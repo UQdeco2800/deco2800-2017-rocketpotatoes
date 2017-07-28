@@ -23,6 +23,7 @@ import com.deco2800.moos.renderers.Render3D;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
 import com.deco2800.moos.worlds.AbstractWorld;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.handlers.MouseHandler;
 
@@ -42,6 +43,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 */
 	Renderer renderer = new Render3D();
 	AbstractWorld world;
+	Player player;
 
 	/**
 	 * Create a camera for panning and zooming.
@@ -73,12 +75,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 */
 		/* Create an example world for the engine */
 		world = new InitialWorld();
+		
+		player = new Player(world, 5, 10, 0);
+		world.addEntity(player);
 
 		/* Create a sound manager for the whole game */
 		soundManager = new SoundManager();
 
 		/* Create a mouse handler for the game */
 		mouseHandler = new MouseHandler(world);
+		
 
 		/**
 		 * Setup the game itself
@@ -151,6 +157,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Setup an Input Multiplexer so that input can be handled by both the UI and the game */
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(stage); // Add the UI as a processor
+		
+		inputMultiplexer.addProcessor(new InputListener());
 
         /*
          * Set up some input handlers for panning with dragging.
@@ -239,7 +247,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
         /*
          * Update the input handlers
          */
-		handleInput();
+		//handleInput();
 
         /*
          * Update the camera
@@ -286,7 +294,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private void handleInput() {
 		int speed = 10;
 
-		if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+		/*if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
 			camera.translate(0, 1*speed*camera.zoom, 0);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
@@ -297,7 +305,26 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 			camera.translate(1*speed*camera.zoom, 0, 0);
+		}*/
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+			player.movingUp = true;
+			player.movingDown = false;
 		}
+		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+			player.movingUp = false;
+			player.movingDown = true;
+		}
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+			player.movingRight = false;
+			player.movingLeft = true;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+			player.movingRight = true;
+			player.movingLeft = false;
+		}
+		
 		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
 			if (camera.zoom > 0.1) {
 				camera.zoom -= 0.1;
@@ -331,8 +358,75 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	public void dispose () {
 		// Don't need this at the moment
 	}
+	
+	
+	private class InputListener implements InputProcessor {
+		public boolean keyDown(int keycode) {
+			System.out.println("Pressed: " + keycode);
+			if (keycode == Input.Keys.W) {
+				player.movingUp = true;
+				player.movingDown = false;
+
+			} else if (keycode == Input.Keys.S) {
+				player.movingUp = false;
+				player.movingDown = true;
+
+			} else if (keycode == Input.Keys.A) {
+				player.movingRight = false;
+				player.movingLeft = true;
+
+			} else if (keycode == Input.Keys.D) {
+				player.movingRight = true;
+				player.movingLeft = false;
+
+			} else {
+				return false;
+			}
+			return true;
+		}
+
+		public boolean keyUp(int keycode) {
+			if (keycode == Input.Keys.W) {
+				player.movingUp = false;
+
+			} else if (keycode == Input.Keys.S) {
+				player.movingDown = false;
+
+			} else if (keycode == Input.Keys.A) {
+				player.movingLeft = false;
+
+			} else if (keycode == Input.Keys.D) {
+				player.movingRight = false;
+
+			} else {
+				return false;
+			}
+			return true;
+		}
+
+		public boolean keyTyped(char character) {
+			return false;
+		}
+
+		public boolean touchDown(int x, int y, int pointer, int button) {
+			return false;
+		}
+
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			return false;
+		}
+
+		public boolean touchDragged(int x, int y, int pointer) {
+			return false;
+		}
+
+		public boolean mouseMoved(int x, int y) {
+			return false;
+		}
+
+		public boolean scrolled(int amount) {
+			return false;
+		}
+	}
 
 }
-
-
-
