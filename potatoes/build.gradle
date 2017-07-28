@@ -1,0 +1,37 @@
+dependencies {
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+
+    compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+    testCompile "org.mockito:mockito-all:1.9.+"
+    testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+sourceSets.main.resources.srcDirs = [ "../core/resources/" ]
+apply plugin: 'org.flywaydb.flyway'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.flywaydb', name: 'flyway-gradle-plugin', version: '3.2.1'
+    }
+
+}
+
+task(run, dependsOn: "classes", type: JavaExec) {
+    main = "com.deco2800.potatoes.GameLauncher"
+    classpath = sourceSets.main.runtimeClasspath
+}
