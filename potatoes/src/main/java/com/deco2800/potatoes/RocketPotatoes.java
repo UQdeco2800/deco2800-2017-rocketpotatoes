@@ -264,11 +264,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        /*
-         * Log FPS
-         */
-		fpsLogger.log();
-
         /* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(world, batch);
 		tileRenderer.setView(camera);
@@ -288,39 +283,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		batch.dispose();
 	}
 
-
-	/**
-	 * Handles keyboard input.
-	 * There probably should be some way to pass this into another class
-	 */
-	//TODO Handle this elsewhere
-	private void handleInput() {
-		int speed = 10;
-		
-
-		/*if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-			camera.translate(0, 1*speed*camera.zoom, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-			camera.translate(0, -1*speed*camera.zoom, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-			camera.translate(-1*speed*camera.zoom, 0, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-			camera.translate(1*speed*camera.zoom, 0, 0);
-		}*/
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
-			if (camera.zoom > 0.1) {
-				camera.zoom -= 0.1;
-			}
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.MINUS)) {
-			camera.zoom += 0.1;
-		}
-
-	}
 
 	/**
 	 * Resizes the viewport
@@ -345,7 +307,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		// Don't need this at the moment
 	}
 	
-	
+	/**
+	 * Keyboard input handler.
+	 * @author leggy
+	 *
+	 */
 	private class InputListener implements InputProcessor {
 		public boolean keyDown(int keycode) {
 			if (keycode == Input.Keys.W) {
@@ -364,11 +330,18 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				player.setMovingRight(true);
 				player.setMovingLeft(false);
 
+			} else if (keycode == Input.Keys.EQUALS) {
+				if (camera.zoom > 0.1) {
+					camera.zoom -= 0.1;
+				}
+			} else if (keycode == Input.Keys.MINUS) {
+				camera.zoom += 0.1;
 			} else {
 				return false;
 			}
 			return true;
 		}
+		
 
 		public boolean keyUp(int keycode) {
 			if (keycode == Input.Keys.W) {
