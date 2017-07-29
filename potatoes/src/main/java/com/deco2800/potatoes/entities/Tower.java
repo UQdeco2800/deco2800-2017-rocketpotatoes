@@ -10,30 +10,32 @@ import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 
-import java.util.Random;
-
-public class Base extends WorldEntity implements Clickable, Tickable, Selectable {
+/**
+ * Tower that can do things.
+ * @author leggy
+ *
+ */
+public class Tower extends WorldEntity implements Clickable, Tickable, Selectable {
 
 
 	boolean selected = false;
 
 	/**
 	 * Constructor for the base
+	 * 
 	 * @param world
+	 *            The world of the tower.
 	 * @param posX
+	 *            The x-coordinate.
 	 * @param posY
+	 *            The y-coordinate.
 	 * @param posZ
+	 *            The z-coordinate.
 	 */
-	public Base(AbstractWorld world, float posX, float posY, float posZ) {
+	public Tower(AbstractWorld world, float posX, float posY, float posZ) {
 		super(world, posX, posY, posZ, 1, 1, 1);
 		this.setTexture("selected");
 	}
-
-	/*public void giveAction(DecoAction action) {
-		if (!currentAction.isPresent()) {
-			currentAction = Optional.of(action);
-		}
-	}*/
 
 	/**
 	 * On click handler
@@ -59,14 +61,6 @@ public class Base extends WorldEntity implements Clickable, Tickable, Selectable
 		} else {
 			this.setTexture("selected");
 		}
-
-		/*if (currentAction.isPresent()) {
-			currentAction.get().doAction();
-
-			if (currentAction.get().completed()) {
-				currentAction = Optional.empty();
-			}
-		}*/
 	}
 
 	@Override
@@ -93,7 +87,7 @@ public class Base extends WorldEntity implements Clickable, Tickable, Selectable
 
 	@Override
 	public void buttonWasPressed() {
-		Random rand = new Random();
+		System.out.println("Button was pressed for " + this);
 		/* We probably don't want these in random spots */
 		//currentAction = Optional.of(new GenerateAction(new Peon(this.getParent(), rand.nextInt(24), rand.nextInt(24), 0), this.getParent()));
 	}

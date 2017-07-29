@@ -1,7 +1,6 @@
 package com.deco2800.potatoes;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,7 +33,6 @@ import com.deco2800.potatoes.handlers.MouseHandler;
  */
 public class RocketPotatoes extends ApplicationAdapter implements ApplicationListener {
 
-	FPSLogger fpsLogger = new FPSLogger();
 	
 	/**
 	 * Set the renderer.
@@ -42,24 +40,24 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 * 2D is for Side Scrolling worlds
 	 * Check the documentation for each renderer to see how it handles WorldEntity coordinates
 	 */
-	Renderer renderer = new Render3D();
-	AbstractWorld world;
-	Player player;
+	private Renderer renderer = new Render3D();
+	private AbstractWorld world;
+	private Player player;
 
 	/**
 	 * Create a camera for panning and zooming.
 	 * Camera must be updated every render cycle.
 	 */
-	OrthographicCamera camera;
+	private OrthographicCamera camera;
 
-	SoundManager soundManager;
-	MouseHandler mouseHandler;
+	private SoundManager soundManager;
+	private MouseHandler mouseHandler;
 
-	Stage stage;
-	Window window;
-	Button peonButton;
+	private Stage stage;
+	private Window window;
+	private Button peonButton;
 
-	long lastGameTick = 0;
+	private long lastGameTick = 0;
 
 	/**
 	 * Creates the required objects for the game to start.

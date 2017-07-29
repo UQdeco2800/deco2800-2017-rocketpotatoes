@@ -3,7 +3,7 @@ package com.deco2800.potatoes;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.worlds.AbstractWorld;
-import com.deco2800.potatoes.entities.Base;
+import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.Peon;
 import com.deco2800.potatoes.entities.Selectable;
 
@@ -29,7 +29,7 @@ public class InitialWorld extends AbstractWorld {
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
 
 		this.addEntity(new Peon(this, 0, 0, 0));
-		this.addEntity(new Base(this, 8, 8, 0));
+		this.addEntity(new Tower(this, 8, 8, 0));
 	}
 
 	/**
