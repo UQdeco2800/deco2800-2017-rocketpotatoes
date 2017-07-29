@@ -1,4 +1,4 @@
-package com.deco2800.marsinvasion;
+package com.deco2800.potatoes;
 
 import org.junit.Test;
 

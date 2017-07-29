@@ -1,9 +1,10 @@
-package com.deco2800.marsinvasion;
+package com.deco2800.potatoes;
 
 import com.deco2800.moos.entities.Tree;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.ExampleWorld;
+import com.deco2800.moos.worlds.WorldEntity;
 import com.deco2800.potatoes.util.WorldUtil;
 
 import org.junit.Test;
@@ -21,11 +22,11 @@ public class WorldUtilTest {
 		AbstractWorld w = mock(ExampleWorld.class);
 		Tree t1 = new Tree(w, 1, 1, 1);
 		Tree t2 = new Tree(w, 2, 2, 1);
-		List<Renderable> e = new ArrayList<>();
+		List<WorldEntity> e = new ArrayList<>();
 		e.add(t1);
 		e.add(t2);
 
-		when(w.getEntities()).thenReturn((ArrayList<Renderable>) e);
+		when(w.getEntities()).thenReturn((List<WorldEntity>) e);
 
 		WorldUtil.closestEntityToPosition(w, 0, 0, 2);
 		assertEquals(t1, WorldUtil.closestEntityToPosition(w, 0, 0, 2).get());

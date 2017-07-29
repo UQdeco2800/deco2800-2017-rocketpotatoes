@@ -2,6 +2,10 @@ package com.deco2800.potatoes.entities;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.deco2800.moos.DesktopLauncher;
 import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.worlds.AbstractWorld;
@@ -10,7 +14,8 @@ import com.deco2800.potatoes.inventory.Inventory;
 
 public class Player extends WorldEntity implements Tickable{
 	
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
+
 	public boolean movingUp;
 	public boolean movingDown;
 	public boolean movingRight;
@@ -56,9 +61,21 @@ public class Player extends WorldEntity implements Tickable{
 		this.position.setX(newPosX);
 		this.position.setY(newPosY);
 
-		List<Renderable> entities = this.getParent().getEntities();
-		//entities.get(0).
+		List<WorldEntity> entities = this.getParent().getEntities();
 		
+		for(WorldEntity entity : entities) {
+			if(this.collidesWith(entity) && !this.equals(entity)) {
+				LOGGER.info(this + " colliding with " + entity);
+				System.out.println(this + " colliding with " + entity);
+
+			}
+		}
+		
+	}
+	
+	
+	public String toString() {
+		return "The player";
 	}
 
 }
