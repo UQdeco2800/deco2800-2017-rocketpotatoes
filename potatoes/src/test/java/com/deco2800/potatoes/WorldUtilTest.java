@@ -1,7 +1,6 @@
 package com.deco2800.potatoes;
 
 import com.deco2800.moos.entities.Tree;
-import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.ExampleWorld;
 import com.deco2800.moos.worlds.WorldEntity;
