@@ -9,7 +9,6 @@ import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.util.Box3D;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
-import com.deco2800.potatoes.inventory.Inventory;
 
 public class Player extends WorldEntity implements Tickable{
 	
@@ -22,8 +21,6 @@ public class Player extends WorldEntity implements Tickable{
 	
 	private float speed;
 	
-	private Inventory inventory;
-
 	public Player(AbstractWorld parent, float posX, float posY, float posZ) {
 		super(parent, posX, posY, posZ, 1, 1);
 		this.speed = 0.2f;
@@ -32,8 +29,6 @@ public class Player extends WorldEntity implements Tickable{
 		this.movingDown = false;
 		this.movingRight = false;
 		this.movingLeft = false;
-		
-		this.inventory = new Inventory();
 		
 		this.setTexture("selected_black");
 	}
