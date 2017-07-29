@@ -1,8 +1,12 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.List;
+
 import com.deco2800.moos.entities.Tickable;
+import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
+import com.deco2800.potatoes.inventory.Inventory;
 
 public class Player extends WorldEntity implements Tickable{
 	
@@ -13,6 +17,8 @@ public class Player extends WorldEntity implements Tickable{
 	public boolean movingLeft;
 	
 	private float speed;
+	
+	private Inventory inventory;
 
 	public Player(AbstractWorld parent, float posX, float posY, float posZ) {
 		super(parent, posX, posY, posZ, 1, 1);
@@ -22,25 +28,36 @@ public class Player extends WorldEntity implements Tickable{
 		this.movingDown = false;
 		this.movingRight = false;
 		this.movingLeft = false;
+		
+		this.inventory = new Inventory();
 	}
 
 	@Override
 	public void onTick(int arg0) {
+		float newPosX = this.position.getX();
+		float newPosY = this.position.getY();
+		
 		if(movingUp){
-			this.posX += speed;
-			this.posY -= speed;
+			newPosX += speed;
+			newPosY -= speed;
 		} else if(movingDown){
-			this.posX -= speed;
-			this.posY += speed;
+			newPosX -= speed;
+			newPosY += speed;
 		}
 		
 		if(movingLeft){
-			this.posX -= speed;
-			this.posY -= speed;
+			newPosX -= speed;
+			newPosY -= speed;
 		} else if(movingRight){
-			this.posX += speed;
-			this.posY += speed;
+			newPosX += speed;
+			newPosY += speed;
 		}
+		
+		this.position.setX(newPosX);
+		this.position.setY(newPosY);
+
+		List<Renderable> entities = this.getParent().getEntities();
+		//entities.get(0).
 		
 	}
 

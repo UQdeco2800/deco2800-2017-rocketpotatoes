@@ -293,6 +293,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	//TODO Handle this elsewhere
 	private void handleInput() {
 		int speed = 10;
+		
 
 		/*if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
 			camera.translate(0, 1*speed*camera.zoom, 0);
@@ -306,24 +307,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 			camera.translate(1*speed*camera.zoom, 0, 0);
 		}*/
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			player.movingUp = true;
-			player.movingDown = false;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			player.movingUp = false;
-			player.movingDown = true;
-		}
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			player.movingRight = false;
-			player.movingLeft = true;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.movingRight = true;
-			player.movingLeft = false;
-		}
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.EQUALS)) {
 			if (camera.zoom > 0.1) {
