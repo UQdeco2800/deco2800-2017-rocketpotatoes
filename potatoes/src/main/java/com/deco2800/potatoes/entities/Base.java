@@ -10,7 +10,6 @@ import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 
-import java.util.Optional;
 import java.util.Random;
 
 public class Base extends WorldEntity implements Clickable, Tickable, Selectable {
@@ -26,8 +25,8 @@ public class Base extends WorldEntity implements Clickable, Tickable, Selectable
 	 * @param posZ
 	 */
 	public Base(AbstractWorld world, float posX, float posY, float posZ) {
-		super(world, posX, posY, posZ, 1, 2, 2);
-		this.setTexture("tree");
+		super(world, posX, posY, posZ, 1, 1, 1);
+		this.setTexture("selected");
 	}
 
 	/*public void giveAction(DecoAction action) {
@@ -58,7 +57,7 @@ public class Base extends WorldEntity implements Clickable, Tickable, Selectable
 		if (selected) {
 			this.setTexture("tree_selected");
 		} else {
-			this.setTexture("tree");
+			this.setTexture("selected");
 		}
 
 		/*if (currentAction.isPresent()) {

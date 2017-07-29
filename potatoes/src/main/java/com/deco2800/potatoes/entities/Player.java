@@ -5,9 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.moos.DesktopLauncher;
 import com.deco2800.moos.entities.Tickable;
-import com.deco2800.moos.renderers.Renderable;
+import com.deco2800.moos.util.Box3D;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 import com.deco2800.potatoes.inventory.Inventory;
@@ -35,6 +34,8 @@ public class Player extends WorldEntity implements Tickable{
 		this.movingLeft = false;
 		
 		this.inventory = new Inventory();
+		
+		this.setTexture("selected_black");
 	}
 
 	@Override
@@ -58,18 +59,36 @@ public class Player extends WorldEntity implements Tickable{
 			newPosY += speed;
 		}
 		
-		this.position.setX(newPosX);
-		this.position.setY(newPosY);
+		/*this.position.setX(newPosX);
+		this.position.setY(newPosY);*/
+		
+		Box3D newPos = getBox3D();
+		newPos.setX(newPosX);
+		newPos.setY(newPosY);
+		
+		
 
 		List<WorldEntity> entities = this.getParent().getEntities();
-		
+		boolean collided = false;
 		for(WorldEntity entity : entities) {
-			if(this.collidesWith(entity) && !this.equals(entity)) {
+			if(!this.equals(entity) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				System.out.println(this + " colliding with " + entity);
+				collided = true;
+				
+				/*movingUp = false;
+				movingDown = false;
+				movingRight = false;
+				movingLeft = false;*/
 
 			}
 		}
+		
+		if(!collided) {
+			this.position.setX(newPosX);
+			this.position.setY(newPosY);			
+		}
+		
 		
 	}
 	

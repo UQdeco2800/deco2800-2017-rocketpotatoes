@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.moos.entities.Tickable;
+import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.managers.SoundManager;
 import com.deco2800.moos.registers.TextureRegister;
 import com.deco2800.moos.renderers.Render3D;
@@ -66,9 +67,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 */
 	@Override
 	public void create () {
+		
+		TextureRegister textureRegister = ((TextureRegister)GameManager.get().getManager(TextureRegister.class));
 
-		TextureRegister.getInstance().saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
-		TextureRegister.getInstance().saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
+		textureRegister.saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
+		textureRegister.saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 
 		/**
 		 *	Set up new stuff for this game
@@ -345,7 +348,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	
 	private class InputListener implements InputProcessor {
 		public boolean keyDown(int keycode) {
-			System.out.println("Pressed: " + keycode);
 			if (keycode == Input.Keys.W) {
 				player.movingUp = true;
 				player.movingDown = false;
