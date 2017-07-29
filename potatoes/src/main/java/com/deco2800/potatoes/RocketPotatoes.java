@@ -121,7 +121,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		anotherButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				soundManager.playSound();
+				soundManager.playSound("quack.wav");
 			}
 		});
 
