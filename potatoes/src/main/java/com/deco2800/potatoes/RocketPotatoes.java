@@ -349,20 +349,20 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private class InputListener implements InputProcessor {
 		public boolean keyDown(int keycode) {
 			if (keycode == Input.Keys.W) {
-				player.movingUp = true;
-				player.movingDown = false;
+				player.setMovingUp(true);
+				player.setMovingDown(false);
 
 			} else if (keycode == Input.Keys.S) {
-				player.movingUp = false;
-				player.movingDown = true;
+				player.setMovingUp(false);
+				player.setMovingDown(true);
 
 			} else if (keycode == Input.Keys.A) {
-				player.movingRight = false;
-				player.movingLeft = true;
+				player.setMovingRight(false);
+				player.setMovingLeft(true);
 
 			} else if (keycode == Input.Keys.D) {
-				player.movingRight = true;
-				player.movingLeft = false;
+				player.setMovingRight(true);
+				player.setMovingLeft(false);
 
 			} else {
 				return false;
@@ -372,16 +372,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		public boolean keyUp(int keycode) {
 			if (keycode == Input.Keys.W) {
-				player.movingUp = false;
+				player.setMovingUp(false);
 
 			} else if (keycode == Input.Keys.S) {
-				player.movingDown = false;
+				player.setMovingDown(false);
 
 			} else if (keycode == Input.Keys.A) {
-				player.movingLeft = false;
+				player.setMovingLeft(false);
 
 			} else if (keycode == Input.Keys.D) {
-				player.movingRight = false;
+				player.setMovingRight(false);
 
 			} else {
 				return false;

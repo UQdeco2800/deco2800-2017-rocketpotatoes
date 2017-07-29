@@ -7,16 +7,24 @@ import com.deco2800.potatoes.entities.Base;
 import com.deco2800.potatoes.entities.Peon;
 import com.deco2800.potatoes.entities.Selectable;
 
+/**
+ * Initial world using preset world file.
+ * 
+ * @author leggy
+ *
+ */
 public class InitialWorld extends AbstractWorld {
 
 	/**
 	 * Constructor for InitialWorld
 	 */
 	public InitialWorld() {
- 		/* Load up the map for this world */
+		/* Load up the map for this world */
 		this.map = new TmxMapLoader().load("resources/placeholderassets/placeholder.tmx");
 
-        /* Grab the width and length values from the map file to use as the world size */
+		/*
+		 * Grab the width and length values from the map file to use as the world size
+		 */
 		this.setWidth(this.getMap().getProperties().get("width", Integer.class));
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
 
@@ -24,6 +32,9 @@ public class InitialWorld extends AbstractWorld {
 		this.addEntity(new Base(this, 8, 8, 0));
 	}
 
+	/**
+	 * Deselects all entities.
+	 */
 	public void deSelectAll() {
 		for (Renderable r : this.getEntities()) {
 			if (r instanceof Selectable) {
