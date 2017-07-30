@@ -25,6 +25,7 @@ import com.deco2800.moos.renderers.Renderer;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.handlers.MouseHandler;
+import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
  * Handles the creation of the world and rendering.
@@ -40,7 +41,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 * Check the documentation for each renderer to see how it handles WorldEntity coordinates
 	 */
 	private Renderer renderer = new Render3D();
-	private Player player;
 
 	/**
 	 * Create a camera for panning and zooming.
@@ -50,6 +50,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
+	private PlayerManager playerManager;
 
 	private Stage stage;
 	private Window window;
@@ -75,14 +76,17 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Create an example world for the engine */
 		GameManager.get().setWorld(new InitialWorld());
 		
-		player = new Player(5, 10, 0);
-		GameManager.get().getWorld().addEntity(player);
-
 		/* Create a sound manager for the whole game */
 		soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 
 		/* Create a mouse handler for the game */
 		mouseHandler = new MouseHandler();
+		
+		/* Create a player manager. */
+		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
+		
+		playerManager.setPlayer(new Player(5, 10, 0));
+		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		
 
 		/**
@@ -311,20 +315,20 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private class InputListener implements InputProcessor {
 		public boolean keyDown(int keycode) {
 			if (keycode == Input.Keys.W) {
-				player.setMovingUp(true);
-				player.setMovingDown(false);
+				playerManager.getPlayer().setMovingUp(true);
+				playerManager.getPlayer().setMovingDown(false);
 
 			} else if (keycode == Input.Keys.S) {
-				player.setMovingUp(false);
-				player.setMovingDown(true);
+				playerManager.getPlayer().setMovingUp(false);
+				playerManager.getPlayer().setMovingDown(true);
 
 			} else if (keycode == Input.Keys.A) {
-				player.setMovingRight(false);
-				player.setMovingLeft(true);
+				playerManager.getPlayer().setMovingRight(false);
+				playerManager.getPlayer().setMovingLeft(true);
 
 			} else if (keycode == Input.Keys.D) {
-				player.setMovingRight(true);
-				player.setMovingLeft(false);
+				playerManager.getPlayer().setMovingRight(true);
+				playerManager.getPlayer().setMovingLeft(false);
 
 			} else if (keycode == Input.Keys.EQUALS) {
 				if (camera.zoom > 0.1) {
@@ -341,16 +345,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		public boolean keyUp(int keycode) {
 			if (keycode == Input.Keys.W) {
-				player.setMovingUp(false);
+				playerManager.getPlayer().setMovingUp(false);
 
 			} else if (keycode == Input.Keys.S) {
-				player.setMovingDown(false);
+				playerManager.getPlayer().setMovingDown(false);
 
 			} else if (keycode == Input.Keys.A) {
-				player.setMovingLeft(false);
+				playerManager.getPlayer().setMovingLeft(false);
 
 			} else if (keycode == Input.Keys.D) {
-				player.setMovingRight(false);
+				playerManager.getPlayer().setMovingRight(false);
 
 			} else {
 				return false;
