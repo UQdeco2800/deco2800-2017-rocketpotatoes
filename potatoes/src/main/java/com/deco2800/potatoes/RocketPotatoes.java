@@ -22,7 +22,6 @@ import com.deco2800.moos.registers.TextureRegister;
 import com.deco2800.moos.renderers.Render3D;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
-import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.handlers.MouseHandler;
@@ -41,7 +40,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 * Check the documentation for each renderer to see how it handles WorldEntity coordinates
 	 */
 	private Renderer renderer = new Render3D();
-	private AbstractWorld world;
 	private Player player;
 
 	/**
@@ -75,16 +73,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 *	Set up new stuff for this game
 		 */
 		/* Create an example world for the engine */
-		world = new InitialWorld();
+		GameManager.get().setWorld(new InitialWorld());
 		
-		player = new Player(world, 5, 10, 0);
-		world.addEntity(player);
+		player = new Player(5, 10, 0);
+		GameManager.get().getWorld().addEntity(player);
 
 		/* Create a sound manager for the whole game */
-		soundManager = new SoundManager();
+		soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 
 		/* Create a mouse handler for the game */
-		mouseHandler = new MouseHandler(world);
+		mouseHandler = new MouseHandler();
 		
 
 		/**
@@ -92,7 +90,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 */
 		/* Setup the camera and move it to the center of the world */
 		camera = new OrthographicCamera(1920, 1080);
-		camera.translate(world.getWidth()*32, 0);
+		camera.translate(GameManager.get().getWorld().getWidth()*32, 0);
 
 		/**
 		 * Setup GUI
@@ -130,7 +128,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		peonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				for (Renderable r : world.getEntities()) {
+				for (Renderable r : GameManager.get().getWorld().getEntities()) {
 					if (r instanceof Selectable) {
 						if (((Selectable) r).isSelected()) {
 
@@ -218,7 +216,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		if(TimeUtils.millis() - lastGameTick > 100) {
 			window.removeActor(peonButton);
 			boolean somethingSelected = false;
-			for (Renderable e : world.getEntities()) {
+			for (Renderable e : GameManager.get().getWorld().getEntities()) {
 				if (e instanceof Tickable) {
 					((Tickable) e).onTick(0);
 
@@ -263,14 +261,14 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         /* Render the tiles first */
-		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(world, batch);
+		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(camera);
 		tileRenderer.render();
 
 		/*
          * Use the selected renderer to render objects onto the map
          */
-		renderer.render(batch, world);
+		renderer.render(batch);
 
 		/* Dispose of the spritebatch to not have memory leaks */
 		Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());

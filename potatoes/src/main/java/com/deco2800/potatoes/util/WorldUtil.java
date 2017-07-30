@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.util;
 
+import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.renderers.Renderable;
-import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 
 import java.util.Optional;
@@ -20,10 +20,10 @@ public class WorldUtil {
 	 * @param delta
 	 * @return Optional of WorldEntity
 	 */
-	public static Optional<WorldEntity> closestEntityToPosition(AbstractWorld world, float x, float y, float delta) {
+	public static Optional<WorldEntity> closestEntityToPosition(float x, float y, float delta) {
 		WorldEntity result = null;
 		double distance = Double.MAX_VALUE;
-		for (Renderable r : world.getEntities()) {
+		for (Renderable r : GameManager.get().getWorld().getEntities()) {
 			double tempDistance = Math.sqrt(Math.pow((r.getPosX() - x), 2) + Math.pow((r.getPosY() - y), 2));
 
 			if (tempDistance < distance) {

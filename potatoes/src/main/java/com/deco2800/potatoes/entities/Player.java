@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.moos.entities.Tickable;
+import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.util.Box3D;
-import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 
 /**
@@ -39,8 +39,8 @@ public class Player extends WorldEntity implements Tickable {
 	 * @param posZ
 	 *            The z-coordinate.
 	 */
-	public Player(AbstractWorld world, float posX, float posY, float posZ) {
-		super(world, posX, posY, posZ, 1, 1);
+	public Player(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 1, 1, 1);
 		this.speed = 0.2f;
 
 		this.movingUp = false;
@@ -76,7 +76,7 @@ public class Player extends WorldEntity implements Tickable {
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		List<WorldEntity> entities = this.getParent().getEntities();
+		List<WorldEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (WorldEntity entity : entities) {
 			if (!this.equals(entity) && newPos.overlaps(entity.getBox3D())) {

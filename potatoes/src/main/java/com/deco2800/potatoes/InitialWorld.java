@@ -28,8 +28,8 @@ public class InitialWorld extends AbstractWorld {
 		this.setWidth(this.getMap().getProperties().get("width", Integer.class));
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
 
-		this.addEntity(new Peon(this, 0, 0, 0));
-		this.addEntity(new Tower(this, 8, 8, 0));
+		this.addEntity(new Peon(0, 0, 0));
+		this.addEntity(new Tower(8, 8, 0));
 	}
 
 	/**

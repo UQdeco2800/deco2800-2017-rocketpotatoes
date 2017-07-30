@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.moos.entities.Tickable;
-import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 
 /**
@@ -32,8 +31,8 @@ public class Tower extends WorldEntity implements Clickable, Tickable, Selectabl
 	 * @param posZ
 	 *            The z-coordinate.
 	 */
-	public Tower(AbstractWorld world, float posX, float posY, float posZ) {
-		super(world, posX, posY, posZ, 1, 1, 1);
+	public Tower(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 1, 1, 1);
 		this.setTexture("selected");
 	}
 

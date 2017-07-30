@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.handlers;
 
+import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.moos.worlds.WorldEntity;
 import com.deco2800.potatoes.InitialWorld;
@@ -12,14 +13,11 @@ import java.util.Optional;
  * Really crappy mouse handler for the game
  */
 public class MouseHandler {
-	private AbstractWorld world;
 
 	/**
 	 * Constructor for the mouse handler
-	 * @param world
 	 */
-	public MouseHandler(AbstractWorld world) {
-		this.world = world;
+	public MouseHandler() {
 	}
 
 	/**
@@ -36,10 +34,11 @@ public class MouseHandler {
 		projY = -(y - 32f / 2f) / 32f + projX;
 		projX -= projY - projX;
 
-		Optional<WorldEntity> closest = WorldUtil.closestEntityToPosition(world, projX, projY, 2f);
+		Optional<WorldEntity> closest = WorldUtil.closestEntityToPosition(projX, projY, 2f);
 		if (closest.isPresent() &&  closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
 		} else {
+			AbstractWorld world = GameManager.get().getWorld();
 			if (world instanceof InitialWorld) {
 				((InitialWorld)(world)).deSelectAll();
 			}
