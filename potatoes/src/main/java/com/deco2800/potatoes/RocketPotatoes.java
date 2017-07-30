@@ -24,6 +24,7 @@ import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
+import com.deco2800.potatoes.handlers.InputListener;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.PlayerManager;
 
@@ -46,11 +47,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 * Create a camera for panning and zooming.
 	 * Camera must be updated every render cycle.
 	 */
-	private OrthographicCamera camera;
 
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
+	private TextureManager textureManager;
 
 	private Stage stage;
 	private Window window;
@@ -65,7 +66,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void create () {
 		
-		TextureManager textureManager = ((TextureManager)GameManager.get().getManager(TextureManager.class));
+		textureManager = ((TextureManager)GameManager.get().getManager(TextureManager.class));
 
 		textureManager.saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		textureManager.saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
@@ -93,8 +94,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 * Setup the game itself
 		 */
 		/* Setup the camera and move it to the center of the world */
-		camera = new OrthographicCamera(1920, 1080);
-		camera.translate(GameManager.get().getWorld().getWidth()*32, 0);
+		GameManager.get().setCamera(new OrthographicCamera(1920, 1080));
+		GameManager.get().getCamera().translate(GameManager.get().getWorld().getWidth()*32, 0);
 
 		/**
 		 * Setup GUI
@@ -177,7 +178,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				originY = screenY;
 
 
-				Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
+				Vector3 worldCoords = GameManager.get().getCamera().unproject(new Vector3(screenX, screenY, 0));
 				mouseHandler.handleMouseClick(worldCoords.x, worldCoords.y);
 
 				return true;
@@ -192,10 +193,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				// invert the y axis
 				originY = -originY;
 
-				originX += camera.position.x;
-				originY += camera.position.y;
+				originX += GameManager.get().getCamera().position.x;
+				originY += GameManager.get().getCamera().position.y;
 
-				camera.translate(originX - camera.position.x, originY - camera.position.y);
+				GameManager.get().getCamera().translate(originX - GameManager.get().getCamera().position.x, originY - GameManager.get().getCamera().position.y);
 
 				originX = screenX;
 				originY = screenY;
@@ -255,8 +256,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
         /*
          * Update the camera
          */
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
+		GameManager.get().getCamera().update();
+		batch.setProjectionMatrix(GameManager.get().getCamera().combined);
 
         /*
          * Clear the entire display as we are using lazy rendering
@@ -266,7 +267,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
         /* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
-		tileRenderer.setView(camera);
+		tileRenderer.setView(GameManager.get().getCamera());
 		tileRenderer.render();
 
 		/*
@@ -291,9 +292,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 */
 	@Override
 	public void resize(int width, int height) {
-		camera.viewportWidth = width;
-		camera.viewportHeight = height;
-		camera.update();
+		GameManager.get().getCamera().viewportWidth = width;
+		GameManager.get().getCamera().viewportHeight = height;
+		GameManager.get().getCamera().update();
 
 		stage.getViewport().update(width, height, true);
 		window.setPosition(0, stage.getHeight());
@@ -307,84 +308,5 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		// Don't need this at the moment
 	}
 	
-	/**
-	 * Keyboard input handler.
-	 * @author leggy
-	 *
-	 */
-	private class InputListener implements InputProcessor {
-		public boolean keyDown(int keycode) {
-			if (keycode == Input.Keys.W) {
-				playerManager.getPlayer().setMovingUp(true);
-				playerManager.getPlayer().setMovingDown(false);
-
-			} else if (keycode == Input.Keys.S) {
-				playerManager.getPlayer().setMovingUp(false);
-				playerManager.getPlayer().setMovingDown(true);
-
-			} else if (keycode == Input.Keys.A) {
-				playerManager.getPlayer().setMovingRight(false);
-				playerManager.getPlayer().setMovingLeft(true);
-
-			} else if (keycode == Input.Keys.D) {
-				playerManager.getPlayer().setMovingRight(true);
-				playerManager.getPlayer().setMovingLeft(false);
-
-			} else if (keycode == Input.Keys.EQUALS) {
-				if (camera.zoom > 0.1) {
-					camera.zoom -= 0.1;
-				}
-			} else if (keycode == Input.Keys.MINUS) {
-				camera.zoom += 0.1;
-			} else {
-				return false;
-			}
-			return true;
-		}
-		
-
-		public boolean keyUp(int keycode) {
-			if (keycode == Input.Keys.W) {
-				playerManager.getPlayer().setMovingUp(false);
-
-			} else if (keycode == Input.Keys.S) {
-				playerManager.getPlayer().setMovingDown(false);
-
-			} else if (keycode == Input.Keys.A) {
-				playerManager.getPlayer().setMovingLeft(false);
-
-			} else if (keycode == Input.Keys.D) {
-				playerManager.getPlayer().setMovingRight(false);
-
-			} else {
-				return false;
-			}
-			return true;
-		}
-
-		public boolean keyTyped(char character) {
-			return false;
-		}
-
-		public boolean touchDown(int x, int y, int pointer, int button) {
-			return false;
-		}
-
-		public boolean touchUp(int x, int y, int pointer, int button) {
-			return false;
-		}
-
-		public boolean touchDragged(int x, int y, int pointer) {
-			return false;
-		}
-
-		public boolean mouseMoved(int x, int y) {
-			return false;
-		}
-
-		public boolean scrolled(int amount) {
-			return false;
-		}
-	}
-
+	
 }
