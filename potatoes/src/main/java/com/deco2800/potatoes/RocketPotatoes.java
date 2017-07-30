@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.managers.SoundManager;
-import com.deco2800.moos.registers.TextureRegister;
+import com.deco2800.moos.managers.TextureManager;
 import com.deco2800.moos.renderers.Render3D;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
@@ -64,10 +64,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void create () {
 		
-		TextureRegister textureRegister = ((TextureRegister)GameManager.get().getManager(TextureRegister.class));
+		TextureManager textureManager = ((TextureManager)GameManager.get().getManager(TextureManager.class));
 
-		textureRegister.saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
-		textureRegister.saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
+		textureManager.saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
+		textureManager.saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 
 		/**
 		 *	Set up new stuff for this game
