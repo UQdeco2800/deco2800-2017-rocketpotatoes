@@ -24,7 +24,7 @@ import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.handlers.InputListener;
+import com.deco2800.moos.managers.InputManager;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.PlayerManager;
 
@@ -161,9 +161,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Setup an Input Multiplexer so that input can be handled by both the UI and the game */
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(stage); // Add the UI as a processor
-		
-		inputMultiplexer.addProcessor(new InputListener());
 
+		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+		inputMultiplexer.addProcessor(input);
         /*
          * Set up some input handlers for panning with dragging.
          */
