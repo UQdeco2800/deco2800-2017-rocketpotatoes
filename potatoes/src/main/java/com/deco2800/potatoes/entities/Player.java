@@ -37,8 +37,8 @@ public class Player extends WorldEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1);
-		movementSpeed = 0.2f;
+		super(new Box3D(posX, posY, posZ, 1, 1, 1));
+		movementSpeed = 0.05f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
 		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);

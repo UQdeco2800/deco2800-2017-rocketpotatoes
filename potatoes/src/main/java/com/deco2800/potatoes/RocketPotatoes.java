@@ -218,7 +218,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/*
 		 * Tickrate = 10Hz
 		 */
-		if(TimeUtils.millis() - lastGameTick > 100) {
+		if(TimeUtils.millis() - lastGameTick > 30) {
 			window.removeActor(peonButton);
 			boolean somethingSelected = false;
 			for (Renderable e : GameManager.get().getWorld().getEntities()) {
