@@ -7,10 +7,10 @@ import com.deco2800.moos.managers.InputManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.deco2800.moos.entities.AbstractEntity;
 import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.util.Box3D;
-import com.deco2800.moos.worlds.WorldEntity;
 
 /**
  * Entity for the playable character.
@@ -18,7 +18,7 @@ import com.deco2800.moos.worlds.WorldEntity;
  * @author leggy
  *
  */
-public class Player extends WorldEntity implements Tickable {
+public class Player extends AbstractEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
@@ -37,7 +37,7 @@ public class Player extends WorldEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(new Box3D(posX, posY, posZ, 1, 1, 1));
+		super(posX, posY, posZ, 1, 1, 1);
 		movementSpeed = 0.05f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
@@ -51,19 +51,19 @@ public class Player extends WorldEntity implements Tickable {
 
 	@Override
 	public void onTick(int arg0) {
-		float newPosX = this.position.getX();
-		float newPosY = this.position.getY();
+		float newPosX = this.getPosX();
+		float newPosY = this.getPosY();
 
-			newPosX += speedx;
-			newPosY += speedy;
+		newPosX += speedx;
+		newPosY += speedy;
 
 		Box3D newPos = getBox3D();
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		List<WorldEntity> entities = GameManager.get().getWorld().getEntities();
+		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
-		for (WorldEntity entity : entities) {
+		for (AbstractEntity entity : entities) {
 			if (!this.equals(entity) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				System.out.println(this + " colliding with " + entity);
@@ -73,61 +73,63 @@ public class Player extends WorldEntity implements Tickable {
 		}
 
 		if (!collided) {
-			this.position.setX(newPosX);
-			this.position.setY(newPosY);
+			this.setPosX(newPosX);
+			this.setPosY(newPosY);
 		}
 	}
 
 	/**
 	 * Handle movement when wasd keys are pressed down
+	 * 
 	 * @param keycode
 	 */
 	private void handleKeyDown(int keycode) {
 		switch (keycode) {
-			case Input.Keys.W:
-				speedy-=movementSpeed;
-				speedx+=movementSpeed;
-				break;
-			case Input.Keys.S:
-				speedy+=movementSpeed;
-				speedx-=movementSpeed;
-				break;
-			case Input.Keys.A:
-				speedx-=movementSpeed;
-				speedy-=movementSpeed;
-				break;
-			case Input.Keys.D:
-				speedx+=movementSpeed;
-				speedy+=movementSpeed;
-			default:
-				break;
+		case Input.Keys.W:
+			speedy -= movementSpeed;
+			speedx += movementSpeed;
+			break;
+		case Input.Keys.S:
+			speedy += movementSpeed;
+			speedx -= movementSpeed;
+			break;
+		case Input.Keys.A:
+			speedx -= movementSpeed;
+			speedy -= movementSpeed;
+			break;
+		case Input.Keys.D:
+			speedx += movementSpeed;
+			speedy += movementSpeed;
+		default:
+			break;
 		}
 	}
 
 	/**
 	 * Handle movement when wasd keys are released
+	 * 
 	 * @param keycode
 	 */
 	private void handleKeyUp(int keycode) {
 		switch (keycode) {
-			case Input.Keys.W:
-				speedy+=movementSpeed;
-				speedx-=movementSpeed;
-				break;
-			case Input.Keys.S:
-				speedy-=movementSpeed;
-				speedx+=movementSpeed;
-				break;
-			case Input.Keys.A:
-				speedx+=movementSpeed;
-				speedy+=movementSpeed;
-				break;
-			case Input.Keys.D:
-				speedx-=movementSpeed;
-				speedy-=movementSpeed;
-				break;
-			default:
-				break;
+		case Input.Keys.W:
+			speedy += movementSpeed;
+			speedx -= movementSpeed;
+			break;
+		case Input.Keys.S:
+			speedy -= movementSpeed;
+			speedx += movementSpeed;
+			break;
+		case Input.Keys.A:
+			speedx += movementSpeed;
+			speedy += movementSpeed;
+			break;
+		case Input.Keys.D:
+			speedx -= movementSpeed;
+			speedy -= movementSpeed;
+			break;
+		default:
+			break;
 		}
 	}
 

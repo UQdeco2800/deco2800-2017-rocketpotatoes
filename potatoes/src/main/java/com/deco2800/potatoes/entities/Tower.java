@@ -6,15 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.deco2800.moos.entities.AbstractEntity;
 import com.deco2800.moos.entities.Tickable;
-import com.deco2800.moos.worlds.WorldEntity;
 
 /**
  * Tower that can do things.
  * @author leggy
  *
  */
-public class Tower extends WorldEntity implements Clickable, Tickable, Selectable {
+public class Tower extends AbstractEntity implements Clickable, Tickable, Selectable {
 
 
 	boolean selected = false;

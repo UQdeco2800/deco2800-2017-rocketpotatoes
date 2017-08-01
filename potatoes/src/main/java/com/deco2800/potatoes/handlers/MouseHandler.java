@@ -1,8 +1,8 @@
 package com.deco2800.potatoes.handlers;
 
+import com.deco2800.moos.entities.AbstractEntity;
 import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.worlds.AbstractWorld;
-import com.deco2800.moos.worlds.WorldEntity;
 import com.deco2800.potatoes.InitialWorld;
 import com.deco2800.potatoes.entities.Clickable;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -34,7 +34,7 @@ public class MouseHandler {
 		projY = -(y - 32f / 2f) / 32f + projX;
 		projX -= projY - projX;
 
-		Optional<WorldEntity> closest = WorldUtil.closestEntityToPosition(projX, projY, 2f);
+		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(projX, projY, 2f);
 		if (closest.isPresent() &&  closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
 		} else {

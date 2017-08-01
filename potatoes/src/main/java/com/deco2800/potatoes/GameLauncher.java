@@ -21,6 +21,7 @@ public class GameLauncher {
 		config.width = 1280;
 		config.height = 720;
 		config.title = "DECO2800 2017: RocketPotatoes";
+		@SuppressWarnings("unused")
 		LwjglApplication game = new LwjglApplication(new RocketPotatoes(), config);
 	}
 }

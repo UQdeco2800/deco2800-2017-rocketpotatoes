@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.moos.entities.AbstractEntity;
 import com.deco2800.moos.entities.Tickable;
-import com.deco2800.moos.worlds.WorldEntity;
 
 /**
  * A generic player instance for the game
  */
-public class Peon extends WorldEntity implements Tickable {
+public class Peon extends AbstractEntity implements Tickable {
 
 	/**
 	 * Constructor for the Peon
