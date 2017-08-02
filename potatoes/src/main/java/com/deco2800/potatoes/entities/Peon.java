@@ -17,7 +17,7 @@ public class Peon extends AbstractEntity implements Tickable {
 	 */
 	public Peon(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1, 1, 1);
-		this.setTexture("player");
+		this.setTexture("selected");
 	}
 
 	@Override

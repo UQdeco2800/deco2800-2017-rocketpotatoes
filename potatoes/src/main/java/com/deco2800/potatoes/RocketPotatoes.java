@@ -70,6 +70,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		textureManager.saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		textureManager.saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
+		textureManager.saveTexture("squirrel", "resources/squirrel.png");
+		textureManager.saveTexture("tower", "resources/tower.png");
+
 
 		/**
 		 *	Set up new stuff for this game
@@ -216,9 +219,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	public void render () {
 
 		/*
-		 * Tickrate = 10Hz
+		 * Tickrate = 100Hz
 		 */
-		if(TimeUtils.millis() - lastGameTick > 30) {
+		if(TimeUtils.millis() - lastGameTick > 10) {
 			window.removeActor(peonButton);
 			boolean somethingSelected = false;
 			for (Renderable e : GameManager.get().getWorld().getEntities()) {

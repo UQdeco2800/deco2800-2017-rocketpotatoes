@@ -16,7 +16,6 @@ import com.deco2800.moos.entities.Tickable;
  */
 public class Tower extends AbstractEntity implements Clickable, Tickable, Selectable {
 
-
 	boolean selected = false;
 
 	/**
@@ -33,7 +32,7 @@ public class Tower extends AbstractEntity implements Clickable, Tickable, Select
 	 */
 	public Tower(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1, 1, 1);
-		this.setTexture("selected");
+		this.setTexture("tower");
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class Tower extends AbstractEntity implements Clickable, Tickable, Select
 		if (selected) {
 			this.setTexture("tree_selected");
 		} else {
-			this.setTexture("selected");
+			this.setTexture("tower");
 		}
 	}
 

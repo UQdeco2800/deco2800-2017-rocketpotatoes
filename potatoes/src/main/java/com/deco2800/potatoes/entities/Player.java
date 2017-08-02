@@ -38,7 +38,7 @@ public class Player extends AbstractEntity implements Tickable {
 	 */
 	public Player(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1, 1, 1);
-		movementSpeed = 0.05f;
+		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
 		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
@@ -64,7 +64,7 @@ public class Player extends AbstractEntity implements Tickable {
 		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities) {
-			if (!this.equals(entity) && newPos.overlaps(entity.getBox3D())) {
+			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				System.out.println(this + " colliding with " + entity);
 				collided = true;
