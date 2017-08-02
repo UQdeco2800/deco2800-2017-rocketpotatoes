@@ -46,7 +46,7 @@ public class Player extends AbstractEntity implements Tickable {
 		input.addKeyDownListener(this::handleKeyDown);
 		input.addKeyUpListener(this::handleKeyUp);
 
-		this.setTexture("selected_black");
+		this.setTexture("spacman_blue");
 	}
 
 	@Override

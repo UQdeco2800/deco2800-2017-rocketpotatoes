@@ -19,6 +19,7 @@ import com.deco2800.moos.entities.Tickable;
 import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.managers.SoundManager;
 import com.deco2800.moos.managers.TextureManager;
+import com.deco2800.moos.observers.KeyDownObserver;
 import com.deco2800.moos.renderers.Render3D;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
@@ -166,7 +167,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		inputMultiplexer.addProcessor(stage); // Add the UI as a processor
 
 		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+		input.addKeyDownListener(new CameraHandler());
 		inputMultiplexer.addProcessor(input);
+		
         /*
          * Set up some input handlers for panning with dragging.
          */
@@ -309,6 +312,34 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void dispose () {
 		// Don't need this at the moment
+	}
+	
+	
+	private class CameraHandler implements KeyDownObserver {
+
+		@Override
+		public void notifyKeyDown(int keycode) {
+			int speed = 10;
+
+			if (keycode == Input.Keys.EQUALS) {
+				if (GameManager.get().getCamera().zoom > 0.1) {
+					GameManager.get().getCamera().zoom -= 0.1;
+				}
+			} else if (keycode == Input.Keys.MINUS) {
+				GameManager.get().getCamera().zoom += 0.1;
+
+			} else if (keycode == Input.Keys.UP) {
+				GameManager.get().getCamera().translate(0, 1 * speed * GameManager.get().getCamera().zoom, 0);
+			} else if (keycode == Input.Keys.DOWN) {
+				GameManager.get().getCamera().translate(0, -1 * speed * GameManager.get().getCamera().zoom, 0);
+			} else if (keycode == Input.Keys.LEFT) {
+				GameManager.get().getCamera().translate(-1 * speed * GameManager.get().getCamera().zoom, 0, 0);
+			} else if (keycode == Input.Keys.RIGHT) {
+				GameManager.get().getCamera().translate(1 * speed * GameManager.get().getCamera().zoom, 0, 0);
+			}
+
+		}
+
 	}
 	
 	
