@@ -20,6 +20,7 @@ import com.deco2800.moos.managers.GameManager;
 import com.deco2800.moos.managers.SoundManager;
 import com.deco2800.moos.managers.TextureManager;
 import com.deco2800.moos.observers.KeyDownObserver;
+import com.deco2800.moos.observers.ScrollObserver;
 import com.deco2800.moos.renderers.Render3D;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.renderers.Renderer;
@@ -168,6 +169,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
 		input.addKeyDownListener(new CameraHandler());
+		input.addScrollListener(new ScrollTester());
 		inputMultiplexer.addProcessor(input);
 		
         /*
@@ -337,9 +339,17 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			} else if (keycode == Input.Keys.RIGHT) {
 				GameManager.get().getCamera().translate(1 * speed * GameManager.get().getCamera().zoom, 0, 0);
 			}
-
 		}
+	}
+	
+	
+	private class ScrollTester implements ScrollObserver {
 
+		@Override
+		public void notifyScrolled(int amount) {
+			System.out.println(amount);			
+		}
+		
 	}
 	
 	
