@@ -89,4 +89,9 @@ public class Tower extends AbstractEntity implements Clickable, Tickable, Select
 		/* We probably don't want these in random spots */
 		//currentAction = Optional.of(new GenerateAction(new Peon(this.getParent(), rand.nextInt(24), rand.nextInt(24), 0), this.getParent()));
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Tower at (%d, %d)", (int)getPosX(), (int)getPosY());
+	}
 }

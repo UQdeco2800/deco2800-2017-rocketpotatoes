@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.deco2800.moos.renderers.Renderable;
 import com.deco2800.moos.worlds.AbstractWorld;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Peon;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.entities.Squirrel;
@@ -34,9 +35,7 @@ public class InitialWorld extends AbstractWorld {
 		this.addEntity(new Peon(7, 7, 0));
 		this.addEntity(new Tower(8, 8, 0));
 		
-//		this.addEntity(new Squirrel(5, 5, 0));
-//		this.addEntity(new Squirrel(10, 2, 0));
-//		this.addEntity(new Squirrel(4, 7, 0));
+		this.addEntity(new GoalPotate(10, 10, 0));
 		
 		Random random = new Random();
 		for(int i = 0; i < 20; i++) {

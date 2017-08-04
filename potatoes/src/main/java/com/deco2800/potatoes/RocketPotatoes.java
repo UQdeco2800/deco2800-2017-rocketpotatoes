@@ -68,12 +68,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void create () {
 		
+		/**
+		 * TODO: Fix this so that registering of textures is done in texture manager.
+		 */
 		textureManager = ((TextureManager)GameManager.get().getManager(TextureManager.class));
 
 		textureManager.saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		textureManager.saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
-		textureManager.saveTexture("squirrel", "resources/squirrel.png");
-		textureManager.saveTexture("tower", "resources/tower.png");
+		textureManager.saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
+		textureManager.saveTexture("tower", "resources/placeholderassets/tower.png");
+		textureManager.saveTexture("potate", "resources/placeholderassets/potate.png");
 
 
 		/**
