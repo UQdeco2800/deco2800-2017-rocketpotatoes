@@ -2,16 +2,11 @@ package com.deco2800.potatoes.entities;
 
 import java.util.Optional;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * Tower that can do things.
@@ -24,6 +19,8 @@ public class Tower extends AbstractEntity implements Tickable {
 	
 	private int reloadTime;
 	private long lastFireTime;
+	
+	private float range = 8f;
 	
 	private Optional<AbstractEntity> target = Optional.empty();
 
@@ -55,11 +52,20 @@ public class Tower extends AbstractEntity implements Tickable {
 	@Override
 	public void onTick(long i) {
 		long time = TimeUtils.millis();
-		if(lastFireTime + reloadTime < time) {
-			System.out.println("FiRiNg Mi LaZoRs " + i);
-			lastFireTime = time;
-			GameManager.get().getWorld().addEntity(new Projectile(getPosX() + 4, getPosY() + 4, getPosZ()));
+		if(!(lastFireTime + reloadTime < time)) {
+			return;
 		}
+		
+		lastFireTime = time;
+		this.target = WorldUtil.getClosestEntityOfClass(Squirrel.class, getPosX(), getPosY());
+		
+		if(!target.isPresent()) {
+			return;
+		}
+		System.out.println("FiRiNg Mi LaZoRs " + i);
+
+		GameManager.get().getWorld().addEntity(new BallisticProjectile(getPosX(), getPosY(), getPosZ(), target.get().getPosX(), target.get().getPosY(), getPosZ(), range));
+	
 
 	}
 

@@ -36,7 +36,7 @@ public class Render3D implements Renderer {
     public void render(SpriteBatch batch) {
         if (font == null) {
             font = new BitmapFont();
-            font.getData().setScale(0.25f);
+            font.getData().setScale(0.8f);
         }
         List<AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
         int worldLength = GameManager.get().getWorld().getLength();

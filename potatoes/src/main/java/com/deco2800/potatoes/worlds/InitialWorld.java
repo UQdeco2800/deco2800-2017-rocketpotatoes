@@ -38,8 +38,8 @@ public class InitialWorld extends AbstractWorld {
 		this.addEntity(new GoalPotate(10, 10, 0));
 		
 		Random random = new Random();
-		for(int i = 0; i < 20; i++) {
-			this.addEntity(new Squirrel(random.nextFloat() * 20, random.nextFloat() * 20, 0));
+		for(int i = 0; i < 5; i++) {
+			this.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 		}
 		
 	}

@@ -13,9 +13,10 @@ import com.deco2800.potatoes.managers.PlayerManager;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends AbstractEntity implements Tickable {
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
-	private final static String TEXTURE = "squirrel";
+	private static final String TEXTURE = "squirrel";
+	private static final float HEALTH = 100f;
 	
 	private float speed = 0.1f;
 	
@@ -23,9 +24,10 @@ public class Squirrel extends AbstractEntity implements Tickable {
 	private SoundManager soundManager;
 	
 	private Random random;
+	
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE);
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 
 		this.setTexture("squirrel");
 		this.playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
@@ -60,9 +62,9 @@ public class Squirrel extends AbstractEntity implements Tickable {
 		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities) {
-			if (!this.equals(entity) & newPos.overlaps(entity.getBox3D())) {
+			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
 				if(entity instanceof Player) {
-					soundManager.playSound("ree1.wav");
+					//soundManager.playSound("ree1.wav");
 				}
 				collided = true;
 			}
@@ -73,4 +75,10 @@ public class Squirrel extends AbstractEntity implements Tickable {
 			setPosY(getPosY() + changeY);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "Squirrel";
+	}
+
 }

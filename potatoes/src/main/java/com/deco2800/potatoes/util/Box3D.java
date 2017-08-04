@@ -180,8 +180,12 @@ public class Box3D {
 		return true;
 	}
 
-	public float distance(Box3D o) {
-		return (float)(Math.sqrt(Math.pow((o.x - this.x), 2) + Math.pow((o.y - this.y), 2) + Math.pow((o.z - this.z), 2)));
+	public float distance(Box3D box) {
+		return distance(box.x, box.y, box.z);
+	}
+	
+	public float distance(float x, float y, float z) {
+		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
 }

@@ -328,4 +328,20 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	public float distance(AbstractEntity entity) {
 		return this.getBox3D().distance(entity.getBox3D());
 	}
+	
+
+	/**
+	 * Calculates the distance this entity and the given coordinates.
+	 * @param x	The x-coordinate.
+	 * @param y	The y-coordinate.
+	 * @param z	The z-coordinate.
+	 * @return	Returns the euclidean distance between this and the specified coordinates.
+	 */
+	public float distance(float x, float y, float z) {
+		return this.getBox3D().distance(x, y, z);
+	}
+	
+	public void moveTowards(float x, float y, float z) {
+		
+	}
 }

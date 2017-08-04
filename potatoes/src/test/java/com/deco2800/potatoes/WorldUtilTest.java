@@ -18,8 +18,8 @@ public class WorldUtilTest {
 		GameManager.get().getWorld().addEntity(t1);
 		GameManager.get().getWorld().addEntity(t2);
 
-		WorldUtil.closestEntityToPosition(0, 0, 2);
-		assertEquals(t1, WorldUtil.closestEntityToPosition(0, 0, 2).get());
+		WorldUtil.closestEntityToPosition(0f, 0f, 2f);
+		assertEquals(t1, WorldUtil.closestEntityToPosition(0f, 0f, 2f).get());
 	}
 	
 	private class TestWorld extends AbstractWorld {
