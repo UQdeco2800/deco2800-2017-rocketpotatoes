@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 public class Tree extends AbstractEntity implements HasProgress {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Tree.class);
+    
+    private final static String TEXTURE = "tree";
 
     /**
      * Constructor for a Tree
@@ -19,10 +21,9 @@ public class Tree extends AbstractEntity implements HasProgress {
      * @param posZ
      */
     public Tree(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 1f, 1f, 1f);
+        super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE);
 
         /* Sets the texture of the tree to tree */
-        this.setTexture("tree");
         LOGGER.info("Making a tree @ [" + posX + ", " + posY + "]");
     }
 

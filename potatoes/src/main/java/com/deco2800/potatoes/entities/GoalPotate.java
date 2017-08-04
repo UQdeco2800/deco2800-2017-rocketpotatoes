@@ -10,10 +10,11 @@ import com.deco2800.potatoes.entities.AbstractEntity;
  *
  */
 public class GoalPotate extends AbstractEntity{
+	
+	private final static String TEXTURE = "potate";
 
 	public GoalPotate(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f);
-		this.setTexture("potate");
+		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE);
 	}
 
 }

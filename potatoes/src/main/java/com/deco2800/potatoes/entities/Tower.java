@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.managers.GameManager;
 
 /**
  * Tower that can do things.
@@ -18,6 +19,8 @@ import com.deco2800.potatoes.entities.Tickable;
  *
  */
 public class Tower extends AbstractEntity implements Tickable {
+	
+	private final static String TEXTURE = "tower";
 	
 	private int reloadTime;
 	private long lastFireTime;
@@ -38,8 +41,7 @@ public class Tower extends AbstractEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Tower(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1);
-		this.setTexture("tower");
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE);
 		
 		this.lastFireTime = 0;
 		this.reloadTime = 1000;
@@ -56,6 +58,7 @@ public class Tower extends AbstractEntity implements Tickable {
 		if(lastFireTime + reloadTime < time) {
 			System.out.println("FiRiNg Mi LaZoRs " + i);
 			lastFireTime = time;
+			GameManager.get().getWorld().addEntity(new Projectile(getPosX() + 4, getPosY() + 4, getPosZ()));
 		}
 
 	}

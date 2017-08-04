@@ -15,6 +15,8 @@ import com.deco2800.potatoes.managers.PlayerManager;
  */
 public class Squirrel extends AbstractEntity implements Tickable {
 	
+	private final static String TEXTURE = "squirrel";
+	
 	private float speed = 0.1f;
 	
 	private PlayerManager playerManager;
@@ -23,9 +25,7 @@ public class Squirrel extends AbstractEntity implements Tickable {
 	private Random random;
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, false);
-		//super(posX, posY, posZ, 6f, 6f, 1f);
-		//super()
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE);
 
 		this.setTexture("squirrel");
 		this.playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);

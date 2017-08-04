@@ -54,7 +54,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
-	private TextureManager textureManager;
 
 	private Stage stage;
 	private Window window;
@@ -69,10 +68,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void create () {
 		
-		/**
-		 * TODO: Fix this so that registering of textures is done in texture manager.
+		/*
+		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
-		textureManager = ((TextureManager)GameManager.get().getManager(TextureManager.class));
+		GameManager.get().getManager(TextureManager.class);
 
 		
 

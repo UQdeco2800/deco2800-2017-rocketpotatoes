@@ -7,6 +7,8 @@ import com.deco2800.potatoes.entities.Tickable;
  * A generic player instance for the game
  */
 public class Peon extends AbstractEntity implements Tickable {
+	
+	private final static String TEXTURE = "spacman";
 
 	/**
 	 * Constructor for the Peon
@@ -16,8 +18,7 @@ public class Peon extends AbstractEntity implements Tickable {
 	 * @param posZ
 	 */
 	public Peon(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1);
-		this.setTexture("selected");
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE);
 	}
 
 	@Override

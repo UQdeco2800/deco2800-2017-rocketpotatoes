@@ -42,9 +42,12 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * @param zLength
 	 *            The length of the entity, in z. Used in rendering and collision
 	 *            detection.
+	 * @param texture
+	 *            The id of the texture for this entity.
 	 */
-	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength) {
-		this(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false);
+	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+			String texture) {
+		this(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture);
 	}
 
 	/**
@@ -69,10 +72,12 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
 	 *            The length of the entity, in y. Used in collision detection.
+	 * @param texture
+	 *            The id of the texture for this entity.
 	 */
 	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength) {
-		this(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, false);
+			float xRenderLength, float yRenderLength, String texture) {
+		this(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, false, texture);
 	}
 
 	/**
@@ -100,12 +105,16 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            The length of the entity, in y. Used in collision detection.
 	 * @param centered
 	 *            True if the entity is to be rendered centered, false otherwise.
+	 * @param texture
+	 *            The id of the texture for this entity.
 	 */
 	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered) {
+			float xRenderLength, float yRenderLength, boolean centered, String texture) {
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
 		this.centered = centered;
+		
+		this.texture = texture;
 
 		if (centered) {
 			posX += (1 - xLength / 2);

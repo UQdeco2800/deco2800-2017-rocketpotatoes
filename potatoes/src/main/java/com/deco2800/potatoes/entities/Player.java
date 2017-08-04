@@ -21,6 +21,8 @@ import com.deco2800.potatoes.util.Box3D;
 public class Player extends AbstractEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
+	
+	private final static String TEXTURE = "spacman_blue";
 
 	private float movementSpeed;
 	private float speedx;
@@ -37,7 +39,7 @@ public class Player extends AbstractEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1);
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE);
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
