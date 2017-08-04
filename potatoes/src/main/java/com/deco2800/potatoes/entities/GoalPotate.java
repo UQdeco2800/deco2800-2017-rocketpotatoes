@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.moos.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.AbstractEntity;
 
 /**
  * Class representing the "goal/nexus" thingy that the player needs to defend.

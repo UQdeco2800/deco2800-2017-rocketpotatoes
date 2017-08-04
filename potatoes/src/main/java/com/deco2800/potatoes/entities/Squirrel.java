@@ -3,11 +3,11 @@ package com.deco2800.potatoes.entities;
 import java.util.List;
 import java.util.Random;
 
-import com.deco2800.moos.entities.AbstractEntity;
-import com.deco2800.moos.entities.Tickable;
-import com.deco2800.moos.managers.GameManager;
-import com.deco2800.moos.managers.SoundManager;
-import com.deco2800.moos.util.Box3D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.managers.PlayerManager;
 
 /**

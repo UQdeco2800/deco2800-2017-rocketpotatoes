@@ -1,8 +1,8 @@
 package com.deco2800.potatoes.util;
 
-import com.deco2800.moos.entities.AbstractEntity;
-import com.deco2800.moos.managers.GameManager;
-import com.deco2800.moos.renderers.Renderable;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.renderering.Renderable;
 
 import java.util.Optional;
 

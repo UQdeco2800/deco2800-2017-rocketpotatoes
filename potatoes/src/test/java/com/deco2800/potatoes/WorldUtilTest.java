@@ -1,8 +1,8 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.moos.entities.Tree;
-import com.deco2800.moos.managers.GameManager;
-import com.deco2800.moos.worlds.AbstractWorld;
+import com.deco2800.potatoes.entities.Tree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.worlds.AbstractWorld;
 import com.deco2800.potatoes.util.WorldUtil;
 
 import org.junit.Test;

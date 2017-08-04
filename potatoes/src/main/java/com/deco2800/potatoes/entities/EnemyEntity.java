@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.moos.entities.AbstractEntity;
-import com.deco2800.moos.util.Box3D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.util.Box3D;
 
 public abstract class EnemyEntity extends AbstractEntity {
 

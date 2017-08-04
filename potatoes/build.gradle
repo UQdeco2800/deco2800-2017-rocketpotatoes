@@ -19,7 +19,6 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-sourceSets.main.resources.srcDirs = [ "../core/resources/" ]
 apply plugin: 'org.flywaydb.flyway'
 buildscript {
     repositories {

@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.moos.managers.Manager;
+import com.deco2800.potatoes.managers.Manager;
 import com.deco2800.potatoes.entities.Player;
 
 /**

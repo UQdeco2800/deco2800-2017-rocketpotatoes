@@ -15,20 +15,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deco2800.moos.entities.Tickable;
-import com.deco2800.moos.managers.GameManager;
-import com.deco2800.moos.managers.SoundManager;
-import com.deco2800.moos.managers.TextureManager;
-import com.deco2800.moos.observers.KeyDownObserver;
-import com.deco2800.moos.observers.ScrollObserver;
-import com.deco2800.moos.renderers.Render3D;
-import com.deco2800.moos.renderers.Renderable;
-import com.deco2800.moos.renderers.Renderer;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.observers.KeyDownObserver;
+import com.deco2800.potatoes.observers.ScrollObserver;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.renderering.Renderable;
+import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.moos.managers.InputManager;
+import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.worlds.InitialWorld;
 
 /**
  * Handles the creation of the world and rendering.

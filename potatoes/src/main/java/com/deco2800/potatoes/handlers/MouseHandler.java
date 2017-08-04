@@ -1,9 +1,9 @@
 package com.deco2800.potatoes.handlers;
 
-import com.deco2800.moos.entities.AbstractEntity;
-import com.deco2800.moos.managers.GameManager;
-import com.deco2800.moos.worlds.AbstractWorld;
-import com.deco2800.potatoes.InitialWorld;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.InitialWorld;
 import com.deco2800.potatoes.entities.Clickable;
 import com.deco2800.potatoes.util.WorldUtil;
 

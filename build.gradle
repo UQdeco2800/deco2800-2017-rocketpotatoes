@@ -55,7 +55,6 @@ subprojects {
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
         compile group: 'org.apache.derby', name: 'derby', version: '10.9.1.0'
 
-        compile(group: 'com.deco2800.4stroke', name: 'core', version: '0.1-SNAPSHOT', changing: true)
         compile(group: 'uq.deco2800.soom', name: 'server', version: '0' +
                 '.1-SNAPSHOT', changing: true)
 
