@@ -34,18 +34,23 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-        textureMap.put("grass", new Texture("grass.png"));
-        textureMap.put("grass2", new Texture("grass2.png"));
-        textureMap.put("tree", new Texture("spacman.png"));
-        textureMap.put("real_tree", new Texture("tree.png"));
-        textureMap.put("ground_1", new Texture("ground-1.png"));
-        textureMap.put("spacman", new Texture("spacman.png"));
-        textureMap.put("spacman_red", new Texture("spacman_red.png"));
-        textureMap.put("spacman_blue", new Texture("spacman_blue.png"));
-        textureMap.put("spacman_green", new Texture("spacman_green.png"));
-        textureMap.put("spacman_ded", new Texture("spacman_ded.png"));
-        textureMap.put("selected", new Texture("selected.png"));
-        textureMap.put("selected_black", new Texture("selected_black.png"));
+    		saveTexture("grass", "resources/placeholderassets/grass.png");
+        saveTexture("grass2", "resources/placeholderassets/grass2.png");
+        saveTexture("tree", "resources/placeholderassets/spacman.png");
+        saveTexture("real_tree", "resources/placeholderassets/tree.png");
+        saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
+        saveTexture("spacman", "resources/placeholderassets/spacman.png");
+        saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
+        saveTexture("spacman_blue", "resources/placeholderassets/spacman_blue.png");
+        saveTexture("spacman_green", "resources/placeholderassets/spacman_green.png");
+        saveTexture("spacman_ded", "resources/placeholderassets/spacman_ded.png");
+        saveTexture("selected", "resources/placeholderassets/selected.png");
+        saveTexture("selected_black", "resources/placeholderassets/selected_black.png");
+        saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
+		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
+		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
+		saveTexture("tower", "resources/placeholderassets/tower.png");
+		saveTexture("potate", "resources/placeholderassets/potate.png");
 
     }
 
