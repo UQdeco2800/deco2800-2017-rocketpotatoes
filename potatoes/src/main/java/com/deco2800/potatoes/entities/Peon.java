@@ -21,7 +21,7 @@ public class Peon extends AbstractEntity implements Tickable {
 	}
 
 	@Override
-	public void onTick(int i) {
+	public void onTick(long i) {
 
 	}
 }

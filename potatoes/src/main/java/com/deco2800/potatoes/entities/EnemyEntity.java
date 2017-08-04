@@ -14,9 +14,5 @@ public abstract class EnemyEntity extends AbstractEntity {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered);
 	}
 
-	public EnemyEntity(Box3D position, float xRenderLength, float yRenderLength, boolean centered) {
-		super(position, xRenderLength, yRenderLength, centered);
-
-	}
 
 }

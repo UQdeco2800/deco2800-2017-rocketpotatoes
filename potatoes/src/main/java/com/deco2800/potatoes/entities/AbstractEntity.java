@@ -3,7 +3,6 @@ package com.deco2800.potatoes.entities;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.worlds.AbstractWorld;
 
 /**
  * A AbstractEntity is an item that can exist in both 3D and 2D worlds
@@ -11,6 +10,8 @@ import com.deco2800.potatoes.worlds.AbstractWorld;
  * need to be rendered should not be a WorldEntity
  */
 public abstract class AbstractEntity implements Renderable, Comparable<AbstractEntity> {
+
+	protected GameManager gameManager = GameManager.get();
 
 	private Box3D position;
 
@@ -22,36 +23,101 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	private String texture = "error_box";
 
+	/**
+	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
+	 * used for collision between entities.
+	 * 
+	 * @param posX
+	 *            The x-coordinate of the entity.
+	 * @param posY
+	 *            The y-coordinate of the entity.
+	 * @param posZ
+	 *            The z-coordinate of the entity.
+	 * @param xLength
+	 *            The length of the entity, in x. Used in rendering and collision
+	 *            detection.
+	 * @param yLength
+	 *            The length of the entity, in y. Used in rendering and collision
+	 *            detection.
+	 * @param zLength
+	 *            The length of the entity, in z. Used in rendering and collision
+	 *            detection.
+	 */
 	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength) {
 		this(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false);
 	}
 
-
-
+	/**
+	 * Constructs a new AbstractEntity with specific render lengths. Allows
+	 * specification of rendering dimensions different to those used for collision.
+	 * For example, could be used to have collision on the trunk of a tree but not
+	 * the leaves/branches.
+	 * 
+	 * @param posX
+	 *            The x-coordinate of the entity.
+	 * @param posY
+	 *            The y-coordinate of the entity.
+	 * @param posZ
+	 *            The z-coordinate of the entity.
+	 * @param xLength
+	 *            The length of the entity, in x. Used in collision detection.
+	 * @param yLength
+	 *            The length of the entity, in y. Used in collision detection.
+	 * @param zLength
+	 *            The length of the entity, in z. Used in collision detection.
+	 * @param xRenderLength
+	 *            The length of the entity, in x. Used in collision detection.
+	 * @param yRenderLength
+	 *            The length of the entity, in y. Used in collision detection.
+	 */
 	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-						  float xRenderLength, float yRenderLength, boolean centered) {
+			float xRenderLength, float yRenderLength) {
+		this(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, false);
+	}
+
+	/**
+	 * Constructs a new AbstractEntity with specific render lengths. Allows
+	 * specification of rendering dimensions different to those used for collision.
+	 * For example, could be used to have collision on the trunk of a tree but not
+	 * the leaves/branches. Allows rendering of entities to be centered on their
+	 * coordinates if centered is true.
+	 * 
+	 * @param posX
+	 *            The x-coordinate of the entity.
+	 * @param posY
+	 *            The y-coordinate of the entity.
+	 * @param posZ
+	 *            The z-coordinate of the entity.
+	 * @param xLength
+	 *            The length of the entity, in x. Used in collision detection.
+	 * @param yLength
+	 *            The length of the entity, in y. Used in collision detection.
+	 * @param zLength
+	 *            The length of the entity, in z. Used in collision detection.
+	 * @param xRenderLength
+	 *            The length of the entity, in x. Used in collision detection.
+	 * @param yRenderLength
+	 *            The length of the entity, in y. Used in collision detection.
+	 * @param centered
+	 *            True if the entity is to be rendered centered, false otherwise.
+	 */
+	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+			float xRenderLength, float yRenderLength, boolean centered) {
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
 		this.centered = centered;
 
 		if (centered) {
-			posX += (1-xLength/2);
-			posY += (1-yLength/2);
+			posX += (1 - xLength / 2);
+			posY += (1 - yLength / 2);
 		}
 		this.position = new Box3D(posX, posY, posZ, xLength, yLength, zLength);
 	}
 
-	public AbstractEntity(Box3D position, float xRenderLength, float yRenderLength, boolean centered) {
-		this.position = new Box3D(position);
-		this.xRenderLength = xRenderLength;
-		this.yRenderLength = yRenderLength;
-		this.centered = centered;
-	}
-
 	/**
-	 * Get the X position of this AbstractWorld Entity
+	 * Get the X coordinate of this AbstractEntity.
 	 * 
-	 * @return The X position
+	 * @return The X coordinate.
 	 */
 	public float getPosX() {
 		float x = position.getX();
@@ -62,9 +128,9 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 	/**
-	 * Get the Y position of this AbstractWorld Entity
+	 * Get the Y coordinate of this AbstractEntity.
 	 * 
-	 * @return The Y position
+	 * @return The Y coordinate.
 	 */
 	public float getPosY() {
 		float y = position.getY();
@@ -75,15 +141,24 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 	/**
-	 * Get the Z position of this AbstractWorld Entity
+	 * Get the Z coordinate of this AbstractEntity.
 	 * 
-	 * @return The Z position
+	 * @return The Z coordinate.
 	 */
 	public float getPosZ() {
 		return position.getZ();
 	}
 
-
+	/**
+	 * Sets the position of this to the coordinates given.
+	 * 
+	 * @param x
+	 *            The x-coordinate.
+	 * @param y
+	 *            The y-coordinate.
+	 * @param z
+	 *            The z-coordinate.
+	 */
 	public void setPosition(float x, float y, float z) {
 		if (this.centered) {
 			y += (1 - this.position.getYLength() / 2);
@@ -96,7 +171,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	public void setPosX(float x) {
 		if (this.centered) {
-			x += (1-this.position.getXLength() / 2);
+			x += (1 - this.position.getXLength() / 2);
 		}
 		this.position.setX(x);
 	}
@@ -183,13 +258,13 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	@Override
 	public int compareTo(AbstractEntity o) {
 		float cartX = this.position.getX();
-		float cartY = this.getParent().getLength() - this.position.getY();
+		float cartY = gameManager.getWorld().getLength() - this.position.getY();
 
 		float isoX = ((cartX - cartY) / 2.0f);
 		float isoY = ((cartX + cartY) / 2.0f);
 
 		float cartX_o = o.getPosX();
-		float cartY_o = o.getParent().getLength() - o.getPosY();
+		float cartY_o = gameManager.getWorld().getLength() - o.getPosY();
 
 		float isoX_o = ((cartX_o - cartY_o) / 2.0f);
 		float isoY_o = ((cartX_o + cartY_o) / 2.0f);
@@ -211,15 +286,19 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+
+		if (!(o instanceof AbstractEntity)) {
 			return false;
+		}
 
 		AbstractEntity that = (AbstractEntity) o;
 
-		if (position != null ? !position.equals(that.position) : that.position != null)
+		if (position != null ? !position.equals(that.position) : that.position != null) {
 			return false;
+		}
 		return texture != null ? texture.equals(that.texture) : that.texture == null;
 	}
 
@@ -230,12 +309,14 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		return result;
 	}
 
-	@Deprecated
-	public AbstractWorld getParent() {
-		return GameManager.get().getWorld();
-	}
-
-	public float distance(AbstractEntity e) {
-		return this.getBox3D().distance(e.getBox3D());
+	/**
+	 * Calculates the distance between two entities.
+	 * 
+	 * @param e
+	 *            The entity to calculate the distance to.
+	 * @return Returns the euclidean distance between this and the specified entity.
+	 */
+	public float distance(AbstractEntity entity) {
+		return this.getBox3D().distance(entity.getBox3D());
 	}
 }

@@ -35,7 +35,7 @@ public class Squirrel extends AbstractEntity implements Tickable {
 	}
 
 	@Override
-	public void onTick(int i) {
+	public void onTick(long i) {
 		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
 		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
 

@@ -50,7 +50,7 @@ public class Player extends AbstractEntity implements Tickable {
 	}
 
 	@Override
-	public void onTick(int arg0) {
+	public void onTick(long arg0) {
 		float newPosX = this.getPosX();
 		float newPosY = this.getPosY();
 

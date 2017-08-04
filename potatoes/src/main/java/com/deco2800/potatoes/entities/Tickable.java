@@ -10,7 +10,7 @@ public interface Tickable {
 
     /**
      * On tick is called periodically (time dependant on the world settings)
-     * @param tick Current game tick
+     * @param time Current game tick
      */
-    void onTick(int tick);
+    void onTick(long time);
 }
