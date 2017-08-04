@@ -41,7 +41,7 @@ public class WorldUtil {
 			}
 		}
 		if (distance < delta){
-			LOGGER.info("Closest is " + ret.toString());
+			LOGGER.info("Closest is " + ret);
 			return Optional.of(ret);
 		} else {
 			LOGGER.info("Nothing is that close");

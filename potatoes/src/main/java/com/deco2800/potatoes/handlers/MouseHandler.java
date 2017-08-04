@@ -26,7 +26,7 @@ public class MouseHandler {
 	 * @param y
 	 */
 	public void handleMouseClick(float x, float y) {
-		System.out.printf("Clicked at %f %f\n\r", x, y);
+		System.out.printf("Clicked at %f %f%n", x, y);
 
 		float projX = 0 , projY = 0;
 

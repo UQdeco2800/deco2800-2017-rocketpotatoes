@@ -53,7 +53,7 @@ public class BallisticProjectile extends Projectile{
 		
 		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		for (AbstractEntity entity : entities) {
-			if (entity instanceof EnemyEntity & this.collidesWith(entity)) {
+			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
 				((EnemyEntity)entity).getShot(this);
 				GameManager.get().getWorld().removeEntity(this);
 				return;
