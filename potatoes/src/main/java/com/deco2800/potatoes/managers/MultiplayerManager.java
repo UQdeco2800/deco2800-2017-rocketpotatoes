@@ -1,5 +1,8 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.networking.NetworkClient;
+import com.deco2800.potatoes.networking.NetworkServer;
+
 /**
  * Handles multiplayer setup, and communication.
  *
@@ -17,12 +20,20 @@ public class MultiplayerManager extends Manager {
     // Port this client is connected to (-1 if none)
     private int port;
 
+    // Our client representation (null if not connected (i.e. singleplayer)) ?? Maybe should always have a client
+    private NetworkClient client;
+
+    // Our server representation (null if not hosting a server)
+    private NetworkServer server;
+
     /**
      * Initializes some values for the manager
      */
     public MultiplayerManager() {
         ip = "";
         port = -1;
+        client = null;
+        server = null;
     }
 
     /**
