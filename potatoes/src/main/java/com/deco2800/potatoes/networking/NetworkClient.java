@@ -43,6 +43,12 @@ public class NetworkClient {
             @Override
             public void received(Connection connection, Object object) {
                 super.received(connection, object);
+
+                /*
+                Class<?> c = Class.forName("mypackage.MyClass");
+                Constructor<?> cons = c.getConstructor(String.class);
+                Object object = cons.newInstance("MyAttributeValue");
+                */
             }
 
             @Override
@@ -66,7 +72,9 @@ public class NetworkClient {
     }
 
     public void broadcastMessage(String message) {
-        //client.sendTCP()
+        Message m = new Message();
+        m.message = message;
+        client.sendTCP(m);
     }
 
     public void broadcastNewEntity(AbstractEntity entity) {

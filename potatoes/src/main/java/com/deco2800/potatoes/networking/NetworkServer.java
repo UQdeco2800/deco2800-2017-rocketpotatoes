@@ -63,6 +63,14 @@ public class NetworkServer {
 
                     return;
                 }
+
+                if (object instanceof Message) {
+                    Message m = (Message) object;
+
+                    System.out.println(c.name + " : " + m.message);
+
+                    return;
+                }
             }
 
             @Override
