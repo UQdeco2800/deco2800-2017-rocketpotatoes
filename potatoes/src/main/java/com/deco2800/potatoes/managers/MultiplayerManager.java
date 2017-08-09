@@ -3,6 +3,8 @@ package com.deco2800.potatoes.managers;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 
+import java.io.IOException;
+
 /**
  * Handles multiplayer setup, and communication.
  *
@@ -21,10 +23,10 @@ public class MultiplayerManager extends Manager {
     private int port;
 
     // Our client representation (null if not connected (i.e. singleplayer)) ?? Maybe should always have a client
-    private NetworkClient client;
+    private NetworkClient client = null;
 
     // Our server representation (null if not hosting a server)
-    private NetworkServer server;
+    private NetworkServer server = null;
 
     /**
      * Initializes some values for the manager
@@ -53,7 +55,7 @@ public class MultiplayerManager extends Manager {
 
     /**
      * Creates a host in the background with the given port, the client then has to connect to this server using
-     * createHost(...);
+     * createHost(...); TODO error checking should throw exceptions?
      * @param port - Port this server should host on
      * @return
      *   0  : SUCCESS
@@ -63,6 +65,16 @@ public class MultiplayerManager extends Manager {
      *  -4  : OTHER_ERROR
      */
     public int createHost(int port) {
+        if (isValidPort(port)) { // TODO handle port in use?
+            try {
+                server = new NetworkServer(port, port);
+            }
+            catch (IOException ex) {
+                // TODO handle errors
+                System.exit(-1);
+            }
+        }
+
         return 0;
     }
 
@@ -70,10 +82,11 @@ public class MultiplayerManager extends Manager {
      * Join's the given IP and port, with the given name (which is then stored in the manager).
      * @param name
      * @param IP - String representing an IP, in the format (255.255.255.255),
-     * @param port -
+     * @param port - port number in range of 1024-65565 (or 0 for any port) ?? TODO 0 port
      * @return
      */
     public int joinGame(String name, String IP, int port) {
+        client = new NetworkClient(name, IP, port, port);
         return 0;
     }
 

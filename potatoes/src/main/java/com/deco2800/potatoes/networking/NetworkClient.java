@@ -9,6 +9,9 @@ import java.io.IOException;
 
 public class NetworkClient {
     Client client;
+    private String IP;
+    private int tcpPort;
+    private int udpPort;
 
     /**
      * Initializes a client for the game,
@@ -17,7 +20,11 @@ public class NetworkClient {
      * @param tcpPort
      * @param udpPort
      */
-    public NetworkClient(String IP, int tcpPort, int udpPort) {
+    public NetworkClient(String name, String IP, int tcpPort, int udpPort) {
+        this.IP = IP;
+        this.tcpPort = tcpPort;
+        this.udpPort = udpPort;
+
         Log.set(Log.LEVEL_DEBUG);
         // Initialize client object
         client = new Client();
@@ -29,32 +36,31 @@ public class NetworkClient {
         // Setup listeners
         client.addListener(new Listener() {
             @Override
-            public void connected(Connection connection) {
-                super.connected(connection);
+            public void received(Connection connection, Object object) {
+                super.received(connection, object);
             }
 
             @Override
             public void disconnected(Connection connection) {
                 super.disconnected(connection);
             }
-
-            @Override
-            public void received(Connection connection, Object object) {
-                super.received(connection, object);
-            }
-
-            @Override
-            public void idle(Connection connection) {
-                super.idle(connection);
-            }
         });
 
         try {
             client.connect(5000, IP, tcpPort, udpPort);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
             System.exit(-1);
         }
+
+        // Send initial connection info
+        Network.ConnectionRegister cr = new Network.ConnectionRegister();
+        cr.name = name;
+
+        client.sendTCP(cr);
+    }
+
+    public void broadcastMessage(String message) {
+        //client.sendTCP()
     }
 }
