@@ -98,7 +98,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		
 		playerManager.setPlayer(new Player(5, 10, 0));
 		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-		
+
+
+		// multiplayerManager.broadcastNewEntity(playerManager.getPlayer());
 
 		/**
 		 * Setup the game itself

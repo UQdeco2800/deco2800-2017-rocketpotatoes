@@ -7,6 +7,8 @@ import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
+import com.deco2800.potatoes.networking.Network.*;
+
 public class NetworkServer {
     private Server server;
     private int tcpPort;
@@ -45,16 +47,22 @@ public class NetworkServer {
                 NetworkConnection c = (NetworkConnection) connection;
 
                 // Process our objects
-                if (object instanceof Network.ConnectionRegister) {
-                    Network.ConnectionRegister cr = (Network.ConnectionRegister) object;
+                if (object instanceof ClientConnectionRegisterMessage) {
+                    ClientConnectionRegisterMessage m = (ClientConnectionRegisterMessage) object;
 
-                    c.name = cr.name;
+                    c.name = m.name;
                     System.out.println("Got name: " + c.name);
 
                     return;
                 }
 
+                if (object instanceof ClientEntityCreationMessage) {
+                    ClientEntityCreationMessage m = (ClientEntityCreationMessage) object;
 
+                    System.out.println("Got entity message: " + m.entity);
+
+                    return;
+                }
             }
 
             @Override

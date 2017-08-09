@@ -1,11 +1,16 @@
 package com.deco2800.potatoes.networking;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
+
+import com.deco2800.potatoes.networking.Network.*;
+
+import javax.swing.text.html.parser.Entity;
 
 public class NetworkClient {
     Client client;
@@ -54,7 +59,7 @@ public class NetworkClient {
         }
 
         // Send initial connection info
-        Network.ConnectionRegister cr = new Network.ConnectionRegister();
+        ClientConnectionRegisterMessage cr = new ClientConnectionRegisterMessage();
         cr.name = name;
 
         client.sendTCP(cr);
@@ -62,5 +67,10 @@ public class NetworkClient {
 
     public void broadcastMessage(String message) {
         //client.sendTCP()
+    }
+
+    public void broadcastNewEntity(AbstractEntity entity) {
+        // Entity creation is important so TCP!
+        client.sendTCP(entity);
     }
 }

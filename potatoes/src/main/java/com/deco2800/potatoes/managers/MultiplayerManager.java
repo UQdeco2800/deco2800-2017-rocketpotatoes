@@ -1,8 +1,10 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 
 /**
@@ -26,7 +28,13 @@ public class MultiplayerManager extends Manager {
     private NetworkClient client = null;
 
     // Our server representation (null if not hosting a server)
+    @SuppressWarnings("unused")
     private NetworkServer server = null;
+
+    /* Boolean representing if this client is the master (i.e. host). Things like waves spawning should be initiated
+     * by the host.
+     */
+    private Boolean master;
 
     /**
      * Initializes some values for the manager
@@ -87,6 +95,9 @@ public class MultiplayerManager extends Manager {
      */
     public int joinGame(String name, String IP, int port) {
         client = new NetworkClient(name, IP, port, port);
+
+        // If our client isn't also the host we aren't the master
+        master = false;
         return 0;
     }
 
@@ -96,7 +107,9 @@ public class MultiplayerManager extends Manager {
      * @param message
      */
     public void broadcastMessage(String message) {
-
+        if (client != null) {
+            client.broadcastMessage(message);
+        }
     }
 
     /**
@@ -109,11 +122,36 @@ public class MultiplayerManager extends Manager {
     }
 
     /**
-     * Broadcasts an object to all clients, TODO unique identification system?
-     * @param object
+     * Broadcasts the creation of a new entity to all clients. Note that the client should not assume that this
+     * succeeded but should then wait for the host to broadcast the entities creation to the client itself, which
+     * will also contain a unique id.
+     * TODO this is a potential optimization (i.e. predictive)
+     * @param entity
      */
-    public void broadcastObject(Object object) {
+    public void broadcastNewEntity(AbstractEntity entity) {
+        if (client != null) {
+            client.broadcastNewEntity(entity);
+        }
+    }
 
+    public void broadcastEntityUpdate(AbstractEntity entity) {
+        if (client != null) {
+
+        }
+    }
+
+    /**
+     * @return if this game is multiplayer
+     */
+    public Boolean isMultiplayer() {
+        return client != null;
+    }
+
+    /**
+     * @return if this client is a master
+     */
+    public Boolean isMaster() {
+        return master;
     }
 
     /**
