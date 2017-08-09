@@ -3,6 +3,7 @@ package com.deco2800.potatoes.networking;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ public class NetworkServer {
      * @throws IOException
      */
     public NetworkServer(int tcpPort, int udpPort) throws IOException {
+        Log.set(Log.LEVEL_DEBUG);
         // Create server object
         server = new Server() {
             protected Connection connection() {
@@ -49,7 +51,7 @@ public class NetworkServer {
                 super.idle(connection);
             }
         });
-
+        System.out.println("Server: Binding to " + tcpPort + ":" + udpPort);
         server.bind(tcpPort, udpPort);
         server.start();
     }

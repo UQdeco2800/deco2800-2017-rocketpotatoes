@@ -3,6 +3,7 @@ package com.deco2800.potatoes.networking;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
@@ -17,6 +18,7 @@ public class NetworkClient {
      * @param udpPort
      */
     public NetworkClient(String IP, int tcpPort, int udpPort) {
+        Log.set(Log.LEVEL_DEBUG);
         // Initialize client object
         client = new Client();
         client.start();

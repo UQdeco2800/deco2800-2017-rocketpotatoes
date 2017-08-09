@@ -52,8 +52,8 @@ public class MultiplayerManager extends Manager {
 
 
     /**
-     * Creates a host in the background with the given port, this method also automatically has the client join this
-     * host as a client
+     * Creates a host in the background with the given port, the client then has to connect to this server using
+     * createHost(...);
      * @param port - Port this server should host on
      * @return
      *   0  : SUCCESS
