@@ -15,6 +15,11 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	protected float maxHealth;
 
 	/**
+	 * Default constructor for serialization
+	 */
+	public MortalEntity() { }
+
+	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
 	 * used for collision between entities.
 	 * 
@@ -173,7 +178,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public void deathHandler() {
-		// TODO handle generic death handler
+		//System.out.println(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
 	}
 

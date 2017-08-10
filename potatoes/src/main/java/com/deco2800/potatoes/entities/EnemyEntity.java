@@ -1,7 +1,14 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.entities.MortalEntity;
+
 public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	
+
+	/**
+	 * Default constructor for serialization
+	 */
+	public EnemyEntity() { }
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -112,11 +119,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	}
 	
 	public void getShot(Projectile projectile) {
-		damage(projectile.getDamage());
-		System.out.println(this + " was shot. Health now " + getHealth());
-		if(this.isDead()) {
-			System.out.println(this + " is dead.");
-		}
+		this.damage(projectile.getDamage());
+		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
 

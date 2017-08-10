@@ -11,7 +11,7 @@ import com.deco2800.potatoes.util.Box3D;
  */
 public abstract class AbstractEntity implements Renderable, Comparable<AbstractEntity> {
 
-	protected GameManager gameManager = GameManager.get();
+	protected transient GameManager gameManager = GameManager.get();
 
 	private Box3D position;
 
@@ -22,6 +22,11 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	private boolean centered;
 
 	private String texture = "error_box";
+
+	/**
+	 * Default constructor for the purposes of serialization
+	 */
+	public AbstractEntity() { }
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size

@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.InputManager;
@@ -20,14 +21,21 @@ import com.deco2800.potatoes.util.Box3D;
  */
 public class Player extends MortalEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
-	
-	private final static String TEXTURE = "spacman_blue";
-	private final static float HEALTH = 100;
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+
+	private final static transient String TEXTURE = "spacman_blue";
+	private final static transient float HEALTH = 100f;
 
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
+
+	/**
+	 * Default constructor for the purposes of serialization
+	 */
+	public Player() {
+		super(0, 0, 0, 1, 1, 1, TEXTURE, HEALTH);
+	}
 
 	/**
 	 * Creates a new Player instance.
@@ -44,12 +52,8 @@ public class Player extends MortalEntity implements Tickable {
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
-		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
 
-		input.addKeyDownListener(this::handleKeyDown);
-		input.addKeyUpListener(this::handleKeyUp);
-
-		this.setTexture("spacman_blue");
+		//this.setTexture("spacman_blue");
 	}
 
 	@Override
@@ -64,9 +68,9 @@ public class Player extends MortalEntity implements Tickable {
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
-		for (AbstractEntity entity : entities) {
+		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				System.out.println(this + " colliding with " + entity);
@@ -86,7 +90,7 @@ public class Player extends MortalEntity implements Tickable {
 	 * 
 	 * @param keycode
 	 */
-	private void handleKeyDown(int keycode) {
+	public void handleKeyDown(int keycode) {
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy -= movementSpeed;
@@ -113,7 +117,7 @@ public class Player extends MortalEntity implements Tickable {
 	 * 
 	 * @param keycode
 	 */
-	private void handleKeyUp(int keycode) {
+	public void handleKeyUp(int keycode) {
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;

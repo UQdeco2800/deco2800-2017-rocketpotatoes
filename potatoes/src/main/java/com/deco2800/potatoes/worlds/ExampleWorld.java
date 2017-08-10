@@ -45,15 +45,6 @@ public class ExampleWorld extends AbstractWorld {
         }
     }
 
-
-    /**
-     * Returns a list of entities in this world
-     * @return All Entities in the world
-     */
-    public ArrayList<AbstractEntity> getEntities() {
-        return new ArrayList<AbstractEntity>(this.entities);
-    }
-
     /**
      * Returns the current map for this world
      * @return Map object for this world
@@ -62,11 +53,4 @@ public class ExampleWorld extends AbstractWorld {
         return this.map;
     }
 
-    /**
-     * Adds an entity to the world
-     * @param entity
-     */
-    public void addEntity(AbstractEntity entity) {
-        entities.add(entity);
-    }
 }

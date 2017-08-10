@@ -14,6 +14,11 @@ public class Box3D {
 	private float xLength, yLength, zLength;
 
 	/**
+	 * Default constructor for the purposes of serialization
+	 */
+	public Box3D() { }
+
+	/**
 	 * Constructs a new Box3D with the given corner point and dimensions.
 	 * 
 	 * @param x
