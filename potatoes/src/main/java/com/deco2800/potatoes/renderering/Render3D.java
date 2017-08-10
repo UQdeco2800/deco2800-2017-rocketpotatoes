@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -38,7 +39,7 @@ public class Render3D implements Renderer {
             font = new BitmapFont();
             font.getData().setScale(0.8f);
         }
-        List<AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
+        Map<Integer, AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
         int worldLength = GameManager.get().getWorld().getLength();
         int worldWidth = GameManager.get().getWorld().getWidth();
 
@@ -52,7 +53,7 @@ public class Render3D implements Renderer {
         List<AbstractEntity> entities = new ArrayList<>();
 
         /* Gets a list of all entities in the renderables */
-        for (AbstractEntity r : renderables) {
+        for (AbstractEntity r : renderables.values()) {
             if (r instanceof AbstractEntity) {
                 entities.add((AbstractEntity)r);
             }

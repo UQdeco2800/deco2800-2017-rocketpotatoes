@@ -5,6 +5,7 @@
 
 bin/
 lib/
+out/
 
 
 # Gradle

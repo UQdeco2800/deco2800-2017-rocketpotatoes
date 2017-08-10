@@ -6,7 +6,11 @@ import com.deco2800.potatoes.managers.GameManager;
 public abstract class EnemyEntity extends AbstractEntity implements HasProgress {
 	
 	protected float health;
-	
+
+	/**
+	 * Default constructor for serialization
+	 */
+	public EnemyEntity() { }
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -117,10 +121,10 @@ public abstract class EnemyEntity extends AbstractEntity implements HasProgress 
 	
 	public void getShot(Projectile projectile) {
 		this.health -= projectile.getDamage();
-		System.out.println(this + " was shot. Health now " + health);
+		//System.out.println(this + " was shot. Health now " + health);
 		if(health <= 0f) {
 			GameManager.get().getWorld().removeEntity(this);
-			System.out.println(this + " is dead.");
+			//System.out.println(this + " is dead.");
 
 		}
 	}

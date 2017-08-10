@@ -29,10 +29,13 @@ public class InitialWorld extends AbstractWorld {
 		this.setWidth(this.getMap().getProperties().get("width", Integer.class));
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
 
-		//this.addEntity(new Peon(7, 7, 0));
+		
+//		this.addEntity(new Peon(7, 7, 0));
 //		this.addEntity(new Tower(8, 8, 0));
 		
-		this.addEntity(new ProjectileTree(10,10,0, 1, 1, 1, "tree"));
+		this.addEntity(new ProjectileTree(10,10,0, 1, 1, 1, "tower"));
+
+//		this.addEntity(new GoalPotate(10, 10, 0));
 		
 		Random random = new Random();
 		for(int i = 0; i < 5; i++) {
@@ -45,7 +48,7 @@ public class InitialWorld extends AbstractWorld {
 	 * Deselects all entities.
 	 */
 	public void deSelectAll() {
-		for (Renderable r : this.getEntities()) {
+		for (Renderable r : this.getEntities().values()) {
 			if (r instanceof Selectable) {
 				((Selectable) r).deselect();
 			}
