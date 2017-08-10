@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -44,11 +45,15 @@ public class NetworkClient {
             public void received(Connection connection, Object object) {
                 super.received(connection, object);
 
-                /*
-                Class<?> c = Class.forName("mypackage.MyClass");
-                Constructor<?> cons = c.getConstructor(String.class);
-                Object object = cons.newInstance("MyAttributeValue");
-                */
+
+
+                if (object instanceof HostEntityCreationMessage) {
+                    HostEntityCreationMessage m = (HostEntityCreationMessage) object;
+
+                    System.out.println("Got host entity creation message :" + m.entity);
+
+                    GameManager.get().getWorld().addEntity(m.entity);
+                }
             }
 
             @Override
@@ -78,7 +83,9 @@ public class NetworkClient {
     }
 
     public void broadcastNewEntity(AbstractEntity entity) {
+        ClientEntityCreationMessage message = new ClientEntityCreationMessage();
+        message.entity = entity;
         // Entity creation is important so TCP!
-        client.sendTCP(entity);
+        client.sendTCP(message);
     }
 }

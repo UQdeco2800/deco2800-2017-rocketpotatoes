@@ -99,7 +99,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		playerManager.setPlayer(new Player(5, 10, 0));
 		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 
-
+		multiplayerManager.broadcastNewEntity(new Player(10, 10, 0));
 		/**
 		 * Setup the game itself
 		 */
@@ -227,7 +227,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 */
 	@Override
 	public void render () {
-s
+
 		/*
 		 * Tickrate = 100Hz
 		 */

@@ -61,6 +61,11 @@ public class NetworkServer {
 
                     System.out.println("Got entity message: " + m.entity);
 
+                    HostEntityCreationMessage response = new HostEntityCreationMessage();
+                    response.entity = m.entity;
+                    response.id = 1;
+                    server.sendToAllTCP(response);
+
                     return;
                 }
 
