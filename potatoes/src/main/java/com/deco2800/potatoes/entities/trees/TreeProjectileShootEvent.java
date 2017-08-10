@@ -38,7 +38,7 @@ public class TreeProjectileShootEvent extends TimeEvent {
         Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(), 
         		tree.getPosY());
 
-        if(!target.isPresent()) {
+        if(!target.isPresent()||target.get().distance(this.tree)>range) {
             return;
         }
         System.out.println("FiRiNg Mi LaZoRs");
