@@ -13,6 +13,10 @@ public abstract class TimeEvent implements HasProgress {
 	private int resetAmount;
 	
 
+	public boolean showProgress() {
+		return true;
+	}
+	
 	public int getProgress() {
 		return progress;
 	}
@@ -54,10 +58,10 @@ public abstract class TimeEvent implements HasProgress {
 	/**
 	 * Decreases the progress and if the it reaches 0 the event action is triggered
 	 * The progress is reset if it reaches 0 and reset is true
-	 * @param amount
+	 * @param deltaTime
 	 */
-	public void decreaseProgress(int amount) {
-		progress -= amount;
+	public void decreaseProgress(long deltaTime) {
+		progress -= deltaTime;
 		if (isCompleted()) {
 			action();
 			reset();
@@ -71,9 +75,14 @@ public abstract class TimeEvent implements HasProgress {
 		return progress <= 0;
 	}
 	
-	private void reset() {
+	/**
+	 * Sets the timer to the reset amount if reseting is enabled, 0 otherwise. The action is not triggered
+	 */
+	public void reset() {
 		if (doReset) {
 			progress = resetAmount;
+		} else {
+			progress = 0;
 		}
 	}
 	

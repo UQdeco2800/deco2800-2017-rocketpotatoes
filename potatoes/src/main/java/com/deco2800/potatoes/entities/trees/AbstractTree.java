@@ -9,7 +9,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
 
 public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	
-	List<TimeEvent> timeEvents = new LinkedList<>();
+	private List<TimeEvent> timeEvents = new LinkedList<>();
 	
 	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture) {
@@ -18,15 +18,16 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	}
 
 	@Override
-	public void onTick(long time) {
-		// TODO scale with FPS, maybe make progress a float to help with this
+	public void onTick(long i) {
 		for (TimeEvent timeEvent : timeEvents) {
-			timeEvent.decreaseProgress(1);
+			timeEvent.decreaseProgress(i);
 		}
 	}
 	
 	public void registerTimeEvent(TimeEvent event) {
 		timeEvents.add(event);
 	}
+	
+	
 }
 
