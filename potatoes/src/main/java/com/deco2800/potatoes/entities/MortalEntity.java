@@ -1,10 +1,16 @@
+/**
+ * 
+ */
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.managers.GameManager;
+/**
+ * @author michaelruigrok
+ *
+ */
+public class MortalEntity extends AbstractEntity implements Mortal {
 
-public abstract class EnemyEntity extends MortalEntity implements HasProgress {
-	
+	protected float health;
+	protected float maxHealth;
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -30,9 +36,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 * @param maxHealth
 	 *            The initial maximum health of the enemy
 	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
+		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture);
+		this.maxHealth = maxHealth;
+		this.health = maxHealth;
 	}
 
 	/**
@@ -62,9 +70,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 * @param maxHealth
 	 *            The initial maximum health of the enemy
 	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
+		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture);
+		this.maxHealth = maxHealth;
+		this.health = maxHealth;
 
 	}
 
@@ -98,31 +108,58 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 * @param maxHealth
 	 *            The initial maximum health of the enemy
 	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
+		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture);
+		this.maxHealth = maxHealth;
+		this.health = maxHealth;
 	}
 	
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public int getProgress() {
-		return (int)health;
+	public float getHealth() {
+		return health;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean showProgress() {
+	public float getMaxHealth() {
+		return health;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean damage(float amount) {
+		health -= amount;
+		return health <= 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean heal(float amount) {
+		if ((health += amount) > maxHealth) {
+			health = maxHealth;
+			return false;
+		}
 		return true;
 	}
-	
-	public void getShot(Projectile projectile) {
-		this.damage(projectile.getDamage());
-		System.out.println(this + " was shot. Health now " + health);
-		if(health <= 0f) {
-			GameManager.get().getWorld().removeEntity(this);
-			System.out.println(this + " is dead.");
 
-		}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deathHandler() {
+		// TODO handle generic death handler
+
 	}
-
 
 }

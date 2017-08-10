@@ -18,7 +18,7 @@ public interface Mortal {
 
 	/**
 	 * @param amount - the amount of health to subtract
-	 * @return iff health <= 0
+	 * @return true iff health <= 0
 	 */
 	boolean damage(float amount);
 
@@ -31,5 +31,5 @@ public interface Mortal {
 	/**
 	 * Perform the required death behaviour
 	 */ 
-	boolean deathHandler();
+	void deathHandler();
 }
