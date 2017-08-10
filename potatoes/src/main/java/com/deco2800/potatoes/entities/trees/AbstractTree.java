@@ -1,12 +1,15 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 
 public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	
-	
+	List<TimeEvent> timeEvents = new LinkedList<>();
 	
 	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture) {
@@ -16,11 +19,14 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 
 	@Override
 	public void onTick(long time) {
-		// TODO Auto-generated method stub
+		// TODO scale with FPS, maybe make progress a float to help with this
+		for (TimeEvent timeEvent : timeEvents) {
+			timeEvent.decreaseProgress(1);
+		}
 	}
 	
 	public void registerTimeEvent(TimeEvent event) {
-		// TODO stub
+		timeEvents.add(event);
 	}
 }
 
