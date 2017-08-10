@@ -134,9 +134,9 @@ public class MultiplayerManager extends Manager {
         }
     }
 
-    public void broadcastEntityUpdate(AbstractEntity entity) {
+    public void broadcastEntityUpdate(AbstractEntity entity, int id) {
         if (client != null) {
-
+            client.broadcastEntityUpdate(entity, id);
         }
     }
 

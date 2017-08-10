@@ -40,6 +40,14 @@ public abstract class AbstractWorld {
         entities.add(entity);
     }
 
+    /**
+     * Add's an entity at the id (i.e. the index of the ArrayList). This will overwrite any existing entity
+     * if it is occupied.
+     * @param entity
+     * @param id
+     */
+    public void addEntity(AbstractEntity entity, int id) { entities.set(id, entity); }
+
     public void removeEntity(AbstractEntity entity) {
         entities.remove(entity);
     }

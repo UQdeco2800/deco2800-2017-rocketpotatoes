@@ -54,6 +54,14 @@ public class NetworkClient {
 
                     GameManager.get().getWorld().addEntity(m.entity);
                 }
+
+                if (object instanceof EntityUpdateMessage) {
+                    EntityUpdateMessage m = (EntityUpdateMessage) object;
+
+                    System.out.println("Got host entity update message :" + m.id + " : " + m.entity);
+
+                    GameManager.get().getWorld().addEntity(m.entity, m.id);
+                }
             }
 
             @Override
@@ -86,6 +94,14 @@ public class NetworkClient {
         ClientEntityCreationMessage message = new ClientEntityCreationMessage();
         message.entity = entity;
         // Entity creation is important so TCP!
+        client.sendTCP(message);
+    }
+
+    public void broadcastEntityUpdate(AbstractEntity entity, int id) {
+        EntityUpdateMessage message = new EntityUpdateMessage();
+        message.entity = entity;
+        message.id = id;
+
         client.sendTCP(message);
     }
 }

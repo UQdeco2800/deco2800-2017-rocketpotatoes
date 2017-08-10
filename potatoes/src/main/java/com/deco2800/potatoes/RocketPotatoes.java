@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -25,6 +26,7 @@ import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.handlers.MouseHandler;
+import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
 /**
@@ -254,6 +256,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
 			}
 			window.add(peonButton);
+
+			Box3D p = GameManager.get().getWorld().getEntities().get(1).getBox3D();
+			AbstractEntity old = GameManager.get().getWorld().getEntities().get(1);
+			Player np = new Player(old.getPosX(), old.getPosY(), old.getPosZ());
+			np.setPosition(np.getPosX() + 0.1f, np.getPosY() + 0.1f,0);
+			multiplayerManager.broadcastEntityUpdate(np, 1);
 		}
 
         /*

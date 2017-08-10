@@ -69,6 +69,14 @@ public class NetworkServer {
                     return;
                 }
 
+                if (object instanceof EntityUpdateMessage) {
+                    EntityUpdateMessage m = (EntityUpdateMessage) object;
+
+                    System.out.println("Got client entity update message :" + m.id + " : " + m.entity);
+
+                    server.sendToAllTCP(m);
+                }
+
                 if (object instanceof Message) {
                     Message m = (Message) object;
 
