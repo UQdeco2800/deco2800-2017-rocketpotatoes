@@ -3,6 +3,8 @@
  */
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.managers.GameManager;
+
 /**
  * @author michaelruigrok
  *
@@ -147,7 +149,11 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	@Override
 	public boolean damage(float amount) {
 		health -= amount;
-		return isDead();
+		if (isDead()) {
+			deathHandler();
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -168,7 +174,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	@Override
 	public void deathHandler() {
 		// TODO handle generic death handler
-
+		GameManager.get().getWorld().removeEntity(this);
 	}
 
 }

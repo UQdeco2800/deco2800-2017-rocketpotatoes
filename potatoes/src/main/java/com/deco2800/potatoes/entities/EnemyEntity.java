@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.managers.GameManager;
-
 public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	
 
@@ -117,9 +115,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 		damage(projectile.getDamage());
 		System.out.println(this + " was shot. Health now " + getHealth());
 		if(this.isDead()) {
-			GameManager.get().getWorld().removeEntity(this);
 			System.out.println(this + " is dead.");
-
 		}
 	}
 
