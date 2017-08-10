@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.worlds;
 
 import java.util.Random;
+import java.util.Optional;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.deco2800.potatoes.renderering.Renderable;
@@ -10,6 +11,9 @@ import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Peon;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.entities.Squirrel;
+import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * Initial world using preset world file.
@@ -32,10 +36,10 @@ public class InitialWorld extends AbstractWorld {
 		this.setWidth(this.getMap().getProperties().get("width", Integer.class));
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
 
-		this.addEntity(new Peon(7, 7, 0));
-		this.addEntity(new Tower(8, 8, 0));
+		//this.addEntity(new Peon(7, 7, 0));
+//		this.addEntity(new Tower(8, 8, 0));
 		
-		this.addEntity(new GoalPotate(10, 10, 0));
+		this.addEntity(new projectileTree(10,10,0, 1, 1, 1, "tree"));
 		
 		Random random = new Random();
 		for(int i = 0; i < 5; i++) {
