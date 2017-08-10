@@ -23,6 +23,9 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	public void onTick(long i) {
 		if (getConstructionLeft() <= 0) {
 			for (TimeEvent timeEvent : timeEvents) {
+				if(timeEvent.getProgress()>1000000){
+					timeEvent.reset();
+				}
 				timeEvent.decreaseProgress(i);
 			}
 		} else {
