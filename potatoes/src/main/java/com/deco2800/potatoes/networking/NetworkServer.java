@@ -53,6 +53,17 @@ public class NetworkServer {
                     c.name = m.name;
                     System.out.println("Got name: " + c.name);
 
+                    // Tell the new client their id
+                    HostConnectionConfirmMessage cResponse = new HostConnectionConfirmMessage();
+                    cResponse.id = c.getID();
+                    server.sendToTCP(c.getID(), cResponse);
+
+                    // Tell everyone of a new player
+                    HostNewPlayerMessage response = new HostNewPlayerMessage();
+                    response.id = c.getID();
+                    response.name = m.name;
+
+                    server.sendToAllTCP(response);
                     return;
                 }
 
@@ -74,7 +85,9 @@ public class NetworkServer {
 
                     System.out.println("Got client entity update message :" + m.id + " : " + m.entity);
 
-                    server.sendToAllTCP(m);
+                    server.sendToAllUDP(m);
+
+                    return;
                 }
 
                 if (object instanceof Message) {

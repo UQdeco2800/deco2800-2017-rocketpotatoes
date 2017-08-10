@@ -15,7 +15,9 @@ public class Network {
     public static void register(EndPoint endPoint) {
         Kryo k = endPoint.getKryo();
         k.register(ClientConnectionRegisterMessage.class);
+        k.register(HostNewPlayerMessage.class);
         k.register(ClientEntityCreationMessage.class);
+        k.register(HostConnectionConfirmMessage.class);
         k.register(HostEntityCreationMessage.class);
         k.register(EntityUpdateMessage.class);
         k.register(Message.class);
@@ -35,6 +37,17 @@ public class Network {
      * should be the first message between a client and host */
     static public class ClientConnectionRegisterMessage {
         public String name;
+    }
+
+    /* Message telling other clients of a new player */
+    static public class HostNewPlayerMessage {
+        public String name;
+        public int id;
+    }
+
+    /* Message confirming connection, gives the client their id */
+    static public class HostConnectionConfirmMessage {
+        public int id;
     }
 
     /* Message for the host to create a new entity */

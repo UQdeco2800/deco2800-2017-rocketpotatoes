@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 
@@ -153,6 +154,8 @@ public class MultiplayerManager extends Manager {
     public Boolean isMaster() {
         return master;
     }
+
+    public int getID() { return client.getID(); }
 
     /**
      * Checks if a port number is valid: anything larger than 1024 is avaliable

@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.deco2800.potatoes.managers.GameManager;
@@ -51,7 +52,7 @@ public class BallisticProjectile extends Projectile{
 		}
 		range -= speed;
 		
-		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
 			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
 				((EnemyEntity)entity).getShot(this);

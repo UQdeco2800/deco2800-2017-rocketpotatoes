@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.InputManager;
@@ -68,9 +69,9 @@ public class Player extends AbstractEntity implements Tickable {
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
-		for (AbstractEntity entity : entities) {
+		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				System.out.println(this + " colliding with " + entity);

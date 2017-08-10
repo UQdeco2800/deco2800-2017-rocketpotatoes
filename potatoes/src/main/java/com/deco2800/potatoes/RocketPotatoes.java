@@ -29,6 +29,8 @@ import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
+import java.util.Map;
+
 /**
  * Handles the creation of the world and rendering.
  *
@@ -94,14 +96,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		multiplayerManager.createHost(1337);
 		multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
 		multiplayerManager.broadcastMessage("Hey everybody!");
-		
+
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
-		
+
+		// Wait for server to create our player
+		/*
 		playerManager.setPlayer(new Player(5, 10, 0));
 		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		*/
 
-		multiplayerManager.broadcastNewEntity(new Player(10, 10, 0));
 		/**
 		 * Setup the game itself
 		 */
@@ -145,7 +149,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		peonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				for (Renderable r : GameManager.get().getWorld().getEntities()) {
+				for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
 					if (r instanceof Selectable) {
 						if (((Selectable) r).isSelected()) {
 
@@ -237,10 +241,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		if(timeDelta > 10) {
 			window.removeActor(peonButton);
 			boolean somethingSelected = false;
-			for (Renderable e : GameManager.get().getWorld().getEntities()) {
+			for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
 				if (e instanceof Tickable) {
 					((Tickable) e).onTick(timeDelta);
-
 				}
 				lastGameTick = TimeUtils.millis();
 
@@ -252,16 +255,19 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				}
 
 			}
+
+			if (multiplayerManager.isMultiplayer()) {
+				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
+					multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+				}
+			}
+
 			if (!somethingSelected) {
 				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
 			}
 			window.add(peonButton);
 
-			Box3D p = GameManager.get().getWorld().getEntities().get(1).getBox3D();
-			AbstractEntity old = GameManager.get().getWorld().getEntities().get(1);
-			Player np = new Player(old.getPosX(), old.getPosY(), old.getPosZ());
-			np.setPosition(np.getPosX() + 0.1f, np.getPosY() + 0.1f,0);
-			multiplayerManager.broadcastEntityUpdate(np, 1);
+
 		}
 
         /*

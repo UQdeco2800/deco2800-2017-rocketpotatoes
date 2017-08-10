@@ -4,7 +4,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * AbstractWorld is the Game AbstractWorld
@@ -13,9 +15,10 @@ import java.util.List;
  */
 public abstract class AbstractWorld {
 
-    private List<AbstractEntity> entities = new ArrayList<AbstractEntity>();
+    private Map<Integer, AbstractEntity> entities = new HashMap<>();
+    // Current index of the hashmap i.e. the last value we inserted into, for significantly more efficient insertion)
+    private int currentIndex;
     protected TiledMap map;
-
     private int width;
     private int length;
 
@@ -23,8 +26,8 @@ public abstract class AbstractWorld {
      * Returns a list of entities in this world
      * @return All Entities in the world
      */
-    public List<AbstractEntity> getEntities() {
-        return new ArrayList<AbstractEntity>(this.entities);
+    public Map<Integer, AbstractEntity> getEntities() {
+        return new HashMap<>(this.entities);
     }
 
     /**
@@ -37,7 +40,11 @@ public abstract class AbstractWorld {
 
 
     public void addEntity(AbstractEntity entity) {
-        entities.add(entity);
+        // HashMap because I want entities to have unique ids that aren't necessarily sequential
+        // O(n) insertion? Sorry this is pretty hacky :(
+        while (entities.containsKey(currentIndex++));
+
+        entities.put(currentIndex - 1, entity);
     }
 
     /**
@@ -46,7 +53,9 @@ public abstract class AbstractWorld {
      * @param entity
      * @param id
      */
-    public void addEntity(AbstractEntity entity, int id) { entities.set(id, entity); }
+    public void addEntity(AbstractEntity entity, int id) {
+        entities.put(id, entity);
+    }
 
     public void removeEntity(AbstractEntity entity) {
         entities.remove(entity);

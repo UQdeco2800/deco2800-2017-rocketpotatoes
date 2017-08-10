@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -59,9 +60,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);
 		
-		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
-		for (AbstractEntity entity : entities) {
+		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
 				if(entity instanceof Player) {
 					//soundManager.playSound("ree1.wav");

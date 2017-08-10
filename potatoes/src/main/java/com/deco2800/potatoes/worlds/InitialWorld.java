@@ -39,7 +39,7 @@ public class InitialWorld extends AbstractWorld {
 		
 		Random random = new Random();
 		for(int i = 0; i < 5; i++) {
-			//this.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+			//athis.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 		}
 		
 	}
@@ -48,7 +48,7 @@ public class InitialWorld extends AbstractWorld {
 	 * Deselects all entities.
 	 */
 	public void deSelectAll() {
-		for (Renderable r : this.getEntities()) {
+		for (Renderable r : this.getEntities().values()) {
 			if (r instanceof Selectable) {
 				((Selectable) r).deselect();
 			}
