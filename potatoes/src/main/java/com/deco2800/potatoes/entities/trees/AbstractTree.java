@@ -23,3 +23,27 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 		// TODO stub
 	}
 }
+
+public class projectileTree extends AbstractTree{
+	public int level;
+	public int hp;
+	public int speed;
+	//public whateveraprojectileis projectile;
+	pubic void init{
+		level=1;
+		hp=1;
+		speed=1;
+	}
+	public void upgrade {
+		// add upgrade numbers later
+		switch (level) {
+			case 1:
+				hp = 7;
+				break;
+			case 2:
+				hp = 10;
+				break;
+		}
+		level++;
+	}
+}
