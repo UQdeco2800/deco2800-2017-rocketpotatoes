@@ -49,10 +49,6 @@ public class Player extends AbstractEntity implements Tickable {
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
-		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
-
-		input.addKeyDownListener(this::handleKeyDown);
-		input.addKeyUpListener(this::handleKeyUp);
 
 		this.setTexture("spacman_blue");
 	}
@@ -91,7 +87,7 @@ public class Player extends AbstractEntity implements Tickable {
 	 * 
 	 * @param keycode
 	 */
-	private void handleKeyDown(int keycode) {
+	public void handleKeyDown(int keycode) {
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy -= movementSpeed;
@@ -118,7 +114,7 @@ public class Player extends AbstractEntity implements Tickable {
 	 * 
 	 * @param keycode
 	 */
-	private void handleKeyUp(int keycode) {
+	public void handleKeyUp(int keycode) {
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;

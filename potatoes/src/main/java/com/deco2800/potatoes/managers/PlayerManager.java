@@ -20,6 +20,11 @@ public class PlayerManager extends Manager {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
+
+		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+
+		input.addKeyDownListener(player::handleKeyDown);
+		input.addKeyUpListener(player::handleKeyUp);
 	}
 
 	/**

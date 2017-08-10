@@ -1,11 +1,14 @@
 package com.deco2800.potatoes.networking;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.deco2800.potatoes.networking.Network.*;
 
@@ -24,7 +27,7 @@ public class NetworkServer {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
 
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_WARN);
         // Create server object
         server = new Server() {
             @Override
@@ -58,6 +61,19 @@ public class NetworkServer {
                     cResponse.id = c.getID();
                     server.sendToTCP(c.getID(), cResponse);
 
+                    // Tell the new client about all the entities (unless it's master)
+                    if (c.getID() != 1) {
+                        System.out.println("Sending entity state...");
+                        for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
+                            HostEntityCreationMessage create = new HostEntityCreationMessage();
+                            create.entity = e.getValue();
+                            create.id = e.getKey();
+                            System.out.println(e.getValue() + " : " + e.getKey());
+
+                            server.sendToTCP(c.getID(), create);
+                        }
+                    }
+
                     // Tell everyone of a new player
                     HostNewPlayerMessage response = new HostNewPlayerMessage();
                     response.id = c.getID();
@@ -83,7 +99,7 @@ public class NetworkServer {
                 if (object instanceof EntityUpdateMessage) {
                     EntityUpdateMessage m = (EntityUpdateMessage) object;
 
-                    System.out.println("Got client entity update message :" + m.id + " : " + m.entity);
+                    //System.out.println("Got client entity update message :" + m.id + " : " + m.entity);
 
                     server.sendToAllUDP(m);
 

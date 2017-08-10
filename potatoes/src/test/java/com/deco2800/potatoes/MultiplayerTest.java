@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class MultiplayerTest {
-    MultiplayerManager m = null;
+    private MultiplayerManager m = null;
 
     @Test
     public void testInit() {

@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.networking;
 
+import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.managers.GameManager;
@@ -37,7 +38,7 @@ public class NetworkClient {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
 
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_WARN);
         // Initialize client object
         client = new Client();
         client.start();
@@ -85,7 +86,7 @@ public class NetworkClient {
 
                     System.out.println("Got host entity creation message :" + m.entity);
 
-                    GameManager.get().getWorld().addEntity(m.entity);
+                    GameManager.get().getWorld().addEntity(m.entity, m.id);
 
                     return;
                 }
@@ -93,10 +94,12 @@ public class NetworkClient {
                 if (object instanceof EntityUpdateMessage) {
                     EntityUpdateMessage m = (EntityUpdateMessage) object;
 
-                    System.out.println("Got host entity update message :" + m.id + " : " + m.entity);
+                    //System.out.println("Got host entity update message :" + m.id + " : " + m.entity);
 
-                    GameManager.get().getWorld().getEntities().get(m.id).setPosition(
-                            m.entity.getPosX(), m.entity.getPosY(), m.entity.getPosZ());
+                    if (GameManager.get().getWorld().getEntities().containsKey(m.id)) {
+                        GameManager.get().getWorld().getEntities().get(m.id).setPosition(
+                                m.entity.getPosX(), m.entity.getPosY(), m.entity.getPosZ());
+                    }
 
                     return;
                 }

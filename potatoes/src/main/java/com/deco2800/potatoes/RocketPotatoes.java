@@ -93,7 +93,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		multiplayerManager = new MultiplayerManager();
 
 		//TODO TESTING REMOVE !!
-		multiplayerManager.createHost(1337);
+		//multiplayerManager.createHost(1337);
 		multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
 		multiplayerManager.broadcastMessage("Hey everybody!");
 
@@ -258,9 +258,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 			if (multiplayerManager.isMultiplayer()) {
 				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
-					multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+					if (e.getKey() == multiplayerManager.getID()) {
+						//multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+					}
 				}
 			}
+			multiplayerManager.broadcastEntityUpdate( playerManager.getPlayer(), multiplayerManager.getID());
 
 			if (!somethingSelected) {
 				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
