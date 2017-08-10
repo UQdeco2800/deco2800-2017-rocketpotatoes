@@ -90,28 +90,35 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Create a multiplayer manager for the game */
 		multiplayerManager = new MultiplayerManager();
 
+		/*
 		//TODO TESTING REMOVE !!
 		//multiplayerManager.createHost(1337);
-		multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
-		multiplayerManager.broadcastMessage("Hey everybody!");
+		//multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+		//multiplayerManager.broadcastMessage("Hey everybody!");
 
 		Random random = new Random();
-		for(int i = 0; i < 5; i++) {
-			MultiplayerManager m = multiplayerManager;
-			if (m.isMultiplayer() && m.isMaster()) {
+
+		MultiplayerManager m = multiplayerManager;
+		if (m.isMultiplayer() && m.isMaster()) {
+			for (int i = 0; i < 5; i++) {
 				m.broadcastNewEntity(new Squirrel(
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 			}
+
+			//m.broadcastNewEntity(new Peon(7, 7, 0));
+			m.broadcastNewEntity(new Tower(8, 8, 0));
+			//m.broadcastNewEntity(new GoalPotate(15, 10, 0));
 		}
+		*/
 
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
 
-		// Wait for server to create our player
-		/*
-		playerManager.setPlayer(new Player(5, 10, 0));
-		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-		*/
+		if (!multiplayerManager.isMultiplayer()) {
+			// Make our player
+			playerManager.setPlayer(new Player(5, 10, 0));
+			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		}
 
 		/**
 		 * Setup the game itself

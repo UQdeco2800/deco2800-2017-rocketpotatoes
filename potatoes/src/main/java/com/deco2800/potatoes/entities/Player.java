@@ -32,7 +32,9 @@ public class Player extends AbstractEntity implements Tickable {
 	/**
 	 * Default constructor for the purposes of serialization
 	 */
-	public Player() { }
+	public Player() {
+		super(0, 0, 0, 1, 1, 1, TEXTURE);
+	}
 
 	/**
 	 * Creates a new Player instance.
@@ -50,7 +52,7 @@ public class Player extends AbstractEntity implements Tickable {
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
 
-		this.setTexture("spacman_blue");
+		//this.setTexture("spacman_blue");
 	}
 
 	@Override

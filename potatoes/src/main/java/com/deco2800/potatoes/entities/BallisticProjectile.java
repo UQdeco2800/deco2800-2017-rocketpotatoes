@@ -7,8 +7,8 @@ import com.deco2800.potatoes.managers.GameManager;
 
 public class BallisticProjectile extends Projectile{
 	
-	private final static String TEXTURE = "projectile";
-	private final static float DAMAGE = 40;
+	private final static transient String TEXTURE = "projectile";
+	private final static transient float DAMAGE = 40;
 	
 	private float goalX;
 	private float goalY;
@@ -21,6 +21,7 @@ public class BallisticProjectile extends Projectile{
 	private float changeX;
 	private float changeY;
 
+	public BallisticProjectile() { }
 
 	public BallisticProjectile(float posX, float posY, float posZ, float goalX, float goalY, float goalZ, float range) {
 		super(posX, posY, posZ, TEXTURE);

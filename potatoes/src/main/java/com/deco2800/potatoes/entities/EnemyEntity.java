@@ -121,10 +121,10 @@ public abstract class EnemyEntity extends AbstractEntity implements HasProgress 
 	
 	public void getShot(Projectile projectile) {
 		this.health -= projectile.getDamage();
-		System.out.println(this + " was shot. Health now " + health);
+		//System.out.println(this + " was shot. Health now " + health);
 		if(health <= 0f) {
 			GameManager.get().getWorld().removeEntity(this);
-			System.out.println(this + " is dead.");
+			//System.out.println(this + " is dead.");
 
 		}
 	}

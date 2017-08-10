@@ -47,7 +47,6 @@ public abstract class AbstractWorld {
                 currentIndex++;
             }
             else {
-                System.out.println("Putting " + entity + " in " + currentIndex);
                 entities.put(currentIndex, entity);
                 currentIndex++;
                 break;
@@ -66,8 +65,18 @@ public abstract class AbstractWorld {
         entities.put(id, entity);
     }
 
+    public void removeEntity(int id) {
+        entities.remove(id);
+    }
+
     public void removeEntity(AbstractEntity entity) {
-        entities.remove(entity);
+
+        for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
+            if (e.getValue() == entity) {
+                entities.remove(e.getKey());
+                return;
+            }
+        }
     }
 
     public void setWidth(int width) {

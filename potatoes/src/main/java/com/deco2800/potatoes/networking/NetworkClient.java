@@ -98,6 +98,14 @@ public class NetworkClient {
                     return;
                 }
 
+                if (object instanceof EntityDestroyMessage) {
+                    EntityDestroyMessage m = (EntityDestroyMessage) object;
+
+                    GameManager.get().getWorld().removeEntity(m.id);
+
+                    return;
+                }
+
                 if (object instanceof EntityUpdateMessage) {
                     EntityUpdateMessage m = (EntityUpdateMessage) object;
 
@@ -110,6 +118,7 @@ public class NetworkClient {
 
                     return;
                 }
+
             }
 
             @Override

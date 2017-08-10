@@ -27,6 +27,7 @@ buildscript {
     dependencies {
         classpath group: 'org.flywaydb', name: 'flyway-gradle-plugin', version: '3.2.1'
     }
+    
 
 }
 

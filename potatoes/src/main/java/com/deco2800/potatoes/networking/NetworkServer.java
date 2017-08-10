@@ -96,6 +96,14 @@ public class NetworkServer {
                     return;
                 }
 
+                if (object instanceof EntityDestroyMessage) {
+                    EntityDestroyMessage m = (EntityDestroyMessage) object;
+
+                    server.sendToAllTCP(m);
+
+                    return;
+                }
+
                 if (object instanceof EntityUpdateMessage) {
                     EntityUpdateMessage m = (EntityUpdateMessage) object;
 

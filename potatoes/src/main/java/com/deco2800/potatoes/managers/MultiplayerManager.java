@@ -156,7 +156,14 @@ public class MultiplayerManager extends Manager {
         return master;
     }
 
-    public int getID() { return client.getID(); }
+    public int getID() {
+        if (client != null) {
+            return client.getID();
+        }
+        else {
+            return 0;
+        }
+    }
 
     /**
      * Checks if a port number is valid: anything larger than 1024 is avaliable
