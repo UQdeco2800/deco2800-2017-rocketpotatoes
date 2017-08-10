@@ -45,6 +45,7 @@ public class MultiplayerManager extends Manager {
         port = -1;
         client = null;
         server = null;
+        master = false;
     }
 
     /**
@@ -82,6 +83,7 @@ public class MultiplayerManager extends Manager {
                 // TODO handle errors
                 System.exit(-1);
             }
+            master = true;
         }
 
         return 0;
@@ -98,7 +100,6 @@ public class MultiplayerManager extends Manager {
         client = new NetworkClient(name, IP, port, port);
 
         // If our client isn't also the host we aren't the master
-        master = false;
         return 0;
     }
 
@@ -145,7 +146,7 @@ public class MultiplayerManager extends Manager {
      * @return if this game is multiplayer
      */
     public Boolean isMultiplayer() {
-        return client != null;
+        return client != null || server != null;
     }
 
     /**

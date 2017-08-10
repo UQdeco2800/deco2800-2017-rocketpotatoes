@@ -68,7 +68,7 @@ public class NetworkClient {
                     System.out.println("Got host new player message: " + m.id);
 
                     // Make the player
-                    Player p = new Player(0, 0, 0);
+                    Player p = new Player(10, 10, 0);
                     GameManager.get().getWorld().addEntity(p, m.id);
 
                     if (clientID == m.id) {
@@ -84,9 +84,16 @@ public class NetworkClient {
                 if (object instanceof HostEntityCreationMessage) {
                     HostEntityCreationMessage m = (HostEntityCreationMessage) object;
 
-                    System.out.println("Got host entity creation message :" + m.entity);
+                    System.out.format("Got host entity creation message: %s, {%f, %f}%n",
+                            m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
 
-                    GameManager.get().getWorld().addEntity(m.entity, m.id);
+                    // -1 is the signal for put it wherever.
+                    if (m.id == -1) {
+                        GameManager.get().getWorld().addEntity(m.entity);
+                    }
+                    else {
+                        GameManager.get().getWorld().addEntity(m.entity, m.id);
+                    }
 
                     return;
                 }

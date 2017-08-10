@@ -2,6 +2,7 @@ package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.util.Box3D;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -23,6 +24,7 @@ public class Network {
         k.register(Message.class);
 
         k.register(Player.class);
+        k.register(Squirrel.class);
         k.register(Box3D.class);
     }
 

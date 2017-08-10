@@ -6,7 +6,11 @@ import com.deco2800.potatoes.managers.GameManager;
 public abstract class EnemyEntity extends AbstractEntity implements HasProgress {
 	
 	protected float health;
-	
+
+	/**
+	 * Default constructor for serialization
+	 */
+	public EnemyEntity() { }
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size

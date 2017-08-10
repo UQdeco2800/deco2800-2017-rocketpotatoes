@@ -42,9 +42,18 @@ public abstract class AbstractWorld {
     public void addEntity(AbstractEntity entity) {
         // HashMap because I want entities to have unique ids that aren't necessarily sequential
         // O(n) insertion? Sorry this is pretty hacky :(
-        while (entities.containsKey(currentIndex++));
+        while (true) {
+            if (entities.containsKey(currentIndex)) {
+                currentIndex++;
+            }
+            else {
+                System.out.println("Putting " + entity + " in " + currentIndex);
+                entities.put(currentIndex, entity);
+                currentIndex++;
+                break;
+            }
+        }
 
-        entities.put(currentIndex - 1, entity);
     }
 
     /**

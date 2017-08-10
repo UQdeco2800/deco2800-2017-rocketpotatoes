@@ -90,7 +90,7 @@ public class NetworkServer {
 
                     HostEntityCreationMessage response = new HostEntityCreationMessage();
                     response.entity = m.entity;
-                    response.id = 1;
+                    response.id = -1;
                     server.sendToAllTCP(response);
 
                     return;

@@ -16,24 +16,22 @@ import com.deco2800.potatoes.managers.PlayerManager;
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
-	private static final String TEXTURE = "squirrel";
-	private static final float HEALTH = 100f;
+	private static final transient String TEXTURE = "squirrel";
+	private static final transient float HEALTH = 100f;
 	
 	private float speed = 0.1f;
 	
-	private PlayerManager playerManager;
-	private SoundManager soundManager;
+	private transient final PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+	private transient final SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 	
-	private Random random;
-	
+	private transient Random random = new Random();
+
+	public Squirrel() { }
 
 	public Squirrel(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 
 		this.setTexture("squirrel");
-		this.playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		this.soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-
 		this.random = new Random();
 	}
 

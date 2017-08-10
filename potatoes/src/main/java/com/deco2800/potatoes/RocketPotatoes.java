@@ -15,21 +15,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
 import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Handles the creation of the world and rendering.
@@ -96,6 +94,15 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		//multiplayerManager.createHost(1337);
 		multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
 		multiplayerManager.broadcastMessage("Hey everybody!");
+
+		Random random = new Random();
+		for(int i = 0; i < 5; i++) {
+			MultiplayerManager m = multiplayerManager;
+			if (m.isMultiplayer() && m.isMaster()) {
+				m.broadcastNewEntity(new Squirrel(
+						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+			}
+		}
 
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
@@ -241,9 +248,20 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		if(timeDelta > 10) {
 			window.removeActor(peonButton);
 			boolean somethingSelected = false;
+
+
+			// Tick our player
+			if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
+				playerManager.getPlayer().onTick(timeDelta);
+			}
+
+			// Tick other stuff maybe
 			for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
 				if (e instanceof Tickable) {
-					((Tickable) e).onTick(timeDelta);
+					// Only tick elements if we're singleplayer or master
+					if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+						((Tickable) e).onTick(timeDelta);
+					}
 				}
 				lastGameTick = TimeUtils.millis();
 
@@ -256,13 +274,17 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 			}
 
-			if (multiplayerManager.isMultiplayer()) {
+			// Broadcast updates if we're master
+			if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
 				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
-					if (e.getKey() == multiplayerManager.getID()) {
-						//multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+					// But don't broadcast our player yet
+					if (e.getKey() != multiplayerManager.getID()) {
+						multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
 					}
 				}
 			}
+
+			// Broadcast our player updating
 			multiplayerManager.broadcastEntityUpdate( playerManager.getPlayer(), multiplayerManager.getID());
 
 			if (!somethingSelected) {
