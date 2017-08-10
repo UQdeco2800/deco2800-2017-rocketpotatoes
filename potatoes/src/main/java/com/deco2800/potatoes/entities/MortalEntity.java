@@ -34,7 +34,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
-	 *            The initial maximum health of the enemy
+	 *            The initial maximum health of the entity
 	 */
 	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth) {
@@ -68,7 +68,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
-	 *            The initial maximum health of the enemy
+	 *            The initial maximum health of the entity
 	 */
 	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth) {
@@ -106,7 +106,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
-	 *            The initial maximum health of the enemy
+	 *            The initial maximum health of the entity
 	 */
 	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
@@ -136,9 +136,18 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public boolean isDead() {
+		return health <= 0f;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean damage(float amount) {
 		health -= amount;
-		return health <= 0;
+		return isDead();
 	}
 
 	/**

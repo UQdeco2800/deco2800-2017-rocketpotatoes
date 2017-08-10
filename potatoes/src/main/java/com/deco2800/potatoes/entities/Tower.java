@@ -13,7 +13,7 @@ import com.deco2800.potatoes.util.WorldUtil;
  * @author leggy
  *
  */
-public class Tower extends AbstractEntity implements Tickable {
+public class Tower extends MortalEntity implements Tickable {
 	
 	private final static String TEXTURE = "tower";
 	
@@ -36,9 +36,11 @@ public class Tower extends AbstractEntity implements Tickable {
 	 *            The y-coordinate.
 	 * @param posZ
 	 *            The z-coordinate.
+	 * @param maxHealth
+	 *            The initial maximum health of the tower
 	 */
-	public Tower(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1, TEXTURE);
+	public Tower(float posX, float posY, float posZ, float maxHealth) {
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE, maxHealth);
 		
 		this.lastFireTime = 0;
 		this.reloadTime = 1000;

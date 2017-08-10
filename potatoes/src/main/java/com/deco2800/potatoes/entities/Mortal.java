@@ -17,8 +17,13 @@ public interface Mortal {
 	float getMaxHealth();
 
 	/**
-	 * @param amount - the amount of health to subtract
 	 * @return true iff health <= 0
+	 */
+	boolean isDead();
+
+	/**
+	 * @param amount - the amount of health to subtract
+	 * @return iff the resulting damage killed the entity
 	 */
 	boolean damage(float amount);
 
