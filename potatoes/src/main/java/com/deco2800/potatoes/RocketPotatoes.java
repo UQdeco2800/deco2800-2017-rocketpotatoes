@@ -16,17 +16,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Selectable;
+import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
 import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.handlers.MouseHandler;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
 import java.util.Map;
@@ -93,7 +92,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		multiplayerManager = new MultiplayerManager();
 
 		//TODO TESTING REMOVE !!
-		//multiplayerManager.createHost(1337);
+		multiplayerManager.createHost(1337);
 		multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
 		multiplayerManager.broadcastMessage("Hey everybody!");
 
@@ -259,7 +258,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			if (multiplayerManager.isMultiplayer()) {
 				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
 					if (e.getKey() == multiplayerManager.getID()) {
-						//multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+						if (e instanceof Squirrel) {
+							multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+						}
 					}
 				}
 			}

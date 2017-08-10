@@ -1,15 +1,11 @@
 package com.deco2800.potatoes.worlds;
 
-import java.util.Random;
-
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.deco2800.potatoes.renderering.Renderable;
-import com.deco2800.potatoes.worlds.AbstractWorld;
-import com.deco2800.potatoes.entities.Tower;
-import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.Peon;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.entities.Squirrel;
+import com.deco2800.potatoes.renderering.Renderable;
+
+import java.util.Random;
 
 /**
  * Initial world using preset world file.
@@ -39,7 +35,7 @@ public class InitialWorld extends AbstractWorld {
 		
 		Random random = new Random();
 		for(int i = 0; i < 5; i++) {
-			//athis.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+			this.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 		}
 		
 	}
