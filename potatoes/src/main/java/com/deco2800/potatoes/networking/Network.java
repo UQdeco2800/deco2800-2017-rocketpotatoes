@@ -13,14 +13,21 @@ public class Network {
      */
     public static void register(EndPoint endPoint) {
         Kryo k = endPoint.getKryo();
+
+        /* Message types */
         k.register(ClientConnectionRegisterMessage.class);
         k.register(HostNewPlayerMessage.class);
         k.register(ClientEntityCreationMessage.class);
         k.register(HostConnectionConfirmMessage.class);
         k.register(HostEntityCreationMessage.class);
-        k.register(EntityUpdateMessage.class);
         k.register(EntityDestroyMessage.class);
+        k.register(ClientEntityUpdatePositionMessage.class);
+        k.register(HostEntityUpdatePositionMessage.class);
         k.register(Message.class);
+
+        /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
+         * actions? Requires as much abstraction as possible with regards to custom behaviour, shouldn't be too tedious
+         */
 
         k.register(Player.class);
         k.register(Squirrel.class);
@@ -52,12 +59,12 @@ public class Network {
     /* Message telling other clients of a new player */
     static public class HostNewPlayerMessage {
         public String name;
-        public int id;
+        public byte id;
     }
 
     /* Message confirming connection, gives the client their id */
     static public class HostConnectionConfirmMessage {
-        public int id;
+        public byte id;
     }
 
     /* Message for the host to create a new entity */
@@ -77,9 +84,15 @@ public class Network {
         public int id;
     }
 
-    /* EntityUpdateMessage with the given id */
-    static public class EntityUpdateMessage {
-        public AbstractEntity entity;
+    /* Message indicating our entity moved
+     * TODO support for z? Unused so far */
+    static public class ClientEntityUpdatePositionMessage {
+        public float x, y;
+    }
+
+    /* Message from the host indicating a new position of an entity */
+    static public class HostEntityUpdatePositionMessage {
+        public float x, y;
         public int id;
     }
 

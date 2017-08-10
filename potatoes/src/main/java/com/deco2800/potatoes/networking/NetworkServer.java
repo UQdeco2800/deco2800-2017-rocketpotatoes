@@ -58,7 +58,7 @@ public class NetworkServer {
 
                     // Tell the new client their id
                     HostConnectionConfirmMessage cResponse = new HostConnectionConfirmMessage();
-                    cResponse.id = c.getID();
+                    cResponse.id = (byte) c.getID();
                     server.sendToTCP(c.getID(), cResponse);
 
                     // Tell the new client about all the entities (unless it's master)
@@ -76,7 +76,7 @@ public class NetworkServer {
 
                     // Tell everyone of a new player
                     HostNewPlayerMessage response = new HostNewPlayerMessage();
-                    response.id = c.getID();
+                    response.id = (byte) c.getID();
                     response.name = m.name;
 
                     server.sendToAllTCP(response);
@@ -104,12 +104,20 @@ public class NetworkServer {
                     return;
                 }
 
-                if (object instanceof EntityUpdateMessage) {
-                    EntityUpdateMessage m = (EntityUpdateMessage) object;
+                /* Player stuff */
+                if (object instanceof ClientEntityUpdatePositionMessage) {
+                    ClientEntityUpdatePositionMessage m = (ClientEntityUpdatePositionMessage) object;
 
-                    //System.out.println("Got client entity update message :" + m.id + " : " + m.entity);
 
-                    server.sendToAllUDP(m);
+                    // Check if position is valid?
+
+                    HostEntityUpdatePositionMessage response = new HostEntityUpdatePositionMessage();
+                    response.x = m.x;
+                    response.y = m.y;
+                    response.id = (byte) connection.getID();
+
+                    // TODO magical UDP order verification
+                    server.sendToAllExceptUDP(connection.getID(), response);
 
                     return;
                 }

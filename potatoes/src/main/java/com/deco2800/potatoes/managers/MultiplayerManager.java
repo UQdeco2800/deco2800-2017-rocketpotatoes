@@ -96,7 +96,7 @@ public class MultiplayerManager extends Manager {
      * @param port - port number in range of 1024-65565 (or 0 for any port) ?? TODO 0 port
      * @return
      */
-    public int joinGame(String name, String IP, int port) {
+    public int joinGame(String name, String IP, int port) throws IOException {
         client = new NetworkClient(name, IP, port, port);
 
         // If our client isn't also the host we aren't the master
@@ -136,9 +136,9 @@ public class MultiplayerManager extends Manager {
         }
     }
 
-    public void broadcastEntityUpdate(AbstractEntity entity, int id) {
+    public void broadcastEntityUpdatePosition(AbstractEntity entity, int id) {
         if (client != null) {
-            client.broadcastEntityUpdate(entity, id);
+            client.broadcastEntityUpdatePosition(entity, id);
         }
     }
 

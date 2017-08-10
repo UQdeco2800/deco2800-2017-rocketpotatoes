@@ -26,6 +26,7 @@ import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
@@ -90,11 +91,22 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Create a multiplayer manager for the game */
 		multiplayerManager = new MultiplayerManager();
 
-		/*
+
 		//TODO TESTING REMOVE !!
-		//multiplayerManager.createHost(1337);
-		//multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
-		//multiplayerManager.broadcastMessage("Hey everybody!");
+		// Magic testing code
+		try {
+			multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+		}
+		catch (IOException ex) {
+			multiplayerManager.createHost(1337);
+			try {
+				multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+			}
+			catch (IOException ex2) {
+				System.exit(-1);
+			}
+		}
+		multiplayerManager.broadcastMessage("Hey everybody!");
 
 		Random random = new Random();
 
@@ -106,10 +118,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			}
 
 			//m.broadcastNewEntity(new Peon(7, 7, 0));
-			m.broadcastNewEntity(new Tower(8, 8, 0));
+			//m.broadcastNewEntity(new Tower(8, 8, 0));
 			//m.broadcastNewEntity(new GoalPotate(15, 10, 0));
 		}
-		*/
+
 
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
@@ -286,13 +298,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
 					// But don't broadcast our player yet
 					if (e.getKey() != multiplayerManager.getID()) {
-						multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+						multiplayerManager.broadcastEntityUpdatePosition(e.getValue(), e.getKey());
 					}
 				}
 			}
 
 			// Broadcast our player updating
-			multiplayerManager.broadcastEntityUpdate( playerManager.getPlayer(), multiplayerManager.getID());
+			multiplayerManager.broadcastEntityUpdatePosition( playerManager.getPlayer(), multiplayerManager.getID());
 
 			if (!somethingSelected) {
 				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));

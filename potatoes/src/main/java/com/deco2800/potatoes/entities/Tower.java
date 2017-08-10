@@ -25,6 +25,8 @@ public class Tower extends AbstractEntity implements Tickable {
 	private Optional<AbstractEntity> target = Optional.empty();
 
 
+	public Tower() { }
+
 	/**
 	 * Constructor for the base
 	 * 

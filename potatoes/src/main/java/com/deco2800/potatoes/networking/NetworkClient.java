@@ -32,7 +32,7 @@ public class NetworkClient {
      * @param tcpPort
      * @param udpPort
      */
-    public NetworkClient(String name, String IP, int tcpPort, int udpPort) {
+    public NetworkClient(String name, String IP, int tcpPort, int udpPort) throws IOException {
         this.clientID = -1;
         this.IP = IP;
         this.tcpPort = tcpPort;
@@ -106,19 +106,15 @@ public class NetworkClient {
                     return;
                 }
 
-                if (object instanceof EntityUpdateMessage) {
-                    EntityUpdateMessage m = (EntityUpdateMessage) object;
+                /* Player stuff */
+                if (object instanceof HostEntityUpdatePositionMessage) {
+                    HostEntityUpdatePositionMessage m = (HostEntityUpdatePositionMessage) object;
 
-                    //System.out.println("Got host entity update message :" + m.id + " : " + m.entity);
-
-                    if (GameManager.get().getWorld().getEntities().containsKey(m.id)) {
-                        GameManager.get().getWorld().getEntities().get(m.id).setPosition(
-                                m.entity.getPosX(), m.entity.getPosY(), m.entity.getPosZ());
-                    }
+                    GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
+                    GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
 
                     return;
                 }
-
             }
 
             @Override
@@ -127,12 +123,7 @@ public class NetworkClient {
             }
         });
 
-        try {
-            client.connect(5000, IP, tcpPort, udpPort);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(-1);
-        }
+        client.connect(5000, IP, tcpPort, udpPort);
 
         // Send initial connection info
         ClientConnectionRegisterMessage cr = new ClientConnectionRegisterMessage();
@@ -154,10 +145,10 @@ public class NetworkClient {
         client.sendTCP(message);
     }
 
-    public void broadcastEntityUpdate(AbstractEntity entity, int id) {
-        EntityUpdateMessage message = new EntityUpdateMessage();
-        message.entity = entity;
-        message.id = id;
+    public void broadcastEntityUpdatePosition(AbstractEntity entity, int id) {
+        ClientEntityUpdatePositionMessage message = new ClientEntityUpdatePositionMessage();
+        message.x = entity.getPosX();
+        message.y = entity.getPosY();
 
         client.sendUDP(message);
     }
