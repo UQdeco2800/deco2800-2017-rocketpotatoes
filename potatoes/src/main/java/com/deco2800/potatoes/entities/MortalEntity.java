@@ -142,6 +142,20 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	}
 
 	/**
+	 * @return the current damage offset
+	 */
+	public float getDamageOffset() {
+		return damageOffset;
+	}
+
+	/**
+	 * @return the current damage scaling
+	 */
+	public float getDamageScaling() {
+		return damageScaling;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -155,7 +169,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public boolean damage(float amount) {
-		health -= amount;
+		health -= (amount * getDamageScaling() - getDamageOffset());
 		if (isDead()) {
 			deathHandler();
 			return true;
