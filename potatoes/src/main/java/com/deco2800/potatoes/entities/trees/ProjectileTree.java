@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.Optional;
-
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 
 class UpgradeStats {
@@ -27,15 +24,9 @@ public class ProjectileTree extends AbstractTree implements Tickable{
     private UpgradeStats level1 = new UpgradeStats(4,4);
     //public whateveraprojectileis projectile;
     
-
-    private int reloadTime = 1000;
-    private float range = 8f;
-
-    private Optional<AbstractEntity> target = Optional.empty();
     
-    public ProjectileTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-                          String texture) {
-        super(posX, posY, posZ, xLength, yLength, zLength, texture);
+    public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range) {
+        super(posX, posY, posZ, 1f, 1f, 1f, texture);
         
         registerTimeEvent(new TreeProjectileShootEvent(this, reloadTime, range));
     }
