@@ -12,7 +12,6 @@ import com.deco2800.potatoes.entities.Projectile;
 import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.Tree;
-import com.deco2800.potatoes.entities.trees.ConstructionEvent;
 import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
 import com.deco2800.potatoes.entities.trees.UpgradeStats;
 import com.deco2800.potatoes.util.Box3D;
@@ -49,9 +48,7 @@ public class Network {
         k.register(Box3D.class);
 
         k.register(LinkedList.class);
-//        k.register(TimeEvent.class);
         k.register(TreeProjectileShootEvent.class);
-        k.register(ConstructionEvent.class);
         k.register(UpgradeStats.class);
     }
 
