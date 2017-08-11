@@ -13,8 +13,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 
 	protected float health;
 	protected float maxHealth;
-	protected float damageOffset;
-	protected float damageScaling;
+	protected float damageOffset = 0;
+	protected float damageScaling = 1;
 
 	/**
 	 * Default constructor for serialization

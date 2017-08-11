@@ -33,7 +33,7 @@ public class InitialWorld extends AbstractWorld {
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
 
 		this.addEntity(new Peon(7, 7, 0));
-		this.addEntity(new Tower(8, 8, 0, 100));
+		this.addEntity(new Tower(8, 8, 0));
 		
 		//this.addEntity(new GoalPotate(10, 10, 0));
 		

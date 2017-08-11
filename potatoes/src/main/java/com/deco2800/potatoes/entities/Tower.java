@@ -1,29 +1,22 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.Optional;
-
-import com.badlogic.gdx.utils.TimeUtils;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 
 /**
  * Tower that can do things.
+ * 
  * @author leggy
  *
  */
-public class Tower extends MortalEntity implements Tickable {
-	
-	private final static String TEXTURE = "tower";
-	
-	private int reloadTime;
-	private long lastFireTime;
-	
-	private float range = 8f;
-	
-	private Optional<AbstractEntity> target = Optional.empty();
+public class Tower extends ProjectileTree {
 
+	private final static String TEXTURE = "tower";
+
+	/**
+	 * Default constructor for serialization
+	 */
+	public Tower() {
+	}
 
 	/**
 	 * Constructor for the base
@@ -36,45 +29,13 @@ public class Tower extends MortalEntity implements Tickable {
 	 *            The y-coordinate.
 	 * @param posZ
 	 *            The z-coordinate.
-	 * @param maxHealth
-	 *            The initial maximum health of the tower
 	 */
-	public Tower(float posX, float posY, float posZ, float maxHealth) {
-		super(posX, posY, posZ, 1, 1, 1, TEXTURE, maxHealth);
-		
-		this.lastFireTime = 0;
-		this.reloadTime = 1000;
+	public Tower(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, TEXTURE, 1000, 8f, 100f);
 	}
 
-
-	/**
-	 * On Tick handler
-	 * @param i time since last tick
-	 */
-	@Override
-	public void onTick(long i) {
-		long time = TimeUtils.millis();
-		if(!(lastFireTime + reloadTime < time)) {
-			return;
-		}
-		
-		lastFireTime = time;
-		this.target = WorldUtil.getClosestEntityOfClass(Squirrel.class, getPosX(), getPosY());
-		
-		if(!target.isPresent()) {
-			return;
-		}
-		System.out.println("FiRiNg Mi LaZoRs " + i);
-
-		GameManager.get().getWorld().addEntity(new BallisticProjectile(getPosX(), getPosY(), getPosZ(), target.get().getPosX(), target.get().getPosY(), getPosZ(), range));
-	
-
-	}
-
-
-	
 	@Override
 	public String toString() {
-		return String.format("Tower at (%d, %d)", (int)getPosX(), (int)getPosY());
+		return String.format("Tower at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 }
