@@ -25,7 +25,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	private long currentConstructionTime = constructionPercentTime;
 	private int upgradeLevel = 0;
 
-	private static UpgradeStats[] upgradeLevelStats = { new UpgradeStats() };
+	private static List<UpgradeStats> upgradeLevelStats = new LinkedList<>();;
 	private int hp = 1000;
 
 	/**
@@ -131,11 +131,11 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	 * Not yet implemented
 	 */
 	public void upgrade() {
-		if (upgradeLevel + 1 == upgradeLevelStats.length) {
+		if (upgradeLevel + 1 == upgradeLevelStats.size()) {
 			return; // Ignores upgrade if at max level
 		}
 		upgradeLevel++;
-		hp = upgradeLevelStats[upgradeLevel].getHp();
+		hp = upgradeLevelStats.get(upgradeLevel).getHp();
 	}
 
 	/**
@@ -144,9 +144,12 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	 * @return the default upgrade stats
 	 */
 	public UpgradeStats getUpgradeStats() {
-		return upgradeLevelStats[upgradeLevel];
+		return upgradeLevelStats.get(upgradeLevel);
 	}
 
+    public void setUpgradeStats(UpgradeStats stats) {
+        this.upgradeLevelStats.add(stats);
+    }
 	/**
 	 * decrements health
 	 *
