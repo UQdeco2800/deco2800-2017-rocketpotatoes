@@ -1,6 +1,20 @@
 package com.deco2800.potatoes.networking;
 
-import com.deco2800.potatoes.entities.*;
+import java.util.LinkedList;
+
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.BallisticProjectile;
+import com.deco2800.potatoes.entities.EnemyEntity;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.Peon;
+import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.Projectile;
+import com.deco2800.potatoes.entities.Squirrel;
+import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.Tree;
+import com.deco2800.potatoes.entities.trees.ConstructionEvent;
+import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
+import com.deco2800.potatoes.entities.trees.UpgradeStats;
 import com.deco2800.potatoes.util.Box3D;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -34,6 +48,11 @@ public class Network {
         k.register(Tree.class);
         k.register(Box3D.class);
 
+        k.register(LinkedList.class);
+//        k.register(TimeEvent.class);
+        k.register(TreeProjectileShootEvent.class);
+        k.register(ConstructionEvent.class);
+        k.register(UpgradeStats.class);
     }
 
     // Define our custom types/containers for serialization here

@@ -4,13 +4,19 @@ import com.deco2800.potatoes.entities.trees.ProjectileTree;
 
 /**
  * Tower that can do things.
+ * 
  * @author leggy
  *
  */
 public class Tower extends ProjectileTree {
-	
+
 	private final static String TEXTURE = "tower";
-	
+
+	/**
+	 * Default constructor for serialization
+	 */
+	public Tower() {
+	}
 
 	/**
 	 * Constructor for the base
@@ -27,9 +33,9 @@ public class Tower extends ProjectileTree {
 	public Tower(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, TEXTURE, 1000, 8f);
 	}
-	
+
 	@Override
 	public String toString() {
-		return String.format("Tower at (%d, %d)", (int)getPosX(), (int)getPosY());
+		return String.format("Tower at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 }

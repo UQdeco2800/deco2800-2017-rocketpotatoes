@@ -2,6 +2,10 @@ package com.deco2800.potatoes.entities.trees;
 
 import com.deco2800.potatoes.entities.TimeEvent;
 
+/**
+ * Needs to be redone
+ */
+@Deprecated
 public class ConstructionEvent extends TimeEvent {
 	
 	private AbstractTree tree;
