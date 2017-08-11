@@ -7,6 +7,8 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 
+import com.deco2800.potatoes.managers.GameManager;
+
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
  * registered normal events which are triggered when the tree is not under
@@ -24,6 +26,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	private int upgradeLevel = 0;
 
 	private static UpgradeStats[] upgradeLevelStats = { new UpgradeStats() };
+	private int hp = 1000;
 
 	/**
 	 * Default constructor for serialization
@@ -132,6 +135,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 			return; // Ignores upgrade if at max level
 		}
 		upgradeLevel++;
+		hp = upgradeLevelStats[upgradeLevel].getHp();
 	}
 
 	/**
@@ -142,4 +146,23 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	public UpgradeStats getUpgradeStats() {
 		return upgradeLevelStats[upgradeLevel];
 	}
+
+	/**
+	 * decrements health
+	 *
+	 * @param damage
+	 *            reduction in hp
+	 */
+	public void changeHP(int damage) {
+		this.hp -= damage;
+		if (hp <= 0) {
+			GameManager.get().getWorld().removeEntity(this);
+			return;
+		}//else if (hp > upgradeLevelStats[upgradeLevel].getHp())  {
+			//this.hp = upgradeLevelStats[upgradeLevel].getHp();
+			//prevents tower gaining hp greater than its maximum
+		//}
+
+	}
+	public int getHP() {return this.hp;}
 }
