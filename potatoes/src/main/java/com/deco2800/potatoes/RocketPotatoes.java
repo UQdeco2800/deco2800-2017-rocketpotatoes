@@ -60,12 +60,18 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 	private long lastGameTick = 0;
 
+	private Skin uiSkin;
+	private TextButton uiPeonButton;
+
 	/**
 	 * Creates the required objects for the game to start.
 	 * Called when the game first starts
 	 */
 	@Override
 	public void create () {
+		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+
+		uiPeonButton = new TextButton("Select a Unit", uiSkin);
 		
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
@@ -295,7 +301,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			multiplayerManager.broadcastEntityUpdate( playerManager.getPlayer(), multiplayerManager.getID());
 
 			if (!somethingSelected) {
-				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
+				peonButton = uiPeonButton;
 			}
 			window.add(peonButton);
 
