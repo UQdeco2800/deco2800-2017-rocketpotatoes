@@ -260,58 +260,60 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void render () {
 
+		if (multiplayerManager.isReady()) {
 		/*
 		 * Tickrate = 100Hz
 		 */
-		long timeDelta = TimeUtils.millis() - lastGameTick;
-		if(timeDelta > 10) {
-			window.removeActor(peonButton);
-			boolean somethingSelected = false;
+			long timeDelta = TimeUtils.millis() - lastGameTick;
+			if (timeDelta > 10) {
+				window.removeActor(peonButton);
+				boolean somethingSelected = false;
 
 
-			// Tick our player
-			if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
-				playerManager.getPlayer().onTick(timeDelta);
-			}
-
-			// Tick other stuff maybe
-			for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-				if (e instanceof Tickable) {
-					// Only tick elements if we're singleplayer or master
-					if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-						((Tickable) e).onTick(timeDelta);
-					}
-				}
-				lastGameTick = TimeUtils.millis();
-
-				if (e instanceof Selectable) {
-					if (((Selectable) e).isSelected()) {
-						peonButton = ((Selectable) e).getButton();
-						somethingSelected = true;
-					}
+				// Tick our player
+				if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
+					playerManager.getPlayer().onTick(timeDelta);
 				}
 
-			}
+				// Tick other stuff maybe
+				for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
+					if (e instanceof Tickable) {
+						// Only tick elements if we're singleplayer or master
+						if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+							((Tickable) e).onTick(timeDelta);
+						}
+					}
+					lastGameTick = TimeUtils.millis();
 
-			// Broadcast updates if we're master
-			if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
-				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
-					// But don't broadcast our player yet
-					if (e.getKey() != multiplayerManager.getID()) {
-						multiplayerManager.broadcastEntityUpdatePosition(e.getValue(), e.getKey());
+					if (e instanceof Selectable) {
+						if (((Selectable) e).isSelected()) {
+							peonButton = ((Selectable) e).getButton();
+							somethingSelected = true;
+						}
+					}
+
+				}
+
+				// Broadcast updates if we're master
+				if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
+					for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
+						// But don't broadcast our player yet
+						if (e.getKey() != multiplayerManager.getID()) {
+							multiplayerManager.broadcastEntityUpdatePosition(e.getValue(), e.getKey());
+						}
 					}
 				}
+
+				// Broadcast our player updating
+				multiplayerManager.broadcastEntityUpdatePosition(playerManager.getPlayer(), multiplayerManager.getID());
+
+				if (!somethingSelected) {
+					peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
+				}
+				window.add(peonButton);
+
+
 			}
-
-			// Broadcast our player updating
-			multiplayerManager.broadcastEntityUpdatePosition( playerManager.getPlayer(), multiplayerManager.getID());
-
-			if (!somethingSelected) {
-				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
-			}
-			window.add(peonButton);
-
-
 		}
 
         /*

@@ -8,6 +8,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.deco2800.potatoes.networking.Network.*;
@@ -61,6 +62,22 @@ public class NetworkServer {
                     cResponse.id = (byte) c.getID();
                     server.sendToTCP(c.getID(), cResponse);
 
+                    // Tell the client of all the other clients in order
+                    for (Connection con : server.getConnections()) {
+                        // Don't tell the new client about itself through this
+                        if (con.getID() == c.getID()) { continue; }
+
+                        NetworkConnection nCon = (NetworkConnection) con;
+
+                        HostExistingPlayerMessage newMess = new HostExistingPlayerMessage();
+
+                        newMess.id = nCon.getID();
+                        newMess.name = nCon.name;
+
+                        server.sendToTCP(c.getID(), newMess);
+                    }
+
+
                     // Tell the new client about all the entities (unless it's master)
                     if (c.getID() != 1) {
                         System.out.println("Sending entity state...");
@@ -80,6 +97,11 @@ public class NetworkServer {
                     response.name = m.name;
 
                     server.sendToAllTCP(response);
+
+                    // Finally tell the client they are ready to play
+                    HostPlayReadyMessage playMess = new HostPlayReadyMessage();
+                    server.sendToTCP(c.getID(), playMess);
+
                     return;
                 }
 

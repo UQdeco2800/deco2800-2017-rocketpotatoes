@@ -11,6 +11,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.deco2800.potatoes.networking.Network.*;
 import org.lwjgl.Sys;
@@ -18,12 +19,19 @@ import org.lwjgl.Sys;
 import javax.swing.text.html.parser.Entity;
 
 public class NetworkClient {
-    Client client;
+    private Client client;
     private String IP;
+    private String name;
     private int tcpPort;
     private int udpPort;
     // ID of this client
     private int clientID;
+
+    // If connection is established and everything is initialized this should be true.
+    public boolean ready;
+
+    // List of clients, index is the id
+    private ArrayList<String> clientList;
 
     /**
      * Initializes a client for the game,
@@ -35,8 +43,11 @@ public class NetworkClient {
     public NetworkClient(String name, String IP, int tcpPort, int udpPort) throws IOException {
         this.clientID = -1;
         this.IP = IP;
+        this.name = name;
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
+        this.ready = false;
+        clientList = new ArrayList<>();
 
         Log.set(Log.LEVEL_WARN);
         // Initialize client object
@@ -62,6 +73,12 @@ public class NetworkClient {
                     return;
                 }
 
+                if (object instanceof HostPlayReadyMessage) {
+                    HostPlayReadyMessage m = (HostPlayReadyMessage) object;
+                    System.out.println("I'm ready to go!");
+                    ready = true;
+                }
+
                 if (object instanceof HostNewPlayerMessage) {
                     HostNewPlayerMessage m = (HostNewPlayerMessage) object;
 
@@ -77,6 +94,18 @@ public class NetworkClient {
                         // Give the player manager me
                         ((PlayerManager)GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
                     }
+
+                    clientList.add(m.name);
+
+                    return;
+                }
+
+
+                if (object instanceof HostExistingPlayerMessage) {
+                    HostExistingPlayerMessage m = (HostExistingPlayerMessage) object;
+
+                    System.out.println("Got host existing player message: " + m.id);
+                    clientList.add(m.name);
 
                     return;
                 }
@@ -155,5 +184,9 @@ public class NetworkClient {
 
     public int getID() {
         return clientID;
+    }
+
+    public ArrayList<String> getClients() {
+        return new ArrayList<>(clientList);
     }
 }

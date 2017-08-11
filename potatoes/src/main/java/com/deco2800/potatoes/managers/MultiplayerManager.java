@@ -7,6 +7,7 @@ import com.deco2800.potatoes.networking.NetworkServer;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Handles multiplayer setup, and communication.
@@ -98,8 +99,6 @@ public class MultiplayerManager extends Manager {
      */
     public int joinGame(String name, String IP, int port) throws IOException {
         client = new NetworkClient(name, IP, port, port);
-
-        // If our client isn't also the host we aren't the master
         return 0;
     }
 
@@ -120,7 +119,9 @@ public class MultiplayerManager extends Manager {
      * @param message
      */
     public void sendMessageTo(int clientID, String message) {
+        if (client != null) {
 
+        }
     }
 
     /**
@@ -162,6 +163,21 @@ public class MultiplayerManager extends Manager {
         }
         else {
             return 0;
+        }
+    }
+
+    /**
+     * Returns true if the client is ready to play
+     * @return
+     */
+    public boolean isReady() { return client.ready; }
+
+    public ArrayList<String> getClients() {
+        if (client != null) {
+            return client.getClients();
+        }
+        else {
+            return null;
         }
     }
 
