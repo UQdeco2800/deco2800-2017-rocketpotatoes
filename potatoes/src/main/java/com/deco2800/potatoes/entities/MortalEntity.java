@@ -13,6 +13,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 
 	protected float health;
 	protected float maxHealth;
+	protected float damageOffset;
+	protected float damageScaling;
 
 	/**
 	 * Default constructor for serialization
@@ -180,6 +182,27 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	public void deathHandler() {
 		//System.out.println(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
+	}
+
+	/**
+	 * Alters the offset of any damage dealt to the entity.
+	 * Use negative values to decrease damage dealt, and negate the parameter
+	 *  to revert the offset.
+	 * @param offset - the amount of health damage is to be offset by
+	 * @return current value of damage offset
+	 */
+	public float addDamageOffset(float offset) {
+		return this.damageOffset += offset;
+	}
+
+	/**
+	 * Alters the scale of damage dealt to the entity
+	 * @param amount - the decimal coefficient to scale damage to the entity by
+	 * @return current value of damage scaling
+	 */
+	@Override
+	public float addDamageScaling(float scale) {
+		return this.damageScaling += scale;
 	}
 
 }
