@@ -8,7 +8,7 @@ package com.deco2800.potatoes.entities;
  */
 public abstract class TimeEvent implements HasProgress {
 	
-	private int progress;
+	private long progress;
 	private boolean doReset;
 	private int resetAmount;
 	
@@ -18,7 +18,7 @@ public abstract class TimeEvent implements HasProgress {
 	}
 	
 	public int getProgress() {
-		return progress;
+		return (int) progress;
 	}
 
 	/**
