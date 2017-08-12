@@ -98,7 +98,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
-
+		/*
 		try {
 			try {
 				System.out.println("Starting client");
@@ -126,7 +126,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			ex.printStackTrace();
 			System.exit(-1);
 		}
-
+		*/
 
 
 
@@ -139,9 +139,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 			}
 
-			//GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
+			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-			//GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 		}
 
 
