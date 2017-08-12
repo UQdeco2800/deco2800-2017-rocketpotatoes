@@ -98,6 +98,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
+		/*
 		try {
 			System.out.println("Starting client");
 			multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
@@ -119,12 +120,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				System.exit(-1);
 			}
 		}
+		*/
 
 
 		Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
-		if (m.isMultiplayer() && m.isMaster()) {
+		if (m.isMaster() || !m.isMultiplayer()) {
 			for (int i = 0; i < 5; i++) {
 				GameManager.get().getWorld().addEntity(new Squirrel(
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
