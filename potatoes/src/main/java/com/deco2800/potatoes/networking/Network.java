@@ -117,6 +117,7 @@ public class Network {
      * TODO support for z? Unused so far */
     static public class ClientEntityUpdatePositionMessage {
         public float x, y;
+        public int id;
     }
 
     /* Message from the host indicating a new position of an entity */

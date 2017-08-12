@@ -24,7 +24,8 @@ public class MultiplayerManager extends Manager {
     private String ip;
 
     // Port this client is connected to (-1 if none)
-    private int port;
+    private int clientPort;
+    private int serverPort;
 
     // Our client representation (null if not connected (i.e. singleplayer)) ?? Maybe should always have a client
     private NetworkClient client = null;
@@ -43,7 +44,8 @@ public class MultiplayerManager extends Manager {
      */
     public MultiplayerManager() {
         ip = "";
-        port = -1;
+        clientPort = -1;
+        serverPort = -1;
         client = null;
         server = null;
         master = false;
@@ -57,10 +59,14 @@ public class MultiplayerManager extends Manager {
     }
 
     /**
-     * @return The port number the client is connected to, -1 if none
+     * @return The port number the client is connected to
      */
-    public int getPort() {
-        return port;
+    public int getClientPort() {
+        return clientPort;
+    }
+
+    public int getServerPort() {
+        return serverPort;
     }
 
 
@@ -85,6 +91,7 @@ public class MultiplayerManager extends Manager {
                 System.exit(-1);
             }
             master = true;
+            serverPort = port;
         }
 
         return 0;
@@ -98,7 +105,9 @@ public class MultiplayerManager extends Manager {
      * @return
      */
     public int joinGame(String name, String IP, int port) throws IOException {
+        // TODO move away from ALL tcp
         client = new NetworkClient(name, IP, port, port);
+        clientPort = port;
         return 0;
     }
 
@@ -170,7 +179,14 @@ public class MultiplayerManager extends Manager {
      * Returns true if the client is ready to play
      * @return
      */
-    public boolean isReady() { return client.ready; }
+    public boolean isReady() {
+        if (client != null) {
+            return client.ready;
+        }
+        else {
+            return true;
+        }
+    }
 
     public ArrayList<String> getClients() {
         if (client != null) {

@@ -136,7 +136,7 @@ public class NetworkServer {
                     HostEntityUpdatePositionMessage response = new HostEntityUpdatePositionMessage();
                     response.x = m.x;
                     response.y = m.y;
-                    response.id = (byte) connection.getID();
+                    response.id = m.id;
 
                     // TODO magical UDP order verification
                     server.sendToAllExceptUDP(connection.getID(), response);

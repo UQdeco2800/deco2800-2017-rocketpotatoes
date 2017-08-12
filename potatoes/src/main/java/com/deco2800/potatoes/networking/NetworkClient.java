@@ -135,7 +135,6 @@ public class NetworkClient {
                     return;
                 }
 
-                /* Player stuff */
                 if (object instanceof HostEntityUpdatePositionMessage) {
                     HostEntityUpdatePositionMessage m = (HostEntityUpdatePositionMessage) object;
 
@@ -178,6 +177,7 @@ public class NetworkClient {
         ClientEntityUpdatePositionMessage message = new ClientEntityUpdatePositionMessage();
         message.x = entity.getPosX();
         message.y = entity.getPosY();
+        message.id = id;
 
         client.sendUDP(message);
     }
