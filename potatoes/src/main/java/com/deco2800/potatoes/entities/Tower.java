@@ -18,8 +18,6 @@ public class Tower extends ProjectileTree {
 	public Tower() {
 	}
 
-	public Tower() { }
-
 	/**
 	 * Constructor for the base
 	 * 
