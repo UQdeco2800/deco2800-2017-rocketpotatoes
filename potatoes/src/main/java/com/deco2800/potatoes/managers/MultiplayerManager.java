@@ -168,6 +168,17 @@ public class MultiplayerManager extends Manager {
             server.broadcastEntityUpdatePosition(id);
         }
     }
+
+    public void broadcastEntityUpdateProgress(int id) {
+        if (client != null) {
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any progress updates!");
+            }
+
+            server.broadcastEntityUpdateProgress(id);
+        }
+    }
+
     /**
      * Broadcasts an entities destruction. Should only be used by master!
      * @param id

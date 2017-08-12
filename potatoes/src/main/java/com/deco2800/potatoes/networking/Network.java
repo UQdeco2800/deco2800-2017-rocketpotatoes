@@ -41,6 +41,7 @@ public class Network {
         k.register(HostEntityDestroyMessage.class);
         k.register(ClientPlayerUpdatePositionMessage.class);
         k.register(HostEntityUpdatePositionMessage.class);
+        k.register(HostEntityUpdateProgressMessage.class);
         k.register(HostExistingPlayerMessage.class);
         k.register(Message.class);
 
@@ -136,6 +137,12 @@ public class Network {
     /* Message from the host indicating a new position of an entity */
     static public class HostEntityUpdatePositionMessage {
         public float x, y;
+        public int id;
+    }
+
+    /* Message from the host indicating an entity's progress has changed (using the HasProgress interface) */
+    static public class HostEntityUpdateProgressMessage {
+        public int progress;
         public int id;
     }
 

@@ -2,6 +2,7 @@ package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.managers.GameManager;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -184,6 +185,8 @@ public class NetworkServer {
         HostEntityCreationMessage message = new HostEntityCreationMessage();
         message.entity = GameManager.get().getWorld().getEntities().get(id);
         message.id = id;
+
+        // TCP because important info and I haven't made the super awesome safe UDP yet.
         server.sendToAllExceptTCP(MASTER_ID, message);
     }
 
@@ -196,7 +199,24 @@ public class NetworkServer {
         message.y = entity.getPosY();
 
         // Tell everyone except the master.
-        server.sendToAllExceptTCP(MASTER_ID, message);
+        server.sendToAllExceptUDP(MASTER_ID, message);
+    }
+
+    public void broadcastEntityUpdateProgress(int id) {
+        HostEntityUpdateProgressMessage message = new HostEntityUpdateProgressMessage();
+
+        AbstractEntity entity = GameManager.get().getWorld().getEntities().get(id);
+        if (entity instanceof HasProgress) {
+            HasProgress e = (HasProgress) entity;
+            message.id = id;
+            message.progress = e.getProgress();
+
+            // Tell everyone except the master.
+            server.sendToAllExceptUDP(MASTER_ID, message);
+        }
+        else {
+            throw new IllegalArgumentException("Entity doesn't implement HasProgress!");
+        }
     }
 
     public void broadcastEntityDestroy(int id) {

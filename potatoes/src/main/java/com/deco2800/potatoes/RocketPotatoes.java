@@ -129,6 +129,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		*/
 
 
+
 		Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
@@ -138,9 +139,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 			}
 
-			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
+			//GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+			//GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 		}
 
 
@@ -321,6 +322,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 						// But don't broadcast our player yet
 						if (e.getKey() != multiplayerManager.getID()) {
 							multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
+
+							// TODO only when needed Maybe attach to the HasProgress interface itself?
+							if (e.getValue() instanceof HasProgress) {
+								multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
+							}
 						}
 					}
 				}

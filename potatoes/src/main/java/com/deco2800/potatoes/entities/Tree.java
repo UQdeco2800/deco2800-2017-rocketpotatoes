@@ -34,6 +34,11 @@ public class Tree extends AbstractEntity implements HasProgress {
         return 100;
     }
 
+
+    // TODO implement!
+    @Override
+    public void setProgress(int p) { return; }
+
     @Override
     public boolean showProgress() {
         return true;

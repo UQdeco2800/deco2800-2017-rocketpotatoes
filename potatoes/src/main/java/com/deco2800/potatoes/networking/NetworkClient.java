@@ -2,6 +2,7 @@ package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -175,6 +176,15 @@ public class NetworkClient {
 
                         GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
                         GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
+
+                        return;
+                    }
+
+                    if (object instanceof HostEntityUpdateProgressMessage) {
+                        HostEntityUpdateProgressMessage m = (HostEntityUpdateProgressMessage) object;
+
+                        // TODO verification?
+                        ((HasProgress)GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
 
                         return;
                     }
