@@ -197,4 +197,8 @@ public class NetworkClient {
     public ArrayList<String> getClients() {
         return new ArrayList<>(clientList);
     }
+
+    public void disconnect() {
+        client.close();
+    }
 }

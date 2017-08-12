@@ -17,11 +17,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
 public class MultiplayerTest {
-    private MultiplayerManager m = null;
 
     @Test
     public void testInit() {
-        m = new MultiplayerManager();
+        MultiplayerManager m = new MultiplayerManager();
         assertEquals("", m.getIP());
         assertEquals(-1, m.getClientPort());
         assertEquals(-1, m.getServerPort());
@@ -45,12 +44,15 @@ public class MultiplayerTest {
         assertEquals(true, m.isMultiplayer());
         assertEquals(true, m.isMaster());
 
+        m.disconectClient();
+        m.shutdownServer();
+
         // TODO test protocols
     }
 
     @Test
     public void testPorts() {
-        m = new MultiplayerManager();
+        MultiplayerManager m = new MultiplayerManager();
         assertEquals(true, MultiplayerManager.isValidPort(0));
         assertEquals(false, MultiplayerManager.isValidPort(5));
         assertEquals(true, MultiplayerManager.isValidPort(1024));

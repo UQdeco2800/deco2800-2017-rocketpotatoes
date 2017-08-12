@@ -206,6 +206,10 @@ public class NetworkServer {
         return c.getID() == MASTER_ID;
     }
 
+    public void shutdown() {
+        server.close();
+    }
+
     /* Connection object containing information about a single connection, various attributes should be kept in this
     * i.e. name, statistics, resources etc */
     static class NetworkConnection extends Connection {

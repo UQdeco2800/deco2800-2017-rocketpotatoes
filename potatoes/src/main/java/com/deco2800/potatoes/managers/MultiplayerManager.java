@@ -266,4 +266,16 @@ public class MultiplayerManager extends Manager {
 
         return true;
     }
+
+    public void disconectClient() {
+        if (client != null) {
+            client.disconnect();
+        }
+    }
+
+    public void shutdownServer() {
+        if (server != null) {
+            server.shutdown();
+        }
+    }
 }
