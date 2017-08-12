@@ -23,7 +23,7 @@ public class NetworkServer {
     private int udpPort;
 
     // If connection is established and everything is initialized this should be true.
-    public boolean ready;
+    public volatile boolean ready;
 
     /**
      * Starts a server for the game // TODO ports occupied?

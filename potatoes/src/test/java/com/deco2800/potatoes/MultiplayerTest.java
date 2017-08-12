@@ -22,15 +22,18 @@ public class MultiplayerTest {
     public void testInit() {
         MultiplayerManager m = new MultiplayerManager();
         assertEquals("", m.getIP());
+        assertEquals(-1, m.getID());
         assertEquals(-1, m.getClientPort());
         assertEquals(-1, m.getServerPort());
         assertEquals(false, m.isMultiplayer());
         assertEquals(false, m.isMaster());
         assertEquals(true, m.isClientReady());
 
-        // Might now work well as a test? What if port 1337 is occupied?
-        m.createHost(1337);
+        // Might not work well as a test? What if port 1337 is occupied?
+        // TODO this test sometimes throws a NullPointerException in the client thread when it tries to create a player
         try {
+            m.createHost(1337);
+            while (!m.isServerReady());
             m.joinGame("Test", "127.0.0.1", 1337);
         }
         catch (IOException ex) {
@@ -38,25 +41,46 @@ public class MultiplayerTest {
             fail();
         }
 
+        while(!m.isClientReady());
+
         assertEquals("127.0.0.1", m.getIP());
+        assertEquals(1, m.getID());
         assertEquals(1337, m.getClientPort());
         assertEquals(1337, m.getServerPort());
         assertEquals(true, m.isMultiplayer());
         assertEquals(true, m.isMaster());
 
-        m.disconectClient();
-        m.shutdownServer();
+        m.shutdownMultiplayer();
+
+        assertEquals("", m.getIP());
+        assertEquals(-1, m.getID());
+        assertEquals(-1, m.getClientPort());
+        assertEquals(-1, m.getServerPort());
+        assertEquals(false, m.isMultiplayer());
+        assertEquals(false, m.isMaster());
+        assertEquals(true, m.isClientReady());
 
         // TODO test protocols
     }
 
     @Test
     public void testPorts() {
-        MultiplayerManager m = new MultiplayerManager();
         assertEquals(true, MultiplayerManager.isValidPort(0));
         assertEquals(false, MultiplayerManager.isValidPort(5));
         assertEquals(true, MultiplayerManager.isValidPort(1024));
         assertEquals(false, MultiplayerManager.isValidPort(700000));
+    }
+
+    @Test
+    public void testIP() {
+        assertEquals(true, MultiplayerManager.isValidIP("0.0.0.0"));
+        assertEquals(true, MultiplayerManager.isValidIP("127.0.0.1"));
+        assertEquals(true, MultiplayerManager.isValidIP("255.255.255.255"));
+
+
+        assertEquals(false, MultiplayerManager.isValidIP("dqwfwqfqwffq"));
+        assertEquals(false, MultiplayerManager.isValidIP("255.255.255.256"));
+        assertEquals(false, MultiplayerManager.isValidIP("-10.42.152.64"));
     }
 
     @Test

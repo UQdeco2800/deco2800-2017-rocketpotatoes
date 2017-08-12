@@ -98,29 +98,34 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
-		/*
-		try {
-			System.out.println("Starting client");
-			multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
-			System.out.println("Started client");
-		}
-		catch (IOException ex) {
-			System.out.println("No server to connect to");
-			System.out.println("Starting server");
-			multiplayerManager.createHost(1337);
 
-			// Wait until server is ready
-			while (!multiplayerManager.isServerReady()) ;
-			System.out.println("Started server");
+		try {
 			try {
 				System.out.println("Starting client");
-				multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
 				System.out.println("Started client");
-			} catch (IOException ex2) {
-				System.exit(-1);
+			} catch (IOException ex) {
+				System.out.println("No server to connect to");
+				System.out.println("Starting server");
+				multiplayerManager.createHost(1337);
+
+				// Wait until server is ready
+				while (!multiplayerManager.isServerReady()) ;
+				System.out.println("Started server");
+				try {
+					System.out.println("Starting client");
+					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+					System.out.println("Started client");
+				} catch (IOException ex2) {
+					System.exit(-1);
+				}
 			}
 		}
-		*/
+		catch (Exception ex) {
+			// rest in peace
+			ex.printStackTrace();
+			System.exit(-1);
+		}
 
 
 		Random random = new Random();
