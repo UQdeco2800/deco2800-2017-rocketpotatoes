@@ -147,6 +147,7 @@ public class NetworkClient {
                 if (object instanceof HostEntityDestroyMessage) {
                     HostEntityDestroyMessage m = (HostEntityDestroyMessage) object;
 
+                    System.out.println("[CLIENT]: Got host destroy entity message: " + m.id);
                     GameManager.get().getWorld().removeEntity(m.id);
 
                     return;

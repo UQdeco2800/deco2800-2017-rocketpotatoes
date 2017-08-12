@@ -114,13 +114,20 @@ public abstract class AbstractWorld {
     }
 
     public void removeEntity(AbstractEntity entity) {
-
         for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
             if (e.getValue() == entity) {
                 entities.remove(e.getKey());
+
+                // Tell the other clients if we're master and in multiplayer.
+                MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+                if (m.isMultiplayer() && m.isMaster()) {
+                    m.broadcastEntityDestroy(e.getKey());
+                }
                 return;
             }
         }
+
+
     }
 
     public void setWidth(int width) {

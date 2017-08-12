@@ -138,7 +138,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			}
 
 			//m.broadcastNewEntity(new Peon(7, 7, 0));
-			//m.broadcastNewEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			//m.broadcastNewEntity(new GoalPotate(15, 10, 0));
 		}
 
