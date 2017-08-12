@@ -1,14 +1,11 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 import com.google.common.net.InetAddresses;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
@@ -286,7 +283,7 @@ public class MultiplayerManager extends Manager {
     }
 
 
-    public void disconectClient() {
+    public void disconnectClient() {
         if (client != null) {
             client.disconnect();
             client = null;
@@ -305,7 +302,7 @@ public class MultiplayerManager extends Manager {
      */
     public void shutdownMultiplayer() {
         shutdownServer();
-        disconectClient();
+        disconnectClient();
 
         ip = "";
         clientPort = -1;

@@ -101,6 +101,9 @@ public class NetworkClient {
 
                     System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
+
+                    clientList.set(m.id, m.name);
+
                     try {
                         // Make the player
                         Player p = new Player(10 + m.id, 10 + m.id, 0);
@@ -108,6 +111,7 @@ public class NetworkClient {
 
                         if (clientID == m.id) {
                             System.out.println("[CLIENT]: IT'S ME!");
+
 
                             // Give the player manager me
                             ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);

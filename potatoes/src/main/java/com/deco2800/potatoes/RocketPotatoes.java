@@ -98,7 +98,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
-		/*
+
 		try {
 			try {
 				System.out.println("Starting client");
@@ -126,7 +126,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			ex.printStackTrace();
 			System.exit(-1);
 		}
-		*/
+
 
 
 
