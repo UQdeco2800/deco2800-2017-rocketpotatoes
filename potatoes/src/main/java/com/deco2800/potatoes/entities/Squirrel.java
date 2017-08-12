@@ -18,13 +18,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
 	private static final transient String TEXTURE = "squirrel";
 	private static final transient float HEALTH = 100f;
-	
-	private float speed = 0.1f;
-	
-	private transient final PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-	private transient final SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-	
 	private transient Random random = new Random();
+
+	private float speed = 0.1f;
 
 	public Squirrel() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
@@ -39,6 +35,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 
 	@Override
 	public void onTick(long i) {
+
+		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
 		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
 

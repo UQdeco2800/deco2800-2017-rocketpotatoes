@@ -22,7 +22,6 @@ import com.deco2800.potatoes.util.Box3D;
 public class Player extends AbstractEntity implements Tickable {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
-
 	private static final transient String TEXTURE = "spacman_blue";
 
 	private float movementSpeed;
