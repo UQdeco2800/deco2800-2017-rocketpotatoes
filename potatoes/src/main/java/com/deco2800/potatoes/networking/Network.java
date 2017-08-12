@@ -31,6 +31,8 @@ public class Network {
 
         /* Message types */
         k.register(ClientConnectionRegisterMessage.class);
+        k.register(HostPlayerDisconnectedMessage.class);
+        k.register(HostDisconnectMessage.class);
         k.register(HostPlayReadyMessage.class);
         k.register(HostNewPlayerMessage.class);
         k.register(ClientEntityCreationMessage.class);
@@ -80,6 +82,10 @@ public class Network {
 
     static public class HostDisconnectMessage {
         public String message;
+    }
+
+    static public class HostPlayerDisconnectedMessage {
+        public int id;
     }
 
     /* Message telling the client they are ready to play */

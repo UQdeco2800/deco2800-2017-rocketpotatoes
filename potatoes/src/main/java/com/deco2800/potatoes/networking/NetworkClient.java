@@ -51,6 +51,10 @@ public class NetworkClient {
         this.udpPort = udpPort;
         this.ready = false;
         clientList = new ArrayList<>();
+        // Allow up to 16 clients
+        for (int i = 0; i < 16; ++i) {
+            clientList.add(null);
+        }
 
         Log.set(Log.LEVEL_WARN);
         // Initialize client object
@@ -117,12 +121,22 @@ public class NetworkClient {
                     return;
                 }
 
+                if (object instanceof HostPlayerDisconnectedMessage) {
+                    HostPlayerDisconnectedMessage m = (HostPlayerDisconnectedMessage) object;
+
+                    System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
+                    clientList.set(m.id, null);
+                    GameManager.get().getWorld().removeEntity(m.id);
+
+                    return;
+                }
+
 
                 if (object instanceof HostExistingPlayerMessage) {
                     HostExistingPlayerMessage m = (HostExistingPlayerMessage) object;
 
                     System.out.println("[CLIENT]: Got host existing player message: " + m.id);
-                    clientList.add(m.name);
+                    clientList.set(m.id, m.name);
 
                     return;
                 }

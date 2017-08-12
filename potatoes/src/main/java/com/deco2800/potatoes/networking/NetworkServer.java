@@ -162,6 +162,17 @@ public class NetworkServer {
             @Override
             public void disconnected(Connection connection) {
                 super.disconnected(connection);
+
+                // Cast connection to our custom type (will always be this type because of our custom newConnection())
+                NetworkConnection c = (NetworkConnection) connection;
+
+
+                System.out.println("[SERVER]: " + c.name + "(" + c.getID() + ")" + " disconnected.");
+
+                HostPlayerDisconnectedMessage m = new HostPlayerDisconnectedMessage();
+                m.id = c.getID();
+
+                server.sendToAllTCP(m);
             }
         });
         server.bind(tcpPort, udpPort);
