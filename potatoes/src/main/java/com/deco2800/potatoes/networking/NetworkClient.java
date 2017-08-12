@@ -67,29 +67,38 @@ public class NetworkClient {
                 if (object instanceof HostConnectionConfirmMessage) {
                     HostConnectionConfirmMessage m = (HostConnectionConfirmMessage) object;
 
-                    System.out.println("Got host connection confirm message: " + m.id);
+                    System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
 
                     clientID = m.id;
                     return;
                 }
 
+                if (object instanceof HostDisconnectMessage) {
+                    HostDisconnectMessage m = (HostDisconnectMessage) object;
+
+                    System.out.println("[CLIENT]: disconnected because: " + m.message);
+                    client.close();
+                    // TODO notify game somehow. (Maybe we wait for connection confirmation before we start the client
+                    // thread?
+                }
+
                 if (object instanceof HostPlayReadyMessage) {
                     HostPlayReadyMessage m = (HostPlayReadyMessage) object;
-                    System.out.println("I'm ready to go!");
+                    System.out.println("[CLIENT]: I'm ready to go!");
                     ready = true;
                 }
 
                 if (object instanceof HostNewPlayerMessage) {
                     HostNewPlayerMessage m = (HostNewPlayerMessage) object;
 
-                    System.out.println("Got host new player message: " + m.id);
+                    System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
                     // Make the player
-                    Player p = new Player(10, 10, 0);
+                    Player p = new Player(10 + m.id, 10 + m.id, 0);
                     GameManager.get().getWorld().addEntity(p, m.id);
 
                     if (clientID == m.id) {
-                        System.out.println("IT'S ME!");
+                        System.out.println("[CLIENT]: IT'S ME!");
 
                         // Give the player manager me
                         ((PlayerManager)GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
@@ -104,7 +113,7 @@ public class NetworkClient {
                 if (object instanceof HostExistingPlayerMessage) {
                     HostExistingPlayerMessage m = (HostExistingPlayerMessage) object;
 
-                    System.out.println("Got host existing player message: " + m.id);
+                    System.out.println("[CLIENT]: Got host existing player message: " + m.id);
                     clientList.add(m.name);
 
                     return;
@@ -113,7 +122,7 @@ public class NetworkClient {
                 if (object instanceof HostEntityCreationMessage) {
                     HostEntityCreationMessage m = (HostEntityCreationMessage) object;
 
-                    System.out.format("Got host entity creation message: %s, {%f, %f}%n",
+                    System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
                             m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
 
                     // -1 is the signal for put it wherever.
@@ -127,21 +136,25 @@ public class NetworkClient {
                     return;
                 }
 
-                if (object instanceof EntityDestroyMessage) {
-                    EntityDestroyMessage m = (EntityDestroyMessage) object;
+                if (object instanceof HostEntityDestroyMessage) {
+                    HostEntityDestroyMessage m = (HostEntityDestroyMessage) object;
 
                     GameManager.get().getWorld().removeEntity(m.id);
 
                     return;
                 }
 
-                if (object instanceof HostEntityUpdatePositionMessage) {
-                    HostEntityUpdatePositionMessage m = (HostEntityUpdatePositionMessage) object;
+                /* Gameplay messages. i.e. none of these should be processed until the client is ready! */
 
-                    GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
-                    GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
+                if (ready) {
+                    if (object instanceof HostEntityUpdatePositionMessage) {
+                        HostEntityUpdatePositionMessage m = (HostEntityUpdatePositionMessage) object;
 
-                    return;
+                        GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
+                        GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
+
+                        return;
+                    }
                 }
             }
 
@@ -160,24 +173,19 @@ public class NetworkClient {
         client.sendTCP(cr);
     }
 
+    /* Messages to be sent to the server from clients. Note that master should always be directly interacting with the
+     * server. And as such methods such as creation/destruction of entities are located in the NetworkServer class. */
+
     public void broadcastMessage(String message) {
         Message m = new Message();
         m.message = message;
         client.sendTCP(m);
     }
 
-    public void broadcastNewEntity(AbstractEntity entity) {
-        ClientEntityCreationMessage message = new ClientEntityCreationMessage();
-        message.entity = entity;
-        // Entity creation is important so TCP!
-        client.sendTCP(message);
-    }
-
-    public void broadcastEntityUpdatePosition(AbstractEntity entity, int id) {
-        ClientEntityUpdatePositionMessage message = new ClientEntityUpdatePositionMessage();
+    public void broadcastPlayerUpdatePosition(Player entity) {
+        ClientPlayerUpdatePositionMessage message = new ClientPlayerUpdatePositionMessage();
         message.x = entity.getPosX();
         message.y = entity.getPosY();
-        message.id = id;
 
         client.sendUDP(message);
     }

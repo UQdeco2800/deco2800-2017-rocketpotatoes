@@ -39,6 +39,8 @@ public class MultiplayerManager extends Manager {
      */
     private Boolean master;
 
+    private Boolean multiplayer;
+
     /**
      * Initializes some values for the manager
      */
@@ -49,6 +51,7 @@ public class MultiplayerManager extends Manager {
         client = null;
         server = null;
         master = false;
+        multiplayer = false;
     }
 
     /**
@@ -83,6 +86,10 @@ public class MultiplayerManager extends Manager {
      */
     public int createHost(int port) {
         if (isValidPort(port)) { // TODO handle port in use?
+            master = true;
+            serverPort = port;
+            multiplayer = true;
+
             try {
                 server = new NetworkServer(port, port);
             }
@@ -90,8 +97,7 @@ public class MultiplayerManager extends Manager {
                 // TODO handle errors
                 System.exit(-1);
             }
-            master = true;
-            serverPort = port;
+
         }
 
         return 0;
@@ -106,8 +112,11 @@ public class MultiplayerManager extends Manager {
      */
     public int joinGame(String name, String IP, int port) throws IOException {
         // TODO move away from ALL tcp
-        client = new NetworkClient(name, IP, port, port);
         clientPort = port;
+        multiplayer = true;
+        ip = IP;
+        client = new NetworkClient(name, IP, port, port);
+
         return 0;
     }
 
@@ -129,26 +138,59 @@ public class MultiplayerManager extends Manager {
      */
     public void sendMessageTo(int clientID, String message) {
         if (client != null) {
-
+            // TODO
         }
     }
 
     /**
-     * Broadcasts the creation of a new entity to all clients. Note that the client should not assume that this
-     * succeeded but should then wait for the host to broadcast the entities creation to the client itself, which
-     * will also contain a unique id.
-     * TODO this is a potential optimization (i.e. predictive)
-     * @param entity
+     * Broadcasts the creation of a new entity. Should only be used by master!
+     * @param id
      */
-    public void broadcastNewEntity(AbstractEntity entity) {
+    public void broadcastNewEntity(int id) {
         if (client != null) {
-            client.broadcastNewEntity(entity);
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entities.");
+            }
+            // Tell server directly
+            server.broadcastNewEntity(id);
         }
     }
 
-    public void broadcastEntityUpdatePosition(AbstractEntity entity, int id) {
+
+    /**
+     * Broadcasts an entities new position. Should only be used by master!
+     * @param id
+     */
+    public void broadcastEntityUpdatePosition(int id) {
         if (client != null) {
-            client.broadcastEntityUpdatePosition(entity, id);
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entity positions!");
+            }
+            // Tell server directly
+            server.broadcastEntityUpdatePosition(id);
+        }
+    }
+    /**
+     * Broadcasts an entities destruction. Should only be used by master!
+     * @param id
+     */
+    public void broadcastEntityDestroy(int id) {
+        if (client != null) {
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any entity destruction!");
+            }
+            // Tell server directly
+            server.broadcastEntityDestroy(id);
+        }
+    }
+
+    /**
+     * Updates the client's player position.
+     */
+    public void broadcastPlayerUpdatePosition() {
+        Player p = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer();
+        if (client != null) {
+            client.broadcastPlayerUpdatePosition(p);
         }
     }
 
@@ -156,7 +198,7 @@ public class MultiplayerManager extends Manager {
      * @return if this game is multiplayer
      */
     public Boolean isMultiplayer() {
-        return client != null || server != null;
+        return multiplayer;
     }
 
     /**
@@ -179,9 +221,22 @@ public class MultiplayerManager extends Manager {
      * Returns true if the client is ready to play
      * @return
      */
-    public boolean isReady() {
+    public boolean isClientReady() {
         if (client != null) {
             return client.ready;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
+     * Returns true if the server is ready to play
+     * @return
+     */
+    public boolean isServerReady() {
+        if (server != null) {
+            return server.ready;
         }
         else {
             return true;

@@ -72,7 +72,7 @@ public class Player extends AbstractEntity implements Tickable {
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
-				System.out.println(this + " colliding with " + entity);
+				//wSystem.out.println(this + " colliding with " + entity);
 				collided = true;
 
 			}

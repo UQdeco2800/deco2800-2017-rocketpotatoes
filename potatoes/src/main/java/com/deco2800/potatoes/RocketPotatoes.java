@@ -79,9 +79,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 */
 		GameManager.get().getManager(TextureManager.class);
 
-		
-
-
 		/**
 		 *	Set up new stuff for this game
 		 */
@@ -96,30 +93,40 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Create a multiplayer manager for the game */
 		multiplayerManager = new MultiplayerManager();
+		GameManager.get().addManager(multiplayerManager);
 
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
 		try {
-			multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+			System.out.println("Starting client");
+			multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
+			System.out.println("Started client");
 		}
 		catch (IOException ex) {
+			System.out.println("No server to connect to");
+			System.out.println("Starting server");
 			multiplayerManager.createHost(1337);
+
+			// Wait until server is ready
+			while (!multiplayerManager.isServerReady()) ;
+			System.out.println("Started server");
 			try {
+				System.out.println("Starting client");
 				multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
-			}
-			catch (IOException ex2) {
+				System.out.println("Started client");
+			} catch (IOException ex2) {
 				System.exit(-1);
 			}
 		}
-		multiplayerManager.broadcastMessage("Hey everybody!");
+
 
 		Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMultiplayer() && m.isMaster()) {
 			for (int i = 0; i < 5; i++) {
-				m.broadcastNewEntity(new Squirrel(
+				GameManager.get().getWorld().addEntity(new Squirrel(
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 			}
 
@@ -266,7 +273,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void render () {
 
-		if (multiplayerManager.isReady()) {
+		if (multiplayerManager.isClientReady()) {
 		/*
 		 * Tickrate = 100Hz
 		 */
@@ -300,18 +307,18 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 				}
 
-				// Broadcast updates if we're master
+				// Broadcast updates if we're master TODO only when needed.
 				if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
 					for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
 						// But don't broadcast our player yet
 						if (e.getKey() != multiplayerManager.getID()) {
-							multiplayerManager.broadcastEntityUpdatePosition(e.getValue(), e.getKey());
+							multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
 						}
 					}
 				}
 
-				// Broadcast our player updating
-				multiplayerManager.broadcastEntityUpdatePosition(playerManager.getPlayer(), multiplayerManager.getID());
+				// Broadcast our player updating pos TODO only when needed.
+				multiplayerManager.broadcastPlayerUpdatePosition();
 
 
 				if (!somethingSelected) {

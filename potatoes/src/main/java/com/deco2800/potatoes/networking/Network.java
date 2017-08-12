@@ -34,8 +34,8 @@ public class Network {
         k.register(ClientEntityCreationMessage.class);
         k.register(HostConnectionConfirmMessage.class);
         k.register(HostEntityCreationMessage.class);
-        k.register(EntityDestroyMessage.class);
-        k.register(ClientEntityUpdatePositionMessage.class);
+        k.register(HostEntityDestroyMessage.class);
+        k.register(ClientPlayerUpdatePositionMessage.class);
         k.register(HostEntityUpdatePositionMessage.class);
         k.register(HostExistingPlayerMessage.class);
         k.register(Message.class);
@@ -74,6 +74,10 @@ public class Network {
         public String name;
     }
 
+    static public class HostDisconnectMessage {
+        public String message;
+    }
+
     /* Message telling the client they are ready to play */
     static public class HostPlayReadyMessage {
     }
@@ -109,15 +113,14 @@ public class Network {
         public int id;
     }
 
-    static public class EntityDestroyMessage {
+    static public class HostEntityDestroyMessage {
         public int id;
     }
 
-    /* Message indicating our entity moved
+    /* Message indicating our player moved
      * TODO support for z? Unused so far */
-    static public class ClientEntityUpdatePositionMessage {
+    static public class ClientPlayerUpdatePositionMessage {
         public float x, y;
-        public int id;
     }
 
     /* Message from the host indicating a new position of an entity */
