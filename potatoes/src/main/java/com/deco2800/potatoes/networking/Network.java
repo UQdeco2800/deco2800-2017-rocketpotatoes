@@ -31,18 +31,19 @@ public class Network {
 
         /* Message types */
         k.register(ClientConnectionRegisterMessage.class);
+        k.register(ClientPlayerUpdatePositionMessage.class);
+
         k.register(HostPlayerDisconnectedMessage.class);
         k.register(HostDisconnectMessage.class);
         k.register(HostPlayReadyMessage.class);
         k.register(HostNewPlayerMessage.class);
-        k.register(ClientEntityCreationMessage.class);
         k.register(HostConnectionConfirmMessage.class);
         k.register(HostEntityCreationMessage.class);
         k.register(HostEntityDestroyMessage.class);
-        k.register(ClientPlayerUpdatePositionMessage.class);
         k.register(HostEntityUpdatePositionMessage.class);
         k.register(HostEntityUpdateProgressMessage.class);
         k.register(HostExistingPlayerMessage.class);
+
         k.register(Message.class);
 
         /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
@@ -109,11 +110,6 @@ public class Network {
     /* Message confirming connection, gives the client their id */
     static public class HostConnectionConfirmMessage {
         public int id;
-    }
-
-    /* Message for the host to create a new entity */
-    static public class ClientEntityCreationMessage {
-        public AbstractEntity entity;
     }
 
     /* Direct response to a HostEntityCreationMessage, this message is sent to all clients
