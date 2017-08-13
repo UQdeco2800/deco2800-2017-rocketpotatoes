@@ -42,7 +42,6 @@ public class TextureManager extends Manager {
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
         saveTexture("spacman_blue", "resources/placeholderassets/spacman_blue.png");
-        saveTexture("spacman_blue_2", "resources/placeholderassets/spacman_blue_2.png");
         saveTexture("spacman_green", "resources/placeholderassets/spacman_green.png");
         saveTexture("spacman_ded", "resources/placeholderassets/spacman_ded.png");
         saveTexture("selected", "resources/placeholderassets/selected.png");

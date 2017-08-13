@@ -11,12 +11,6 @@ public interface HasProgress {
 	int getProgress();
 
 	/**
-	 * Set's the progress to the given value.
-	 * @param p
-	 */
-	void setProgress(int p);
-
-	/**
 	 * Should i show the progress
 	 * @return
 	 */

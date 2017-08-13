@@ -8,9 +8,7 @@ import com.deco2800.potatoes.entities.Tickable;
  */
 public class Peon extends AbstractEntity implements Tickable {
 	
-	private final static transient String TEXTURE = "spacman";
-
-	public Peon() { }
+	private final static String TEXTURE = "spacman";
 
 	/**
 	 * Constructor for the Peon

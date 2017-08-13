@@ -10,11 +10,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Tree extends AbstractEntity implements HasProgress {
 
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(Tree.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Tree.class);
     
-    private final static transient String TEXTURE = "tree";
-
-    public Tree() { }
+    private final static String TEXTURE = "tree";
 
     /**
      * Constructor for a Tree
@@ -33,11 +31,6 @@ public class Tree extends AbstractEntity implements HasProgress {
     public int getProgress() {
         return 100;
     }
-
-
-    // TODO implement!
-    @Override
-    public void setProgress(int p) { return; }
 
     @Override
     public boolean showProgress() {

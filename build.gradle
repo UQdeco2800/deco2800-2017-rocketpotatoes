@@ -72,9 +72,6 @@ subprojects {
         // Headless gdx
         testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-        // Reflections for testing
-        compile 'org.reflections:reflections:0.9.11'
     }
 
     sourceSets {

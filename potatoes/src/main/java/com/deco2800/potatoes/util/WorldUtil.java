@@ -5,7 +5,9 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.AbstractWorld;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,7 @@ public class WorldUtil {
 	public static Optional<AbstractEntity> closestEntityToPosition(float x, float y, float delta) {
 		AbstractEntity ret = null;
 		double distance = Double.MAX_VALUE;
-		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
+		for (Renderable e : GameManager.get().getWorld().getEntities()) {
 			double tmp_distance = Math.sqrt(Math.pow((e.getPosX() - x), 2) + Math.pow((e.getPosY() - y), 2));
 
 			if (tmp_distance < distance) {
@@ -47,7 +49,7 @@ public class WorldUtil {
 		}
 	}
 
-	public static List<AbstractEntity> getEntitiesOfClass(Collection<AbstractEntity> entities, Class<?> c) {
+	public static List<AbstractEntity> getEntitiesOfClass(List<AbstractEntity> entities, Class<?> c) {
 		List<AbstractEntity> classEntities = new ArrayList<>();
 		for (AbstractEntity w : entities) {
 			if (w.getClass() == c) {
@@ -58,7 +60,7 @@ public class WorldUtil {
 	}
 
 	public static Optional<AbstractEntity> getClosestEntityOfClass(Class<?> c, float x, float y) {
-		List<AbstractEntity> entities = WorldUtil.getEntitiesOfClass(GameManager.get().getWorld().getEntities().values(), c);
+		List<AbstractEntity> entities = WorldUtil.getEntitiesOfClass(GameManager.get().getWorld().getEntities(), c);
 
 		AbstractEntity closest = null;
 		float dist = Float.MAX_VALUE;
@@ -79,7 +81,7 @@ public class WorldUtil {
 
 	public static Optional<AbstractEntity> getEntityAtPosition(float x, float y) {
 		
-		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
+		for (Renderable e : GameManager.get().getWorld().getEntities()) {
 			if (Math.abs(e.getPosX() - x) < 1f && Math.abs(e.getPosY() - y) < 1f) {
 				return Optional.of((AbstractEntity)e);
 			}

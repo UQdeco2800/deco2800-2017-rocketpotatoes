@@ -1,14 +1,13 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.deco2800.potatoes.managers.GameManager;
 
 public class BallisticProjectile extends Projectile{
 	
-	private final static transient String TEXTURE = "projectile";
-	private final static transient float DAMAGE = 40;
+	private final static String TEXTURE = "projectile";
+	private final static float DAMAGE = 40;
 	
 	private float goalX;
 	private float goalY;
@@ -21,7 +20,6 @@ public class BallisticProjectile extends Projectile{
 	private float changeX;
 	private float changeY;
 
-	public BallisticProjectile() { }
 
 	public BallisticProjectile(float posX, float posY, float posZ, float goalX, float goalY, float goalZ, float range) {
 		super(posX, posY, posZ, TEXTURE);
@@ -53,7 +51,7 @@ public class BallisticProjectile extends Projectile{
 		}
 		range -= speed;
 		
-		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		for (AbstractEntity entity : entities) {
 			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
 				((EnemyEntity)entity).getShot(this);
