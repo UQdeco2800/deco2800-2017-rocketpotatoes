@@ -36,7 +36,6 @@ import java.util.Random;
  */
 public class RocketPotatoes extends ApplicationAdapter implements ApplicationListener {
 
-	
 	/**
 	 * Set the renderer.
 	 * 3D is for Isometric worlds
@@ -60,6 +59,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private Button peonButton;
 
 	private long lastGameTick = 0;
+	private boolean playing = false;
 
 	private Skin uiSkin;
 	private TextButton uiPeonButton;
@@ -275,70 +275,120 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
+	private void tickGame(long timeDelta) {
+		if (multiplayerManager.isClientReady()) {
+
+			window.removeActor(peonButton);
+			boolean somethingSelected = false;
+
+			// Tick our player
+			if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
+				playerManager.getPlayer().onTick(timeDelta);
+			}
+
+			// Tick other stuff maybe
+			for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
+				if (e instanceof Tickable) {
+					// Only tick elements if we're singleplayer or master
+					if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+						((Tickable) e).onTick(timeDelta);
+					}
+				}
+
+
+				if (e instanceof Selectable) {
+					if (((Selectable) e).isSelected()) {
+						peonButton = ((Selectable) e).getButton();
+						somethingSelected = true;
+					}
+				}
+
+			}
+
+			// Broadcast updates if we're master TODO only when needed.
+			if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
+				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
+					// But don't broadcast our player yet
+					if (e.getKey() != multiplayerManager.getID()) {
+						multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
+
+						// TODO only when needed Maybe attach to the HasProgress interface itself?
+						if (e.getValue() instanceof HasProgress) {
+							multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
+						}
+					}
+				}
+			}
+
+			// Broadcast our player updating pos TODO only when needed.
+			multiplayerManager.broadcastPlayerUpdatePosition();
+
+
+			if (!somethingSelected) {
+				peonButton = uiPeonButton;
+			}
+			window.add(peonButton);
+		}
+
+	}
+
+	/**
+	 * Pauses the game, does nothing if the game is already paused
+	 * TODO temp
+	 */
+	public void pauseGame() {
+		playing = false;
+	}
+
+	/**
+	 * Resumes the game, does nothing if the game is already playing
+	 * TODO temp
+	 */
+	public void resumeGame() {
+		playing = true;
+	}
+
+	private void renderGUI(SpriteBatch batch) {
+
+		// Update window title
+		Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
+
+		// Render GUI elements
+		stage.act();
+		stage.draw();
+	}
+
+	private void renderGame(SpriteBatch batch) {
+
+        /* Render the tiles first */
+		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
+		tileRenderer.setView(GameManager.get().getCamera());
+		tileRenderer.render();
+
+		// Render entities etc.
+		renderer.render(batch);
+	}
+
 	/**
 	 * Renderer thread
 	 * Must update all displayed elements using a Renderer
 	 */
 	@Override
 	public void render () {
-
-		if (multiplayerManager.isClientReady()) {
+		/**
+		 * We only tick/render the game if we're actually playing. Lets us seperate main menu and such from the game
+		 * TODO We may lose/gain a tick or part of a tick when we pause/unpause?
+		 */
 		/*
 		 * Tickrate = 100Hz
 		 */
+		if (playing) {
 			long timeDelta = TimeUtils.millis() - lastGameTick;
 			if (timeDelta > 10) {
-				window.removeActor(peonButton);
-				boolean somethingSelected = false;
 
-
-				// Tick our player
-				if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
-					playerManager.getPlayer().onTick(timeDelta);
-				}
-
-				// Tick other stuff maybe
-				for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-					if (e instanceof Tickable) {
-						// Only tick elements if we're singleplayer or master
-						if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-							((Tickable) e).onTick(timeDelta);
-						}
-					}
-					lastGameTick = TimeUtils.millis();
-
-					if (e instanceof Selectable) {
-						if (((Selectable) e).isSelected()) {
-							peonButton = ((Selectable) e).getButton();
-							somethingSelected = true;
-						}
-					}
-
-				}
-
-				// Broadcast updates if we're master TODO only when needed.
-				if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
-					for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
-						// But don't broadcast our player yet
-						if (e.getKey() != multiplayerManager.getID()) {
-							multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
-
-							// TODO only when needed Maybe attach to the HasProgress interface itself?
-							if (e.getValue() instanceof HasProgress) {
-								multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
-							}
-						}
-					}
-				}
-
-				// Broadcast our player updating pos TODO only when needed.
-				multiplayerManager.broadcastPlayerUpdatePosition();
-
-
-				if (!somethingSelected) {
-					peonButton = uiPeonButton;
-				}
-				window.add(peonButton);
+				// Tick game, a bit a weird place to have it though.
+				tickGame(timeDelta);
+				lastGameTick = TimeUtils.millis();
 			}
 		}
 
@@ -348,7 +398,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
          */
 		SpriteBatch batch = new SpriteBatch();
 
-        /*
+		        /*
          * Update the input handlers
          */
 		//handleInput();
@@ -365,21 +415,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        /* Render the tiles first */
-		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
-		tileRenderer.setView(GameManager.get().getCamera());
-		tileRenderer.render();
+		renderGUI(batch);
 
-		/*
-         * Use the selected renderer to render objects onto the map
-         */
-		renderer.render(batch);
-
-		/* Dispose of the spritebatch to not have memory leaks */
-		Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
-
-		stage.act();
-		stage.draw();
+		// TODO way to render game so it appears paused (could just be a flag)
+		if (playing) {
+			renderGame(batch);
+		}
 
 		batch.dispose();
 	}
