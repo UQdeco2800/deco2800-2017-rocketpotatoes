@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -99,7 +100,14 @@ public class Render3D implements Renderer {
                 font.getData().setScale(1.0f);
                 font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoX + tileWidth/2 - 10, isoY + 60);
             }
-
+            /*Construction percentage displayed in yellow
+            * */
+            if (entity instanceof AbstractTree && ((AbstractTree) entity).getConstructionLeft()>0) {
+                font.setColor(Color.YELLOW);
+                font.getData().setScale(1.0f);
+                font.draw(batch, String.format("%d%%", 100-((AbstractTree) entity).getConstructionLeft()), isoX + tileWidth/2 - 10, isoY + 60);
+            }
+            /**************************/
             MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
             if (entity instanceof Player && m.isMultiplayer()) {
                 font.setColor(Color.WHITE);

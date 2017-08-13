@@ -18,7 +18,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 
 	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
-	private int constructionLeft = 0; // TODO change to 100 once construction is implemented, or add to constructor
+	private int constructionLeft = 20; // TODO change to 100 once construction is implemented, or add to constructor
 	private int constructionTime = 0; // TODO move this onto upgrade stats
 	private int constructionPercentTime = constructionTime / 100;
 	private long currentConstructionTime = constructionPercentTime;
