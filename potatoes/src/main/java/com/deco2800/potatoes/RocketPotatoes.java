@@ -15,21 +15,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
 import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.handlers.MouseHandler;
-import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Handles the creation of the world and rendering.
@@ -37,7 +36,6 @@ import com.deco2800.potatoes.worlds.InitialWorld;
  */
 public class RocketPotatoes extends ApplicationAdapter implements ApplicationListener {
 
-	
 	/**
 	 * Set the renderer.
 	 * 3D is for Isometric worlds
@@ -54,53 +52,51 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
+	private MultiplayerManager multiplayerManager;
 
 	private Stage stage;
 	private Window window;
 	private Button peonButton;
 
 	private long lastGameTick = 0;
+	private boolean playing = true;
+
+	private Skin uiSkin;
+	private TextButton uiPeonButton;
 
 	/**
-	 * Creates the required objects for the game to start.
-	 * Called when the game first starts
+	 * Creates the required objects for window, gui and such. Also calls initializeGame().
 	 */
 	@Override
 	public void create () {
+		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+
+		uiPeonButton = new TextButton("Select a Unit", uiSkin);
 		
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		GameManager.get().getManager(TextureManager.class);
 
-		
-
-
 		/**
-		 *	Set up new stuff for this game
+		 *	Setup managers etc.
 		 */
-		/* Create an example world for the engine */
-		GameManager.get().setWorld(new InitialWorld());
 		
 		/* Create a sound manager for the whole game */
 		soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 
 		/* Create a mouse handler for the game */
 		mouseHandler = new MouseHandler();
-		
+
+		/* Create a multiplayer manager for the game */
+		multiplayerManager = new MultiplayerManager();
+		GameManager.get().addManager(multiplayerManager); // TODO add other managers too?
+
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
-		
-		playerManager.setPlayer(new Player(5, 10, 0));
-		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-		
 
-		/**
-		 * Setup the game itself
-		 */
-		/* Setup the camera and move it to the center of the world */
+		/* Setup camera */
 		GameManager.get().setCamera(new OrthographicCamera(1920, 1080));
-		GameManager.get().getCamera().translate(GameManager.get().getWorld().getWidth()*32, 0);
 
 		/**
 		 * Setup GUI
@@ -114,6 +110,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Add another button to the menu */
 		Button anotherButton = new TextButton("Play Duck Sound", skin);
+
+		Button resetButton = new TextButton("Reset", skin);
 
 		/* Add another button to the menu */
 		peonButton = new TextButton("Select a Unit", skin);
@@ -138,7 +136,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		peonButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				for (Renderable r : GameManager.get().getWorld().getEntities()) {
+				for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
 					if (r instanceof Selectable) {
 						if (((Selectable) r).isSelected()) {
 
@@ -148,9 +146,18 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			}
 		});
 
+		/* Listener for reset button */
+		resetButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				initializeGame();
+			}
+		});
+
 		/* Add all buttons to the menu */
 		window.add(button);
 		window.add(anotherButton);
+		window.add(resetButton);
 		window.add(peonButton);
 		window.pack();
 		window.setMovable(false); // So it doesn't fly around the screen
@@ -159,6 +166,14 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Add the window to the stage */
 		stage.addActor(window);
 
+		/* Setup inputs */
+		setupInputHandling();
+
+		/* Init game TODO move? */
+		initializeGame();
+	}
+
+	private void setupInputHandling() {
 
 		/**
 		 * Setup inputs for the buttons and the game itself
@@ -171,7 +186,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		input.addKeyDownListener(new CameraHandler());
 		input.addScrollListener(new ScrollTester());
 		inputMultiplexer.addProcessor(input);
-		
+
         /*
          * Set up some input handlers for panning with dragging.
          */
@@ -214,28 +229,108 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		});
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
+
 	}
 
 	/**
-	 * Renderer thread
-	 * Must update all displayed elements using a Renderer
+	 * Initializes everything needed to actually play the game
+	 * Can be used to `reset` the state of the game
+	 *
+	 * TODO this logic should be state-machined'd (i.e. Main Menu <-> Playing <-> Paused. With every state having
+	 * TODO it's own menu(s), initialization etc. And when we setup custom transition logic.
 	 */
-	@Override
-	public void render () {
+	private void initializeGame() {
 
+		/* Create an example world for the engine */
+		GameManager.get().setWorld(new InitialWorld());
+
+		/* Move camera to center */
+		GameManager.get().getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
+		GameManager.get().getCamera().position.y = 0;
+
+
+		// TODO clean up testing stuff
+
+		//TODO TESTING REMOVE !!
+		// Magic testing code
 		/*
-		 * Tickrate = 100Hz
-		 */
-		long timeDelta = TimeUtils.millis() - lastGameTick;
-		if(timeDelta > 10) {
+		try {
+			try {
+				System.out.println("Starting client");
+				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
+				System.out.println("Started client");
+			} catch (IOException ex) {
+				System.out.println("No server to connect to");
+				System.out.println("Starting server");
+				multiplayerManager.createHost(1337);
+
+				// Wait until server is ready
+				while (!multiplayerManager.isServerReady()) ;
+				System.out.println("Started server");
+				try {
+					System.out.println("Starting client");
+					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+					System.out.println("Started client");
+				} catch (IOException ex2) {
+					System.exit(-1);
+				}
+			}
+		}
+		catch (Exception ex) {
+			// rest in peace
+			ex.printStackTrace();
+			System.exit(-1);
+		}
+		*/
+
+		Random random = new Random();
+
+		MultiplayerManager m = multiplayerManager;
+		if (m.isMaster() || !m.isMultiplayer()) {
+			for (int i = 0; i < 5; i++) {
+				GameManager.get().getWorld().addEntity(new Squirrel(
+						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+			}
+
+			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
+			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+		}
+
+
+
+		if (!multiplayerManager.isMultiplayer()) {
+			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
+		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
+		   TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
+		 	*/
+
+			// Make our player
+			playerManager.setPlayer(new Player(5, 10, 0));
+			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		}
+	}
+
+	private void tickGame(long timeDelta) {
+		if (multiplayerManager.isClientReady()) {
+
 			window.removeActor(peonButton);
 			boolean somethingSelected = false;
-			for (Renderable e : GameManager.get().getWorld().getEntities()) {
-				if (e instanceof Tickable) {
-					((Tickable) e).onTick(timeDelta);
 
+			// Tick our player
+			if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
+				playerManager.getPlayer().onTick(timeDelta);
+			}
+
+			// Tick other stuff maybe
+			for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
+				if (e instanceof Tickable) {
+					// Only tick elements if we're singleplayer or master
+					if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+						((Tickable) e).onTick(timeDelta);
+					}
 				}
-				lastGameTick = TimeUtils.millis();
+
 
 				if (e instanceof Selectable) {
 					if (((Selectable) e).isSelected()) {
@@ -245,10 +340,92 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				}
 
 			}
+
+			// Broadcast updates if we're master TODO only when needed.
+			if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
+				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
+					// But don't broadcast our player yet
+					if (e.getKey() != multiplayerManager.getID()) {
+						multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
+
+						// TODO only when needed Maybe attach to the HasProgress interface itself?
+						if (e.getValue() instanceof HasProgress) {
+							multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
+						}
+					}
+				}
+			}
+
+			// Broadcast our player updating pos TODO only when needed.
+			multiplayerManager.broadcastPlayerUpdatePosition();
+
+
 			if (!somethingSelected) {
-				peonButton = new TextButton("Select a Unit", new Skin(Gdx.files.internal("uiskin.json")));
+				peonButton = uiPeonButton;
 			}
 			window.add(peonButton);
+		}
+
+	}
+
+	/**
+	 * Pauses the game, does nothing if the game is already paused
+	 * TODO temp
+	 */
+	public void pauseGame() {
+		playing = false;
+	}
+
+	/**
+	 * Resumes the game, does nothing if the game is already playing
+	 * TODO temp
+	 */
+	public void resumeGame() {
+		playing = true;
+	}
+
+	private void renderGUI(SpriteBatch batch) {
+
+		// Update window title
+		Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
+
+		// Render GUI elements
+		stage.act();
+		stage.draw();
+	}
+
+	private void renderGame(SpriteBatch batch) {
+
+        /* Render the tiles first */
+		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
+		tileRenderer.setView(GameManager.get().getCamera());
+		tileRenderer.render();
+
+		// Render entities etc.
+		renderer.render(batch);
+	}
+
+	/**
+	 * Renderer thread
+	 * Must update all displayed elements using a Renderer
+	 */
+	@Override
+	public void render () {
+		/**
+		 * We only tick/render the game if we're actually playing. Lets us seperate main menu and such from the game
+		 * TODO We may lose/gain a tick or part of a tick when we pause/unpause?
+		 */
+		/*
+		 * Tickrate = 100Hz
+		 */
+		if (playing) {
+			long timeDelta = TimeUtils.millis() - lastGameTick;
+			if (timeDelta > 10) {
+
+				// Tick game, a bit a weird place to have it though.
+				tickGame(timeDelta);
+				lastGameTick = TimeUtils.millis();
+			}
 		}
 
         /*
@@ -257,7 +434,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
          */
 		SpriteBatch batch = new SpriteBatch();
 
-        /*
+		        /*
          * Update the input handlers
          */
 		//handleInput();
@@ -274,21 +451,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        /* Render the tiles first */
-		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
-		tileRenderer.setView(GameManager.get().getCamera());
-		tileRenderer.render();
+		renderGUI(batch);
 
-		/*
-         * Use the selected renderer to render objects onto the map
-         */
-		renderer.render(batch);
-
-		/* Dispose of the spritebatch to not have memory leaks */
-		Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
-
-		stage.act();
-		stage.draw();
+		// TODO way to render game so it appears paused (could just be a flag)
+		if (playing) {
+			renderGame(batch);
+		}
 
 		batch.dispose();
 	}
