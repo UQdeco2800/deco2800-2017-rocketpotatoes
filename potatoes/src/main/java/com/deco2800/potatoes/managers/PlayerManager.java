@@ -13,6 +13,13 @@ public class PlayerManager extends Manager {
 
 	private Player player;
 
+	public PlayerManager() {
+		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+
+		input.addKeyDownListener(this::handleKeyDown);
+		input.addKeyUpListener(this::handleKeyUp);
+	}
+
 	/**
 	 * Sets the player.
 	 * 
@@ -20,11 +27,18 @@ public class PlayerManager extends Manager {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
 
-		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+	public void handleKeyDown(int keycode) {
+		if (player != null) {
+			player.handleKeyDown(keycode);
+		}
+	}
 
-		input.addKeyDownListener(player::handleKeyDown);
-		input.addKeyUpListener(player::handleKeyUp);
+	public void handleKeyUp(int keycode) {
+		if (player != null) {
+			player.handleKeyUp(keycode);
+		}
 	}
 
 	/**
