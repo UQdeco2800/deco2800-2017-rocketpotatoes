@@ -162,7 +162,7 @@ public class Inventory {
 	 * @param extraInventory
 	 *            the extra items to be added to this object
 	 * @throws Exception
-	 *             if extraTraffic is null
+	 *             if extraItems is null
 	 */
 	public void updateInventory(Inventory extraItems) throws Exception {
 		if (extraItems == null){
