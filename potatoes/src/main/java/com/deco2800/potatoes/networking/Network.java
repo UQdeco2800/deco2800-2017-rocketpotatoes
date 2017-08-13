@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.networking;
 
-import java.util.LinkedList;
+import java.util.*;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.BallisticProjectile;
@@ -19,6 +19,7 @@ import com.deco2800.potatoes.entities.trees.UpgradeStats;
 import com.deco2800.potatoes.util.Box3D;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import org.reflections.Reflections;
 
 public class Network {
 
@@ -45,28 +46,41 @@ public class Network {
         k.register(HostExistingPlayerMessage.class);
 
         k.register(Message.class);
+        // Register member variables here:
+
+        k.register(java.util.Optional.class);
+        k.register(Box3D.class);
+        k.register(LinkedList.class);
+        k.register(TreeProjectileShootEvent.class); // TODO custom protocol for abitrary events?
+        k.register(UpgradeStats.class);
 
         /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
          * actions? Requires as much abstraction as possible with regards to custom behaviour, shouldn't be too tedious
          */
 
-        k.register(Player.class);
-        k.register(Squirrel.class);
-        k.register(EnemyEntity.class);
-        k.register(GoalPotate.class);
-        k.register(Peon.class);
-        k.register(Projectile.class);
-        k.register(BallisticProjectile.class);
-        k.register(Tower.class);
-        k.register(java.util.Optional.class);
-        k.register(Tree.class);
-        k.register(Box3D.class);
-        k.register(AbstractTree.class);
-        k.register(ProjectileTree.class);
+        Reflections reflections = new Reflections("com.deco2800");
 
-        k.register(LinkedList.class);
-        k.register(TreeProjectileShootEvent.class);
-        k.register(UpgradeStats.class);
+        Set<Class<? extends AbstractEntity>> entities =
+                reflections.getSubTypesOf(com.deco2800.potatoes.entities.AbstractEntity.class);
+
+        // Order matters so let's order them
+        TreeSet<Class<? extends AbstractEntity>> sorted = new TreeSet<>(new Comparator<Class<? extends AbstractEntity>>() {
+            @Override
+            public int compare(Class<? extends AbstractEntity> aClass, Class<? extends AbstractEntity> t1) {
+                // Compare by class name
+                return aClass.getCanonicalName().compareTo(t1.getCanonicalName());
+            }
+        });
+
+        sorted.addAll(entities);
+
+        for (Class c : sorted) {
+            System.out.println(c.getCanonicalName());
+            // Auto register entities!
+            k.register(c);
+        }
+
+
     }
 
     // Define our custom types/containers for serialization here
