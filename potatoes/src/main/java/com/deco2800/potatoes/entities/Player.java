@@ -22,7 +22,6 @@ import com.deco2800.potatoes.util.Box3D;
 public class Player extends AbstractEntity implements Tickable {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
-
 	private static final transient String TEXTURE = "spacman_blue";
 
 	private float movementSpeed;
@@ -72,7 +71,7 @@ public class Player extends AbstractEntity implements Tickable {
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
-				System.out.println(this + " colliding with " + entity);
+				//wSystem.out.println(this + " colliding with " + entity);
 				collided = true;
 
 			}
