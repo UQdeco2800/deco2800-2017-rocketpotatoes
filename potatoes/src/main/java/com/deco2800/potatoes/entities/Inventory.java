@@ -39,6 +39,7 @@ public class Inventory {
 		}
 	}
 
+	
 	/**
 	 * <p>
 	 * Returns the resources stored in this object
