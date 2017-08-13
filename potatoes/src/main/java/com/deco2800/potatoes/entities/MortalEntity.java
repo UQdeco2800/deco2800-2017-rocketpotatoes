@@ -216,7 +216,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public float addDamageScaling(float scale) {
-		return this.damageScaling += scale;
+		return this.damageScaling *= scale;
 	}
 
 }
