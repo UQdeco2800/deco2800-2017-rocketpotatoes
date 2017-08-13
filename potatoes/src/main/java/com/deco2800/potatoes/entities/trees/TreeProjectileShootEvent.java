@@ -7,35 +7,25 @@ import com.deco2800.potatoes.entities.BallisticProjectile;
 import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 /**
- * Represents a projectile shot from a tree
+ * Represents a projectile shot from a tree, may be generalised to all entities
+ * later
  */
-public class TreeProjectileShootEvent extends TimeEvent {
-
-	private Box3D sourcePosition = new Box3D();
-	private float range = 0;
+public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public TreeProjectileShootEvent() {
 	}
-	
+
 	/**
-	 * @param tree
-	 *            the tree the projectile originated from
 	 * @param shootDelay
 	 *            the delay between shots
-	 * @param range
-	 *            the range of the shot
 	 */
-	public TreeProjectileShootEvent(Box3D sourcePosition, int shootDelay,
-			float range /* Projectile projectile, ProjectileDetails details */) {
-		this.sourcePosition = sourcePosition;
-		this.range = range;
+	public TreeProjectileShootEvent(int shootDelay) {
 		setDoReset(true);
 		setResetAmount(shootDelay);
 		reset();
@@ -45,17 +35,23 @@ public class TreeProjectileShootEvent extends TimeEvent {
 	 * Temporary action for testing
 	 */
 	@Override
-	public void action() {
-		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Squirrel.class, sourcePosition.getX(),
-				sourcePosition.getY());
+	public void action(AbstractTree tree) {
+		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(),
+				tree.getPosY());
 
-		if (!target.isPresent() || sourcePosition.distance(target.get().getBox3D()) > range) {
+		if (!target.isPresent() || tree.distance(target.get()) > tree.getUpgradeStats().getRange()) {
 			return;
 		}
 		System.out.println("FiRiNg Mi LaZoRs");
 
-		GameManager.get().getWorld().addEntity(new BallisticProjectile(sourcePosition.getX(), sourcePosition.getY(),
-				sourcePosition.getZ(), target.get().getPosX(), target.get().getPosY(), sourcePosition.getZ(), range));
+		GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+				target.get().getPosX(), target.get().getPosY(), tree.getPosZ(), tree.getUpgradeStats().getRange()));
+	}
+
+	@Override
+	public TimeEvent<AbstractTree> copy() {
+		System.out.println("Copying Mi LaZoRs");
+		return new TreeProjectileShootEvent(getResetAmount());
 	}
 
 }

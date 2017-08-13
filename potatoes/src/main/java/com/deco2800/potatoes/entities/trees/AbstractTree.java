@@ -6,7 +6,6 @@ import java.util.List;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
-
 import com.deco2800.potatoes.managers.GameManager;
 
 /**
@@ -17,33 +16,33 @@ import com.deco2800.potatoes.managers.GameManager;
  */
 public abstract class AbstractTree extends AbstractEntity implements Tickable {
 
-	private List<TimeEvent> normalEvents = new LinkedList<>();
-	private List<TimeEvent> constructionEvents = new LinkedList<>();
+	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
+	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
 	private int constructionLeft = 0; // TODO change to 100 once construction is implemented, or add to constructor
 	private int constructionTime = 0; // TODO move this onto upgrade stats
 	private int constructionPercentTime = constructionTime / 100;
 	private long currentConstructionTime = constructionPercentTime;
 	private int upgradeLevel = 0;
 
-	private static List<UpgradeStats> upgradeLevelStats = new LinkedList<>();;
 	private int hp = 1000;
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public AbstractTree() {
+		resetStats();
 	}
 
 	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture) {
 		super(posX, posY, posZ, xLength, yLength, zLength, texture);
-		// TODO Auto-generated constructor stub
+		resetStats();
 	}
 
 	@Override
 	public void onTick(long i) {
 		if (getConstructionLeft() <= 0) {
-			for (TimeEvent timeEvent : normalEvents) {
+			for (TimeEvent<AbstractTree> timeEvent : normalEvents) {
 				progressEvent(timeEvent, i);
 			}
 		} else {
@@ -53,15 +52,15 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 				currentConstructionTime = constructionPercentTime;
 				decrementConstructionLeft();
 			}
-			
-			for (TimeEvent timeEvent : constructionEvents) {
+
+			for (TimeEvent<AbstractTree> timeEvent : constructionEvents) {
 				progressEvent(timeEvent, i);
 			}
 		}
 	}
 
-	private void progressEvent(TimeEvent timeEvent, long i) {
-		timeEvent.decreaseProgress(i);
+	private void progressEvent(TimeEvent<AbstractTree> timeEvent, long i) {
+		timeEvent.decreaseProgress(i, this);
 		if (!timeEvent.isDoReset() && timeEvent.isCompleted()) {
 			normalEvents.remove(timeEvent);
 		}
@@ -74,7 +73,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	 * @param event
 	 *            the time event that will be triggered
 	 */
-	public void registerNormalEvent(TimeEvent event) {
+	public void registerNormalEvent(TimeEvent<AbstractTree> event) {
 		normalEvents.add(event);
 	}
 
@@ -85,7 +84,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	 * @param event
 	 *            the time event that will be triggered
 	 */
-	public void registerConstructionEvent(TimeEvent event) {
+	public void registerConstructionEvent(TimeEvent<AbstractTree> event) {
 		constructionEvents.add(event);
 	}
 
@@ -107,7 +106,7 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	public void decrementConstructionLeft() {
 		constructionLeft--;
 	}
-	
+
 	/**
 	 * The amount of time construction takes to fully complete
 	 */
@@ -131,11 +130,17 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	 * Not yet implemented
 	 */
 	public void upgrade() {
-		if (upgradeLevel + 1 == upgradeLevelStats.size()) {
+		if (upgradeLevel + 1 == getAllUpgradeStats().size()) {
 			return; // Ignores upgrade if at max level
 		}
 		upgradeLevel++;
-		hp = upgradeLevelStats.get(upgradeLevel).getHp();
+		resetStats();
+	}
+	
+	public void resetStats() {
+		hp = getUpgradeStats().getHp();
+		normalEvents = getUpgradeStats().getNormalEventsCopy();
+		constructionEvents = getUpgradeStats().getConstructionEventsCopy();
 	}
 
 	/**
@@ -144,12 +149,9 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	 * @return the default upgrade stats
 	 */
 	public UpgradeStats getUpgradeStats() {
-		return upgradeLevelStats.get(upgradeLevel);
+		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
-    public void setUpgradeStats(UpgradeStats stats) {
-        this.upgradeLevelStats.add(stats);
-    }
 	/**
 	 * decrements health
 	 *
@@ -161,11 +163,23 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 		if (hp <= 0) {
 			GameManager.get().getWorld().removeEntity(this);
 			return;
-		}//else if (hp > upgradeLevelStats[upgradeLevel].getHp())  {
-			//this.hp = upgradeLevelStats[upgradeLevel].getHp();
-			//prevents tower gaining hp greater than its maximum
-		//}
+		} // else if (hp > getAllUpgradeStats()[upgradeLevel].getHp()) {
+			// this.hp = getAllUpgradeStats()[upgradeLevel].getHp();
+			// prevents tower gaining hp greater than its maximum
+			// }
 
 	}
-	public int getHP() {return this.hp;}
+
+	public int getHP() {
+		return this.hp;
+	}
+
+	/**
+	 * Returns a list of the stats for each upgrade level in order <br>
+	 * This is called often, so it is recommend you don't create a new object every
+	 * time
+	 * 
+	 * @return a list of all the upgrade stats for this tree
+	 */
+	public abstract List<UpgradeStats> getAllUpgradeStats();
 }

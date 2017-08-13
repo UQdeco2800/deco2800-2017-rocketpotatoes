@@ -1,28 +1,45 @@
 package com.deco2800.potatoes.entities.trees;
 
-import com.deco2800.potatoes.entities.TimeEvent;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.TimeEvent;
 
 public class ProjectileTree extends AbstractTree implements Tickable {
 	public int level;
 	public int hp;
 	public int speed;
-	public UpgradeStats stats;
+	public static final List<UpgradeStats> STATS = initStats();
+
 	/**
 	 * Default constructor for serialization
 	 */
 	public ProjectileTree() {
 	}
-    
+
 	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range) {
 		super(posX, posY, posZ, 1f, 1f, 1f, texture);
+	}
 
-		stats= new UpgradeStats(10, 1000,new TimeEvent[] {new TreeProjectileShootEvent(this.getBox3D(), 1000, range)},null,"tree");
-		setUpgradeStats(stats);
-		stats= new UpgradeStats(20, 600,new TimeEvent[] {new TreeProjectileShootEvent(this.getBox3D(), 600, 10f)},null,"tree");
-        setUpgradeStats(stats);
-        stats= new UpgradeStats(30, 300,new TimeEvent[] {new TreeProjectileShootEvent(this.getBox3D(), 300, 12f)},null,"tree");
-        setUpgradeStats(stats);
-		registerNormalEvent(this.getUpgradeStats().getNormalEvents()[0]);
+	@Override
+	public List<UpgradeStats> getAllUpgradeStats() {
+		return STATS;
+	}
+	
+	private static List<UpgradeStats> initStats() {
+		List<UpgradeStats> result = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
+		
+		result.add(new UpgradeStats(10, 1000, 8f, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(20, 600, 8f, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(30, 100, 8f, normalEvents, constructionEvents, "real_tree"));
+		
+		for (UpgradeStats upgradeStats : result) {
+			upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));
+		}
+		
+		return result;
 	}
 }
