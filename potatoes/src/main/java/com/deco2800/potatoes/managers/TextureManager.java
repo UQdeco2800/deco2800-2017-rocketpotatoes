@@ -34,7 +34,7 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-    	saveTexture("grass", "resources/placeholderassets/grass.png");
+    		saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
