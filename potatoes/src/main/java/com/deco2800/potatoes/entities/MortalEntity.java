@@ -13,8 +13,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 
 	protected float health;
 	protected float maxHealth;
-	protected float damageOffset = 0;
-	protected float damageScaling = 1;
+	protected float damageOffset = 0f;
+	protected float damageScaling = 1f;
 
 	/**
 	 * Default constructor for serialization
@@ -165,11 +165,23 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 
 
 	/**
-	 * {@inheritDoc}
+	 * Apply damage to the entity.
+	 * damageOffset may not cause damage dealt to be below zero - but scaling can
+	 * damageOffset does not apply when scaling causes damage to heal
+	 * @param amount - the amount of health to subtract
+	 * @return iff the resulting damage killed the entity
 	 */
 	@Override
 	public boolean damage(float amount) {
-		health -= (amount * getDamageScaling() - getDamageOffset());
+		float damage = (amount * getDamageScaling());
+
+		if (damage > 0) {
+			health -= damage;
+			health += Math.min(getDamageOffset(), damage);
+		} else {
+			heal(-damage);
+		}
+
 		if (isDead()) {
 			deathHandler();
 			return true;
@@ -219,4 +231,13 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 		return this.damageScaling *= scale;
 	}
 
+	/**
+	 * Alters the scale of damage dealt to the entity
+	 * @param amount - the decimal coefficient to cancel scaling by
+	 * @return current value of damage scaling
+	 */
+	@Override
+	public float removeDamageScaling(float scale) {
+		return this.damageScaling /= scale;
+	}
 }

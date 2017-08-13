@@ -50,6 +50,13 @@ public interface Mortal {
 	float addDamageScaling(float scale);
 
 	/**
+	 * Alters the scale of damage dealt to the entity
+	 * @param amount - the decimal coefficient to cancel scaling by
+	 * @return current value of damage scaling
+	 */
+	float removeDamageScaling(float scale);
+
+	/**
 	 * Perform the required death behaviour
 	 */ 
 	void deathHandler();
