@@ -59,14 +59,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private Button peonButton;
 
 	private long lastGameTick = 0;
-	private boolean playing = false;
+	private boolean playing = true;
 
 	private Skin uiSkin;
 	private TextButton uiPeonButton;
 
 	/**
-	 * Creates the required objects for the game to start.
-	 * Called when the game first starts
+	 * Creates the required objects for window, gui and such. Also calls initializeGame().
 	 */
 	@Override
 	public void create () {
@@ -80,10 +79,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		GameManager.get().getManager(TextureManager.class);
 
 		/**
-		 *	Set up new stuff for this game
+		 *	Setup managers etc.
 		 */
-		/* Create an example world for the engine */
-		GameManager.get().setWorld(new InitialWorld());
 		
 		/* Create a sound manager for the whole game */
 		soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
@@ -93,73 +90,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Create a multiplayer manager for the game */
 		multiplayerManager = new MultiplayerManager();
-		GameManager.get().addManager(multiplayerManager);
-
-
-		//TODO TESTING REMOVE !!
-		// Magic testing code
-		/*
-		try {
-			try {
-				System.out.println("Starting client");
-				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
-				System.out.println("Started client");
-			} catch (IOException ex) {
-				System.out.println("No server to connect to");
-				System.out.println("Starting server");
-				multiplayerManager.createHost(1337);
-
-				// Wait until server is ready
-				while (!multiplayerManager.isServerReady()) ;
-				System.out.println("Started server");
-				try {
-					System.out.println("Starting client");
-					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
-					System.out.println("Started client");
-				} catch (IOException ex2) {
-					System.exit(-1);
-				}
-			}
-		}
-		catch (Exception ex) {
-			// rest in peace
-			ex.printStackTrace();
-			System.exit(-1);
-		}
-		*/
-
-
-
-		Random random = new Random();
-
-		MultiplayerManager m = multiplayerManager;
-		if (m.isMaster() || !m.isMultiplayer()) {
-			for (int i = 0; i < 5; i++) {
-				GameManager.get().getWorld().addEntity(new Squirrel(
-						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-			}
-
-			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
-			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-		}
-
+		GameManager.get().addManager(multiplayerManager); // TODO add other managers too?
 
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
 
-		if (!multiplayerManager.isMultiplayer()) {
-			// Make our player
-			playerManager.setPlayer(new Player(5, 10, 0));
-			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-		}
-
-		/**
-		 * Setup the game itself
-		 */
-		/* Setup the camera and move it to the center of the world */
+		/* Setup camera */
 		GameManager.get().setCamera(new OrthographicCamera(1920, 1080));
-		GameManager.get().getCamera().translate(GameManager.get().getWorld().getWidth()*32, 0);
 
 		/**
 		 * Setup GUI
@@ -173,6 +110,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Add another button to the menu */
 		Button anotherButton = new TextButton("Play Duck Sound", skin);
+
+		Button resetButton = new TextButton("Reset", skin);
 
 		/* Add another button to the menu */
 		peonButton = new TextButton("Select a Unit", skin);
@@ -207,9 +146,18 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			}
 		});
 
+		/* Listener for reset button */
+		resetButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				initializeGame();
+			}
+		});
+
 		/* Add all buttons to the menu */
 		window.add(button);
 		window.add(anotherButton);
+		window.add(resetButton);
 		window.add(peonButton);
 		window.pack();
 		window.setMovable(false); // So it doesn't fly around the screen
@@ -218,6 +166,14 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Add the window to the stage */
 		stage.addActor(window);
 
+		/* Setup inputs */
+		setupInputHandling();
+
+		/* Init game TODO move? */
+		initializeGame();
+	}
+
+	private void setupInputHandling() {
 
 		/**
 		 * Setup inputs for the buttons and the game itself
@@ -230,7 +186,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		input.addKeyDownListener(new CameraHandler());
 		input.addScrollListener(new ScrollTester());
 		inputMultiplexer.addProcessor(input);
-		
+
         /*
          * Set up some input handlers for panning with dragging.
          */
@@ -273,6 +229,86 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		});
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
+
+	}
+
+	/**
+	 * Initializes everything needed to actually play the game
+	 * Can be used to `reset` the state of the game
+	 *
+	 * TODO this logic should be state-machined'd (i.e. Main Menu <-> Playing <-> Paused. With every state having
+	 * TODO it's own menu(s), initialization etc. And when we setup custom transition logic.
+	 */
+	private void initializeGame() {
+
+		/* Create an example world for the engine */
+		GameManager.get().setWorld(new InitialWorld());
+
+		/* Move camera to center */
+		GameManager.get().getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
+		GameManager.get().getCamera().position.y = 0;
+
+
+		// TODO clean up testing stuff
+
+		//TODO TESTING REMOVE !!
+		// Magic testing code
+		/*
+		try {
+			try {
+				System.out.println("Starting client");
+				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
+				System.out.println("Started client");
+			} catch (IOException ex) {
+				System.out.println("No server to connect to");
+				System.out.println("Starting server");
+				multiplayerManager.createHost(1337);
+
+				// Wait until server is ready
+				while (!multiplayerManager.isServerReady()) ;
+				System.out.println("Started server");
+				try {
+					System.out.println("Starting client");
+					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+					System.out.println("Started client");
+				} catch (IOException ex2) {
+					System.exit(-1);
+				}
+			}
+		}
+		catch (Exception ex) {
+			// rest in peace
+			ex.printStackTrace();
+			System.exit(-1);
+		}
+		*/
+
+		Random random = new Random();
+
+		MultiplayerManager m = multiplayerManager;
+		if (m.isMaster() || !m.isMultiplayer()) {
+			for (int i = 0; i < 5; i++) {
+				GameManager.get().getWorld().addEntity(new Squirrel(
+						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+			}
+
+			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
+			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+		}
+
+
+
+		if (!multiplayerManager.isMultiplayer()) {
+			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
+		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
+		   TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
+		 	*/
+
+			// Make our player
+			playerManager.setPlayer(new Player(5, 10, 0));
+			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		}
 	}
 
 	private void tickGame(long timeDelta) {
