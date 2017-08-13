@@ -117,6 +117,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	public boolean showProgress() {
 		return true;
 	}
+
+	@Override
+	public void setProgress(int p) { health = p; }
 	
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());

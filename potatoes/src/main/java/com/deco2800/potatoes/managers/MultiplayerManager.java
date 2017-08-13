@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
+import com.google.common.net.InetAddresses;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Handles multiplayer setup, and communication.
@@ -23,7 +23,8 @@ public class MultiplayerManager extends Manager {
     private String ip;
 
     // Port this client is connected to (-1 if none)
-    private int port;
+    private int clientPort;
+    private int serverPort;
 
     // Our client representation (null if not connected (i.e. singleplayer)) ?? Maybe should always have a client
     private NetworkClient client = null;
@@ -37,15 +38,19 @@ public class MultiplayerManager extends Manager {
      */
     private Boolean master;
 
+    private Boolean multiplayer;
+
     /**
      * Initializes some values for the manager
      */
     public MultiplayerManager() {
         ip = "";
-        port = -1;
+        clientPort = -1;
+        serverPort = -1;
         client = null;
         server = null;
         master = false;
+        multiplayer = false;
     }
 
     /**
@@ -56,37 +61,36 @@ public class MultiplayerManager extends Manager {
     }
 
     /**
-     * @return The port number the client is connected to, -1 if none
+     * @return The port number the client is connected to
      */
-    public int getPort() {
-        return port;
+    public int getClientPort() {
+        return clientPort;
     }
 
+    /**
+     * @return The port number the server is listening on
+     */
+    public int getServerPort() {
+        return serverPort;
+    }
 
     /**
      * Creates a host in the background with the given port, the client then has to connect to this server using
-     * createHost(...); TODO error checking should throw exceptions?
-     * @param port - Port this server should host on
-     * @return
-     *   0  : SUCCESS
-     *  -1  : INVALID_PORT
-     *  -2  : PORT_OCCUPIED
-     *  -3  : HOST_ALREADY_EXISTS
-     *  -4  : OTHER_ERROR
+     * joinGame(...); TODO error checking should throw exceptions?
+     * @param port
+     * @throws IllegalStateException
+     * @throws IllegalArgumentException
+     * @throws IOException
      */
-    public int createHost(int port) {
-        if (isValidPort(port)) { // TODO handle port in use?
-            try {
-                server = new NetworkServer(port, port);
-            }
-            catch (IOException ex) {
-                // TODO handle errors
-                System.exit(-1);
-            }
-            master = true;
-        }
+    public void createHost(int port) throws IllegalStateException, IllegalArgumentException, IOException {
+        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
+        if (client != null) { throw new IllegalStateException("Client already exists!"); }
 
-        return 0;
+        master = true;
+        serverPort = port;
+        multiplayer = true;
+        server = new NetworkServer(port, port);
+
     }
 
     /**
@@ -94,13 +98,19 @@ public class MultiplayerManager extends Manager {
      * @param name
      * @param IP - String representing an IP, in the format (255.255.255.255),
      * @param port - port number in range of 1024-65565 (or 0 for any port) ?? TODO 0 port
-     * @return
+     * @throws IOException
+     * @throws IllegalArgumentException
      */
-    public int joinGame(String name, String IP, int port) {
-        client = new NetworkClient(name, IP, port, port);
+    public void joinGame(String name, String IP, int port) throws IOException, IllegalArgumentException {
+        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
+        if (!isValidIP(IP)) { throw new IllegalArgumentException("Invalid IP: " + IP); }
+        if (client != null) { throw new IllegalStateException("Client already exists!"); }
 
-        // If our client isn't also the host we aren't the master
-        return 0;
+        // TODO move away from ALL tcp
+        clientPort = port;
+        multiplayer = true;
+        ip = IP;
+        client = new NetworkClient(name, IP, port, port);
     }
 
 
@@ -120,25 +130,73 @@ public class MultiplayerManager extends Manager {
      * @param message
      */
     public void sendMessageTo(int clientID, String message) {
-
-    }
-
-    /**
-     * Broadcasts the creation of a new entity to all clients. Note that the client should not assume that this
-     * succeeded but should then wait for the host to broadcast the entities creation to the client itself, which
-     * will also contain a unique id.
-     * TODO this is a potential optimization (i.e. predictive)
-     * @param entity
-     */
-    public void broadcastNewEntity(AbstractEntity entity) {
         if (client != null) {
-            client.broadcastNewEntity(entity);
+            // TODO
         }
     }
 
-    public void broadcastEntityUpdate(AbstractEntity entity, int id) {
+    /**
+     * Broadcasts the creation of a new entity. Should only be used by master!
+     * @param id
+     */
+    public void broadcastNewEntity(int id) {
         if (client != null) {
-            client.broadcastEntityUpdate(entity, id);
+            if (!isMaster()) {
+                // Probably just want to crash the program here, since there should be no logical way to get here
+                // if the client is in multiplayer and not master. As in this function shouldn't even be called?
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entities.");
+            }
+            // Tell server directly
+            server.broadcastNewEntity(id);
+        }
+    }
+
+
+    /**
+     * Broadcasts an entities new position. Should only be used by master!
+     * @param id
+     */
+    public void broadcastEntityUpdatePosition(int id) {
+        if (client != null) {
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entity positions!");
+            }
+            // Tell server directly
+            server.broadcastEntityUpdatePosition(id);
+        }
+    }
+
+    public void broadcastEntityUpdateProgress(int id) {
+        if (client != null) {
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any progress updates!");
+            }
+
+            server.broadcastEntityUpdateProgress(id);
+        }
+    }
+
+    /**
+     * Broadcasts an entities destruction. Should only be used by master!
+     * @param id
+     */
+    public void broadcastEntityDestroy(int id) {
+        if (client != null) {
+            if (!isMaster()) {
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any entity destruction!");
+            }
+            // Tell server directly
+            server.broadcastEntityDestroy(id);
+        }
+    }
+
+    /**
+     * Updates the client's player position.
+     */
+    public void broadcastPlayerUpdatePosition() {
+        Player p = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer();
+        if (client != null) {
+            client.broadcastPlayerUpdatePosition(p);
         }
     }
 
@@ -146,7 +204,7 @@ public class MultiplayerManager extends Manager {
      * @return if this game is multiplayer
      */
     public Boolean isMultiplayer() {
-        return client != null || server != null;
+        return multiplayer;
     }
 
     /**
@@ -161,7 +219,42 @@ public class MultiplayerManager extends Manager {
             return client.getID();
         }
         else {
-            return 0;
+            return -1;
+        }
+    }
+
+    /**
+     * Returns true if the client is ready to play
+     * @return
+     */
+    public boolean isClientReady() {
+        if (client != null) {
+            return client.ready;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
+     * Returns true if the server is ready to play
+     * @return
+     */
+    public boolean isServerReady() {
+        if (server != null) {
+            return server.ready;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public ArrayList<String> getClients() {
+        if (client != null) {
+            return client.getClients();
+        }
+        else {
+            return null;
         }
     }
 
@@ -171,12 +264,52 @@ public class MultiplayerManager extends Manager {
      * @param p - port number to check
      * @return if a port is within a valid range or not
      */
-    public static Boolean isValidPort(int p) {
+    public static boolean isValidPort(int p) {
         // TODO 128 < ports < 1024 are avaliable if running as root/admin could check this
         if (p != 0 && p < 1024 || p > 65535) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Returns if an ip is a valid IP address.
+     * @param ip
+     * @return
+     */
+    public static boolean isValidIP(String ip) {
+        return InetAddresses.isInetAddress(ip);
+    }
+
+
+    public void disconnectClient() {
+        if (client != null) {
+            client.disconnect();
+            client = null;
+        }
+    }
+
+    public void shutdownServer() {
+        if (server != null) {
+            server.shutdown();
+            server = null;
+        }
+    }
+
+    /**
+     * Shuts down all multiplayer components and resets the multiplayer manager to it's default state.
+     */
+    public void shutdownMultiplayer() {
+        shutdownServer();
+        disconnectClient();
+
+        ip = "";
+        clientPort = -1;
+        serverPort = -1;
+        client = null;
+        server = null;
+        master = false;
+        multiplayer = false;
     }
 }

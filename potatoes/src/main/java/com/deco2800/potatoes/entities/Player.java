@@ -15,7 +15,7 @@ import com.deco2800.potatoes.util.Box3D;
 
 /**
  * Entity for the playable character.
- * 
+ *
  * @author leggy
  *
  */
@@ -23,8 +23,9 @@ public class Player extends MortalEntity implements Tickable {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private final static transient String TEXTURE = "spacman_blue";
 	private final static transient float HEALTH = 100f;
+	private static final transient String TEXTURE_RIGHT = "spacman_blue";
+	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
 	private float movementSpeed;
 	private float speedx;
@@ -34,7 +35,7 @@ public class Player extends MortalEntity implements Tickable {
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 1, 1, 1, TEXTURE, HEALTH);
+		super(0, 0, 0, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class Player extends MortalEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1, TEXTURE, HEALTH);
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
@@ -73,7 +74,7 @@ public class Player extends MortalEntity implements Tickable {
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
-				System.out.println(this + " colliding with " + entity);
+				//wSystem.out.println(this + " colliding with " + entity);
 				collided = true;
 
 			}
@@ -87,7 +88,7 @@ public class Player extends MortalEntity implements Tickable {
 
 	/**
 	 * Handle movement when wasd keys are pressed down
-	 * 
+	 *
 	 * @param keycode
 	 */
 	public void handleKeyDown(int keycode) {
@@ -101,10 +102,14 @@ public class Player extends MortalEntity implements Tickable {
 			speedx -= movementSpeed;
 			break;
 		case Input.Keys.A:
+			//changes the sprite so that the character is facing left
+			this.setTexture(TEXTURE_LEFT);
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
+		//changes the sprite so that the character is facing right
+		this.setTexture(TEXTURE_RIGHT);
 			speedx += movementSpeed;
 			speedy += movementSpeed;
 		default:
@@ -114,7 +119,7 @@ public class Player extends MortalEntity implements Tickable {
 
 	/**
 	 * Handle movement when wasd keys are released
-	 * 
+	 *
 	 * @param keycode
 	 */
 	public void handleKeyUp(int keycode) {

@@ -26,6 +26,7 @@ import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
@@ -78,9 +79,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 */
 		GameManager.get().getManager(TextureManager.class);
 
-		
-
-
 		/**
 		 *	Set up new stuff for this game
 		 */
@@ -95,27 +93,57 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Create a multiplayer manager for the game */
 		multiplayerManager = new MultiplayerManager();
+		GameManager.get().addManager(multiplayerManager);
 
-		/*
+
 		//TODO TESTING REMOVE !!
-		//multiplayerManager.createHost(1337);
-		//multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
-		//multiplayerManager.broadcastMessage("Hey everybody!");
+		// Magic testing code
+		/*
+		try {
+			try {
+				System.out.println("Starting client");
+				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
+				System.out.println("Started client");
+			} catch (IOException ex) {
+				System.out.println("No server to connect to");
+				System.out.println("Starting server");
+				multiplayerManager.createHost(1337);
+
+				// Wait until server is ready
+				while (!multiplayerManager.isServerReady()) ;
+				System.out.println("Started server");
+				try {
+					System.out.println("Starting client");
+					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
+					System.out.println("Started client");
+				} catch (IOException ex2) {
+					System.exit(-1);
+				}
+			}
+		}
+		catch (Exception ex) {
+			// rest in peace
+			ex.printStackTrace();
+			System.exit(-1);
+		}
+		*/
+
+
 
 		Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
-		if (m.isMultiplayer() && m.isMaster()) {
+		if (m.isMaster() || !m.isMultiplayer()) {
 			for (int i = 0; i < 5; i++) {
-				m.broadcastNewEntity(new Squirrel(
+				GameManager.get().getWorld().addEntity(new Squirrel(
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 			}
 
-			//m.broadcastNewEntity(new Peon(7, 7, 0));
-			m.broadcastNewEntity(new Tower(8, 8, 0));
-			//m.broadcastNewEntity(new GoalPotate(15, 10, 0));
+			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
+			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 		}
-		*/
+
 
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
@@ -254,58 +282,64 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	@Override
 	public void render () {
 
+		if (multiplayerManager.isClientReady()) {
 		/*
 		 * Tickrate = 100Hz
 		 */
-		long timeDelta = TimeUtils.millis() - lastGameTick;
-		if(timeDelta > 10) {
-			window.removeActor(peonButton);
-			boolean somethingSelected = false;
+			long timeDelta = TimeUtils.millis() - lastGameTick;
+			if (timeDelta > 10) {
+				window.removeActor(peonButton);
+				boolean somethingSelected = false;
 
 
-			// Tick our player
-			if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
-				playerManager.getPlayer().onTick(timeDelta);
-			}
-
-			// Tick other stuff maybe
-			for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-				if (e instanceof Tickable) {
-					// Only tick elements if we're singleplayer or master
-					if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-						((Tickable) e).onTick(timeDelta);
-					}
-				}
-				lastGameTick = TimeUtils.millis();
-
-				if (e instanceof Selectable) {
-					if (((Selectable) e).isSelected()) {
-						peonButton = ((Selectable) e).getButton();
-						somethingSelected = true;
-					}
+				// Tick our player
+				if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
+					playerManager.getPlayer().onTick(timeDelta);
 				}
 
-			}
+				// Tick other stuff maybe
+				for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
+					if (e instanceof Tickable) {
+						// Only tick elements if we're singleplayer or master
+						if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+							((Tickable) e).onTick(timeDelta);
+						}
+					}
+					lastGameTick = TimeUtils.millis();
 
-			// Broadcast updates if we're master
-			if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
-				for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
-					// But don't broadcast our player yet
-					if (e.getKey() != multiplayerManager.getID()) {
-						multiplayerManager.broadcastEntityUpdate(e.getValue(), e.getKey());
+					if (e instanceof Selectable) {
+						if (((Selectable) e).isSelected()) {
+							peonButton = ((Selectable) e).getButton();
+							somethingSelected = true;
+						}
+					}
+
+				}
+
+				// Broadcast updates if we're master TODO only when needed.
+				if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
+					for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
+						// But don't broadcast our player yet
+						if (e.getKey() != multiplayerManager.getID()) {
+							multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
+
+							// TODO only when needed Maybe attach to the HasProgress interface itself?
+							if (e.getValue() instanceof HasProgress) {
+								multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
+							}
+						}
 					}
 				}
+
+				// Broadcast our player updating pos TODO only when needed.
+				multiplayerManager.broadcastPlayerUpdatePosition();
+
+
+				if (!somethingSelected) {
+					peonButton = uiPeonButton;
+				}
+				window.add(peonButton);
 			}
-
-			// Broadcast our player updating
-			multiplayerManager.broadcastEntityUpdate( playerManager.getPlayer(), multiplayerManager.getID());
-
-			if (!somethingSelected) {
-				peonButton = uiPeonButton;
-			}
-			window.add(peonButton);
-
-
 		}
 
         /*

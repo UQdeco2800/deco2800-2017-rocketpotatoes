@@ -11,12 +11,12 @@ public abstract class TimeEvent implements HasProgress {
 	private long progress = 0;
 	private boolean doReset = false;
 	private int resetAmount = 0;
-	
+
 
 	public boolean showProgress() {
 		return true;
 	}
-	
+
 	public int getProgress() {
 		return (int) progress;
 	}
