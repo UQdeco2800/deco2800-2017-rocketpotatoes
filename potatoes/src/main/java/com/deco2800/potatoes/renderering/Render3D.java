@@ -1,5 +1,13 @@
 package com.deco2800.potatoes.renderering;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,14 +21,6 @@ import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.text.html.parser.Entity;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -55,14 +55,26 @@ public class Render3D implements Renderer {
         float baseY = -tileHeight/2*worldLength + tileHeight/2f; // good
 
         /* Tree map so we sort our entities properly */
-        SortedMap<AbstractEntity, Integer> entities = new TreeMap<>();
+        SortedMap<AbstractEntity, Integer> entities = new TreeMap<>(new Comparator<AbstractEntity>() {
+            @Override
+            public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
+                int val = abstractEntity.compareTo(t1);
+
+                // Hacky fix so TreeMap doesn't throw away duplicate values. I.e. Renderables in the exact same location
+                // Since TreeMap's think when the comparator result is 0 the objects are duplicates, we just make that
+                // impossible to occur.
+                if (val == 0) { val = 1; }
+
+                return val;
+            }
+        });
 
         /* Gets a list of all entities in the renderables */
         for (Map.Entry<Integer, AbstractEntity> e : renderables.entrySet()) {
             entities.put(e.getValue(), e.getKey());
         }
 
-             batch.begin();
+        batch.begin();
 
         /* Render each entity (backwards) in order to retain objects at the front */
         for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {

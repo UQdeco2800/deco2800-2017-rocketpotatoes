@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
@@ -14,7 +14,7 @@ import com.deco2800.potatoes.managers.GameManager;
  * construction and construction events which are triggered when the tree is
  * being constructed
  */
-public abstract class AbstractTree extends AbstractEntity implements Tickable {
+public abstract class AbstractTree extends MortalEntity implements Tickable {
 
 	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
@@ -34,8 +34,8 @@ public abstract class AbstractTree extends AbstractEntity implements Tickable {
 	}
 
 	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture) {
-		super(posX, posY, posZ, xLength, yLength, zLength, texture);
+			String texture, float maxHealth) {
+		super(posX, posY, posZ, xLength, yLength, zLength, texture, maxHealth);
 		resetStats();
 	}
 
