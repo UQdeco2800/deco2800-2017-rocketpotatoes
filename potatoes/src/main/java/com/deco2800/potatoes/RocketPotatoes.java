@@ -6,12 +6,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.gui.GameMenuGui;
-import com.deco2800.potatoes.gui.Gui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -21,8 +18,6 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -40,20 +35,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 */
 	private Renderer renderer = new Render3D();
 
-	/**
-	 * Create a camera for panning and zooming.
-	 * Camera must be updated every render cycle.
-	 */
-
+	// Managers tracked here for ease of use. Should be initialized from the GameManager.get().getManager(...) though!
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
 	private MultiplayerManager multiplayerManager;
-
-	private Stage stage;
-	// List of our Gui elements, this should probably be moved to a dedicated GuiManager. Or atleast somewhere
-	// where we can access it through the the GameManager?
-	private List<Gui> gui;
+	private GuiManager guiManager;
+	private CameraManager cameraManager;
 
 	private long lastGameTick = 0;
 	private boolean playing = true;
@@ -81,24 +69,23 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		mouseHandler = new MouseHandler();
 
 		/* Create a multiplayer manager for the game */
-		multiplayerManager = new MultiplayerManager();
-		GameManager.get().addManager(multiplayerManager); // TODO add other managers too?
+		multiplayerManager = (MultiplayerManager)GameManager.get().getManager(MultiplayerManager.class);
 
 		/* Create a player manager. */
 		playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
 
 		/* Setup camera */
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).setCamera(
-				new OrthographicCamera(1920, 1080));
+		cameraManager = (CameraManager)GameManager.get().getManager(CameraManager.class);
+		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
 
 		/**
-		 * Setup stage, for our Gui to be placed on
+		 * GuiManager, which contains all our Gui specific properties/logic. Creates our stage etc.
 		 */
-		stage = new Stage(new ScreenViewport());
-		gui = new ArrayList<>();
+
+		guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
 
 		// Make our GameMenuGui
-		gui.add(new GameMenuGui(stage));
+		guiManager.addGui(new GameMenuGui(guiManager.getStage()));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -114,7 +101,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 */
 		/* Setup an Input Multiplexer so that input can be handled by both the UI and the game */
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(stage); // Add the UI as a processor
+		inputMultiplexer.addProcessor(guiManager.getStage()); // Add the UI as a processor
 
 		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
 		input.addKeyDownListener(new CameraHandler());
@@ -135,7 +122,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				originY = screenY;
 
 
-				Vector3 worldCoords =((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera()
+				Vector3 worldCoords = cameraManager.getCamera()
 						.unproject(new Vector3(screenX, screenY, 0));
 				mouseHandler.handleMouseClick(worldCoords.x, worldCoords.y);
 
@@ -144,7 +131,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				OrthographicCamera c = ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera();
+				OrthographicCamera c = cameraManager.getCamera();
 
 				originX -= screenX;
 				originY -= screenY;
@@ -152,8 +139,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				// invert the y axis
 				originY = -originY;
 
-				originX += ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().position.x;
-				originY += ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().position.y;
+				originX += cameraManager.getCamera().position.x;
+				originY += cameraManager.getCamera().position.y;
 
 				c.translate(originX - c.position.x, originY - c.position.y);
 
@@ -181,9 +168,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		GameManager.get().setWorld(new InitialWorld());
 
 		/* Move camera to center */
-		((CameraManager)GameManager.get().getManager(CameraManager.class))
-				.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().position.y = 0;
+		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
+		cameraManager.getCamera().position.y = 0;
 
 
 		// TODO clean up testing stuff
@@ -308,7 +294,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		*/
 
 		// Tick CameraManager, maybe want to make managers tickable??
-		((CameraManager) GameManager.get().getManager(CameraManager.class)).centerOnTarget(timeDelta);
+		cameraManager.centerOnTarget(timeDelta);
 	}
 
 	/**
@@ -333,15 +319,15 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
 
 		// Render GUI elements
-		stage.act();
-		stage.draw();
+		guiManager.getStage().act();
+		guiManager.getStage().draw();
 	}
 
 	private void renderGame(SpriteBatch batch) {
 
         /* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
-		tileRenderer.setView(((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera());
+		tileRenderer.setView(cameraManager.getCamera());
 		tileRenderer.render();
 
 		// Render entities etc.
@@ -385,9 +371,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
         /*
          * Update the camera
          */
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().update();
-		batch.setProjectionMatrix(((CameraManager)GameManager.get().getManager(CameraManager.class))
-				.getCamera().combined);
+		cameraManager.getCamera().update();
+		batch.setProjectionMatrix(cameraManager.getCamera().combined);
 
         /*
          * Clear the entire display as we are using lazy rendering
@@ -413,15 +398,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	 */
 	@Override
 	public void resize(int width, int height) {
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().viewportWidth = width;
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().viewportHeight = height;
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().update();
+		cameraManager.getCamera().viewportWidth = width;
+		cameraManager.getCamera().viewportHeight = height;
+		cameraManager.getCamera().update();
 
-		stage.getViewport().update(width, height, true);
-
-		for (Gui c : gui) {
-			c.getWindow().setPosition(0, stage.getHeight());
-		}
+		// Tell the gui manager to resize appropriately
+		guiManager.resize(width, height);
 	}
 
 	/**
@@ -437,7 +419,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		@Override
 		public void notifyKeyDown(int keycode) {
-			OrthographicCamera c = ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera();
+			OrthographicCamera c = cameraManager.getCamera();
 			int speed = 10;
 
 			if (keycode == Input.Keys.EQUALS) {

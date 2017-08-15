@@ -13,9 +13,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Renderable;
 
-public class GameMenuGui extends HideableGui implements Gui {
-    private Window window;
-
+public class GameMenuGui extends Gui {
     // Buttons
     private Skin uiSkin;
     private Button quitButton;
@@ -90,22 +88,14 @@ public class GameMenuGui extends HideableGui implements Gui {
     }
 
     /**
-     * @return the internal window element
-     */
-    @Override
-    public Window getWindow() {
-        return window;
-    }
-
-    /**
-     * Redraws this gui element
+     * Adjusts this gui's position to correct for any resize event.
      *
-     * @param deltaTime deltaTime for animations/effects that are relative to game speed.
+     * @param stage
      */
     @Override
-    public void render(float deltaTime) {
+    public void resize(Stage stage) {
+        super.resize(stage);
 
+        window.setPosition(0, stage.getHeight());
     }
-
-
 }
