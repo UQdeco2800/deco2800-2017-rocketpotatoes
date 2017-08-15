@@ -37,11 +37,6 @@ public class MortalEntityTest {
 
 	//Common to all initialisation test
 	private void initTestCommon() {
-		assertEquals("getPosY() bad init ", 2f, mortalEntity.getPosY(), 0f);
-		assertEquals("getPosZ() bad init ", 3f, mortalEntity.getPosZ(), 0f);
-		assertEquals("getXLength() bad init ", 4f, mortalEntity.getXLength(), 0f);
-		assertEquals("getYLength() bad init ", 5f, mortalEntity.getYLength(), 0f);
-		assertEquals("getZLength() bad init ", 6f, mortalEntity.getZLength(), 0f);
 		assertEquals("getMaxHealth() bad init ", HEALTH, mortalEntity.getMaxHealth(), 0f);
 		assertEquals("getHealth() bad init ", HEALTH, mortalEntity.getHealth(), 0f);
 		assertEquals("isDead() bad init ", false, mortalEntity.isDead());
@@ -53,7 +48,6 @@ public class MortalEntityTest {
 	public void initTest() {
 		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
 		initTestCommon();
-		assertEquals("getPosX() bad init ", 1f, mortalEntity.getPosX(), 0f);
 	}
 
 	@Test
@@ -65,25 +59,16 @@ public class MortalEntityTest {
 		}
 	}
 
-	private void testGetRenderLength() {
-		assertEquals("getYRenderLength() bad init ", 7f, mortalEntity.getXRenderLength(), 0f);
-		assertEquals("getYRenderLength() bad init ", 8f, mortalEntity.getYRenderLength(), 0f);
-	}
-
 	@Test
 	public void initTestVariableRendering() {
 		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, 7, 8, "texture", HEALTH);
 		initTestCommon();
-		testGetRenderLength();
-		assertEquals("getPosX() bad init ", 1f, mortalEntity.getPosX(), 0f);
 	}
 
 	@Test
 	public void initTestCentred() {
 		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, 7, 8, true, "texture", HEALTH);
 		initTestCommon();
-		assertEquals("getPosX() bad init ", 1.5f, mortalEntity.getPosX(), 0f);
-		testGetRenderLength();
 	}
 
 	@Test
