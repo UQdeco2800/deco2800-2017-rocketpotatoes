@@ -193,4 +193,26 @@ public class Box3D {
 		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (!(o instanceof Box3D)) {
+			return false;
+		}
+
+		Box3D that = (Box3D) o;
+
+		return that.getX() == getX() && 
+			that.getY() == getY() &&
+			that.getZ() == getZ() &&
+			that.getXLength() == getXLength() &&
+			that.getYLength() == getYLength() &&
+			that.getZLength() == getZLength();
+
+	}
+
+
 }

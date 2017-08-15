@@ -21,15 +21,19 @@ public class AbstractEntityTest {
 		}
 
 
-	public TestableAbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String texture) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture);
-	}
+		public TestableAbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+				float xRenderLength, float yRenderLength, String texture) {
+			super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture);
+		}
 
-	public TestableAbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered, String texture) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture);
-	}
+		public TestableAbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+				float xRenderLength, float yRenderLength, boolean centered, String texture) {
+			super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture);
+		}
+
+		public boolean equals(Object o) {
+			return super.equals(o);
+		}
 
 	}
 
@@ -70,7 +74,7 @@ public class AbstractEntityTest {
 	}
 
 	private void testGetRenderLength() {
-		assertEquals("getYRenderLength() bad init ", 7f, abstractEntity.getXRenderLength(), 0f);
+		assertEquals("getXRenderLength() bad init ", 7f, abstractEntity.getXRenderLength(), 0f);
 		assertEquals("getYRenderLength() bad init ", 8f, abstractEntity.getYRenderLength(), 0f);
 	}
 
@@ -90,4 +94,19 @@ public class AbstractEntityTest {
 		testGetRenderLength();
 	}
 
+	@Test
+	public void textureTest() {
+		assertEquals("texture", abstractEntity.getTexture());
+		abstractEntity.setTexture("differentTexture");
+		assertEquals("differentTexture", abstractEntity.getTexture());
+	}
+
+
+	@Test
+	public void equalsTest() {
+		TestableAbstractEntity original = new TestableAbstractEntity(1, 2, 3, 4, 5, 6, "texture");
+		TestableAbstractEntity imposter = new TestableAbstractEntity(1, 2, 3, 4, 5, 6, "texture");
+		assertTrue(original.equals(imposter));
+		assertTrue(imposter.equals(original));
+	}
 }
