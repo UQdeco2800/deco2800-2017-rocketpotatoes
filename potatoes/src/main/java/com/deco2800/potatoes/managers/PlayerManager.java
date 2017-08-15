@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.managers.Manager;
 import com.deco2800.potatoes.entities.Player;
 
 /**
@@ -27,6 +26,9 @@ public class PlayerManager extends Manager {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
+
+		// Set camera manager to target the player
+		((CameraManager)GameManager.get().getManager(CameraManager.class)).setTarget(player);
 	}
 
 	public void handleKeyDown(int keycode) {

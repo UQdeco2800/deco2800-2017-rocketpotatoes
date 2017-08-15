@@ -31,7 +31,7 @@ public class Tower extends ProjectileTree {
 	 *            The z-coordinate.
 	 */
 	public Tower(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, TEXTURE, 1000, 8f);
+		super(posX, posY, posZ, TEXTURE, 1000, 8f, 100f);
 	}
 
 	@Override

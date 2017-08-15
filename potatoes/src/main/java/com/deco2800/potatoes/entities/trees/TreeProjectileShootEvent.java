@@ -52,7 +52,7 @@ public class TreeProjectileShootEvent extends TimeEvent {
 		if (!target.isPresent() || sourcePosition.distance(target.get().getBox3D()) > range) {
 			return;
 		}
-		System.out.println("FiRiNg Mi LaZoRs");
+		//System.out.println("FiRiNg Mi LaZoRs");
 
 		GameManager.get().getWorld().addEntity(new BallisticProjectile(sourcePosition.getX(), sourcePosition.getY(),
 				sourcePosition.getZ(), target.get().getPosX(), target.get().getPosY(), sourcePosition.getZ(), range));

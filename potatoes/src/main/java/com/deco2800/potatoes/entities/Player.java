@@ -19,10 +19,11 @@ import com.deco2800.potatoes.util.Box3D;
  * @author leggy
  *
  */
-public class Player extends AbstractEntity implements Tickable {
+public class Player extends MortalEntity implements Tickable {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
+	private final static transient float HEALTH = 100f;
 	private static final transient String TEXTURE_RIGHT = "spacman_blue";
 	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
@@ -34,7 +35,7 @@ public class Player extends AbstractEntity implements Tickable {
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 1, 1, 1, TEXTURE_RIGHT);
+		super(0, 0, 0, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class Player extends AbstractEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1, TEXTURE_RIGHT);
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;

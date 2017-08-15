@@ -6,20 +6,20 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.text.html.parser.Entity;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -43,25 +43,31 @@ public class Render3D implements Renderer {
             font.getData().setScale(1.0f);
         }
         Map<Integer, AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
-        int worldLength = GameManager.get().getWorld().getLength();
-        int worldWidth = GameManager.get().getWorld().getWidth();
 
         int tileWidth = (int)GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
         int tileHeight = (int)GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
-        float baseX = tileWidth*(worldWidth/2.0f - 0.5f); // bad
-
-        float baseY = -tileHeight/2*worldLength + tileHeight/2f; // good
-
         /* Tree map so we sort our entities properly */
-        SortedMap<AbstractEntity, Integer> entities = new TreeMap<>();
+        SortedMap<AbstractEntity, Integer> entities = new TreeMap<>(new Comparator<AbstractEntity>() {
+            @Override
+            public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
+                int val = abstractEntity.compareTo(t1);
+
+                // Hacky fix so TreeMap doesn't throw away duplicate values. I.e. Renderables in the exact same location
+                // Since TreeMap's think when the comparator result is 0 the objects are duplicates, we just make that
+                // impossible to occur.
+                if (val == 0) { val = 1; }
+
+                return val;
+            }
+        });
 
         /* Gets a list of all entities in the renderables */
         for (Map.Entry<Integer, AbstractEntity> e : renderables.entrySet()) {
             entities.put(e.getValue(), e.getKey());
         }
 
-             batch.begin();
+        batch.begin();
 
         /* Render each entity (backwards) in order to retain objects at the front */
         for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
@@ -71,33 +77,24 @@ public class Render3D implements Renderer {
             TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
             Texture tex = reg.getTexture(textureString);
 
-            float cartX = entity.getPosX();
-            float cartY = (worldWidth-1) - entity.getPosY();
-
-            float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
-            float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
+            Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
             // We want to keep the aspect ratio of the image so...
             float aspect = (float)(tex.getWidth())/(float)(tileWidth);
 
-            batch.draw(tex, isoX, isoY, tileWidth*entity.getXRenderLength(),
+            batch.draw(tex, isoPosition.x, isoPosition.y, tileWidth*entity.getXRenderLength(),
                     (tex.getHeight()/aspect)*entity.getYRenderLength());
         }
 
         for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
             AbstractEntity entity = e.getKey();
 
-            float cartX = entity.getPosX();
-            float cartY = (worldWidth-1) - entity.getPosY();
-
-            float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
-            float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
-
+            Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
             if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
                 font.setColor(Color.RED);
                 font.getData().setScale(1.0f);
-                font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoX + tileWidth/2 - 10, isoY + 60);
+                font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
             }
 
             MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
@@ -105,7 +102,7 @@ public class Render3D implements Renderer {
                 font.setColor(Color.WHITE);
                 font.getData().setScale(1.3f);
                 if (m.getID() == e.getValue()) { font.setColor(Color.BLUE); }
-                font.draw(batch, String.format("%s", m.getClients().get(e.getValue())), isoX + tileWidth/2 - 10, isoY + 70);
+                font.draw(batch, String.format("%s", m.getClients().get(e.getValue())), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 70);
 
             }
         }
@@ -139,5 +136,40 @@ public class Render3D implements Renderer {
     @Override
     public BatchTiledMapRenderer getTileRenderer(SpriteBatch batch) {
         return new IsometricTiledMapRenderer(GameManager.get().getWorld().getMap(), 1, batch);
+    }
+
+
+    /**
+     * Transforms world coordinates to screen coordinates for rendering.
+     * @param x x coord in the world
+     * @param y y coord in the world
+     * @return a Vector2 with the screen coordinates
+     */
+    public static Vector2 worldToScreenCoordinates(float x, float y) {
+        int worldLength = GameManager.get().getWorld().getLength();
+        int worldWidth = GameManager.get().getWorld().getWidth();
+
+        int tileWidth = (int)GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        int tileHeight = (int)GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+        float baseX = tileWidth*(worldWidth/2.0f - 0.5f); // bad
+        float baseY = -tileHeight/2*worldLength + tileHeight/2f; // good
+
+        float cartX = x;
+        float cartY = (worldWidth-1) - y;
+
+        float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
+        float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
+
+        return new Vector2(isoX, isoY);
+    }
+
+    /**
+     * Transforms world coordinates to screen coordinates for rendering.
+     * @param p Vector2 with the world coords
+     * @return a Vector2 with the screen coordinates
+     */
+    public static Vector2 worldToScreenCoordinates(Vector2 p) {
+        return worldToScreenCoordinates(p.x, p.y);
     }
 }
