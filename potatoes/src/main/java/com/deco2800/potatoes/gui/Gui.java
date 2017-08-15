@@ -20,19 +20,4 @@ public interface Gui {
      * @param deltaTime deltaTime for animations/effects that are relative to game speed.
      */
     void render(float deltaTime);
-
-    /**
-     * Hide's this Gui element. Fadeout effects can be implemented on a case-by-case basis.
-     */
-    void hide();
-
-    /**
-     * Show's this Gui element. Fadein effects can be implemented on a case-by-case basis.
-     */
-    void show();
-
-    /**
-     * @return if this element is hidden
-     */
-    boolean isHidden();
 }

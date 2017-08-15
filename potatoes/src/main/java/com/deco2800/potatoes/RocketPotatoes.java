@@ -6,16 +6,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.gui.GameMenuGui;
+import com.deco2800.potatoes.gui.Gui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -25,7 +21,8 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -54,23 +51,19 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private MultiplayerManager multiplayerManager;
 
 	private Stage stage;
-	private Window window;
-	private Button peonButton;
+	// List of our Gui elements, this should probably be moved to a dedicated GuiManager. Or atleast somewhere
+	// where we can access it through the the GameManager?
+	private List<Gui> gui;
 
 	private long lastGameTick = 0;
 	private boolean playing = true;
 
-	private Skin uiSkin;
-	private TextButton uiPeonButton;
 
 	/**
 	 * Creates the required objects for window, gui and such. Also calls initializeGame().
 	 */
 	@Override
 	public void create () {
-		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
-
-		uiPeonButton = new TextButton("Select a Unit", uiSkin);
 		
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
@@ -99,72 +92,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				new OrthographicCamera(1920, 1080));
 
 		/**
-		 * Setup GUI
+		 * Setup stage, for our Gui to be placed on
 		 */
 		stage = new Stage(new ScreenViewport());
-		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		window = new Window("Menu", skin);
+		gui = new ArrayList<>();
 
-		/* Add a quit button to the menu */
-		Button button = new TextButton("Quit", skin);
-
-		/* Add another button to the menu */
-		Button anotherButton = new TextButton("Play Duck Sound", skin);
-
-		Button resetButton = new TextButton("Reset", skin);
-
-		/* Add another button to the menu */
-		peonButton = new TextButton("Select a Unit", skin);
-
-		/* Add a programatic listener to the quit button */
-		button.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				System.exit(0);
-			}
-		});
-
-		/* Add a handler to play a sound */
-		anotherButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				soundManager.playSound("quack.wav");
-			}
-		});
-
-		/* Add listener for peon button */
-		peonButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
-					if (r instanceof Selectable) {
-						if (((Selectable) r).isSelected()) {
-
-						}
-					}
-				}
-			}
-		});
-
-		/* Listener for reset button */
-		resetButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				initializeGame();
-			}
-		});
-
-		/* Add all buttons to the menu */
-		window.add(button);
-		window.add(anotherButton);
-		window.add(resetButton);
-		window.add(peonButton);
-		window.pack();
-		window.setMovable(false); // So it doesn't fly around the screen
-		window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen
-
-		/* Add the window to the stage */
-		stage.addActor(window);
+		// Make our GameMenuGui
+		gui.add(new GameMenuGui(stage));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -256,7 +190,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
-
+		/*
 		try {
 			try {
 				System.out.println("Starting client");
@@ -284,6 +218,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			ex.printStackTrace();
 			System.exit(-1);
 		}
+		*/
 
 
 		Random random = new Random();
@@ -315,8 +250,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	}
 
 	private void tickGame(long timeDelta) {
+		/* broken!
 		window.removeActor(peonButton);
 		boolean somethingSelected = false;
+		*/
 
 		// Tick our player
 		if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
@@ -333,12 +270,14 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			}
 
 
+			/* broken!
 			if (e instanceof Selectable) {
 				if (((Selectable) e).isSelected()) {
 					peonButton = ((Selectable) e).getButton();
 					somethingSelected = true;
 				}
 			}
+			*/
 
 		}
 
@@ -361,10 +300,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		multiplayerManager.broadcastPlayerUpdatePosition();
 
 
+		/* broken!
 		if (!somethingSelected) {
 			peonButton = uiPeonButton;
 		}
 		window.add(peonButton);
+		*/
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		((CameraManager) GameManager.get().getManager(CameraManager.class)).centerOnTarget(timeDelta);
@@ -477,7 +418,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().update();
 
 		stage.getViewport().update(width, height, true);
-		window.setPosition(0, stage.getHeight());
+
+		for (Gui c : gui) {
+			c.getWindow().setPosition(0, stage.getHeight());
+		}
 	}
 
 	/**
