@@ -6,8 +6,6 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.renderering.Render3D;
 
 public class CameraManager extends Manager{
-
-	// Unused
 	private OrthographicCamera camera;
 
 	private AbstractEntity target;
@@ -30,13 +28,15 @@ public class CameraManager extends Manager{
 	/**
 	 * Moves the camera to center on the target, if the camera has no target this method does nothing
 	 */
-	public void centerOnTarget() {
+	public void centerOnTarget(float deltaTime) {
 		if (camera != null) {
 			if (hasTarget()) {
 				Vector2 isoPosition = Render3D.worldToScreenCoordinates(target.getPosX(), target.getPosY());
 
-				this.camera.position.x = isoPosition.x;
-				this.camera.position.y = isoPosition.y;
+				float lerp = 0.1f;
+
+				camera.position.x += (isoPosition.x - camera.position.x) * lerp;
+				camera.position.y += (isoPosition.y - camera.position.y) * lerp;
 			}
 		}
 	}

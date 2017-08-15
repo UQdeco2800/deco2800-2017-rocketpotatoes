@@ -366,7 +366,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		window.add(peonButton);
 
 		// Tick CameraManager, maybe want to make managers tickable??
-		((CameraManager) GameManager.get().getManager(CameraManager.class)).centerOnTarget();
+		((CameraManager) GameManager.get().getManager(CameraManager.class)).centerOnTarget(timeDelta);
 	}
 
 	/**

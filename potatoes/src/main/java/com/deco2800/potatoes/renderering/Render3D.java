@@ -78,11 +78,6 @@ public class Render3D implements Renderer {
 
             Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
-            if (entity instanceof Player) {
-                System.out.println(entity + " : " + isoPosition.x + " : " + isoPosition.y);
-            }
-
-
             if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
                 font.setColor(Color.RED);
                 font.getData().setScale(1.0f);
