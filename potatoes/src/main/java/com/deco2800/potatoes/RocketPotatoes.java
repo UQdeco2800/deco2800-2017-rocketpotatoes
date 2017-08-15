@@ -106,50 +106,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
 		input.addKeyDownListener(new CameraHandler());
 		input.addScrollListener(new ScrollTester());
+		
+		MouseHandler mouseHandler = new MouseHandler();
+		input.addTouchDownListener(mouseHandler);
+		input.addTouchDraggedListener(mouseHandler);
 		inputMultiplexer.addProcessor(input);
-
-        /*
-         * Set up some input handlers for panning with dragging.
-         */
-		inputMultiplexer.addProcessor(new InputAdapter() {
-
-			int originX;
-			int originY;
-
-			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				originX = screenX;
-				originY = screenY;
-
-
-				Vector3 worldCoords = cameraManager.getCamera()
-						.unproject(new Vector3(screenX, screenY, 0));
-				mouseHandler.handleMouseClick(worldCoords.x, worldCoords.y);
-
-				return true;
-			}
-
-			@Override
-			public boolean touchDragged(int screenX, int screenY, int pointer) {
-				OrthographicCamera c = cameraManager.getCamera();
-
-				originX -= screenX;
-				originY -= screenY;
-
-				// invert the y axis
-				originY = -originY;
-
-				originX += cameraManager.getCamera().position.x;
-				originY += cameraManager.getCamera().position.y;
-
-				c.translate(originX - c.position.x, originY - c.position.y);
-
-				originX = screenX;
-				originY = screenY;
-
-				return true;
-			}
-		});
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
