@@ -24,8 +24,6 @@ public class GameManager implements TickableManager {
 	private List<Manager> managers = new ArrayList<>();
 
 	private AbstractWorld gameWorld;
-	
-	private OrthographicCamera camera;
 
 	/**
 	 * Returns an instance of the GM
@@ -100,20 +98,6 @@ public class GameManager implements TickableManager {
 	 */
 	public AbstractWorld getWorld() {
 		return gameWorld;
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	public void setCamera(OrthographicCamera camera) {
-		this.camera = camera;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public OrthographicCamera getCamera() {
-		return camera;
 	}
 
 	/**
