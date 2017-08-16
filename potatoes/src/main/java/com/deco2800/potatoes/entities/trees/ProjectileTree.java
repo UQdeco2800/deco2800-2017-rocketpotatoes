@@ -50,9 +50,9 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
 		
-		result.add(new UpgradeStats(10, 1000, 8f, normalEvents, constructionEvents, "real_tree"));
-		result.add(new UpgradeStats(20, 600, 8f, normalEvents, constructionEvents, "real_tree"));
-		result.add(new UpgradeStats(30, 100, 8f, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(10, 1000, 8f, 5000, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(20, 600, 8f, 2000, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(30, 100, 8f, 2000, normalEvents, constructionEvents, "real_tree"));
 		
 		for (UpgradeStats upgradeStats : result) {
 			upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));

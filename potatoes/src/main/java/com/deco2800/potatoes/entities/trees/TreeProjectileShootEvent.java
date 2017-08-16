@@ -42,7 +42,6 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 		if (!target.isPresent() || tree.distance(target.get()) > tree.getUpgradeStats().getRange()) {
 			return;
 		}
-		//System.out.println("FiRiNg Mi LaZoRs");
 
 		GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
 				target.get().getPosX(), target.get().getPosY(), tree.getPosZ(), tree.getUpgradeStats().getRange()));
@@ -50,7 +49,6 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 
 	@Override
 	public TimeEvent<AbstractTree> copy() {
-		System.out.println("Copying Mi LaZoRs");
 		return new TreeProjectileShootEvent(getResetAmount());
 	}
 

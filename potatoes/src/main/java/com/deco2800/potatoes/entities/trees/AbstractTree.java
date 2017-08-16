@@ -6,7 +6,6 @@ import java.util.List;
 import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.managers.GameManager;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -18,13 +17,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 
 	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
-	private int constructionLeft = 20; // TODO change to 100 once construction is implemented, or add to constructor
-	private int constructionTime = 0; // TODO move this onto upgrade stats
+	private int constructionLeft = 100;
+	private int constructionTime = 0;
 	private int constructionPercentTime = constructionTime / 100;
 	private long currentConstructionTime = constructionPercentTime;
 	private int upgradeLevel = 0;
-
-	private int hp = 1000;
 
 	/**
 	 * Default constructor for serialization
@@ -138,9 +135,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 	}
 	
 	public void resetStats() {
-		hp = getUpgradeStats().getHp();
 		normalEvents = getUpgradeStats().getNormalEventsCopy();
 		constructionEvents = getUpgradeStats().getConstructionEventsCopy();
+		constructionPercentTime =  getUpgradeStats().getConstructionTime() / 100;
+		currentConstructionTime = constructionPercentTime;
 	}
 
 	/**
@@ -152,27 +150,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
-	/**
-	 * decrements health
-	 *
-	 * @param damage
-	 *            reduction in hp
-	 */
-	public void changeHP(int damage) {
-		this.hp -= damage;
-		if (hp <= 0) {
-			GameManager.get().getWorld().removeEntity(this);
-			return;
-		} // else if (hp > getAllUpgradeStats()[upgradeLevel].getHp()) {
-			// this.hp = getAllUpgradeStats()[upgradeLevel].getHp();
-			// prevents tower gaining hp greater than its maximum
-			// }
-
-	}
-
-	public int getHP() {
-		return this.hp;
-	}
 
 	/**
 	 * Returns a list of the stats for each upgrade level in order <br>

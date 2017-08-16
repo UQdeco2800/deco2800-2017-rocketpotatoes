@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
-import com.deco2800.potatoes.entities.Peon;
+import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.observers.TouchDownObserver;
@@ -54,8 +54,8 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 				((InitialWorld) (world)).deSelectAll();
 			}
 		}
-		// For testing
-		GameManager.get().getWorld().addEntity(new Peon(Math.round(projX), Math.round(projY), 0));
+		// Build Testing
+		GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
 	}
 
 	@Override
