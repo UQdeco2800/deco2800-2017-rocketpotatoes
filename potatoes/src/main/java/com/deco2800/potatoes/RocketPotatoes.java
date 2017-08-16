@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
@@ -83,6 +84,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 */
 
 		guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
+		guiManager.setStage(new Stage(new ScreenViewport()));
 
 		// Make our GameMenuGui
 		guiManager.addGui(new GameMenuGui(guiManager.getStage()));
