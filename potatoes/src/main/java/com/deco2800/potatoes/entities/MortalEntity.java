@@ -142,6 +142,24 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	}
 
 	/**
+	 * Alters the max health of an entity
+	 * Use negative values to decrease max health, and negate the parameter
+	 *  to revert changes
+	 * @param offset - the amount the entity's max health is to be altered by
+	 * @return current value of damage offset
+	 */
+	public float addMaxHealth(float offset) {
+		return this.maxHealth += offset;
+	}
+
+	/**
+	 * @param maxHealth the maxHealth to set
+	 */
+	public void setMaxHealth(float maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+
+	/**
 	 * @return the current damage offset
 	 */
 	public float getDamageOffset() {
