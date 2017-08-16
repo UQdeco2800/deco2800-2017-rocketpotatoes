@@ -66,6 +66,14 @@ public class MortalEntityTest {
 	}
 
 	@Test
+	public void maxHealthTest() {
+		mortalEntity.addMaxHealth(37);
+		assertEquals("addMaxHealth() can't add", HEALTH + 37, mortalEntity.getMaxHealth(), 0f);
+		mortalEntity.addMaxHealth(-39);
+		assertEquals("addMaxHealth() can't subtract", HEALTH - 2, mortalEntity.getMaxHealth(), 0f);
+	}
+
+	@Test
 	public void damageHealTest() {
 		assertEquals(HEALTH, mortalEntity.getHealth(), 0f);
 

@@ -138,7 +138,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public float getMaxHealth() {
-		return health;
+		return maxHealth;
 	}
 
 	/**
@@ -150,13 +150,6 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	public float addMaxHealth(float offset) {
 		return this.maxHealth += offset;
-	}
-
-	/**
-	 * @param maxHealth the maxHealth to set
-	 */
-	public void setMaxHealth(float maxHealth) {
-		this.maxHealth = maxHealth;
 	}
 
 	/**
