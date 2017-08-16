@@ -1,8 +1,10 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.managers;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+
+import com.deco2800.potatoes.entities.Resource;
 
 public class Inventory {
 
