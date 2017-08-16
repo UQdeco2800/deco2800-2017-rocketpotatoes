@@ -1,15 +1,11 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Input;
-import com.deco2800.potatoes.managers.InputManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
+import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 

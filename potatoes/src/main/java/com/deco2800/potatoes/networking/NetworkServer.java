@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.networking;
 
-import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.managers.GameManager;
@@ -10,7 +9,6 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import com.deco2800.potatoes.networking.Network.*;

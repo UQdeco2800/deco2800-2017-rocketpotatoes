@@ -8,7 +8,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	/**
 	 * Default constructor for serialization
 	 */
-	public EnemyEntity() { }
+	public EnemyEntity() {
+		//empty for serialization
+	}
+
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
