@@ -1,7 +1,6 @@
 package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,10 +40,6 @@ public class AbstractEntityTest {
 	@Before
 	public void setUp() throws Exception {
 		abstractEntity = new TestableAbstractEntity(1, 2, 3, 4, 5, 6, "texture");
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 
 	//Common to all initialisation test
@@ -107,5 +102,19 @@ public class AbstractEntityTest {
 		TestableAbstractEntity imposter = new TestableAbstractEntity(1, 2, 3, 4, 5, 6, "texture");
 		assertTrue(original.equals(imposter));
 		assertTrue(imposter.equals(original));
+
+		//iterate through each parameter of AbstractEntity, changing one at a time
+		float p[] = {1, 2, 3, 4, 5, 6}; //parameters
+		for (int i = 0; i < 6; i++) {
+			p[i] = i;
+			original = new TestableAbstractEntity(p[0], p[1], p[2], p[3], p[4], p[5], "texture");
+			assertFalse(original.equals(imposter));
+			assertFalse(imposter.equals(original));
+			p[i] = i - 1;
+		}
+
+		original.setTexture("FAKE NEWS");
+		assertFalse(original.equals(imposter));
+		assertFalse(imposter.equals(original));
 	}
 }
