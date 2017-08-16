@@ -200,6 +200,18 @@ public class MultiplayerManager extends Manager {
         }
     }
 
+
+    /**
+     * Broadcasts a build order from a client (should only be used by non-master)
+     * @param x
+     * @param y
+     */
+    public void broadcastBuildOrder(int x, int y) {
+        if (client != null) {
+            client.broadcastBuildOrder(x, y);
+        }
+    }
+
     /**
      * @return if this game is multiplayer
      */
@@ -312,4 +324,5 @@ public class MultiplayerManager extends Manager {
         master = false;
         multiplayer = false;
     }
+
 }

@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.handlers;
 
-import java.util.Optional;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -9,11 +7,14 @@ import com.deco2800.potatoes.entities.Clickable;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.worlds.AbstractWorld;
 import com.deco2800.potatoes.worlds.InitialWorld;
+
+import java.util.Optional;
 
 /**
  * Really crappy mouse handler for the game
@@ -55,7 +56,17 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 			}
 		}
 		// Build Testing
-		GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
+		// Check tile is occupied
+		if (!WorldUtil.getEntityAtPosition(Math.round(projX), Math.round(projY)).isPresent()) {
+			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
+					.getManager(MultiplayerManager.class);
+			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+				GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
+			} else {
+				multiplayerManager.broadcastBuildOrder(Math.round(projX), Math.round(projY));
+			}
+		}
+
 	}
 
 	@Override
