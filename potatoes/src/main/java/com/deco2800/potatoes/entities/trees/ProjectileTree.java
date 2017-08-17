@@ -1,11 +1,16 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.TimeEvent;
 
 public class ProjectileTree extends AbstractTree implements Tickable {
 	public int level;
 	public int hp;
 	public int speed;
+	public static final List<UpgradeStats> STATS = initStats();
 
 	/**
 	 * Default constructor for serialization
@@ -33,7 +38,26 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, 
 			float range, float maxHealth) {
 		super(posX, posY, posZ, 1f, 1f, 1f, texture, maxHealth);
+	}
 
-		registerNormalEvent(new TreeProjectileShootEvent(this.getBox3D(), reloadTime, range));
+	@Override
+	public List<UpgradeStats> getAllUpgradeStats() {
+		return STATS;
+	}
+	
+	private static List<UpgradeStats> initStats() {
+		List<UpgradeStats> result = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
+		
+		result.add(new UpgradeStats(10, 1000, 8f, 5000, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(20, 600, 8f, 2000, normalEvents, constructionEvents, "real_tree"));
+		result.add(new UpgradeStats(30, 100, 8f, 2000, normalEvents, constructionEvents, "real_tree"));
+		
+		for (UpgradeStats upgradeStats : result) {
+			upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));
+		}
+		
+		return result;
 	}
 }

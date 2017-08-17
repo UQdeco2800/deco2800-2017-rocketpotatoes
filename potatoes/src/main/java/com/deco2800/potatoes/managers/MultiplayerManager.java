@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 import com.google.common.net.InetAddresses;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Handles multiplayer setup, and communication.
@@ -176,6 +176,10 @@ public class MultiplayerManager extends Manager {
         }
     }
 
+
+    public void broadcastEntityUpdateTimeEvents(int id) {
+    }
+
     /**
      * Broadcasts an entities destruction. Should only be used by master!
      * @param id
@@ -197,6 +201,18 @@ public class MultiplayerManager extends Manager {
         Player p = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer();
         if (client != null) {
             client.broadcastPlayerUpdatePosition(p);
+        }
+    }
+
+
+    /**
+     * Broadcasts a build order from a client (should only be used by non-master)
+     * @param x
+     * @param y
+     */
+    public void broadcastBuildOrder(int x, int y) {
+        if (client != null) {
+            client.broadcastBuildOrder(x, y);
         }
     }
 

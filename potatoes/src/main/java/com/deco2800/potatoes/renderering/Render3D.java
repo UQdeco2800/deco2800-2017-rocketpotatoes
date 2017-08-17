@@ -1,5 +1,13 @@
 package com.deco2800.potatoes.renderering;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,16 +18,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -96,7 +99,14 @@ public class Render3D implements Renderer {
                 font.getData().setScale(1.0f);
                 font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
             }
-
+            /*Construction percentage displayed in yellow
+            * */
+            if (entity instanceof AbstractTree && ((AbstractTree) entity).getConstructionLeft()>0) {
+                font.setColor(Color.YELLOW);
+                font.getData().setScale(1.0f);
+                font.draw(batch, String.format("%d%%", 100-((AbstractTree) entity).getConstructionLeft()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
+            }
+            /**************************/
             MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
             if (entity instanceof Player && m.isMultiplayer()) {
                 font.setColor(Color.WHITE);
