@@ -19,7 +19,6 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
@@ -140,7 +139,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
-
+		/*
 		try {
 			try {
 				System.out.println("Starting client");
@@ -170,7 +169,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			ex.printStackTrace();
 			System.exit(-1);
 		}
-
+		*/
 
 
 		Random random = new Random();
