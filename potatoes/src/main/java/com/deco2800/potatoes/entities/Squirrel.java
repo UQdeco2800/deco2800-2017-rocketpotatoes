@@ -1,11 +1,8 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
@@ -14,7 +11,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	
 	private static final transient String TEXTURE = "squirrel";
 	private static final transient float HEALTH = 100f;

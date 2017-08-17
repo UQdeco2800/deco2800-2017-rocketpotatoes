@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.entities.MortalEntity;
-
 public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	
 

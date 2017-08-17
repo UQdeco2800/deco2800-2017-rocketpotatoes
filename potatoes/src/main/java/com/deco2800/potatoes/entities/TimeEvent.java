@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities;
 /**
  * Represents an event that happens after a certain amount of time e.g. firing a
  * projectile when an amount of time has passed
+ * TODO sync with network
  */
 public abstract class TimeEvent<T> {
 

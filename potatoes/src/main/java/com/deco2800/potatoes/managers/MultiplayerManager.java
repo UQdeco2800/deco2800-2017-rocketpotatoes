@@ -176,6 +176,10 @@ public class MultiplayerManager extends Manager {
         }
     }
 
+
+    public void broadcastEntityUpdateTimeEvents(int id) {
+    }
+
     /**
      * Broadcasts an entities destruction. Should only be used by master!
      * @param id
@@ -324,5 +328,4 @@ public class MultiplayerManager extends Manager {
         master = false;
         multiplayer = false;
     }
-
 }
