@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Random;
 
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
  * A generic player instance for the game

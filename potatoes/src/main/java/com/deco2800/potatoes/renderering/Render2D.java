@@ -9,7 +9,6 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Render2D is a 2D renderer for side scrolling games.

@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.graphics.Texture;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Texture manager acts as a cache between the file system and the renderers.

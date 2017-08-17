@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -21,7 +20,10 @@ public class BallisticProjectile extends Projectile{
 	private float changeX;
 	private float changeY;
 
-	public BallisticProjectile() { }
+	public BallisticProjectile() {
+		//empty for serialization
+	}
+
 
 	public BallisticProjectile(float posX, float posY, float posZ, float goalX, float goalY, float goalZ, float range) {
 		super(posX, posY, posZ, TEXTURE);
