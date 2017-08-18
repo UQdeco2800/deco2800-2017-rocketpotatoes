@@ -13,7 +13,7 @@ import com.deco2800.potatoes.util.Box3D;
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	
-	private static final transient String TEXTURE = "squirrel";
+	private static final transient String TEXTURE = "pronograde";
 	private static final transient float HEALTH = 100f;
 	private transient Random random = new Random();
 

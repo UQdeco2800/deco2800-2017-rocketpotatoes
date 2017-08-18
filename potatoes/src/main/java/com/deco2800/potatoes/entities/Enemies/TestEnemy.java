@@ -14,7 +14,7 @@ import com.deco2800.potatoes.util.Box3D;
  * -We want this to extend from AbstractEnemy eventually, at the moment it is simply extending from EnemyEntity
  * -I.e. we need to still need to develop the basic functions and elements of enemies before creating individual enemies.
  */
-public class TestEnemy extends EnemyEntity implements Tickable, HasProgress {
+public class TestEnemy extends AbstractEnemy implements Tickable, HasProgress {
 
     private static final transient String TEXTURE = "europeanhattedsquirrel";
     private static final transient float HEALTH = 100f;

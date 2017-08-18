@@ -54,6 +54,7 @@ public class TextureManager extends Manager {
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
         saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
+        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");
 
 
     }

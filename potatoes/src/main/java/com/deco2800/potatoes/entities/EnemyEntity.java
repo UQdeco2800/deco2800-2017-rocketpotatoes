@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities;
 public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	
 
+
 	/**
 	 * Default constructor for serialization
 	 */
@@ -107,7 +108,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
 	}
-	
+
 
 	@Override
 	public int getProgress() {
