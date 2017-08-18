@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.Enemies.*;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -180,6 +181,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 				GameManager.get().getWorld().addEntity(new Squirrel(
 						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 			}
+
+			//Testing a new enemy
+			GameManager.get().getWorld().addEntity(new TestEnemy(
+					10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 
 			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
