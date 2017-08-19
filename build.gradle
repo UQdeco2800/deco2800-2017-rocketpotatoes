@@ -46,17 +46,15 @@ subprojects {
 
     repositories {
         mavenLocal()
-        maven { url 'http://deco2800-artifactory.uqcloud.net/artifactory/libs-release/' }
         mavenCentral()
+        maven { url 'http://deco2800-artifactory.uqcloud.net/artifactory/libs-release/' }
+        
     }
 
     dependencies {
         // Logging via Log4J 2.0 using the SLF4J API
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
         compile group: 'org.apache.derby', name: 'derby', version: '10.9.1.0'
-
-        compile(group: 'uq.deco2800.soom', name: 'server', version: '0' +
-                '.1-SNAPSHOT', changing: true)
 
         // Unit testing with JUnit
         testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
