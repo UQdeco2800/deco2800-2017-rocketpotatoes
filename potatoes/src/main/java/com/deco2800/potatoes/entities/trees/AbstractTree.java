@@ -16,12 +16,28 @@ import java.util.List;
  */
 public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress {
 
+	private class ConstructionEvent extends TimeEvent<AbstractTree> {
+		public ConstructionEvent() {
+			setDoReset(true);
+			setResetAmount(constructionTime / 100);
+			reset();
+		}
+		
+		@Override
+		public void action(AbstractTree param) {
+			decrementConstructionLeft();
+		}
+
+		@Override
+		public TimeEvent<AbstractTree> copy() {
+			return null;
+		}
+	}
+
 	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
 	private int constructionLeft = 100;
 	private int constructionTime = 0;
-	private int constructionPercentTime = constructionTime / 100;
-	private long currentConstructionTime = constructionPercentTime;
 	private int upgradeLevel = 0;
 
 	/**
@@ -31,8 +47,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float maxHealth) {
+	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength, String texture,
+			float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, texture, maxHealth);
 		resetStats();
 	}
@@ -44,13 +60,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 				progressEvent(timeEvent, i);
 			}
 		} else {
-			// Time event can't be used for this at the moment
-			currentConstructionTime -= i;
-			if (currentConstructionTime <= 0) {
-				currentConstructionTime = constructionPercentTime;
-				decrementConstructionLeft();
-			}
-
 			for (TimeEvent<AbstractTree> timeEvent : constructionEvents) {
 				progressEvent(timeEvent, i);
 			}
@@ -62,28 +71,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		if (!timeEvent.isDoReset() && timeEvent.isCompleted()) {
 			normalEvents.remove(timeEvent);
 		}
-	}
-
-	/**
-	 * Adds an event to this tree that will trigger every tick when the tree is not
-	 * being constructed, when getConstructionLeft() <= 0
-	 * 
-	 * @param event
-	 *            the time event that will be triggered
-	 */
-	public void registerNormalEvent(TimeEvent<AbstractTree> event) {
-		normalEvents.add(event);
-	}
-
-	/**
-	 * Adds an event to this tree that will trigger every tick when the tree is
-	 * being constructed, when getConstructionLeft() > 0
-	 * 
-	 * @param event
-	 *            the time event that will be triggered
-	 */
-	public void registerConstructionEvent(TimeEvent<AbstractTree> event) {
-		constructionEvents.add(event);
 	}
 
 	/**
@@ -134,12 +121,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		upgradeLevel++;
 		resetStats();
 	}
-	
+
 	public void resetStats() {
 		normalEvents = getUpgradeStats().getNormalEventsCopy();
 		constructionEvents = getUpgradeStats().getConstructionEventsCopy();
-		constructionPercentTime =  getUpgradeStats().getConstructionTime() / 100;
-		currentConstructionTime = constructionPercentTime;
+		constructionEvents.add(new ConstructionEvent());
 	}
 
 	/**
@@ -150,7 +136,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public UpgradeStats getUpgradeStats() {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
-
 
 	/**
 	 * Returns a list of the stats for each upgrade level in order <br>
