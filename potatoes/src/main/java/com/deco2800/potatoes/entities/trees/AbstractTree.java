@@ -126,6 +126,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		normalEvents = getUpgradeStats().getNormalEventsCopy();
 		constructionEvents = getUpgradeStats().getConstructionEventsCopy();
 		constructionEvents.add(new ConstructionEvent());
+		this.heal(this.getMaxHealth());
 	}
 
 	/**
