@@ -48,6 +48,4 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	public TimeEvent<AbstractTree> copy() {
 		return new ResourceGatherEvent(getResetAmount(), gatherAmount);
 	}
-
-	
 }
