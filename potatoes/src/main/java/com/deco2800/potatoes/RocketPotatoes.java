@@ -182,9 +182,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 //						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 //			}
 
-			//Testing a new enemy
-			GameManager.get().getWorld().addEntity(new TestEnemy(
-					10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+
 
 			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
@@ -203,6 +201,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			playerManager.setPlayer(new Player(5, 10, 0));
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		}
+		//Testing a new enemy
+		GameManager.get().getWorld().addEntity(new TestEnemy(
+				10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 	}
 
 	private void tickGame(long timeDelta) {

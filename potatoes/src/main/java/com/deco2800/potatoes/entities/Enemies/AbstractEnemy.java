@@ -1,14 +1,29 @@
 package com.deco2800.potatoes.entities.Enemies;
 
-import com.deco2800.potatoes.entities.EnemyEntity;
-import com.deco2800.potatoes.entities.Projectile;
-import com.deco2800.potatoes.entities.Tickable;
+import java.util.Map;
+import java.util.Random;
+
+import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.util.Box3D;
+
+import java.util.Map;
 
 
 /**
  * AbstractEnemy defines a generic enemy in the game.
  */
-public abstract class AbstractEnemy extends EnemyEntity implements Tickable {
+public abstract class AbstractEnemy extends MortalEntity implements Tickable, HasProgress {
+
+    /*Initialisation of variables*/
+    private transient Random random = new Random();
+    private float speed = 0.1f;
+
+    //Get the player and make player the goal of enemy
+    PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+    private AbstractEntity goalEntity = playerManager.getPlayer();
 
     /**
      * Default constructor for serialization
@@ -111,6 +126,80 @@ public abstract class AbstractEnemy extends EnemyEntity implements Tickable {
     public AbstractEnemy(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
                        float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
         super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
+    }
+
+    public void testGetEntities() {
+        System.out.println(GameManager.get().getWorld().getEntities());
+    }
+
+    /*Movement towards a particular goal
+     */
+    @Override
+    public void onTick(long i) {
+
+        PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+        SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
+
+        float goalX = goalEntity.getPosX() + random.nextFloat() * 6 - 3;
+        float goalY = goalEntity.getPosY() + random.nextFloat() * 6 - 3;
+
+ //       testGetEntities();
+
+ //       float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
+  //      float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
+
+        if(this.distance(playerManager.getPlayer()) < speed) {
+            this.setPosX(goalX);
+            this.setPosY(goalY);
+            return;
+        }
+
+        float deltaX = getPosX() - goalX;
+        float deltaY = getPosY() - goalY;
+
+        float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+
+        float changeX = (float)(speed * Math.cos(angle));
+        float changeY = (float)(speed * Math.sin(angle));
+
+        Box3D newPos = getBox3D();
+        newPos.setX(getPosX() + changeX);
+        newPos.setY(getPosY() + changeY);
+
+        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+        boolean collided = false;
+        for (AbstractEntity entity : entities.values()) {
+            if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
+                if(entity instanceof Player) {
+                    //soundManager.playSound("ree1.wav");
+                }
+                collided = true;
+            }
+        }
+
+        if (!collided) {
+            setPosX(getPosX() + changeX);
+            setPosY(getPosY() + changeY);
+        }
+    }
+
+    /**
+     * Sets a single goal entity for the enemy
+     *
+     * @param goal
+     *          An AbstractEntity to set as enemy's goal
+     */
+    public void setGoalEntity(AbstractEntity goal) {
+        this.goalEntity = goal;
+    }
+
+    /**
+     * The current goal of this enemy
+     *
+     * @return the goal AbstractEntity of this enemy
+     */
+    public AbstractEntity getGoalEntity() {
+        return this.goalEntity;
     }
 
     @Override
