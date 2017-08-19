@@ -1,15 +1,12 @@
 package com.deco2800.potatoes.worlds;
 
-import com.badlogic.gdx.Game;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * AbstractWorld is the Game AbstractWorld

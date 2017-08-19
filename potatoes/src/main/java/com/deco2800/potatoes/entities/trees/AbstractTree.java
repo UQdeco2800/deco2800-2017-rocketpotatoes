@@ -1,11 +1,12 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -13,7 +14,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
  * construction and construction events which are triggered when the tree is
  * being constructed
  */
-public abstract class AbstractTree extends MortalEntity implements Tickable {
+public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress {
 
 	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
@@ -159,4 +160,34 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 	 * @return a list of all the upgrade stats for this tree
 	 */
 	public abstract List<UpgradeStats> getAllUpgradeStats();
+
+	/**
+	 * Returns the current progress
+	 *
+	 * @return
+	 */
+	@Override
+	public int getProgress() {
+		return constructionLeft;
+	}
+
+	/**
+	 * Set's the progress to the given value.
+	 *
+	 * @param p
+	 */
+	@Override
+	public void setProgress(int p) {
+		constructionLeft = p;
+	}
+
+	/**
+	 * Should i show the progress
+	 *
+	 * @return
+	 */
+	@Override
+	public boolean showProgress() {
+		return false;
+	}
 }
