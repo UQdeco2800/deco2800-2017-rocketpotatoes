@@ -119,6 +119,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			return; // Ignores upgrade if at max level
 		}
 		upgradeLevel++;
+        this.addMaxHealth(getUpgradeStats().getHp()-this.getMaxHealth());
 		resetStats();
 	}
 

@@ -38,8 +38,15 @@ public class ProjectileTreeTest {
         assertTrue(HEALTH==testTree.getHealth());
         testTree.onTick(1);
         testTree.upgrade();
+        assertTrue(20f==testTree.getHealth());
         assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
         testTree.onTick(1);
+        testTree.upgrade();
+        assertTrue(30f==testTree.getHealth());
+        assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
+        testTree.upgrade();
+        assertTrue(30f==testTree.getHealth());
+        assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
     }
 
     @Test
