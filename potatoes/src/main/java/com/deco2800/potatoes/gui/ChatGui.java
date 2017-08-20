@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
@@ -35,19 +34,8 @@ public class ChatGui extends Gui {
         // List of messages, with custom draw method so we have label specific
         textArea = new ChatList(uiSkin);
 
-        // Remove our listeners since we don't want our messages to be clickable
-        for (EventListener e : textArea.getListeners()) {
-            textArea.removeListener(e);
-        }
-
         // Scrollpane containing the list of messages
         chatContainer = new ScrollPane(textArea, uiSkin);
-        Label t = new Label("Hey!", uiSkin);
-        t.setName("[Tom] ");
-        t.setColor(Color.RED);
-
-
-        textArea.setItems(t);
         chatContainer.setForceScroll(false, true);
         chatContainer.setScrollBarPositions(false, true);
         chatContainer.setFadeScrollBars(false);
@@ -55,7 +43,7 @@ public class ChatGui extends Gui {
         resetGui(stage);
         stage.addActor(table);
     }
-
+    private int num = 0;
     /**
      * Adjusts this gui's position to correct for any resize event.
      *
@@ -66,6 +54,8 @@ public class ChatGui extends Gui {
         super.resize(stage);
 
         resetGui(stage);
+
+        addMessage("Tom", "Sup: " + num++, Color.WHITE);
     }
 
     private void resetGui(Stage stage) {
@@ -85,7 +75,16 @@ public class ChatGui extends Gui {
      * @param color the gdx defined colour
      */
     public void addMessage(String name, String text, Color color) {
+        Label l = new Label("", uiSkin);
+        l.setName("[" + name + "]");
+        l.setText(text);
+        l.setColor(color);
 
+        textArea.addItem(l);
+
+        // Force scroll to bottom (TODO disable if manually scrolled up?)
+        chatContainer.layout();
+        chatContainer.scrollTo(0, 0, 0, 0);
     }
 
     /** Tweaked list element so we can colour specific elements, and don't listen for click events
@@ -182,6 +181,20 @@ public class ChatGui extends Gui {
 
         protected GlyphLayout drawItem(Batch batch, BitmapFont font, int index, Label item, float x, float y) {
             return font.draw(batch, toString(item), x, y);
+        }
+
+        /**
+         * Add's a single label item
+         * @param l the label to be added
+         */
+        public void addItem(Label l) {
+            if (l == null) throw new IllegalArgumentException("new item cannot be null.");
+            float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
+
+            items.add(l);
+
+            invalidate();
+            if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
         }
 
         public void setItems(Label... newItems) {
