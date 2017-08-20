@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
@@ -87,6 +90,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
 		guiManager.setStage(new Stage(new ScreenViewport()));
+
+		// Deselect all gui elements if we click anywhere in the game world
+		guiManager.getStage().getRoot().addCaptureListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if (!(event.getTarget() instanceof TextField)) {
+					guiManager.getStage().setKeyboardFocus(null);
+				}
+				return false;
+			}
+		});
 
 		// Make our GameMenuGui
 		guiManager.addGui(new GameMenuGui(guiManager.getStage()));

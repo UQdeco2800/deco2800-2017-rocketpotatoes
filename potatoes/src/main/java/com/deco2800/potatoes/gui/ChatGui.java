@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -20,12 +23,15 @@ public class ChatGui extends Gui {
     private Table table;
     private ScrollPane chatContainer;
     private ChatList textArea;
+    private TextField textField;
+    private Button sendButton;
 
     /**
      * Initializes this ChatGui
      */
     public ChatGui(Stage stage) {
         hidden = false;
+
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 
         // Our table contains our entire chat gui
@@ -40,6 +46,23 @@ public class ChatGui extends Gui {
         chatContainer.setScrollBarPositions(false, true);
         chatContainer.setFadeScrollBars(true);
         chatContainer.pack();
+
+        // Field where chat is entered
+        textField = new TextField("", uiSkin);
+
+        // Button to press when chat is complete
+        sendButton = new Button(uiSkin);
+        sendButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!textField.getText().equals("")) {
+                    addMessage("Button", textField.getText(), Color.WHITE);
+                    textField.setText("");
+                    stage.setKeyboardFocus(null);
+                }
+            }
+        });
+
         resetGui(stage);
         stage.addActor(table);
     }
@@ -59,6 +82,9 @@ public class ChatGui extends Gui {
         table.reset();
         //table.setDebug(true);
         table.add(chatContainer).width(stage.getWidth() * 0.3f).height(stage.getHeight() * 0.3f);
+        table.row();
+        table.add(textField).width(stage.getWidth() * 0.3f - 20.0f).align(Align.left);
+        table.add(sendButton).width(20.0f).height(20.0f).align(Align.left);
         table.getColor().a = 0.3f;
         table.setPosition(0, 0);
         table.pack();
