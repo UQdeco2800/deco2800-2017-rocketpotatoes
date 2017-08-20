@@ -1,11 +1,10 @@
 package com.deco2800.potatoes.networking;
 
-import com.badlogic.gdx.Game;
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.networking.Network.*;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -13,11 +12,6 @@ import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import com.deco2800.potatoes.networking.Network.*;
-import org.lwjgl.Sys;
-
-import javax.swing.text.html.parser.Entity;
 
 public class NetworkClient {
     private Client client;
@@ -226,6 +220,14 @@ public class NetworkClient {
 
         client.sendUDP(message);
     }
+
+    public void broadcastBuildOrder(int x, int y) {
+        ClientBuildOrderMessage m = new ClientBuildOrderMessage();
+        m.x = x;
+        m.y = y;
+
+        client.sendTCP(m);
+    };
 
     public int getID() {
         return clientID;

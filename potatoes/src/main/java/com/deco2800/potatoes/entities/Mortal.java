@@ -17,6 +17,15 @@ public interface Mortal {
 	float getMaxHealth();
 
 	/**
+	 * Alters the max health of an entity
+	 * Use negative values to decrease max health, and negate the parameter
+	 *  to revert changes
+	 * @param offset - the amount the entity's max health is to be altered by
+	 * @return current value of damage offset
+	 */
+	public float addMaxHealth(float offset);
+
+	/**
 	 * @return true iff health <= 0
 	 */
 	boolean isDead();

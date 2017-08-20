@@ -1,19 +1,18 @@
 package com.deco2800.potatoes.networking;
 
-import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
+import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.networking.Network.*;
+import com.deco2800.potatoes.util.WorldUtil;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
-
-import com.deco2800.potatoes.networking.Network.*;
 
 public class NetworkServer {
     // Master will always be the first connection
@@ -148,6 +147,17 @@ public class NetworkServer {
                     // TODO magical UDP order verification
                     server.sendToAllExceptUDP(connection.getID(), response);
 
+                    return;
+                }
+
+                if (object instanceof ClientBuildOrderMessage) {
+                    ClientBuildOrderMessage m = (ClientBuildOrderMessage) object;
+                    // Add it? TODO verify by whole tile?
+                    if (WorldUtil.getEntityAtPosition(m.x, m.y).isPresent()) {
+                        return;
+                    } else {
+                        GameManager.get().getWorld().addEntity(new Tower(m.x, m.y, 0));
+                    }
                     return;
                 }
 

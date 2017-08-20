@@ -1,22 +1,28 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deco2800.potatoes.gui.Gui;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.deco2800.potatoes.gui.Gui;
 
 public class GuiManager extends Manager {
     private List<Gui> gui;
     private Stage stage;
 
     /**
-     * Initialize the basic GuiManager. Just creates the internal gui storage, and the internal stage
+     * Initialize the basic GuiManager. Just creates the internal gui storage
      */
     public GuiManager() {
         gui = new ArrayList<>();
-        stage = new Stage(new ScreenViewport());
+    }
+
+    /**
+     * Set's the internal stage to operate on
+     * @param stage
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     /**
@@ -59,10 +65,12 @@ public class GuiManager extends Manager {
      * call's resize(...) on all Gui's. Allowing them to appropriately adjust to the new window size.
      */
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        if (stage != null) {
+            stage.getViewport().update(width, height, true);
 
-        for (Gui c : gui) {
-            c.resize(stage);
+            for (Gui c : gui) {
+                c.resize(stage);
+            }
         }
     }
 }
