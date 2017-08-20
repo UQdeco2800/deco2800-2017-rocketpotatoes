@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -86,6 +86,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		// Make our GameMenuGui
 		guiManager.addGui(new GameMenuGui(guiManager.getStage()));
+
+		// Make our chat window
+		guiManager.addGui(new ChatGui(guiManager.getStage()));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -407,7 +410,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		@Override
 		public void notifyScrolled(int amount) {
-			System.out.println(amount);			
+			//System.out.println(amount);
 		}
 		
 	}
