@@ -1,18 +1,15 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 public class ChatGui extends Gui {
     private Skin uiSkin;
     private Table table;
     private ScrollPane chatContainer;
-    private TextArea textArea;
+    private List<Label> textArea;
 
     /**
      * Initializes this ChatGui
@@ -23,13 +20,18 @@ public class ChatGui extends Gui {
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 
         table = new Table(uiSkin);
-        textArea = new TextArea("[Tom] Hey!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!\n[Tom2] Hello!", uiSkin);
-        textArea.setDisabled(true);
-        chatContainer = new ScrollPane(textArea);
+        textArea = new List<>(uiSkin);
+        Label t = new Label("Hey!", uiSkin);
+        t.setName("[TOM]");
+        t.setColor(Color.RED);
+        t.set
+        textArea.setItems(t);
+        textArea.setSelectedIndex(-1);
+        chatContainer = new ScrollPane(textArea, uiSkin);
+        chatContainer.setForceScroll(false, true);
         chatContainer.setScrollBarPositions(false, true);
         chatContainer.setFadeScrollBars(false);
         chatContainer.pack();
-
 
         resetGui(stage);
         stage.addActor(table);  
@@ -49,9 +51,8 @@ public class ChatGui extends Gui {
 
     private void resetGui(Stage stage) {
         table.reset();
-        table.setDebug(true);
+        //table.setDebug(true);
         table.add(chatContainer).width(stage.getWidth() * 0.3f).height(stage.getHeight() * 0.3f);
-        table.setBackground((Drawable) null);
         table.getColor().a = 0.8f;
         table.setPosition(0, 0);
         table.pack();
