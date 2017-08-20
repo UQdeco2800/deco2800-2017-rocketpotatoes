@@ -90,7 +90,7 @@ public class NetworkClient {
                 if (object instanceof HostPlayReadyMessage) {
                     HostPlayReadyMessage m = (HostPlayReadyMessage) object;
                     System.out.println("[CLIENT]: I'm ready to go!");
-                    sendSystemMessage("Multiplayer initialization complete");
+                    sendSystemMessage("Successfully joined server!");
                     ready = true;
                 }
 
@@ -99,7 +99,6 @@ public class NetworkClient {
 
                     System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
-                    sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
 
                     clientList.set(m.id, m.name);
 
@@ -114,6 +113,8 @@ public class NetworkClient {
 
                             // Give the player manager me
                             ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
+                        } else {
+                            sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
                         }
                     }
                     catch (Exception ex) {
@@ -129,7 +130,7 @@ public class NetworkClient {
                     HostPlayerDisconnectedMessage m = (HostPlayerDisconnectedMessage) object;
 
                     System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
-                    sendSystemMessage("Player Disconnected:" + clientList.get(m.id) + "(" + m.id + ")");
+                    sendSystemMessage("Player Disconnected: " + clientList.get(m.id) + "(" + m.id + ")");
 
                     clientList.set(m.id, null);
                     GameManager.get().getWorld().removeEntity(m.id);
@@ -142,7 +143,7 @@ public class NetworkClient {
                     HostExistingPlayerMessage m = (HostExistingPlayerMessage) object;
 
                     System.out.println("[CLIENT]: Got host existing player message: " + m.id);
-                    sendSystemMessage("Existing Player:" + m.name + "(" + m.id + ")");
+                    sendSystemMessage("Existing Player: " + m.name + "(" + m.id + ")");
                     clientList.set(m.id, m.name);
 
                     return;
@@ -202,7 +203,7 @@ public class NetworkClient {
                         GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
                         ((ChatGui)g.getGui(ChatGui.class)).addMessage(
                                 clientList.get(connection.getID()) + "(" + connection.getID() + ")"
-                                ,m.message, Color.WHITE);
+                                , m.message, Color.WHITE);
 
                         return;
                     }
@@ -215,8 +216,9 @@ public class NetworkClient {
             }
         });
 
-        client.connect(5000, IP, tcpPort, udpPort);
 
+        client.connect(5000, IP, tcpPort, udpPort);
+        sendSystemMessage("Joining " + IP + ":" + tcpPort);
         // Send initial connection info
         ClientConnectionRegisterMessage cr = new ClientConnectionRegisterMessage();
         cr.name = name;

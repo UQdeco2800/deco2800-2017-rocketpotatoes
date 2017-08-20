@@ -1,9 +1,12 @@
 package com.deco2800.potatoes.networking;
 
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.networking.Network.*;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.esotericsoftware.kryonet.Connection;
@@ -189,6 +192,7 @@ public class NetworkServer {
         server.bind(tcpPort, udpPort);
         server.start();
         this.ready = true;
+        sendSystemMessage("Broadcasting on 0.0.0.0:" + tcpPort);
     }
 
     public void broadcastNewEntity(int id) {
@@ -235,6 +239,15 @@ public class NetworkServer {
         message.id = id;
 
         server.sendToAllExceptTCP(MASTER_ID, message);
+    }
+
+    /**
+     * Posts a system message to the chat of this client
+     * @param m
+     */
+    private void sendSystemMessage(String m) {
+        GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        ((ChatGui)g.getGui(ChatGui.class)).addMessage("System", m, Color.YELLOW);
     }
 
 
