@@ -6,7 +6,6 @@ public abstract class Projectile extends AbstractEntity implements Tickable{
 		//empty for serialization
 	}
 
-
 	public Projectile(float posX, float posY, float posZ, String texture) {
 		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, true,texture);
 	}
@@ -16,5 +15,5 @@ public abstract class Projectile extends AbstractEntity implements Tickable{
 	}
 	
 	public abstract float getDamage();
-
+	
 }

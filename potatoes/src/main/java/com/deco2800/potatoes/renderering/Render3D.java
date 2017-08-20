@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
@@ -55,12 +56,15 @@ public class Render3D implements Renderer {
             @Override
             public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
                 int val = abstractEntity.compareTo(t1);
-
+                //System.out.println(abstractEntity+" "+t1);
+        		if(abstractEntity instanceof ExplosionProjectile) {
+        			val=-1;
+        		}
                 // Hacky fix so TreeMap doesn't throw away duplicate values. I.e. Renderables in the exact same location
                 // Since TreeMap's think when the comparator result is 0 the objects are duplicates, we just make that
                 // impossible to occur.
                 if (val == 0) { val = 1; }
-
+                
                 return val;
             }
         });
@@ -85,8 +89,12 @@ public class Render3D implements Renderer {
             // We want to keep the aspect ratio of the image so...
             float aspect = (float)(tex.getWidth())/(float)(tileWidth);
 
-            batch.draw(tex, isoPosition.x, isoPosition.y, tileWidth*entity.getXRenderLength(),
-                    (tex.getHeight()/aspect)*entity.getYRenderLength());
+            //old method of draw:
+            //batch.draw(tex, isoPosition.x, isoPosition.y, tileWidth*entity.getXRenderLength(),
+             //       (tex.getHeight()/aspect)*entity.getYRenderLength());
+            
+            //NEW: changed the render method to allow for sprite rotation.
+            batch.draw(tex, isoPosition.x, isoPosition.y, 0, 0, tileWidth*entity.getXRenderLength(), (tex.getHeight()/aspect)*entity.getYRenderLength(), 1, 1, 0-entity.rotateAngle(), 0, 0, tex.getWidth(), tex.getHeight(), false, false);
         }
 
         for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {

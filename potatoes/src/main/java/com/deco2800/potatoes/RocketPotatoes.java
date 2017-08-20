@@ -297,6 +297,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		// Render entities etc.
 		renderer.render(batch);
+		
+		//TODO: add render for projectile's separately
 	}
 
 	/**
