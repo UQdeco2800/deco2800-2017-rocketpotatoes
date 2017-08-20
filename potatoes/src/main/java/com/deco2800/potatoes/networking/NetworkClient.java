@@ -1,8 +1,11 @@
 package com.deco2800.potatoes.networking;
 
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.networking.Network.*;
 import com.esotericsoftware.kryonet.Client;
@@ -87,6 +90,7 @@ public class NetworkClient {
                 if (object instanceof HostPlayReadyMessage) {
                     HostPlayReadyMessage m = (HostPlayReadyMessage) object;
                     System.out.println("[CLIENT]: I'm ready to go!");
+                    sendSystemMessage("Multiplayer initialization complete");
                     ready = true;
                 }
 
@@ -95,6 +99,7 @@ public class NetworkClient {
 
                     System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
+                    sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
 
                     clientList.set(m.id, m.name);
 
@@ -124,6 +129,8 @@ public class NetworkClient {
                     HostPlayerDisconnectedMessage m = (HostPlayerDisconnectedMessage) object;
 
                     System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
+                    sendSystemMessage("Player Disconnected:" + clientList.get(m.id) + "(" + m.id + ")");
+
                     clientList.set(m.id, null);
                     GameManager.get().getWorld().removeEntity(m.id);
 
@@ -135,6 +142,7 @@ public class NetworkClient {
                     HostExistingPlayerMessage m = (HostExistingPlayerMessage) object;
 
                     System.out.println("[CLIENT]: Got host existing player message: " + m.id);
+                    sendSystemMessage("Existing Player:" + m.name + "(" + m.id + ")");
                     clientList.set(m.id, m.name);
 
                     return;
@@ -186,6 +194,18 @@ public class NetworkClient {
 
                         return;
                     }
+
+                    /* Generic chat message */
+                    if (object instanceof Message) {
+                        Message m = (Message) object;
+
+                        GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
+                        ((ChatGui)g.getGui(ChatGui.class)).addMessage(
+                                clientList.get(connection.getID()) + "(" + connection.getID() + ")"
+                                ,m.message, Color.WHITE);
+
+                        return;
+                    }
                 }
             }
 
@@ -227,7 +247,16 @@ public class NetworkClient {
         m.y = y;
 
         client.sendTCP(m);
-    };
+    }
+
+    /**
+     * Posts a system message to the chat of this client
+     * @param m
+     */
+    private void sendSystemMessage(String m) {
+        GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        ((ChatGui)g.getGui(ChatGui.class)).addMessage("System", m, Color.YELLOW);
+    }
 
     public int getID() {
         return clientID;

@@ -38,7 +38,7 @@ public class ChatGui extends Gui {
         chatContainer = new ScrollPane(textArea, uiSkin);
         chatContainer.setForceScroll(false, true);
         chatContainer.setScrollBarPositions(false, true);
-        chatContainer.setFadeScrollBars(false);
+        chatContainer.setFadeScrollBars(true);
         chatContainer.pack();
         resetGui(stage);
         stage.addActor(table);
@@ -52,17 +52,14 @@ public class ChatGui extends Gui {
     @Override
     public void resize(Stage stage) {
         super.resize(stage);
-
         resetGui(stage);
-
-        addMessage("Tom", "Sup: " + num++, Color.WHITE);
     }
 
     private void resetGui(Stage stage) {
         table.reset();
         //table.setDebug(true);
-        table.add(chatContainer).width(stage.getWidth() * 0.3f).height(stage.getHeight() * 0.3f);
-        table.getColor().a = 0.8f;
+        table.add(chatContainer).width(stage.getWidth() * 0.5f).height(stage.getHeight() * 0.3f);
+        table.getColor().a = 0.3f;
         table.setPosition(0, 0);
         table.pack();
     }
@@ -170,7 +167,7 @@ public class ChatGui extends Gui {
             for (int i = 0; i < items.size; i++) {
                 if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
                     Label item = items.get(i);
-                    font.setColor(item.getColor().r, item.getColor().g, item.getColor().b, item.getColor().a * parentAlpha);
+                    font.setColor(item.getColor().r, item.getColor().g, item.getColor().b, item.getColor().asdwwa);
                     drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY);
                 } else if (itemY < cullingArea.y) {
                     break;
