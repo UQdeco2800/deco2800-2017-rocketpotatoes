@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.entities;
 
 public class Resource {
+	
+	
 	/*
 	 * The location of the resource on the x axis
 	 */

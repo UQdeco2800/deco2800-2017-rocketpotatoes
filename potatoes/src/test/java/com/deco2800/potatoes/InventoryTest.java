@@ -10,21 +10,26 @@ import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.exceptions.InvalidResourceException;
 
 public class InventoryTest {
 	
-	Resource seed1 = new SeedResource();
-	Resource food1 = new FoodResource();
+	Resource seed1;
+	Resource food1;
 	Resource nullResource = null;
-	Object nonResource = new Object();
+	Object nonResource;
 	
-	HashSet<Resource> validResources = new HashSet<Resource>();
+	HashSet<Resource> validResources;
 	Inventory validInventory;
 	
 	@Before
 	public void setUp() throws Exception {
-		validResources.add(seed1);
-		validResources.add(food1);
+		nonResource = new Object();
+		//seed1 = new Resource();
+		//food1 = new Resource();
+		validResources = new HashSet<Resource>();
+		//validResources.add(seed1);
+		//validResources.add(food1);
 		validInventory = new Inventory(validResources);
 	}
 
@@ -117,10 +122,12 @@ public class InventoryTest {
 	@Test
 	public void removeResourceTest() throws Exception {
 		// Test remove existing
-		validInventory.removeInventoryResource(food1);
+		HashSet<Resource> resources = new HashSet<Resource>();
+		resources.add(new Resource());
+		Inventory inventory = new Inventory(resources);
+		inventory.removeInventoryResource(new Resource());
+		assert(inventory.getInventoryResources().equals(new HashSet<Resource>()));
 		
-		// Test remove non exsisting
-		validInventory.removeInventoryResource(food1);
 	}
 	
 	@Test(expected = Exception.class)
