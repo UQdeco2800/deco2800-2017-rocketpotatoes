@@ -1,99 +1,70 @@
 package com.deco2800.potatoes.entities;
 
-public class Resource {
+import java.util.Map;
+
+public class Resource implements Comparable<Resource> {
 	
+	protected String resourceType;
+	protected String imageSource;
+	protected String name;
 	
-	/*
-	 * The location of the resource on the x axis
-	 */
-	private int xValue;
-	/*
-	 * The location of the resource on the y axis
-	 */
-	private int yValue;
-	/*
-	 * The location of the resource on the z axis
-	 */
-	private int zValue;
-	
-	/**
-	 * <p>Returns the x location of the resource</p>
-	 * 
-	 * @return xValue
-	 * 		The x location of the resource
-	 */
-	public int getX() {
-		return xValue;
+	public Resource(String name) {
+		this.name = name;
+		resourceType = "ordinary";
+		imageSource = "defaultImage.png";
 	}
 	
-	/**
-	 * <p>Returns the y location of the resource</p>
-	 * 
-	 * @return yValue
-	 * 		The y location of the resource
-	 */
-	public int getY() {
-		return yValue;
+	public String getType() {
+		return resourceType;
 	}
 	
-	/**
-	 * <p>Returns the z location of the resource</p>
-	 * 
-	 * @return zValue
-	 * 		The z location of the resource
-	 */
-	public int getZ() {
-		return zValue;
+	public String getName() {
+		return name;
 	}
 	
-	/**
-	 * <p>Returns the three coordinates of the resource.</p>
-	 * 
-	 * @return coordinates
-	 * 		The x, y and z coordinates for the resource in that order.
-	 */
-	public int[] getLocation() {
-		int[] coordinates = new int[] {xValue, yValue, zValue};
-		
-		return coordinates;
-	}
-	
-	/**
-	 * <p>Updates the coordinates of the resource on the map.</p>
-	 * 
-	 * <p>
-	 * Can simply call with getX(), getY() and getZ() to update only one value.
-	 * </p>
-	 * 
-	 * @param xNew
-	 * 		The new x coordinate.
-	 * @param yNew
-	 * 		The new y coordinate.
-	 * @param zNew
-	 * 		The new z coordinate.
-	 */
-	public void move(int xNew, int yNew, int zNew) {
-		xValue = xNew;
-		yValue = yNew;
-		zValue = zNew;
+	public String getImageSource() {
+		return imageSource;
 	}
 	
 	/**
 	 * <p>
-	 * Removes the resource from the map.
+	 * Returns the string representation of the resource.
 	 * </p>
+	 * 
+	 * @return string
+	 * 		The string representation of the resource.
 	 */
-	public void delete() {
-		//to be completed after further discussion
+	public String toString() {
+		return resourceType+": "+name;
 	}
 	
-	/**
-	 * <p>
-	 * Returns the texture data for the resource.
-	 * </p>
-	 */
-	public void getTexture() {
-		//to be completed after further discussion
-	}
+	@Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Resource)) {
+            return false;
+        }
+        Resource other = (Resource) object; // the corridor to compare
+        return other.getName().equals(name) &&
+        		other.getType().equals(resourceType);
+    }
+
+    @Override
+    public int hashCode() {
+        // We create a polynomial hash-code based on the object string and type.
+        final int prime = 31; // an odd base prime
+        int result = 1; // the hash code under construction
+        result = prime * result + name.hashCode();
+        result = prime * result + resourceType.hashCode();
+        return result;
+    }
+    
+    @Override
+    public int compareTo(Resource other) {
+        int result = resourceType.compareTo(other.getType());
+        if (result == 0) {
+        	return name.compareTo(other.getName());
+        }
+        return result;
+    }
 
 }

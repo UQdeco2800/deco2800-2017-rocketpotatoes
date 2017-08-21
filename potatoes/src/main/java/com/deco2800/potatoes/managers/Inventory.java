@@ -14,11 +14,12 @@ public class Inventory {
 	 * A mapping of possible resource items to the number of items the player
 	 * holds
 	 */
-	private TreeMap<Resource, Integer> inventoryMap;
+	private TreeMap<Resource, Integer> inventoryMap = new TreeMap<Resource,Integer>();
+	
 	/*
 	 * invariant:
 	 * 
-	 * Inventory!=null && !invenotry.containsValue(null) &&
+	 * Inventory!=null && !inventory.containsValue(null) &&
 	 * 
 	 * for each resource in inventory.keySet(), inventory.get(resource) >= 0
 	 * 
@@ -34,15 +35,20 @@ public class Inventory {
 	 * </p>
 	 */
 	public Inventory(HashSet<Resource> resources) throws InvalidResourceException {
+		inventoryMap = new TreeMap<Resource,Integer>();
 		if (resources == null) {
 			throw new InvalidResourceException("Resources cannot be null, please instantiate the class with valid resources");
 		}
-		TreeMap<Resource, Integer> inventoryMap = new TreeMap<>();
 		for (Resource resource : resources) {
+			if (resource == null) throw new InvalidResourceException("Resource cannot be null, please instantiate the class with valid resources");
 			inventoryMap.put(resource, 0);
 		}
 	}
 
+	public TreeMap<Resource, Integer> getMap(){
+		// Testing purposes
+		return inventoryMap;
+	}
 	
 	/**
 	 * <p>
@@ -52,7 +58,7 @@ public class Inventory {
 	 * @return the a set of resources
 	 */
 	public Set<Resource> getInventoryResources() {
-		return new HashSet<>(inventoryMap.keySet());
+		return new HashSet<Resource>(inventoryMap.keySet());
 	}
 	
 	/**
@@ -84,6 +90,8 @@ public class Inventory {
 		if (resource == null || !getInventoryResources().contains(resource)){
 			throw new InvalidResourceException ("Please supply a valid resource");
 		}
+		System.out.println(resource);
+		System.out.println(inventoryMap);
 		inventoryMap.remove(resource);
 	}
 	
@@ -140,7 +148,7 @@ public class Inventory {
 		}
 
 		int currentAmount = getQuantity(resource);
-		// check that the resoure amount would not become negative.
+		// check that the resource amount would not become negative.
 		if (currentAmount + amount < 0) {
 			throw new InvalidResourceException("Sorry, not enough " + resource.toString());
 		}
