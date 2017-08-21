@@ -140,13 +140,13 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
         PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
         SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 
-        float goalX = goalEntity.getPosX() + random.nextFloat() * 6 - 3;
-        float goalY = goalEntity.getPosY() + random.nextFloat() * 6 - 3;
+//        float goalX = goalEntity.getPosX() + random.nextFloat() * 6 - 3;
+//        float goalY = goalEntity.getPosY() + random.nextFloat() * 6 - 3;
 
  //       testGetEntities();
 
- //       float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-  //      float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
+        float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
+        float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
 
         if(this.distance(playerManager.getPlayer()) < speed) {
             this.setPosX(goalX);
