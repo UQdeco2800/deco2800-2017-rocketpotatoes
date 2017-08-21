@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
+import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
 public class InventoryTest {
 	
@@ -23,7 +24,7 @@ public class InventoryTest {
 	Inventory validInventory;
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws InvalidResourceException {
 		nonResource = new Object();
 		//seed1 = new Resource();
 		//food1 = new Resource();
@@ -33,13 +34,13 @@ public class InventoryTest {
 		validInventory = new Inventory(validResources);
 	}
 
-	@Test(expected = Exception.class)
-	public void testNullResourceInstantiation() throws Exception {
+	@Test(expected = InvalidInventoryException.class)
+	public void testNullResourceInstantiation() throws InvalidInventoryException {
 		Inventory items = new Inventory(null);
 	}
 	
-	@Test(expected = Exception.class)
-	public void testInvalidResource() throws Exception {
+	@Test(expected = InvalidResourceException.class)
+	public void testInvalidResource() throws InvalidResourceException {
 		// Non resource items
 		HashSet<Resource> invalidResources1 = new HashSet<Resource>();
 		
@@ -90,7 +91,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidInventoryException.class)
 	public void testAddingNullResource() throws Exception {
 		// Test null
 		HashSet<Resource> emptyResources = new HashSet<Resource>();
@@ -114,7 +115,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidResourceException.class)
 	public void testRemoveNullResource() throws Exception {
 		validInventory.removeInventoryResource(null);
 	}
@@ -130,13 +131,13 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidResourceException.class)
 	public void testRemoveNonExistingResource() throws Exception {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
 		validInventory.removeInventoryResource(food1);
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidResourceException.class)
 	public void getNullResourceQuantityTest() throws Exception {
 		validInventory.getQuantity(null);
 	}
@@ -154,12 +155,12 @@ public class InventoryTest {
 		inventory.getQuantity(seed1);
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidResourceException.class)
 	public void testNullResourceUpdate() throws Exception {
 		validInventory.updateQuantity(null, 10);
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidResourceException.class)
 	public void testNonExistingResourceUpdate() throws Exception {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
 		inventory.updateQuantity(seed1, 10);
@@ -175,7 +176,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidResourceException.class)
 	public void testInvalidQuantityUpdate() throws Exception {
 		validInventory.updateQuantity(seed1, -2);
 	}
@@ -187,7 +188,7 @@ public class InventoryTest {
 		inventory.updateInventory(validInventory);
 	}
 	
-	@Test(expected = Exception.class)
+	@Test(expected = InvalidInventoryException.class)
 	public void testNullInventoryUpdate() throws Exception {
 		validInventory.updateInventory(null);
 	}

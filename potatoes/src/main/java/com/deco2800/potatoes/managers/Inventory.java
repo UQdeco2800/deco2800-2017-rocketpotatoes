@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.exceptions.InvalidResourceException;
+import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
 public class Inventory {
 
@@ -31,9 +33,9 @@ public class Inventory {
 	 * For any resource in resources, this.getQuantity(resource) == 0
 	 * </p>
 	 */
-	public Inventory(HashSet<Resource> resources) throws Exception {
+	public Inventory(HashSet<Resource> resources) throws InvalidResourceException {
 		if (resources == null) {
-			throw new Exception("Resources cannot be null, please instantiate the class with valid resources");
+			throw new InvalidResourceException("Resources cannot be null, please instantiate the class with valid resources");
 		}
 		TreeMap<Resource, Integer> inventoryMap = new TreeMap<>();
 		for (Resource resource : resources) {
@@ -61,9 +63,9 @@ public class Inventory {
 	 * @throws Exception 
 	 * 			if the resource is null
 	 */
-	public void addInventoryResource(Resource resource) throws Exception {
+	public void addInventoryResource(Resource resource) throws InvalidResourceException {
 		if (resource == null){
-			throw new Exception("Please supply a valid resource");
+			throw new InvalidResourceException("Please supply a valid resource");
 		}
 		if (!getInventoryResources().contains(resource)){
 			inventoryMap.put(resource, 0);
@@ -78,9 +80,9 @@ public class Inventory {
 	 * @throws Exception 
 	 * 			if the resource is null or is not in inventoryMap
 	 */
-	public void removeInventoryResource(Resource resource) throws Exception {
+	public void removeInventoryResource(Resource resource) throws InvalidResourceException {
 		if (resource == null || !getInventoryResources().contains(resource)){
-			throw new Exception ("Please supply a valid resource");
+			throw new InvalidResourceException ("Please supply a valid resource");
 		}
 		inventoryMap.remove(resource);
 	}
@@ -102,9 +104,9 @@ public class Inventory {
 	 * @throws Exception
 	 *             if the resource is not in this.getInventoryResources()
 	 */
-	public int getQuantity(Resource resource) throws Exception {
+	public int getQuantity(Resource resource) throws InvalidResourceException {
 		if (!this.getInventoryResources().contains(resource)) {
-			throw new Exception("Please supply a valid resource");
+			throw new InvalidResourceException("Please supply a valid resource");
 		}
 		return inventoryMap.get(resource);
 	}
@@ -134,13 +136,13 @@ public class Inventory {
 	 */
 	public void updateQuantity(Resource resource, int amount) throws Exception {
 		if (!this.getInventoryResources().contains(resource)) {
-			throw new Exception("Please supply a valid resource");
+			throw new InvalidResourceException("Please supply a valid resource");
 		}
 
 		int currentAmount = getQuantity(resource);
 		// check that the resoure amount would not become negative.
 		if (currentAmount + amount < 0) {
-			throw new Exception("Sorry, not enough " + resource.toString());
+			throw new InvalidResourceException("Sorry, not enough " + resource.toString());
 		}
 
 		inventoryMap.put(resource, currentAmount + amount);
@@ -168,7 +170,7 @@ public class Inventory {
 	 */
 	public void updateInventory(Inventory extraItems) throws Exception {
 		if (extraItems == null){
-			throw new Exception("Cannot add null to Inventory");
+			throw new InvalidInventoryException("Cannot add null to Inventory");
 		}
 		for (Resource resource : extraItems.inventoryMap.keySet()) {
 			inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
