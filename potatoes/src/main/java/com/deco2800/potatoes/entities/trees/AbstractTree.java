@@ -1,12 +1,13 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.List;
+
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
-
-import java.util.LinkedList;
-import java.util.List;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -16,13 +17,14 @@ import java.util.List;
  */
 public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress {
 
+	// Maybe move this out
 	private class ConstructionEvent extends TimeEvent<AbstractTree> {
 		public ConstructionEvent() {
 			setDoReset(true);
 			setResetAmount(constructionTime / 100);
 			reset();
 		}
-		
+
 		@Override
 		public void action(AbstractTree param) {
 			decrementConstructionLeft();
@@ -34,16 +36,16 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		}
 	}
 
-	private List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
-	private List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
 	private int constructionLeft = 100;
 	private int constructionTime = 0;
 	private int upgradeLevel = 0;
+	private boolean normalEventsRegistered = false;
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public AbstractTree() {
+		// Reseting may not be needed
 		resetStats();
 	}
 
@@ -56,20 +58,23 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	@Override
 	public void onTick(long i) {
 		if (getConstructionLeft() <= 0) {
-			for (TimeEvent<AbstractTree> timeEvent : normalEvents) {
-				progressEvent(timeEvent, i);
+			if (!normalEventsRegistered) {
+				registerNewEvents(getUpgradeStats().getNormalEventsCopy());
 			}
-		} else {
-			for (TimeEvent<AbstractTree> timeEvent : constructionEvents) {
-				progressEvent(timeEvent, i);
-			}
+			normalEventsRegistered = true;
+		} else if (normalEventsRegistered) {
+			List<TimeEvent<AbstractTree>> constructionEvents = getUpgradeStats().getConstructionEventsCopy();
+			constructionEvents.add(new ConstructionEvent());
+			registerNewEvents(constructionEvents);
+			normalEventsRegistered = false;
 		}
 	}
 
-	private void progressEvent(TimeEvent<AbstractTree> timeEvent, long i) {
-		timeEvent.decreaseProgress(i, this);
-		if (!timeEvent.isDoReset() && timeEvent.isCompleted()) {
-			normalEvents.remove(timeEvent);
+	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
+		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		eventManager.unregisterAll(this);
+		for (TimeEvent<AbstractTree> timeEvent : events) {
+			eventManager.registerEvent(this, timeEvent);
 		}
 	}
 
@@ -119,15 +124,16 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			return; // Ignores upgrade if at max level
 		}
 		upgradeLevel++;
-        this.addMaxHealth(getUpgradeStats().getHp()-this.getMaxHealth());
+		this.addMaxHealth(getUpgradeStats().getHp() - this.getMaxHealth());
 		resetStats();
 	}
 
 	public void resetStats() {
-		normalEvents = getUpgradeStats().getNormalEventsCopy();
-		constructionEvents = getUpgradeStats().getConstructionEventsCopy();
+		constructionTime = getUpgradeStats().getConstructionTime();
+		List<TimeEvent<AbstractTree>> constructionEvents = getUpgradeStats().getConstructionEventsCopy();
 		constructionEvents.add(new ConstructionEvent());
 		this.heal(this.getMaxHealth());
+		registerNewEvents(constructionEvents);
 	}
 
 	/**

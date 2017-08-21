@@ -231,6 +231,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			*/
 
 		}
+		
+		// Tick Events
+		((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);;
 
 		// Broadcast updates if we're master TODO only when needed.
 		if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
