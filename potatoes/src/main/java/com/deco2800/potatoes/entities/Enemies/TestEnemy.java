@@ -24,7 +24,7 @@ public class TestEnemy extends AbstractEnemy implements Tickable, HasProgress {
 
 
 
-    private float speed = 0.1f;
+    private float speed = 0.2f;
 
     public TestEnemy() {
         super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);

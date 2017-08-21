@@ -200,10 +200,10 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			// Make our player
 			playerManager.setPlayer(new Player(5, 10, 0));
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+			//Testing a new enemy
+			GameManager.get().getWorld().addEntity(new TestEnemy(
+					10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 		}
-		//Testing a new enemy
-		GameManager.get().getWorld().addEntity(new TestEnemy(
-				10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
 	}
 
 	private void tickGame(long timeDelta) {
