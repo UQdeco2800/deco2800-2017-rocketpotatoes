@@ -30,9 +30,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		//this.random = new Random();
 	}
 
+	
 	@Override
 	public void onTick(long i) {
-
 		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
 		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;

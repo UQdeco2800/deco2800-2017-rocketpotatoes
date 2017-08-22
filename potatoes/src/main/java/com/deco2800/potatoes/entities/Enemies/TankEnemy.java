@@ -12,12 +12,18 @@ import com.deco2800.potatoes.util.Box3D;
 import java.util.Map;
 
 /**
- * Sub-class of AbstractEnemy
- * Tank Enemy has more health, slower move speed, stronger attack power
+ * Sub-class of AbstractEnemy Tank Enemy has more health, slower move speed,
+ * stronger attack power
  *
  */
-public class TankEnemy extends AbstractEnemy implements Tickable, HasProgress{
+public class TankEnemy extends AbstractEnemy implements Tickable, HasProgress {
 
-	
-	
+	/**
+	 * Default constructor for serialization
+	 */
+	public TankEnemy() {
+
+	}
+
+
 }
