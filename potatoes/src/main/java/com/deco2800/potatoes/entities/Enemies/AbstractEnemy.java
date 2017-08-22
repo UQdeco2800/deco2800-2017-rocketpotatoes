@@ -17,10 +17,9 @@ import java.util.Map;
  */
 public abstract class AbstractEnemy extends MortalEntity implements Tickable, HasProgress {
 
-    /*Initialisation of variables*/
+    /*Initialization of variables*/
     private transient Random random = new Random();
     private float speed = 0.1f;
-
     //Get the player and make player the goal of enemy
     PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
     private AbstractEntity goalEntity = playerManager.getPlayer();
@@ -138,14 +137,12 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
      */
     @Override
     public void onTick(long i) {
-
         PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
         SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 
-//        float goalX = goalEntity.getPosX() + random.nextFloat() * 6 - 3;
-//        float goalY = goalEntity.getPosY() + random.nextFloat() * 6 - 3;
-
-//       testGetEntities();
+//      float goalX = goalEntity.getPosX() + random.nextFloat() * 6 - 3;
+//      float goalY = goalEntity.getPosY() + random.nextFloat() * 6 - 3;
+//      testGetEntities();
 
         float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
         float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
