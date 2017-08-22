@@ -23,8 +23,6 @@ public class ProjectileTreeTest {
         assertEquals("getConstructionLeft() incorect construction time", 100, testTree.getConstructionLeft());
         testTree.decrementConstructionLeft();
         assertEquals("decrementConstructionLeft() incorect construction time", 99, testTree.getConstructionLeft());
-        testTree.setConstructionTime(70);
-        assertEquals("getConstructionLeft() incorect construction time", 70, testTree.getConstructionTime());
         assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
         assertNotNull("getAllUpgradeStats() returns null", testTree.getAllUpgradeStats());
     }
