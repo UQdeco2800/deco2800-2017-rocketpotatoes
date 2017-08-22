@@ -297,6 +297,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+			
+			GameManager.get().getWorld().addEntity(new SeedResource("seed", 18, 18, 0));
+			GameManager.get().getWorld().addEntity(new SeedResource("seed", 17, 18, 0));
+			GameManager.get().getWorld().addEntity(new SeedResource("seed", 17, 17, 0));
+			GameManager.get().getWorld().addEntity(new SeedResource("seed", 18, 17, 0));
+			
+			GameManager.get().getWorld().addEntity(new FoodResource("food", 0, 18, 0));
+			GameManager.get().getWorld().addEntity(new FoodResource("food", 1, 18, 0));
+			GameManager.get().getWorld().addEntity(new FoodResource("food", 0, 17, 0));
+			GameManager.get().getWorld().addEntity(new FoodResource("food", 1, 17, 0));
 		}
 
 
