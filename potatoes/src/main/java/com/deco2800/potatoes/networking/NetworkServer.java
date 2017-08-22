@@ -29,6 +29,7 @@ public class NetworkServer {
     public volatile boolean ready;
 
     /**
+
      * Starts a server for the game // TODO ports occupied?
      * TODO debug logging
      *
@@ -82,7 +83,7 @@ public class NetworkServer {
                     ClientConnectionRegisterMessage m = (ClientConnectionRegisterMessage) object;
 
                     c.name = m.name;
-                    System.out.println("[SERVER]: New connection: " + c.name + "(" + c.getID() + ")");
+                    //System.out.println("[SERVER]: New connection: " + c.name + "(" + c.getID() + ")");
 
                     // Tell the new client their id
                     HostConnectionConfirmMessage cResponse = new HostConnectionConfirmMessage();
@@ -102,19 +103,19 @@ public class NetworkServer {
 
                         newMess.id = nCon.getID();
                         newMess.name = nCon.name;
-                        System.out.println("[SERVER]: Sending player " + nCon.name + "(" + c.getID() + ")");
+                        //System.out.println("[SERVER]: Sending player " + nCon.name + "(" + c.getID() + ")");
                         server.sendToTCP(c.getID(), newMess);
                     }
 
 
                     // Tell the new client about all the entities (unless it's master)
                     if (!isMaster(c)) {
-                        System.out.println("[SERVER]: Sending entity state...");
+                        //System.out.println("[SERVER]: Sending entity state...");
                         for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
                             HostEntityCreationMessage create = new HostEntityCreationMessage();
                             create.entity = e.getValue();
                             create.id = e.getKey();
-                            System.out.println(e.getValue() + " : " + e.getKey());
+                            //System.out.println(e.getValue() + " : " + e.getKey());
 
                             server.sendToTCP(c.getID(), create);
                         }
@@ -125,10 +126,10 @@ public class NetworkServer {
                     response.id = (byte) c.getID();
                     response.name = m.name;
 
-                    System.out.println("[SERVER]: Sending new player to current clients");
+                    //System.out.println("[SERVER]: Sending new player to current clients");
                     server.sendToAllTCP(response);
 
-                    System.out.println("[SERVER]: Telling new player they are ready");
+                    //System.out.println("[SERVER]: Telling new player they are ready");
                     // Finally tell the client they are ready to play
                     HostPlayReadyMessage playMess = new HostPlayReadyMessage();
                     server.sendToTCP(c.getID(), playMess);
@@ -186,7 +187,7 @@ public class NetworkServer {
                 NetworkConnection c = (NetworkConnection) connection;
 
 
-                System.out.println("[SERVER]: " + c.name + "(" + c.getID() + ")" + " disconnected.");
+                //System.out.println("[SERVER]: " + c.name + "(" + c.getID() + ")" + " disconnected.");
 
                 HostPlayerDisconnectedMessage m = new HostPlayerDisconnectedMessage();
                 m.id = c.getID();

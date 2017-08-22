@@ -69,7 +69,7 @@ public class Network {
         sorted.addAll(entities);
 
         for (Class c : sorted) {
-            System.out.println(c.getCanonicalName());
+            //System.out.println(c.getCanonicalName());
             // Auto register entities!
             k.register(c);
         }

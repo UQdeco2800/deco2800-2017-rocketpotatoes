@@ -23,6 +23,7 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
@@ -152,30 +153,23 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		cameraManager.getCamera().position.y = 0;
 
 
-		// TODO clean up testing stuff
+		// TODO clean up testing wstuff
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
-		/*
+
 		try {
 			try {
-				System.out.println("Starting client");
 				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
 				while (!multiplayerManager.isClientReady()) ;
-				System.out.println("Started client");
 			} catch (IOException ex) {
-				System.out.println("No server to connect to");
-				System.out.println("Starting server");
 				multiplayerManager.createHost(1337);
 
 				// Wait until server is ready
 				while (!multiplayerManager.isServerReady()) ;
-				System.out.println("Started server");
 				try {
-					System.out.println("Starting client");
 					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
 					while (!multiplayerManager.isClientReady()) ;
-					System.out.println("Started client");
 				} catch (IOException ex2) {
 					System.exit(-1);
 				}
@@ -186,7 +180,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			ex.printStackTrace();
 			System.exit(-1);
 		}
-		*/
+
 
 		if (!multiplayerManager.isMultiplayer()) {
 			guiManager.getGui(ChatGui.class).hide();

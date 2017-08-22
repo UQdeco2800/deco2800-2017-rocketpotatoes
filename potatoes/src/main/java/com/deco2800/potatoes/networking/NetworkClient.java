@@ -72,7 +72,7 @@ public class NetworkClient {
                 if (object instanceof HostConnectionConfirmMessage) {
                     HostConnectionConfirmMessage m = (HostConnectionConfirmMessage) object;
 
-                    System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
+                    //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
 
                     clientID = m.id;
                     return;
@@ -81,7 +81,7 @@ public class NetworkClient {
                 if (object instanceof HostDisconnectMessage) {
                     HostDisconnectMessage m = (HostDisconnectMessage) object;
 
-                    System.out.println("[CLIENT]: disconnected because: " + m.message);
+                    //System.out.println("[CLIENT]: disconnected because: " + m.message);
                     client.close();
                     // TODO notify game somehow. (Maybe we wait for connection confirmation before we start the client
                     // thread?
@@ -89,7 +89,7 @@ public class NetworkClient {
 
                 if (object instanceof HostPlayReadyMessage) {
                     HostPlayReadyMessage m = (HostPlayReadyMessage) object;
-                    System.out.println("[CLIENT]: I'm ready to go!");
+                    //System.out.println("[CLIENT]: I'm ready to go!");
                     sendSystemMessage("Successfully joined server!");
                     ready = true;
                 }
@@ -97,7 +97,7 @@ public class NetworkClient {
                 if (object instanceof HostNewPlayerMessage) {
                     HostNewPlayerMessage m = (HostNewPlayerMessage) object;
 
-                    System.out.println("[CLIENT]: Got host new player message: " + m.id);
+                    //System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
 
                     clientList.set(m.id, m.name);
@@ -108,7 +108,7 @@ public class NetworkClient {
                         GameManager.get().getWorld().addEntity(p, m.id);
 
                         if (clientID == m.id) {
-                            System.out.println("[CLIENT]: IT'S ME!");
+                            //System.out.println("[CLIENT]: IT'S ME!");
 
 
                             // Give the player manager me
@@ -129,7 +129,7 @@ public class NetworkClient {
                 if (object instanceof HostPlayerDisconnectedMessage) {
                     HostPlayerDisconnectedMessage m = (HostPlayerDisconnectedMessage) object;
 
-                    System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
+                    //System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
                     sendSystemMessage("Player Disconnected: " + clientList.get(m.id) + "(" + m.id + ")");
 
                     clientList.set(m.id, null);
@@ -142,7 +142,7 @@ public class NetworkClient {
                 if (object instanceof HostExistingPlayerMessage) {
                     HostExistingPlayerMessage m = (HostExistingPlayerMessage) object;
 
-                    System.out.println("[CLIENT]: Got host existing player message: " + m.id);
+                    //System.out.println("[CLIENT]: Got host existing player message: " + m.id);
                     sendSystemMessage("Existing Player: " + m.name + "(" + m.id + ")");
                     clientList.set(m.id, m.name);
 
@@ -152,8 +152,8 @@ public class NetworkClient {
                 if (object instanceof HostEntityCreationMessage) {
                     HostEntityCreationMessage m = (HostEntityCreationMessage) object;
 
-                    System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
-                            m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
+                    //System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
+                    //        m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
 
                     // -1 is the signal for put it wherever.
                     if (m.id == -1) {
@@ -169,7 +169,7 @@ public class NetworkClient {
                 if (object instanceof HostEntityDestroyMessage) {
                     HostEntityDestroyMessage m = (HostEntityDestroyMessage) object;
 
-                    System.out.println("[CLIENT]: Got host destroy entity message: " + m.id);
+                    //System.out.println("[CLIENT]: Got host destroy entity message: " + m.id);
                     GameManager.get().getWorld().removeEntity(m.id);
 
                     return;
