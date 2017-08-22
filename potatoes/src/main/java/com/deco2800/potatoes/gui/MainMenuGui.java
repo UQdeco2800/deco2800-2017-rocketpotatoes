@@ -190,28 +190,25 @@ public class MainMenuGui extends Gui {
     private void resetGui(Stage stage) {
         root.reset();
         root.debugAll();
+        root.center();
+        root.setWidth(stage.getWidth());
+        root.setHeight(stage.getHeight());
+        root.setPosition(0, 0);
 
         switch (state) {
             case PRIMARY:
-                root.add(primaryButtons);
+                root.add(primaryButtons).expandX().center();
                 break;
             case START_GAME:
-                root.add(startButtonGroup);
+                root.add(startButtonGroup).expandX().center();
                 break;
             case START_MULTIPLAYER:
-                root.add(startMultiplayerButtonGroup);
+                root.add(startMultiplayerButtonGroup).expandX().center();
                 break;
             case OPTIONS:
                 // TODO
                 break;
         }
-
-
-        root.setWidth(stage.getWidth());
-        root.setHeight(stage.getHeight());
-        root.setPosition(0, 0);
-        root.layout();
-        root.pack();
     }
 
     /**
