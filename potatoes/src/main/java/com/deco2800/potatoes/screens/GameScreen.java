@@ -248,6 +248,9 @@ public class GameScreen implements Screen {
 
         }
 
+        // Tick Events
+        ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);;
+
         // Broadcast updates if we're master TODO only when needed.
         if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
             for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
@@ -315,11 +318,16 @@ public class GameScreen implements Screen {
 		 * Tickrate = 100Hz
 		 */
         if (playing) {
-            long timeDelta = TimeUtils.millis() - lastGameTick;
-            if (timeDelta > 10) {
+            // Stop the first tick lasting years
+            if (lastGameTick != 0) {
+                long timeDelta = TimeUtils.millis() - lastGameTick;
+                if (timeDelta > 10) {
 
-                // Tick game, a bit a weird place to have it though.
-                tickGame(timeDelta);
+                    // Tick game, a bit a weird place to have it though.
+                    tickGame(timeDelta);
+                    lastGameTick = TimeUtils.millis();
+                }
+            } else {
                 lastGameTick = TimeUtils.millis();
             }
         }
