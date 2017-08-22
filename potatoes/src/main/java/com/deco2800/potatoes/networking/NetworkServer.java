@@ -30,6 +30,7 @@ public class NetworkServer {
 
     /**
      * Starts a server for the game // TODO ports occupied?
+     * TODO debug logging
      *
      * @param tcpPort tcp port to use, presumed to be correct
      * @param udpPort udp port to use, presumed to be correct
@@ -164,10 +165,14 @@ public class NetworkServer {
                     return;
                 }
 
-                if (object instanceof Message) {
-                    Message m = (Message) object;
+                if (object instanceof ClientChatMessage) {
+                    ClientChatMessage m = (ClientChatMessage) object;
 
-                    System.out.println("[MESSAGE]: " + c.name + " : " + m.message);
+                    HostChatMessage response = new HostChatMessage();
+                    response.id = c.getID();
+                    response.message = m.message;
+                    //System.out.println("[MESSAGE]: " + c.name + " : " + m.message);
+                    server.sendToAllTCP(response);
 
                     return;
                 }

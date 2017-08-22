@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
 
 public class ChatGui extends Gui {
     private Skin uiSkin;
@@ -58,8 +60,16 @@ public class ChatGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (!textField.getText().equals("")) {
-                    addMessage("Button", textField.getText(), Color.WHITE);
+                    MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+
+                    if (m.isMultiplayer()) {
+                        m.broadcastMessage(textField.getText());
+                    }
+
+                    //addMessage("Button", textField.getText(), Color.WHITE);
                     textField.setText("");
+
+                    // Reset keyboard focus to game window
                     stage.setKeyboardFocus(null);
                 }
             }

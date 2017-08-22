@@ -197,13 +197,13 @@ public class NetworkClient {
                     }
 
                     /* Generic chat message */
-                    if (object instanceof Message) {
-                        Message m = (Message) object;
+                    if (object instanceof HostChatMessage) {
+                        HostChatMessage m = (HostChatMessage) object;
 
                         GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
                         ((ChatGui)g.getGui(ChatGui.class)).addMessage(
-                                clientList.get(connection.getID()) + "(" + connection.getID() + ")"
-                                , m.message, Color.WHITE);
+                                clientList.get(m.id) + " (" + m.id + ")",
+                                m.message, Color.WHITE);
 
                         return;
                     }
@@ -230,7 +230,7 @@ public class NetworkClient {
      * server. And as such methods such as creation/destruction of entities are located in the NetworkServer class. */
 
     public void broadcastMessage(String message) {
-        Message m = new Message();
+        ClientChatMessage m = new ClientChatMessage();
         m.message = message;
         client.sendTCP(m);
     }
