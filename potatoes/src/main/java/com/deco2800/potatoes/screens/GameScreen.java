@@ -33,7 +33,7 @@ import java.util.Random;
  */
 public class GameScreen implements Screen {
 
-    // References to the 'game' object which handles our screens/switching etc
+    // References to the 'game' object which handles our screens/
     private RocketPotatoes game;
     /**
      * Set the renderer.

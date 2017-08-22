@@ -2,6 +2,7 @@ package com.deco2800.potatoes;
 
 import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.screens.GameScreen;
+import com.deco2800.potatoes.screens.MainMenuScreen;
 
 public class RocketPotatoes extends Game {
 
@@ -10,11 +11,11 @@ public class RocketPotatoes extends Game {
 	 */
 	@Override
 	public void create() {
-		this.setScreen(new GameScreen(this));
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	public void render() {
-		super.render(); //important!
+		super.render();
 	}
 
 	public void dispose() {

@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -114,7 +113,7 @@ public class ChatGui extends Gui {
     public void show() {
         super.show();
 
-        ((GuiManager) GameManager.get().getManager(GuiManager.class)).getStage().addActor(table);
+        stage.addActor(table);
     }
 
     /**
