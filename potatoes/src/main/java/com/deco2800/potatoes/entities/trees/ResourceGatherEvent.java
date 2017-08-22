@@ -6,7 +6,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
  */
 public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	
-	private int gatherAmount;	// The number of resources gathered per reset
+	private int gatherAmount;	// The number of resources gathered per interval
 	
 	/**
 	 * Default constructor for serialization
@@ -42,6 +42,8 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 		} else {
 			resourceTree.resourceCount = ResourceTree.MAX_RESOURCE_COUNT;
 		}
+		
+		// TODO: Log entries for resource updates and when tree it full
 	}
 
 	@Override
