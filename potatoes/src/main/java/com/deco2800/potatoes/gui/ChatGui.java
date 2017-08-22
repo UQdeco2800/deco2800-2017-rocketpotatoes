@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 
 public class ChatGui extends Gui {
@@ -79,6 +80,27 @@ public class ChatGui extends Gui {
         stage.addActor(table);
     }
     private int num = 0;
+
+    /**
+     * Hide's this Gui element. Fadeout effects can be implemented on a case-by-case basis.
+     */
+    @Override
+    public void hide() {
+        super.hide();
+
+        table.remove();
+    }
+
+    /**
+     * Show's this Gui element. Fadein effects can be implemented on a case-by-case basis.
+     */
+    @Override
+    public void show() {
+        super.show();
+
+        ((GuiManager) GameManager.get().getManager(GuiManager.class)).getStage().addActor(table);
+    }
+
     /**
      * Adjusts this gui's position to correct for any resize event.
      *
