@@ -65,6 +65,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen(RocketPotatoes game, String name, String IP, int port, boolean isHost)
             throws IllegalStateException, IllegalArgumentException, IOException {
+        this.game = game;
         setupGame();
 
         // setup multiplayer
@@ -83,6 +84,7 @@ public class GameScreen implements Screen {
      * @param game game instance
      */
     public GameScreen(RocketPotatoes game) {
+        this.game = game;
         setupGame();
         initializeGame();
     }
@@ -143,6 +145,13 @@ public class GameScreen implements Screen {
 
 		/* Setup inputs */
         setupInputHandling();
+
+        /* Create an example world for the engine */
+        GameManager.get().setWorld(new InitialWorld());
+
+		/* Move camera to center */
+        cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
+        cameraManager.getCamera().position.y = 0;
     }
 
     private void setupInputHandling() {
@@ -175,18 +184,9 @@ public class GameScreen implements Screen {
      */
     private void initializeGame() {
 
-		/* Create an example world for the engine */
-        GameManager.get().setWorld(new InitialWorld());
-
-		/* Move camera to center */
-        cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
-        cameraManager.getCamera().position.y = 0;
-
         if (!multiplayerManager.isMultiplayer()) {
             guiManager.getGui(ChatGui.class).hide();
         }
-
-
 
         Random random = new Random();
 
