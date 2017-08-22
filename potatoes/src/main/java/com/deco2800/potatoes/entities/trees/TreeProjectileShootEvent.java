@@ -44,8 +44,6 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 
 		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
 				target, tree.getUpgradeStats().getRange(),1));
-
-
 	}
 
 	@Override
