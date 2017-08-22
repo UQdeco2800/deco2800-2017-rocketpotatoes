@@ -23,6 +23,8 @@ public class ChatGui extends Gui {
     private Table table;
     private ScrollPane chatContainer;
     private ChatList textArea;
+
+    //2private Table
     private TextField textField;
     private Button sendButton;
 
@@ -80,11 +82,13 @@ public class ChatGui extends Gui {
 
     private void resetGui(Stage stage) {
         table.reset();
-        //table.setDebug(true);
-        table.add(chatContainer).width(stage.getWidth() * 0.3f).height(stage.getHeight() * 0.3f);
+        //stable.setDebug(true);
+
+        table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
         table.row();
-        table.add(textField).width(stage.getWidth() * 0.3f - 20.0f).align(Align.left);
-        table.add(sendButton).width(20.0f).height(20.0f).align(Align.left);
+        table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
+        table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
+
         table.getColor().a = 0.3f;
         table.setPosition(0, 0);
         table.pack();
