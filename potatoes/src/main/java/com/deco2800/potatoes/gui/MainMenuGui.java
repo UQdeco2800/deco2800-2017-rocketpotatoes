@@ -157,6 +157,14 @@ public class MainMenuGui extends Gui {
                 mainMenuScreen.startMultiplayer("Fred", "",1337, true);
             }
         });
+
+        multiplayerBackButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state = States.START_GAME;
+                resetGui(stage);
+            }
+        });
     }
 
     /**
