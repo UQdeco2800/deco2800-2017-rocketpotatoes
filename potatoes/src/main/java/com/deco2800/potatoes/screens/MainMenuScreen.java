@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
@@ -41,13 +43,16 @@ public class MainMenuScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         stage = new Stage(new ScreenViewport());
 
-        // Add gui
-        mainMenuGui = new MainMenuGui(stage);
+        setupGui();
 
         // Setup input handling
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    private void setupGui() {
+        mainMenuGui = new MainMenuGui(stage, this);
     }
 
 
@@ -127,5 +132,20 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public void startSinglePlayer() {
+        game.setScreen(new GameScreen(game));
+    }
+
+    public void startMultiplayer(String name, String IP, int port, boolean isHost) {
+        try {
+            game.setScreen(new GameScreen(game, name, IP, port, isHost));
+        }
+        catch (Exception ex) {
+            // TODO handle this stuff yo
+            ex.printStackTrace();
+            System.exit(-1);
+        }
     }
 }

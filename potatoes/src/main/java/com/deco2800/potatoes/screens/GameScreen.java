@@ -24,6 +24,7 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.worlds.InitialWorld;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
@@ -54,7 +55,42 @@ public class GameScreen implements Screen {
     private long lastGameTick = 0;
     private boolean playing = true;
 
+    /**
+     * Start's a multiplayer game
+     * @param game game instance
+     * @param name name to join with
+     * @param IP IP to connect to, (ignored if isHost is true (will connect to 127.0.0.1))
+     * @param port port to connect/host on
+     * @param isHost is this client a host (i.e. start a server then connect to it)
+     */
+    public GameScreen(RocketPotatoes game, String name, String IP, int port, boolean isHost)
+            throws IllegalStateException, IllegalArgumentException, IOException {
+        setupGame();
+
+        // setup multiplayer
+        if (isHost) {
+            multiplayerManager.createHost(port);
+            multiplayerManager.joinGame(name, "127.0.0.1", port);
+        } else {
+            multiplayerManager.joinGame(name, IP, port);
+        }
+
+        initializeGame();
+    }
+
+    /**
+     * Start's a singleplayer game
+     * @param game game instance
+     */
     public GameScreen(RocketPotatoes game) {
+        setupGame();
+        initializeGame();
+    }
+
+    /**
+     * Sets up everything needed for the game, but doesn't initialize any game specific things just yet
+     */
+    private void setupGame() {
         this.game = game;
 
 		/*
@@ -107,9 +143,6 @@ public class GameScreen implements Screen {
 
 		/* Setup inputs */
         setupInputHandling();
-
-		/* Init game TODO move? */
-        initializeGame();
     }
 
     private void setupInputHandling() {
@@ -148,36 +181,6 @@ public class GameScreen implements Screen {
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
         cameraManager.getCamera().position.y = 0;
-
-
-        // TODO clean up testing wstuff
-
-        //TODO TESTING REMOVE !!
-        // Magic testing code
-		/*
-		try {
-			try {
-				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
-				while (!multiplayerManager.isClientReady()) ;
-			} catch (IOException ex) {
-				multiplayerManager.createHost(1337);
-
-				// Wait until server is ready
-				while (!multiplayerManager.isServerReady()) ;
-				try {
-					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
-					while (!multiplayerManager.isClientReady()) ;
-				} catch (IOException ex2) {
-					System.exit(-1);
-				}
-			}
-		}
-		catch (Exception ex) {
-			// rest in peace
-			ex.printStackTrace();
-			System.exit(-1);
-		}
-		*/
 
         if (!multiplayerManager.isMultiplayer()) {
             guiManager.getGui(ChatGui.class).hide();
