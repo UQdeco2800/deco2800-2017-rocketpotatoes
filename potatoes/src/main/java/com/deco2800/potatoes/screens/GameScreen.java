@@ -138,7 +138,7 @@ public class GameScreen implements Screen {
         });
 
         // Make our GameMenuGui
-        guiManager.addGui(new GameMenuGui(guiManager.getStage()));
+        guiManager.addGui(new GameMenuGui(guiManager.getStage(), this));
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
@@ -419,6 +419,11 @@ public class GameScreen implements Screen {
     @Override
     public void dispose () {
         // Don't need this at the moment
+    }
+
+    public void exitToMenu() {
+        game.setScreen(new MainMenuScreen(game));
+        dispose();
     }
 
 
