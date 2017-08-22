@@ -133,7 +133,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		inputMultiplexer.addProcessor(input);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
-
 	}
 
 	/**

@@ -1,12 +1,15 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
@@ -19,15 +22,18 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.observers.KeyDownObserver;
 
 public class ChatGui extends Gui {
+    private Stage stage;
+
     private Skin uiSkin;
     private Table table;
     private ScrollPane chatContainer;
     private ChatList textArea;
 
-    //2private Table
     private TextField textField;
     private Button sendButton;
 
@@ -36,6 +42,7 @@ public class ChatGui extends Gui {
      */
     public ChatGui(Stage stage) {
         hidden = false;
+        this.stage = stage;
 
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -60,18 +67,34 @@ public class ChatGui extends Gui {
         sendButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!textField.getText().equals("")) {
-                    MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+                sendMessage();
+            }
+        });
 
-                    if (m.isMultiplayer()) {
-                        m.broadcastMessage(textField.getText());
-                    }
+        textField.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ENTER) {
+                    sendMessage();
+                    return true;
+                }
 
-                    //addMessage("Button", textField.getText(), Color.WHITE);
-                    textField.setText("");
-
-                    // Reset keyboard focus to game window
+                if (keycode == Input.Keys.ESCAPE) {
                     stage.setKeyboardFocus(null);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Key listener to focus on textfield when playing
+        ((InputManager)GameManager.get().getManager(InputManager.class)).addKeyDownListener(new KeyDownObserver() {
+            @Override
+            public void notifyKeyDown(int keycode) {
+                if (!hidden) {
+                    if (keycode == Input.Keys.ENTER) {
+                        stage.setKeyboardFocus(textField);
+                    }
                 }
             }
         });
@@ -144,6 +167,22 @@ public class ChatGui extends Gui {
         // Force scroll to bottom (TODO disable if manually scrolled up?)
         chatContainer.layout();
         chatContainer.scrollTo(0, 0, 0, 0);
+    }
+
+    private void sendMessage() {
+        if (!textField.getText().equals("")) {
+            MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+
+            if (m.isMultiplayer()) {
+                m.broadcastMessage(textField.getText());
+            }
+
+            //addMessage("Button", textField.getText(), Color.WHITE);
+            textField.setText("");
+
+            // Reset keyboard focus to game window
+            stage.setKeyboardFocus(null);
+        }
     }
 
     /** Tweaked list element so we can colour specific elements, and don't listen for click events
