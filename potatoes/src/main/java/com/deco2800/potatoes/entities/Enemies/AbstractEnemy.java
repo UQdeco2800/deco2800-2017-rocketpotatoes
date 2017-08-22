@@ -143,7 +143,7 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
 //        float goalX = goalEntity.getPosX() + random.nextFloat() * 6 - 3;
 //        float goalY = goalEntity.getPosY() + random.nextFloat() * 6 - 3;
 
- //       testGetEntities();
+//       testGetEntities();
 
         float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
         float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
@@ -194,7 +194,7 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
     }
 
     /**
-     * The current goal of this enemy
+     * Get the current goal of this enemy
      *
      * @return the goal AbstractEntity of this enemy
      */
@@ -202,19 +202,34 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
         return this.goalEntity;
     }
 
+    /**
+     * Get the health of this enemy
+     * @return current health of enemy as a integer
+     */
     @Override
     public int getProgress() {
         return (int)health;
     }
 
+    
     @Override
     public boolean showProgress() {
         return true;
     }
 
+    
+    /**
+     * Set current health of the enemy to given int
+     * @param p given health
+     */
     @Override
     public void setProgress(int p) { health = p; }
 
+    
+    /**
+     * Give damage to the enemy if the enemy is shot by projectile
+     * @param projectile 
+     */
     public void getShot(Projectile projectile) {
         this.damage(projectile.getDamage());
         //System.out.println(this + " was shot. Health now " + getHealth());
