@@ -1,43 +1,70 @@
 package com.deco2800.potatoes.entities;
 
-public interface Resource {
-	// possible additions:
-	// 		- location data
-	//		- texture data
+import java.util.Map;
+
+public class Resource implements Comparable<Resource> {
 	
+	protected String resourceType;
+	protected String imageSource;
+	protected String name;
 	
-	/**
-	 * <p>
-	 * Returns the ID of the resource.
-	 * </p>
-	 * 
-	 * <p>
-	 * Method to be implemented by each resource class.
-	 * </p>
-	 * 
-	 * @return ID
-	 * 		The numerical representation of the resource.
-	 * 		Core game resources: 0xx. Eg. 1 for Seeds
-	 * 		Offensive resources: 1xx. Eg. possibly 101 for arrows.
-	 * 		Defensive resources: 2xx. Eg. possibly 204 for a healing item.
-	 * 		Passive items: 3xx. Eg possibly 345 for a shield.
-	 * 
-	 * 		Extend as needed.
-	 */
-	public int getResourceType();
+	public Resource(String name) {
+		this.name = name;
+		resourceType = "ordinary";
+		imageSource = "defaultImage.png";
+	}
+	
+	public String getType() {
+		return resourceType;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public String getImageSource() {
+		return imageSource;
+	}
 	
 	/**
 	 * <p>
 	 * Returns the string representation of the resource.
 	 * </p>
 	 * 
-	 * <p>
-	 * Method to be implemented by each resource class.
-	 * </p>
-	 * 
 	 * @return string
 	 * 		The string representation of the resource.
 	 */
-	public String toString();
+	public String toString() {
+		return resourceType+": "+name;
+	}
+	
+	@Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Resource)) {
+            return false;
+        }
+        Resource other = (Resource) object; // the corridor to compare
+        return other.getName().equals(name) &&
+        		other.getType().equals(resourceType);
+    }
+
+    @Override
+    public int hashCode() {
+        // We create a polynomial hash-code based on the object string and type.
+        final int prime = 31; // an odd base prime
+        int result = 1; // the hash code under construction
+        result = prime * result + name.hashCode();
+        result = prime * result + resourceType.hashCode();
+        return result;
+    }
+    
+    @Override
+    public int compareTo(Resource other) {
+        int result = resourceType.compareTo(other.getType());
+        if (result == 0) {
+        	return name.compareTo(other.getName());
+        }
+        return result;
+    }
 
 }
