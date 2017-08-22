@@ -1,14 +1,23 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.Map;
+import com.deco2800.potatoes.entities.AbstractEntity;
 
-public class Resource implements Comparable<Resource> {
+public class Resource extends AbstractEntity {
 	
 	protected String resourceType;
 	protected String imageSource;
 	protected String name;
 	
 	public Resource(String name) {
+		this.name = name;
+		resourceType = "ordinary";
+		imageSource = "defaultImage.png";
+	}
+	
+	public Resource(String name, float posX, float posY, float posZ, String texture) {
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, texture);
+		
 		this.name = name;
 		resourceType = "ordinary";
 		imageSource = "defaultImage.png";
@@ -58,6 +67,7 @@ public class Resource implements Comparable<Resource> {
         return result;
     }
     
+    /*
     @Override
     public int compareTo(Resource other) {
         int result = resourceType.compareTo(other.getType());
@@ -66,5 +76,6 @@ public class Resource implements Comparable<Resource> {
         }
         return result;
     }
+    */
 
 }

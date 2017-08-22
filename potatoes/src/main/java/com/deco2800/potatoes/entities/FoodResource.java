@@ -1,10 +1,18 @@
 package com.deco2800.potatoes.entities;
 
-public class FoodResource extends Resource {
-	/*
-	 * Unique name for each resource.
-	 */
-	
+import java.util.Map;
+
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.Box3D;
+
+public class FoodResource extends Resource implements Tickable {
+
+	private static final transient String TEXTURE = "food";
+	private final float change = (float)0.2;
+	private final float[][] positions = {{change, 0}, {change, change},
+			{0, change}, {-change, change}, {-change, 0}, {-change, -change},
+			{0, -change}, {-change, -change}};
 	
 	/**
 	 * <p>
@@ -20,6 +28,44 @@ public class FoodResource extends Resource {
 	public FoodResource(String name) {
 		super(name);
 		this.resourceType = "food";
+	}
+	
+	public FoodResource(String name, float posX, float posY, float posZ) {
+		super(name, posX, posY, posZ, TEXTURE);
+		this.resourceType = "food";
+	}
+	
+	@Override
+	public void onTick(long time) {
+		float xPos = getPosX();
+		float yPos = getPosY();
+		boolean collided = false;
+		
+		Box3D newPos = getBox3D();
+		newPos.setX(xPos);
+		newPos.setY(yPos);
+		
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		for (AbstractEntity entity : entities.values()) {
+			if (entity instanceof Player) {
+				for (int i = 0; i < 8; i ++) {
+					newPos.setX(xPos + positions[i][0]);
+					newPos.setY(yPos + positions[i][1]);
+					
+					if (newPos.overlaps(entity.getBox3D())) {
+						collided = true;
+					}
+				}
+				
+			}
+				
+		}
+		
+		if(collided) {
+			GameManager.get().getWorld().removeEntity(this);
+			//add to inventory
+		}
+			
 	}
 
 }
