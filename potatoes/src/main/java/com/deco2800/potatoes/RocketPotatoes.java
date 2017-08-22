@@ -316,11 +316,16 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		 * Tickrate = 100Hz
 		 */
 		if (playing) {
-			long timeDelta = TimeUtils.millis() - lastGameTick;
-			if (timeDelta > 10) {
+			// Stop the first tick lasting years
+			if (lastGameTick != 0) {
+				long timeDelta = TimeUtils.millis() - lastGameTick;
+				if (timeDelta > 10) {
 
-				// Tick game, a bit a weird place to have it though.
-				tickGame(timeDelta);
+					// Tick game, a bit a weird place to have it though.
+					tickGame(timeDelta);
+					lastGameTick = TimeUtils.millis();
+				} 
+			} else {
 				lastGameTick = TimeUtils.millis();
 			}
 		}
