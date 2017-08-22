@@ -20,6 +20,7 @@ public class GameMenuGui extends Gui {
     private Button duckSoundButton;
     private Button resetButton;
     private Button selectButton;
+    private Window window;
 
     public GameMenuGui(Stage stage) {
         hidden = false;
@@ -95,7 +96,6 @@ public class GameMenuGui extends Gui {
     @Override
     public void resize(Stage stage) {
         super.resize(stage);
-
         window.setPosition(0, stage.getHeight());
     }
 }

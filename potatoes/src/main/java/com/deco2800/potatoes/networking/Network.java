@@ -38,8 +38,8 @@ public class Network {
         k.register(HostEntityUpdateProgressMessage.class);
         k.register(HostExistingPlayerMessage.class);
 
-
-        k.register(Message.class);
+        k.register(ClientChatMessage.class);
+        k.register(HostChatMessage.class);
         // Register member variables here:
 
         k.register(java.util.Optional.class);
@@ -69,7 +69,7 @@ public class Network {
         sorted.addAll(entities);
 
         for (Class c : sorted) {
-            System.out.println(c.getCanonicalName());
+            //System.out.println(c.getCanonicalName());
             // Auto register entities!
             k.register(c);
         }
@@ -156,9 +156,15 @@ public class Network {
         public int id;
     }
 
-    /* Simple message object, TODO colours, formatting etc */
-    static public class Message {
+    /* Simple chat message object */
+    static public class ClientChatMessage {
         public String message;
+    }
+
+    /* Chat message object sent with sender ID */
+    static public class HostChatMessage {
+        public String message;
+        public int id;
     }
 
 }

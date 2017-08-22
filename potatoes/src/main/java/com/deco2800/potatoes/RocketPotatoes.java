@@ -5,10 +5,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -86,8 +90,21 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
 		guiManager.setStage(new Stage(new ScreenViewport()));
 
+		// Deselect all gui elements if we click anywhere in the game world
+		guiManager.getStage().getRoot().addCaptureListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if (!(event.getTarget() instanceof TextField)) {
+					guiManager.getStage().setKeyboardFocus(null);
+				}
+				return false;
+			}
+		});
+
 		// Make our GameMenuGui
 		guiManager.addGui(new GameMenuGui(guiManager.getStage()));
+
+		// Make our chat window
+		guiManager.addGui(new ChatGui(guiManager.getStage()));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -115,7 +132,6 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		inputMultiplexer.addProcessor(input);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
-
 	}
 
 	/**
@@ -135,30 +151,23 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		cameraManager.getCamera().position.y = 0;
 
 
-		// TODO clean up testing stuff
+		// TODO clean up testing wstuff
 
 		//TODO TESTING REMOVE !!
 		// Magic testing code
 		/*
 		try {
 			try {
-				System.out.println("Starting client");
 				multiplayerManager.joinGame("Tom 2", "127.0.0.1", 1337);
 				while (!multiplayerManager.isClientReady()) ;
-				System.out.println("Started client");
 			} catch (IOException ex) {
-				System.out.println("No server to connect to");
-				System.out.println("Starting server");
 				multiplayerManager.createHost(1337);
 
 				// Wait until server is ready
 				while (!multiplayerManager.isServerReady()) ;
-				System.out.println("Started server");
 				try {
-					System.out.println("Starting client");
 					multiplayerManager.joinGame("Tom", "127.0.0.1", 1337);
 					while (!multiplayerManager.isClientReady()) ;
-					System.out.println("Started client");
 				} catch (IOException ex2) {
 					System.exit(-1);
 				}
@@ -170,6 +179,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			System.exit(-1);
 		}
 		*/
+
+		if (!multiplayerManager.isMultiplayer()) {
+			guiManager.getGui(ChatGui.class).hide();
+		}
+
 
 
 		Random random = new Random();
@@ -413,7 +427,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		@Override
 		public void notifyScrolled(int amount) {
-			System.out.println(amount);			
+			//System.out.println(amount);
 		}
 		
 	}
