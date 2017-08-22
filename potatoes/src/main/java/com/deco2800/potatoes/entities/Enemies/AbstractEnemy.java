@@ -128,9 +128,11 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
         super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
     }
 
-    public void testGetEntities() {
-        System.out.println(GameManager.get().getWorld().getEntities());
-    }
+    
+//    public void testGetEntities() {
+//        System.out.println(GameManager.get().getWorld().getEntities());
+//    }
+    
 
     /*Movement towards a particular goal
      */
