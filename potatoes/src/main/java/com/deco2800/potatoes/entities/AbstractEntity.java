@@ -22,6 +22,10 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	private boolean centered;
 
 	private String texture = "error_box";
+	
+	public int rotateAngle(){
+		return 0;
+	}
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -285,10 +289,13 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		float isoX_o = ((cartX_o - cartY_o) / 2.0f);
 		float isoY_o = ((cartX_o + cartY_o) / 2.0f);
-
+		
 		if (Float.compare(isoY, isoY_o) == 0) {
 			return Float.compare(isoX_o, isoX);
 		} 
+		if(o instanceof ExplosionProjectile) {
+			return 2;
+		}
 		return Float.compare(isoY_o, isoY);
 	}
 

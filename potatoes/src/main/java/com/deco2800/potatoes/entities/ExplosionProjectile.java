@@ -17,43 +17,34 @@ public class ExplosionProjectile extends Projectile{
 
 	public ExplosionProjectile(float posX, float posY, float posZ,float xLength, float yLength, float zLength, float xRenderLength, float yRenderLength, String TEXTURE) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, TEXTURE);
-//		super(posX, posY, posZ,3f, 3f, 3f, 3f,3f, "aoe1");
-
 	}
 
-	int dud=1;
+	int currentSpriteIndex=1;
 	int timer=0;
 	@Override
 	public void onTick(long time) {
 		timer++;
 		if(timer%10==0) {
-			setTexture("aoe" + dud);
-			if (dud < 3) {
-				dud++;
+			if (currentSpriteIndex < 3) {
+				currentSpriteIndex++;
 			} else {
-				GameManager.get().getWorld().removeEntity(this);
+				//GameManager.get().getWorld().removeEntity(this);
 			}
 		}
 
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
-
+			if (entity instanceof Player && this.collidesWith(entity)) {
+				//System.out.println("player col");
+			}
 			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
 				((EnemyEntity)entity).getShot(this);
-				//end
-//				GameManager.get().getWorld().removeEntity(this);
-//				ExplosionProjectile exp=new ExplosionProjectile(goalX, goalY, goalZ,0.4f,0.4f,0.4f,0.4f,0.4f, "aoe1");
-//				GameManager.get().getWorld().addEntity(exp);
-
-				//GameManager.get().getWorld().addEntity(exp);
-
-
 				return;
 			}
 		}
-
 	}
 
+	//TODO: Change to amount
 	@Override
 	public float getDamage() {
 		return 0;
