@@ -252,7 +252,10 @@ public class NetworkServer {
      */
     private void sendSystemMessage(String m) {
         GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
-        ((ChatGui)g.getGui(ChatGui.class)).addMessage("System", m, Color.YELLOW);
+        ChatGui chat = ((ChatGui)g.getGui(ChatGui.class));
+        if (chat != null) {
+            chat.addMessage("System", m, Color.YELLOW);
+        }
     }
 
 
