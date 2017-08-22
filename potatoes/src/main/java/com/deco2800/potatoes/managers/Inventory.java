@@ -118,12 +118,12 @@ public class Inventory {
 	 * <p>
 	 * Parameter amount may be either a negative or positive integer (or zero),
 	 * but an Exception will be thrown if the result of adding amount to the
-	 * current traffic on the corridor will result in a negative quantity for
+	 * current resource on the corridor will result in a negative quantity for
 	 * that resource
 	 * </p>
 	 * 
 	 * @param resource
-	 *            the resource whose amount of traffic will be updated
+	 *            the resource whose amount will be updated
 	 * @param amount
 	 *            the number of resources that will be added
 	 * @throws Exception
@@ -138,7 +138,7 @@ public class Inventory {
 		}
 
 		int currentAmount = getQuantity(resource);
-		// check that the traffic would not become negative.
+		// check that the resoure amount would not become negative.
 		if (currentAmount + amount < 0) {
 			throw new Exception("Sorry, not enough " + resource.toString());
 		}
