@@ -84,5 +84,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 
 		return result;
 	}
+	
+	/**
+	 * Transfers the resources gathered from the 
+	 * tree into the specified inventory.
+	 */
+	public void transferResources() {
+		
+	}
 
 }
