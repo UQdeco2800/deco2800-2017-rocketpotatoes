@@ -16,8 +16,8 @@ public class SeedResource extends Resource {
 	 * on the map.
 	 * </p>
 	 */
-	public SeedResource(String name) {
-		super(name);
+	public SeedResource() {
+		super();
 		this.resourceType = "seed";
 	}
 	

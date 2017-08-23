@@ -15,8 +15,8 @@ public class FoodResource extends Resource{
 	 * on the map.
 	 * </p>
 	 */
-	public FoodResource(String name) {
-		super(name);
+	public FoodResource() {
+		super();
 		this.resourceType = "food";
 	}
 	
