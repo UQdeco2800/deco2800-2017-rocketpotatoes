@@ -39,3 +39,4 @@ Thumbs.db
 # Local sonar installations
 sonar-project.properties
 .sonar/
+/.recommenders/

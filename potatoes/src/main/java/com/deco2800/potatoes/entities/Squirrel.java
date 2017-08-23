@@ -13,18 +13,19 @@ import com.deco2800.potatoes.util.Box3D;
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	
-	private static final transient String TEXTURE = "squirrel";
+	private static final transient String TEXTURE_LEFT = "squirrel";
+	private static final transient String TEXTURE_RIGHT = "squirrel2";
 	private static final transient float HEALTH = 100f;
 	private transient Random random = new Random();
 
 	private float speed = 0.1f;
 
 	public Squirrel() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
 		//this.setTexture("squirrel");
 		//this.random = new Random();
 	}
@@ -34,8 +35,13 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
 		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
+
+//		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
+//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
+
+		// The X and Y position of the player without random floats generated
+		float goalX = playerManager.getPlayer().getPosX();
+		float goalY = playerManager.getPlayer().getPosY();
 
 		if(this.distance(playerManager.getPlayer()) < speed) {
 			this.setPosX(goalX);
@@ -48,12 +54,24 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 
+
+
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));
 
 		Box3D newPos = getBox3D();
+
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);
+
+		// Squirrel changes direction when moving towards player.
+
+		if(this.getPosX()>goalX){
+			this.setTexture(TEXTURE_LEFT);
+		}
+		else{
+			this.setTexture(TEXTURE_RIGHT);
+		}
 		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;

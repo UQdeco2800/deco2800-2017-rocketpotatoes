@@ -197,12 +197,24 @@ public class GameScreen implements Screen {
                 GameManager.get().getWorld().addEntity(new Squirrel(
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
-
+            
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-            GameManager.get().getWorld().addEntity(new ResourceTree(15, 15, 0, null, 0)); // Add a resource tree
+            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, null, 0));
             
+            SeedResource seedResource = new SeedResource();
+			FoodResource foodResource = new FoodResource();
+			
+			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+			
+			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
         }
 
 
@@ -252,7 +264,9 @@ public class GameScreen implements Screen {
         }
 
         // Tick Events
-        ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);;
+        if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+            ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);
+        }
 
         // Broadcast updates if we're master TODO only when needed.
         if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
@@ -304,7 +318,7 @@ public class GameScreen implements Screen {
         // Render entities etc.
         renderer.render(batch);
 
-        //TODO: add render for projectile's separately
+        // TODO: add render for projectile's separately
     }
 
     /**
