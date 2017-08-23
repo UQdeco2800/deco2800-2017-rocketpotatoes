@@ -15,6 +15,7 @@ import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
+import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -142,6 +143,9 @@ public class GameScreen implements Screen {
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
+        
+        // Make our inventory window
+        guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		/* Setup inputs */
         setupInputHandling();
