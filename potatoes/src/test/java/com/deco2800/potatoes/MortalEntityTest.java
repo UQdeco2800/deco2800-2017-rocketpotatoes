@@ -1,37 +1,32 @@
 package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.MortalEntity;
-import org.junit.After;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.worlds.InitialWorld;
+
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
+import static org.mockito.Mockito.*;
 
 public class MortalEntityTest {
-
-	//in order to test death, we have to override deathHandler()
-	private class TestableMortalEntity extends MortalEntity {
-
-		public TestableMortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-				String texture, float maxHealth) {
-			super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		}
-
-		@Override
-		public void deathHandler() { }
-	}
 
 	MortalEntity mortalEntity;
 	private static final float HEALTH = 100f;
 
-	@Before
-	public void setUp() throws Exception {
-		mortalEntity = new TestableMortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		//a fake game world so deathHandler can interact with it
+		InitialWorld mockWorld = mock(InitialWorld.class);
+		GameManager gm = GameManager.get();
+		gm.setWorld(mockWorld);
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
 	}
 
 	//Common to all initialisation test
@@ -68,6 +63,14 @@ public class MortalEntityTest {
 	public void initTestCentred() {
 		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, 7, 8, true, "texture", HEALTH);
 		initTestCommon();
+	}
+
+	@Test
+	public void maxHealthTest() {
+		mortalEntity.addMaxHealth(37);
+		assertEquals("addMaxHealth() can't add", HEALTH + 37, mortalEntity.getMaxHealth(), 0f);
+		mortalEntity.addMaxHealth(-39);
+		assertEquals("addMaxHealth() can't subtract", HEALTH - 2, mortalEntity.getMaxHealth(), 0f);
 	}
 
 	@Test
@@ -178,10 +181,11 @@ public class MortalEntityTest {
 
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void deathHandlerTest() {
-		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
+		reset(GameManager.get().getWorld()); //resets all invocation counters related to mockWorld
 		mortalEntity.deathHandler();
+		verify(GameManager.get().getWorld()).removeEntity(any()); //ensure deathHandler called removeEntity()
 	}
 
 }

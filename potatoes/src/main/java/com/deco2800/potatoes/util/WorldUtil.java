@@ -1,14 +1,16 @@
 package com.deco2800.potatoes.util;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.renderering.Renderable;
-import com.deco2800.potatoes.worlds.AbstractWorld;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.renderering.Renderable;
 
 /**
  * A utility class for the AbstractWorld instances

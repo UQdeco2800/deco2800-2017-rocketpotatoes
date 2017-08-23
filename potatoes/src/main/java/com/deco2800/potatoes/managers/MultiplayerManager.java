@@ -91,6 +91,8 @@ public class MultiplayerManager extends Manager {
         multiplayer = true;
         server = new NetworkServer(port, port);
 
+        // Block until ready
+        while (!isServerReady());
     }
 
     /**
@@ -111,6 +113,8 @@ public class MultiplayerManager extends Manager {
         multiplayer = true;
         ip = IP;
         client = new NetworkClient(name, IP, port, port);
+
+        while (!isClientReady());
     }
 
 
@@ -176,6 +180,10 @@ public class MultiplayerManager extends Manager {
         }
     }
 
+
+    public void broadcastEntityUpdateTimeEvents(int id) {
+    }
+
     /**
      * Broadcasts an entities destruction. Should only be used by master!
      * @param id
@@ -197,6 +205,18 @@ public class MultiplayerManager extends Manager {
         Player p = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer();
         if (client != null) {
             client.broadcastPlayerUpdatePosition(p);
+        }
+    }
+
+
+    /**
+     * Broadcasts a build order from a client (should only be used by non-master)
+     * @param x
+     * @param y
+     */
+    public void broadcastBuildOrder(int x, int y) {
+        if (client != null) {
+            client.broadcastBuildOrder(x, y);
         }
     }
 

@@ -14,7 +14,10 @@ public class Tree extends AbstractEntity implements HasProgress {
     
     private final static transient String TEXTURE = "tree";
 
-    public Tree() { }
+    public Tree() {
+		//empty for serialization
+	}
+
 
     /**
      * Constructor for a Tree

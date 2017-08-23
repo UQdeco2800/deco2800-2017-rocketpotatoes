@@ -1,11 +1,13 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.LinkedList;
 import java.util.List;
 
+import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -13,77 +15,82 @@ import com.deco2800.potatoes.entities.TimeEvent;
  * construction and construction events which are triggered when the tree is
  * being constructed
  */
-public abstract class AbstractTree extends MortalEntity implements Tickable {
+public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress {
 
-	private List<TimeEvent> normalEvents = new LinkedList<>();
-	private List<TimeEvent> constructionEvents = new LinkedList<>();
-	private int constructionLeft = 0; // TODO change to 100 once construction is implemented, or add to constructor
-	private int constructionTime = 0; // TODO move this onto upgrade stats
-	private int constructionPercentTime = constructionTime / 100;
-	private long currentConstructionTime = constructionPercentTime;
+	// Maybe move this out
+	private static class ConstructionEvent extends TimeEvent<AbstractTree> {
+		public ConstructionEvent(int constructionTime) {
+			setDoReset(true);
+			setResetAmount(constructionTime / 100);
+			reset();
+		}
+
+		@Override
+		public void action(AbstractTree param) {
+			param.decrementConstructionLeft();
+			if (param.getConstructionLeft() <= 0) {
+				param.setRegisteredEvents(false);
+			}
+		}
+
+		@Override
+		public TimeEvent<AbstractTree> copy() {
+			return null;
+		}
+	}
+//	private int test = 300;
+	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
-
-	private static UpgradeStats[] upgradeLevelStats = { new UpgradeStats() };
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public AbstractTree() {
+		// Reseting may not be needed
+		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float maxHealth) {
+	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength, String texture,
+			float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, texture, maxHealth);
-		// TODO Auto-generated constructor stub
+		resetStats();
 	}
 
 	@Override
-	public void onTick(long i) {
-		if (getConstructionLeft() <= 0) {
-			for (TimeEvent timeEvent : normalEvents) {
-				progressEvent(timeEvent, i);
-			}
+	public void onTick(long time) {
+		// Nothing here now
+	}
+	
+	/**
+	 * Sets the registered events to the construction events or the normal events
+	 * 
+	 * @param construction
+	 *            whether to set the events to construction events or not
+	 */
+	private void setRegisteredEvents(boolean construction) {
+		if (construction) {
+			List<TimeEvent<AbstractTree>> constructionEvents = getUpgradeStats().getConstructionEventsCopy();
+			constructionEvents.add(new ConstructionEvent(getUpgradeStats().getConstructionTime()));
+			registerNewEvents(constructionEvents);
 		} else {
-			// Time event can't be used for this at the moment
-			currentConstructionTime -= i;
-			if (currentConstructionTime <= 0) {
-				currentConstructionTime = constructionPercentTime;
-				decrementConstructionLeft();
-			}
-			
-			for (TimeEvent timeEvent : constructionEvents) {
-				progressEvent(timeEvent, i);
-			}
+			registerNewEvents(getUpgradeStats().getNormalEventsCopy());
 		}
-	}
-
-	private void progressEvent(TimeEvent timeEvent, long i) {
-		timeEvent.decreaseProgress(i);
-		if (!timeEvent.isDoReset() && timeEvent.isCompleted()) {
-			normalEvents.remove(timeEvent);
-		}
+//		if (test--<0){
+//			test = 300;
+//			this.upgrade();
+//		}
 	}
 
 	/**
-	 * Adds an event to this tree that will trigger every tick when the tree is not
-	 * being constructed, when getConstructionLeft() <= 0
-	 * 
-	 * @param event
-	 *            the time event that will be triggered
+	 * Registers the list of events given with the event manager and unregisters all
+	 * other events for this object
 	 */
-	public void registerNormalEvent(TimeEvent event) {
-		normalEvents.add(event);
-	}
-
-	/**
-	 * Adds an event to this tree that will trigger every tick when the tree is
-	 * being constructed, when getConstructionLeft() > 0
-	 * 
-	 * @param event
-	 *            the time event that will be triggered
-	 */
-	public void registerConstructionEvent(TimeEvent event) {
-		constructionEvents.add(event);
+	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
+		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		eventManager.unregisterAll(this);
+		for (TimeEvent<AbstractTree> timeEvent : events) {
+			eventManager.registerEvent(this, timeEvent);
+		}
 	}
 
 	/**
@@ -99,27 +106,13 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 	 */
 	public void setConstructionLeft(int constructionLeft) {
 		this.constructionLeft = constructionLeft;
+		if (constructionLeft > 0) {
+			setRegisteredEvents(true);
+		}
 	}
 
 	public void decrementConstructionLeft() {
 		constructionLeft--;
-	}
-	
-	/**
-	 * The amount of time construction takes to fully complete
-	 */
-	public int getConstructionTime() {
-		return constructionTime;
-	}
-
-	/**
-	 * Sets the time construction takes to complete
-	 * 
-	 * @param constructionTime
-	 *            the time in milliseconds
-	 */
-	public void setConstructionTime(int constructionTime) {
-		this.constructionTime = constructionTime;
 	}
 
 	/**
@@ -128,10 +121,22 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 	 * Not yet implemented
 	 */
 	public void upgrade() {
-		if (upgradeLevel + 1 == upgradeLevelStats.length) {
+		if (upgradeLevel + 1 >= getAllUpgradeStats().size()) {
 			return; // Ignores upgrade if at max level
 		}
 		upgradeLevel++;
+		resetStats();
+	}
+
+	/**
+	 * Resets the stats of this tree to the default for the current upgrade level
+	 * and restarts tree construction
+	 */
+	public void resetStats() {
+		this.addMaxHealth(getUpgradeStats().getHp() - this.getMaxHealth());
+		this.heal(getMaxHealth());
+		setTexture(getUpgradeStats().getTexture());
+		setRegisteredEvents(true);
 	}
 
 	/**
@@ -140,6 +145,45 @@ public abstract class AbstractTree extends MortalEntity implements Tickable {
 	 * @return the default upgrade stats
 	 */
 	public UpgradeStats getUpgradeStats() {
-		return upgradeLevelStats[upgradeLevel];
+		return getAllUpgradeStats().get(upgradeLevel);
+	}
+
+	/**
+	 * Returns a list of the stats for each upgrade level in order <br>
+	 * This is called often, so it is recommend you don't create a new object every
+	 * time
+	 * 
+	 * @return a list of all the upgrade stats for this tree
+	 */
+	public abstract List<UpgradeStats> getAllUpgradeStats();
+
+	/**
+	 * Returns the current progress
+	 *
+	 * @return
+	 */
+	@Override
+	public int getProgress() {
+		return constructionLeft;
+	}
+
+	/**
+	 * Set's the progress to the given value.
+	 *
+	 * @param p
+	 */
+	@Override
+	public void setProgress(int p) {
+		constructionLeft = p;
+	}
+
+	/**
+	 * Should i show the progress
+	 *
+	 * @return
+	 */
+	@Override
+	public boolean showProgress() {
+		return false;
 	}
 }
