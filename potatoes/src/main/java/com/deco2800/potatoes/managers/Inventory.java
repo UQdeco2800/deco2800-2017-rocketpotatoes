@@ -181,7 +181,12 @@ public class Inventory {
 			throw new InvalidInventoryException("Cannot add null to Inventory");
 		}
 		for (Resource resource : extraItems.inventoryMap.keySet()) {
-			inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
+			if (inventoryMap.containsKey(resource)) {
+				inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
+			} else {
+				inventoryMap.put(resource, extraItems.getQuantity(resource));
+			}
+			
 		}
 	}
 

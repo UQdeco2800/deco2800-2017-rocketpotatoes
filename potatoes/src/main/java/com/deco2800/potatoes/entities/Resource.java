@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities;
 import java.util.Map;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
-public class Resource extends AbstractEntity {
+public class Resource implements Comparable<Resource> {
 	
 	protected String resourceType;
 	protected String imageSource;
@@ -15,13 +15,13 @@ public class Resource extends AbstractEntity {
 		imageSource = "defaultImage.png";
 	}
 	
-	public Resource(String name, float posX, float posY, float posZ, String texture) {
+	/*public Resource(String name, float posX, float posY, float posZ, String texture) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, texture);
 		
 		this.name = name;
 		resourceType = "ordinary";
 		imageSource = "defaultImage.png";
-	}
+	}*/
 	
 	public String getType() {
 		return resourceType;
@@ -67,7 +67,7 @@ public class Resource extends AbstractEntity {
         return result;
     }
     
-    /*
+    
     @Override
     public int compareTo(Resource other) {
         int result = resourceType.compareTo(other.getType());
@@ -76,6 +76,6 @@ public class Resource extends AbstractEntity {
         }
         return result;
     }
-    */
+    
 
 }

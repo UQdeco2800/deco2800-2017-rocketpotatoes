@@ -304,15 +304,19 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 			
-			GameManager.get().getWorld().addEntity(new SeedResource("seed", 18, 18, 0));
-			GameManager.get().getWorld().addEntity(new SeedResource("seed", 17, 18, 0));
-			GameManager.get().getWorld().addEntity(new SeedResource("seed", 17, 17, 0));
-			GameManager.get().getWorld().addEntity(new SeedResource("seed", 18, 17, 0));
+			SeedResource seedResource = new SeedResource("seed");
+			FoodResource foodResource = new FoodResource("food");
 			
-			GameManager.get().getWorld().addEntity(new FoodResource("food", 0, 18, 0));
-			GameManager.get().getWorld().addEntity(new FoodResource("food", 1, 18, 0));
-			GameManager.get().getWorld().addEntity(new FoodResource("food", 0, 17, 0));
-			GameManager.get().getWorld().addEntity(new FoodResource("food", 1, 17, 0));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+			
+			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+			
 		}
 
 
