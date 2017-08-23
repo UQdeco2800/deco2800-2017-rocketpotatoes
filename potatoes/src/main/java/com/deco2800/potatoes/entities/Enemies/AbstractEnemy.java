@@ -21,7 +21,7 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
     private transient Random random = new Random();
     private float speed = 0.1f;
     
-    //redefine types of enemies
+    //predefine types of enemies
     private enum EnemyType {NORMAL, TANK, SPEEDY};
     EnemyType enemyType;
     
