@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.Map;
-import com.deco2800.potatoes.entities.AbstractEntity;
-
 public class Resource implements Comparable<Resource> {
 	
 	protected String resourceType;
@@ -13,15 +10,7 @@ public class Resource implements Comparable<Resource> {
 		imageSource = "defaultImage.png";
 	}
 	
-	/*public Resource(String name, float posX, float posY, float posZ, String texture) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, texture);
-		
-		this.name = name;
-		resourceType = "ordinary";
-		imageSource = "defaultImage.png";
-	}*/
-	
-	public String getType() {
+	public String getTypeName() {
 		return resourceType;
 	}
 	
@@ -47,7 +36,7 @@ public class Resource implements Comparable<Resource> {
             return false;
         }
         Resource other = (Resource) object; // the corridor to compare
-        return other.getType().equals(resourceType);
+        return other.getTypeName().equals(resourceType);
     }
 
     @Override
@@ -62,7 +51,7 @@ public class Resource implements Comparable<Resource> {
     
     @Override
     public int compareTo(Resource other) {
-        return resourceType.compareTo(other.getType());
+        return resourceType.compareTo(other.getTypeName());
     }
     
 
