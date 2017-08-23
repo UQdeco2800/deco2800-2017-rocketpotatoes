@@ -59,15 +59,13 @@ public class ResourceEntity extends AbstractEntity implements Tickable{
 		
 		if(collided == true) {
 			GameManager.get().getWorld().removeEntity(this);
-			System.out.println(this.resourceType);
 			try {
 				player.getInventory().updateQuantity(this.resourceType, 1);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(player.getInventory().getQuantity(this.resourceType));
-		
+			
 		}
 			
 	}
