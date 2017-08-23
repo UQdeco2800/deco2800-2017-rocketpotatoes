@@ -168,18 +168,13 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Add the window to the stage */
 		stage.addActor(window);
 
-		/* Add Inventory to the stage */
-		/*SeedResource seedResource = new SeedResource("Seed");
-		FoodResource foodResource = new FoodResource("Seed");
-		Inventory inventory = new Inventory();
-		*/
-		//playerManager.getPlayer().inventoryMenu(stage);
 		
 		/* Setup inputs */
 		setupInputHandling();
 
 		/* Init game TODO move? */
 		initializeGame();
+		playerManager.getPlayer().inventoryMenu(stage);;
 	}
 
 	private void setupInputHandling() {
