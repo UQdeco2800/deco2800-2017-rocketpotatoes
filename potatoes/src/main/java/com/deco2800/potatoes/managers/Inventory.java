@@ -1,8 +1,17 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.managers;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.exceptions.InvalidResourceException;
+import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
 public class Inventory {
 
@@ -10,11 +19,12 @@ public class Inventory {
 	 * A mapping of possible resource items to the number of items the player
 	 * holds
 	 */
-	private TreeMap<Resource, Integer> inventoryMap;
+	private TreeMap<Resource, Integer> inventoryMap = new TreeMap<Resource,Integer>();
+	
 	/*
 	 * invariant:
 	 * 
-	 * Inventory!=null && !invenotry.containsValue(null) &&
+	 * Inventory!=null && !inventory.containsValue(null) &&
 	 * 
 	 * for each resource in inventory.keySet(), inventory.get(resource) >= 0
 	 * 
@@ -29,16 +39,21 @@ public class Inventory {
 	 * For any resource in resources, this.getQuantity(resource) == 0
 	 * </p>
 	 */
-	public Inventory(HashSet<Resource> resources) throws Exception {
+	public Inventory(HashSet<Resource> resources) throws InvalidResourceException {
+		inventoryMap = new TreeMap<Resource,Integer>();
 		if (resources == null) {
-			throw new Exception("Resources cannot be null, please instantiate the class with valid resources");
+			throw new InvalidResourceException("Resources cannot be null, please instantiate the class with valid resources");
 		}
-		TreeMap<Resource, Integer> inventoryMap = new TreeMap<>();
 		for (Resource resource : resources) {
+			if (resource == null) throw new InvalidResourceException("Resource cannot be null, please instantiate the class with valid resources");
 			inventoryMap.put(resource, 0);
 		}
 	}
 
+	public TreeMap<Resource, Integer> getMap(){
+		// Testing purposes
+		return inventoryMap;
+	}
 	
 	/**
 	 * <p>
@@ -48,7 +63,7 @@ public class Inventory {
 	 * @return the a set of resources
 	 */
 	public Set<Resource> getInventoryResources() {
-		return new HashSet<>(inventoryMap.keySet());
+		return new HashSet<Resource>(inventoryMap.keySet());
 	}
 	
 	/**
@@ -59,9 +74,9 @@ public class Inventory {
 	 * @throws Exception 
 	 * 			if the resource is null
 	 */
-	public void addInventoryResource(Resource resource) throws Exception {
+	public void addInventoryResource(Resource resource) throws InvalidResourceException {
 		if (resource == null){
-			throw new Exception("Please supply a valid resource");
+			throw new InvalidResourceException("Please supply a valid resource");
 		}
 		if (!getInventoryResources().contains(resource)){
 			inventoryMap.put(resource, 0);
@@ -76,10 +91,12 @@ public class Inventory {
 	 * @throws Exception 
 	 * 			if the resource is null or is not in inventoryMap
 	 */
-	public void removeInventoryResource(Resource resource) throws Exception {
+	public void removeInventoryResource(Resource resource) throws InvalidResourceException {
 		if (resource == null || !getInventoryResources().contains(resource)){
-			throw new Exception ("Please supply a valid resource");
+			throw new InvalidResourceException ("Please supply a valid resource");
 		}
+		System.out.println(resource);
+		System.out.println(inventoryMap);
 		inventoryMap.remove(resource);
 	}
 	
@@ -100,9 +117,9 @@ public class Inventory {
 	 * @throws Exception
 	 *             if the resource is not in this.getInventoryResources()
 	 */
-	public int getQuantity(Resource resource) throws Exception {
+	public int getQuantity(Resource resource) throws InvalidResourceException {
 		if (!this.getInventoryResources().contains(resource)) {
-			throw new Exception("Please supply a valid resource");
+			throw new InvalidResourceException("Please supply a valid resource");
 		}
 		return inventoryMap.get(resource);
 	}
@@ -116,12 +133,12 @@ public class Inventory {
 	 * <p>
 	 * Parameter amount may be either a negative or positive integer (or zero),
 	 * but an Exception will be thrown if the result of adding amount to the
-	 * current traffic on the corridor will result in a negative quantity for
+	 * current resource on the corridor will result in a negative quantity for
 	 * that resource
 	 * </p>
 	 * 
 	 * @param resource
-	 *            the resource whose amount of traffic will be updated
+	 *            the resource whose amount will be updated
 	 * @param amount
 	 *            the number of resources that will be added
 	 * @throws Exception
@@ -132,13 +149,13 @@ public class Inventory {
 	 */
 	public void updateQuantity(Resource resource, int amount) throws Exception {
 		if (!this.getInventoryResources().contains(resource)) {
-			throw new Exception("Please supply a valid resource");
+			throw new InvalidResourceException("Please supply a valid resource");
 		}
 
 		int currentAmount = getQuantity(resource);
-		// check that the traffic would not become negative.
+		// check that the resource amount would not become negative.
 		if (currentAmount + amount < 0) {
-			throw new Exception("Sorry, not enough " + resource.toString());
+			throw new InvalidResourceException("Sorry, not enough " + resource.toString());
 		}
 
 		inventoryMap.put(resource, currentAmount + amount);
@@ -166,11 +183,18 @@ public class Inventory {
 	 */
 	public void updateInventory(Inventory extraItems) throws Exception {
 		if (extraItems == null){
-			throw new Exception("Cannot add null to Inventory");
+			throw new InvalidInventoryException("Cannot add null to Inventory");
 		}
 		for (Resource resource : extraItems.inventoryMap.keySet()) {
-			inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
+			if (inventoryMap.containsKey(resource)) {
+				inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
+			} else {
+				inventoryMap.put(resource, extraItems.getQuantity(resource));
+			}
+			
 		}
 	}
+	
+	
 
 }
