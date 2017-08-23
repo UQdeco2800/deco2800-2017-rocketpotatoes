@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
@@ -10,8 +11,10 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.worlds.AbstractWorld;
 import com.deco2800.potatoes.worlds.InitialWorld;
@@ -21,7 +24,7 @@ import java.util.Optional;
 /**
  * Really crappy mouse handler for the game
  */
-public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
+public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, MouseMovedObserver {
 	private int originX;
 	private int originY;
 
@@ -38,17 +41,9 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 	 * @param y
 	 */
 	public void handleMouseClick(float x, float y, int button) {
+		Vector2 coords = Render3D.screenToWorldCoordiates(x, y);
 
-		float projX = 0, projY = 0;
-
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-
-		projX = x / tileWidth;
-		projY = -(y - tileHeight / 2f) / tileHeight + projX;
-		projX -= projY - projX;
-
-		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(projX, projY, 2f);
+		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
 		} else {
@@ -59,19 +54,19 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 		}
 		// Build Testing
 		// Check tile is occupied
-		if (!WorldUtil.getEntityAtPosition(Math.round(projX), Math.round(projY)).isPresent()) {
+		if (!WorldUtil.getEntityAtPosition(Math.round(coords.x), Math.round(coords.y)).isPresent()) {
 			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
 					.getManager(MultiplayerManager.class);
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				if (button == 0) {
 					// Adds a projectile tree
-					GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
+					GameManager.get().getWorld().addEntity(new Tower(Math.round(coords.x), Math.round(coords.y), 0));
 				} else {
 					// Adds a resource tree
-					GameManager.get().getWorld().addEntity(new ResourceTree(Math.round(projX), Math.round(projY), 0, new SeedResource()));
+					GameManager.get().getWorld().addEntity(new ResourceTree(Math.round(coords.x), Math.round(coords.y), 0, new SeedResource()));
 				}
 			} else {
-				multiplayerManager.broadcastBuildOrder(Math.round(projX), Math.round(projY));
+				multiplayerManager.broadcastBuildOrder(Math.round(coords.x), Math.round(coords.y));
 			}
 		}
 
@@ -107,5 +102,12 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 
 	private CameraManager getCameraManager() {
 		return (CameraManager) GameManager.get().getManager(CameraManager.class);
+	}
+
+	@Override
+	public void notifyMouseMoved(int screenX, int screenY) {
+		Vector2 coords = Render3D.screenToWorldCoordiates(screenX, screenY);
+
+		
 	}
 }

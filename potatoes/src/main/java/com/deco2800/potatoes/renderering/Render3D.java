@@ -1,13 +1,5 @@
 package com.deco2800.potatoes.renderering;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,6 +16,13 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -267,5 +266,18 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector2 worldToScreenCoordinates(Vector2 p) {
 		return worldToScreenCoordinates(p.x, p.y);
+	}
+
+    public static Vector2 screenToWorldCoordiates(float x, float y) {
+		float projX = 0, projY = 0;
+
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+		projX = x / tileWidth;
+		projY = -(y - tileHeight / 2f) / tileHeight + projX;
+		projX -= projY - projX;
+
+		return new Vector2(projX, projY);
 	}
 }

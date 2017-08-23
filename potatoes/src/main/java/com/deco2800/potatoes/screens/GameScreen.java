@@ -171,6 +171,7 @@ public class GameScreen implements Screen {
         MouseHandler mouseHandler = new MouseHandler();
         input.addTouchDownListener(mouseHandler);
         input.addTouchDraggedListener(mouseHandler);
+        input.addMouseMovedListener(mouseHandler);
         inputMultiplexer.addProcessor(input);
 
         Gdx.input.setInputProcessor(inputMultiplexer);
