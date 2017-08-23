@@ -15,26 +15,19 @@ public class ExplosionProjectile extends Projectile {
 		// empty for serialization
 	}
 
-<<<<<<< HEAD
+
 
 	public ExplosionProjectile(float posX, float posY, float posZ,float xLength, float yLength, float zLength, float xRenderLength, float yRenderLength, String TEXTURE, float DAMAGE) {
-=======
-	public ExplosionProjectile(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String TEXTURE) {
->>>>>>> ff2de254832358edc8e61c55d5e3d19a90bcc66b
+
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, TEXTURE);
 		this.DAMAGE = DAMAGE;
 	}
 
-<<<<<<< HEAD
+
 	int currentSpriteIndex=1;
 	int timer=0;
 	int dmgTimer = 0;
-=======
-	int currentSpriteIndex = 1;
-	int timer = 0;
 
->>>>>>> ff2de254832358edc8e61c55d5e3d19a90bcc66b
 	@Override
 	public void onTick(long time) {
 		timer++;
@@ -49,15 +42,7 @@ public class ExplosionProjectile extends Projectile {
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
 			if (entity instanceof Player && this.collidesWith(entity)) {
-<<<<<<< HEAD
-				System.out.println("player col");
-=======
-				// System.out.println("player col");
-			}
-			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
-				((EnemyEntity) entity).getShot(this);
-				return;
->>>>>>> ff2de254832358edc8e61c55d5e3d19a90bcc66b
+
 			}
 
 				if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
