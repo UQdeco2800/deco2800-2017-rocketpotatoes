@@ -41,7 +41,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	 * @param y
 	 */
 	public void handleMouseClick(float x, float y, int button) {
-		Vector2 coords = Render3D.screenToWorldCoordiates(x, y);
+		Vector2 coords = Render3D.worldPosToTile(x, y);
 
 		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
@@ -52,21 +52,21 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				((InitialWorld) (world)).deSelectAll();
 			}
 		}
-		// Build Testing
-		// Check tile is occupied
-		if (!WorldUtil.getEntityAtPosition(Math.round(coords.x), Math.round(coords.y)).isPresent()) {
+		int realX = (int)Math.floor(coords.x);
+		int realY = (int)Math.floor(coords.y);
+		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
 			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
 					.getManager(MultiplayerManager.class);
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				if (button == 0) {
 					// Adds a projectile tree
-					GameManager.get().getWorld().addEntity(new Tower(Math.round(coords.x), Math.round(coords.y), 0));
+					GameManager.get().getWorld().addEntity(new Tower(realX, realY, 0));
 				} else {
 					// Adds a resource tree
-					GameManager.get().getWorld().addEntity(new ResourceTree(Math.round(coords.x), Math.round(coords.y), 0, new SeedResource()));
+					GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0, new SeedResource()));
 				}
 			} else {
-				multiplayerManager.broadcastBuildOrder(Math.round(coords.x), Math.round(coords.y));
+				multiplayerManager.broadcastBuildOrder(realX, realY);
 			}
 		}
 
@@ -77,7 +77,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		originX = screenX;
 		originY = screenY;
 
-		Vector3 worldCoords = getCameraManager().getCamera().unproject(new Vector3(screenX, screenY, 0));
+		Vector3 worldCoords = Render3D.screenToWorldCoordiates(screenX, screenY, 0);
 		handleMouseClick(worldCoords.x, worldCoords.y, button);
 	}
 
@@ -106,8 +106,5 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 
 	@Override
 	public void notifyMouseMoved(int screenX, int screenY) {
-		Vector2 coords = Render3D.screenToWorldCoordiates(screenX, screenY);
-
-		
 	}
 }

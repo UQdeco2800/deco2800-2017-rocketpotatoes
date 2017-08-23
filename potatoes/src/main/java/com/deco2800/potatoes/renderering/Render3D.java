@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -268,7 +270,12 @@ public class Render3D implements Renderer {
 		return worldToScreenCoordinates(p.x, p.y);
 	}
 
-    public static Vector2 screenToWorldCoordiates(float x, float y) {
+    public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
+		return ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().
+				unproject(new Vector3(x, y, z));
+	}
+
+	public static Vector2 worldPosToTile(float x, float y) {
 		float projX = 0, projY = 0;
 
 		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
