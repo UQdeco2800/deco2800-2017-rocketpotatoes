@@ -34,7 +34,7 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-    		saveTexture("grass", "resources/placeholderassets/grass.png");
+    	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
@@ -54,6 +54,8 @@ public class TextureManager extends Manager {
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
+		saveTexture("seed", "resources/placeholderassets/seed.png");
+		saveTexture("food", "resources/placeholderassets/food.png");
 		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
         saveTexture("aoe2","resources/placeholderassets/aoe2.png");
         saveTexture("aoe3","resources/placeholderassets/aoe3.png");
