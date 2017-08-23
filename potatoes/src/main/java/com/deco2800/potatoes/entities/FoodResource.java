@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities;
 
-public class FoodResource extends Resource{
+public class FoodResource extends Resource {
 
 	private static final transient String TEXTURE = "food";
 	

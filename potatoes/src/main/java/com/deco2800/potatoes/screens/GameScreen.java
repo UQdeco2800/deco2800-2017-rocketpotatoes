@@ -262,7 +262,9 @@ public class GameScreen implements Screen {
         }
 
         // Tick Events
-        ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);;
+        if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+            ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);
+        }
 
         // Broadcast updates if we're master TODO only when needed.
         if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
