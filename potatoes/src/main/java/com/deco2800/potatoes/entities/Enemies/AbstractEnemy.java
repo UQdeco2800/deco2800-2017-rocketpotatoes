@@ -159,6 +159,8 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
             return;
         }
 
+
+        
         float deltaX = getPosX() - goalX;
         float deltaY = getPosY() - goalY;
 
