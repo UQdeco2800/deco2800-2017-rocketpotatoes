@@ -20,6 +20,7 @@ import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -132,6 +133,17 @@ public class Render3D implements Renderer {
 				font.draw(batch, String.format("%d%%", 100 - ((AbstractTree) entity).getConstructionLeft()),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
 			}
+
+			/*
+			 * Display resource collected for Resource Tree
+			 */
+			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceAmount() > 0) {
+				font.setColor(Color.GREEN);
+				font.getData().setScale(1.0f);
+				font.draw(batch, String.format("%s", ((ResourceTree) entity).resourceCount),
+						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
+			}
+
 			/**************************/
 			MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
 			if (entity instanceof Player && m.isMultiplayer()) {

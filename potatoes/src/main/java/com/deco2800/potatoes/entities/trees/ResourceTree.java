@@ -84,7 +84,15 @@ public class ResourceTree extends AbstractTree implements Tickable {
 
 		return result;
 	}
-	
+
+	/**
+	 * @return the percentage of construction left, from 0 to 100
+	 */
+	public int getResourceAmount() {
+		return resourceCount;
+	}
+
+
 	/**
 	 * Transfers the resources gathered from the tree
 	 * into the specified inventory. Once resources
