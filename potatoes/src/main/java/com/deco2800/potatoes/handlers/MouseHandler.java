@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
+import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
@@ -67,7 +68,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 					GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
 				} else {
 					// Adds a resource tree
-					GameManager.get().getWorld().addEntity(new ResourceTree(Math.round(projX), Math.round(projY), 0, null, 0));
+					GameManager.get().getWorld().addEntity(new ResourceTree(Math.round(projX), Math.round(projY), 0, new SeedResource()));
 				}
 			} else {
 				multiplayerManager.broadcastBuildOrder(Math.round(projX), Math.round(projY));

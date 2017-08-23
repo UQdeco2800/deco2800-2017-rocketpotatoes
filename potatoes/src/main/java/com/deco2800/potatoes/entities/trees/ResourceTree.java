@@ -3,8 +3,10 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.managers.Inventory;
 
 /**
  * Resource tree offer a means to collect resources over time.
@@ -14,6 +16,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/* Resource Tree Attributes */
 	public int resourceCount;	// Number of resources currently gathered
+	public Resource resourceType;	// Type of resource gathered by the tree
 	
 	// Maximum amount of resources held by resource tree at any given instance
 	public static final int MAX_RESOURCE_COUNT = 99;	
@@ -36,23 +39,19 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/**
 	 * Constructor for the base
 	 * 
-	 * @param world
-	 *            The world of the tower.
 	 * @param posX
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
 	 * @param posZ
 	 *            The z-coordinate.
-	 * @param gatherRate
-	 * 			The interval in milliseconds that resources are gathered.
-	 * @param gatherAmount
-	 * 			The amount of resources gathered per interval.
-	 * @param maxHealth
-	 * 			The initial maximum health of the tower.
+	 * @param resourceType
+	 * 			The type of resource gathered by the tree.
 	 */
-	public ResourceTree(float posX, float posY, float posZ, String texture, float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f, texture, maxHealth);
+	public ResourceTree(float posX, float posY, float posZ, Resource resourceType) {
+		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
+		this.resourceCount = 0;
+		this.resourceType = resourceType;
 	}
 	
 	@Override
@@ -61,8 +60,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 	
 	/**
-	 * Configure the stats for the resource tree.
-	 * 
+	 * Configures the stats for the resource tree. Each stat level has a 
+	 * normal event action for gathering resources based on the level's
+	 * speed stat.
 	 */
 	private static List<UpgradeStats> initStats() {
 		List<UpgradeStats> result = new LinkedList<>();
@@ -86,11 +86,27 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 	
 	/**
-	 * Transfers the resources gathered from the 
-	 * tree into the specified inventory.
+	 * Transfers the resources gathered from the tree
+	 * into the specified inventory. Once resources
+	 * are transfered, the resourceCount of the tree will 
+	 * reset to zero.
+	 * 
+	 * 	@param inventory
+	 * 		The inventory of the player to receive gathered resources
 	 */
-	public void transferResources() {
-		
+	public void transferResources(Inventory inventory) {
+		try {
+			inventory.updateQuantity(this.resourceType, resourceCount);
+		} catch (Exception e) {
+			// throws if resourceCount is negative
+		}
+		resourceCount = 0;
 	}
-
+	
+	@Override
+	public String toString() {
+		String pos = this.getPosX() + ", " + this.getPosY() + ", " + this.getPosZ();
+		return "Resource Tree at (" + pos + ") has " + this.resourceCount 
+				+ " " + this.resourceType.toString() + " resources.";
+	}
 }
