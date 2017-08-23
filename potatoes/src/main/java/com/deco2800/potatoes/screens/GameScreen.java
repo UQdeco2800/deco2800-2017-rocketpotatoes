@@ -201,7 +201,7 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, null, 0));
+            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
             
             SeedResource seedResource = new SeedResource();
 			FoodResource foodResource = new FoodResource();
