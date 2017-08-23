@@ -2,10 +2,7 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.Optional;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.BallisticProjectile;
-import com.deco2800.potatoes.entities.Squirrel;
-import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -43,8 +40,12 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 			return;
 		}
 
-		GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-				target.get().getPosX(), target.get().getPosY(), tree.getPosZ(), tree.getUpgradeStats().getRange()));
+		//Added custom damages to projectiles
+
+		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+				target, tree.getUpgradeStats().getRange(),1));
+
+
 	}
 
 	@Override

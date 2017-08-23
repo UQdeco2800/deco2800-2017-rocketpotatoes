@@ -53,7 +53,10 @@ public class TextureManager extends Manager {
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
-
+		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
+        saveTexture("aoe2","resources/placeholderassets/aoe2.png");
+        saveTexture("aoe3","resources/placeholderassets/aoe3.png");
+        saveTexture("proj1","resources/placeholderassets/proj1.png");
 
     }
 

@@ -68,7 +68,7 @@ public class Player extends MortalEntity implements Tickable {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
+			if (!this.equals(entity) && !(entity instanceof Squirrel)&& !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				//wSystem.out.println(this + " colliding with " + entity);
 				collided = true;
