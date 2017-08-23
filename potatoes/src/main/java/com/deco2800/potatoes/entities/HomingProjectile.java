@@ -81,7 +81,6 @@ public class HomingProjectile extends Projectile {
 		range -= speed;
 
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
-		System.out.println(rotateAngle);
 
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {

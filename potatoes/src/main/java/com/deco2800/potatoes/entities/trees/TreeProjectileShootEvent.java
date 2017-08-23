@@ -40,11 +40,10 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 			return;
 		}
 
-		//Added custom damages to projectiles
+		// Added custom damages to projectiles
 
 		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-				target, tree.getUpgradeStats().getRange(),1));
-
+				target, tree.getUpgradeStats().getRange(), 1));
 
 	}
 
