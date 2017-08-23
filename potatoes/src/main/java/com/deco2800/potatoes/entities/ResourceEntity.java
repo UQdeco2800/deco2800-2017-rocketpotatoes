@@ -2,6 +2,8 @@ package com.deco2800.potatoes.entities;
 
 import java.util.Map;
 
+import org.apache.derby.tools.sysinfo;
+
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
@@ -9,7 +11,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class ResourceEntity extends AbstractEntity implements Tickable{
 	
-	protected Resource resourceType;
+	private Resource resourceType;
 	private final float change = (float)0.2;
 	private final float[][] positions = {{change, 0}, {change, change},
 			{0, change}, {-change, change}, {-change, 0}, {-change, -change},
@@ -22,14 +24,16 @@ public class ResourceEntity extends AbstractEntity implements Tickable{
 	
 	public ResourceEntity(float posX, float posY, float posZ, Resource resource) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, resource.getType());
-		resourceType = new Resource("Default");
+		resourceType = resource;
 	}
+	
 	
 	@Override
 	public void onTick(long time) {
 		float xPos = getPosX();
 		float yPos = getPosY();
 		boolean collided = false;
+		Player player = null;
 		
 		Box3D newPos = getBox3D();
 		newPos.setX(xPos);
@@ -44,16 +48,26 @@ public class ResourceEntity extends AbstractEntity implements Tickable{
 					
 					if (newPos.overlaps(entity.getBox3D())) {
 						collided = true;
+						player = (Player) entity;
 					}
+					
 				}
 				
 			}
 				
 		}
 		
-		if(collided) {
+		if(collided == true) {
 			GameManager.get().getWorld().removeEntity(this);
-			//add to inventory
+			System.out.println(this.resourceType);
+			try {
+				player.getInventory().updateQuantity(this.resourceType, 1);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(player.getInventory().getQuantity(this.resourceType));
+		
 		}
 			
 	}

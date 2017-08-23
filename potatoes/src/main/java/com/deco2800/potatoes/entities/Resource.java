@@ -7,10 +7,8 @@ public class Resource implements Comparable<Resource> {
 	
 	protected String resourceType;
 	protected String imageSource;
-	protected String name;
 	
-	public Resource(String name) {
-		this.name = name;
+	public Resource() {
 		resourceType = "ordinary";
 		imageSource = "defaultImage.png";
 	}
@@ -27,10 +25,6 @@ public class Resource implements Comparable<Resource> {
 		return resourceType;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
 	public String getImageSource() {
 		return imageSource;
 	}
@@ -44,7 +38,7 @@ public class Resource implements Comparable<Resource> {
 	 * 		The string representation of the resource.
 	 */
 	public String toString() {
-		return resourceType+": "+name;
+		return resourceType;
 	}
 	
 	@Override
@@ -53,8 +47,7 @@ public class Resource implements Comparable<Resource> {
             return false;
         }
         Resource other = (Resource) object; // the corridor to compare
-        return other.getName().equals(name) &&
-        		other.getType().equals(resourceType);
+        return other.getType().equals(resourceType);
     }
 
     @Override
@@ -62,7 +55,6 @@ public class Resource implements Comparable<Resource> {
         // We create a polynomial hash-code based on the object string and type.
         final int prime = 31; // an odd base prime
         int result = 1; // the hash code under construction
-        result = prime * result + name.hashCode();
         result = prime * result + resourceType.hashCode();
         return result;
     }
@@ -70,11 +62,7 @@ public class Resource implements Comparable<Resource> {
     
     @Override
     public int compareTo(Resource other) {
-        int result = resourceType.compareTo(other.getType());
-        if (result == 0) {
-        	return name.compareTo(other.getName());
-        }
-        return result;
+        return resourceType.compareTo(other.getType());
     }
     
 

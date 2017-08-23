@@ -4,6 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.exceptions.InvalidInventoryException;
@@ -189,5 +194,7 @@ public class Inventory {
 			
 		}
 	}
+	
+	
 
 }

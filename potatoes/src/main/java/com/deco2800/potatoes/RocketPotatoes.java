@@ -173,7 +173,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		FoodResource foodResource = new FoodResource("Seed");
 		Inventory inventory = new Inventory();
 		*/
-		inventoryMenu();
+		//playerManager.getPlayer().inventoryMenu(stage);
 		
 		/* Setup inputs */
 		setupInputHandling();
@@ -308,8 +308,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 			
-			SeedResource seedResource = new SeedResource("seed");
-			FoodResource foodResource = new FoodResource("food");
+			SeedResource seedResource = new SeedResource();
+			FoodResource foodResource = new FoodResource();
 			
 			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
 			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
@@ -549,37 +549,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	}
 	
 	
-	//* GUI display for the inventory menu
-	private void inventoryMenu () {
-		
-		//Create inventory
-		//Inventory inventory = new Inventory();
-		
-		//Get inventory number (getQuantity from Inventory)
-		int seedNo = 15;
-		int foodNo = 16;
-		
-		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		
-		//Set up a table for the inventory menu
-
-		Label seedLabel = new Label("Seed", skin);
-	    TextField seedNumber = new TextField(Integer.toString(foodNo), skin);
-	    Label foodLabel = new Label("Food:", skin);
-	    TextField foodNumber = new TextField(Integer.toString(seedNo), skin);
-	    
-	    Table table = new Table();
-	    table.setFillParent(true);
-	    table.add(seedLabel);
-	    table.add(seedNumber).width(30);
-	    table.row();
-	    table.add(foodLabel);
-	    table.add(foodNumber).width(30);
-	    
-	    table.left().bottom();
-		 
-		stage.addActor(table);
-	}
+	
 	
 	
 }

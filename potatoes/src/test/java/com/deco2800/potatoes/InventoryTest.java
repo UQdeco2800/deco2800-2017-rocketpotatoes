@@ -26,8 +26,8 @@ public class InventoryTest {
 	@Before
 	public void setUp() throws InvalidResourceException {
 		nonResource = new Object();
-		seed1 = new Resource("Seed 1");
-		food1 = new Resource("Food 1");
+		seed1 = new SeedResource();
+		food1 = new FoodResource();
 		validResources = new HashSet<Resource>();
 		validResources.add(seed1);
 		validResources.add(food1);
@@ -62,8 +62,8 @@ public class InventoryTest {
 		
 		// Valid resources
 		HashSet<Resource> resources2 = new HashSet<Resource>();
-		Resource seed = new SeedResource("My Seed");
-		Resource food = new FoodResource("My Food");
+		Resource seed = new SeedResource();
+		Resource food = new FoodResource();
 		resources2.add(seed);
 		resources2.add(food);
 		Inventory items2 = new Inventory(resources2);	
@@ -81,7 +81,7 @@ public class InventoryTest {
 		Inventory items = new Inventory(resources);
 		assert(items.getInventoryResources().equals(resources));
 		// Make sure resources are deep cloned
-		resources.add(new SeedResource("My Seed"));
+		resources.add(new SeedResource());
 		assert(!items.getInventoryResources().equals(resources));
 		
 		// Test with resources
@@ -102,14 +102,14 @@ public class InventoryTest {
 	public void addResourceTest() throws Exception {
 		// Without existing resource
 		Inventory inventory = new Inventory(new HashSet<Resource>());
-		inventory.addInventoryResource(new SeedResource("My Seed"));
+		inventory.addInventoryResource(new SeedResource());
 		HashSet<Resource> resources = new HashSet<Resource>();
-		resources.add(new SeedResource("My Seed"));
+		resources.add(new SeedResource());
 		assert(inventory.getInventoryResources().equals(resources));
 		
 		// With existing resource
-		resources.add(new FoodResource("My Food"));
-		inventory.addInventoryResource(new FoodResource("My Food"));
+		resources.add(new FoodResource());
+		inventory.addInventoryResource(new FoodResource());
 		assert(inventory.getInventoryResources().equals(resources));
 		
 	}
@@ -123,7 +123,7 @@ public class InventoryTest {
 	public void removeResourceTest() throws Exception {
 		// Test remove existing
 		HashSet<Resource> resources = new HashSet<Resource>();
-		Resource resource = new Resource("Test thing");
+		Resource resource = new Resource();
 		resources.add(resource);
 		Inventory inventory = new Inventory(resources);
 		inventory.removeInventoryResource(resource);
@@ -145,7 +145,7 @@ public class InventoryTest {
 	@Test
 	public void getQuantityTest() throws Exception {
 		// Test existing resource
-		Resource seed = new SeedResource("My Seed");
+		Resource seed = new SeedResource();
 		HashSet<Resource> resources = new HashSet<Resource>();
 		resources.add(seed);
 		Inventory inventory = new Inventory(resources);
