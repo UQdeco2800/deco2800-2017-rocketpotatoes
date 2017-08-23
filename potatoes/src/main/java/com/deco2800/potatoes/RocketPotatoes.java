@@ -174,7 +174,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Init game TODO move? */
 		initializeGame();
-		playerManager.getPlayer().inventoryMenu(stage);;
+		playerManager.getPlayer().inventoryMenu(stage);
 	}
 
 	private void setupInputHandling() {
