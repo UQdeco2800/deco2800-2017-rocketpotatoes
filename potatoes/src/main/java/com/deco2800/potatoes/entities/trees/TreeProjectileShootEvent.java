@@ -31,6 +31,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 	/**
 	 * Temporary action for testing
 	 */
+	int shootOnce = 0;
 	@Override
 	public void action(AbstractTree tree) {
 		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(),
@@ -40,10 +41,23 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 			return;
 		}
 
-		//Added custom damages to projectiles
+		// Added custom damages to projectiles
+
+
+//		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+//				target, tree.getUpgradeStats().getRange(),1));
+
+		if(shootOnce ==0){
+			shootOnce++;
+			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+					target,tree.getPosZ(), tree.getUpgradeStats().getRange(),0));
+		}
+
+
+
 
 		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-				target, tree.getUpgradeStats().getRange(),1));
+				target, tree.getUpgradeStats().getRange(), 1));
 
 
 	}
