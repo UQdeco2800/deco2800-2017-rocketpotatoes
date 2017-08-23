@@ -20,6 +20,11 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
     /*Initialization of variables*/
     private transient Random random = new Random();
     private float speed = 0.1f;
+    
+    //redefine types of enemies
+    private enum EnemyType {NORMAL, TANK, SPEEDY};
+    EnemyType enemyType;
+    
     //Get the player and make player the goal of enemy
     PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
     private AbstractEntity goalEntity = playerManager.getPlayer();
@@ -182,6 +187,31 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
         }
     }
 
+    
+    /**
+     * Indicates if the enemy is a tank enemy
+     * @return true iff the enemy's type is TANK
+     */
+    public boolean isTank() {
+    	return (this.enemyType == EnemyType.TANK);
+    }
+    
+    /**
+     * If the enemy is a tank, make its maxHealth two times than normal enemy
+     * and speed half than normal, but only attack tree/tower
+     */
+    public void makeTank() {
+    	if (isTank()) {
+    		this.maxHealth = this.maxHealth*2;
+    		this.speed = this.speed/2;
+    		
+    		//set the tank's goal to tree/tower
+    		//!!!!!!HAVNE NOT MAKEN TREE AS GOAL YET!!!!!!!
+    		this.setGoalEntity(getGoalEntity());
+    		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    	}
+    }
+    
     /**
      * Sets a single goal entity for the enemy
      *
