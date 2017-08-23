@@ -9,8 +9,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -165,6 +168,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Add the window to the stage */
 		stage.addActor(window);
 
+		/* Add Inventory menu to the stage */
+		inventoryMenu();
+		
 		/* Setup inputs */
 		setupInputHandling();
 
@@ -536,6 +542,39 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			System.out.println(amount);			
 		}
 		
+	}
+	
+	
+	//* GUI display for the inventory menu
+	private void inventoryMenu () {
+		
+		//Create inventory
+		//Inventory inventory = new Inventory();
+		
+		//Get inventory number (getQuantity from Inventory)
+		int seedNo = 15;
+		int foodNo = 16;
+		
+		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+		
+		//Set up a table for the inventory menu
+
+		Label seedLabel = new Label("Seed", skin);
+	    TextField seedNumber = new TextField(Integer.toString(foodNo), skin);
+	    Label foodLabel = new Label("Food:", skin);
+	    TextField foodNumber = new TextField(Integer.toString(seedNo), skin);
+	    
+	    Table table = new Table();
+	    table.setFillParent(true);
+	    table.add(seedLabel);
+	    table.add(seedNumber).width(30);
+	    table.row();
+	    table.add(foodLabel);
+	    table.add(foodNumber).width(30);
+	    
+	    table.right().bottom();
+		 
+		stage.addActor(table);
 	}
 	
 	
