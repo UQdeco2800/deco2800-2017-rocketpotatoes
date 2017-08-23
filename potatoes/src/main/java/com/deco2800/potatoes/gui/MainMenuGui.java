@@ -34,6 +34,15 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerHostButton;
     private TextButton multiplayerBackButton;
 
+    //icc
+    private VerticalGroup optionsButtonGroup;
+    private TextButton soundsEffsButton;
+    private TextButton musicButton;
+    private TextButton fullscreenButton;
+    private TextButton colourblindButton;
+    private TextButton optionsBackButton;
+
+
     // State indicator
     private enum States {
         PRIMARY,
@@ -81,6 +90,21 @@ public class MainMenuGui extends Gui {
         startMultiplayerButtonGroup.addActor(multiplayerHostButton);
         startMultiplayerButtonGroup.addActor(multiplayerBackButton);
 
+        //icc Options state
+        soundsEffsButton = new TextButton("Sound Effects: ON",uiSkin);
+        musicButton = new TextButton("Music: OFF",uiSkin);
+        fullscreenButton = new TextButton("Fullscreen Mode: OFF",uiSkin);
+        colourblindButton = new TextButton("Colourblind Mode: OFF",uiSkin);
+        optionsBackButton = new TextButton("Back",uiSkin);
+
+        optionsButtonGroup = new VerticalGroup();
+        optionsButtonGroup.addActor(soundsEffsButton);
+        optionsButtonGroup.addActor(musicButton);
+        optionsButtonGroup.addActor(fullscreenButton);
+        optionsButtonGroup.addActor(colourblindButton);
+        optionsButtonGroup.addActor(optionsBackButton);
+
+
         setupListeners();
 
         root = new Table(uiSkin);
@@ -106,6 +130,9 @@ public class MainMenuGui extends Gui {
                 // TODO
                 //state = States.OPTIONS;
                 //resetGui(stage);
+
+                state = States.OPTIONS;
+                resetGui(stage);
             }
         });
 
@@ -165,6 +192,15 @@ public class MainMenuGui extends Gui {
                 resetGui(stage);
             }
         });
+
+        //Options state
+        optionsBackButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state = States.PRIMARY;
+                resetGui(stage);
+            }
+        });
     }
 
     /**
@@ -207,6 +243,7 @@ public class MainMenuGui extends Gui {
                 break;
             case OPTIONS:
                 // TODO
+                root.add(optionsButtonGroup).expandX().center();
                 break;
         }
     }
