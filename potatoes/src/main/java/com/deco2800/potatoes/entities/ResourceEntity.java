@@ -20,10 +20,11 @@ public class ResourceEntity extends AbstractEntity implements Tickable{
 	
 	public ResourceEntity() {
 		super();
+		resourceType = new Resource();
 	}
 	
 	public ResourceEntity(float posX, float posY, float posZ, Resource resource) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, resource.getType());
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, resource.getTypeName());
 		resourceType = resource;
 	}
 	
@@ -91,36 +92,6 @@ public class ResourceEntity extends AbstractEntity implements Tickable{
 	public String toString() {
 		return resourceType.toString();
 	}
-	
-	/*@Override
-    public boolean equals(Object object) {
-        if (!(object instanceof ResourceEntity)) {
-            return false;
-        }
-        ResourceEntity other = (ResourceEntity) object; // the corridor to compare
-        return other.getName().equals(name) &&
-        		other.getType().equals(resourceType);
-    }
-
-    @Override
-    public int hashCode() {
-        // We create a polynomial hash-code based on the object string and type.
-        final int prime = 31; // an odd base prime
-        int result = 1; // the hash code under construction
-        result = prime * result + name.hashCode();
-        result = prime * result + resourceType.hashCode();
-        return result;
-    }
-    
-    
-    @Override
-    public int compareTo(ResourceEntity other) {
-        int result = resourceType.compareTo(other.getType());
-        if (result == 0) {
-        	return name.compareTo(other.getName());
-        }
-        return result;
-    }*/
     
 
 }
