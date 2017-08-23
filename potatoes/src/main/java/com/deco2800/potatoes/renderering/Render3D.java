@@ -60,7 +60,7 @@ public class Render3D implements Renderer {
 			@Override
 			public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
 				int val = abstractEntity.compareTo(t1);
-				// System.out.println(abstractEntity+" "+t1);
+				//System.out.println(abstractEntity+" "+t1);
 				if (abstractEntity instanceof ExplosionProjectile) {
 					val = -1;
 				}
@@ -102,7 +102,7 @@ public class Render3D implements Renderer {
 			// old method of draw:
 			// batch.draw(tex, isoPosition.x, isoPosition.y,
 			// tileWidth*entity.getXRenderLength(),
-			// (tex.getHeight()/aspect)*entity.getYRenderLength());
+			//(tex.getHeight()/aspect)*entity.getYRenderLength());
 
 			// NEW: changed the render method to allow for sprite rotation.
 
@@ -153,15 +153,15 @@ public class Render3D implements Renderer {
 		// when
 		//
 		// */s
-		// for (int index = 0; index < entities.size(); index++) {
-		// Renderable entity = entities.get(index);
-		// float cartX = entity.getPosX();
-		// float cartY = (worldWidth-1) - entity.getPosY();
+		//for (int index = 0; index < entities.size(); index++) {
+		//Renderable entity = entities.get(index);
+		//float cartX = entity.getPosX();
+		//float cartY = (worldWidth-1) - entity.getPosY();
 		//
-		// float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
-		// float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
+		//float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
+		//float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
 		//
-		// font.draw(batch, String.format("%d", index), isoX + 32, isoY + 32);
+		//font.draw(batch, String.format("%d", index), isoX + 32, isoY + 32);
 		// }
 
 		batch.end();

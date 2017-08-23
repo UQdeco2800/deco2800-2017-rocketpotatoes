@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities;
 public abstract class Projectile extends AbstractEntity implements Tickable{
 
 	public Projectile() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 	public Projectile(float posX, float posY, float posZ, String texture) {

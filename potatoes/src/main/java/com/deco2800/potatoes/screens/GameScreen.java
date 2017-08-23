@@ -316,7 +316,7 @@ public class GameScreen implements Screen {
         // Render entities etc.
         renderer.render(batch);
 
-        //TODO: add render for projectile's separately
+        // TODO: add render for projectile's separately
     }
 
     /**

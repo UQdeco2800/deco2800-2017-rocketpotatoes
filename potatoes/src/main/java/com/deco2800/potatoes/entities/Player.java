@@ -78,19 +78,19 @@ public class Player extends MortalEntity implements Tickable {
 		return this.inventory;
 	}
 	
-	//* GUI display for the inventory menu
+	// * GUI display for the inventory menu
 	public void inventoryMenu (Stage stage) {
 		
-		//Create inventory
+		// Create inventory
 		//Inventory inventory = new Inventory();
 		
-		//Get inventory number (getQuantity from Inventory)
+		// Get inventory number (getQuantity from Inventory)
 		int seedNo = 0;
 		int foodNo = 0;
 		
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
-		//Set up a table for the inventory menu
+		// Set up a table for the inventory menu
 
 		Label seedLabel = new Label("Seed", skin);
 	    TextField seedNumber = new TextField(Integer.toString(foodNo), skin);
@@ -156,13 +156,13 @@ public class Player extends MortalEntity implements Tickable {
 			speedx -= movementSpeed;
 			break;
 		case Input.Keys.A:
-			//changes the sprite so that the character is facing left
+			// changes the sprite so that the character is facing left
 			this.setTexture(TEXTURE_LEFT);
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
-		//changes the sprite so that the character is facing right
+		// changes the sprite so that the character is facing right
 		this.setTexture(TEXTURE_RIGHT);
 			speedx += movementSpeed;
 			speedy += movementSpeed;

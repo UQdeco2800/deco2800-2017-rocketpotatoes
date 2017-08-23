@@ -35,7 +35,7 @@ public class ExplosionProjectile extends Projectile {
 			if (currentSpriteIndex < 3) {
 				currentSpriteIndex++;
 			} else {
-				// GameManager.get().getWorld().removeEntity(this);
+				//GameManager.get().getWorld().removeEntity(this);
 			}
 		}
 
