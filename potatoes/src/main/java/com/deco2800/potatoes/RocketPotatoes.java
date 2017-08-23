@@ -168,7 +168,11 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Add the window to the stage */
 		stage.addActor(window);
 
-		/* Add Inventory menu to the stage */
+		/* Add Inventory to the stage */
+		/*SeedResource seedResource = new SeedResource("Seed");
+		FoodResource foodResource = new FoodResource("Seed");
+		Inventory inventory = new Inventory();
+		*/
 		inventoryMenu();
 		
 		/* Setup inputs */
@@ -572,7 +576,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	    table.add(foodLabel);
 	    table.add(foodNumber).width(30);
 	    
-	    table.right().bottom();
+	    table.left().bottom();
 		 
 		stage.addActor(table);
 	}
