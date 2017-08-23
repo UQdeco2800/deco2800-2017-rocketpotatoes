@@ -189,7 +189,7 @@ public class MainMenuGui extends Gui {
 
     private void resetGui(Stage stage) {
         root.reset();
-        root.debugAll();
+        //root.debugAll();
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight());
