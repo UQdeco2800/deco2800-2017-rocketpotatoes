@@ -1,7 +1,8 @@
 package com.deco2800.potatoes.managers;
 
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.Tickable;
@@ -27,7 +28,7 @@ public class EventManager extends Manager {
 	private List<EventPair> events;
 
 	public EventManager() {
-		events = new LinkedList<>();
+		events = new ArrayList<>();
 	}
 
 	/**
@@ -55,7 +56,7 @@ public class EventManager extends Manager {
 	 */
 	public void unregisterAll(Tickable tickable) {
 		for (Iterator<EventPair> iterator = events.iterator(); iterator.hasNext();) {
-			EventPair eventPair = (EventPair) iterator.next();
+			EventPair eventPair = iterator.next();
 			if (eventPair.tickable == tickable) {
 				iterator.remove();
 			}
@@ -66,11 +67,18 @@ public class EventManager extends Manager {
 	 * Ticks all registered events. Completed events will be automatically unregistered
 	 */
 	public void tickAll(long deltaTime) {
-		for (EventPair eventPair : events) {
+		List<EventPair> finishedEvents = new ArrayList<>();
+		// this line throws ConcurrentModificationException, not sure why
+		// for (EventPair eventPair : events) {
+		for (int i = 0; i < events.size(); i++) {
+			EventPair eventPair = events.get(i);
 			eventPair.event.decreaseProgress(deltaTime, eventPair.tickable);
 			if (eventPair.event.isCompleted()) {
-				unregisterEvent(eventPair.tickable, eventPair.event);
+				finishedEvents.add(eventPair);
 			}
+		}
+		for (EventPair eventPair : finishedEvents) {
+			unregisterEvent(eventPair.tickable, eventPair.event);
 		}
 	}
 }

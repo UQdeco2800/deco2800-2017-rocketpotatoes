@@ -6,39 +6,58 @@ import com.deco2800.potatoes.util.Box3D;
 import java.util.Collection;
 import java.util.Optional;
 
-public class ExplosionProjectile extends Projectile{
+public class ExplosionProjectile extends Projectile {
 
 	private final static transient String TEXTURE = "aoe";
 	private float DAMAGE = 1;
 
 	public ExplosionProjectile() {
-		//empty for serialization
+		// empty for serialization
 	}
 
+<<<<<<< HEAD
 
 	public ExplosionProjectile(float posX, float posY, float posZ,float xLength, float yLength, float zLength, float xRenderLength, float yRenderLength, String TEXTURE, float DAMAGE) {
+=======
+	public ExplosionProjectile(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+			float xRenderLength, float yRenderLength, String TEXTURE) {
+>>>>>>> ff2de254832358edc8e61c55d5e3d19a90bcc66b
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, TEXTURE);
 		this.DAMAGE = DAMAGE;
 	}
 
+<<<<<<< HEAD
 	int currentSpriteIndex=1;
 	int timer=0;
 	int dmgTimer = 0;
+=======
+	int currentSpriteIndex = 1;
+	int timer = 0;
+
+>>>>>>> ff2de254832358edc8e61c55d5e3d19a90bcc66b
 	@Override
 	public void onTick(long time) {
 		timer++;
-		if(timer%10==0) {
+		if (timer % 10 == 0) {
 			if (currentSpriteIndex < 3) {
 				currentSpriteIndex++;
 			} else {
-				//GameManager.get().getWorld().removeEntity(this);
+				// GameManager.get().getWorld().removeEntity(this);
 			}
 		}
 
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
 			if (entity instanceof Player && this.collidesWith(entity)) {
+<<<<<<< HEAD
 				System.out.println("player col");
+=======
+				// System.out.println("player col");
+			}
+			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
+				((EnemyEntity) entity).getShot(this);
+				return;
+>>>>>>> ff2de254832358edc8e61c55d5e3d19a90bcc66b
 			}
 
 				if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
@@ -55,7 +74,7 @@ public class ExplosionProjectile extends Projectile{
 		}
 	}
 
-	//TODO: Change to amount
+	// TODO: Change to amount
 	@Override
 	public float getDamage() {
 		return DAMAGE;
