@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
@@ -35,7 +36,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 	 * @param x
 	 * @param y
 	 */
-	public void handleMouseClick(float x, float y) {
+	public void handleMouseClick(float x, float y, int button) {
 
 		float projX = 0, projY = 0;
 
@@ -61,7 +62,13 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
 					.getManager(MultiplayerManager.class);
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
+				if (button == 0) {
+					// Adds a projectile tree
+					GameManager.get().getWorld().addEntity(new Tower(Math.round(projX), Math.round(projY), 0));
+				} else {
+					// Adds a resource tree
+					GameManager.get().getWorld().addEntity(new ResourceTree(Math.round(projX), Math.round(projY), 0, null, 0));
+				}
 			} else {
 				multiplayerManager.broadcastBuildOrder(Math.round(projX), Math.round(projY));
 			}
@@ -75,7 +82,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver {
 		originY = screenY;
 
 		Vector3 worldCoords = getCameraManager().getCamera().unproject(new Vector3(screenX, screenY, 0));
-		handleMouseClick(worldCoords.x, worldCoords.y);
+		handleMouseClick(worldCoords.x, worldCoords.y, button);
 	}
 
 	@Override
