@@ -16,21 +16,21 @@ import com.deco2800.potatoes.util.Box3D;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
+public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
 	
-	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient String TEXTURE_RIGHT = "squirrel2";
-	private static final transient float HEALTH = 100f;
+	//this is not working. spacman_ded texture is showing instead of tankBear
+	private static final transient String TEXTURE = "tankBear";
+	private static final transient float HEALTH = 200f;
 	private transient Random random = new Random();
 
-	private float speed = 0.1f;
+	private float speed = 0.06f;
 
-	public Squirrel() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
+	public TankEnemy() {
+		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 	}
 
-	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
+	public TankEnemy(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 		//this.setTexture("squirrel");
 		//this.random = new Random();
 	}
@@ -88,10 +88,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 			//Squirrel changes direction when moving towards player.
 
 			if(this.getPosX()>goalX){
-				this.setTexture(TEXTURE_LEFT);
+				this.setTexture(TEXTURE);
 			}
 			else{
-				this.setTexture(TEXTURE_RIGHT);
+				this.setTexture(TEXTURE);
 			}
 		}
 	}

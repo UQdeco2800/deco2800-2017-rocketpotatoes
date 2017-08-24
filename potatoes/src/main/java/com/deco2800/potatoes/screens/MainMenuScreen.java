@@ -16,6 +16,7 @@ import com.deco2800.potatoes.gui.OptionsMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.TextureManager;
 
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
@@ -73,6 +74,9 @@ public class MainMenuScreen implements Screen {
 
         // Draw/update gui
         stage.act();
+        stage.getBatch().begin();
+        stage.getBatch().draw(new TextureManager().getTexture("screen_background"),0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage.getBatch().end();
         stage.draw();
 
     }

@@ -1,13 +1,5 @@
 package com.deco2800.potatoes.renderering;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,14 +7,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -30,6 +33,7 @@ import com.deco2800.potatoes.managers.TextureManager;
  * @Author Tim Hadwen
  */
 public class Render3D implements Renderer {
+
 
 	BitmapFont font;
 	SpriteBatch renderBatch;
@@ -118,10 +122,16 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
-				font.setColor(Color.RED);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
+				// Hacky way of getting progress bars
+            	TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+				Texture tex = reg.getTexture("progress_bar");
+				((ProgressBar) entity).setProgressBar(entity, tex, batch, (int)(isoPosition.x + tileWidth / 2 - 10),
+						(int) (isoPosition.y + 50));
+            	/*
+                font.setColor(Color.RED);
+                font.getData().setScale(1.0f);
+                font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
+                */
 			}
 			/*
 			 * Construction percentage displayed in yellow
@@ -132,6 +142,17 @@ public class Render3D implements Renderer {
 				font.draw(batch, String.format("%d%%", 100 - ((AbstractTree) entity).getConstructionLeft()),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
 			}
+
+			/*
+			 * Display resource collected for Resource Tree
+			 */
+			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceAmount() > 0) {
+				font.setColor(Color.GREEN);
+				font.getData().setScale(1.0f);
+				font.draw(batch, String.format("%s", ((ResourceTree) entity).resourceCount),
+						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
+			}
+
 			/**************************/
 			MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
 			if (entity instanceof Player && m.isMultiplayer()) {
@@ -255,5 +276,23 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector2 worldToScreenCoordinates(Vector2 p) {
 		return worldToScreenCoordinates(p.x, p.y);
+	}
+
+    public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
+		return ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().
+				unproject(new Vector3(x, y, z));
+	}
+
+	public static Vector2 worldPosToTile(float x, float y) {
+		float projX = 0, projY = 0;
+
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+		projX = x / tileWidth;
+		projY = -(y - tileHeight / 2f) / tileHeight + projX;
+		projX -= projY - projX;
+
+		return new Vector2(projX, projY);
 	}
 }

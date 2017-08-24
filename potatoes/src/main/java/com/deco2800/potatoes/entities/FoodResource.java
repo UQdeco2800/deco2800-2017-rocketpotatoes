@@ -5,23 +5,12 @@ public class FoodResource extends Resource {
 	private static final transient String TEXTURE = "food";
 	
 	/**
-	 * <p>
-	 * Creates a new instance of the class and assigns the name of 
-	 * the resource.
-	 * </p>
-	 * 
-	 * <p>
-	 * Only to be used when the instance of the resource isn't appearing
-	 * on the map.
-	 * </p>
+	 * A type of resource that gives health to player.
 	 */
 	public FoodResource() {
 		super();
 		this.resourceType = "food";
+		this.texture = TEXTURE;
 	}
 	
-	public String getTexture() {
-		return TEXTURE;
-	}
-
 }
