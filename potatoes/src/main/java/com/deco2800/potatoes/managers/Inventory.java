@@ -127,6 +127,28 @@ public class Inventory {
 		}
 		return inventoryMap.get(resource);
 	}
+	
+	/**
+	 * <p>
+	 * Returns the quantity for any given resource and zero if non existing.
+	 * </p>
+	 * 
+	 * <p>
+	 * The quantity is always non-negative -> this method will always return a
+	 * positive integer or zero.
+	 * </p>
+	 * 
+	 * @param resource
+	 *            the resource whose associated quantity will be returned
+	 * @return the number of items of the given resource
+	 */
+	public int getAbsoluteQuantity (Resource resource) {
+		try {
+			return getQuantity(resource);
+		} catch (InvalidResourceException e) {
+			return 0;
+		}
+	}
 
 	/**
 	 * <p>

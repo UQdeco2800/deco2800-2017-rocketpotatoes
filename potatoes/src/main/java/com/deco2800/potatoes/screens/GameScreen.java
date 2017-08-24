@@ -18,6 +18,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
+import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -147,6 +148,9 @@ public class GameScreen implements Screen {
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
+        
+        // Make our inventory window
+        guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		/* Setup inputs */
         setupInputHandling();
@@ -208,18 +212,8 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
             GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
             
-            SeedResource seedResource = new SeedResource();
-			FoodResource foodResource = new FoodResource();
-			
-			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-			
-			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+            initialiseResources();
+            
         }
 
 
@@ -234,6 +228,22 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void initialiseResources() {
+
+        SeedResource seedResource = new SeedResource();
+		FoodResource foodResource = new FoodResource();
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
     }
 
     private void tickGame(long timeDelta) {
