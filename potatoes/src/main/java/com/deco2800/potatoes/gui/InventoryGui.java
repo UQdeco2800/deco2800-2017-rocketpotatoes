@@ -7,10 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.deco2800.potatoes.entities.FoodResource;
-import com.deco2800.potatoes.entities.SeedResource;
-import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
  * Inventory GUI is to display the amount of resources hold by player
@@ -22,9 +18,6 @@ import com.deco2800.potatoes.managers.PlayerManager;
 public class InventoryGui extends Gui {
 	
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-	
-	//Get the player's inventory
-	private Inventory inventory;
 	
 	//Set up a table for the inventory menu
 	private Table inventoryTable;
@@ -39,34 +32,29 @@ public class InventoryGui extends Gui {
 	private Label foodLabelAmount = new Label(Integer.toString(foodAmount), skin);;
 	private Image foodImage;
 	
-	//Constructor takes in playerManager (for the inventory) and takes in stage to set up
+	/**
+	 * Instantiates a table for the InventoryGui to be placed on the current stage. 
+	 * It requires stage is not null because the name component of it
+	 * is input in the constructor.
+	 * 
+	 * @require stage is not null
+	 */
 	public InventoryGui(Stage stage){
-		//get inventory
-		//inventory = playerManager.getPlayer().getInventory();
-		//get amount of food/seed
-		//seedAmount = inventory.getQuantity(new SeedResource());
-		//foodAmount = inventory.getQuantity(new FoodResource());
-		
-		//add labels
-		//Label seedLabel = new Label("Seed", skin);
-		//Label foodLabel = new Label("Food", skin);
-		//seedLabelAmount = new Label(Integer.toString(seedAmount), skin);
-		//foodLabelAmount = new Label(Integer.toString(foodAmount), skin);
 		
 		//instantiate table
 		inventoryTable = new Table();
 		inventoryTable.setFillParent(true);
+		
+		inventoryTable.defaults().width(50);
+		
 		inventoryTable.add(seedLabel);
-		inventoryTable.add(seedLabelAmount).width(30);
-		
+		inventoryTable.add(seedLabelAmount);
 		//seedImage = new Image(new Texture());
-	    //table.add(seedNumber).width(30);
 		
+		//add the next row
 		inventoryTable.row();
-		
 		inventoryTable.add(foodLabel);
-		inventoryTable.add(foodLabelAmount).width(30);
-	    //table.add(foodNumber).width(30);
+		inventoryTable.add(foodLabelAmount);
 		
 		//position table in the bottom left
 		inventoryTable.left().bottom();
@@ -76,11 +64,21 @@ public class InventoryGui extends Gui {
 		
 	}
 	
-	//set stage
-	
-	//take in player's inventory to set inventory display
-	public void setInventory(Inventory playerInventory){
-		inventory = playerInventory;
+	/**
+     * Start's a singleplayer game
+     * @param resource The type of resource that was added to inventory
+     * @param amount The amount of resource that was added to inventory
+     */
+	public void increaseInventory(String resource, int amount){
+		
+		if (resource == "seed") {
+			seedLabelAmount.setText(Integer.toString(amount));
+		} 
+		
+		if (resource == "food") {
+			foodLabelAmount.setText(Integer.toString(amount));
+		}
 	}
+
 	
 }

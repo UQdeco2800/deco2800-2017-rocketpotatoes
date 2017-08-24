@@ -3,18 +3,19 @@ package com.deco2800.potatoes.managers;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
+import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
 public class Inventory {
-
+	
+	/*
+	 * A mapping of possible resource items to the number of items the player
+	 * holds
+	 */
+	private GuiManager guiManager;
+	
 	/*
 	 * A mapping of possible resource items to the number of items the player
 	 * holds
@@ -185,6 +186,8 @@ public class Inventory {
 		}
 
 		inventoryMap.put(resource, currentAmount + amount);
+		guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
+		((InventoryGui)guiManager.getGui(InventoryGui.class)).increaseInventory(resource.getTypeName(), currentAmount + amount);
 	}
 
 	/**

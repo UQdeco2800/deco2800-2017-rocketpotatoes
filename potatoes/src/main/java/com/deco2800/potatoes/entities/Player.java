@@ -2,21 +2,11 @@ package com.deco2800.potatoes.entities;
 
 import java.util.HashSet;
 import java.util.List;
-
 import java.util.Map;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.managers.InputManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
@@ -78,37 +68,6 @@ public class Player extends MortalEntity implements Tickable {
 
 	public Inventory getInventory() {
 		return this.inventory;
-	}
-
-	// * GUI display for the inventory menu
-	public void inventoryMenu(Stage stage) {
-
-		// Create inventory
-		// Inventory inventory = new Inventory();
-
-		// Get inventory number (getQuantity from Inventory)
-		int seedNo = 0;
-		int foodNo = 0;
-
-		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		// Set up a table for the inventory menu
-
-		Label seedLabel = new Label("Seed", skin);
-		TextField seedNumber = new TextField(Integer.toString(foodNo), skin);
-		Label foodLabel = new Label("Food:", skin);
-		TextField foodNumber = new TextField(Integer.toString(seedNo), skin);
-
-		Table table = new Table();
-		table.setFillParent(true);
-		table.add(seedLabel);
-		table.add(seedNumber).width(30);
-		table.row();
-		table.add(foodLabel);
-		table.add(foodNumber).width(30);
-
-		table.left().bottom();
-
-		stage.addActor(table);
 	}
 
 	/**
