@@ -2,9 +2,15 @@ package com.deco2800.potatoes.entities;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.Inventory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
@@ -18,6 +24,11 @@ import com.deco2800.potatoes.entities.AbstractEntity;
  */
 public class ResourceEntity extends AbstractEntity implements Tickable {
 
+	/*
+	 * Logger for all info/warning/error logs
+	 */
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
+	
 	private Resource resourceType;
 	private int quantity;
 	// The radius of which a collision can be detected
@@ -104,8 +115,9 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 			try {
 				GameManager.get().getWorld().removeEntity(this);
 				player.getInventory().updateQuantity(this.resourceType, this.getQuantity());
+				LOGGER.info("Collected resource: " + this.resourceType);
 			} catch (Exception e) {
-				// Issue with resource
+				LOGGER.warn("Issue colliding with resource");
 			}
 
 		}

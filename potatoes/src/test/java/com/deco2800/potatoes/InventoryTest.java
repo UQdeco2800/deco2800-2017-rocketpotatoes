@@ -96,12 +96,13 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void testAddingNullResource() throws Exception {
 		// Test null
 		HashSet<Resource> emptyResources = new HashSet<Resource>();
 		Inventory inventory = new Inventory(emptyResources);
 		inventory.addInventoryResource(null);
+		assert(inventory.getQuantity(null) == 0);
 	}
 	
 	@Test
@@ -120,7 +121,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void testRemoveNullResource() throws Exception {
 		validInventory.removeInventoryResource(null);
 	}
@@ -143,7 +144,7 @@ public class InventoryTest {
 		inventory.removeInventoryResource(food1);
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void getNullResourceQuantityTest() throws Exception {
 		validInventory.getQuantity(null);
 	}
@@ -158,7 +159,7 @@ public class InventoryTest {
 		assert(inventory.getQuantity(seed)==0);
 	}
 	
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void getAbsoluteQuantityTest() throws Exception {
 		// Test existing resource
 		Resource seed = new SeedResource();
@@ -175,12 +176,12 @@ public class InventoryTest {
 		inventory.getQuantity(seed1);
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void testNullResourceUpdate() throws Exception {
 		validInventory.updateQuantity(null, 10);
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void testNonExistingResourceUpdate() throws Exception {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
 		inventory.updateQuantity(seed1, 10);
@@ -196,7 +197,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void testInvalidQuantityUpdate() throws Exception {
 		validInventory.updateQuantity(seed1, -2);
 	}
@@ -208,7 +209,7 @@ public class InventoryTest {
 		inventory.updateInventory(validInventory);
 	}
 	
-	@Test(expected = InvalidInventoryException.class)
+	@Test(expected = NullPointerException.class)
 	public void testNullInventoryUpdate() throws Exception {
 		validInventory.updateInventory(null);
 	}

@@ -3,12 +3,18 @@ package com.deco2800.potatoes.managers;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.gui.InventoryGui;
-import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
 public class Inventory {
+	
+	/*
+	 * Logger for all info/warning/error logs
+	 */
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
 	
 	/*
 	 * A mapping of possible resource items to the number of items the player
@@ -76,12 +82,10 @@ public class Inventory {
 	 * Adds a resource to the inventory with 0 quantity
 	 * </p>
 	 * 
-	 * @throws Exception 
-	 * 			if the resource is null
 	 */
-	public void addInventoryResource(Resource resource) throws InvalidResourceException {
+	public void addInventoryResource(Resource resource) {
 		if (resource == null){
-			throw new InvalidResourceException("Please supply a valid resource");
+			LOGGER.error("Please supply a valid resource");
 		}
 		if (!getInventoryResources().contains(resource)){
 			inventoryMap.put(resource, 0);
@@ -92,13 +96,10 @@ public class Inventory {
 	 * <p>
 	 * Removes a resource from the inventory (and its associated quantity)
 	 * </p>
-	 * 
-	 * @throws Exception 
-	 * 			if the resource is null or is not in inventoryMap
 	 */
-	public void removeInventoryResource(Resource resource) throws InvalidResourceException {
+	public void removeInventoryResource(Resource resource) {
 		if (resource == null || !getInventoryResources().contains(resource)){
-			throw new InvalidResourceException ("Please supply a valid resource");
+			LOGGER.error("Please supply a valid resource");
 		}
 		System.out.println(resource);
 		System.out.println(inventoryMap);
@@ -119,12 +120,10 @@ public class Inventory {
 	 * @param resource
 	 *            the resource whose associated quantity will be returned
 	 * @return the number of items of the given resource
-	 * @throws Exception
-	 *             if the resource is not in this.getInventoryResources()
 	 */
-	public int getQuantity(Resource resource) throws InvalidResourceException {
+	public int getQuantity(Resource resource) {
 		if (!this.getInventoryResources().contains(resource)) {
-			throw new InvalidResourceException("Please supply a valid resource");
+			LOGGER.error("Please supply a valid resource");
 		}
 		return inventoryMap.get(resource);
 	}
@@ -168,21 +167,16 @@ public class Inventory {
 	 *            the resource whose amount will be updated
 	 * @param amount
 	 *            the number of resources that will be added
-	 * @throws Exception
-	 *             if resource is not already in this.getInventoryResources()
-	 * @throws Exception
-	 *             if the addition of amount and the current quantity for that
-	 *             resource is negative (i.e. less than zero).
 	 */
-	public void updateQuantity(Resource resource, int amount) throws Exception {
+	public void updateQuantity(Resource resource, int amount) {
 		if (!this.getInventoryResources().contains(resource)) {
-			throw new InvalidResourceException("Please supply a valid resource");
+			LOGGER.error("Please supply a valid resource");
 		}
 
 		int currentAmount = getQuantity(resource);
 		// check that the resource amount would not become negative.
 		if (currentAmount + amount < 0) {
-			throw new InvalidResourceException("Sorry, not enough " + resource.toString());
+			LOGGER.warn("Sorry, not enough " + resource.toString());
 		}
 
 		inventoryMap.put(resource, currentAmount + amount);
@@ -207,12 +201,10 @@ public class Inventory {
 	 * 
 	 * @param extraInventory
 	 *            the extra items to be added to this object
-	 * @throws Exception
-	 *             if extraItems is null
 	 */
-	public void updateInventory(Inventory extraItems) throws Exception {
+	public void updateInventory(Inventory extraItems) {
 		if (extraItems == null){
-			throw new InvalidInventoryException("Cannot add null to Inventory");
+			LOGGER.warn("Cannot add null to Inventory");
 		}
 		for (Resource resource : extraItems.inventoryMap.keySet()) {
 			if (inventoryMap.containsKey(resource)) {
