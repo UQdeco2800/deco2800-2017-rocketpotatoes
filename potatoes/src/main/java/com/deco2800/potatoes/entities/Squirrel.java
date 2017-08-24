@@ -40,8 +40,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 //		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
 
 		//The X and Y position of the player without random floats generated
-		float goalX = playerManager.getPlayer().getPosX();
-		float goalY = playerManager.getPlayer().getPosY();
+		float goalX = playerManager.getPlayer().getPosX() ;
+		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
 
 		if(this.distance(playerManager.getPlayer()) < speed) {
 			this.setPosX(goalX);
@@ -64,14 +64,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);
 
-		//Squirrel changes direction when moving towards player.
 
-		if(this.getPosX()>goalX){
-			this.setTexture(TEXTURE_LEFT);
-		}
-		else{
-			this.setTexture(TEXTURE_RIGHT);
-		}
 		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
@@ -87,6 +80,14 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
+			//Squirrel changes direction when moving towards player.
+
+			if(this.getPosX()>goalX){
+				this.setTexture(TEXTURE_LEFT);
+			}
+			else{
+				this.setTexture(TEXTURE_RIGHT);
+			}
 		}
 	}
 	
