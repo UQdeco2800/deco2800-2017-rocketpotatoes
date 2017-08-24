@@ -205,18 +205,8 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
             
-            SeedResource seedResource = new SeedResource();
-			FoodResource foodResource = new FoodResource();
-			
-			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-			
-			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+            initialiseResources();
+            
         }
 
 
@@ -231,6 +221,22 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void initialiseResources() {
+
+        SeedResource seedResource = new SeedResource();
+		FoodResource foodResource = new FoodResource();
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
     }
 
     private void tickGame(long timeDelta) {
