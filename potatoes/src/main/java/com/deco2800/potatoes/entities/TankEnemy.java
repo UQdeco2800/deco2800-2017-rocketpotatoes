@@ -44,16 +44,6 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 	@Override
 	public void onTick(long i) {
 
-		//PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-//		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-
-//		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
-
-//		//The X and Y position of the player without random floats generated
-//		float goalX = playerManager.getPlayer().getPosX() ;
-//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
-//		
 		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Tower.class, getPosX(), getPosY());
 	
 		
