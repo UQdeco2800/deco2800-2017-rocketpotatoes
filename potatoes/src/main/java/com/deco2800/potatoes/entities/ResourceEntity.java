@@ -12,8 +12,8 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 public class ResourceEntity extends AbstractEntity implements Tickable{
 	
 	private Resource resourceType;
-	private final float change = (float)0.2;
-	private final float[][] positions = {{change, 0}, {change, change},
+	private transient final float change = (float)0.2;
+	private transient final float[][] positions = {{change, 0}, {change, change},
 			{0, change}, {-change, change}, {-change, 0}, {-change, -change},
 			{0, -change}, {-change, -change}};
 	

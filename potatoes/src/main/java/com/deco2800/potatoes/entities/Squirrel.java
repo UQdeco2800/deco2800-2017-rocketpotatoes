@@ -42,6 +42,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		//The X and Y position of the player without random floats generated
 		float goalX = playerManager.getPlayer().getPosX() ;
 		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
+		
 
 		if(this.distance(playerManager.getPlayer()) < speed) {
 			this.setPosX(goalX);
@@ -63,7 +64,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);
-
 
 		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();

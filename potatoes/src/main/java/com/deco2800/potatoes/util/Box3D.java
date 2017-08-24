@@ -218,9 +218,9 @@ public class Box3D {
 
 		Box3D that = (Box3D) o;
 
-		//since equality necessitates hash equality, this equals() method does
-		//effectivelly float == float. I haven't found a way around this that enforces
-		//transitivity, hashCode equality, and equality between very similar values.
+		// since equality necessitates hash equality, this equals() method does
+		// effectivelly float == float. I haven't found a way around this that enforces
+		// transitivity, hashCode equality, and equality between very similar values.
 		return hashCode() == that.hashCode() &&
 			compareFloat(that.getX(), getX()) &&
 			compareFloat(that.getY(), getY()) &&
