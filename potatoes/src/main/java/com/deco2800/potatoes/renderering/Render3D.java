@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
@@ -95,9 +96,16 @@ public class Render3D implements Renderer {
             Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
             if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
+				// Hacky way of getting progress bars
+            	TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+				Texture tex = reg.getTexture("progress_bar");
+				((ProgressBar) entity).setProgressBar(entity, tex, batch, (int)(isoPosition.x + tileWidth / 2 - 10),
+						(int) (isoPosition.y + 50));
+            	/*
                 font.setColor(Color.RED);
                 font.getData().setScale(1.0f);
                 font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
+                */
             }
             /*Construction percentage displayed in yellow
             * */

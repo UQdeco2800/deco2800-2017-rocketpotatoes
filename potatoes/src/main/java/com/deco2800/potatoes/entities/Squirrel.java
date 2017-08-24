@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
@@ -14,7 +17,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
 	
 	private static final transient String TEXTURE = "squirrel";
 	private static final transient float HEALTH = 100f;
@@ -79,6 +82,21 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	@Override
 	public String toString() {
 		return "Squirrel";
+	}
+
+	@Override
+	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
+		if (health > 60) {
+			batch.setColor(Color.GREEN);
+		} else if (health > 20) {
+			batch.setColor(Color.ORANGE);
+		} else {
+			batch.setColor(Color.RED);
+		}
+
+		batch.draw(progressBar, xLength, yLength, health/3, 5);
+		batch.setColor(Color.WHITE);
+		
 	}
 
 }
