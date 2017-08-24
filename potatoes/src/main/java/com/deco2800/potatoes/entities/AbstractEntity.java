@@ -31,7 +31,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * Default constructor for the purposes of serialization
 	 */
 	public AbstractEntity() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 
@@ -311,7 +311,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		AbstractEntity that = (AbstractEntity) o;
 
-		//be wary: Box3D is very precise in its equality
+		// be wary: Box3D is very precise in its equality
 		if (position != null ? !position.equals(that.position) : that.position != null) {
 			return false;
 		}

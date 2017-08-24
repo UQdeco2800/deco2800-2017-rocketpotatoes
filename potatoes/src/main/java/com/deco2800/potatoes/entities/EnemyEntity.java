@@ -7,7 +7,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 
