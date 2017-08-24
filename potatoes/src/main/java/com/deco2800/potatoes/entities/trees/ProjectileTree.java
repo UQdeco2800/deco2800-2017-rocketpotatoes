@@ -7,10 +7,7 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 
 public class ProjectileTree extends AbstractTree implements Tickable {
-	public int level;
-	public int hp;
-	public int speed;
-	public static final List<UpgradeStats> STATS = initStats();
+	private static final List<UpgradeStats> STATS = initStats();
 
 	/**
 	 * Default constructor for serialization

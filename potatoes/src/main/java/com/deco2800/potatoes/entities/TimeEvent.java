@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities;
 /**
  * Represents an event that happens after a certain amount of time e.g. firing a
  * projectile when an amount of time has passed
+ * TODO sync with network
  */
 public abstract class TimeEvent<T> {
 
@@ -73,7 +74,11 @@ public abstract class TimeEvent<T> {
 		progress -= deltaTime;
 		if (isCompleted()) {
 			action(param);
-			reset();
+			if (doReset) {
+				decreaseProgress(-resetAmount, param);
+			} else {
+				progress = 0;
+			}
 		}
 	}
 
@@ -107,5 +112,7 @@ public abstract class TimeEvent<T> {
 	 * 
 	 * @return a copy of this event
 	 */
-	public abstract TimeEvent<T> copy();
+	public TimeEvent<T> copy() {
+		return null;
+	}
 }

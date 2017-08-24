@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.util;
 
+import java.util.Objects;
+
 /**
  * Representation of a box in 3d space, defined by a corner point in XYZ and
  * extends in x (xLength), y (yLength), and z (zLength).
@@ -194,6 +196,17 @@ public class Box3D {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, z, xLength, yLength, zLength);
+	}
+
+	private boolean compareFloat(float a, float b) {
+		float delta = 0.00001f;
+		return Math.abs(a-b) < delta;
+
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -205,12 +218,16 @@ public class Box3D {
 
 		Box3D that = (Box3D) o;
 
-		return that.getX() == getX() && 
-			that.getY() == getY() &&
-			that.getZ() == getZ() &&
-			that.getXLength() == getXLength() &&
-			that.getYLength() == getYLength() &&
-			that.getZLength() == getZLength();
+		// since equality necessitates hash equality, this equals() method does
+		// effectivelly float == float. I haven't found a way around this that enforces
+		// transitivity, hashCode equality, and equality between very similar values.
+		return hashCode() == that.hashCode() &&
+			compareFloat(that.getX(), getX()) &&
+			compareFloat(that.getY(), getY()) &&
+			compareFloat(that.getZ(), getZ()) &&
+			compareFloat(that.getXLength(), getXLength()) &&
+			compareFloat(that.getYLength(), getYLength()) &&
+			compareFloat(that.getZLength(), getZLength());
 
 	}
 

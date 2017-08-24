@@ -10,7 +10,10 @@ public class Peon extends AbstractEntity implements Tickable {
 	
 	private final static transient String TEXTURE = "spacman";
 
-	public Peon() { }
+	public Peon() {
+		// empty for serialization
+	}
+
 
 	/**
 	 * Constructor for the Peon

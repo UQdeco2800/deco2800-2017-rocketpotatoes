@@ -29,10 +29,6 @@ public class AbstractEntityTest {
 			super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture);
 		}
 
-		public boolean equals(Object o) {
-			return super.equals(o);
-		}
-
 	}
 
 	TestableAbstractEntity abstractEntity;
@@ -110,7 +106,10 @@ public class AbstractEntityTest {
 			original = new TestableAbstractEntity(p[0], p[1], p[2], p[3], p[4], p[5], "texture");
 			assertFalse(original.equals(imposter));
 			assertFalse(imposter.equals(original));
-			p[i] = i - 1;
+			p[i] = i + 1;
+			original = new TestableAbstractEntity(p[0], p[1], p[2], p[3], p[4], p[5], "texture");
+			assertTrue(p[i] + " is not " + (i + 1f) + " for " + i, original.equals(imposter));
+			assertTrue(p[i] + " is not " + (i + 1f) + " for " + i, imposter.equals(original));
 		}
 
 		original.setTexture("FAKE NEWS");

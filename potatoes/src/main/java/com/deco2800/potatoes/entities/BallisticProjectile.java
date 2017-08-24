@@ -1,14 +1,15 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
+import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.deco2800.potatoes.managers.GameManager;
 
 public class BallisticProjectile extends Projectile{
 	
 	private final static transient String TEXTURE = "projectile";
-	private final static transient float DAMAGE = 40;
+	private float DAMAGE = 1;
 	
 	private float goalX;
 	private float goalY;
@@ -17,16 +18,21 @@ public class BallisticProjectile extends Projectile{
 	private float range;
 	
 	private final float speed = 0.2f;
-	
+	private Optional<AbstractEntity> mainTarget;
 	private float changeX;
 	private float changeY;
 
-	public BallisticProjectile() { }
+	public BallisticProjectile() {
+		// empty for serialization
+	}
 
-	public BallisticProjectile(float posX, float posY, float posZ, float goalX, float goalY, float goalZ, float range) {
+
+	public BallisticProjectile(float posX, float posY, float posZ, Optional<AbstractEntity> target, float goalZ, float range, float DAMAGE) {
 		super(posX, posY, posZ, TEXTURE);
-		this.goalX = goalX;
-		this.goalY = goalY;
+		this.DAMAGE = DAMAGE;
+		this.mainTarget = target;
+		this.goalX = target.get().getPosX();
+		this.goalY = target.get().getPosY();
 		this.goalZ = goalZ;
 		
 		this.range = range;
@@ -55,9 +61,16 @@ public class BallisticProjectile extends Projectile{
 		
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
+
 			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
 				((EnemyEntity)entity).getShot(this);
 				GameManager.get().getWorld().removeEntity(this);
+				float AOE_width = 5f;
+				float AOE_height = 2f;
+				ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
+						AOE_width, AOE_height, 0, AOE_width, AOE_height, "aoe1", 1);
+				 GameManager.get().getWorld().addEntity(exp);
+
 				return;
 			}
 		}

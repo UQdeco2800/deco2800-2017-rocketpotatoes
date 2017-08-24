@@ -3,13 +3,8 @@ package com.deco2800.potatoes.worlds;
 import java.util.Random;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.deco2800.potatoes.renderering.Renderable;
-import com.deco2800.potatoes.worlds.AbstractWorld;
-import com.deco2800.potatoes.entities.Tower;
-import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.Peon;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.entities.Squirrel;
+import com.deco2800.potatoes.renderering.Renderable;
 
 /**
  * Initial world using preset world file.

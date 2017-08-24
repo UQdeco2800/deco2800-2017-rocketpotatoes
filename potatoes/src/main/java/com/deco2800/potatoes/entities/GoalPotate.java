@@ -13,7 +13,10 @@ public class GoalPotate extends AbstractEntity{
 	
 	private final static transient String TEXTURE = "potate";
 
-	public GoalPotate() { }
+	public GoalPotate() {
+		// empty for serialization
+	}
+
 
 	public GoalPotate(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE);

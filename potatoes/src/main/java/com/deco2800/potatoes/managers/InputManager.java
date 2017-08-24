@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Created by woody on 30-Jul-17.
  */
 public class InputManager extends Manager implements InputProcessor {
+	private int mouseX, mouseY;
 
 	private ArrayList<KeyDownObserver> keyDownListeners = new ArrayList<>();
 
@@ -128,6 +129,8 @@ public class InputManager extends Manager implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		mouseX = screenX;
+		mouseY = screenY;
 		for (MouseMovedObserver observer : mouseMovedListeners) {
 			observer.notifyMouseMoved(screenX, screenY);
 		}
@@ -140,5 +143,19 @@ public class InputManager extends Manager implements InputProcessor {
 			observer.notifyScrolled(amount);
 		}
 		return true;
+	}
+
+	/**
+	 * @return the current mouseX
+	 */
+	public int getMouseX() {
+		return mouseX;
+	}
+
+	/**
+	 * @return the current mouseY
+	 */
+	public int getMouseY() {
+		return mouseY;
 	}
 }

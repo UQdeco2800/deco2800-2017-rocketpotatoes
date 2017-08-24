@@ -19,7 +19,9 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	/**
 	 * Default constructor for serialization
 	 */
-	public MortalEntity() { }
+	public MortalEntity() {
+		// empty because serialization
+	}
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -149,7 +151,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @return current value of damage offset
 	 */
 	public float addMaxHealth(float offset) {
-		return this.maxHealth += offset;
+		this.maxHealth += offset;
+		return this.maxHealth;
 	}
 
 	/**
@@ -205,7 +208,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public boolean heal(float amount) {
-		if ((health += amount) > maxHealth) {
+		health += amount;
+		if (health > maxHealth) {
 			health = maxHealth;
 			return false;
 		}
@@ -229,7 +233,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @return current value of damage offset
 	 */
 	public float addDamageOffset(float offset) {
-		return this.damageOffset += offset;
+		this.damageOffset += offset;
+		return this.damageOffset;
 	}
 
 	/**
@@ -239,7 +244,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public float addDamageScaling(float scale) {
-		return this.damageScaling *= scale;
+		this.damageScaling *= scale;
+		return this.damageScaling;
 	}
 
 	/**
@@ -249,6 +255,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public float removeDamageScaling(float scale) {
-		return this.damageScaling /= scale;
+		this.damageScaling /= scale;
+		return this.damageScaling;
 	}
 }

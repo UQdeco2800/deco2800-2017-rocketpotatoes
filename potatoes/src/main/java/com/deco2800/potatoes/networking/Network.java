@@ -1,18 +1,18 @@
 package com.deco2800.potatoes.networking;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.reflections.Reflections;
-
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.FoodResource;
+import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
 import com.deco2800.potatoes.entities.trees.UpgradeStats;
+import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.util.Box3D;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import org.reflections.Reflections;
+
+import java.util.*;
 
 public class Network {
 
@@ -26,6 +26,7 @@ public class Network {
         /* Message types */
         k.register(ClientConnectionRegisterMessage.class);
         k.register(ClientPlayerUpdatePositionMessage.class);
+        k.register(ClientBuildOrderMessage.class);
 
         k.register(HostPlayerDisconnectedMessage.class);
         k.register(HostDisconnectMessage.class);
@@ -38,7 +39,8 @@ public class Network {
         k.register(HostEntityUpdateProgressMessage.class);
         k.register(HostExistingPlayerMessage.class);
 
-        k.register(Message.class);
+        k.register(ClientChatMessage.class);
+        k.register(HostChatMessage.class);
         // Register member variables here:
 
         k.register(java.util.Optional.class);
@@ -46,6 +48,11 @@ public class Network {
         k.register(LinkedList.class);
         k.register(TreeProjectileShootEvent.class); // TODO custom protocol for abitrary events?
         k.register(UpgradeStats.class);
+        k.register(Resource.class);
+        k.register(FoodResource.class);
+        k.register(SeedResource.class);
+        k.register(Inventory.class);
+        k.register(TreeMap.class);
 
         /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
          * actions? Requires as much abstraction as possible with regards to custom behaviour, shouldn't be too tedious
@@ -68,7 +75,7 @@ public class Network {
         sorted.addAll(entities);
 
         for (Class c : sorted) {
-            System.out.println(c.getCanonicalName());
+            //System.out.println(c.getCanonicalName());
             // Auto register entities!
             k.register(c);
         }
@@ -137,6 +144,12 @@ public class Network {
         public float x, y;
     }
 
+    /* Message indicating our player wants to build something
+     * TODO support other types? AbstractTree?? */
+    static public class ClientBuildOrderMessage {
+        public float x, y;
+    }
+
     /* Message from the host indicating a new position of an entity */
     static public class HostEntityUpdatePositionMessage {
         public float x, y;
@@ -149,9 +162,15 @@ public class Network {
         public int id;
     }
 
-    /* Simple message object, TODO colours, formatting etc */
-    static public class Message {
+    /* Simple chat message object */
+    static public class ClientChatMessage {
         public String message;
+    }
+
+    /* Chat message object sent with sender ID */
+    static public class HostChatMessage {
+        public String message;
+        public int id;
     }
 
 }

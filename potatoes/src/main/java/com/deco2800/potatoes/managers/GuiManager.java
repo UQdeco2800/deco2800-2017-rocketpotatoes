@@ -1,10 +1,10 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.deco2800.potatoes.gui.Gui;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.deco2800.potatoes.gui.Gui;
 
 public class GuiManager extends Manager {
     private List<Gui> gui;

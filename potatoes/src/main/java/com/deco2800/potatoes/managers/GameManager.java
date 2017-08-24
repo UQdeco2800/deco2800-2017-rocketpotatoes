@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.deco2800.potatoes.worlds.AbstractWorld;
 
 import org.slf4j.Logger;

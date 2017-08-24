@@ -1,19 +1,21 @@
 package com.deco2800.potatoes.networking;
 
-import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasProgress;
+import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.networking.Network.*;
+import com.deco2800.potatoes.util.WorldUtil;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
-
-import com.deco2800.potatoes.networking.Network.*;
 
 public class NetworkServer {
     // Master will always be the first connection
@@ -27,7 +29,9 @@ public class NetworkServer {
     public volatile boolean ready;
 
     /**
+
      * Starts a server for the game // TODO ports occupied?
+     * TODO debug logging
      *
      * @param tcpPort tcp port to use, presumed to be correct
      * @param udpPort udp port to use, presumed to be correct
@@ -79,7 +83,7 @@ public class NetworkServer {
                     ClientConnectionRegisterMessage m = (ClientConnectionRegisterMessage) object;
 
                     c.name = m.name;
-                    System.out.println("[SERVER]: New connection: " + c.name + "(" + c.getID() + ")");
+                    //System.out.println("[SERVER]: New connection: " + c.name + "(" + c.getID() + ")");
 
                     // Tell the new client their id
                     HostConnectionConfirmMessage cResponse = new HostConnectionConfirmMessage();
@@ -99,19 +103,19 @@ public class NetworkServer {
 
                         newMess.id = nCon.getID();
                         newMess.name = nCon.name;
-                        System.out.println("[SERVER]: Sending player " + nCon.name + "(" + c.getID() + ")");
+                        //System.out.println("[SERVER]: Sending player " + nCon.name + "(" + c.getID() + ")");
                         server.sendToTCP(c.getID(), newMess);
                     }
 
 
                     // Tell the new client about all the entities (unless it's master)
                     if (!isMaster(c)) {
-                        System.out.println("[SERVER]: Sending entity state...");
+                        //System.out.println("[SERVER]: Sending entity state...");
                         for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
                             HostEntityCreationMessage create = new HostEntityCreationMessage();
                             create.entity = e.getValue();
                             create.id = e.getKey();
-                            System.out.println(e.getValue() + " : " + e.getKey());
+                            //System.out.println(e.getValue() + " : " + e.getKey());
 
                             server.sendToTCP(c.getID(), create);
                         }
@@ -122,10 +126,10 @@ public class NetworkServer {
                     response.id = (byte) c.getID();
                     response.name = m.name;
 
-                    System.out.println("[SERVER]: Sending new player to current clients");
+                    //System.out.println("[SERVER]: Sending new player to current clients");
                     server.sendToAllTCP(response);
 
-                    System.out.println("[SERVER]: Telling new player they are ready");
+                    //System.out.println("[SERVER]: Telling new player they are ready");
                     // Finally tell the client they are ready to play
                     HostPlayReadyMessage playMess = new HostPlayReadyMessage();
                     server.sendToTCP(c.getID(), playMess);
@@ -151,10 +155,25 @@ public class NetworkServer {
                     return;
                 }
 
-                if (object instanceof Message) {
-                    Message m = (Message) object;
+                if (object instanceof ClientBuildOrderMessage) {
+                    ClientBuildOrderMessage m = (ClientBuildOrderMessage) object;
+                    // Add it? TODO verify by whole tile?
+                    if (WorldUtil.getEntityAtPosition(m.x, m.y).isPresent()) {
+                        return;
+                    } else {
+                        GameManager.get().getWorld().addEntity(new Tower(m.x, m.y, 0));
+                    }
+                    return;
+                }
 
-                    System.out.println("[MESSAGE]: " + c.name + " : " + m.message);
+                if (object instanceof ClientChatMessage) {
+                    ClientChatMessage m = (ClientChatMessage) object;
+
+                    HostChatMessage response = new HostChatMessage();
+                    response.id = c.getID();
+                    response.message = m.message;
+                    //System.out.println("[MESSAGE]: " + c.name + " : " + m.message);
+                    server.sendToAllTCP(response);
 
                     return;
                 }
@@ -168,7 +187,7 @@ public class NetworkServer {
                 NetworkConnection c = (NetworkConnection) connection;
 
 
-                System.out.println("[SERVER]: " + c.name + "(" + c.getID() + ")" + " disconnected.");
+                //System.out.println("[SERVER]: " + c.name + "(" + c.getID() + ")" + " disconnected.");
 
                 HostPlayerDisconnectedMessage m = new HostPlayerDisconnectedMessage();
                 m.id = c.getID();
@@ -179,6 +198,7 @@ public class NetworkServer {
         server.bind(tcpPort, udpPort);
         server.start();
         this.ready = true;
+        sendSystemMessage("Broadcasting on 0.0.0.0:" + tcpPort);
     }
 
     public void broadcastNewEntity(int id) {
@@ -225,6 +245,18 @@ public class NetworkServer {
         message.id = id;
 
         server.sendToAllExceptTCP(MASTER_ID, message);
+    }
+
+    /**
+     * Posts a system message to the chat of this client
+     * @param m
+     */
+    private void sendSystemMessage(String m) {
+        GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        ChatGui chat = ((ChatGui)g.getGui(ChatGui.class));
+        if (chat != null) {
+            chat.addMessage("System", m, Color.YELLOW);
+        }
     }
 
 

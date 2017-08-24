@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-    		saveTexture("grass", "resources/placeholderassets/grass.png");
+    	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
@@ -50,11 +49,20 @@ public class TextureManager extends Manager {
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
+        saveTexture("squirrel2", "resources/placeholderassets/squirrelFaceRight.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
         saveTexture("progress_bar","resources/placeholderassets/progress_bar.png");
-
+		saveTexture("seed", "resources/placeholderassets/seed.png");
+		saveTexture("food", "resources/placeholderassets/food.png");
+		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
+        saveTexture("aoe2","resources/placeholderassets/aoe2.png");
+        saveTexture("aoe3","resources/placeholderassets/aoe3.png");
+        saveTexture("proj1","resources/placeholderassets/proj1.png");
+        saveTexture("Lightning","resources/placeholderassets/Lightning.png");
+        saveTexture("ring","resources/placeholderassets/ring.png");
+        saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
     }
 
     /**
