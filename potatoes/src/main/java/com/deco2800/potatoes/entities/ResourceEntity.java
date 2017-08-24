@@ -13,6 +13,8 @@ import com.deco2800.potatoes.entities.AbstractEntity;
  * items need to be a type of resource that a player can collect and store in
  * inventory. ResourceEntities appear on the map and get added to a player's
  * inventory when collided with.
+ * 
+ * @author Dion
  */
 public class ResourceEntity extends AbstractEntity implements Tickable {
 

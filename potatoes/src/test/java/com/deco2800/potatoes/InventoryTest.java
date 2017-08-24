@@ -13,6 +13,12 @@ import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
+/**
+ * Tests for the inventory class
+ * 
+ * @author Dion
+ *
+ */
 public class InventoryTest {
 	
 	Resource seed1;

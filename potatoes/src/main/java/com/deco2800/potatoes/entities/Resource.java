@@ -6,6 +6,7 @@ package com.deco2800.potatoes.entities;
  * player inventory or on the map as a ResourceEntity where its type is a
  * Resource. The primary two resources are FoodResource and SeedResource.
  *
+ *@author Dion
  */
 public class Resource implements Comparable<Resource> {
 
