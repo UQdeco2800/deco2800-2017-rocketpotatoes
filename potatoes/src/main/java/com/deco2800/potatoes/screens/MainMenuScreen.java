@@ -74,7 +74,9 @@ public class MainMenuScreen implements Screen {
 
         // Draw/update gui
         stage.act();
+        stage.getBatch().begin();
         stage.getBatch().draw(new TextureManager().getTexture("screen_background"),0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage.getBatch().end();
         stage.draw();
 
     }
