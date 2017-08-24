@@ -6,30 +6,12 @@ public class SeedResource extends Resource {
 	
 	
 	/**
-	 * <p>
-	 * Creates a new instance of the class and assigns the name of 
-	 * the resource.
-	 * </p>
-	 * 
-	 * <p>
-	 * Only to be used when the instance of the resource isn't appearing
-	 * on the map.
-	 * </p>
+	 * A type of resource that gives seeds to player.
 	 */
 	public SeedResource() {
 		super();
 		this.resourceType = "seed";
-	}
-	
-	public String getTexture() {
-		return TEXTURE;
-	}
-	
-	/*public SeedResource(String name, float posX, float posY, float posZ) {
-		super(name, posX, posY, posZ, TEXTURE);
-		this.resourceType = "seed";
-	}*/
-
-	
+		this.texture = TEXTURE;
+	}	
 		
 }

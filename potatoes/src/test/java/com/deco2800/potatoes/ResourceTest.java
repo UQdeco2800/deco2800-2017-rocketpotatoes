@@ -7,6 +7,7 @@ import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.SeedResource;
+import com.deco2800.potatoes.exceptions.InvalidResourceException;
 
 public class ResourceTest {
 
@@ -26,9 +27,8 @@ public class ResourceTest {
 		// Position at (0,0,0) with empty constructer
 		ResourceEntity basicEntity = new ResourceEntity();
 		// Make sure type name and resourceType is consistent
-		System.out.println(basicEntity.getType());
 		assert(basicEntity.getType().equals(new Resource()));
-		assert(basicEntity.getType().getTypeName().equals("ordinary"));
+		assert(basicEntity.getType().getTypeName().equals("default"));
 		
 		// Default position and type seed
 		ResourceEntity seedEntity = new ResourceEntity();
@@ -50,11 +50,34 @@ public class ResourceTest {
 	}
 	
 	@Test
+	public void resourceEntityQuantityTest() {
+		ResourceEntity foodEntity = new ResourceEntity(1,2,3,new FoodResource());
+		assert(foodEntity.getQuantity() == 1);
+		foodEntity.setQuantity(3);
+		assert(foodEntity.getQuantity() == 3);
+	}
+	
+	@Test
 	public void toStringTest() {
 		ResourceEntity foodEntity = new ResourceEntity(1,2,3,new FoodResource());
 		// ToString
-		assert(foodEntity.toString().equals(new FoodResource().toString()));
+		foodEntity.setQuantity(3);
+		assert(foodEntity.toString().equals("3 " + new FoodResource().toString()));
 	}
 	
+	@Test(expected = InvalidResourceException.class)
+	public void testNullResourceSetFunction() {
+		ResourceEntity entity = new ResourceEntity();
+		entity.setResourceType(null);
+	}
 	
+	@Test
+	public void textureTest() {
+		ResourceEntity entity = new ResourceEntity();
+		ResourceEntity food = new ResourceEntity(0,0,0, new FoodResource());
+		ResourceEntity seed = new ResourceEntity(0,0,0, new SeedResource());
+		assert(entity.getType().getTexture().equals("default"));
+		assert(seed.getType().getTexture().equals("seed"));
+		assert(food.getType().getTexture().equals("food"));
+	}
 }
