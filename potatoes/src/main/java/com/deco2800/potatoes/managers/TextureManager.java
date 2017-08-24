@@ -64,6 +64,8 @@ public class TextureManager extends Manager {
         saveTexture("ring","resources/placeholderassets/ring.png");
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
+        saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
+
     }
 
     /**
