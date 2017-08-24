@@ -43,10 +43,11 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 
 	@Override
 	public void onTick(long i) {
-
+		
+		//set the target of tankEnemy to the closest tree/tower
 		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Tower.class, getPosX(), getPosY());
 	
-		
+		//get the position of the target
 		float goalX = target.get().getPosX(); 
 		float goalY = target.get().getPosY(); 
 		
@@ -77,7 +78,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
-				if(entity instanceof Player) {
+				if(entity instanceof Tower) {
 					//soundManager.playSound("ree1.wav");
 				}
 				collided = true;
@@ -87,7 +88,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
-			//Squirrel changes direction when moving towards player.
+			//tankEnemy changes direction when moving towards tree/tower
 
 			if(this.getPosX()>goalX){
 				this.setTexture(TEXTURE);
