@@ -180,6 +180,9 @@ public class Player extends MortalEntity implements Tickable {
 		case Input.Keys.T:
 			tossItem(new SeedResource());
 			break;
+		case Input.Keys.F:
+			tossItem(new FoodResource());
+			break;
 		default:
 			break;
 		}
