@@ -31,6 +31,7 @@ public class ClientMessageProcessor {
     public static void playReadyMessage(NetworkClient client, Network.HostPlayReadyMessage m) {
         //System.out.println("[CLIENT]: I'm ready to go!");
         client.sendSystemMessage("Successfully joined server!");
+        client.ready = true;
     }
 
     public static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
@@ -46,10 +47,9 @@ public class ClientMessageProcessor {
 
             if (client.getID() == m.id) {
                 //System.out.println("[CLIENT]: IT'S ME!");
-
-
                 // Give the player manager me
                 ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
+
             } else {
                 client.sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
             }

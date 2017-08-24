@@ -1,12 +1,10 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.networking.Network.*;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -175,7 +173,7 @@ public class NetworkClient {
     public void setID(int id) { clientID = id; }
 
     public ArrayList<String> getClients() {
-        return new ArrayList<>(clientList);
+        return clientList;a
     }
 
     public void disconnect() {
