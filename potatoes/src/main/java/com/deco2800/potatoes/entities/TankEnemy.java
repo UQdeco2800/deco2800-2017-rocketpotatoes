@@ -18,7 +18,8 @@ import com.deco2800.potatoes.util.Box3D;
  */
 public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
 	
-	private static final transient String TEXTURE = "potate";
+	//this is not working. spacman_ded texture is showing instead of tankBear
+	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 200f;
 	private transient Random random = new Random();
 
