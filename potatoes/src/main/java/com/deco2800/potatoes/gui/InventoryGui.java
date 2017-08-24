@@ -19,18 +19,16 @@ public class InventoryGui extends Gui {
 	
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	
-	//Set up a table for the inventory menu
+	/* Objects to be used in the inventory gui */
 	private Table inventoryTable;
 	
 	private int seedAmount = 0;
 	private Label seedLabel = new Label("Seed", skin);;
 	private Label seedLabelAmount = new Label(Integer.toString(seedAmount), skin);;
-	private Image seedImage;
 	
 	private int foodAmount = 0;
 	private Label foodLabel = new Label("Food", skin);;
 	private Label foodLabelAmount = new Label(Integer.toString(foodAmount), skin);;
-	private Image foodImage;
 	
 	/**
 	 * Instantiates a table for the InventoryGui to be placed on the current stage. 
@@ -41,31 +39,19 @@ public class InventoryGui extends Gui {
 	 */
 	public InventoryGui(Stage stage){
 		
-		//instantiate table
-		inventoryTable = new Table();
-		inventoryTable.setFillParent(true);
+		/* Set up the table for positioning Inventory Gui */
+		instantiateTable();
 		
-		inventoryTable.defaults().width(50);
-		
-		inventoryTable.add(seedLabel);
-		inventoryTable.add(seedLabelAmount);
-		//seedImage = new Image(new Texture());
-		
-		//add the next row
-		inventoryTable.row();
-		inventoryTable.add(foodLabel);
-		inventoryTable.add(foodLabelAmount);
-		
-		//position table in the bottom left
+		/* position table in the bottom left */
 		inventoryTable.left().bottom();
 		
-		//add in the table finally
+		/* add in the table finally */
 		stage.addActor(inventoryTable);
 		
 	}
 	
 	/**
-     * Start's a singleplayer game
+     * Increase Inventory
      * @param resource The type of resource that was added to inventory
      * @param amount The amount of resource that was added to inventory
      */
@@ -78,6 +64,29 @@ public class InventoryGui extends Gui {
 		if (resource == "food") {
 			foodLabelAmount.setText(Integer.toString(amount));
 		}
+	}
+	
+	 /**
+     * PRIVATE METHODS
+     */
+	
+	/**
+     * To be called by the constructor to upon first time to create
+     * inventory gui display
+     */
+	private void instantiateTable(){
+		inventoryTable = new Table();
+		inventoryTable.setFillParent(true);
+		
+		inventoryTable.defaults().width(50);
+		
+		inventoryTable.add(seedLabel);
+		inventoryTable.add(seedLabelAmount);
+		
+		/* next row */
+		inventoryTable.row();
+		inventoryTable.add(foodLabel);
+		inventoryTable.add(foodLabelAmount);
 	}
 
 	
