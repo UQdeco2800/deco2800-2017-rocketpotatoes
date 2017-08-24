@@ -1,20 +1,15 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.InputProcessor;
-import com.deco2800.potatoes.observers.KeyDownObserver;
-import com.deco2800.potatoes.observers.KeyUpObserver;
-import com.deco2800.potatoes.observers.MouseMovedObserver;
-import com.deco2800.potatoes.observers.ScrollObserver;
-import com.deco2800.potatoes.observers.TouchDownObserver;
-import com.deco2800.potatoes.observers.TouchDraggedObserver;
-import com.deco2800.potatoes.observers.TouchUpObserver;
+import com.deco2800.potatoes.observers.*;
+
+import java.util.ArrayList;
 
 /**
  * Created by woody on 30-Jul-17.
  */
 public class InputManager extends Manager implements InputProcessor {
+	private int mouseX, mouseY;
 
 	private ArrayList<KeyDownObserver> keyDownListeners = new ArrayList<>();
 
@@ -134,6 +129,8 @@ public class InputManager extends Manager implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		mouseX = screenX;
+		mouseY = screenY;
 		for (MouseMovedObserver observer : mouseMovedListeners) {
 			observer.notifyMouseMoved(screenX, screenY);
 		}
@@ -146,5 +143,19 @@ public class InputManager extends Manager implements InputProcessor {
 			observer.notifyScrolled(amount);
 		}
 		return true;
+	}
+
+	/**
+	 * @return the current mouseX
+	 */
+	public int getMouseX() {
+		return mouseX;
+	}
+
+	/**
+	 * @return the current mouseY
+	 */
+	public int getMouseY() {
+		return mouseY;
 	}
 }

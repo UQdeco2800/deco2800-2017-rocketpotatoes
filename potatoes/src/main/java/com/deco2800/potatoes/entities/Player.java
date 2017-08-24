@@ -91,7 +91,6 @@ public class Player extends MortalEntity implements Tickable {
 		int foodNo = 0;
 
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-
 		// Set up a table for the inventory menu
 
 		Label seedLabel = new Label("Seed", skin);

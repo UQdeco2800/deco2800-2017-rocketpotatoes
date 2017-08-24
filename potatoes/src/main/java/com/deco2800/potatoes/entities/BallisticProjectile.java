@@ -23,7 +23,7 @@ public class BallisticProjectile extends Projectile{
 	private float changeY;
 
 	public BallisticProjectile() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 

@@ -1,12 +1,11 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.badlogic.gdx.graphics.Texture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.graphics.Texture;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Texture manager acts as a cache between the file system and the renderers.
@@ -50,6 +49,7 @@ public class TextureManager extends Manager {
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
+        saveTexture("squirrel2", "resources/placeholderassets/squirrel_2.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
@@ -61,6 +61,8 @@ public class TextureManager extends Manager {
         saveTexture("proj1","resources/placeholderassets/proj1.png");
         saveTexture("Lightning","resources/placeholderassets/Lightning.png");
         saveTexture("ring","resources/placeholderassets/ring.png");
+
+        saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
     }
 
     /**

@@ -30,6 +30,10 @@ public class Inventory {
 	 * 
 	 */
 
+	public Inventory() {
+		// Empty constructor for serialization
+	}
+
 	/**
 	 * <p>
 	 * Creates a new instance of the class in which every resource quantity is set to 0
