@@ -173,7 +173,7 @@ public class NetworkClient {
     public void setID(int id) { clientID = id; }
 
     public ArrayList<String> getClients() {
-        return clientList;a
+        return clientList;
     }
 
     public void disconnect() {
