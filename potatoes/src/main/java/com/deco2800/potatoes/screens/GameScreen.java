@@ -206,7 +206,7 @@ public class GameScreen implements Screen {
                 GameManager.get().getWorld().addEntity(new Squirrel(
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
-            
+            GameManager.get().getWorld().addEntity(new TankEnemy(13, 11, 12));
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
