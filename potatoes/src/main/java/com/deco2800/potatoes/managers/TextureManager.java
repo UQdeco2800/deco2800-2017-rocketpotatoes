@@ -34,7 +34,11 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
+<<<<<<< HEAD
         saveTexture("grass", "resources/placeholderassets/grass.png");
+=======
+    	saveTexture("grass", "resources/placeholderassets/grass.png");
+>>>>>>> c9225bf489a082384de4bd56a9fea9514464ec2d
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
@@ -50,15 +54,26 @@ public class TextureManager extends Manager {
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
+        saveTexture("squirrel2", "resources/placeholderassets/squirrel_2.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
+<<<<<<< HEAD
         saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
         saveTexture("pronograde", "resources/placeholderassets/pronograde.png");
+=======
+		saveTexture("seed", "resources/placeholderassets/seed.png");
+		saveTexture("food", "resources/placeholderassets/food.png");
+>>>>>>> c9225bf489a082384de4bd56a9fea9514464ec2d
 		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
         saveTexture("aoe2","resources/placeholderassets/aoe2.png");
         saveTexture("aoe3","resources/placeholderassets/aoe3.png");
         saveTexture("proj1","resources/placeholderassets/proj1.png");
+<<<<<<< HEAD
+=======
+        saveTexture("Lightning","resources/placeholderassets/Lightning.png");
+        saveTexture("ring","resources/placeholderassets/ring.png");
+>>>>>>> c9225bf489a082384de4bd56a9fea9514464ec2d
     }
 
     /**

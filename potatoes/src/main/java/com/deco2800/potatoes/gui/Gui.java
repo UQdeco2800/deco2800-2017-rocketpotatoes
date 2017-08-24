@@ -1,33 +1,20 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 /**
- * Describes a single GUI. More should be added here when needed
- *
- * Gui's each have a Window, this parameter should be initialized within the constructor of the Gui element.
- * The constructor should also take the game Stage, and then add the window to the Stage once initialization is complete.
+ * Describes a single GUI. More should be added here when needed.
  */
 public class Gui {
-    protected Window window;
     protected boolean hidden;
 
     /**
-     * @return the internal window element
-     */
-    public Window getWindow() {
-        return window;
-    }
-
-    /**
-     * Redraws this gui element
+     * Redraws this gui element TODO use for this?
      * @param deltaTime deltaTime for animations/effects that are relative to game speed.
      */
     public void render(float deltaTime) {
         // Nothin
     }
-
 
     /**
      * Hide's this Gui element. Fadeout effects can be implemented on a case-by-case basis.

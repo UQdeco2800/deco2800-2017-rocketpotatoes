@@ -1,16 +1,30 @@
 package com.deco2800.potatoes;
 
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.entities.*;
+<<<<<<< .merge_file_a09084
 import com.deco2800.potatoes.entities.Enemies.*;
 import com.deco2800.potatoes.gui.GameMenuGui;
+=======
+>>>>>>> .merge_file_a06620
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -19,7 +33,11 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.worlds.InitialWorld;
+import com.badlogic.gdx.Game;
+import com.deco2800.potatoes.screens.GameScreen;
+import com.deco2800.potatoes.screens.MainMenuScreen;
 
+<<<<<<< .merge_file_a09084
 import java.util.Map;
 import java.util.Random;
 
@@ -378,51 +396,24 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		// Tell the gui manager to resize appropriately
 		guiManager.resize(width, height);
 	}
+=======
+public class RocketPotatoes extends Game {
+>>>>>>> .merge_file_a06620
 
+	
 	/**
-	 * Disposes of assets etc when the rendering system is stopped.
+	 * Called when the {@link Application} is first created.
 	 */
-	@Override
-	public void dispose () {
-		// Don't need this at the moment
+	
+
+	public void create() {
+		this.setScreen(new MainMenuScreen(this));
 	}
-	
-	
-	private class CameraHandler implements KeyDownObserver {
 
-		@Override
-		public void notifyKeyDown(int keycode) {
-			OrthographicCamera c = cameraManager.getCamera();
-			int speed = 10;
-
-			if (keycode == Input.Keys.EQUALS) {
-				if (c.zoom > 0.1) {
-					c.zoom -= 0.1;
-				}
-			} else if (keycode == Input.Keys.MINUS) {
-				c.zoom += 0.1;
-
-			} else if (keycode == Input.Keys.UP) {
-				c.translate(0, 1 * speed * c.zoom, 0);
-			} else if (keycode == Input.Keys.DOWN) {
-				c.translate(0, -1 * speed * c.zoom, 0);
-			} else if (keycode == Input.Keys.LEFT) {
-				c.translate(-1 * speed * c.zoom, 0, 0);
-			} else if (keycode == Input.Keys.RIGHT) {
-				c.translate(1 * speed * c.zoom, 0, 0);
-			}
-		}
+	public void render() {
+		super.render();
 	}
-	
-	
-	private class ScrollTester implements ScrollObserver {
 
-		@Override
-		public void notifyScrolled(int amount) {
-			System.out.println(amount);			
-		}
-		
+	public void dispose() {
 	}
-	
-	
 }
