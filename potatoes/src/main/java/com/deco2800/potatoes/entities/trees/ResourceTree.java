@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.Inventory;
@@ -37,7 +38,26 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 	
 	/**
-	 * Constructor for the base
+	 * Constructor for creating a basic resource tree at a given 
+	 * coordinate. The resource produced by the tree will default to
+	 * the seed resource.
+	 * 
+	 * @param posX
+	 *            The x-coordinate.
+	 * @param posY
+	 *            The y-coordinate.
+	 * @param posZ
+	 *            The z-coordinate.
+	 */
+	public ResourceTree(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
+		this.resourceCount = 0;
+		this.resourceType = new SeedResource();
+	}
+	
+	/**
+	 * Constructor for creating a resource tree at a given 
+	 * coordinate that gathers a specified resource.
 	 * 
 	 * @param posX
 	 *            The x-coordinate.
