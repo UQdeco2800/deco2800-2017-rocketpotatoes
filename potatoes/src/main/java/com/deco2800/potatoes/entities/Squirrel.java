@@ -65,7 +65,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);
 
-		
+		 
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
