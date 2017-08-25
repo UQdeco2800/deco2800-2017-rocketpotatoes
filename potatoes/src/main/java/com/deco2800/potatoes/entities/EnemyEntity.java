@@ -128,7 +128,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 * @param projectile, the projectile shot
 	 */
 	public void getShot(Projectile projectile) {
-		this.damage(10);
+		this.damage(projectile.getDamage());
 		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
