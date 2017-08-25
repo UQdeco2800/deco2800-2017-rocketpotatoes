@@ -3,6 +3,8 @@ package com.deco2800.potatoes.managers;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
+import java.util.ArrayList;
+
 /**
  * Object to manage the creation and allocation of paths for enemies to follow.
  */
@@ -26,5 +28,9 @@ public class PathManager extends Manager {
      */
     public Path generatePath(Box3D start, Box3D goal) {
 
+        ArrayList<Box3D> pathList = new ArrayList<>();
+        pathList.add(goal);
+        pathList.add(start);
+        return new Path(pathList);
     }
 }

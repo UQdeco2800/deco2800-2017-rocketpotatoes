@@ -188,4 +188,18 @@ public class Box3D {
 		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
+	/**
+	 * Find the angle between two _Box3D_. Starts from calling box to target box
+	 * @param target end point of the line
+	 * @return angle in radians
+	 */
+	public float angle(Box3D target) {
+
+		// Find the difference of X and Y coordinates
+		float deltaX = this.getX() - target.getX();
+		float deltaY = this.getY() - target.getY();
+		// Return angle
+		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+	}
+
 }

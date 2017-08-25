@@ -6,6 +6,7 @@ import java.util.Random;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -22,6 +23,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
 	private PlayerManager playerManager;
 	private SoundManager soundManager;
+	private PathManager pathManager;
 	
 	private Random random;
 	
