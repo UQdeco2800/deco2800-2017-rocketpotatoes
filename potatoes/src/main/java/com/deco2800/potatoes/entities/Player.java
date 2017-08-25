@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.InputManager;
 import org.slf4j.Logger;
@@ -10,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 
 /**
  * Entity for the playable character.
@@ -142,6 +145,9 @@ public class Player extends MortalEntity implements Tickable {
 		case Input.Keys.F:
 			tossItem(new FoodResource());
 			break;
+		case Input.Keys.SPACE:
+			harvestResources();
+			break;
 		default:
 			break;
 		}
@@ -167,6 +173,19 @@ public class Player extends MortalEntity implements Tickable {
 			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
 		}
 
+	}
+	
+	/**
+	 * Handles harvesting resources from the closest resource tree. 
+	 * Resources are added to the player's inventory.
+	 */
+	private void harvestResources() {
+		Optional<AbstractEntity> tree = WorldUtil.getClosestEntityOfClass(ResourceTree.class, this.getPosX(),
+				this.getPosY());
+		ResourceTree resourceTree = (ResourceTree) tree.get();
+		if (this.distance(resourceTree) <= 50) { // TODO: replace value here with variable representing player interaction range
+			resourceTree.transferResources(this.inventory);
+		}
 	}
 
 	/**

@@ -207,19 +207,21 @@ public class Inventory {
 	 * @param extraInventory
 	 *            the extra items to be added to this object
 	 */
-	public void updateInventory(Inventory extraItems) {
-		if (extraItems == null) {
-			LOGGER.warn("Cannot add null to Inventory");
-		}
-		for (Resource resource : extraItems.inventoryMap.keySet()) {
-			if (inventoryMap.containsKey(resource)) {
-				inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
-			} else {
-				inventoryMap.put(resource, extraItems.getQuantity(resource));
-			}
+    public void updateInventory(Inventory extraItems) {
+        if (extraItems == null) {
+            LOGGER.warn("Cannot add null to Inventory");
+        } else {
+            for (Resource resource : extraItems.inventoryMap.keySet()) {
+                if (inventoryMap.containsKey(resource)) {
+                    this.updateQuantity(resource, extraItems.getQuantity(resource));
+                } else {
+                    inventoryMap.put(resource,0);
+                    this.updateQuantity(resource, extraItems.getQuantity(resource));
+                }
 
-		}
-	}
+            }
+        }
+    }
 
 	/**
 	 * <p>
