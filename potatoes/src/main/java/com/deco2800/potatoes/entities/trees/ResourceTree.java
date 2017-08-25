@@ -3,6 +3,12 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.swing.text.ChangedCharSetException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
@@ -15,6 +21,11 @@ import com.deco2800.potatoes.managers.Inventory;
  */
 public class ResourceTree extends AbstractTree implements Tickable {
 	
+	/*
+	 * Logger for all info/warning/error logs
+	 */
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceTree.class);
+	
 	/* Resource Tree Attributes */
 	private int resourceCount;	// Number of resources currently gathered
 	private Resource resourceType;	// Type of resource gathered by the tree
@@ -23,7 +34,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	// Maximum amount of resources held by any resource. Must be a
 	// positive integer.
-	public static final int MAX_RESOURCE_COUNT = 99;	
+	public static final int MAX_RESOURCE_COUNT = 3;	
 	
 	/* Stats that apply to all resource trees */
 	public static final int HP = 8; // Health of the tree
@@ -75,6 +86,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
 		this.resourceCount = 0;
 		if (resourceType == null) {
+			LOGGER.warn("Resource type was set to null. Deafaulting to seed resouce.");
 			this.resourceType = new SeedResource();
 		} else {
 			this.resourceType = resourceType;
@@ -150,12 +162,18 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 	@param amount of resources to add. Can be positive or negative.
 	 */
 	public void addResources(int amount) {
+		int oldCount = this.resourceCount;
 		this.resourceCount += amount;
+		
 		// Check that the new amount is bounded
 		if (this.resourceCount > ResourceTree.MAX_RESOURCE_COUNT) {
 			this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT;
 		} else if (this.resourceCount < 0) {
 			this.resourceCount = 0;
+		}
+		
+		if (this.resourceCount - oldCount != 0) {
+			LOGGER.info("Added " + (this.resourceCount - oldCount) + " to " + this);
 		}
 	}
 
@@ -169,6 +187,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 		The inventory of the player to receive gathered resources
 	 */
 	public void transferResources(Inventory otherInventory) {
+		LOGGER.info(this + " transferred " + this.resourceCount + " resources.");
 		otherInventory.updateInventory(this.getInventory());
 		this.resourceCount = 0;
 	}
@@ -178,12 +197,16 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	public void toggleGatherEnabled() {
 		this.gatherEnabled = !this.gatherEnabled;
+		LOGGER.info(this + " has gathering enabled: " + this.gatherEnabled + ".");
 	}
 	
+	/**
+	 * Returns the string representation of the resource tree.
+	 * 
+	 * @return string The string representation of the resource tree.
+	 */
 	@Override
 	public String toString() {
-		String pos = this.getPosX() + ", " + this.getPosY() + ", " + this.getPosZ();
-		return "Resource Tree at (" + pos + ") has " + this.resourceCount 
-				+ " " + this.resourceType.toString() + " resources.";
+		return "Resource tree (" + this.resourceType + ": " + this.resourceCount + ")";
 	}
 }
