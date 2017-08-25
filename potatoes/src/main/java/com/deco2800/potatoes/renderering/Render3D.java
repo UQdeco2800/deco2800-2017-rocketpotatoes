@@ -104,13 +104,10 @@ public class Render3D implements Renderer {
 			// We want to keep the aspect ratio of the image so...
 			float aspect = (float) (tex.getWidth()) / (float) (tileWidth);
 
-			// old method of draw:
-			// batch.draw(tex, isoPosition.x, isoPosition.y,
-			// tileWidth*entity.getXRenderLength(),
-			//(tex.getHeight()/aspect)*entity.getYRenderLength());
 
-			// NEW: changed the render method to allow for sprite rotation.
-
+			/**
+			 * A render method utilizing sprite rotation (useful for projectile and effect animations)
+			 */
 			batch.draw(tex, isoPosition.x, isoPosition.y, (tileWidth * entity.getXRenderLength()) / 2,
 					(tileHeight * entity.getYRenderLength()) / 2, tileWidth * entity.getXRenderLength(),
 					(tex.getHeight() / aspect) * entity.getYRenderLength(), 1, 1, 0 - entity.rotateAngle(), 0, 0,
@@ -204,11 +201,12 @@ public class Render3D implements Renderer {
 		// It renders the rendering order onto entites so you can see what gets rendered
 		// when
 		//
-		// */s
-		//for (int index = 0; index < entities.size(); index++) {
-		//Renderable entity = entities.get(index);
-		//float cartX = entity.getPosX();
-		//float cartY = (worldWidth-1) - entity.getPosY();
+		// */
+		// for (int index = 0; index < entities.size(); index++) {
+		// Renderable entity = entities.get(index);
+		// float cartX = entity.getPosX();
+		// float cartY = (worldWidth-1) - entity.getPosY();
+
 		//
 		//float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
 		//float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
