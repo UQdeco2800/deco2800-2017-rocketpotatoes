@@ -90,6 +90,7 @@ public class ResourceTreeTest {
 	@Test
 	public void inventoryTransferTest() {
 		assertTrue(defaultResourceTree.getResourceCount() == 0);
+		System.out.println(defaultResourceTree.getResourceCount());
 		defaultResourceTree.addResources(testAmount);
 		assertTrue(defaultResourceTree.getResourceCount() == testAmount);
 		

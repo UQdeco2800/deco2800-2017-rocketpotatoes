@@ -156,9 +156,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 		The inventory of the player to receive gathered resources
 	 */
 	public void transferResources(Inventory inventory) {
-		if (inventory.updateQuantity(this.resourceType, resourceCount) == 1 ) {
-			resourceCount = 0;
-		}
+		inventory.updateQuantity(this.resourceType, resourceCount);
+		resourceCount = 0;
 		
 	}
 	
