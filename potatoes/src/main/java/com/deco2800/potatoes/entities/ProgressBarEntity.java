@@ -18,7 +18,7 @@ public class ProgressBarEntity implements ProgressBar {
 	// the of the progress bar in relation to the location of the entity
 	protected int height;
 
-	ProgressBarEntity() {
+	public ProgressBarEntity() {
 		// empty because serialization
 	}
 
@@ -31,7 +31,7 @@ public class ProgressBarEntity implements ProgressBar {
 	 * @param height
 	 *            the of the progress bar in relation to the location of the entity
 	 */
-	ProgressBarEntity(String texture, List<Color> colours, int height) {
+	public ProgressBarEntity(String texture, List<Color> colours, int height) {
 		this.texture = texture;
 		this.colours = colours;
 		this.height = height;
