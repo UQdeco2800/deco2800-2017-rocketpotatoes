@@ -23,7 +23,7 @@ public interface ProgressBar {
 	 * @param currentHealth
 	 * @return the colour based on the current health of the entity
 	 */
-	public Color getColour(int currentHealth);
+	public Color getColour(int currentHealth, int maxHealth);
 
 	/**
 	 * 
