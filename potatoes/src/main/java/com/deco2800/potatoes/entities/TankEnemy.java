@@ -58,6 +58,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 			return;
 		}
 
+
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
 
@@ -97,26 +98,30 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 				this.setTexture(TEXTURE);
 			}
 		}
+
 	}
 	
-
+	
 	@Override
 	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-		if (health > 60) {
+		if (health > 160f) {
 			batch.setColor(Color.GREEN);
-		} else if (health > 20) {
+		} else if (health > 100f) {
 			batch.setColor(Color.ORANGE);
 		} else {
 			batch.setColor(Color.RED);
 		}
 
-		batch.draw(progressBar, xLength, yLength, health/3, 5);
+		batch.draw(progressBar, xLength, yLength/3, health/3, 5);
 		batch.setColor(Color.WHITE);
 	}
 	
+	
+	
+	
 	@Override
 	public String toString() {
-		return "TankEnemy";
+		return String.format("Tank Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
 }
