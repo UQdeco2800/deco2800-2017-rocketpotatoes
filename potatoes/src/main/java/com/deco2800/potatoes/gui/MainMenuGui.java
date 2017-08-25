@@ -3,8 +3,10 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
@@ -33,6 +35,11 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerConnectButton;
     private TextButton multiplayerHostButton;
     private TextButton multiplayerBackButton;
+
+    private VerticalGroup optionsButtonGroup;
+    private Label optionsVolumeLabel;
+    private Slider optionsVolumeSlider;
+    private TextButton optionsBackButton;
 
     // State indicator
     private enum States {
@@ -81,6 +88,16 @@ public class MainMenuGui extends Gui {
         startMultiplayerButtonGroup.addActor(multiplayerHostButton);
         startMultiplayerButtonGroup.addActor(multiplayerBackButton);
 
+        // Options State
+        optionsVolumeLabel = new Label("Volume", uiSkin);
+        optionsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsBackButton = new TextButton("Back", uiSkin);
+
+        optionsButtonGroup = new VerticalGroup();
+        optionsButtonGroup.addActor(optionsVolumeLabel);
+        optionsButtonGroup.addActor(optionsVolumeSlider);
+        optionsButtonGroup.addActor(optionsBackButton);
+
         setupListeners();
 
         root = new Table(uiSkin);
@@ -104,8 +121,8 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // TODO
-                //state = States.OPTIONS;
-                //resetGui(stage);
+                state = States.OPTIONS;
+                resetGui(stage);
             }
         });
 
@@ -165,6 +182,21 @@ public class MainMenuGui extends Gui {
                 resetGui(stage);
             }
         });
+
+        optionsVolumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.setVolume(optionsVolumeSlider.getValue());
+            }
+        });
+
+        optionsBackButton.addListener(new ChangeListener() {
+           @Override
+           public void changed(ChangeEvent event, Actor actor) {
+               state = States.PRIMARY;
+               resetGui(stage);
+           }
+        });
     }
 
     /**
@@ -206,7 +238,7 @@ public class MainMenuGui extends Gui {
                 root.add(startMultiplayerButtonGroup).expandX().center();
                 break;
             case OPTIONS:
-                // TODO
+                root.add(optionsButtonGroup).expandX().center();
                 break;
         }
     }

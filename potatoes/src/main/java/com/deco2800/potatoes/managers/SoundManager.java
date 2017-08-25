@@ -15,12 +15,25 @@ public class SoundManager extends Manager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundManager.class);
 
+	private float masterVolume = 1f;
+
 	/**
 	 * Plays a fun test sound on a new thread
 	 */
 	public void playSound(String soundString) {
 		LOGGER.info("Playing sound effect");
 		Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + soundString));
-		sound.play(1f);
+		sound.play(masterVolume);
 	}
+
+	/**
+	 * Sets a new master volume.
+	 */
+	public void setMasterVolume(float v) {masterVolume = v;}
+
+	/**
+	 * Gets the current master volume.
+	 */
+	public float getMasterVolume(){return masterVolume;}
+
 }
