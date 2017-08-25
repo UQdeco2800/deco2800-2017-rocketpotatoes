@@ -22,6 +22,9 @@ public class BallisticProjectile extends Projectile {
 	private Optional<AbstractEntity> mainTarget;
 	private float changeX;
 	private float changeY;
+	private float changeZ;
+	
+	private boolean maxRange = false;
 
 	public BallisticProjectile() {
 		// empty for serialization
@@ -69,23 +72,60 @@ public class BallisticProjectile extends Projectile {
 
 	}
 	
+	/**
+	 * Creates a new Ballistic Projectile. Ballistic Projectiles do not change
+	 * direction once fired. The initial direction is based on the direction to the
+	 * closest entity
+	 * 
+	 * @param posX
+	 *            x start position
+	 * @param posY
+	 *            y start position
+	 * @param posZ
+	 *            z start position
+	 * @param fPosX
+	 *            target x position
+	 * @param fPosY
+	 *            target y position
+	 * @param fPosZ
+	 *            target z position
+	 * @param RANGE
+	 *            Projectile range
+	 * @param DAMAGE
+	 *            Projectile damage
+	 */
+	public BallisticProjectile(float posX, float posY, float posZ, float fPosX, float fPosY, float fPosZ, float RANGE,
+			float DAMAGE) {
+		super(posX, posY, posZ, TEXTURE);
+		this.DAMAGE = DAMAGE;
+		
+		this.goalX = fPosX;
+		this.goalY = fPosY;
+		this.goalZ = fPosZ;
+
+		this.RANGE = RANGE;
+
+		float deltaX = getPosX() - goalX;
+		float deltaY = getPosY() - goalY;
+		float deltaZ = getPosZ() - goalZ;
+
+		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+		
+		changeX = (float) (speed * Math.cos(angle));
+		changeY = (float) (speed * Math.sin(angle));
+		// TODO: add changeZ
+		
+		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+	}
+	
 	public int rotateAngle() {
 		return rotateAngle;
 	}
 
 	@Override
 	public void onTick(long time) {
-		boolean maxRange = false;
-		if (RANGE < speed) {
-			setPosX(goalX);
-			setPosY(goalY);
-			maxRange = true;
-		} else {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
 
-		RANGE -= speed;
+		updatePos();
 
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
@@ -115,7 +155,25 @@ public class BallisticProjectile extends Projectile {
 			GameManager.get().getWorld().removeEntity(this);
 		}
 	}
-
+	
+	public void updatePos() {
+		maxRange = false;
+		if (RANGE < speed) {
+			setPosX(goalX);
+			setPosY(goalY);
+			setPosZ(goalZ);
+			maxRange = true;
+		} else {
+			setPosX(getPosX() + changeX);
+			setPosY(getPosY() + changeY);
+		}
+		RANGE -= speed;
+	}
+	
+	public float getRange() {
+		return RANGE;
+	}
+	
 	@Override
 	public float getDamage() {
 		return DAMAGE;
