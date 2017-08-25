@@ -12,6 +12,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
@@ -32,6 +33,7 @@ import java.util.TreeMap;
  * @Author Tim Hadwen
  */
 public class Render3D implements Renderer {
+
 
 	BitmapFont font;
 	SpriteBatch renderBatch;
@@ -120,10 +122,16 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
-				font.setColor(Color.RED);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
+				// Hacky way of getting progress bars
+            	TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+				Texture tex = reg.getTexture("progress_bar");
+				((ProgressBar) entity).setProgressBar(entity, tex, batch, (int)(isoPosition.x + tileWidth / 2 - 10),
+						(int) (isoPosition.y + 50));
+            	/*
+                font.setColor(Color.RED);
+                font.getData().setScale(1.0f);
+                font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
+                */
 			}
 			/*
 			 * Construction percentage displayed in yellow
@@ -138,10 +146,10 @@ public class Render3D implements Renderer {
 			/*
 			 * Display resource collected for Resource Tree
 			 */
-			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceAmount() > 0) {
+			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceCount() > 0) {
 				font.setColor(Color.GREEN);
 				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%s", ((ResourceTree) entity).resourceCount),
+				font.draw(batch, String.format("%s", ((ResourceTree) entity).getResourceCount()),
 						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
 			}
 

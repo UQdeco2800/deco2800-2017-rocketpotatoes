@@ -53,6 +53,7 @@ public class TextureManager extends Manager {
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
+        saveTexture("progress_bar","resources/placeholderassets/progress_bar.png");
 		saveTexture("seed", "resources/placeholderassets/seed.png");
 		saveTexture("food", "resources/placeholderassets/food.png");
 		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
@@ -61,8 +62,11 @@ public class TextureManager extends Manager {
         saveTexture("proj1","resources/placeholderassets/proj1.png");
         saveTexture("Lightning","resources/placeholderassets/Lightning.png");
         saveTexture("ring","resources/placeholderassets/ring.png");
-
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
+        saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
+        saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
+
+
     }
 
     /**
