@@ -60,7 +60,6 @@ public class GameScreen implements Screen {
 
     private long lastGameTick = 0;
     private boolean playing = true;
-    private int gameLevel = 1;
 
     /**
      * Start's a multiplayer game
@@ -203,19 +202,12 @@ public class GameScreen implements Screen {
 
         MultiplayerManager m = multiplayerManager;
         if (m.isMaster() || !m.isMultiplayer()) {
-            //generate 5*gameLevel squirrels
-        	for (int i = 0; i < 5*gameLevel; i++) {
-                GameManager.get().getWorld().addEntity(
-                		new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+            for (int i = 0; i < 5; i++) {
+                GameManager.get().getWorld().addEntity(new Squirrel(
+                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-            
-            //generate 2*gameLevel tankEnemies
-            for (int i = 0; i < 2*gameLevel; i++) {
-            	GameManager.get().getWorld().addEntity(
-            			new TankEnemy(20, 25+random.nextFloat()*10, 0));
-            }
-            
+            GameManager.get().getWorld().addEntity(new TankEnemy(20, 25, 0));
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
             GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));

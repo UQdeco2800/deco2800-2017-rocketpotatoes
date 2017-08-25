@@ -22,9 +22,9 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 /**
- * Create a tank enemy in the game. Tank has doubled health and half speed but only attacks trees/towers. 
+ * A generic player instance for the game
  */
-public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
+public class TankEnemy extends EnemyEntity implements Tickable{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final transient String TEXTURE = "tankBear";
@@ -100,24 +100,6 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		}
 
 	}
-	
-	
-	@Override
-	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-		if (health > 160f) {
-			batch.setColor(Color.GREEN);
-		} else if (health > 100f) {
-			batch.setColor(Color.ORANGE);
-		} else {
-			batch.setColor(Color.RED);
-		}
-
-		batch.draw(progressBar, xLength, yLength/3, health/3, 5);
-		batch.setColor(Color.WHITE);
-	}
-	
-	
-	
 	
 	@Override
 	public String toString() {
