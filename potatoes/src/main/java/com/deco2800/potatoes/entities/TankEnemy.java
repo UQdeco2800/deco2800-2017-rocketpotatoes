@@ -99,10 +99,6 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		}
 	}
 	
-	@Override
-	public String toString() {
-		return "TankEnemy";
-	}
 
 	@Override
 	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
@@ -116,7 +112,11 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 
 		batch.draw(progressBar, xLength, yLength, health/3, 5);
 		batch.setColor(Color.WHITE);
-		
+	}
+	
+	@Override
+	public String toString() {
+		return "TankEnemy";
 	}
 
 }
