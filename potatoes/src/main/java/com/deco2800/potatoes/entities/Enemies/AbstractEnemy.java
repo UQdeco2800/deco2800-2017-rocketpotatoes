@@ -3,6 +3,9 @@ package com.deco2800.potatoes.entities.Enemies;
 import java.util.Map;
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -265,5 +268,20 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
     public void getShot(Projectile projectile) {
         this.damage(projectile.getDamage());
         //System.out.println(this + " was shot. Health now " + getHealth());
+    }
+
+    //set colour of health bar.
+    public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
+        if (health > 60) {
+            batch.setColor(Color.GREEN);
+        } else if (health > 20) {
+            batch.setColor(Color.ORANGE);
+        } else {
+            batch.setColor(Color.RED);
+        }
+
+        batch.draw(progressBar, xLength, yLength, health/3, 5);
+        batch.setColor(Color.WHITE);
+
     }
 }
