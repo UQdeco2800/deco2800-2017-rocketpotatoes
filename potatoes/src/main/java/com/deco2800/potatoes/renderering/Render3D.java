@@ -125,7 +125,6 @@ public class Render3D implements Renderer {
 				// SUPER Hacky way of getting progress bars
 				TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
 				float aspect = (float) 1 / 5;
-				System.out.println(entity.toString().split(" ")[0]);
 				
 				if (entity.toString().split(" ")[0].equals("Squirrel")) {
 					Texture barTexture = reg.getTexture((((Squirrel) entity).getProgressBar().getTexture()));
