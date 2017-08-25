@@ -97,12 +97,12 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 	}
 
 //	Not working **********
-	public void squirrelAttack() {
-		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		if (this.distance(playerManager.getPlayer())< 5f) {
-			playerManager.getPlayer().damage(10);
-		}
-	}
+//	public void squirrelAttack() {
+//		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+//		if (this.distance(playerManager.getPlayer())< 5f) {
+//			playerManager.getPlayer().damage(10);
+//		}
+//	}
 	
 	@Override
 	public String toString() {

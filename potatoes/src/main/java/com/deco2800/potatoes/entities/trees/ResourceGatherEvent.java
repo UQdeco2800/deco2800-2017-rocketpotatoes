@@ -33,8 +33,9 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	@Override
 	public void action(AbstractTree tree) {
 		ResourceTree resourceTree = (ResourceTree) tree;
-		
-		resourceTree.addResources(gatherAmount);
+		if (resourceTree.gatherEnabled) {
+			resourceTree.addResources(gatherAmount);
+		}
 	}
 
 	@Override
