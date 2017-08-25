@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.managers;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 import com.google.common.net.InetAddresses;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Handles multiplayer setup, and communication.
@@ -91,6 +91,8 @@ public class MultiplayerManager extends Manager {
         multiplayer = true;
         server = new NetworkServer(port, port);
 
+        // Block until ready
+        while (!isServerReady());
     }
 
     /**
@@ -111,6 +113,8 @@ public class MultiplayerManager extends Manager {
         multiplayer = true;
         ip = IP;
         client = new NetworkClient(name, IP, port, port);
+
+        while (!isClientReady());
     }
 
 

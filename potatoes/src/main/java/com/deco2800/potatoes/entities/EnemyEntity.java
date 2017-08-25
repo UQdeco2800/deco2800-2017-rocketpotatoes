@@ -8,7 +8,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 
@@ -122,11 +122,17 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 
 	@Override
 	public void setProgress(int p) { health = p; }
+
 	
+	/**
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * @param projectile, the projectile shot
+	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
 		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
+	
 
 }

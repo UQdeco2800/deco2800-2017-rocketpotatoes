@@ -15,7 +15,7 @@ public class Tree extends AbstractEntity implements HasProgress {
     private final static transient String TEXTURE = "tree";
 
     public Tree() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 
