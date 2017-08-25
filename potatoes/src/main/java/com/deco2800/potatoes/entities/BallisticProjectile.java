@@ -15,6 +15,8 @@ public class BallisticProjectile extends Projectile {
 	private float goalX;
 	private float goalY;
 	private float goalZ;
+	
+	private int rotateAngle = 0;
 
 	private final float speed = 0.2f;
 	private Optional<AbstractEntity> mainTarget;
@@ -64,7 +66,13 @@ public class BallisticProjectile extends Projectile {
 		changeX = (float) (speed * Math.cos(angle));
 		changeY = (float) (speed * Math.sin(angle));
 		// TODO: add changeZ
+		
+		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
+	}
+	
+	public int rotateAngle() {
+		return rotateAngle;
 	}
 
 	@Override
@@ -93,15 +101,13 @@ public class BallisticProjectile extends Projectile {
 				 */
 				float AOE_width = 5f;
 				float AOE_height = 2f;
+				
 				/**
 				 * Spawn explosion when projectile hits entity
 				 */
-
-
 				ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
-						AOE_width, AOE_height, 0, AOE_width, AOE_height, 1);
+						AOE_width+10, AOE_height+10, 0, AOE_width, AOE_height, 1);
 				GameManager.get().getWorld().addEntity(exp);
-
 
 				return;
 			}
