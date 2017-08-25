@@ -22,7 +22,7 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 /**
- * A generic player instance for the game
+ * Create a tank enemy in the game. Tank has doubled health and half speed but only attacks trees/towers. 
  */
 public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
 	
