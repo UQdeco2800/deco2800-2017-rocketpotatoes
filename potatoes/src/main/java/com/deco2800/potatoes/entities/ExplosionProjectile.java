@@ -55,11 +55,8 @@ public class ExplosionProjectile extends Projectile {
 			}
 
 			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
-				dmgTimer++;
-				System.out.println(dmgTimer);
-				//if (dmgTimer % 16 == 0) {
+				//dmgTimer++;
 				((EnemyEntity) entity).getShot(this);
-				//}
 				return;
 			}
 
