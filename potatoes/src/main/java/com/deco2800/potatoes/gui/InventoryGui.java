@@ -2,11 +2,14 @@ package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /**
  * Inventory GUI is to display the amount of resources hold by player
@@ -23,12 +26,12 @@ public class InventoryGui extends Gui {
 	private Table inventoryTable;
 	
 	private int seedAmount = 0;
-	private Label seedLabel = new Label("Seed", skin);;
-	private Label seedLabelAmount = new Label(Integer.toString(seedAmount), skin);;
+	private Image seedImage;
+	private Label seedLabelAmount = new Label(Integer.toString(seedAmount), skin);
 	
 	private int foodAmount = 0;
-	private Label foodLabel = new Label("Food", skin);;
-	private Label foodLabelAmount = new Label(Integer.toString(foodAmount), skin);;
+	private Image foodImage;
+	private Label foodLabelAmount = new Label(Integer.toString(foodAmount), skin);
 	
 	/**
 	 * Instantiates a table for the InventoryGui to be placed on the current stage. 
@@ -80,13 +83,17 @@ public class InventoryGui extends Gui {
 		
 		inventoryTable.defaults().width(50);
 		
-		inventoryTable.add(seedLabel);
-		inventoryTable.add(seedLabelAmount);
+		seedImage =  new Image((Drawable) new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/seed.png")))));
+		seedImage.setOrigin(50, 50);
+		inventoryTable.add(seedImage).size(30,30).pad(2);
+		inventoryTable.add(seedLabelAmount).pad(2);
 		
 		/* next row */
 		inventoryTable.row();
-		inventoryTable.add(foodLabel);
-		inventoryTable.add(foodLabelAmount);
+		foodImage =  new Image((Drawable) new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/food.png")))));
+		foodImage.setOrigin(50, 50);
+		inventoryTable.add(foodImage).size(25,25).pad(2);
+		inventoryTable.add(foodLabelAmount).pad(2);
 	}
 
 	
