@@ -42,15 +42,13 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 		}
 
 		// Added custom damages to projectiles
-
-
-//		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-//				target, tree.getUpgradeStats().getRange(),1));
+	    //GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+        //				target, tree.getUpgradeStats().getRange(),1));
 
 		if(shootOnce ==0){
 			shootOnce++;
 			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-					target,tree.getPosZ(), tree.getUpgradeStats().getRange(),0));
+					target, tree.getUpgradeStats().getRange(),0));
 		}
 
 
