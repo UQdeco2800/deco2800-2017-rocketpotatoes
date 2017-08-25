@@ -1,29 +1,37 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A generic player instance for the game
  */
 public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
 	
-	//this is not working. spacman_ded texture is showing instead of tankBear
+	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 200f;
 	private transient Random random = new Random();
 
-	private float speed = 0.06f;
+	private float speed = 0.05f;
 
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
@@ -31,25 +39,20 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 
 	public TankEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
-		//this.setTexture("squirrel");
-		//this.random = new Random();
 	}
 
 	@Override
 	public void onTick(long i) {
-
-		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-
-//		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
-
-		//The X and Y position of the player without random floats generated
-		float goalX = playerManager.getPlayer().getPosX() ;
-		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
 		
-
-		if(this.distance(playerManager.getPlayer()) < speed) {
+		//set the target of tankEnemy to the closest tree/tower
+		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Tower.class, getPosX(), getPosY());
+	
+		//get the position of the target
+		float goalX = target.get().getPosX(); 
+		float goalY = target.get().getPosY(); 
+		
+		
+		if(this.distance(target.get()) < speed) {
 			this.setPosX(goalX);
 			this.setPosY(goalY);
 			return;
@@ -75,7 +78,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
-				if(entity instanceof Player) {
+				if(entity instanceof Tower) {
 					//soundManager.playSound("ree1.wav");
 				}
 				collided = true;
@@ -85,7 +88,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
-			//Squirrel changes direction when moving towards player.
+			//tankEnemy changes direction when moving towards tree/tower
 
 			if(this.getPosX()>goalX){
 				this.setTexture(TEXTURE);
@@ -98,7 +101,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 	
 	@Override
 	public String toString() {
-		return "Squirrel";
+		return "TankEnemy";
 	}
 
 	@Override

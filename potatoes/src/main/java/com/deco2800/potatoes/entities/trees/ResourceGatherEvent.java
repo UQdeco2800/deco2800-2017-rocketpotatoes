@@ -34,16 +34,7 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	public void action(AbstractTree tree) {
 		ResourceTree resourceTree = (ResourceTree) tree;
 		
-		// Keep adding resources until the resource tree is full. The player
-		// Will need to remove resources for more to produce.
-		
-		if ((resourceTree.resourceCount + gatherAmount) <= ResourceTree.MAX_RESOURCE_COUNT) {
-			resourceTree.resourceCount += gatherAmount;
-		} else {
-			resourceTree.resourceCount = ResourceTree.MAX_RESOURCE_COUNT;
-		}
-		
-		// TODO: Log entries for resource updates and when tree it full
+		resourceTree.addResources(gatherAmount);
 	}
 
 	@Override

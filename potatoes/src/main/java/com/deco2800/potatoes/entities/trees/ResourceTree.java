@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.Inventory;
@@ -15,10 +16,11 @@ import com.deco2800.potatoes.managers.Inventory;
 public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/* Resource Tree Attributes */
-	public int resourceCount;	// Number of resources currently gathered
-	public Resource resourceType;	// Type of resource gathered by the tree
+	private int resourceCount;	// Number of resources currently gathered
+	private Resource resourceType;	// Type of resource gathered by the tree
 	
-	// Maximum amount of resources held by resource tree at any given instance
+	// Maximum amount of resources held by any resource  
+	// tree at any given instance. Set to -1 for infinite.
 	public static final int MAX_RESOURCE_COUNT = 99;	
 	
 	/* Stats that apply to all resource trees */
@@ -37,7 +39,26 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 	
 	/**
-	 * Constructor for the base
+	 * Constructor for creating a basic resource tree at a given 
+	 * coordinate. The resource produced by the tree will default to
+	 * the seed resource.
+	 * 
+	 * @param posX
+	 *            The x-coordinate.
+	 * @param posY
+	 *            The y-coordinate.
+	 * @param posZ
+	 *            The z-coordinate.
+	 */
+	public ResourceTree(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
+		this.resourceCount = 0;
+		this.resourceType = new SeedResource();
+	}
+	
+	/**
+	 * Constructor for creating a resource tree at a given 
+	 * coordinate that gathers a specified resource.
 	 * 
 	 * @param posX
 	 *            The x-coordinate.
@@ -86,12 +107,54 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 
 	/**
-	 * @return the percentage of construction left, from 0 to 100
+	 * Returns the number of resources gathered by the tree.
+	 * 
+	 *	@return the resourceCount
 	 */
-	public int getResourceAmount() {
+	public int getResourceCount() {
 		return resourceCount;
 	}
-
+	
+	/**
+	 * Returns the resource type that is gathered by the tree.
+	 * 
+	 *	@return the resourceType
+	 */
+	public Resource getResourceType() {
+		return resourceType;
+	}
+	
+	/**
+	 * Adds the specified amount to the tree's current resource gather
+	 * count. Resource count will not exceed MAX_RESOURCE_COUNT.
+	 * 
+	 * 	@param amount of resources to add
+	 */
+	public void addResources(int amount) {
+		if (ResourceTree.MAX_RESOURCE_COUNT == -1) {
+			this.resourceCount += amount; // No limit so add without checking
+		} else {
+			if ((this.resourceCount + amount) <= ResourceTree.MAX_RESOURCE_COUNT) {
+				this.resourceCount += amount;
+			} else {
+				this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT; // Resource tree is full
+			}
+		}
+	}
+	
+	/**
+	 * Removes the specified amount from the tree's current resource 
+	 * gather count.
+	 * 
+	 * @param amount
+	 */
+	public void removeResources(int amount) {
+		if ((this.resourceCount - amount) < 0) {
+			this.resourceCount = 0; // Cannot have less than zero resources
+		} else {
+			this.resourceCount -= amount;
+		}
+	}
 
 	/**
 	 * Transfers the resources gathered from the tree
