@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
@@ -19,8 +18,10 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private int resourceCount;	// Number of resources currently gathered
 	private Resource resourceType;	// Type of resource gathered by the tree
 	
-	// Maximum amount of resources held by any resource  
-	// tree at any given instance. Set to -1 for infinite.
+	public boolean gatherEnabled = true; // Gathers resources default
+	
+	// Maximum amount of resources held by any resource. Must be a
+	// positive integer.
 	public static final int MAX_RESOURCE_COUNT = 99;	
 	
 	/* Stats that apply to all resource trees */
@@ -72,7 +73,11 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public ResourceTree(float posX, float posY, float posZ, Resource resourceType) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
 		this.resourceCount = 0;
-		this.resourceType = resourceType;
+		if (resourceType == null) {
+			this.resourceType = new SeedResource();
+		} else {
+			this.resourceType = resourceType;
+		}
 	}
 	
 	@Override
@@ -126,33 +131,18 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/**
 	 * Adds the specified amount to the tree's current resource gather
-	 * count. Resource count will not exceed MAX_RESOURCE_COUNT.
+	 * count. Resource count will always be bounded between 0 and
+	 * MAX_RESOURCE_COUNT.
 	 * 
-	 * 	@param amount of resources to add
+	 * 	@param amount of resources to add. Can be positive or negative.
 	 */
 	public void addResources(int amount) {
-		if (ResourceTree.MAX_RESOURCE_COUNT == -1) {
-			this.resourceCount += amount; // No limit so add without checking
-		} else {
-			if ((this.resourceCount + amount) <= ResourceTree.MAX_RESOURCE_COUNT) {
-				this.resourceCount += amount;
-			} else {
-				this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT; // Resource tree is full
-			}
-		}
-	}
-	
-	/**
-	 * Removes the specified amount from the tree's current resource 
-	 * gather count.
-	 * 
-	 * @param amount
-	 */
-	public void removeResources(int amount) {
-		if ((this.resourceCount - amount) < 0) {
-			this.resourceCount = 0; // Cannot have less than zero resources
-		} else {
-			this.resourceCount -= amount;
+		this.resourceCount += amount;
+		// Check that the new amount is bounded
+		if (this.resourceCount > ResourceTree.MAX_RESOURCE_COUNT) {
+			this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT;
+		} else if (this.resourceCount < 0) {
+			this.resourceCount = 0;
 		}
 	}
 
@@ -170,6 +160,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 			resourceCount = 0;
 		}
 		
+	}
+	
+	/**
+	 * Toggles the trees ability to gather resources.
+	 */
+	public void toggleGatherEnabled() {
+		this.gatherEnabled = !this.gatherEnabled;
 	}
 	
 	@Override
