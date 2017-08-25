@@ -33,15 +33,18 @@ public class MainMenuScreen implements Screen {
     private MainMenuGui mainMenuGui;
     private OptionsMenuGui optionsMenuGui;
     private OrthographicCamera camera;
+    private TextureManager texturemanager;
 
 
     public MainMenuScreen(RocketPotatoes game) {
         this.game = game;
         batch = new SpriteBatch();
-
         camera = new OrthographicCamera();
         // TODO config?
         camera.setToOrtho(false, 1920, 1080);
+        //game screen background
+        texturemanager=(TextureManager)GameManager.get().getManager(TextureManager.class);
+
         stage = new Stage(new ScreenViewport());
 
         setupGui();
@@ -75,8 +78,9 @@ public class MainMenuScreen implements Screen {
         // Draw/update gui
         stage.act();
         stage.getBatch().begin();
-        stage.getBatch().draw(new TextureManager().getTexture("screen_background"),0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         stage.getBatch().end();
+        
         stage.draw();
 
     }
@@ -102,6 +106,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void show() {
+
 
     }
 
