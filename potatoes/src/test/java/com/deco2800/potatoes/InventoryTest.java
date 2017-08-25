@@ -217,7 +217,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNullInventoryUpdate() {
 		// Test null inventory
 		Inventory inventory = new Inventory(new HashSet<Resource>());
