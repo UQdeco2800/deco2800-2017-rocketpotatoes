@@ -34,7 +34,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	// Maximum amount of resources held by any resource. Must be a
 	// positive integer.
-	public static final int MAX_RESOURCE_COUNT = 3;	
+	public static final int MAX_RESOURCE_COUNT = 99;	
 	
 	/* Stats that apply to all resource trees */
 	public static final int HP = 8; // Health of the tree
