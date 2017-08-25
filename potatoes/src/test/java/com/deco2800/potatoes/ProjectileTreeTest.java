@@ -13,28 +13,33 @@ import static org.mockito.Mockito.*;
 
 public class ProjectileTreeTest {
 
-    ProjectileTree testTree;
     private static final int RELOAD = 100;
     private static final float HEALTH = 10f;
     private static final float RANGE = 8f;
+    ProjectileTree testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
 
-    //Common to all initialisation test
-    private void initTestCommon() {
+    @Test
+    public void constructTest() {
         assertEquals("getConstructionLeft() incorect construction time", 100, testTree.getConstructionLeft());
         testTree.decrementConstructionLeft();
         assertEquals("decrementConstructionLeft() incorect construction time", 99, testTree.getConstructionLeft());
+    }
+    @Test
+    public void getUpgradeTest() {
         assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
         assertNotNull("getAllUpgradeStats() returns null", testTree.getAllUpgradeStats());
     }
-
-    private void methodTestCommon() {
-        //
+    @Test
+    public void healthChangeTest() {
         assertTrue(HEALTH==testTree.getHealth());
         testTree.damage(2);
         assertTrue(HEALTH-2==testTree.getHealth());
         testTree.resetStats();
         assertTrue(HEALTH==testTree.getHealth());
         testTree.onTick(1);
+    }
+    @Test
+    public void upgradeHealthTest() {
         testTree.upgrade();
         assertTrue(20f==testTree.getHealth());
         assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
@@ -45,16 +50,5 @@ public class ProjectileTreeTest {
         testTree.upgrade();
         assertTrue(30f==testTree.getHealth());
         assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
-    }
-
-    @Test
-    public void initTest() {
-        testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
-        initTestCommon();
-    }
-    @Test
-    public void methodTest() {
-        testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
-        methodTestCommon();
     }
 }
