@@ -24,7 +24,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * A generic player instance for the game
  */
-public class TankEnemy extends EnemyEntity implements Tickable, HasProgress{
+public class TankEnemy extends EnemyEntity implements Tickable{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final transient String TEXTURE = "tankBear";
@@ -57,6 +57,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress{
 			this.setPosY(goalY);
 			return;
 		}
+
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
@@ -97,11 +98,12 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress{
 				this.setTexture(TEXTURE);
 			}
 		}
+
 	}
 	
 	@Override
 	public String toString() {
-		return "TankEnemy";
+		return String.format("Tank Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
 }

@@ -34,10 +34,15 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 	int shootOnce = 0;
 	@Override
 	public void action(AbstractTree tree) {
-		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(),
+		Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(),
+				tree.getPosY());
+		Optional<AbstractEntity> target2 = WorldUtil.getClosestEntityOfClass(TankEnemy.class, tree.getPosX(),
 				tree.getPosY());
 
-		if (!target.isPresent() || tree.distance(target.get()) > tree.getUpgradeStats().getRange()) {
+		if (!target1.isPresent() || tree.distance(target1.get()) > tree.getUpgradeStats().getRange()) {
+			return;
+		}
+		if (!target2.isPresent() || tree.distance(target2.get()) > tree.getUpgradeStats().getRange()) {
 			return;
 		}
 
@@ -45,19 +50,25 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 
 
 //		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-//				target, tree.getUpgradeStats().getRange(),1));
+//				target1, tree.getUpgradeStats().getRange(),1));
 
+//
 //		if(shootOnce <=0){
 //			shootOnce++;
 			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-					target,tree.getPosZ(), tree.getUpgradeStats().getRange(),0));
-//		}
+
+					target1,tree.getUpgradeStats().getRange(),10));
+			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+					target2,tree.getUpgradeStats().getRange(),10));
+		//}
 
 
 
+
+//					target1,tree.getUpgradeStats().getRange(),0);
 
 //		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-//				target, tree.getUpgradeStats().getRange(),1));
+//				target1, tree.getUpgradeStats().getRange(),1));
 	}
 
 	@Override
