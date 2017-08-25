@@ -48,14 +48,6 @@ public class Resource implements Comparable<Resource> {
 		return texture;
 	}
 
-	/**
-	 * Returns the string representation of the resource.
-	 * 
-	 * @return string The string representation of the resource.
-	 */
-	public String resource() {
-		return resourceType;
-	}
 
 	@Override
 	public boolean equals(Object object) {
@@ -78,6 +70,16 @@ public class Resource implements Comparable<Resource> {
 	@Override
 	public int compareTo(Resource other) {
 		return resourceType.compareTo(other.getTypeName());
+	}
+	
+	/**
+	 * Returns the string representation of the resource.
+	 * 
+	 * @return string The string representation of the resource.
+	 */
+	@Override
+	public String toString() {
+		return resourceType;
 	}
 
 }

@@ -81,4 +81,12 @@ public class ResourceTest {
 		assert(seed.getType().getTexture().equals("seed"));
 		assert(food.getType().getTexture().equals("food"));
 	}
+	
+	@Test
+	public void testToString() {
+		ResourceEntity entity = new ResourceEntity();
+		assert(entity.getType().toString().equals("default"));
+		entity.setResourceType(new SeedResource());
+		assert(entity.getType().toString().equals("seed"));
+	}
 }

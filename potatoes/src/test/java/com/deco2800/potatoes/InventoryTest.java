@@ -197,15 +197,45 @@ public class InventoryTest {
 	}
 	
 	@Test
-	public void updateInventoryTest() throws Exception {
+	public void updateInventoryTest() {
 		// Valid entry
-		Inventory inventory = new Inventory(new HashSet<Resource>());
+		HashSet<Resource> resources = new HashSet<Resource>();
+		Inventory inventory = new Inventory(resources);
 		inventory.updateInventory(validInventory);
+		assert(validInventory.getMap().equals(inventory.getMap()));
+		// Update with existing resources
+		resources.add(new FoodResource());
+		inventory = new Inventory(resources);
+		inventory.updateQuantity(new FoodResource(), 2);
+		resources.add(new SeedResource());
+		Inventory inventory2 = new Inventory(resources);
+		inventory2.updateQuantity(new SeedResource(), 1);
+		inventory2.updateQuantity(new FoodResource(), 1);
+		inventory.updateInventory(inventory2);
+		assert(inventory.getQuantity(new SeedResource())==1);
+		assert(inventory.getQuantity(new FoodResource())==3);
+		
 	}
 	
 	@Test(expected = NullPointerException.class)
-	public void testNullInventoryUpdate() throws Exception {
-		validInventory.updateInventory(null);
+	public void testNullInventoryUpdate() {
+		// Test null inventory
+		Inventory inventory = new Inventory(new HashSet<Resource>());
+		inventory.updateInventory(null);
+	}
+	
+	@Test
+	public void testToString() {
+		Inventory inventory = new Inventory(new HashSet<Resource>());
+		assert(inventory.toString().equals(""));
+		inventory.addInventoryResource(new SeedResource());
+		assert(inventory.toString().equals("seed count = 0"+System.getProperty("line.separator")));
+		inventory.updateQuantity(new SeedResource(), 2);
+		assert(inventory.toString().equals("seed count = 2"+System.getProperty("line.separator")));
+		inventory.addInventoryResource(new FoodResource());
+		inventory.updateQuantity(new FoodResource(), 5);
+		assert(inventory.toString().equals("food count = 5"+System.getProperty("line.separator")+"seed count = 2"+System.getProperty("line.separator")));
+		
 	}
 	
 
