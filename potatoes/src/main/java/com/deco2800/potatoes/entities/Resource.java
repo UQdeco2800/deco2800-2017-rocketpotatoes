@@ -53,7 +53,7 @@ public class Resource implements Comparable<Resource> {
 	 * 
 	 * @return string The string representation of the resource.
 	 */
-	public String toString() {
+	public String resource() {
 		return resourceType;
 	}
 

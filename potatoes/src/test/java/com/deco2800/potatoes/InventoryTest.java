@@ -158,18 +158,7 @@ public class InventoryTest {
 		Inventory inventory = new Inventory(resources);
 		assert(inventory.getQuantity(seed)==0);
 	}
-	
-	@Test(expected = NullPointerException.class)
-	public void getAbsoluteQuantityTest() throws Exception {
-		// Test existing resource
-		Resource seed = new SeedResource();
-		HashSet<Resource> resources = new HashSet<Resource>();
-		resources.add(seed);
-		Inventory inventory = new Inventory(resources);
-		assert(inventory.getAbsoluteQuantity(seed)==0);
-		assert(inventory.getAbsoluteQuantity(new FoodResource())==0);
-	}
-	
+
 	@Test(expected = Exception.class)
 	public void getInvalidResourceQuantityTest() throws Exception {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
