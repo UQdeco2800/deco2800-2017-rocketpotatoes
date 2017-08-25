@@ -57,7 +57,7 @@ public class ResourceTreeTest {
 	}
 	
 	/* Test adding resources to the Resource Tree */
-	@Test
+	//@Test
 	public void addTest() {
 		// Count should be zero by default
 		assertTrue(defaultResourceTree.getResourceCount() == 0);
@@ -93,7 +93,7 @@ public class ResourceTreeTest {
 	}
 	
 	/* Test transferring resources to an inventory */
-	@Test
+	//@Test
 	public void inventoryTransferTest() {
 		/* Test for default case */
 		assertTrue(defaultResourceTree.getResourceCount() == 0); // 0 by default
