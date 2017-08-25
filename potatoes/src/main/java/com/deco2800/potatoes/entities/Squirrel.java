@@ -116,7 +116,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	}
 
 	public ProgressBarEntity getProgressBar() {
-		return new ProgressBarEntity(progressBar.getTexture(), progressBar.getColours(), progressBar.getHeight());
+		return progressBar;
 	}
 
 }
