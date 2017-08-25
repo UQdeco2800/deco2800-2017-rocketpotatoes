@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
@@ -18,6 +17,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/* Resource Tree Attributes */
 	private int resourceCount;	// Number of resources currently gathered
 	private Resource resourceType;	// Type of resource gathered by the tree
+	
+	public boolean gatherEnabled = true; // Gathers resources default
 	
 	// Maximum amount of resources held by any resource  
 	// tree at any given instance. Set to -1 for infinite.
@@ -172,6 +173,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 			// throws if resourceCount is negative
 		}
 		resourceCount = 0;
+	}
+	
+	/**
+	 * Toggles the trees ability to gather resources.
+	 */
+	public void toggleGatherEnabled() {
+		this.gatherEnabled = !this.gatherEnabled;
 	}
 	
 	@Override
