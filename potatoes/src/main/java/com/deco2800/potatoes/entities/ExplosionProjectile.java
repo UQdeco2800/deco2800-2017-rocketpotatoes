@@ -24,40 +24,40 @@ public class ExplosionProjectile extends Projectile {
 	}
 
 
-	int currentSpriteIndexCount = 1;
-	String[] currentSpriteIndex = {"aoe1","aoe2","aoe3"};
-	int timer = 0;
-	int dmgTimer = 0;
+//	int currentSpriteIndexCount = 1;
+////	String[] currentSpriteIndex = {"aoe1","aoe2","aoe3"};
+//	int timer = 0;
+//	int dmgTimer = 0;
 
 
 	@Override
 	public void onTick(long time) {
-		timer++;
-		if (timer % 10 == 0) {
-			if (currentSpriteIndexCount < 3) {
-				currentSpriteIndexCount++;
-			} else {
-				//GameManager.get().getWorld().removeEntity(this);
-			}
-		}
+//		timer++;
+//		if (timer % 10 == 0) {
+//			if (currentSpriteIndexCount < 3) {
+//				currentSpriteIndexCount++;
+//			} else {
+//				//GameManager.get().getWorld().removeEntity(this);
+//			}
+//		}
 
 
-		timer++;
-		if (timer % 10 == 0) {
-			if (currentSpriteIndexCount <= 2) {
-//                currentSpriteIndexCount++;
-//                System.out.println(currentSpriteIndex[currentSpriteIndexCount]);
-				setTexture(currentSpriteIndex[currentSpriteIndexCount]);
-				if(currentSpriteIndexCount < 3){
-					currentSpriteIndexCount++;
-				}
+//		timer++;
+//		if (timer % 10 == 0) {
+//			if (currentSpriteIndexCount <= 2) {
+////                currentSpriteIndexCount++;
+////                System.out.println(currentSpriteIndex[currentSpriteIndexCount]);
+////				setTexture(currentSpriteIndex[currentSpriteIndexCount]);
+//				if(currentSpriteIndexCount < 3){
+//					currentSpriteIndexCount++;
+//				}
 
 
-			} else {
-				GameManager.get().getWorld().removeEntity(this);
-
-			}
-		}
+//			} else {
+//				GameManager.get().getWorld().removeEntity(this);
+//
+//			}
+//		}
 
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entity : entities) {
@@ -66,11 +66,11 @@ public class ExplosionProjectile extends Projectile {
 			}
 
 			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
-				dmgTimer++;
-				if (dmgTimer % 16 == 0) {
+//				dmgTimer++;
+//				if (dmgTimer % 16 == 0) {
 					((EnemyEntity) entity).getShot(this);
-
-				}
+//
+//				}
 
 				return;
 			}
