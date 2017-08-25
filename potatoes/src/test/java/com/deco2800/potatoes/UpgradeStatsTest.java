@@ -20,6 +20,10 @@ public class UpgradeStatsTest {
         assertNotNull(test.getConstructionEventsReference());
     }
     @Test
+    public void emptyTest() {
+        UpgradeStats test = new UpgradeStats();
+    }
+    @Test
     public void getHpTest() {
         assertEquals("incorrectreturn value hp" ,test.getHp(), 10);
     }

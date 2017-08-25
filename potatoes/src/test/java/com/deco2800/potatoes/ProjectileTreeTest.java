@@ -19,6 +19,10 @@ public class ProjectileTreeTest {
     ProjectileTree testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
 
     @Test
+    public void emptyTest() {
+        ProjectileTree nullTree = new ProjectileTree();
+    }
+    @Test
     public void constructTest() {
         assertEquals("getConstructionLeft() incorect construction time", 100, testTree.getConstructionLeft());
         testTree.decrementConstructionLeft();
