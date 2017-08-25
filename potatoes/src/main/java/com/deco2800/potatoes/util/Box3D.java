@@ -195,7 +195,6 @@ public class Box3D {
 		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Find the angle between two _Box3D_. Starts from calling box to target box
 	 * @param target end point of the line
@@ -210,7 +209,6 @@ public class Box3D {
 		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 	}
 
-=======
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y, z, xLength, yLength, zLength);
@@ -247,6 +245,4 @@ public class Box3D {
 
 	}
 
-
->>>>>>> 6613d501b6757432704fe62d32010175c6c70abb
 }
