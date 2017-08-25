@@ -48,13 +48,6 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 					target2,tree.getUpgradeStats().getRange(),10));
 		}
 		
-//		if (!target1.isPresent() || tree.distance(target1.get()) > tree.getUpgradeStats().getRange()) {
-//			return;
-//		}
-//		if (!target2.isPresent() || tree.distance(target2.get()) > tree.getUpgradeStats().getRange()) {
-//			return;
-//		}
-
 		// Added custom damages to projectiles
 
 
@@ -64,11 +57,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 //
 //		if(shootOnce <=0){
 //			shootOnce++;
-			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
 
-					target1,tree.getUpgradeStats().getRange(),10));
-			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-					target2,tree.getUpgradeStats().getRange(),10));
 		//}
 
 
@@ -77,7 +66,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 //					target1,tree.getUpgradeStats().getRange(),0);
 
 //		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-//				target1, tree.getUpgradeStats().getRange(),1));
+//				target2, tree.getUpgradeStats().getRange(),1));
 	}
 
 	@Override
