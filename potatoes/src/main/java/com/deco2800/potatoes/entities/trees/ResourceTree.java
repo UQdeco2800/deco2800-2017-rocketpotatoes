@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import com.deco2800.potatoes.entities.Resource;
@@ -29,7 +30,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public static final int RATE = 5000; // Rate resources are earned
 	public static final float AMOUNT = 1f; // Number of resourced earned per gather
 	public static final int CONSTRUCTION_TIME = 2500; // Construction time
-	public static final String TEXTURE = "tree_selected"; // Texture name
+	public static final String TEXTURE = "resource_tree"; // Texture name
 	
 	public static final List<UpgradeStats> STATS = initStats();
 
@@ -78,6 +79,18 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		} else {
 			this.resourceType = resourceType;
 		}
+	}
+	
+	/*
+	 * Creates an inventory object based on the resource type and 
+	 * resource count.
+	 */
+	private Inventory getInventory() {
+		HashSet<Resource> resources = new HashSet<Resource>();
+		resources.add(this.resourceType);
+		Inventory inventory = new Inventory(resources);
+		inventory.updateQuantity(this.resourceType, this.resourceCount);
+		return inventory;
 	}
 	
 	@Override
@@ -155,10 +168,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 	@param inventory
 	 * 		The inventory of the player to receive gathered resources
 	 */
-	public void transferResources(Inventory inventory) {
-		inventory.updateQuantity(this.resourceType, resourceCount);
-		resourceCount = 0;
-		
+	public void transferResources(Inventory otherInventory) {
+		otherInventory.updateInventory(this.getInventory());
+		this.resourceCount = 0;
 	}
 	
 	/**
