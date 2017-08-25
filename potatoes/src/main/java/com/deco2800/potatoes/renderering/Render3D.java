@@ -160,7 +160,7 @@ public class Render3D implements Renderer {
 
 				font.setColor(Color.RED);
 				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()),
+				font.draw(batch, String.format("%d", ((HasProgress) entity).getProgress()),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
 
 			}	

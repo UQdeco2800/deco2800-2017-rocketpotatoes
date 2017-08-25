@@ -67,9 +67,13 @@ public class BallisticProjectile extends Projectile{
 				GameManager.get().getWorld().removeEntity(this);
 				float AOE_width = 5f;
 				float AOE_height = 2f;
-				ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
-						AOE_width, AOE_height, 0, AOE_width, AOE_height, 50);
-				 GameManager.get().getWorld().addEntity(exp);
+
+				/**
+				 * Spawn explosion when projectile hits entity
+				 */
+//				ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
+//						AOE_width, AOE_height, 0, AOE_width, AOE_height, 50);
+//				 GameManager.get().getWorld().addEntity(exp);
 
 				return;
 			}
