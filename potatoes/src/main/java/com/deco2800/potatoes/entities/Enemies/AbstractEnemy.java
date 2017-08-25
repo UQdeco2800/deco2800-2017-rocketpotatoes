@@ -1,7 +1,9 @@
 package com.deco2800.potatoes.entities.Enemies;
 
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+//import java.util.List;
+//import java.util.Map;
+//import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,10 +22,12 @@ import java.util.Map;
  */
 public abstract class AbstractEnemy extends MortalEntity implements Tickable, HasProgress {
 
-    /*Initialization of variables*/
+    /*Initialization of variables --> these can be handled by BasicStats when implemented*/
     private transient Random random = new Random();
     private float speed = 0.1f;
-    
+    private List<TimeEvent<AbstractEnemy>> normalEvents = new LinkedList<>();
+
+
     
 //    //predefine types of enemies
 //    private enum EnemyType {NORMAL, TANK, SPEEDY};
@@ -217,7 +221,29 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
 //    		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //    	}
 //    }
-    
+
+    /***
+     *
+     * @returns a deep copy of the normal events associated with these stats
+     * (credit to trees team)
+     */
+    public List<TimeEvent<AbstractEnemy>> getNormalEventsCopy() {
+        List<TimeEvent<AbstractEnemy>> result = new LinkedList<>();
+        for (TimeEvent<AbstractEnemy> timeEvent : normalEvents) {
+            result.add(timeEvent.copy());
+        }
+        return result;
+    }
+
+    /**
+     * @return returns a reference to the normal events list of these stats
+     * (credit to trees team)
+     */
+    public List<TimeEvent<AbstractEnemy>> getNormalEventsReference() {
+        return normalEvents;
+    }
+
+
     /**
      * Sets a single goal entity for the enemy
      *
@@ -246,13 +272,11 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
         return (int)health;
     }
 
-    
     @Override
     public boolean showProgress() {
         return true;
     }
 
-    
     /**
      * Set current health of the enemy to given int
      * @param p given health
@@ -260,28 +284,27 @@ public abstract class AbstractEnemy extends MortalEntity implements Tickable, Ha
     @Override
     public void setProgress(int p) { health = p; }
 
-    
+
+    public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
+        if (health > 160f) {
+            batch.setColor(Color.GREEN);
+        } else if (health > 100f) {
+            batch.setColor(Color.ORANGE);
+        } else {
+            batch.setColor(Color.RED);
+        }
+
+        batch.draw(progressBar, xLength, yLength/3, health/3, 5);
+        batch.setColor(Color.WHITE);
+    }
+
     /**
-     * Give damage to the enemy if the enemy is shot by projectile
-     * @param projectile 
+     * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+     * @param projectile, the projectile shot
      */
     public void getShot(Projectile projectile) {
         this.damage(projectile.getDamage());
         //System.out.println(this + " was shot. Health now " + getHealth());
     }
 
-    //set colour of health bar.
-    public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-        if (health > 60) {
-            batch.setColor(Color.GREEN);
-        } else if (health > 20) {
-            batch.setColor(Color.ORANGE);
-        } else {
-            batch.setColor(Color.RED);
-        }
-
-        batch.draw(progressBar, xLength, yLength, health/3, 5);
-        batch.setColor(Color.WHITE);
-
-    }
 }

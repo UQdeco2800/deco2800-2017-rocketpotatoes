@@ -214,6 +214,8 @@ public class GameScreen implements Screen {
             for (int i = 0; i < 2*gameLevel; i++) {
             	GameManager.get().getWorld().addEntity(
             			new TankEnemy(20, 25+random.nextFloat()*10, 0));
+//                GameManager.get().getWorld().addEntity(
+//           	        new TestEnemy(20, 25+random.nextFloat()*10, 0));
             }
             
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
