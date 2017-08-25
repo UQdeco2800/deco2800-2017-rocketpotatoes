@@ -49,7 +49,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress, P
          testing for enemy set target
          it might change the target of speedy enemy
         **/
-        Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Tower.class, getPosX(), getPosY());
+        Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(ResourceTree.class, getPosX(), getPosY());
 
         //get the position of the target
         float goalX = target.get().getPosX();
