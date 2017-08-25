@@ -146,7 +146,13 @@ public class Player extends MortalEntity implements Tickable {
 			break;
 		}
 	}
-
+	
+	/**
+	 * Handles removing an item from an inventory and placing it on the map.
+	 * 
+	 * @param item
+	 * 			The resource to be thrown.
+	 */
 	private void tossItem(Resource item) {
 		// tosses a item in front of player
 		float x = this.getPosX();
@@ -156,12 +162,11 @@ public class Player extends MortalEntity implements Tickable {
 		x = (direction == 0) ? x - 1 : x + 1;
 		y = (direction == 0) ? y - 2 : y + 2;
 
-		try {
-			this.getInventory().updateQuantity(item, -1);
+		//only toss an item if there are items to toss
+		if (this.getInventory().updateQuantity(item, -1) == 1) {
 			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
-		} catch (Exception e) {
-			// not enough of this item
 		}
+
 	}
 
 	/**

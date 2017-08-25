@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities;
 /**
  * FoodResource is a type of Resource that grants players health when used.
  * 
- * @author Dion
+ * @author Dion, Jordan
  *
  */
 

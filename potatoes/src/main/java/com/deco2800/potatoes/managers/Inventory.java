@@ -167,21 +167,32 @@ public class Inventory {
 	 *            the resource whose amount will be updated
 	 * @param amount
 	 *            the number of resources that will be added
+	 * @return result
+	 * 			  returns 1 if successful and 0 otherwise
 	 */
-	public void updateQuantity(Resource resource, int amount) {
+	public int updateQuantity(Resource resource, int amount) {
+		int result = 1;
+		
 		if (!this.getInventoryResources().contains(resource)) {
 			LOGGER.error("Please supply a valid resource");
+			result = 0;
+		} else {
+			int currentAmount = getQuantity(resource);
+			
+			// check that the resource amount would not become negative.
+			if (currentAmount + amount < 0) {
+				LOGGER.warn("Sorry, not enough " + resource.toString());
+				result = 0;
+			} else {
+				inventoryMap.put(resource, currentAmount + amount);
+				guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
+				((InventoryGui)guiManager.getGui(InventoryGui.class)).increaseInventory(resource.getTypeName(), currentAmount + amount);
+			}
+			
 		}
-
-		int currentAmount = getQuantity(resource);
-		// check that the resource amount would not become negative.
-		if (currentAmount + amount < 0) {
-			LOGGER.warn("Sorry, not enough " + resource.toString());
-		}
-
-		inventoryMap.put(resource, currentAmount + amount);
-		guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
-		((InventoryGui)guiManager.getGui(InventoryGui.class)).increaseInventory(resource.getTypeName(), currentAmount + amount);
+		
+		return result;
+			
 	}
 
 	/**
