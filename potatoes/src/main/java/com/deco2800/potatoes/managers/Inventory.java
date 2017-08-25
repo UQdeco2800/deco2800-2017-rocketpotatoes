@@ -9,8 +9,6 @@ import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.gui.InventoryGui;
 
-
-
 /**
  * Inventory holds information regarding the number/type of items a player can
  * and has collected.
@@ -210,14 +208,15 @@ public class Inventory {
 	public void updateInventory(Inventory extraItems) {
 		if (extraItems == null) {
 			LOGGER.warn("Cannot add null to Inventory");
-		}
-		for (Resource resource : extraItems.inventoryMap.keySet()) {
-			if (inventoryMap.containsKey(resource)) {
-				inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
-			} else {
-				inventoryMap.put(resource, extraItems.getQuantity(resource));
-			}
+		} else {
+			for (Resource resource : extraItems.inventoryMap.keySet()) {
+				if (inventoryMap.containsKey(resource)) {
+					inventoryMap.put(resource, getQuantity(resource) + extraItems.getQuantity(resource));
+				} else {
+					inventoryMap.put(resource, extraItems.getQuantity(resource));
+				}
 
+			}
 		}
 	}
 
