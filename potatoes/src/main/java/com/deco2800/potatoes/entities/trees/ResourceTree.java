@@ -20,8 +20,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	public boolean gatherEnabled = true; // Gathers resources default
 	
-	// Maximum amount of resources held by any resource  
-	// tree at any given instance. Set to -1 for infinite.
+	// Maximum amount of resources held by any resource. Must be a
+	// positive integer.
 	public static final int MAX_RESOURCE_COUNT = 99;	
 	
 	/* Stats that apply to all resource trees */
@@ -73,7 +73,11 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public ResourceTree(float posX, float posY, float posZ, Resource resourceType) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
 		this.resourceCount = 0;
-		this.resourceType = resourceType;
+		if (resourceType == null) {
+			this.resourceType = new SeedResource();
+		} else {
+			this.resourceType = resourceType;
+		}
 	}
 	
 	@Override
