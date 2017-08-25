@@ -24,7 +24,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * A class for speedy enemy
  */
-public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
+public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
     private static final transient String TEXTURE = "speedySquirrel";
@@ -105,22 +105,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress, P
     @Override
     public String toString() {
         return "SpeedyEnemy";
-    }
-
-    //set colour of health bar.
-    @Override
-    public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-        if (health > 60) {
-            batch.setColor(Color.GREEN);
-        } else if (health > 20) {
-            batch.setColor(Color.ORANGE);
-        } else {
-            batch.setColor(Color.RED);
-        }
-
-        batch.draw(progressBar, xLength, yLength, health/3, 5);
-        batch.setColor(Color.WHITE);
-
     }
 
 }

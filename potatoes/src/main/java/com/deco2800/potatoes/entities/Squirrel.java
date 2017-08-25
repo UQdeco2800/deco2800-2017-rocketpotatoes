@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -16,7 +18,7 @@ import com.deco2800.potatoes.util.Box3D;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel2";
@@ -25,6 +27,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 
 	private float speed = 0.1f;
 
+	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50);	
+	
+	
 	public Squirrel() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
 	}
@@ -109,19 +115,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
-	@Override
-	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-		if (health > 60) {
-			batch.setColor(Color.GREEN);
-		} else if (health > 20) {
-			batch.setColor(Color.ORANGE);
-		} else {
-			batch.setColor(Color.RED);
-		}
-
-		batch.draw(progressBar, xLength, yLength, health/3, 5);
-		batch.setColor(Color.WHITE);
-		
+	public ProgressBarEntity getProgressBar() {
+		return new ProgressBarEntity(progressBar.getTexture(), progressBar.getColours(), progressBar.getHeight());
 	}
 
 }

@@ -61,7 +61,6 @@ public class BallisticProjectile extends Projectile {
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
-		float deltaZ = getPosZ() - goalZ;
 
 		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
 
@@ -120,13 +119,12 @@ public class BallisticProjectile extends Projectile {
 	}
 	
 	public int rotateAngle() {
-		System.out.println(rotateAngle);
 		return rotateAngle;
 	}
 
 	@Override
 	public void onTick(long time) {
-		
+
 		updatePos();
 
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
