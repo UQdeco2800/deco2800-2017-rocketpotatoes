@@ -12,6 +12,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -122,17 +123,47 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
-				// Hacky way of getting progress bars
-            	TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-				Texture tex = reg.getTexture("progress_bar");
-				((ProgressBar) entity).setProgressBar(entity, tex, batch, (int)(isoPosition.x + tileWidth / 2 - 10),
-						(int) (isoPosition.y + 50));
-            	/*
-                font.setColor(Color.RED);
-                font.getData().setScale(1.0f);
-                font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
-                */
-			}
+				// SUPER Hacky way of getting progress bars
+				TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+				float aspect = (float) 1 / 5;
+
+				if (entity.toString() == "Squirrel") {
+					Texture barTexture = reg.getTexture((((Squirrel) entity).getProgressBar().getTexture()));
+
+					// sets colour palette
+					batch.setColor(
+							((Squirrel) entity).getProgressBar().getColour(((HasProgress) entity).getProgress()));
+					// draws the progress bar
+					batch.draw(barTexture, isoPosition.x, isoPosition.y + ((Squirrel) entity).getProgressBar().getHeight(),
+							(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+							tileWidth * entity.getXRenderLength() * ((HasProgress) entity).getProgress()
+									/ ((Squirrel) entity).getMaxHealth(),
+							(barTexture.getHeight() / aspect) * entity.getYRenderLength(), 1, 1, 0 - entity.rotateAngle(), 0,
+							0, barTexture.getWidth(), barTexture.getHeight(), false, false);
+
+				} else {
+					// default progress bar
+					Texture barTexture = reg.getTexture("progress_bar");
+					Texture entityTecture = reg.getTexture(entity.getTexture());
+					float aspect2 = (float) (entityTecture.getWidth()) / (float) (tileWidth);
+					// set default colour to red
+					batch.setColor(Color.RED);
+					// draws the progress bar
+					batch.draw(barTexture, isoPosition.x, isoPosition.y + entityTecture.getHeight() / aspect2 + 10,
+							(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+							((HasProgress) entity).getProgress() / 3,
+							(barTexture.getHeight() / aspect) * entity.getYRenderLength(), 1, 1, 0 - entity.rotateAngle(), 0,
+							0, barTexture.getWidth(), barTexture.getHeight(), false, false);
+				}
+				// reset the batch colour
+				batch.setColor(Color.WHITE);
+
+				font.setColor(Color.RED);
+				font.getData().setScale(1.0f);
+				font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()),
+						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
+
+			}	
 			/*
 			 * Construction percentage displayed in yellow
 			 */

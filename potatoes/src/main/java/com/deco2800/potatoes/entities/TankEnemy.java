@@ -24,7 +24,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * A generic player instance for the game
  */
-public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
+public class TankEnemy extends EnemyEntity implements Tickable, HasProgress{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final transient String TEXTURE = "tankBear";
@@ -102,21 +102,6 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 	@Override
 	public String toString() {
 		return "TankEnemy";
-	}
-
-	@Override
-	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-		if (health > 60) {
-			batch.setColor(Color.GREEN);
-		} else if (health > 20) {
-			batch.setColor(Color.ORANGE);
-		} else {
-			batch.setColor(Color.RED);
-		}
-
-		batch.draw(progressBar, xLength, yLength, health/3, 5);
-		batch.setColor(Color.WHITE);
-		
 	}
 
 }
