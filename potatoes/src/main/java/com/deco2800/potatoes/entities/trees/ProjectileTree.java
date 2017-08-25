@@ -13,6 +13,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * Default constructor for serialization
 	 */
 	public ProjectileTree() {
+		//default method
 	}
 
 
