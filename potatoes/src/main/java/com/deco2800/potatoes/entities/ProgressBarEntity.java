@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * 
+ * Created by fff134 on 25/08/17.
+ *
+ */
 public class ProgressBarEntity implements ProgressBar {
 	// the textureID used for the entity
 	protected String texture;
