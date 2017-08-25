@@ -127,33 +127,18 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/**
 	 * Adds the specified amount to the tree's current resource gather
-	 * count. Resource count will not exceed MAX_RESOURCE_COUNT.
+	 * count. Resource count will always be bounded between 0 and
+	 * MAX_RESOURCE_COUNT.
 	 * 
-	 * 	@param amount of resources to add
+	 * 	@param amount of resources to add. Can be positive or negative.
 	 */
 	public void addResources(int amount) {
-		if (ResourceTree.MAX_RESOURCE_COUNT == -1) {
-			this.resourceCount += amount; // No limit so add without checking
-		} else {
-			if ((this.resourceCount + amount) <= ResourceTree.MAX_RESOURCE_COUNT) {
-				this.resourceCount += amount;
-			} else {
-				this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT; // Resource tree is full
-			}
-		}
-	}
-	
-	/**
-	 * Removes the specified amount from the tree's current resource 
-	 * gather count.
-	 * 
-	 * @param amount
-	 */
-	public void removeResources(int amount) {
-		if ((this.resourceCount - amount) < 0) {
-			this.resourceCount = 0; // Cannot have less than zero resources
-		} else {
-			this.resourceCount -= amount;
+		this.resourceCount += amount;
+		// Check that the new amount is bounded
+		if (this.resourceCount > ResourceTree.MAX_RESOURCE_COUNT) {
+			this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT;
+		} else if (this.resourceCount < 0) {
+			this.resourceCount = 0;
 		}
 	}
 
