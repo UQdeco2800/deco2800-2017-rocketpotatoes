@@ -1,2 +1,2 @@
-# RocketPotatoes
-A tree defense game.
+![potatey](/potate.jpeg)    
+An awesome tree defense game ft. squrrels.

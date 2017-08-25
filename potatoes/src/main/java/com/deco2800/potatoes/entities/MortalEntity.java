@@ -20,7 +20,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * Default constructor for serialization
 	 */
 	public MortalEntity() {
-		//empty because serialization
+		// empty because serialization
 	}
 
 	/**
