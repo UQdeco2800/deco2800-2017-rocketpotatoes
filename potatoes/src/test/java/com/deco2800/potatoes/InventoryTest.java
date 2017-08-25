@@ -3,6 +3,7 @@ package com.deco2800.potatoes;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
+import java.util.TreeMap;
 
 import org.junit.*;
 
@@ -96,8 +97,8 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void testAddingNullResource() throws Exception {
+	@Test
+	public void testAddingNullResource() {
 		// Test null
 		HashSet<Resource> emptyResources = new HashSet<Resource>();
 		Inventory inventory = new Inventory(emptyResources);
@@ -138,15 +139,16 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
-	public void testRemoveNonExistingResource() throws InvalidResourceException {
+	@Test
+	public void testRemoveNonExistingResource() {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
 		inventory.removeInventoryResource(food1);
+		assert(inventory.getInventoryResources().equals(new HashSet<Resource>()));
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void getNullResourceQuantityTest() throws Exception {
-		validInventory.getQuantity(null);
+	@Test
+	public void getNullResourceQuantityTest() {
+		assert(validInventory.getQuantity(null) == 0);
 	}
 	
 	@Test
@@ -159,21 +161,23 @@ public class InventoryTest {
 		assert(inventory.getQuantity(seed)==0);
 	}
 
-	@Test(expected = Exception.class)
-	public void getInvalidResourceQuantityTest() throws Exception {
+	@Test
+	public void getInvalidResourceQuantityTest() {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
-		inventory.getQuantity(seed1);
+		assert(inventory.getQuantity(seed1) == 0);
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void testNullResourceUpdate() throws Exception {
-		validInventory.updateQuantity(null, 10);
+	@Test
+	public void testNullResourceUpdate() {
+		int result = validInventory.updateQuantity(null, 10);
+		assert(result == 0);
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void testNonExistingResourceUpdate() throws Exception {
+	@Test
+	public void testNonExistingResourceUpdate() {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
-		inventory.updateQuantity(seed1, 10);
+		int result = inventory.updateQuantity(seed1, 10);
+		assert(result == 0);
 	}
 	
 	@Test
@@ -186,9 +190,10 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void testInvalidQuantityUpdate() throws Exception {
-		validInventory.updateQuantity(seed1, -2);
+	@Test
+	public void testInvalidQuantityUpdate() {
+		int result = validInventory.updateQuantity(seed1, -2);
+		assert(result == 0);
 	}
 	
 	@Test

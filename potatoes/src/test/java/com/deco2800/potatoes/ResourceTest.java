@@ -65,10 +65,11 @@ public class ResourceTest {
 		assert(foodEntity.toString().equals("3 " + new FoodResource().toString()));
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test
 	public void testNullResourceSetFunction() {
 		ResourceEntity entity = new ResourceEntity();
 		entity.setResourceType(null);
+		assert(entity.getType().equals(new Resource()));
 	}
 	
 	@Test

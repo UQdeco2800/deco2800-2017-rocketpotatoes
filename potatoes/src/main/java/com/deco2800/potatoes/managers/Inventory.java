@@ -18,7 +18,9 @@ import com.deco2800.potatoes.gui.InventoryGui;
  * @Author Katie Gray
  */
 public class Inventory {
-	// Logger for all info/warning/error logs
+	/*
+	 * Logger for all info/warning/error logs
+	 */
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
 
 	/*
@@ -99,8 +101,7 @@ public class Inventory {
 	public void addInventoryResource(Resource resource) {
 		if (resource == null) {
 			LOGGER.error("Please supply a valid resource");
-		}
-		if (!getInventoryResources().contains(resource)) {
+		} else if (!getInventoryResources().contains(resource)) {
 			inventoryMap.put(resource, 0);
 		}
 	}
@@ -114,8 +115,6 @@ public class Inventory {
 		if (resource == null || !getInventoryResources().contains(resource)) {
 			LOGGER.error("Please supply a valid resource");
 		}
-		System.out.println(resource);
-		System.out.println(inventoryMap);
 		inventoryMap.remove(resource);
 	}
 
@@ -137,6 +136,7 @@ public class Inventory {
 	public int getQuantity(Resource resource) {
 		if (!this.getInventoryResources().contains(resource)) {
 			LOGGER.error("Please supply a valid resource");
+			return 0;
 		}
 		return inventoryMap.get(resource);
 	}
@@ -158,7 +158,8 @@ public class Inventory {
 	 *            the resource whose amount will be updated
 	 * @param amount
 	 *            the number of resources that will be added
-	 * @return result returns 1 if successful and 0 otherwise
+	 * @return result
+	 * 			  returns 1 if successful and 0 otherwise
 	 */
 	public int updateQuantity(Resource resource, int amount) {
 		int result = 1;
@@ -176,8 +177,12 @@ public class Inventory {
 			} else {
 				inventoryMap.put(resource, currentAmount + amount);
 				guiManager = (GuiManager) GameManager.get().getManager(GuiManager.class);
-				((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(resource.getTypeName(),
-						currentAmount + amount);
+				try {
+					((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(
+							resource.getTypeName(), currentAmount + amount);
+				} catch (NullPointerException exception) {
+					//catch exception for tests when the gui isn't initialised
+				}
 			}
 		}
 		return result;
