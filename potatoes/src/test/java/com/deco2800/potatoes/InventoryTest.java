@@ -3,6 +3,7 @@ package com.deco2800.potatoes;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
+import java.util.TreeMap;
 
 import org.junit.*;
 
@@ -13,6 +14,12 @@ import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
+/**
+ * Tests for the inventory class
+ * 
+ * @author Dion
+ *
+ */
 public class InventoryTest {
 	
 	Resource seed1;
@@ -90,12 +97,13 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
-	public void testAddingNullResource() throws Exception {
+	@Test
+	public void testAddingNullResource() {
 		// Test null
 		HashSet<Resource> emptyResources = new HashSet<Resource>();
 		Inventory inventory = new Inventory(emptyResources);
 		inventory.addInventoryResource(null);
+		assert(inventory.getQuantity(null) == 0);
 	}
 	
 	@Test
@@ -114,7 +122,7 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test(expected = NullPointerException.class)
 	public void testRemoveNullResource() throws Exception {
 		validInventory.removeInventoryResource(null);
 	}
@@ -131,15 +139,16 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
-	public void testRemoveNonExistingResource() throws InvalidResourceException {
+	@Test
+	public void testRemoveNonExistingResource() {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
 		inventory.removeInventoryResource(food1);
+		assert(inventory.getInventoryResources().equals(new HashSet<Resource>()));
 	}
 	
-	@Test(expected = InvalidResourceException.class)
-	public void getNullResourceQuantityTest() throws Exception {
-		validInventory.getQuantity(null);
+	@Test
+	public void getNullResourceQuantityTest() {
+		assert(validInventory.getQuantity(null) == 0);
 	}
 	
 	@Test
@@ -151,33 +160,24 @@ public class InventoryTest {
 		Inventory inventory = new Inventory(resources);
 		assert(inventory.getQuantity(seed)==0);
 	}
+
+	@Test
+	public void getInvalidResourceQuantityTest() {
+		Inventory inventory = new Inventory(new HashSet<Resource>());
+		assert(inventory.getQuantity(seed1) == 0);
+	}
 	
 	@Test
-	public void getAbsoluteQuantityTest() throws Exception {
-		// Test existing resource
-		Resource seed = new SeedResource();
-		HashSet<Resource> resources = new HashSet<Resource>();
-		resources.add(seed);
-		Inventory inventory = new Inventory(resources);
-		assert(inventory.getAbsoluteQuantity(seed)==0);
-		assert(inventory.getAbsoluteQuantity(new FoodResource())==0);
+	public void testNullResourceUpdate() {
+		int result = validInventory.updateQuantity(null, 10);
+		assert(result == 0);
 	}
 	
-	@Test(expected = Exception.class)
-	public void getInvalidResourceQuantityTest() throws Exception {
+	@Test
+	public void testNonExistingResourceUpdate() {
 		Inventory inventory = new Inventory(new HashSet<Resource>());
-		inventory.getQuantity(seed1);
-	}
-	
-	@Test(expected = InvalidResourceException.class)
-	public void testNullResourceUpdate() throws Exception {
-		validInventory.updateQuantity(null, 10);
-	}
-	
-	@Test(expected = InvalidResourceException.class)
-	public void testNonExistingResourceUpdate() throws Exception {
-		Inventory inventory = new Inventory(new HashSet<Resource>());
-		inventory.updateQuantity(seed1, 10);
+		int result = inventory.updateQuantity(seed1, 10);
+		assert(result == 0);
 	}
 	
 	@Test
@@ -190,9 +190,10 @@ public class InventoryTest {
 		
 	}
 	
-	@Test(expected = InvalidResourceException.class)
-	public void testInvalidQuantityUpdate() throws Exception {
-		validInventory.updateQuantity(seed1, -2);
+	@Test
+	public void testInvalidQuantityUpdate() {
+		int result = validInventory.updateQuantity(seed1, -2);
+		assert(result == 0);
 	}
 	
 	@Test
@@ -202,7 +203,7 @@ public class InventoryTest {
 		inventory.updateInventory(validInventory);
 	}
 	
-	@Test(expected = InvalidInventoryException.class)
+	@Test(expected = NullPointerException.class)
 	public void testNullInventoryUpdate() throws Exception {
 		validInventory.updateInventory(null);
 	}
