@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.graphics.Texture;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Texture manager acts as a cache between the file system and the renderers.
@@ -42,6 +42,7 @@ public class TextureManager extends Manager {
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
         saveTexture("spacman_blue", "resources/placeholderassets/spacman_blue.png");
+        saveTexture("spacman_blue_2", "resources/placeholderassets/spacman_blue_2.png");
         saveTexture("spacman_green", "resources/placeholderassets/spacman_green.png");
         saveTexture("spacman_ded", "resources/placeholderassets/spacman_ded.png");
         saveTexture("selected", "resources/placeholderassets/selected.png");
@@ -52,7 +53,10 @@ public class TextureManager extends Manager {
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
-
+		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
+        saveTexture("aoe2","resources/placeholderassets/aoe2.png");
+        saveTexture("aoe3","resources/placeholderassets/aoe3.png");
+        saveTexture("proj1","resources/placeholderassets/proj1.png");
 
     }
 

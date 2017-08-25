@@ -1,12 +1,15 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.managers.GameManager;
+public abstract class EnemyEntity extends MortalEntity implements HasProgress {
+	
 
-public abstract class EnemyEntity extends AbstractEntity implements HasProgress {
-	
-	protected float health;
-	
+	/**
+	 * Default constructor for serialization
+	 */
+	public EnemyEntity() {
+		//empty for serialization
+	}
+
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -29,11 +32,12 @@ public abstract class EnemyEntity extends AbstractEntity implements HasProgress 
 	 *            detection.
 	 * @param texture
 	 *            The id of the texture for this entity.
+	 * @param maxHealth
+	 *            The initial maximum health of the enemy
 	 */
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float health) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture);
-		this.health = health;
+			String texture, float maxHealth) {
+		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
 	}
 
 	/**
@@ -60,11 +64,12 @@ public abstract class EnemyEntity extends AbstractEntity implements HasProgress 
 	 *            The length of the entity, in y. Used in collision detection.
 	 * @param texture
 	 *            The id of the texture for this entity.
+	 * @param maxHealth
+	 *            The initial maximum health of the enemy
 	 */
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String texture, float health) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture);
-		this.health = health;
+			float xRenderLength, float yRenderLength, String texture, float maxHealth) {
+		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
 
 	}
 
@@ -95,14 +100,13 @@ public abstract class EnemyEntity extends AbstractEntity implements HasProgress 
 	 *            True if the entity is to be rendered centered, false otherwise.
 	 * @param texture
 	 *            The id of the texture for this entity.
+	 * @param maxHealth
+	 *            The initial maximum health of the enemy
 	 */
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered, String texture, float health) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture);
-		this.health = health;
+			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
+		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
 	}
-	
-	
 	
 
 	@Override
@@ -114,15 +118,13 @@ public abstract class EnemyEntity extends AbstractEntity implements HasProgress 
 	public boolean showProgress() {
 		return true;
 	}
+
+	@Override
+	public void setProgress(int p) { health = p; }
 	
 	public void getShot(Projectile projectile) {
-		this.health -= projectile.getDamage();
-		System.out.println(this + " was shot. Health now " + health);
-		if(health <= 0f) {
-			GameManager.get().getWorld().removeEntity(this);
-			System.out.println(this + " is dead.");
-
-		}
+		this.damage(projectile.getDamage());
+		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
 

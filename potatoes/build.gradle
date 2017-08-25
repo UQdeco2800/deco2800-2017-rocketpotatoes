@@ -7,6 +7,7 @@ dependencies {
 
     compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile 'com.esotericsoftware:kryo:4.0.1'
 
     testCompile "org.mockito:mockito-all:1.9.+"
     testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
@@ -27,6 +28,7 @@ buildscript {
     dependencies {
         classpath group: 'org.flywaydb', name: 'flyway-gradle-plugin', version: '3.2.1'
     }
+    
 
 }
 

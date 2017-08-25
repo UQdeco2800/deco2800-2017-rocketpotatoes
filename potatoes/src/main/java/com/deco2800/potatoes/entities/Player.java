@@ -1,32 +1,38 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.List;
+import java.util.Map;
 
-import com.badlogic.gdx.Input;
-import com.deco2800.potatoes.managers.InputManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
+import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 
 /**
  * Entity for the playable character.
- * 
+ *
  * @author leggy
  *
  */
-public class Player extends AbstractEntity implements Tickable {
+public class Player extends MortalEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
-	
-	private final static String TEXTURE = "spacman_blue";
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+
+	private final static transient float HEALTH = 100f;
+	private static final transient String TEXTURE_RIGHT = "spacman_blue";
+	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
+
+	/**
+	 * Default constructor for the purposes of serialization
+	 */
+	public Player() {
+		super(0, 0, 0, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
+	}
 
 	/**
 	 * Creates a new Player instance.
@@ -39,16 +45,12 @@ public class Player extends AbstractEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1, TEXTURE);
+		super(posX, posY, posZ, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
-		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
 
-		input.addKeyDownListener(this::handleKeyDown);
-		input.addKeyUpListener(this::handleKeyUp);
-
-		this.setTexture("spacman_blue");
+		//this.setTexture("spacman_blue");
 	}
 
 	@Override
@@ -63,12 +65,12 @@ public class Player extends AbstractEntity implements Tickable {
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		List<AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
-		for (AbstractEntity entity : entities) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && newPos.overlaps(entity.getBox3D())) {
+		for (AbstractEntity entity : entities.values()) {
+			if (!this.equals(entity) && !(entity instanceof Squirrel)&& !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
-				System.out.println(this + " colliding with " + entity);
+				//wSystem.out.println(this + " colliding with " + entity);
 				collided = true;
 
 			}
@@ -82,10 +84,10 @@ public class Player extends AbstractEntity implements Tickable {
 
 	/**
 	 * Handle movement when wasd keys are pressed down
-	 * 
+	 *
 	 * @param keycode
 	 */
-	private void handleKeyDown(int keycode) {
+	public void handleKeyDown(int keycode) {
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy -= movementSpeed;
@@ -96,10 +98,14 @@ public class Player extends AbstractEntity implements Tickable {
 			speedx -= movementSpeed;
 			break;
 		case Input.Keys.A:
+			//changes the sprite so that the character is facing left
+			this.setTexture(TEXTURE_LEFT);
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
+		//changes the sprite so that the character is facing right
+		this.setTexture(TEXTURE_RIGHT);
 			speedx += movementSpeed;
 			speedy += movementSpeed;
 		default:
@@ -109,10 +115,10 @@ public class Player extends AbstractEntity implements Tickable {
 
 	/**
 	 * Handle movement when wasd keys are released
-	 * 
+	 *
 	 * @param keycode
 	 */
-	private void handleKeyUp(int keycode) {
+	public void handleKeyUp(int keycode) {
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;

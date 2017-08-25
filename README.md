@@ -1,2 +1,2 @@
 # RocketPotatoes
-A tower defense game.
+A tree defense game.

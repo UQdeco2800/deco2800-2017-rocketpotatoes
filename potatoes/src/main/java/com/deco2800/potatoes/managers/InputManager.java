@@ -1,9 +1,15 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.InputProcessor;
-import com.deco2800.potatoes.observers.*;
-
 import java.util.ArrayList;
+
+import com.badlogic.gdx.InputProcessor;
+import com.deco2800.potatoes.observers.KeyDownObserver;
+import com.deco2800.potatoes.observers.KeyUpObserver;
+import com.deco2800.potatoes.observers.MouseMovedObserver;
+import com.deco2800.potatoes.observers.ScrollObserver;
+import com.deco2800.potatoes.observers.TouchDownObserver;
+import com.deco2800.potatoes.observers.TouchDraggedObserver;
+import com.deco2800.potatoes.observers.TouchUpObserver;
 
 /**
  * Created by woody on 30-Jul-17.

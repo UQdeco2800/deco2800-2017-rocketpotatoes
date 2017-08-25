@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.util;
 
+import java.util.Objects;
+
 /**
  * Representation of a box in 3d space, defined by a corner point in XYZ and
  * extends in x (xLength), y (yLength), and z (zLength).
@@ -12,6 +14,11 @@ public class Box3D {
 	private float x, y, z;
 
 	private float xLength, yLength, zLength;
+
+	/**
+	 * Default constructor for the purposes of serialization
+	 */
+	public Box3D() { }
 
 	/**
 	 * Constructs a new Box3D with the given corner point and dimensions.
@@ -188,6 +195,7 @@ public class Box3D {
 		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Find the angle between two _Box3D_. Starts from calling box to target box
 	 * @param target end point of the line
@@ -202,4 +210,43 @@ public class Box3D {
 		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 	}
 
+=======
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, z, xLength, yLength, zLength);
+	}
+
+	private boolean compareFloat(float a, float b) {
+		float delta = 0.00001f;
+		return Math.abs(a-b) < delta;
+
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (!(o instanceof Box3D)) {
+			return false;
+		}
+
+		Box3D that = (Box3D) o;
+
+		//since equality necessitates hash equality, this equals() method does
+		//effectivelly float == float. I haven't found a way around this that enforces
+		//transitivity, hashCode equality, and equality between very similar values.
+		return hashCode() == that.hashCode() &&
+			compareFloat(that.getX(), getX()) &&
+			compareFloat(that.getY(), getY()) &&
+			compareFloat(that.getZ(), getZ()) &&
+			compareFloat(that.getXLength(), getXLength()) &&
+			compareFloat(that.getYLength(), getYLength()) &&
+			compareFloat(that.getZLength(), getZLength());
+
+	}
+
+
+>>>>>>> 6613d501b6757432704fe62d32010175c6c70abb
 }
