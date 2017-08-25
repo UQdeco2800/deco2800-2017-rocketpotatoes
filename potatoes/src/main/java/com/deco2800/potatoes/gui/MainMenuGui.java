@@ -37,8 +37,10 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerBackButton;
 
     private VerticalGroup optionsButtonGroup;
-    private Label optionsVolumeLabel;
-    private Slider optionsVolumeSlider;
+    private Label optionsMasterVolumeLabel;
+    private Slider optionsMasterVolumeSlider;
+    private Label optionsMusicVolumeLabel;
+    private Slider optionsMusicVolumeSlider;
     private TextButton optionsBackButton;
 
     // State indicator
@@ -89,13 +91,17 @@ public class MainMenuGui extends Gui {
         startMultiplayerButtonGroup.addActor(multiplayerBackButton);
 
         // Options State
-        optionsVolumeLabel = new Label("Volume", uiSkin);
-        optionsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsMasterVolumeLabel = new Label("Master Volume", uiSkin);
+        optionsMasterVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
+        optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsBackButton = new TextButton("Back", uiSkin);
 
         optionsButtonGroup = new VerticalGroup();
-        optionsButtonGroup.addActor(optionsVolumeLabel);
-        optionsButtonGroup.addActor(optionsVolumeSlider);
+        optionsButtonGroup.addActor(optionsMasterVolumeLabel);
+        optionsButtonGroup.addActor(optionsMasterVolumeSlider);
+        optionsButtonGroup.addActor(optionsMusicVolumeLabel);
+        optionsButtonGroup.addActor(optionsMusicVolumeSlider);
         optionsButtonGroup.addActor(optionsBackButton);
 
         setupListeners();
@@ -183,10 +189,17 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        optionsVolumeSlider.addListener(new ChangeListener() {
+        optionsMasterVolumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenuScreen.setVolume(optionsVolumeSlider.getValue());
+                mainMenuScreen.setMasterVolume(optionsMasterVolumeSlider.getValue());
+            }
+        });
+
+        optionsMusicVolumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.setMusicVolume(optionsMusicVolumeSlider.getValue());
             }
         });
 

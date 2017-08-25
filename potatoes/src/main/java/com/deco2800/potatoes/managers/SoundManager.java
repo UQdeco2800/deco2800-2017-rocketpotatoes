@@ -16,6 +16,7 @@ public class SoundManager extends Manager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundManager.class);
 
 	private float masterVolume = 1f;
+	private float musicVolume = 1f;
 
 	/**
 	 * Plays a fun test sound on a new thread
@@ -35,5 +36,7 @@ public class SoundManager extends Manager {
 	 * Gets the current master volume.
 	 */
 	public float getMasterVolume(){return masterVolume;}
+
+	public void setMusicVolume(float v) {musicVolume = v;}
 
 }
