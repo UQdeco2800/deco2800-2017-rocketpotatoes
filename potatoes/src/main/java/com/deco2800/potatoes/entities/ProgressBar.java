@@ -38,4 +38,10 @@ public interface ProgressBar {
 	 */
 	public int getHeight();
 
+	/**
+	 * 
+	 * @return the scale of the progress bar in relation to its entity
+	 */
+	public float getWidthScale();
+
 }

@@ -127,35 +127,70 @@ public class Render3D implements Renderer {
 				float aspect = (float) 1 / 5;
 				
 				if (entity.toString().split(" ")[0].equals("Squirrel")) {
-					Texture barTexture = reg.getTexture((((Squirrel) entity).getProgressBar().getTexture()));
+					ProgressBar progressBar = ((Squirrel) entity).getProgressBar();
+					Texture barTexture = reg.getTexture((progressBar.getTexture()));
 
 					// sets colour palette
-					batch.setColor(((Squirrel) entity).getProgressBar().getColour(((HasProgress) entity).getProgress(),
+					batch.setColor(progressBar.getColour(((HasProgress) entity).getProgress(),
 							(int) ((Squirrel) entity).getMaxHealth()));
 					// draws the progress bar
+					System.out.println(entity.getXRenderLength());
+					/*
 					batch.draw(barTexture, isoPosition.x,
-							isoPosition.y + ((Squirrel) entity).getProgressBar().getHeight(),
+							isoPosition.y + progressBar.getHeight(),
 							(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
 							tileWidth * entity.getXRenderLength() * ((HasProgress) entity).getProgress()
 									/ ((Squirrel) entity).getMaxHealth(),
 							(barTexture.getHeight() / aspect) * entity.getYRenderLength(), 1, 1,
 							0 - entity.rotateAngle(), 0, 0, barTexture.getWidth(), barTexture.getHeight(), false,
 							false);
+							*/
+					batch.draw(barTexture, 
+							//x, y
+							isoPosition.x, isoPosition.y + progressBar.getHeight(),
+							//originX, originY
+							//(tileWidth * entity.getXRenderLength()), (tileHeight * entity.getYRenderLength()),
+							//width
+							tileWidth * entity.getXRenderLength() * ((HasProgress) entity).getProgress()
+									/ ((Squirrel) entity).getMaxHealth(),
+							//height
+							(barTexture.getHeight() / aspect) * entity.getYRenderLength(),
+							//scaleX, scaleY
+						   	//1, 1,
+							//rotation
+							//0 - entity.rotateAngle(),
+							//srcX, srcY
+						   	0, 0, 
+							//srcWidth, srcHeight
+							barTexture.getWidth(), barTexture.getHeight(),
+							//flipX, flipY
+						   	false, false);
 
 				} else {
 					// default progress bar
 					Texture barTexture = reg.getTexture("progress_bar");
-					Texture entityTecture = reg.getTexture(entity.getTexture());
-					float aspect2 = (float) (entityTecture.getWidth()) / (float) (tileWidth);
+					Texture entityTexture = reg.getTexture(entity.getTexture());
+					float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
 					// set default colour to red
 					batch.setColor(Color.RED);
 					// draws the progress bar
-					batch.draw(barTexture, isoPosition.x, isoPosition.y + entityTecture.getHeight() / aspect2 + 10,
-							(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+					batch.draw(barTexture,
+							//x, y
+						   	isoPosition.x ,// - (tileWidth * entity.getXRenderLength()) / 2,
+						   	isoPosition.y + entityTexture.getHeight() / aspect2 + 10,
+							//origins
+							//(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+							//width
 							((HasProgress) entity).getProgress() / 3,
-							(barTexture.getHeight() / aspect) * entity.getYRenderLength(), 1, 1,
-							0 - entity.rotateAngle(), 0, 0, barTexture.getWidth(), barTexture.getHeight(), false,
-							false);
+							//height
+							(barTexture.getHeight() / aspect) * entity.getYRenderLength(),
+							//scale
+						   	//1, 1,
+							//rotation
+							//0 - entity.rotateAngle(),
+						   	0, 0,
+						   	barTexture.getWidth(), barTexture.getHeight(),
+						   	false, false);
 				}
 				// reset the batch colour
 				batch.setColor(Color.WHITE);
@@ -166,6 +201,7 @@ public class Render3D implements Renderer {
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
 
 			}
+
 			/*
 			 * Construction percentage displayed in yellow
 			 */
@@ -220,6 +256,9 @@ public class Render3D implements Renderer {
 
 		batch.end();
 
+	}
+
+	private void renderProgress(SpriteBatch batch, AbstractEntity entity) {
 	}
 
 	public void drawTextureBetween(String texture, float xPos, float yPos, float fxPos, float fyPos) {
