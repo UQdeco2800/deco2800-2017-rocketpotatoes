@@ -30,9 +30,8 @@ public class TankEnemy extends EnemyEntity implements Tickable{
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 200f;
 	private transient Random random = new Random();
-
-	private float speed = 0.05f;
-
+	private final float speed = 0.05f;
+	private Class goal = Tower.class;
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 	}
@@ -44,8 +43,8 @@ public class TankEnemy extends EnemyEntity implements Tickable{
 	@Override
 	public void onTick(long i) {
 		
-		//set the target of tankEnemy to the closest tree/tower
-		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Tower.class, getPosX(), getPosY());
+//		//set the target of tankEnemy to the closest goal
+		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 	
 		//get the position of the target
 		float goalX = target.get().getPosX(); 
