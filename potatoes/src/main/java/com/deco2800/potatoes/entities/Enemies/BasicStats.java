@@ -1,7 +1,10 @@
 package com.deco2800.potatoes.entities.Enemies;
 
+import com.deco2800.potatoes.entities.EnemyEntity;
 import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +18,12 @@ public class BasicStats {
 
     /*Example stats for an enemy*/
     private float speed = 0.1f;
+    private int attackSpeed = 500;
     private float health = 100f;
     private float range = 0;
-    private Class<?> goal = Squirrel.class;
+   // private Class<?> goal = Squirrel.class;
 
-    private List<TimeEvent<AbstractEnemy>> normalEvents = new LinkedList<>();
+    private List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
     private String texture = "";
 
     /**
@@ -41,13 +45,34 @@ public class BasicStats {
      * @param texture
      *          The enemy's starting texture
      */
-    public BasicStats(float health, float speed, float range, List<TimeEvent<AbstractEnemy>> normalEvents, String texture) {
+    public BasicStats(float health, int speed, float range, int attackSpeed, List<TimeEvent<EnemyEntity>> normalEvents, String texture) {
         this.health = health;
         this.speed = speed;
         this.range = range;
-
+        this.attackSpeed = attackSpeed;
         this.normalEvents = normalEvents;
+        this.normalEvents = getNormalEventsCopy();
         this.texture = texture;
+    }
+
+
+
+    /**
+     * @return A deep copy of the normal events associated with these stats
+     * */
+    public List<TimeEvent<EnemyEntity>> getNormalEventsCopy() {
+        List<TimeEvent<EnemyEntity>> result = new LinkedList<>();
+        for (TimeEvent<EnemyEntity> timeEvent : normalEvents) {
+            result.add(timeEvent.copy());
+        }
+        return result;
+    }
+
+    /**
+     * @return returns a reference to the normal events list of these stats
+     */
+    public List<TimeEvent<EnemyEntity>> getNormalEventsReference() {
+        return normalEvents;
     }
 
     /**
@@ -62,8 +87,8 @@ public class BasicStats {
      *
      * @return returns enemy's current speed
      */
-    public float getSpeed() {
-        return this.speed;
+    public float getAttackSpeed() {
+        return this.attackSpeed;
     }
 
     /**
@@ -77,7 +102,7 @@ public class BasicStats {
     /**
      * @return returns a reference to the normal events list of these stats
      */
-    public List<TimeEvent<AbstractEnemy>> getNormalEvents() {
+    public List<TimeEvent<EnemyEntity>> getNormalEvents() {
         return normalEvents;
     }
 

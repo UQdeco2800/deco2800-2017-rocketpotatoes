@@ -1,6 +1,13 @@
 package com.deco2800.potatoes.entities;
 
-public abstract class EnemyEntity extends MortalEntity implements HasProgress {
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.entities.Tickable;
+
+import java.util.List;
+
+public abstract class EnemyEntity extends MortalEntity implements Tickable, HasProgress {
 	
 
 
@@ -9,6 +16,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	 */
 	public EnemyEntity() {
 		// empty for serialization
+		resetStats();
 	}
 
 
@@ -39,6 +47,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
+		resetStats();
 	}
 
 	/**
@@ -71,7 +80,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-
+		resetStats();
 	}
 
 	/**
@@ -107,8 +116,27 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
+		resetStats();
 	}
 
+	private void registerNewEvents(List<TimeEvent<EnemyEntity>> events) {
+		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		eventManager.unregisterAll(this);
+		for (TimeEvent<EnemyEntity> timeEvent : events) {
+			eventManager.registerEvent(this, timeEvent);
+		}
+	}
+
+	/**
+	 * Gets the basic stats that apply to this enemy
+	 *
+	 * @return the basic stats (BasicStats) for this enemy
+	 * */
+	public abstract BasicStats getBasicStats();
+
+	private void resetStats() {
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
+	}
 
 	@Override
 	public int getProgress() {

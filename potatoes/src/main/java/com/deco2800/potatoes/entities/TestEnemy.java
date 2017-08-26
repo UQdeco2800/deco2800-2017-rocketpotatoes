@@ -40,12 +40,12 @@ public class TestEnemy extends AbstractEnemy implements Tickable, HasProgress, P
 
     public TestEnemy() {
         super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
-        getNormalEventsReference().add(new MeleeAttackEvent(500));
+        //getNormalEventsReference().add(new MeleeAttackEvent(500));
     }
 
     public TestEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
-        getNormalEventsReference().add(new MeleeAttackEvent(500));
+        //getNormalEventsReference().add(new MeleeAttackEvent(500));
         //this.setTexture("squirrel");
         //this.random = new Random();
     }

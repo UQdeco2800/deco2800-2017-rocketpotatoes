@@ -3,7 +3,12 @@ package com.deco2800.potatoes.entities;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.LinkedList;
+import java.util.List;
 
+
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +38,21 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 
 	private float speed = 0.05f;
 
+	/*Testing attacking*/
+	//List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+	private static final BasicStats STATS = initStats();
+	/*Testing attacking*/
+
+
+
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+		initStats();
 	}
 
 	public TankEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+		initStats();
 	}
 
 	@Override
@@ -114,6 +128,18 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 
 		batch.draw(progressBar, xLength, yLength/3, health/3, 5);
 		batch.setColor(Color.WHITE);
+	}
+
+	private static BasicStats initStats() {
+		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+		BasicStats result = new BasicStats(200, 500, .8f, 500, normalEvents,"tankBear");
+		result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+		return result;
+	}
+
+	@Override
+	public BasicStats getBasicStats() {
+		return STATS;
 	}
 	
 	
