@@ -35,18 +35,11 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 	int shootOnce = 0;
 	@Override
 	public void action(AbstractTree tree) {
-		Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(),
+		Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, tree.getPosX(),
 				tree.getPosY());
-		Optional<AbstractEntity> target2 = WorldUtil.getClosestEntityOfClass(TankEnemy.class, tree.getPosX(),
-				tree.getPosY());
-
 		if(target1.isPresent()&&(tree.distance(target1.get()) <= tree.getUpgradeStats().getRange())) {
 			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
 					target1,tree.getUpgradeStats().getRange(),10));
-		}
-		if(target2.isPresent()&&(tree.distance(target2.get()) <= tree.getUpgradeStats().getRange())) {
-			GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-					target2,tree.getUpgradeStats().getRange(),10));
 		}
 		
 		// Added custom damages to projectiles
