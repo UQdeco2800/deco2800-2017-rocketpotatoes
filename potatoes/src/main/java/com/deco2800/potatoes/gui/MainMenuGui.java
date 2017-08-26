@@ -3,8 +3,9 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -41,6 +42,7 @@ public class MainMenuGui extends Gui {
     private Slider optionsMasterVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
+    private CheckBox optionsCheckbox;
     private TextButton optionsBackButton;
 
     // State indicator
@@ -95,6 +97,7 @@ public class MainMenuGui extends Gui {
         optionsMasterVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsCheckbox = new CheckBox("Checkbox?", uiSkin);
         optionsBackButton = new TextButton("Back", uiSkin);
 
         optionsButtonGroup = new VerticalGroup();
@@ -102,6 +105,7 @@ public class MainMenuGui extends Gui {
         optionsButtonGroup.addActor(optionsMasterVolumeSlider);
         optionsButtonGroup.addActor(optionsMusicVolumeLabel);
         optionsButtonGroup.addActor(optionsMusicVolumeSlider);
+        optionsButtonGroup.addActor(optionsCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
 
         setupListeners();
@@ -200,6 +204,13 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.setMusicVolume(optionsMusicVolumeSlider.getValue());
+            }
+        });
+
+        optionsCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO
             }
         });
 
