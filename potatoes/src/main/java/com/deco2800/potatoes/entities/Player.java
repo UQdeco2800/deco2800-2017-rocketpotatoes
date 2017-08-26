@@ -1,13 +1,21 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
+import com.badlogic.gdx.Input;
+import com.deco2800.potatoes.managers.InputManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Input;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 
 /**
  * Entity for the playable character.
@@ -26,6 +34,9 @@ public class Player extends MortalEntity implements Tickable {
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
+	private int direction; // facing left=0, right=1
+
+	private Inventory inventory;
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -49,8 +60,25 @@ public class Player extends MortalEntity implements Tickable {
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
+		this.direction = 1;
 
-		//this.setTexture("spacman_blue");
+		HashSet<Resource> startingResources = new HashSet<Resource>();
+		startingResources.add(new SeedResource());
+		startingResources.add(new FoodResource());
+		this.inventory = new Inventory(startingResources);
+
+		// this.setTexture("spacman_blue");
+	}
+
+	public Inventory getInventory() {
+		return this.inventory;
+	}
+
+	/**
+	 * Returns the string representation of which way the player is facing.
+	 */
+	public String getPlayerDirection() {
+		return (direction == 0) ? "left" : "right";
 	}
 
 	@Override
@@ -68,9 +96,10 @@ public class Player extends MortalEntity implements Tickable {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel)&& !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D())) {
+			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)
+					&& newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
-				//wSystem.out.println(this + " colliding with " + entity);
+				// wSystem.out.println(this + " colliding with " + entity);
 				collided = true;
 
 			}
@@ -98,18 +127,66 @@ public class Player extends MortalEntity implements Tickable {
 			speedx -= movementSpeed;
 			break;
 		case Input.Keys.A:
-			//changes the sprite so that the character is facing left
+			// changes the sprite so that the character is facing left
 			this.setTexture(TEXTURE_LEFT);
+			direction = 0;
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
-		//changes the sprite so that the character is facing right
-		this.setTexture(TEXTURE_RIGHT);
+			// changes the sprite so that the character is facing right
+			this.setTexture(TEXTURE_RIGHT);
+			direction = 1;
 			speedx += movementSpeed;
 			speedy += movementSpeed;
+			break;
+		case Input.Keys.T:
+			tossItem(new SeedResource());
+			break;
+		case Input.Keys.F:
+			tossItem(new FoodResource());
+			break;
+		case Input.Keys.SPACE:
+			harvestResources();
+			break;
 		default:
 			break;
+		}
+	}
+	
+	/**
+	 * Handles removing an item from an inventory and placing it on the map.
+	 * 
+	 * @param item
+	 * 			The resource to be thrown.
+	 */
+	private void tossItem(Resource item) {
+		// tosses a item in front of player
+		float x = this.getPosX();
+		float y = this.getPosY();
+		float z = this.getPosZ();
+
+		x = (direction == 0) ? x - 1 : x + 1;
+		y = (direction == 0) ? y - 2 : y + 2;
+
+		//only toss an item if there are items to toss
+		if (this.getInventory().updateQuantity(item, -1) == 1) {
+			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
+		}
+
+	}
+	
+	/**
+	 * Handles harvesting resources from resource tree that are in 
+	 * range. Resources are added to the player's inventory.
+	 */
+	private void harvestResources() {
+		double interactRange = 3f; // TODO: Could this be a class variable?
+		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+		for (AbstractEntity entitiy : entities) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+				((ResourceTree) entitiy).transferResources(this.inventory);
+			}
 		}
 	}
 

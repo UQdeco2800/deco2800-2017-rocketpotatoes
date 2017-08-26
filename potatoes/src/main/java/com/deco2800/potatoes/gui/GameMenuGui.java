@@ -12,8 +12,11 @@ import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Renderable;
+import com.deco2800.potatoes.screens.GameScreen;
 
 public class GameMenuGui extends Gui {
+    private GameScreen screen;
+
     // Buttons
     private Skin uiSkin;
     private Button quitButton;
@@ -22,8 +25,9 @@ public class GameMenuGui extends Gui {
     private Button selectButton;
     private Window window;
 
-    public GameMenuGui(Stage stage) {
+    public GameMenuGui(Stage stage, GameScreen screen) {
         hidden = false;
+        this.screen = screen;
 
         // Make window, with the given skin
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -69,7 +73,7 @@ public class GameMenuGui extends Gui {
         resetButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // Ayy broken
+                screen.exitToMenu();
             }
         });
 
