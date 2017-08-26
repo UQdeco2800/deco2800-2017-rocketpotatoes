@@ -35,7 +35,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 */
 	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, 
 			float range, float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f, texture, maxHealth);
+		super(posX, posY, posZ, 1f, 1f, 1f, texture);
 	}
 
 	@Override
