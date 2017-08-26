@@ -29,6 +29,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		public void action(AbstractTree param) {
 			param.decrementConstructionLeft();
 			if (param.getConstructionLeft() <= 0) {
+				// Changes to the normal events since construction is over
 				param.setRegisteredEvents(false);
 			}
 		}
@@ -38,6 +39,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			return null;
 		}
 	}
+
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 
@@ -49,7 +51,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength, String texture) {
+	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+			String texture) {
 		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
 		resetStats();
 	}
@@ -58,7 +61,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void onTick(long time) {
 		// Nothing here now
 	}
-	
+
 	/**
 	 * Sets the registered events to the construction events or the normal events
 	 * 
@@ -101,6 +104,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void setConstructionLeft(int constructionLeft) {
 		this.constructionLeft = constructionLeft;
 		if (constructionLeft > 0) {
+			// Construction starts again
 			setRegisteredEvents(true);
 		}
 	}
