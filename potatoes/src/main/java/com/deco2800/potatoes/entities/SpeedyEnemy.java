@@ -31,77 +31,18 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress, P
     private static final transient float HEALTH = 65f;
     private transient Random random = new Random();
 
-    private float speed = 0.2f;
-
+    private static float speed = 0.2f;
+    private static Class goal = ResourceEntity.class;
+    
     public SpeedyEnemy() {
-        super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+        super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
     }
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+        super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
     }
 
-    @Override
-    public void onTick(long i) {
-
-        /**
-        set the target of speedy enemy to the closest tree/tower
-         testing for enemy set target
-         it might change the target of speedy enemy
-        **/
-        Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(ResourceTree.class, getPosX(), getPosY());
-
-        //get the position of the target
-        float goalX = target.get().getPosX();
-        float goalY = target.get().getPosY();
-
-
-        if(this.distance(target.get()) < speed) {
-            this.setPosX(goalX);
-            this.setPosY(goalY);
-            return;
-        }
-
-        float deltaX = getPosX() - goalX;
-        float deltaY = getPosY() - goalY;
-
-        float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-
-
-
-        float changeX = (float)(speed * Math.cos(angle));
-        float changeY = (float)(speed * Math.sin(angle));
-
-        Box3D newPos = getBox3D();
-
-        newPos.setX(getPosX() + changeX);
-        newPos.setY(getPosY() + changeY);
-
-
-        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-        boolean collided = false;
-        for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
-                if(entity instanceof Tower) {
-                }
-                collided = true;
-            }
-        }
-
-        if (!collided) {
-            setPosX(getPosX() + changeX);
-            setPosY(getPosY() + changeY);
-            //speedy enemy change direction if something blocked.
-
-            if(this.getPosX()>goalX){
-                this.setTexture(TEXTURE);
-            }
-            else{
-                this.setTexture(TEXTURE);
-            }
-        }
-    }
-
+ 
     @Override
     public String toString() {
         return "SpeedyEnemy";
