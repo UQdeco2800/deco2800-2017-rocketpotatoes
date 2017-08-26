@@ -27,7 +27,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 
 	private float speed = 0.1f;
 
-	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN);
+	private static final List<Color> colours = Arrays.asList(Color.GREEN, Color.ORANGE, Color.RED);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50);	
 	
 	
