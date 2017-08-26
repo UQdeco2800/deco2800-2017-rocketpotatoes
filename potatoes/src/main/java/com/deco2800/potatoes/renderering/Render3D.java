@@ -125,7 +125,7 @@ public class Render3D implements Renderer {
 				// SUPER Hacky way of getting progress bars
 				TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
 				float aspect = (float) 1 / 5;
-				
+
 				if (entity.toString().split(" ")[0].equals("Squirrel")) {
 					Texture barTexture = reg.getTexture((((Squirrel) entity).getProgressBar().getTexture()));
 
@@ -159,12 +159,12 @@ public class Render3D implements Renderer {
 				}
 				// reset the batch colour
 				batch.setColor(Color.WHITE);
-
-				font.setColor(Color.RED);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d", ((HasProgress) entity).getProgress()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
-
+				
+				/* display font (used for debugging)
+				 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
+				 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
+				 * tileWidth / 2 - 10, isoPosition.y + 60);
+				 */
 			}
 			/*
 			 * Construction percentage displayed in yellow
