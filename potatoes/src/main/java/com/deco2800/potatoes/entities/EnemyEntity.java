@@ -139,9 +139,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 
 			//The X and Y position of the player without random floats generated
 			float goalX = playerManager.getPlayer().getPosX() ;
-			float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
-			
-
+			float goalY = playerManager.getPlayer().getPosY() ;
+		
 			if(this.distance(playerManager.getPlayer()) < speed) {
 				this.setPosX(goalX);
 				this.setPosY(goalY);
@@ -152,8 +151,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 			float deltaY = getPosY() - goalY;
 
 			float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-
-
 
 			float changeX = (float)(speed * Math.cos(angle));
 			float changeY = (float)(speed * Math.sin(angle));
@@ -186,20 +183,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 			float goalX = target.get().getPosX(); 
 			float goalY = target.get().getPosY(); 
 			
-			
 			if(this.distance(target.get()) < speed) {
 				this.setPosX(goalX);
 				this.setPosY(goalY);
 				return;
 			}
 
-
 			float deltaX = getPosX() - goalX;
 			float deltaY = getPosY() - goalY;
 
 			float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-
-
 
 			float changeX = (float)(speed * Math.cos(angle));
 			float changeY = (float)(speed * Math.sin(angle));
@@ -208,8 +201,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 
 			newPos.setX(getPosX() + changeX);
 			newPos.setY(getPosY() + changeY);
-
-			 
+ 
 			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 			boolean collided = false;
 			for (AbstractEntity entity : entities.values()) {

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
@@ -25,15 +26,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
 	public static final int DEFAULT_GATHER_CAPACITY = 32;	 // Default gather capacity, must be > 0
-	
-	/* Stats that apply to all resource trees */
-	public static final int HP = 8; // Health of the tree
-	public static final int RATE = 6000; // Rate resources are earned
-	public static final float AMOUNT = 1f; // Number of resourced earned per gather
-	public static final int CONSTRUCTION_TIME = 2500; // Construction time
-	public static final String TEXTURE = "seed_resource_tree"; // Texture name
-	
-	public static final List<UpgradeStats> STATS = initStats();
 
 	/**
 	 * Default constructor for serialization
@@ -58,6 +50,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.gatherCount = 0;
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
+		this.resetStats();
 	}
 	
 	/**
@@ -85,11 +78,67 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		} else {
 			this.gatherType = gatherType;
 		}
+		this.resetStats();
 	}
 	
-	/*
+	@Override
+	public List<UpgradeStats> getAllUpgradeStats() {
+		if (this.gatherType instanceof SeedResource) {
+			return getSeedTreeStats();
+		} else if (this.gatherType instanceof FoodResource) {
+			return getFoodTreeStats();
+		} else {
+			return getSeedTreeStats();
+		}
+	}
+	
+	/**
+	 *	Stats for a resource tree that gathers seeds
+	 * 
+	 * 	@return the list of upgrade stats for a seed resource tree
+	 */
+	private static List<UpgradeStats> getSeedTreeStats() {
+		List<UpgradeStats> result = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
+		result.add(new UpgradeStats(8, 3500, 1f, 2500, normalEvents, constructionEvents, "seed_resource_tree"));
+		result.add(new UpgradeStats(20, 3000, 1f, 2000, normalEvents, constructionEvents, "seed_resource_tree"));
+		result.add(new UpgradeStats(30, 3000, 2f, 1500, normalEvents, constructionEvents, "seed_resource_tree"));
+		
+		// Add ResourceGatherEvent to each upgrade level
+		for (UpgradeStats upgradeStats : result) {
+			upgradeStats.getNormalEventsReference().add(new ResourceGatherEvent(upgradeStats.getSpeed(), 
+					Math.round(upgradeStats.getRange())));
+		}
+		return result;
+	}
+	
+	/**
+	 *	Stats for a resource tree that gathers food
+	 * 
+	 * 	@return the list of upgrade stats for a food resource tree
+	 */
+	private static List<UpgradeStats> getFoodTreeStats() {
+		List<UpgradeStats> result = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
+		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
+		result.add(new UpgradeStats(5, 6000, 1f, 8000, normalEvents, constructionEvents, "food_resource_tree")); 
+		result.add(new UpgradeStats(10, 5500, 1f, 7000, normalEvents, constructionEvents, "food_resource_tree")); 
+		result.add(new UpgradeStats(15, 5000, 2f, 6500, normalEvents, constructionEvents, "food_resource_tree")); 
+		
+		// Add ResourceGatherEvent to each upgrade level
+		for (UpgradeStats upgradeStats : result) {
+			upgradeStats.getNormalEventsReference().add(new ResourceGatherEvent(upgradeStats.getSpeed(), 
+					Math.round(upgradeStats.getRange())));
+		}
+		return result;
+	}
+	
+	/**
 	 * Creates an inventory object based on the resource type and 
 	 * resource count.
+	 * 
+	 * 	@return the inventory of gathered resources.
 	 */
 	private Inventory getInventory() {
 		HashSet<Resource> resources = new HashSet<Resource>();
@@ -97,41 +146,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		Inventory inventory = new Inventory(resources);
 		inventory.updateQuantity(this.gatherType, this.gatherCount);
 		return inventory;
-	}
-	
-	@Override
-	public List<UpgradeStats> getAllUpgradeStats() {
-		return STATS;
-	}
-	
-	/**
-	 * Configures the stats for the resource tree. Each stat level has a 
-	 * normal event action for gathering resources based on the level's
-	 * speed stat.
-	 * 
-	 * 	@return the list of upgrade stats for the resource tree
-	 */
-	private static List<UpgradeStats> initStats() {
-		List<UpgradeStats> result = new LinkedList<>();
-		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
-		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
-		
-		
-		
-		// Base State
-		result.add(new UpgradeStats(HP, RATE, AMOUNT, CONSTRUCTION_TIME, normalEvents, constructionEvents, TEXTURE)); 
-		// Upgrade 1
-		result.add(new UpgradeStats(HP+12, RATE-1000, AMOUNT+1, CONSTRUCTION_TIME-500, normalEvents, constructionEvents, TEXTURE)); 
-		// Upgrade 2
-		result.add(new UpgradeStats(HP+22, RATE-1500, AMOUNT+2, CONSTRUCTION_TIME-1000, normalEvents, constructionEvents, TEXTURE)); 
-		
-		// Add ResourceGatherEvent to each upgrade level
-		for (UpgradeStats upgradeStats : result) {
-			upgradeStats.getNormalEventsReference().add(new ResourceGatherEvent(upgradeStats.getSpeed(), 
-					Math.round(upgradeStats.getRange())));
-		}
-
-		return result;
 	}
 
 	/**

@@ -19,6 +19,8 @@ import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
+import java.net.InetAddress;
+
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
  * Also holds the logic for starting a game, (e.g. singleplayer, multiplayer, loaded, etc.)
@@ -157,6 +159,19 @@ public class MainMenuScreen implements Screen {
             ex.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    public static String multiplayerHostAddress() {
+        // TODO: Get Actual IP Addresses, not just the local host
+        try {
+            InetAddress IP = InetAddress.getLocalHost();
+            return IP.getHostAddress();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        // If it fails to find an IP address, return loopback.
+        //TODO: this will change
+        return "127.0.0.1";
     }
 
     public void setMasterVolume(float v){

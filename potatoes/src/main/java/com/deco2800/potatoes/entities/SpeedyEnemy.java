@@ -24,25 +24,25 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * A class for speedy enemy
  */
-public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress{
+public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
-    private static final transient String TEXTURE = "speedySquirrel";
+    private static final transient String TEXTURE = "speedyRaccoon";
+    private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
     private static final transient float HEALTH = 65f;
-
-    private static float speed = 0.1f;
-	private static Class goal = ResourceEntity.class;
+    private static float speed = 0.15f;
+    private static Class goal = ResourceTree.class;
 
     public SpeedyEnemy() {
         super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
         this.speed = speed;
-		this.goal = goal;
+        this.goal = goal;
     }
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
         this.speed = speed;
-		this.goal = goal;
+        this.goal = goal;
     }
 
 //    @Override
@@ -108,7 +108,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress{
 
     @Override
     public String toString() {
-        return "SpeedyEnemy";
+        return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
     }
-
 }
+
+
