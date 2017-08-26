@@ -242,6 +242,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	@Override
 	public String toString() {
-		return "Resource tree (" + this.gatherType + ": " + this.gatherCount + ")";
+		return "Resource tree (" + this.gatherType + ": " + this.gatherCount + "/" + this.gatherCapacity + ")";
 	}
 }
