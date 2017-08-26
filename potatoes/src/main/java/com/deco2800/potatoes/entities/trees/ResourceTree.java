@@ -75,15 +75,15 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * @param gatherCapacity
 	 * 			maximum number of resources that can be held by the tree.
 	 */
-	public ResourceTree(float posX, float posY, float posZ, Resource resourceType, int gatherCapacity) {
+	public ResourceTree(float posX, float posY, float posZ, Resource gatherType, int gatherCapacity) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
 		this.gatherCount = 0;
 		this.setGatherCapacity(gatherCapacity);
-		if (resourceType == null) {
+		if (gatherType == null) {
 			LOGGER.warn("Resource type was set to null. Deafaulting to seed resouce.");
 			this.gatherType = new SeedResource();
 		} else {
-			this.gatherType = resourceType;
+			this.gatherType = gatherType;
 		}
 	}
 	
