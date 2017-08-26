@@ -63,7 +63,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 					GameManager.get().getWorld().addEntity(new Tower(realX, realY, 0));
 				} else {
 					// Adds a resource tree
-					GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0, new SeedResource()));
+					GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0));
 				}
 			} else {
 				multiplayerManager.broadcastBuildOrder(realX, realY);

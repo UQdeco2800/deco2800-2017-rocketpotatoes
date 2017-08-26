@@ -2,9 +2,7 @@ package com.deco2800.potatoes;
 
 import org.junit.*;
 import static org.junit.Assert.*;
-
 import java.util.HashSet;
-
 import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
@@ -22,13 +20,13 @@ public class ResourceTreeTest {
 	Inventory emptyInventory;	
 	Inventory usedInventory;
 	
-	int testAmount = 10;
+	int testAmount = ResourceTree.DEFAULT_GATHER_CAPACITY/2; // Use a value less than the default
 	
 	@Before
 	public void setup() {
 		defaultResourceTree = new ResourceTree(0, 0, 0);
-		customResourceTree = new ResourceTree(1, 0, 0, new FoodResource());
-		nullTypeResourceTree = new ResourceTree(2, 0, 0, null);
+		customResourceTree = new ResourceTree(1, 0, 0, new FoodResource(), 100);
+		nullTypeResourceTree = new ResourceTree(2, 0, 0, null, -10);
 		
 		emptyInventory = new Inventory();
 		
@@ -42,42 +40,58 @@ public class ResourceTreeTest {
 		usedInventory.updateQuantity(foodResource, 2);
 	}
 	
-	/* Test Type of Initialised Resource Tree */
+	/* Test initialising the resource tree */
 	@Test
-	public void initTypeTest() {
-		assertTrue(defaultResourceTree.getResourceType() instanceof SeedResource); // Should default to SeedResource
-		assertTrue(customResourceTree.getResourceType() instanceof FoodResource); // Should be set to FoodResource
-		assertTrue(nullTypeResourceTree.getResourceType() instanceof SeedResource); // Should default to SeedResource
+	public void initTest() {
+		// Resource type tests
+		assertTrue(defaultResourceTree.getResourceType() instanceof SeedResource); // Defaults to SeedResource
+		assertTrue(customResourceTree.getResourceType() instanceof FoodResource); // Set to FoodResource
+		assertTrue(nullTypeResourceTree.getResourceType() instanceof SeedResource); // Defaults to SeedResource
+		
+		// Gather capcity tests
+		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY); // Defaults
+		assertTrue(customResourceTree.getGatherCapacity() == 100); // Set to 100
+		assertTrue(nullTypeResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY); // Defaults
 	}
 	
+	/* Test setting the gather capacity of the resource tree */
 	@Test
-	/* Ensure that the max resource count is always non-negative */
-	public void maxResourceCountTest() {
-		assertTrue(ResourceTree.MAX_RESOURCE_COUNT >= 0);
+	public void capacityTest() {
+		// Setting to a general number
+		defaultResourceTree.setGatherCapacity(50);
+		assertTrue(defaultResourceTree.getGatherCapacity() == 50);
+		
+		// Setting to 0
+		defaultResourceTree.setGatherCapacity(0);
+		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY);
+		
+		// Setting to negative number
+		defaultResourceTree.setGatherCapacity(-50);
+		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY);
 	}
 	
 	/* Test adding resources to the Resource Tree */
-	//@Test
+	@Test
 	public void addTest() {
 		// Count should be zero by default
 		assertTrue(defaultResourceTree.getResourceCount() == 0);
 		
-		// Test adding amount
+		// Test positive amount
 		defaultResourceTree.addResources(testAmount);
 		assertTrue(defaultResourceTree.getResourceCount() == testAmount);
 		defaultResourceTree.addResources(testAmount);
 		assertTrue(defaultResourceTree.getResourceCount() == 2*testAmount);
 		
-		// Test removing amount
+		// Test negative amount
 		defaultResourceTree.addResources(-testAmount);
 		assertTrue(defaultResourceTree.getResourceCount() == testAmount);
 		
-		// Test adding above limit
-		defaultResourceTree.addResources(ResourceTree.MAX_RESOURCE_COUNT*2);
-		assertTrue(defaultResourceTree.getResourceCount() == ResourceTree.MAX_RESOURCE_COUNT);
+		// Test adding above upper limit
+		defaultResourceTree.addResources(defaultResourceTree.getGatherCapacity()*2);
+		assertTrue(defaultResourceTree.getResourceCount() == defaultResourceTree.getGatherCapacity());
 		
-		// Test removing below zero
-		defaultResourceTree.addResources(-ResourceTree.MAX_RESOURCE_COUNT*2);
+		// Test adding below lower limit
+		defaultResourceTree.addResources(-defaultResourceTree.getGatherCapacity()*2);
 		assertTrue(defaultResourceTree.getResourceCount() == 0);
 		
 	}
@@ -93,7 +107,7 @@ public class ResourceTreeTest {
 	}
 	
 	/* Test transferring resources to an inventory */
-	//@Test
+	@Test
 	public void inventoryTransferTest() {
 		/* Test for default case */
 		assertTrue(defaultResourceTree.getResourceCount() == 0); // 0 by default
