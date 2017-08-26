@@ -3,8 +3,6 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.junit.experimental.theories.Theories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.deco2800.potatoes.entities.Resource;
@@ -123,7 +121,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		// Base State
 		result.add(new UpgradeStats(HP, RATE, AMOUNT, CONSTRUCTION_TIME, normalEvents, constructionEvents, TEXTURE)); 
 		// Upgrade 1
-		result.add(new UpgradeStats(HP+12, RATE-1000, AMOUNT+1, CONSTRUCTION_TIME-500, normalEvents, constructionEvents, "food_resource_tree")); 
+		result.add(new UpgradeStats(HP+12, RATE-1000, AMOUNT+1, CONSTRUCTION_TIME-500, normalEvents, constructionEvents, TEXTURE)); 
 		// Upgrade 2
 		result.add(new UpgradeStats(HP+22, RATE-1500, AMOUNT+2, CONSTRUCTION_TIME-1000, normalEvents, constructionEvents, TEXTURE)); 
 		
