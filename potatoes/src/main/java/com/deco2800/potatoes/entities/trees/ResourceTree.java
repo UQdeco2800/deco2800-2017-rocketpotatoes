@@ -3,12 +3,8 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.text.ChangedCharSetException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tickable;
@@ -17,24 +13,18 @@ import com.deco2800.potatoes.managers.Inventory;
 
 /**
  * Resource tree offer a means to collect resources over time.
- * 
  */
 public class ResourceTree extends AbstractTree implements Tickable {
 	
-	/*
-	 * Logger for all info/warning/error logs
-	 */
+	/* Logger for all info/warning/error logs */
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceTree.class);
 	
 	/* Resource Tree Attributes */
 	private int resourceCount;	// Number of resources currently gathered
 	private Resource resourceType;	// Type of resource gathered by the tree
-	
 	public boolean gatherEnabled = true; // Gathers resources default
-	
-	// Maximum amount of resources held by any resource. Must be a
-	// positive integer.
-	public static final int MAX_RESOURCE_COUNT = 99;	
+	private int gatherCapacity; // Limit on resources held by resource tree
+	public static final int DEFAULT_GATHER_CAPACITY = 32;	 // Default gather capacity, must be > 0
 	
 	/* Stats that apply to all resource trees */
 	public static final int HP = 8; // Health of the tree
@@ -53,8 +43,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/**
 	 * Constructor for creating a basic resource tree at a given 
-	 * coordinate. The resource produced by the tree will default to
-	 * the seed resource.
+	 * coordinate. By default the tree will produce seed resources
+	 * and have a gather capacity of 32. 
 	 * 
 	 * @param posX
 	 *            The x-coordinate.
@@ -66,12 +56,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public ResourceTree(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
 		this.resourceCount = 0;
+		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.resourceType = new SeedResource();
 	}
 	
 	/**
 	 * Constructor for creating a resource tree at a given 
-	 * coordinate that gathers a specified resource.
+	 * coordinate with a custom resource and gather capacity.
 	 * 
 	 * @param posX
 	 *            The x-coordinate.
@@ -81,10 +72,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The z-coordinate.
 	 * @param resourceType
 	 * 			The type of resource gathered by the tree.
+	 * @param gatherCapacity
+	 * 			maximum number of resources that can be held by the tree.
 	 */
-	public ResourceTree(float posX, float posY, float posZ, Resource resourceType) {
+	public ResourceTree(float posX, float posY, float posZ, Resource resourceType, int gatherCapacity) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
 		this.resourceCount = 0;
+		this.setGatherCapacity(gatherCapacity);
 		if (resourceType == null) {
 			LOGGER.warn("Resource type was set to null. Deafaulting to seed resouce.");
 			this.resourceType = new SeedResource();
@@ -139,7 +133,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/**
 	 * Returns the number of resources gathered by the tree.
 	 * 
-	 *	@return the resourceCount
+	 *	@return the resource count
 	 */
 	public int getResourceCount() {
 		return resourceCount;
@@ -148,10 +142,33 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/**
 	 * Returns the resource type that is gathered by the tree.
 	 * 
-	 *	@return the resourceType
+	 *	@return the resource type
 	 */
 	public Resource getResourceType() {
 		return resourceType;
+	}
+	
+	/**
+	 * Returns the maximum number of resources that can be held.
+	 * 
+	 *	@return the gather capacity
+	 */
+	public int getGatherCapacity() {
+		return this.gatherCapacity;
+	}
+	
+	/**
+	 * Sets the gather capacity for the tree.
+	 * 
+	 * 	@param capacity, must be greater than 0.
+	 */
+	public void setGatherCapacity(int capacity) {
+		if (capacity > 0) {
+			this.gatherCapacity = capacity;
+		} else {
+			LOGGER.warn("Attempted to set resource tree capacity to invalid capacity: " + capacity + ". Defaulting to " + DEFAULT_GATHER_CAPACITY);
+			this.gatherCapacity = DEFAULT_GATHER_CAPACITY;
+		}
 	}
 	
 	/**
@@ -166,8 +183,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.resourceCount += amount;
 		
 		// Check that the new amount is bounded
-		if (this.resourceCount > ResourceTree.MAX_RESOURCE_COUNT) {
-			this.resourceCount = ResourceTree.MAX_RESOURCE_COUNT;
+		if (this.resourceCount > this.gatherCapacity) {
+			this.resourceCount = this.gatherCapacity;
 		} else if (this.resourceCount < 0) {
 			this.resourceCount = 0;
 		}
