@@ -38,6 +38,7 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerClientBackButton;
 
     private VerticalGroup multiplayerHostButtonGroup;
+    private Label multiplayerHostIpAddress;
     private TextField multiplayerHostName;
     private TextButton multiplayerHostConnectButton;
     private TextButton multiplayerHostBackButton;
@@ -102,7 +103,8 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer Client state
         multiplayerClientName = new TextField("Client Name", uiSkin);
-        multiplayerClientIpAddConnection = new TextField("127.0.0.1", uiSkin);
+        // multiplayerClientIpAddConnection = new TextField("127.0.0.1", uiSkin);
+        multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerClientConnectButton = new TextButton("Connect", uiSkin);
         multiplayerClientBackButton = new TextButton("Back", uiSkin);
 
@@ -113,11 +115,13 @@ public class MainMenuGui extends Gui {
         multiplayerClientButtonGroup.addActor(multiplayerClientBackButton);
 
         // Multiplayer Host state
+        multiplayerHostIpAddress = new Label("Host IP:  " + MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerHostName = new TextField("Host Name", uiSkin);
         multiplayerHostConnectButton = new TextButton("Connect", uiSkin);
         multiplayerHostBackButton = new TextButton("Back", uiSkin);
 
         multiplayerHostButtonGroup = new VerticalGroup();
+        multiplayerHostButtonGroup.addActor(multiplayerHostIpAddress);
         multiplayerHostButtonGroup.addActor(multiplayerHostName);
         multiplayerHostButtonGroup.addActor( multiplayerHostConnectButton);
         multiplayerHostButtonGroup.addActor(multiplayerHostBackButton);
@@ -250,8 +254,10 @@ public class MainMenuGui extends Gui {
         multiplayerHostConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+               // mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
+               //         "127.0.0.1",1337, true);
                 mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
-                        "127.0.0.1",1337, true);
+                        MainMenuScreen.multiplayerHostAddress(),1337, true);
             }
         });
 
