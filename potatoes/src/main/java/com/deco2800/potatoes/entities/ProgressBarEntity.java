@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -17,7 +18,7 @@ public class ProgressBarEntity implements ProgressBar {
 	// the of the progress bar in relation to the location of the entity
 	protected int height;
 
-	ProgressBarEntity() {
+	public ProgressBarEntity() {
 		// empty because serialization
 	}
 
@@ -30,7 +31,7 @@ public class ProgressBarEntity implements ProgressBar {
 	 * @param height
 	 *            the of the progress bar in relation to the location of the entity
 	 */
-	ProgressBarEntity(String texture, List<Color> colours, int height) {
+	public ProgressBarEntity(String texture, List<Color> colours, int height) {
 		this.texture = texture;
 		this.colours = colours;
 		this.height = height;
@@ -55,7 +56,7 @@ public class ProgressBarEntity implements ProgressBar {
 
 	@Override
 	public List<Color> getColours() {
-		return colours;
+		return new ArrayList<Color>(colours);
 	}
 
 }
