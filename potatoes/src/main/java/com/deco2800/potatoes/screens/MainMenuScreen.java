@@ -182,4 +182,8 @@ public class MainMenuScreen implements Screen {
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
     }
 
+    public static void menuBlipSound(){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
+    }
+
 }

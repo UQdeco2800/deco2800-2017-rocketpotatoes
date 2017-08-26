@@ -103,7 +103,6 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer Client state
         multiplayerClientName = new TextField("Client Name", uiSkin);
-        // multiplayerClientIpAddConnection = new TextField("127.0.0.1", uiSkin);
         multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerClientConnectButton = new TextButton("Connect", uiSkin);
         multiplayerClientBackButton = new TextButton("Back", uiSkin);
@@ -158,6 +157,7 @@ public class MainMenuGui extends Gui {
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.START_GAME;
                 resetGui(stage);
             }
@@ -166,6 +166,7 @@ public class MainMenuGui extends Gui {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.OPTIONS;
                 resetGui(stage);
             }
@@ -174,6 +175,7 @@ public class MainMenuGui extends Gui {
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 // Todo nicer exit?
                 System.exit(0);
             }
@@ -183,6 +185,7 @@ public class MainMenuGui extends Gui {
         singleplayerButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 // TODO loading etc
                 mainMenuScreen.startSinglePlayer();
             }
@@ -191,6 +194,7 @@ public class MainMenuGui extends Gui {
         multiplayerButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.START_MULTIPLAYER;
                 resetGui(stage);
             }
@@ -199,6 +203,7 @@ public class MainMenuGui extends Gui {
         startBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.PRIMARY;
                 resetGui(stage);
             }
@@ -209,6 +214,7 @@ public class MainMenuGui extends Gui {
         multiplayerClientButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.MULTIPLAYER_CLIENT;
                 resetGui(stage);
             }
@@ -217,6 +223,7 @@ public class MainMenuGui extends Gui {
         multiplayerHostButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.MULTIPLAYER_HOST;
                 resetGui(stage);
             }
@@ -225,6 +232,7 @@ public class MainMenuGui extends Gui {
         multiplayerBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.START_GAME;
                 resetGui(stage);
             }
@@ -236,6 +244,7 @@ public class MainMenuGui extends Gui {
         multiplayerClientConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
                         multiplayerClientIpAddConnection.getText(),1337, false);
             }
@@ -244,6 +253,7 @@ public class MainMenuGui extends Gui {
         multiplayerClientBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.START_MULTIPLAYER;
                 resetGui(stage);
             }
@@ -254,8 +264,7 @@ public class MainMenuGui extends Gui {
         multiplayerHostConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-               // mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
-               //         "127.0.0.1",1337, true);
+                MainMenuScreen.menuBlipSound();
                 mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
                         MainMenuScreen.multiplayerHostAddress(),1337, true);
             }
@@ -264,6 +273,7 @@ public class MainMenuGui extends Gui {
         multiplayerHostBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                MainMenuScreen.menuBlipSound();
                 state = States.START_MULTIPLAYER;
                 resetGui(stage);
             }
@@ -302,6 +312,7 @@ public class MainMenuGui extends Gui {
         optionsBackButton.addListener(new ChangeListener() {
            @Override
            public void changed(ChangeEvent event, Actor actor) {
+               MainMenuScreen.menuBlipSound();
                state = States.PRIMARY;
                resetGui(stage);
            }
