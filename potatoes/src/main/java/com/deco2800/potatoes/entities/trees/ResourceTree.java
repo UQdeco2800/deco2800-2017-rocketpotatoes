@@ -28,7 +28,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/* Stats that apply to all resource trees */
 	public static final int HP = 8; // Health of the tree
-	public static final int RATE = 5000; // Rate resources are earned
+	public static final int RATE = 1000; // Rate resources are earned
 	public static final float AMOUNT = 1f; // Number of resourced earned per gather
 	public static final int CONSTRUCTION_TIME = 2500; // Construction time
 	public static final String TEXTURE = "resource_tree"; // Texture name
