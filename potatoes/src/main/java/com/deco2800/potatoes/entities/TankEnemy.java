@@ -36,14 +36,12 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 	private static final transient float HEALTH = 200f;
 	private transient Random random = new Random();
 
-	private float speed = 0.05f;
-
 	/*Testing attacking*/
-	//List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 	private static final BasicStats STATS = initStats();
 	/*Testing attacking*/
 
-
+	private static float speed = 0.05f;
+	private static Class goal = Tower.class;
 
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
@@ -57,10 +55,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 
 	@Override
 	public void onTick(long i) {
-		
-		//set the target of tankEnemy to the closest tree/tower
-		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Tower.class, getPosX(), getPosY());
-	
+		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 		//get the position of the target
 		float goalX = target.get().getPosX(); 
 		float goalY = target.get().getPosY(); 
@@ -103,16 +98,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
-			//tankEnemy changes direction when moving towards tree/tower
-
-			if(this.getPosX()>goalX){
-				this.setTexture(TEXTURE);
-			}
-			else{
-				this.setTexture(TEXTURE);
-			}
 		}
-
 	}
 	
 	

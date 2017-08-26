@@ -27,8 +27,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 	private static final transient String TEXTURE_RIGHT = "squirrel2";
 	private static final transient float HEALTH = 100f;
 	private transient Random random = new Random();
-
-	private float speed = 0.1f;
+	private static Class goal = Player.class;
+	private static float speed = 0.1f;
 
 	/*Testing attacking*/
 	private static final BasicStats STATS = initStats();
@@ -44,7 +44,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 		//this.random = new Random();
 	}
 
-	
 	@Override
 	public void onTick(long i) {
 		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
@@ -94,16 +93,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, Prog
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
-			//Squirrel changes direction when moving towards player.
-
-			if(this.getPosX()>goalX){
-				this.setTexture(TEXTURE_LEFT);
-			}
-			else{
-				this.setTexture(TEXTURE_RIGHT);
-			}
 		}
 	}
+	
 
 //	Not working **********
 //	public void squirrelAttack() {
