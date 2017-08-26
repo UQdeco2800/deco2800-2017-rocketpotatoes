@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -176,15 +177,16 @@ public class Player extends MortalEntity implements Tickable {
 	}
 	
 	/**
-	 * Handles harvesting resources from the closest resource tree. 
-	 * Resources are added to the player's inventory.
+	 * Handles harvesting resources from resource tree that are in 
+	 * range. Resources are added to the player's inventory.
 	 */
 	private void harvestResources() {
-		Optional<AbstractEntity> tree = WorldUtil.getClosestEntityOfClass(ResourceTree.class, this.getPosX(),
-				this.getPosY());
-		ResourceTree resourceTree = (ResourceTree) tree.get();
-		if (this.distance(resourceTree) <= 50) { // TODO: replace value here with variable representing player interaction range
-			resourceTree.transferResources(this.inventory);
+		double interactRange = 3f; // TODO: Could this be a class variable?
+		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+		for (AbstractEntity entitiy : entities) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+				((ResourceTree) entitiy).transferResources(this.inventory);
+			}
 		}
 	}
 

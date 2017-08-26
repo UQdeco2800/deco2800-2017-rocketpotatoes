@@ -37,7 +37,8 @@ public class TextureManager extends Manager {
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
-        saveTexture("resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
+        saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
+        saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -65,7 +66,7 @@ public class TextureManager extends Manager {
         saveTexture("ring","resources/placeholderassets/ring.png");
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
-        saveTexture("speedySquirrel","resources/placeholderassets/speedySquirrel.png");
+        saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
         saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
 
 
