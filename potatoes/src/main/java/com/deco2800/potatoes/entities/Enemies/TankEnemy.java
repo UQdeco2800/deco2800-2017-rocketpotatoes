@@ -4,9 +4,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -21,8 +19,10 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float HEALTH = 200f;
 	private transient Random random = new Random();
 
-	private static float speed = 0.05f;
-	private static Class goal = Tower.class;
+
+	private float speed = 0.03f;
+
+
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 	}
