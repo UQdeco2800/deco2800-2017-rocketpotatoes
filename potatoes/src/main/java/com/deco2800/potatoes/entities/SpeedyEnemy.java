@@ -27,7 +27,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
-    private static final transient String TEXTURE = "speedySquirrel";
+    private static final transient String TEXTURE = "speedyRaccoon";
     private static final transient float HEALTH = 65f;
 
     private static float speed = 0.15f;
