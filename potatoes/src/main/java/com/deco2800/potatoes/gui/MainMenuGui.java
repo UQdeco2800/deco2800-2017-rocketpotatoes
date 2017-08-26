@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
@@ -34,14 +37,14 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerHostButton;
     private TextButton multiplayerBackButton;
 
-    //icc
     private VerticalGroup optionsButtonGroup;
-    private TextButton soundsEffsButton;
-    private TextButton musicButton;
-    private TextButton fullscreenButton;
-    private TextButton colourblindButton;
+    private Label optionsMasterVolumeLabel;
+    private Slider optionsMasterVolumeSlider;
+    private Label optionsMusicVolumeLabel;
+    private Slider optionsMusicVolumeSlider;
+    private CheckBox optionsFullscreenCheckbox;
+    private CheckBox optionsColourblindCheckbox;
     private TextButton optionsBackButton;
-
 
     // State indicator
     private enum States {
@@ -90,20 +93,23 @@ public class MainMenuGui extends Gui {
         startMultiplayerButtonGroup.addActor(multiplayerHostButton);
         startMultiplayerButtonGroup.addActor(multiplayerBackButton);
 
-        //icc Options state
-        soundsEffsButton = new TextButton("Sound Effects: ON",uiSkin);
-        musicButton = new TextButton("Music: OFF",uiSkin);
-        fullscreenButton = new TextButton("Fullscreen Mode: OFF",uiSkin);
-        colourblindButton = new TextButton("Colourblind Mode: OFF",uiSkin);
-        optionsBackButton = new TextButton("Back",uiSkin);
+        // Options State
+        optionsMasterVolumeLabel = new Label("Master Volume", uiSkin);
+        optionsMasterVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
+        optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsFullscreenCheckbox = new CheckBox("Fullscreen", uiSkin);
+        optionsColourblindCheckbox = new CheckBox("Colour Blind", uiSkin);
+        optionsBackButton = new TextButton("Back", uiSkin);
 
         optionsButtonGroup = new VerticalGroup();
-        optionsButtonGroup.addActor(soundsEffsButton);
-        optionsButtonGroup.addActor(musicButton);
-        optionsButtonGroup.addActor(fullscreenButton);
-        optionsButtonGroup.addActor(colourblindButton);
+        optionsButtonGroup.addActor(optionsMasterVolumeLabel);
+        optionsButtonGroup.addActor(optionsMasterVolumeSlider);
+        optionsButtonGroup.addActor(optionsMusicVolumeLabel);
+        optionsButtonGroup.addActor(optionsMusicVolumeSlider);
+        optionsButtonGroup.addActor(optionsFullscreenCheckbox);
+        optionsButtonGroup.addActor(optionsColourblindCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
-
 
         setupListeners();
 
@@ -127,10 +133,6 @@ public class MainMenuGui extends Gui {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // TODO
-                //state = States.OPTIONS;
-                //resetGui(stage);
-
                 state = States.OPTIONS;
                 resetGui(stage);
             }
@@ -193,6 +195,42 @@ public class MainMenuGui extends Gui {
             }
         });
 
+        optionsMasterVolumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.setMasterVolume(optionsMasterVolumeSlider.getValue());
+            }
+        });
+
+        optionsMusicVolumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.setMusicVolume(optionsMusicVolumeSlider.getValue());
+            }
+        });
+
+        optionsFullscreenCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO
+            }
+        });
+
+        optionsColourblindCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO
+            }
+        });
+
+        optionsBackButton.addListener(new ChangeListener() {
+           @Override
+           public void changed(ChangeEvent event, Actor actor) {
+               state = States.PRIMARY;
+               resetGui(stage);
+           }
+        });
+
         //Options state
         optionsBackButton.addListener(new ChangeListener() {
             @Override
@@ -242,7 +280,6 @@ public class MainMenuGui extends Gui {
                 root.add(startMultiplayerButtonGroup).expandX().center();
                 break;
             case OPTIONS:
-                // TODO
                 root.add(optionsButtonGroup).expandX().center();
                 break;
         }

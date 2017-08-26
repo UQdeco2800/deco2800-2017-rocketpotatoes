@@ -222,6 +222,7 @@ public class InventoryTest {
 		// Test null inventory
 		Inventory inventory = new Inventory(new HashSet<Resource>());
 		inventory.updateInventory(null);
+		assert(inventory.getInventoryResources().equals(new HashSet<Resource>()));
 	}
 	
 	@Test

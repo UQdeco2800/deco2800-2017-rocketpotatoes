@@ -16,6 +16,7 @@ import com.deco2800.potatoes.gui.OptionsMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
 /**
@@ -157,4 +158,13 @@ public class MainMenuScreen implements Screen {
             System.exit(-1);
         }
     }
+
+    public void setMasterVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMasterVolume(v);
+    }
+
+    public void setMusicVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+    }
+
 }
