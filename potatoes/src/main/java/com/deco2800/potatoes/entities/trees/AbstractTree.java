@@ -38,7 +38,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			return null;
 		}
 	}
-//	private int test = 300;
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 
@@ -75,10 +74,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		} else {
 			registerNewEvents(getUpgradeStats().getNormalEventsCopy());
 		}
-//		if (test--<0){
-//			test = 300;
-//			this.upgrade();
-//		}
 	}
 
 	/**
