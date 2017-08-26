@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
+import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -58,12 +59,11 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
 					.getManager(MultiplayerManager.class);
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				if (button == 0) {
-					// Adds a projectile tree
-					GameManager.get().getWorld().addEntity(new Tower(realX, realY, 0));
-				} else {
-					// Adds a resource tree
-					GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0));
+				// Spawn a random tree
+				switch ((int)(Math.random()*3 + 1)) {
+				case 1: 	GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0, new FoodResource(), 8)); break;
+				case 2: GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0)); break;
+				default: GameManager.get().getWorld().addEntity(new Tower(realX, realY, 0)); break;
 				}
 			} else {
 				multiplayerManager.broadcastBuildOrder(realX, realY);
