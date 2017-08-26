@@ -42,7 +42,8 @@ public class MainMenuGui extends Gui {
     private Slider optionsMasterVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
-    private CheckBox optionsCheckbox;
+    private CheckBox optionsFullscreenCheckbox;
+    private CheckBox optionsColourblindCheckbox;
     private TextButton optionsBackButton;
 
     // State indicator
@@ -97,7 +98,8 @@ public class MainMenuGui extends Gui {
         optionsMasterVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
-        optionsCheckbox = new CheckBox("Checkbox?", uiSkin);
+        optionsFullscreenCheckbox = new CheckBox("Fullscreen", uiSkin);
+        optionsColourblindCheckbox = new CheckBox("Colour Blind", uiSkin);
         optionsBackButton = new TextButton("Back", uiSkin);
 
         optionsButtonGroup = new VerticalGroup();
@@ -105,7 +107,8 @@ public class MainMenuGui extends Gui {
         optionsButtonGroup.addActor(optionsMasterVolumeSlider);
         optionsButtonGroup.addActor(optionsMusicVolumeLabel);
         optionsButtonGroup.addActor(optionsMusicVolumeSlider);
-        optionsButtonGroup.addActor(optionsCheckbox);
+        optionsButtonGroup.addActor(optionsFullscreenCheckbox);
+        optionsButtonGroup.addActor(optionsColourblindCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
 
         setupListeners();
@@ -207,7 +210,14 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        optionsCheckbox.addListener(new ChangeListener() {
+        optionsFullscreenCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO
+            }
+        });
+
+        optionsColourblindCheckbox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // TODO
