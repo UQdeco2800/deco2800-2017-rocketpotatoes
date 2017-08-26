@@ -108,6 +108,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * Configures the stats for the resource tree. Each stat level has a 
 	 * normal event action for gathering resources based on the level's
 	 * speed stat.
+	 * 
+	 * 	@return the list of upgrade stats for the resource tree
 	 */
 	private static List<UpgradeStats> initStats() {
 		List<UpgradeStats> result = new LinkedList<>();
@@ -210,7 +212,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 	
 	/**
-	 * Toggles the trees ability to gather resources.
+	 * Toggles the tree's ability to gather resources.
 	 */
 	public void toggleGatherEnabled() {
 		this.gatherEnabled = !this.gatherEnabled;
