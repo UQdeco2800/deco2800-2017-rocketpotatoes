@@ -49,9 +49,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength, String texture,
-			float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, texture, maxHealth);
+	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength, String texture) {
+		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
 		resetStats();
 	}
 

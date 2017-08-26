@@ -26,6 +26,9 @@ public class UpgradeStats {
 	 * Default constructor for serialization
 	 */
 	public UpgradeStats() {
+		/**
+		 * Default constructor for serialization
+		 */
 	}
 
 	public UpgradeStats(int hp, int speed, float range, int constructionTime, List<TimeEvent<AbstractTree>> normalEvents,
