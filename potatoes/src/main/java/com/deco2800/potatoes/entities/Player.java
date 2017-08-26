@@ -9,17 +9,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.managers.InputManager;
-import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.worlds.AbstractWorld;
 import com.deco2800.potatoes.worlds.InitialWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.Input;
-import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -154,7 +151,8 @@ public class Player extends MortalEntity implements Tickable {
 		case Input.Keys.F:
 			tossItem(new FoodResource());
 			break;
-		case Input.Keys.SPACE:
+		case Input.Keys.E:
+			((SoundManager) GameManager.get().getManager(SoundManager.class)).playSound("harvesting.mp3");
 			harvestResources();
 			break;
 		case Input.Keys.NUM_1:

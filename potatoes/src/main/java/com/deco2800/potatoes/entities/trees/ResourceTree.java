@@ -73,7 +73,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.gatherCount = 0;
 		this.setGatherCapacity(gatherCapacity);
 		if (gatherType == null) {
-			LOGGER.warn("Resource type was set to null. Deafaulting to seed resouce.");
+			LOGGER.warn("Resource type was set to null. Defaulting to seed resource.");
 			this.gatherType = new SeedResource();
 		} else {
 			this.gatherType = gatherType;
@@ -215,7 +215,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/**
 	 * Transfers the resources gathered from the tree
 	 * into the specified inventory. Once resources
-	 * are transfered, the resourceCount of the tree will 
+	 * are transferred, the resourceCount of the tree will
 	 * reset to zero.
 	 * 
 	 * 	@param inventory
