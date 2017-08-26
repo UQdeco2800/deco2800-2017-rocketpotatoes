@@ -1,3 +1,5 @@
+package com.deco2800.potatoes;
+
 import com.deco2800.potatoes.entities.trees.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
