@@ -3,6 +3,8 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.junit.experimental.theories.Theories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.deco2800.potatoes.entities.Resource;
@@ -31,7 +33,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public static final int RATE = 6000; // Rate resources are earned
 	public static final float AMOUNT = 1f; // Number of resourced earned per gather
 	public static final int CONSTRUCTION_TIME = 2500; // Construction time
-	public static final String TEXTURE = "resource_tree"; // Texture name
+	public static final String TEXTURE = "seed_resource_tree"; // Texture name
 	
 	public static final List<UpgradeStats> STATS = initStats();
 
@@ -116,10 +118,12 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
 		
+		
+		
 		// Base State
 		result.add(new UpgradeStats(HP, RATE, AMOUNT, CONSTRUCTION_TIME, normalEvents, constructionEvents, TEXTURE)); 
 		// Upgrade 1
-		result.add(new UpgradeStats(HP+12, RATE-1000, AMOUNT+1, CONSTRUCTION_TIME-500, normalEvents, constructionEvents, TEXTURE)); 
+		result.add(new UpgradeStats(HP+12, RATE-1000, AMOUNT+1, CONSTRUCTION_TIME-500, normalEvents, constructionEvents, "food_resource_tree")); 
 		// Upgrade 2
 		result.add(new UpgradeStats(HP+22, RATE-1500, AMOUNT+2, CONSTRUCTION_TIME-1000, normalEvents, constructionEvents, TEXTURE)); 
 		
