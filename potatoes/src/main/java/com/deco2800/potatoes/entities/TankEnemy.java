@@ -33,13 +33,60 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress, Pro
 	private static float speed = 0.05f;
 	private static Class goal = Tower.class;
 	public TankEnemy() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
+		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 	}
 
 	public TankEnemy(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 	}
 
+	@Override
+	public void onTick(long i) {
+		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+		//get the position of the target
+		float goalX = target.get().getPosX(); 
+		float goalY = target.get().getPosY(); 
+		
+		
+		if(this.distance(target.get()) < speed) {
+			this.setPosX(goalX);
+			this.setPosY(goalY);
+			return;
+		}
+
+
+		float deltaX = getPosX() - goalX;
+		float deltaY = getPosY() - goalY;
+
+		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+
+
+
+		float changeX = (float)(speed * Math.cos(angle));
+		float changeY = (float)(speed * Math.sin(angle));
+
+		Box3D newPos = getBox3D();
+
+		newPos.setX(getPosX() + changeX);
+		newPos.setY(getPosY() + changeY);
+
+		 
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		boolean collided = false;
+		for (AbstractEntity entity : entities.values()) {
+			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
+				if(entity instanceof Tower) {
+					//soundManager.playSound("ree1.wav");
+				}
+				collided = true;
+			}
+		}
+
+		if (!collided) {
+			setPosX(getPosX() + changeX);
+			setPosY(getPosY() + changeY);
+		}
+	}
 	
 	
 	@Override
