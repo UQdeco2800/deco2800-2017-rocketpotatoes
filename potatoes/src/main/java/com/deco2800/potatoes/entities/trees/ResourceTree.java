@@ -20,8 +20,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceTree.class);
 	
 	/* Resource Tree Attributes */
-	private int resourceCount;	// Number of resources currently gathered
-	private Resource resourceType;	// Type of resource gathered by the tree
+	private int gatherCount;	// Number of resources currently gathered
+	private Resource gatherType;	// Type of resource gathered by the tree
 	public boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
 	public static final int DEFAULT_GATHER_CAPACITY = 32;	 // Default gather capacity, must be > 0
@@ -55,9 +55,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	public ResourceTree(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
-		this.resourceCount = 0;
+		this.gatherCount = 0;
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
-		this.resourceType = new SeedResource();
+		this.gatherType = new SeedResource();
 	}
 	
 	/**
@@ -77,13 +77,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	public ResourceTree(float posX, float posY, float posZ, Resource resourceType, int gatherCapacity) {
 		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
-		this.resourceCount = 0;
+		this.gatherCount = 0;
 		this.setGatherCapacity(gatherCapacity);
 		if (resourceType == null) {
 			LOGGER.warn("Resource type was set to null. Deafaulting to seed resouce.");
-			this.resourceType = new SeedResource();
+			this.gatherType = new SeedResource();
 		} else {
-			this.resourceType = resourceType;
+			this.gatherType = resourceType;
 		}
 	}
 	
@@ -93,9 +93,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	private Inventory getInventory() {
 		HashSet<Resource> resources = new HashSet<Resource>();
-		resources.add(this.resourceType);
+		resources.add(this.gatherType);
 		Inventory inventory = new Inventory(resources);
-		inventory.updateQuantity(this.resourceType, this.resourceCount);
+		inventory.updateQuantity(this.gatherType, this.gatherCount);
 		return inventory;
 	}
 	
@@ -137,8 +137,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 
 	 *	@return the resource count
 	 */
-	public int getResourceCount() {
-		return resourceCount;
+	public int getGatherCount() {
+		return gatherCount;
 	}
 	
 	/**
@@ -146,8 +146,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 
 	 *	@return the resource type
 	 */
-	public Resource getResourceType() {
-		return resourceType;
+	public Resource getGatherType() {
+		return gatherType;
 	}
 	
 	/**
@@ -175,24 +175,24 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/**
 	 * Adds the specified amount to the tree's current resource gather
-	 * count. Resource count will always be bounded between 0 and
-	 * MAX_RESOURCE_COUNT.
+	 * count. The gather count will always be bounded between 0 and
+	 * the gather capacity.
 	 * 
 	 * 	@param amount of resources to add. Can be positive or negative.
 	 */
-	public void addResources(int amount) {
-		int oldCount = this.resourceCount;
-		this.resourceCount += amount;
+	public void gather(int amount) {
+		int oldCount = this.gatherCount;
+		this.gatherCount += amount;
 		
 		// Check that the new amount is bounded
-		if (this.resourceCount > this.gatherCapacity) {
-			this.resourceCount = this.gatherCapacity;
-		} else if (this.resourceCount < 0) {
-			this.resourceCount = 0;
+		if (this.gatherCount > this.gatherCapacity) {
+			this.gatherCount = this.gatherCapacity;
+		} else if (this.gatherCount < 0) {
+			this.gatherCount = 0;
 		}
 		
-		if (this.resourceCount - oldCount != 0) {
-			LOGGER.info("Added " + (this.resourceCount - oldCount) + " to " + this);
+		if (this.gatherCount - oldCount != 0) {
+			LOGGER.info("Added " + (this.gatherCount - oldCount) + " to " + this);
 		}
 	}
 
@@ -206,9 +206,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 		The inventory of the player to receive gathered resources
 	 */
 	public void transferResources(Inventory otherInventory) {
-		LOGGER.info(this + " transferred " + this.resourceCount + " resources.");
+		LOGGER.info(this + " transferred " + this.gatherCount + " resources.");
 		otherInventory.updateInventory(this.getInventory());
-		this.resourceCount = 0;
+		this.gatherCount = 0;
 	}
 	
 	/**
@@ -226,6 +226,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	@Override
 	public String toString() {
-		return "Resource tree (" + this.resourceType + ": " + this.resourceCount + ")";
+		return "Resource tree (" + this.gatherType + ": " + this.gatherCount + ")";
 	}
 }

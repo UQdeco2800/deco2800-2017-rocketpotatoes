@@ -38,7 +38,7 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	public void action(AbstractTree tree) {
 		ResourceTree resourceTree = (ResourceTree) tree;
 		if (resourceTree.gatherEnabled) {
-			resourceTree.addResources(gatherAmount);
+			resourceTree.gather(gatherAmount);
 		}
 	}
 

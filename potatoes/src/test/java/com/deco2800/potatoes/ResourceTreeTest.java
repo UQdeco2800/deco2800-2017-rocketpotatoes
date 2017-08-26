@@ -44,9 +44,9 @@ public class ResourceTreeTest {
 	@Test
 	public void initTest() {
 		// Resource type tests
-		assertTrue(defaultResourceTree.getResourceType() instanceof SeedResource); // Defaults to SeedResource
-		assertTrue(customResourceTree.getResourceType() instanceof FoodResource); // Set to FoodResource
-		assertTrue(nullTypeResourceTree.getResourceType() instanceof SeedResource); // Defaults to SeedResource
+		assertTrue(defaultResourceTree.getGatherType() instanceof SeedResource); // Defaults to SeedResource
+		assertTrue(customResourceTree.getGatherType() instanceof FoodResource); // Set to FoodResource
+		assertTrue(nullTypeResourceTree.getGatherType() instanceof SeedResource); // Defaults to SeedResource
 		
 		// Gather capcity tests
 		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY); // Defaults
@@ -74,25 +74,25 @@ public class ResourceTreeTest {
 	@Test
 	public void addTest() {
 		// Count should be zero by default
-		assertTrue(defaultResourceTree.getResourceCount() == 0);
+		assertTrue(defaultResourceTree.getGatherCount() == 0);
 		
 		// Test positive amount
-		defaultResourceTree.addResources(testAmount);
-		assertTrue(defaultResourceTree.getResourceCount() == testAmount);
-		defaultResourceTree.addResources(testAmount);
-		assertTrue(defaultResourceTree.getResourceCount() == 2*testAmount);
+		defaultResourceTree.gather(testAmount);
+		assertTrue(defaultResourceTree.getGatherCount() == testAmount);
+		defaultResourceTree.gather(testAmount);
+		assertTrue(defaultResourceTree.getGatherCount() == 2*testAmount);
 		
 		// Test negative amount
-		defaultResourceTree.addResources(-testAmount);
-		assertTrue(defaultResourceTree.getResourceCount() == testAmount);
+		defaultResourceTree.gather(-testAmount);
+		assertTrue(defaultResourceTree.getGatherCount() == testAmount);
 		
 		// Test adding above upper limit
-		defaultResourceTree.addResources(defaultResourceTree.getGatherCapacity()*2);
-		assertTrue(defaultResourceTree.getResourceCount() == defaultResourceTree.getGatherCapacity());
+		defaultResourceTree.gather(defaultResourceTree.getGatherCapacity()*2);
+		assertTrue(defaultResourceTree.getGatherCount() == defaultResourceTree.getGatherCapacity());
 		
 		// Test adding below lower limit
-		defaultResourceTree.addResources(-defaultResourceTree.getGatherCapacity()*2);
-		assertTrue(defaultResourceTree.getResourceCount() == 0);
+		defaultResourceTree.gather(-defaultResourceTree.getGatherCapacity()*2);
+		assertTrue(defaultResourceTree.getGatherCount() == 0);
 		
 	}
 	
@@ -110,22 +110,22 @@ public class ResourceTreeTest {
 	@Test
 	public void inventoryTransferTest() {
 		/* Test for default case */
-		assertTrue(defaultResourceTree.getResourceCount() == 0); // 0 by default
-		defaultResourceTree.addResources(testAmount);
-		assertTrue(defaultResourceTree.getResourceCount() == testAmount); // Check that resources were added
+		assertTrue(defaultResourceTree.getGatherCount() == 0); // 0 by default
+		defaultResourceTree.gather(testAmount);
+		assertTrue(defaultResourceTree.getGatherCount() == testAmount); // Check that resources were added
 		
 		defaultResourceTree.transferResources(emptyInventory);
-		assertTrue(defaultResourceTree.getResourceCount() == 0); // All resources should be removed from tree
+		assertTrue(defaultResourceTree.getGatherCount() == 0); // All resources should be removed from tree
 		assertTrue(emptyInventory.getQuantity(seedResource) == testAmount); // All resources should be added to inventory
 		
 		/* Test for custom case */
-		assertTrue(customResourceTree.getResourceCount() == 0); // 0 by default
-		customResourceTree.addResources(testAmount);
-		assertTrue(customResourceTree.getResourceCount() == testAmount); // Check that resources were added
+		assertTrue(customResourceTree.getGatherCount() == 0); // 0 by default
+		customResourceTree.gather(testAmount);
+		assertTrue(customResourceTree.getGatherCount() == testAmount); // Check that resources were added
 		
 		int initalAmount = usedInventory.getQuantity(foodResource);
 		customResourceTree.transferResources(usedInventory);
-		assertTrue(customResourceTree.getResourceCount() == 0); // All resources should be removed from tree
+		assertTrue(customResourceTree.getGatherCount() == 0); // All resources should be removed from tree
 		assertTrue(usedInventory.getQuantity(foodResource) == testAmount + initalAmount); // All resources should be added to inventory
 	}
 	

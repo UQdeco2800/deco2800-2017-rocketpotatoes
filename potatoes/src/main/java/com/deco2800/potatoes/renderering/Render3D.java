@@ -179,10 +179,10 @@ public class Render3D implements Renderer {
 			/*
 			 * Display resource collected for Resource Tree
 			 */
-			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceCount() > 0) {
+			if (entity instanceof ResourceTree && ((ResourceTree) entity).getGatherCount() > 0) {
 				font.setColor(Color.GREEN);
 				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%s", ((ResourceTree) entity).getResourceCount()),
+				font.draw(batch, String.format("%s", ((ResourceTree) entity).getGatherCount()),
 						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
 			}
 
