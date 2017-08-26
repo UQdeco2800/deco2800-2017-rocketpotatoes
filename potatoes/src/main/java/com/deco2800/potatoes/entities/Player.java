@@ -5,8 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.InitialWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.Input;
@@ -14,6 +20,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 
@@ -117,6 +124,7 @@ public class Player extends MortalEntity implements Tickable {
 	 * @param keycode
 	 */
 	public void handleKeyDown(int keycode) {
+
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy -= movementSpeed;
@@ -149,10 +157,31 @@ public class Player extends MortalEntity implements Tickable {
 		case Input.Keys.SPACE:
 			harvestResources();
 			break;
+		case Input.Keys.NUM_1:
+            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                GameManager.get().getWorld().addEntity(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+            }
+            break;
+		case Input.Keys.NUM_2:
+            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+            GameManager.get().getWorld().addEntity(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+            }
+            break;
+		case Input.Keys.NUM_3:
+            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+            GameManager.get().getWorld().addEntity(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+            }
+            break;
 		default:
 			break;
 		}
 	}
+	
+	private Vector2 getCursorCoords() {
+		Vector3 worldCoords = Render3D.screenToWorldCoordiates(Gdx.input.getX(), Gdx.input.getY(), 0);
+		Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
+        return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
+    }
 	
 	/**
 	 * Handles removing an item from an inventory and placing it on the map.
