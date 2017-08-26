@@ -1,7 +1,10 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Optional;
+
+import com.deco2800.potatoes.util.WorldUtil;
+
 public abstract class EnemyEntity extends MortalEntity implements HasProgress {
-	
 
 	/**
 	 * Default constructor for serialization
@@ -122,6 +125,27 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress {
 	@Override
 	public void setProgress(int p) { health = p; }
 
+	
+//	public float getTargetPosX(Class goal) {
+//		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+//		float targetPosX = target.get().getPosX(); 
+//		return targetPosX;
+//	}
+//	
+//	public float getTargetPosY(Class goal) {
+//		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+//		float targetPosY = target.get().getPosY(); 
+//		return targetPosY;
+//	}
+	
+	/** TODO:
+	 * move the enemy to the target.
+	 * @param target target entity class
+	 */
+	public void moveToTarget(Class goal) {
+		
+	}
+	
 	
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
