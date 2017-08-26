@@ -133,7 +133,6 @@ public class MainMenuGui extends Gui {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // TODO
                 state = States.OPTIONS;
                 resetGui(stage);
             }
@@ -230,6 +229,15 @@ public class MainMenuGui extends Gui {
                state = States.PRIMARY;
                resetGui(stage);
            }
+        });
+
+        //Options state
+        optionsBackButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state = States.PRIMARY;
+                resetGui(stage);
+            }
         });
     }
 

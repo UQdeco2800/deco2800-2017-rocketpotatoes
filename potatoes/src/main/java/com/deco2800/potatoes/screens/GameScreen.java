@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,8 +15,10 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
+import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -51,6 +55,8 @@ public class GameScreen implements Screen {
     private MultiplayerManager multiplayerManager;
     private GuiManager guiManager;
     private CameraManager cameraManager;
+    private TextureManager textureManager;
+    private InputManager inputManager;
 
     private long lastGameTick = 0;
     private boolean playing = true;
@@ -98,7 +104,7 @@ public class GameScreen implements Screen {
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
-        GameManager.get().getManager(TextureManager.class);
+        textureManager = (TextureManager)GameManager.get().getManager(TextureManager.class);
 
         /**
          *	Setup managers etc.
@@ -142,6 +148,9 @@ public class GameScreen implements Screen {
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
+        
+        // Make our inventory window
+        guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		/* Setup inputs */
         setupInputHandling();
@@ -163,14 +172,15 @@ public class GameScreen implements Screen {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(guiManager.getStage()); // Add the UI as a processor
 
-        InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
-        input.addKeyDownListener(new CameraHandler());
-        input.addScrollListener(new ScrollTester());
+        inputManager = (InputManager) GameManager.get().getManager(InputManager.class);
+        inputManager.addKeyDownListener(new CameraHandler());
+        inputManager.addScrollListener(new ScrollTester());
 
         MouseHandler mouseHandler = new MouseHandler();
-        input.addTouchDownListener(mouseHandler);
-        input.addTouchDraggedListener(mouseHandler);
-        inputMultiplexer.addProcessor(input);
+        inputManager.addTouchDownListener(mouseHandler);
+        inputManager.addTouchDraggedListener(mouseHandler);
+        inputManager.addMouseMovedListener(mouseHandler);
+        inputMultiplexer.addProcessor(inputManager);
 
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -196,10 +206,18 @@ public class GameScreen implements Screen {
                 GameManager.get().getWorld().addEntity(new Squirrel(
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
-
-            GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+            for (int i = 0; i < 3; i++) {
+                GameManager.get().getWorld().addEntity(
+                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+            }
+            
+            GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
+            GameManager.get().getWorld().addEntity(new SpeedyEnemy(24,20,0));
+            initialiseResources();
+            
         }
 
 
@@ -214,6 +232,22 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void initialiseResources() {
+
+        SeedResource seedResource = new SeedResource();
+		FoodResource foodResource = new FoodResource();
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
     }
 
     private void tickGame(long timeDelta) {
@@ -249,7 +283,9 @@ public class GameScreen implements Screen {
         }
 
         // Tick Events
-        ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);;
+        if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+            ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);
+        }
 
         // Broadcast updates if we're master TODO only when needed.
         if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
@@ -298,10 +334,28 @@ public class GameScreen implements Screen {
         tileRenderer.setView(cameraManager.getCamera());
         tileRenderer.render();
 
+        /* Draw highlight on current tile we have selected */
+        batch.begin();
+        // Convert our mouse coordinates to world, where we then convert them to a tile [x, y], then back to screen
+
+        Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
+        Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
+
+        float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+        float tileX = (int)(Math.floor(tileCoords.x));
+        float tileY = (int)(Math.floor(tileCoords.y));
+
+        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY);
+        batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
+
+        batch.end();
+
         // Render entities etc.
         renderer.render(batch);
 
-        //TODO: add render for projectile's separately
+        // TODO: add render for projectile's separately
     }
 
     /**

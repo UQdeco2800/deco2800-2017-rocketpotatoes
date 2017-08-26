@@ -152,7 +152,7 @@ public class NetworkClient {
                 if (object instanceof HostEntityCreationMessage) {
                     HostEntityCreationMessage m = (HostEntityCreationMessage) object;
 
-                    //System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
+                    // System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
                     //        m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
 
                     // -1 is the signal for put it wherever.

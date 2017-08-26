@@ -5,16 +5,12 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
-import com.deco2800.potatoes.entities.Tree;
 import com.deco2800.potatoes.gui.MainMenuGui;
 import com.deco2800.potatoes.gui.OptionsMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
@@ -22,9 +18,6 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
-import org.lwjgl.Sys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
@@ -83,14 +76,12 @@ public class MainMenuScreen implements Screen {
 
         Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
 
-
+        // Draw/update gui
         stage.act();
-
         stage.getBatch().begin();
         stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         stage.getBatch().end();
-
-        // Draw/update gui
+        
         stage.draw();
 
     }

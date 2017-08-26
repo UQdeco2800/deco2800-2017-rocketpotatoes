@@ -26,6 +26,14 @@ public class ChatGui extends Gui {
     private TextField textField;
     private Button sendButton;
 
+    //icc
+    private TextButton minButton;
+    private enum chatStates{
+        CHAT,
+        HIDDEN
+    }
+    private chatStates cState = chatStates.CHAT;
+
     /**
      * Initializes this ChatGui
      */
@@ -61,6 +69,26 @@ public class ChatGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 sendMessage();
+            }
+        });
+
+        //icc Button to minimise chat
+        minButton = new TextButton("Hide Chat", uiSkin);
+        minButton.addListener(new ChangeListener(){
+            @Override
+
+            public void changed(ChangeEvent event, Actor actor){
+                switch (cState){
+                    case HIDDEN:
+                        cState = chatStates.CHAT;
+                        resetGui(stage);
+                        break;
+                    case CHAT:
+                        cState = chatStates.HIDDEN;
+                        resetGui(stage);
+                        break;
+                }
+               // resetGui(stage);
             }
         });
 
@@ -129,23 +157,39 @@ public class ChatGui extends Gui {
 
     private void resetGui(Stage stage) {
         table.reset();
+        //table.debugAll();
 
-        // TODO refine these measurements
-        table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
-        table.row();
-        table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
-        table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
+        //icc
+        switch (cState){
+            case CHAT:
+                table.add(minButton).height(30.0f).padLeft(Align.left);
+                minButton.setText("Hide Chat");
+                table.row();
 
-        table.getColor().a = 0.3f;
-        table.setPosition(0, 0);
-        table.pack();
+                // TODO refine these measurements
+                table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
+                table.row();
+                table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
+                table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
 
-        // Realign messages
-        for (Cell l : textList.getCells()) {
-            l.width(stage.getWidth() * 0.4f - 10.0f);
+                table.getColor().a = 0.3f;
+                table.setPosition(0, 0);
+                table.pack();
+
+                // Realign messages
+                for (Cell l : textList.getCells()) {
+                    l.width(stage.getWidth() * 0.4f - 10.0f);
+                }
+                // Automatically adjust alpha to counter the parent table
+                textList.getColor().a = 1.0f / table.getColor().a;
+                break;
+
+        case HIDDEN:
+            table.add(minButton).height(30.0f).align(Align.left);
+            table.left().bottom();
+            minButton.setText("Show Chat");
+            break;
         }
-        // Automatically adjust alpha to counter the parent table
-        textList.getColor().a = 1.0f / table.getColor().a;
     }
 
     /**

@@ -1,12 +1,11 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.badlogic.gdx.graphics.Texture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.graphics.Texture;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Texture manager acts as a cache between the file system and the renderers.
@@ -34,10 +33,11 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-    		saveTexture("grass", "resources/placeholderassets/grass.png");
+    	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
+        saveTexture("resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -50,14 +50,24 @@ public class TextureManager extends Manager {
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
+        saveTexture("squirrel2", "resources/placeholderassets/squirrelFaceRight.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
+        saveTexture("progress_bar","resources/placeholderassets/progress_bar.png");
+		saveTexture("seed", "resources/placeholderassets/seed.png");
+		saveTexture("food", "resources/placeholderassets/food.png");
 		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
         saveTexture("aoe2","resources/placeholderassets/aoe2.png");
         saveTexture("aoe3","resources/placeholderassets/aoe3.png");
         saveTexture("proj1","resources/placeholderassets/proj1.png");
-        saveTexture("screen_background","resources/placeholderassets/screen_background.png");
+        saveTexture("Lightning","resources/placeholderassets/Lightning.png");
+        saveTexture("ring","resources/placeholderassets/ring.png");
+        saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
+        saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
+        saveTexture("speedySquirrel","resources/placeholderassets/speedySquirrel.png");
+        saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
+
 
     }
 
