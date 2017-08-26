@@ -127,6 +127,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 		this.goal = goal;
 	}
 
+	/**
+	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target, 
+	 * otherwise get the closest targeted entity position.
+	 */
 	@Override
 	public void onTick(long i) {
 		if (goal == Player.class) {
