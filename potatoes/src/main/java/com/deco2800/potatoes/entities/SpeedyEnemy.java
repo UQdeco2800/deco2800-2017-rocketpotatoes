@@ -30,8 +30,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasProgress{
     private static final transient String TEXTURE = "speedySquirrel";
     private static final transient float HEALTH = 65f;
 
-    private static float speed = 0.1f;
-	private static Class goal = ResourceEntity.class;
+    private static float speed = 0.15f;
+	private static Class goal = ResourceTree.class;
 
     public SpeedyEnemy() {
         super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
