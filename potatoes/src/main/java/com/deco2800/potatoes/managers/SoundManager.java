@@ -16,7 +16,7 @@ public class SoundManager extends Manager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundManager.class);
 
-	private float masterVolume = 1f;
+	private float effectsVolume = 1f;
 	private float musicVolume = 1f;
 
 	private Music music;
@@ -27,7 +27,7 @@ public class SoundManager extends Manager {
 	public void playSound(String soundString) {
 		LOGGER.info("Playing sound effect");
 		Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + soundString));
-		sound.play(masterVolume);
+		sound.play(effectsVolume);
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class SoundManager extends Manager {
 	public void playMusic(String musicString){
 		LOGGER.info("Playing music.");
 		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/" + musicString));
-		music.setVolume(masterVolume *  musicVolume);
+		music.setVolume(musicVolume);
 		music.setLooping(true);
 		music.play();
 	}
@@ -49,19 +49,19 @@ public class SoundManager extends Manager {
 	}
 
 	/**
-	 * Sets a new master volume.
+	 * Sets a new sound effects volume.
 	 */
-	public void setMasterVolume(float v) {
-		masterVolume = v;
+	public void setEffectsVolume(float v) {
+		effectsVolume = v;
 		if (music != null) {
-			music.setVolume(masterVolume * musicVolume);
+			music.setVolume(effectsVolume);
 		}
 	}
 
 	/**
-	 * Gets the current master volume.
+	 * Gets the current sound effects volume.
 	 */
-	public float getMasterVolume(){return masterVolume;}
+	public float getEffectsVolume(){return effectsVolume;}
 
 	/**
 	 * Sets a new music volume. (music is played at master * music volume)
@@ -69,7 +69,7 @@ public class SoundManager extends Manager {
 	public void setMusicVolume(float v) {
 		musicVolume = v;
 		if (music != null) {
-			music.setVolume(masterVolume * musicVolume);
+			music.setVolume(musicVolume);
 		}
 	}
 
