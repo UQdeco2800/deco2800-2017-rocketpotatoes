@@ -19,6 +19,9 @@ import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 
 /**
@@ -29,6 +32,8 @@ import java.net.InetAddress;
  */
 public class MainMenuScreen implements Screen {
     private RocketPotatoes game;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainMenuScreen.class);
 
     private SpriteBatch batch;
     private Stage stage;
@@ -156,7 +161,7 @@ public class MainMenuScreen implements Screen {
         }
         catch (Exception ex) {
             // TODO handle this stuff yo
-            ex.printStackTrace();
+            LOGGER.warn("Failed to get connect to host.", ex);
             System.exit(-1);
         }
     }
@@ -167,10 +172,11 @@ public class MainMenuScreen implements Screen {
             InetAddress IP = InetAddress.getLocalHost();
             return IP.getHostAddress();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.warn("Failed to get host IP address.", ex);
         }
         // If it fails to find an IP address, return loopback.
         //TODO: this will change
+
         return "127.0.0.1";
     }
 
