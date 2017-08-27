@@ -176,7 +176,7 @@ public class BallisticProjectile extends Projectile {
         }
     }
 
-    private void updatePos() {
+    public void updatePos() {
         maxRange = false;
         if (RANGE < speed) {
             setPosX(goalX);
