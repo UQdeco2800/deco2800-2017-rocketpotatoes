@@ -38,7 +38,7 @@ public class BallisticProjectile extends Projectile {
     private Optional<AbstractEntity> mainTarget;
     private float changeX;
     private float changeY;
-    private float changeZ;
+//    private float changeZ;
 
     private boolean maxRange = false;
 
