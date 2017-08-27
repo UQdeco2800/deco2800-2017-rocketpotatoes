@@ -65,13 +65,13 @@ public class PathManager extends Manager {
         for (AbstractEntity e : world.getEntities().values()) {
             if (e.isStaticCollideable()) {
                 nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() - this.nodeOffset, //left
-                        0, 0, 0, 0));
+                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
                 nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() - this.nodeOffset, //top
-                        0, 0, 0, 0));
+                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
                 nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //bottom
-                        0, 0, 0, 0));
+                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
                 nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //right
-                        0, 0, 0, 0));
+                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
             }
         }
 
@@ -125,28 +125,28 @@ public class PathManager extends Manager {
      * @param player coordinates of the player
      */
     public void onTick(Box3D player) {
-        AbstractWorld world = GameManager.get().getWorld();
+        // AbstractWorld world = GameManager.get().getWorld();
 
-        //if player hasn't moved since last tick, can skip this
-        if (!player.equals(lastPlayerPosition)) {
-            lastPlayerPosition = player;
+        // //if player hasn't moved since last tick, can skip this
+        // if (!player.equals(lastPlayerPosition)) {
+        //     lastPlayerPosition = player;
 
-            //populates directNode, nodes which have a direct line of sight
-            boolean doesCollide;
-            for (Box3D node : this.nodes) {
-                doesCollide = false;
-                for (AbstractEntity entity : world.getEntities().values()) {
-                    if (entity.isStaticCollideable() &&
-                            entity.getBox3D().doesIntersectLine(node.getX(), node.getY(), 0, player.getX(), player.getY(), 0)) {
-                        doesCollide = true;
-                        break;
-                    }
-                }
-                if (!doesCollide) {
-                    this.directNode.put(node, true);
-                }
-            }
-        }
+        //     //populates directNode, nodes which have a direct line of sight
+        //     boolean doesCollide;
+        //     for (Box3D node : this.nodes) {
+        //         doesCollide = false;
+        //         for (AbstractEntity entity : world.getEntities().values()) {
+        //             if (entity.isStaticCollideable() &&
+        //                     entity.getBox3D().doesIntersectLine(node.getX(), node.getY(), 0, player.getX(), player.getY(), 0)) {
+        //                 doesCollide = true;
+        //                 break;
+        //             }
+        //         }
+        //         if (!doesCollide) {
+        //             this.directNode.put(node, true);
+        //         }
+        //     }
+        // }
 
     }
 
