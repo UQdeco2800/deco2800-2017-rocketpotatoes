@@ -79,7 +79,7 @@ public class TextureManager extends Manager {
         
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
-        	saveTexture("basictree_grow" + i, "resources/trees/grow/Grow" + i + ".png");
+        	saveTexture("basictree_grow" + i, "resources/trees/Grow" + i + ".png");
         }
         
     }
