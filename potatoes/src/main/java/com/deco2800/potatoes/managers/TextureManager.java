@@ -50,7 +50,6 @@ public class TextureManager extends Manager {
         saveTexture("selected", "resources/placeholderassets/selected.png");
         saveTexture("selected_black", "resources/placeholderassets/selected_black.png");
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
-		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
         saveTexture("squirrel2", "resources/placeholderassets/squirrel_right.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
