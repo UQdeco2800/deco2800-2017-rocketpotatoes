@@ -162,7 +162,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
-		if (this.maxHealth <= 0 ) { maxHealth = 1; }
+		if (maxHealth <= 0 ) { maxHealth = 1; }
 		return this.maxHealth;
 	}
 
