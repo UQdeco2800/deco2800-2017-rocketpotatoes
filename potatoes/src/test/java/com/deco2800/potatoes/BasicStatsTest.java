@@ -28,9 +28,6 @@ public class BasicStatsTest {
         testStats = new BasicStats(200, 500, 4f, 500, normalEvents, "squirrel");
     }
 
-    @test
-    
-
     @Test
     public void getEventsTest() {
         assertFalse("Normal events copy returned the same object",
