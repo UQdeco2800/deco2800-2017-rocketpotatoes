@@ -25,7 +25,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * A class for speedy enemy
  */
-public class SpeedyEnemy extends EnemyEntity implements Tickable {
+public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
     private static final transient String TEXTURE = "speedyRaccoon";
@@ -52,9 +52,42 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        //this.steal
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();
+    }
+    /*
+    private void steal() {
+        double interactRange = 3f;
+        Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+
+        for (AbstractEntity entitiy : entities) {
+            if (entitiy instanceof ResourceTree && entitiy.distance(this)  <= interactRange) {
+                ((ResourceTree) entitiy).gather(-10);
+            }
+        }
+
+    }
+    **/
+
+
+
+    /*
+    public void gather(int amount) {
+        int oldCount = gather.gatherCount;
+        this.gatherCount += amount;
+
+        // Check that the new amount is bounded
+        if (this.gatherCount > this.gatherCapacity) {
+            this.gatherCount = this.gatherCapacity;
+        } else if (this.gatherCount < 0) {
+            this.gatherCount = 0;
+        }
+
+        if (this.gatherCount - oldCount != 0) {
+            LOGGER.info("Added " + (this.gatherCount - oldCount) + " to " + this);
+        }
     }
 
 
