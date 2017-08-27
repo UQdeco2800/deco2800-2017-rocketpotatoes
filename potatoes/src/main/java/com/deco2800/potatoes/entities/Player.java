@@ -33,7 +33,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private final static transient float HEALTH = 100f;
+	private final static transient float HEALTH = 200f;
 	private static final transient String TEXTURE_RIGHT = "spacman_blue";
 	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
@@ -120,8 +120,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 			if (!this.equals(entity) && (entity instanceof EnemyEntity)
 					&& newPos.overlaps(entity.getBox3D())) {
-				LOGGER.info("Ouch! a " + entity + " hit the player!");
-				damage(1);
 				collided = true;
 
 			}
