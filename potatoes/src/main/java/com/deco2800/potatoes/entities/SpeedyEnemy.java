@@ -57,7 +57,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
         //this.goal = goal;
         //resetStats();
     }
-    
+
     private void steal() {
         double interactRange = 3f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
