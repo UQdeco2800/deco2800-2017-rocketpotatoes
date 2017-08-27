@@ -1,8 +1,10 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.worlds.AbstractWorld;
+import org.lwjgl.Sys;
 
 import java.util.*;
 
@@ -30,12 +32,15 @@ public class PathManager extends Manager {
 
     private AbstractWorld world;
 
-    private static float nodeOffset = (float) 0.1;
+    private static float nodeOffset = (float) 0.5;
 
     /**
-     * Updates the internal graph representation of the path manager, based on world state.
+     * Populates the internal graph representation of the path manager, based on the initial world state.
+     * Should be run after loading the map
      */
     public void initialiseGraph() {
+        this.nodes = new HashSet<>();
+        this.edges = new HashMap<>();
 
         //add points in corners of map
         nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, //left
@@ -48,16 +53,58 @@ public class PathManager extends Manager {
                 0, 0, 0, 0));
 
         //loop through entities, put nodes off of corners
-        world.getEntities().values().iterator();
+        for (AbstractEntity e : world.getEntities().values()) {
+            if (e.isStaticCollideable()) {
+                nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() - this.nodeOffset, //left
+                        0, 0, 0, 0));
+                nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() - this.nodeOffset, //top
+                        0, 0, 0, 0));
+                nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //bottom
+                        0, 0, 0, 0));
+                nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //right
+                        0, 0, 0, 0));
+            }
+        }
 
-        //loop through all nodes and all entities, removing any nodes that intersect
-        world.getEntities().values().iterator();
-        nodes.iterator();
-        //nodes.remove();
+
+        //potentially make random nodes here
+
+        //loop through all nodes and all entities, removing any nodes that intersect with the entity
+        Set<Box3D> removedNodes = new HashSet<>();
+        for (Box3D node : this.nodes) {
+            for (AbstractEntity e : world.getEntities().values()) {
+                if (e.isStaticCollideable() && e.getBox3D().overlaps(node)) {
+                    removedNodes.add(node);
+                }
+            }
+        }
+
+        for (Box3D node : removedNodes) {
+            this.nodes.remove(node);
+        }
+
 
         //loop through every combination of 2 nodes & every entity check if the edge between the two nodes is valid
-        Iterator iterN1 = nodes.iterator();
-        Iterator iterN2 = nodes.iterator();
+        boolean doesCollide;
+        float dist;
+        for (Box3D node1 : this.nodes) {
+            for (Box3D node2 : this.nodes) {
+                if (node1 == node2) { break; }
+                doesCollide = false;
+                for (AbstractEntity e : world.getEntities().values()) {
+                    if (e.isStaticCollideable() &&
+                            e.getBox3D().doesIntersectLine(node1.getX(),node1.getY(),0,node2.getX(), node2.getY(),0)) {
+                        doesCollide = true;
+                        break;
+                    }
+                }
+                if(!doesCollide) {
+                    dist = node1.distance(node2);
+                    this.edges.put(new DoubleBox3D(node1, node2), dist);
+                    this.edges.put(new DoubleBox3D(node2, node1), dist);
+                }
+            }
+        }
 
         // build the minimum spanning tree from the graph - and set the spanningTree variable.
     }

@@ -233,12 +233,13 @@ public class Box3D {
 		for (int i = 0; i < 3; i++) {
 			float lineDist = lineMax[i] - lineMin[i];
 			if (lineDist != 0) {
-				fMin = Math.max(fMin, (boxMax[i] - lineMin[i]) / lineDist);
-				fMax = Math.min(fMax, (boxMax[i] - lineMax[i]) / lineDist);
-				if (fMin > fMax) { return false;}
-			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
+				fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
+				fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
+				if (fMin > fMax) { return false; }
 
+			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
 		}
+
 		return true;
 	}
 
