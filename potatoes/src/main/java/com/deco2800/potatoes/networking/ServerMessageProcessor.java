@@ -41,6 +41,16 @@ public class ServerMessageProcessor {
         }
     }
 
+    /**
+     * Processes a connection register message
+     *
+     * Responsible for syncing initial state, informing existing clients, setting up ids/names
+     * And informing the new client when they are ready
+     *
+     * @param server the server object to use
+     * @param c the connection object that holds details about the sender
+     * @param m the message containing specific data
+     */
     private static void processConnectionRegisterMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                                          Network.ClientConnectionRegisterMessage m) {
         // If too many clients reject.
@@ -95,6 +105,18 @@ public class ServerMessageProcessor {
 
     }
 
+    /**
+     * Processes an entity update
+     *
+     * Takes x, y coords from the message and updates the position of an entity.
+     * Assumes it exists
+     *
+     * Currently only used to update player positions (master uses a different method)
+     *
+     * @param server the server object to use
+     * @param c the connection object that holds details about the sender
+     * @param m the message containing specific data
+     */
     private static void processEntityUpdateMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                                     Network.ClientPlayerUpdatePositionMessage m) {
         Network.HostEntityUpdatePositionMessage response = new Network.HostEntityUpdatePositionMessage();
@@ -105,6 +127,15 @@ public class ServerMessageProcessor {
         server.server.sendToAllExceptUDP(c.getID(), response);
     }
 
+    /**
+     * Processes a build order
+     *
+     * Builds a tower entity at the given position if possible, otherwise does nothing
+     *
+     * @param server the server object to use
+     * @param c the connection object that holds details about the sender
+     * @param m the message containing specific data
+     */
     private static void processBuildOrderMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                                  Network.ClientBuildOrderMessage m) {
         if (!WorldUtil.getEntityAtPosition(m.x, m.y).isPresent()) {
@@ -112,6 +143,15 @@ public class ServerMessageProcessor {
         }
     }
 
+    /**
+     * Processes a chat message
+     *
+     * Simply broadcasts the message to all clients
+     *
+     * @param server the server object to use
+     * @param c the connection object that holds details about the sender
+     * @param m the message containing specific data
+     */
     private static void processChatMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                            Network.ClientChatMessage m) {
         Network.HostChatMessage response = new Network.HostChatMessage();
