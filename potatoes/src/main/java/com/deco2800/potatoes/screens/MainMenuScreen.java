@@ -44,7 +44,7 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         // TODO config?
         camera.setToOrtho(false, 1920, 1080);
-        //game screen background
+        // game screen background
         texturemanager=(TextureManager)GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
@@ -57,10 +57,12 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    /**
+     * Creates GUI.
+     */
     private void setupGui() {
         mainMenuGui = new MainMenuGui(stage, this);
     }
-
 
     /**
      * Called when the screen should render itself.
@@ -147,10 +149,20 @@ public class MainMenuScreen implements Screen {
 
     }
 
+    /**
+     * Start a singleplayer game.
+     */
     public void startSinglePlayer() {
         game.setScreen(new GameScreen(game));
     }
 
+    /**
+     * Start / join a multiplayer game.
+     * @param name name of player
+     * @param ip IP address to connect to
+     * @param port Port to connect to
+     * @param isHost whether starting multiplayer as host
+     */
     public void startMultiplayer(String name, String ip, int port, boolean isHost) {
         try {
             game.setScreen(new GameScreen(game, name, ip, port, isHost));
@@ -162,6 +174,9 @@ public class MainMenuScreen implements Screen {
         }
     }
 
+    /**
+     * Gets the string of the host's LocalHost IP address.
+     */
     public static String multiplayerHostAddress() {
         // TODO: Get Actual IP Addresses, not just the local host
         try {
@@ -174,22 +189,41 @@ public class MainMenuScreen implements Screen {
 
     }
 
+    /**
+     * Sets the sound effects volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
     public void setEffectsVolume(float v){
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setEffectsVolume(v);
     }
 
+    /**
+     * Returns the current sound effects volume from SoundManager.
+     * @return float from 0 to 1.
+     */
     public float getEffectsVolume(){
         return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getEffectsVolume();
     }
 
+    /**
+     * Sets the music volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
     public void setMusicVolume(float v){
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
     }
 
+    /**
+     * Returns the current music volume from SoundManager.
+     * @return float from 0 to 1.
+     */
     public float getMusicVolume(){
         return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMusicVolume();
     }
 
+    /**
+     * Plays a blip sound.
+     */
     public void menuBlipSound(){
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
     }

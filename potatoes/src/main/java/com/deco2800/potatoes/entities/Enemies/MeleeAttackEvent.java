@@ -41,7 +41,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Player.class, enemy.getPosX(),
                 enemy.getPosY());
 
-        //no target exists or target is out of range
+        // no target exists or target is out of range
         if (!target1.isPresent() || (enemy.distance(target1.get()) > 10)) {
             return;
         }

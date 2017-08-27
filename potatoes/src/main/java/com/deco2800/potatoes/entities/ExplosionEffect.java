@@ -11,7 +11,7 @@ public class ExplosionEffect extends Projectile {
     private int currentSpriteIndexCount = 1;
     private String[] currentSpriteIndex = {"exp1","exp2","exp3"};
     private int effectsTimer = 0;
-    private int dmgTimer = 0;
+
 
     public ExplosionEffect() {
         // empty for serialization
@@ -35,7 +35,6 @@ public class ExplosionEffect extends Projectile {
      * @param zLength       target z position
      * @param xRenderLength Projectile x length
      * @param yRenderLength Projectile y length
-     * @param DAMAGE        Projectile damage
      */
 
     public ExplosionEffect(float posX, float posY, float posZ, float xLength, float yLength, float zLength,

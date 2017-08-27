@@ -69,11 +69,11 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	// @Override
 	// public void onTick(long i) {
 	//
-	//// //set the target of tankEnemy to the closest goal
+	// // //set the target of tankEnemy to the closest goal
 	// Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal,
 	// getPosX(), getPosY());
 	//
-	// //get the position of the target
+	// // get the position of the target
 	// float goalX = target.get().getPosX();
 	// float goalY = target.get().getPosY();
 	//
@@ -117,7 +117,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	// if (!collided) {
 	// setPosX(getPosX() + changeX);
 	// setPosY(getPosY() + changeY);
-	// //tankEnemy changes direction when moving towards tree/tower
+	// // tankEnemy changes direction when moving towards tree/tower
 	//
 	// if(this.getPosX()>goalX){
 	// this.setTexture(TEXTURE);
