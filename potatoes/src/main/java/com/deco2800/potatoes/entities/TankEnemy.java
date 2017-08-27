@@ -40,7 +40,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final BasicStats STATS = initStats();
 	/*Testing attacking*/
 
-	private static float speed = 0.01f;
+	private static float speed = 0.02f;
 	private static Class<?> goal = Tower.class;
 	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 90, 1);
