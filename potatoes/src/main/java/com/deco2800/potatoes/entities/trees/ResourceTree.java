@@ -101,9 +101,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<UpgradeStats> result = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
-		result.add(new UpgradeStats(8, 3500, 1f, 2500, normalEvents, constructionEvents, "seed_resource_tree"));
-		result.add(new UpgradeStats(20, 3000, 1f, 2000, normalEvents, constructionEvents, "seed_resource_tree"));
-		result.add(new UpgradeStats(30, 3000, 2f, 1500, normalEvents, constructionEvents, "seed_resource_tree"));
+		result.add(new UpgradeStats(8, 3500, 1f, 2500, 1, normalEvents, constructionEvents, "seed_resource_tree"));
+		result.add(new UpgradeStats(20, 3000, 1f, 2000, 1, normalEvents, constructionEvents, "seed_resource_tree"));
+		result.add(new UpgradeStats(30, 3000, 2f, 1500, 1, normalEvents, constructionEvents, "seed_resource_tree"));
 		
 		// Add ResourceGatherEvent to each upgrade level
 		for (UpgradeStats upgradeStats : result) {
@@ -122,9 +122,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<UpgradeStats> result = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
-		result.add(new UpgradeStats(5, 6000, 1f, 8000, normalEvents, constructionEvents, "food_resource_tree")); 
-		result.add(new UpgradeStats(10, 5500, 1f, 7000, normalEvents, constructionEvents, "food_resource_tree")); 
-		result.add(new UpgradeStats(15, 5000, 2f, 6500, normalEvents, constructionEvents, "food_resource_tree")); 
+		result.add(new UpgradeStats(5, 6000, 1f, 8000, 1, normalEvents, constructionEvents, "food_resource_tree")); 
+		result.add(new UpgradeStats(10, 5500, 1f, 7000, 1, normalEvents, constructionEvents, "food_resource_tree")); 
+		result.add(new UpgradeStats(15, 5000, 2f, 6500, 1, normalEvents, constructionEvents, "food_resource_tree")); 
 		
 		// Add ResourceGatherEvent to each upgrade level
 		for (UpgradeStats upgradeStats : result) {
