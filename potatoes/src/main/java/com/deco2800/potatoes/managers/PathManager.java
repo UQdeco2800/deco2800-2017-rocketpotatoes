@@ -13,11 +13,15 @@ public class PathManager extends Manager {
     /* The PathManager stores a minimum spanning tree, representing all the internode connections that can be used to
      * create paths. This is represented as a hashmap in memory, where the keys are nodes, and the values are the
      * parent nodes of the keys within the minimum spanning tree.
-     * 
-     * This tree is centered around the node storing the player's location for now, though in future that will be 
+     *
+     * This tree is centered around the node storing the player's location for now, though in future that will be
      * expanded so that multiple different goals can be set.
      */
-    private HashMap<Box3D, Box3D> spanningTree;
+    private Map<Box3D, Box3D> spanningTree;
+
+    public PathManager() {
+        spanningTree = new HashMap<>();
+    }
 
     /**
      * Updates the internal graph representation of the path manager, based on world state.
@@ -37,7 +41,7 @@ public class PathManager extends Manager {
      * new paths for enemies.
      *
      * @param start The initial vertex within the graph where the search starts, and where each generated path will end.
-     * @param vertices The vertices of the graph of internode connections. This set is effectively destroyed by the 
+     * @param vertices The vertices of the graph of internode connections. This set is effectively destroyed by the
      * time this function has completed.
      * @param edges The edges of the graph of internode connections.
      */
@@ -98,15 +102,28 @@ public class PathManager extends Manager {
      * @return The path object itself, which can then be followed.
      */
     public Path generatePath(Box3D start, Box3D goal) {
-        // TODO - use the spanningTree to build this path instead.
         ArrayDeque<Box3D> nodes = new ArrayDeque<>();
-        nodes.add(start);
-        nodes.add(goal);
+        if (spanningTree.size() == 0) {
+            nodes.add(start);
+            nodes.add(goal);
+        } else {
+            nodes.add(start);
+            Box3D closest = null;
+            for (Box3D other : spanningTree.keySet()) {
+                if (closest == null || closest.distance(start) > other.distance(start)) {
+                    closest = other;
+                }
+            }
+            do {
+                nodes.add(closest);
+                closest = spanningTree.get(closest);
+            } while (closest != null);
+        }
         return new Path(nodes);
     }
 
     /**
-     * An unordered pair of two 3D boxes. Used as the keys in the mapping from edges to weights in the interal graph 
+     * An unordered pair of two 3D boxes. Used as the keys in the mapping from edges to weights in the interal graph
      * representation. Designed so that DoubleBox3D(A, B) will compare as equal to DoubleBox3D(B, A).
      */
     private class DoubleBox3D {
@@ -118,7 +135,7 @@ public class PathManager extends Manager {
 
         /**
          * Creates a new DoubleBox3D with two given points.
-         * 
+         *
          * @param first One of the points in the pair.
          * @param second The other point in the pair.
          */
@@ -134,7 +151,7 @@ public class PathManager extends Manager {
 
         /**
          * Gets the first Box3D of this pair.
-         * 
+         *
          * @return Returns a copy of the first Box3D.
          */
         public Box3D getFirst() {
@@ -143,8 +160,8 @@ public class PathManager extends Manager {
 
         /**
          * Gets the second Box3D of this pair.
-         * 
-         * @return 
+         *
+         * @return Returns a copy of the second Box3D.
          */
         public Box3D getSecond() {
             return new Box3D(this.second);
