@@ -74,7 +74,10 @@ public class TextureManager extends Manager {
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
-        saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
+
+        // GUI
+        saveTexture("screen_background", "resources/menu/background.png");
+        saveTexture("start_btn", "resources/menu/start_btn.png");
         
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {

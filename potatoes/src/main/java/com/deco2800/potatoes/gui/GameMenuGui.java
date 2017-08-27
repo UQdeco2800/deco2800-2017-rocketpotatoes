@@ -31,7 +31,7 @@ public class GameMenuGui extends Gui {
 
         // Make window, with the given skin
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
-        window = new Window("Menu", uiSkin);
+        window = new Window("menu", uiSkin);
 
 		// Make our buttons
         quitButton = new TextButton("Quit", uiSkin);
