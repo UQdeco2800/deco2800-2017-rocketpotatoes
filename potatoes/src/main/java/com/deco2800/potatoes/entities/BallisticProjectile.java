@@ -132,6 +132,7 @@ public class BallisticProjectile extends Projectile {
 
         rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
     }
+
     /**
      * Returns rotated angle value
      */

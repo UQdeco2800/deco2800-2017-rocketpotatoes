@@ -74,6 +74,7 @@ public class ExplosionProjectile extends Projectile {
 
         }
     }
+
     /**
      * Returns Damage value
      */
