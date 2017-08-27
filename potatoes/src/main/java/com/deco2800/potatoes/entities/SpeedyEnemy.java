@@ -29,24 +29,24 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
     private static final transient String TEXTURE = "speedyRaccoon";
     private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
-    private static final transient float HEALTH = 65f;
+    private static final transient float HEALTH = 80f;
 
     /*Testing attacking*/
     private static final BasicStats STATS = initStats();
 	/*Testing attacking*/
 
-    private static float speed = 0.15f;
+    private static float speed = 0.08f;
     private static Class<?> goal = ResourceTree.class;
 
     public SpeedyEnemy() {
-        super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
+        super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();
     }
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
+        super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();

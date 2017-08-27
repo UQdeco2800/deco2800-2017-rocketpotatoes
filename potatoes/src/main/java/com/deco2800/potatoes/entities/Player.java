@@ -2,24 +2,23 @@ package com.deco2800.potatoes.entities;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.worlds.AbstractWorld;
-import com.deco2800.potatoes.worlds.InitialWorld;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.badlogic.gdx.Input;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.renderering.Render3D;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 
 /**
  * Entity for the playable character.
@@ -63,7 +62,7 @@ public class Player extends MortalEntity implements Tickable {
 	public Player(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f,
 				0.48f, TEXTURE_RIGHT, HEALTH);
-		movementSpeed = 0.1f;
+		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
 		this.direction = 1;
@@ -158,17 +157,17 @@ public class Player extends MortalEntity implements Tickable {
 			break;
 		case Input.Keys.NUM_1:
             if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                GameManager.get().getWorld().addEntity(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+                AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
             }
             break;
 		case Input.Keys.NUM_2:
             if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-            GameManager.get().getWorld().addEntity(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+            	AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
             }
             break;
 		case Input.Keys.NUM_3:
             if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-            GameManager.get().getWorld().addEntity(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+            	AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
             }
             break;
 		default:

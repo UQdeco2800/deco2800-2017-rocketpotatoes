@@ -33,12 +33,12 @@ public class TankEnemy extends EnemyEntity implements Tickable{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final transient String TEXTURE = "tankBear";
-	private static final transient float HEALTH = 200f;
+	private static final transient float HEALTH = 400f;
 	/*Testing attacking*/
 	private static final BasicStats STATS = initStats();
 	/*Testing attacking*/
 
-	private static float speed = 0.04f;
+	private static float speed = 0.01f;
 	private static Class<?> goal = Tower.class;
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
