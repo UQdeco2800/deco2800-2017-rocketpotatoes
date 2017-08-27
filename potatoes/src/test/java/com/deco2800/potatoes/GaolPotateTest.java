@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class GaolPotateTest {
+	@Test
 	public void initTests(){
 		GoalPotate test = new GoalPotate();
 		test = new GoalPotate(1,1,1);

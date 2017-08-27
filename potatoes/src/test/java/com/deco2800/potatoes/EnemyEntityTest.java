@@ -4,7 +4,6 @@ package com.deco2800.potatoes;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,15 +16,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.badlogic.gdx.graphics.Color;
+
 import com.deco2800.potatoes.entities.BallisticProjectile;
 import com.deco2800.potatoes.entities.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.ProgressBarEntity;
 import com.deco2800.potatoes.entities.Projectile;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.worlds.InitialWorld;
 
 
 public class EnemyEntityTest {

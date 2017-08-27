@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Class to represent attributes for enemy stats
  *
- * (implementation inspired by trees/UpgradeStats - THANK YOU TREES TEAM)
+ * (broad implementation of enemy stats inspired by trees upgrade stats (trees/UpgradeStats) - thanks trees team)
  */
 public class BasicStats {
 

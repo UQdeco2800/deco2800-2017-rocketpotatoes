@@ -54,6 +54,7 @@ subprojects {
     dependencies {
         // Logging via Log4J 2.0 using the SLF4J API
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
+		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
         compile group: 'org.apache.derby', name: 'derby', version: '10.9.1.0'
         compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
 

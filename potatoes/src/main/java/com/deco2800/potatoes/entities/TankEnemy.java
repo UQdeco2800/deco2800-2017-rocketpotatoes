@@ -2,11 +2,7 @@ package com.deco2800.potatoes.entities;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
 import java.util.LinkedList;
-import java.util.List;
 
 
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
@@ -15,18 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A generic player instance for the game
@@ -62,8 +46,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
-		result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+		BasicStats result = new BasicStats(200f, 0.4f, .3f, 1000, normalEvents,"tankBear");
+		result.getNormalEventsReference().add(new MeleeAttackEvent(1000));
 		return result;
 	}
 
