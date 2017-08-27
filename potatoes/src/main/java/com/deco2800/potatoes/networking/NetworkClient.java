@@ -5,16 +5,22 @@ import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.networking.Network.*;
+import com.deco2800.potatoes.networking.Network.ClientBuildOrderMessage;
+import com.deco2800.potatoes.networking.Network.ClientChatMessage;
+import com.deco2800.potatoes.networking.Network.ClientPlayerUpdatePositionMessage;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class NetworkClient {
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(NetworkClient.class);
+
     private Client client;
     private String IP;
     private String name;
@@ -33,26 +39,40 @@ public class NetworkClient {
     private ArrayList<String> clientList;
 
     /**
-     * Initializes a client for the game,
-     * when this method finishes the client should have connected successfully
-     * @param IP
-     * @param tcpPort
-     * @param udpPort
+     * Initializes a client for the game
      */
-    public NetworkClient(String name, String IP, int tcpPort, int udpPort) throws IOException {
+    public NetworkClient() {
         this.clientID = -1;
+        this.IP = null;
+        this.name = null;
+        this.tcpPort = 0;
+        this.udpPort = 0;
+        this.ready = false;
+        this.clientList = new ArrayList<>();
+    }
+
+    /**
+     * Connects to a server with the provided parameters
+     * @param name name of the player
+     * @param IP ip to connect to
+     * @param tcpPort tcp port to use
+     * @param udpPort udp port to use
+     * @throws IOException when connection fails
+     */
+    public void connect(String name, String IP, int tcpPort, int udpPort) throws IOException {
         this.IP = IP;
         this.name = name;
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
-        this.ready = false;
-        clientList = new ArrayList<>();
+
         // Allow up to 16 clients
         for (int i = 0; i < 16; ++i) {
             clientList.add(null);
         }
 
+        // Kyro warning level
         Log.set(Log.LEVEL_WARN);
+
         // Initialize client object
         client = new Client();
         client.start();
@@ -79,9 +99,9 @@ public class NetworkClient {
 
 
         client.connect(5000, IP, tcpPort, udpPort);
-        sendSystemMessage("Joining " + IP + ":" + tcpPort);
+        LOGGER.info("Joining " + IP + ":" + tcpPort);
         // Send initial connection info
-        ClientConnectionRegisterMessage cr = new ClientConnectionRegisterMessage();
+        Network.ClientConnectionRegisterMessage cr = new Network.ClientConnectionRegisterMessage();
         cr.name = name;
 
         client.sendTCP(cr);
@@ -160,6 +180,7 @@ public class NetworkClient {
      * Rudely closes the server
      */
     public void disconnect() {
+        LOGGER.info("Disconnecting from the server");
         client.close();
     }
 }

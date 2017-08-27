@@ -112,7 +112,8 @@ public class MultiplayerManager extends Manager {
         clientPort = port;
         multiplayer = true;
         ip = IP;
-        client = new NetworkClient(name, IP, port, port);
+        client = new NetworkClient();
+        client.connect(name, IP, port, port);
 
         while (!isClientReady());
     }

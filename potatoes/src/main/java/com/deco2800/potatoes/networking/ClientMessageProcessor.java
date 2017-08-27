@@ -7,58 +7,62 @@ import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Static processor for messages
  */
 public class ClientMessageProcessor {
-
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
 
     /**
      * Calls the appropriate handler for the given message
-     * @param client
-     * @param object
+     * @param client client to alter
+     * @param object message object
      */
     public static void processMessage(NetworkClient client, Object object) {
-
-        // Connection message (gives us our client id)
         if (object instanceof Network.HostConnectionConfirmMessage) {
             ClientMessageProcessor.connectionConfirmMessage(client, (Network.HostConnectionConfirmMessage) object);
         }
-        if (object instanceof Network.HostDisconnectMessage) {
+        else if (object instanceof Network.HostDisconnectMessage) {
             ClientMessageProcessor.disconnectMessage(client, (Network.HostDisconnectMessage) object);
         }
-        if (object instanceof Network.HostPlayReadyMessage) {
+        else if (object instanceof Network.HostPlayReadyMessage) {
             ClientMessageProcessor.playReadyMessage(client, (Network.HostPlayReadyMessage) object);
         }
-        if (object instanceof Network.HostNewPlayerMessage) {
+        else if (object instanceof Network.HostNewPlayerMessage) {
             ClientMessageProcessor.newPlayerMessage(client, (Network.HostNewPlayerMessage) object);
         }
-        if (object instanceof Network.HostPlayerDisconnectedMessage) {
+        else if (object instanceof Network.HostPlayerDisconnectedMessage) {
             ClientMessageProcessor.playerDisconnectMessage(client, (Network.HostPlayerDisconnectedMessage) object);
         }
-        if (object instanceof Network.HostExistingPlayerMessage) {
+        else if (object instanceof Network.HostExistingPlayerMessage) {
             ClientMessageProcessor.existingPlayerMessage(client, (Network.HostExistingPlayerMessage) object);
         }
-        if (object instanceof Network.HostEntityCreationMessage) {
+        else if (object instanceof Network.HostEntityCreationMessage) {
             ClientMessageProcessor.entityCreationMessage(client, (Network.HostEntityCreationMessage) object);
         }
-        if (object instanceof Network.HostEntityDestroyMessage) {
+        else if (object instanceof Network.HostEntityDestroyMessage) {
             ClientMessageProcessor.entityDestroyMessage(client, (Network.HostEntityDestroyMessage) object);
         }
-
         /* Gameplay messages. i.e. none of these should be processed until the client is ready! */
-        if (client.ready) {
+        else if (client.ready) {
             if (object instanceof Network.HostEntityUpdatePositionMessage) {
                 ClientMessageProcessor.entityUpdatePositionMessage(client, (Network.HostEntityUpdatePositionMessage) object);
             }
-            if (object instanceof Network.HostEntityUpdateProgressMessage) {
+            else if (object instanceof Network.HostEntityUpdateProgressMessage) {
                 ClientMessageProcessor.entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
             }
-                    /* Generic chat message */
-            if (object instanceof Network.HostChatMessage) {
+            else if (object instanceof Network.HostChatMessage) {
                 ClientMessageProcessor.chatMessage(client, (Network.HostChatMessage) object);
             }
+            else {
+                throw new IllegalArgumentException("Unhandled message type");
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Unhandled message type");
         }
     }
 
@@ -70,7 +74,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
+    private static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
 
         //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
 
@@ -85,7 +89,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
+    private static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
 
         //System.out.println("[CLIENT]: disconnected because: " + m.message);
         client.disconnect();
@@ -103,7 +107,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void playReadyMessage(NetworkClient client, Network.HostPlayReadyMessage m) {
+    private static void playReadyMessage(NetworkClient client, Network.HostPlayReadyMessage m) {
         //System.out.println("[CLIENT]: I'm ready to go!");
         client.sendSystemMessage("Successfully joined server!");
         client.ready = true;
@@ -119,7 +123,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
+    private static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
         //System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
 
@@ -154,15 +158,13 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void playerDisconnectMessage(NetworkClient client, Network.HostPlayerDisconnectedMessage m) {
+    private static void playerDisconnectMessage(NetworkClient client, Network.HostPlayerDisconnectedMessage m) {
 
         //System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
         client.sendSystemMessage("Player Disconnected: " + client.getClients().get(m.id) + "(" + m.id + ")");
 
         client.getClients().set(m.id, null);
         GameManager.get().getWorld().removeEntity(m.id);
-
-        return;
     }
 
     /**
@@ -175,7 +177,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void existingPlayerMessage(NetworkClient client, Network.HostExistingPlayerMessage m) {
+    private static void existingPlayerMessage(NetworkClient client, Network.HostExistingPlayerMessage m) {
 
         //System.out.println("[CLIENT]: Got host existing player message: " + m.id);
         client.sendSystemMessage("Existing Player: " + m.name + "(" + m.id + ")");
@@ -190,7 +192,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void entityCreationMessage(NetworkClient client, Network.HostEntityCreationMessage m) {
+    private static void entityCreationMessage(NetworkClient client, Network.HostEntityCreationMessage m) {
 
         //System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
         //        m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
@@ -211,7 +213,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void entityDestroyMessage(NetworkClient client, Network.HostEntityDestroyMessage m) {
+    private static void entityDestroyMessage(NetworkClient client, Network.HostEntityDestroyMessage m) {
 
         //System.out.println("[CLIENT]: Got host destroy entity message: " + m.id);
         GameManager.get().getWorld().removeEntity(m.id);
@@ -225,7 +227,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void entityUpdatePositionMessage(NetworkClient client, Network.HostEntityUpdatePositionMessage m) {
+    private static void entityUpdatePositionMessage(NetworkClient client, Network.HostEntityUpdatePositionMessage m) {
 
         GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
         GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
@@ -240,7 +242,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void entityUpdateProgressMessage(NetworkClient client, Network.HostEntityUpdateProgressMessage m) {
+    private static void entityUpdateProgressMessage(NetworkClient client, Network.HostEntityUpdateProgressMessage m) {
 
         // TODO verification?
         ((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
@@ -256,7 +258,7 @@ public class ClientMessageProcessor {
      * @param client the network client to process this event
      * @param m the message
      */
-    public static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
+    private static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
         GuiManager g = (GuiManager) GameManager.get().getManager(GuiManager.class);
         ((ChatGui) g.getGui(ChatGui.class)).addMessage(
                 client.getClients().get(m.id) + " (" + m.id + ")",
