@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -28,17 +29,51 @@ public class ProgressBarEntity implements ProgressBar {
 	 * 
 	 * @param texture
 	 *            the textureID used for the entity
+	 * @param height
+	 *            the of the progress bar in relation to the location of the entity
+	 * @param widthScale
+	 *            the scale of the progress bar in relation to its entity
+	 */
+	public ProgressBarEntity(String texture, int height, float widthScale) {
+		List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
+		this.texture = texture;
+		this.colours = colours;
+		this.height = height;
+		this.widthScale = widthScale;
+	}
+
+	/**
+	 * 
 	 * @param colours
 	 *            the colour palette used for the progress bar
 	 * @param height
 	 *            the of the progress bar in relation to the location of the entity
+	 * @param widthScale
+	 *            the scale of the progress bar in relation to its entity
+	 */
+	public ProgressBarEntity(List<Color> colours, int height, float widthScale) {
+		this.texture = "progress_bar";
+		this.colours = colours;
+		this.height = height;
+		this.widthScale = widthScale;
+	}
+
+	/**
+	 * 
+	 * @param texture
+	 *            the textureID used for the entity
+	 * @param colours
+	 *            the colour palette used for the progress bar
+	 * @param height
+	 *            the of the progress bar in relation to the location of the entity
+	 * @param widthScale
+	 *            the scale of the progress bar in relation to its entity
 	 */
 	public ProgressBarEntity(String texture, List<Color> colours, int height, float widthScale) {
 		this.texture = texture;
 		this.colours = colours;
 		this.height = height;
 		this.widthScale = widthScale;
-
 	}
 
 	@Override
