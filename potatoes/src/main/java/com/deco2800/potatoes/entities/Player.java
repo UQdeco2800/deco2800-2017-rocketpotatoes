@@ -46,7 +46,7 @@ public class Player extends MortalEntity implements Tickable {
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
+		super(0, 0, 0, 0.48f, 0.48f, 0.78f, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class Player extends MortalEntity implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1, 1, 1, TEXTURE_RIGHT, HEALTH);
+		super(posX, posY, posZ, 0.48f, 0.48f, 0.78f, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.1f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
