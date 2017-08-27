@@ -209,7 +209,18 @@ public class Box3D {
 		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 	}
 
-	//TODO desc
+	/**
+	 * Checks to see if a line intersects with this Box3D.
+	 * The line goes from point (x1,y1,z1) to (x2,y2,z2)
+	 *
+	 * @param x1 The x coord of point 1 of the line
+	 * @param y1 The y coord of point 1 of the line
+	 * @param z1 The z coord of point 1 of the line
+	 * @param x2 The x coord of point 2 of the line
+	 * @param y2 The y coord of point 2 of the line
+	 * @param z2 The z coord of point 2 of the line
+	 * @return
+	 */
 	public boolean doesIntersectLine(float x1, float y1, float z1, float x2, float y2, float z2) {
 		float fMin = 0;
 		float fMax = 1;

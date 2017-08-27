@@ -2,8 +2,10 @@ package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
+import com.deco2800.potatoes.worlds.AbstractWorld;
 
 import java.util.*;
+
 
 
 /**
@@ -23,20 +25,41 @@ public class PathManager extends Manager {
         spanningTree = new HashMap<>();
     }
 
+    private Set<Box3D> nodes = new HashSet<>();
+    private Map<DoubleBox3D, Float> edges = new HashMap<>();
+
+    private AbstractWorld world;
+
+    private static float nodeOffset = (float) 0.1;
+
     /**
      * Updates the internal graph representation of the path manager, based on world state.
      */
-    private void updateGraph() {
-        // create the graph
-        Set<Box3D> vertices = new HashSet<>();
-        Map<DoubleBox3D, Float> edges = new HashMap<>();
+    public void initialiseGraph() {
+
+        //add points in corners of map
+        nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, //left
+                0, 0, 0, 0));
+        nodes.add(new Box3D(this.world.getWidth() - this.nodeOffset, 0 + this.nodeOffset, //top
+                0, 0, 0, 0));
+        nodes.add(new Box3D(0 + this.nodeOffset, this.world.getLength() - this.nodeOffset, //bottom
+                0, 0, 0, 0));
+        nodes.add(new Box3D(this.world.getWidth() - this.nodeOffset, this.world.getLength() - this.nodeOffset, //right
+                0, 0, 0, 0));
+
+        //loop through entities, put nodes off of corners
+        world.getEntities().values().iterator();
+
+        //loop through all nodes and all entities, removing any nodes that intersect
+        world.getEntities().values().iterator();
+        nodes.iterator();
+        //nodes.remove();
+
+        //loop through every combination of 2 nodes & every entity check if the edge between the two nodes is valid
+        Iterator iterN1 = nodes.iterator();
+        Iterator iterN2 = nodes.iterator();
 
         // build the minimum spanning tree from the graph - and set the spanningTree variable.
-
-
-
-
-
     }
 
     /**
@@ -124,6 +147,15 @@ public class PathManager extends Manager {
             } while (closest != null);
         }
         return new Path(nodes);
+    }
+
+    /**
+     * Sets the world state so that it can be accessed when generating paths
+     *
+     * @param world the current state of the world
+     */
+    public void setWorld(AbstractWorld world) {
+        this.world = world;
     }
 
     /**

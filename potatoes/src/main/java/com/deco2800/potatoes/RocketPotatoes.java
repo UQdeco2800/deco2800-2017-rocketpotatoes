@@ -47,6 +47,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 	private MultiplayerManager multiplayerManager;
 	private GuiManager guiManager;
 	private CameraManager cameraManager;
+	private PathManager pathManager;
 
 	private long lastGameTick = 0;
 	private boolean playing = true;
@@ -82,6 +83,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 		/* Setup camera */
 		cameraManager = (CameraManager)GameManager.get().getManager(CameraManager.class);
 		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
+
+		/* Path Manager, for enemy movement */
+		pathManager = new PathManager();
 
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our stage etc.
@@ -212,6 +216,9 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			playerManager.setPlayer(new Player(5, 10, 0));
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		}
+
+		pathManager.setWorld(GameManager.get().getWorld());
+		pathManager.initialiseGraph();
 	}
 
 	private void tickGame(long timeDelta) {
