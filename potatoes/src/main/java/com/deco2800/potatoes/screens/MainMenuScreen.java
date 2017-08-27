@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.gui.MainMenuGui;
-import com.deco2800.potatoes.gui.OptionsMenuGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -35,7 +34,6 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
 
     private MainMenuGui mainMenuGui;
-    // private OptionsMenuGui optionsMenuGui;
     private OrthographicCamera camera;
     private TextureManager texturemanager;
 
@@ -77,12 +75,14 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
+        Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: " +
+                Gdx.graphics.getFramesPerSecond());
 
         // Draw/update gui
         stage.act();
         stage.getBatch().begin();
-        stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
         stage.getBatch().end();
         
         stage.draw();
@@ -151,12 +151,12 @@ public class MainMenuScreen implements Screen {
         game.setScreen(new GameScreen(game));
     }
 
-    public void startMultiplayer(String name, String IP, int port, boolean isHost) {
+    public void startMultiplayer(String name, String ip, int port, boolean isHost) {
         try {
-            game.setScreen(new GameScreen(game, name, IP, port, isHost));
+            game.setScreen(new GameScreen(game, name, ip, port, isHost));
         }
         catch (Exception ex) {
-            // TODO handle this stuff yo
+            // TODO handle a failed connection.
             LOGGER.warn("Failed to get connect to host.", ex);
             System.exit(-1);
         }
@@ -165,8 +165,8 @@ public class MainMenuScreen implements Screen {
     public static String multiplayerHostAddress() {
         // TODO: Get Actual IP Addresses, not just the local host
         try {
-            InetAddress IP = InetAddress.getLocalHost();
-            return IP.getHostAddress();
+            InetAddress ip = InetAddress.getLocalHost();
+            return ip.getHostAddress();
         } catch (Exception ex) {
             LOGGER.warn("Failed to get host IP address.", ex);
         }
@@ -182,7 +182,7 @@ public class MainMenuScreen implements Screen {
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
     }
 
-    public static void menuBlipSound(){
+    public void menuBlipSound(){
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
     }
 
