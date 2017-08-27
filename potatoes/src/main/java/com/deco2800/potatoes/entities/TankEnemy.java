@@ -3,7 +3,12 @@ package com.deco2800.potatoes.entities;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.LinkedList;
+import java.util.List;
 
+
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,18 +34,37 @@ public class TankEnemy extends EnemyEntity implements Tickable{
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 200f;
+	/*Testing attacking*/
+	private static final BasicStats STATS = initStats();
+	/*Testing attacking*/
+
 	private static float speed = 0.04f;
 	private static Class<?> goal = Tower.class;
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		//this.speed = getBasicStats().getSpeed();
+		//this.goal = goal;
+		//resetStats();
 	}
 
 	public TankEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		//this.speed = getBasicStats().getSpeed();
+		//this.goal = goal;
+		//resetStats();
+	}
+
+
+	private static BasicStats initStats() {
+		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+		BasicStats result = new BasicStats(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
+		result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+		return result;
+	}
+
+	@Override
+	public BasicStats getBasicStats() {
+		return STATS;
 	}
 
 //	@Override
