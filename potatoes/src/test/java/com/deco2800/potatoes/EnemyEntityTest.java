@@ -18,9 +18,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.BallisticProjectile;
 import com.deco2800.potatoes.entities.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.ProgressBarEntity;
+import com.deco2800.potatoes.entities.Projectile;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.InitialWorld;
@@ -120,16 +122,25 @@ public class EnemyEntityTest {
 	}
 	
 	@Test
-	public void testSetSpeed() {
+	public void setSpeedTest() {
 		enemyEntity.setSpeed(3f);
 		Assert.assertEquals("Failed to set Speed",3f, enemyEntity.getSpeed(), 0f);
 	}
 	
 	@Test
-	public void testSetGoal() {
+	public void setGoalTest() {
 		enemyEntity.setGoal(Tower.class);
 		Assert.assertEquals("Failed to set Goal",Tower.class, enemyEntity.getGoal());
 	}
+	
+	@Test
+	public void getShotTest() {
+		Projectile proj = new BallisticProjectile();
+		enemyEntity.getShot(proj);
+		Assert.assertTrue("enemy failed to getShot()", enemyEntity.getHealth() < enemyEntity.getMaxHealth());
+	}
+	
+	
 	
 	
 }
