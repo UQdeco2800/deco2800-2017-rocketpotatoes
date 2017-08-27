@@ -8,7 +8,6 @@ import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.Manager;
 import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
