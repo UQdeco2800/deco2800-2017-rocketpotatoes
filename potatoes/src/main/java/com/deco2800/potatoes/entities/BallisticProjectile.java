@@ -88,6 +88,13 @@ public class BallisticProjectile extends Projectile {
     }
 
     /**
+     *
+     * ****************************************************************************
+     * ****************************************************************************
+     * DO NOT USE THIS CONSTRUCTOR METHOD, USED FOR TESTING ONLY.
+     * ****************************************************************************
+     * ****************************************************************************
+     *
      * Creates a new Ballistic Projectile. Ballistic Projectiles do not change
      * direction once fired. The initial direction is based on the direction to the
      * closest entity
@@ -169,7 +176,7 @@ public class BallisticProjectile extends Projectile {
         }
     }
 
-    public void updatePos() {
+    private void updatePos() {
         maxRange = false;
         if (RANGE < speed) {
             setPosX(goalX);
