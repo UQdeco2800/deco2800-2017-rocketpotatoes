@@ -25,7 +25,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient String TEXTURE_RIGHT = "squirrel2";
+	private static final transient String TEXTURE_RIGHT = "squirrel_right";
 	private static final transient float HEALTH = 100f;
 	private transient Random random = new Random();
 
@@ -42,13 +42,13 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
 	
 	public Squirrel() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 	}
