@@ -136,25 +136,24 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				// SUPER Hacky way of getting progress bars
-				TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+				TextureManager reg = (TextureManager) GameManager.get()
+					.getManager(TextureManager.class);
 				float aspect = (float) 1 / 5;
 
-				//if (entity.toString().split(" ")[0].equals("Squirrel")) {
 				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
 				Texture barTexture = reg.getTexture((progressBar.getTexture()));
 
 				// sets colour palette
 				batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
-				//(int) ((MortalEntity) entity).getMaxHealth()));
+
 				// draws the progress bar
 				Texture entityTexture = reg.getTexture(entity.getTexture());
 				float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
 				batch.draw(barTexture,
 						//x, y
 						isoPosition.x,
-						progressBar.getHeight() != 0 ? progressBar.getHeight() : isoPosition.y
-						+ entityTexture.getHeight() / aspect2 + 10,
+						isoPosition.y + (progressBar.getHeight() != 0 ? progressBar.getHeight() 
+						: entityTexture.getHeight() / aspect2 + 10),
 						//width
 						tileWidth * entity.getXRenderLength() * ((HasProgress) entity).getProgress()
 						/ ((HasProgressBar) entity).getMaxProgress(),
