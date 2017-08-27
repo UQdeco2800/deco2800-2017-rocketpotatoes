@@ -36,7 +36,7 @@ public class TextureManager extends Manager {
 
     	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
-        saveTexture("tree", "resources/placeholderassets/spacman.png");
+        saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
         saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
         saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
@@ -76,6 +76,11 @@ public class TextureManager extends Manager {
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
         saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
+        
+        // Tree growing animation, should maybe be moved to TextureRegion later
+        for (int i = 1; i < 8; i++) {
+        	saveTexture("basictree_grow" + i, "resources/trees/Grow" + i + ".png");
+        }
         
     }
 

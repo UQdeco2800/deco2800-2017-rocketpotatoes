@@ -174,12 +174,12 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    public void setMasterVolume(float v){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMasterVolume(v);
+    public void setEffectsVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setEffectsVolume(v);
     }
 
-    public float getMasterVolume(){
-        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMasterVolume();
+    public float getEffectsVolume(){
+        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getEffectsVolume();
     }
 
     public void setMusicVolume(float v){

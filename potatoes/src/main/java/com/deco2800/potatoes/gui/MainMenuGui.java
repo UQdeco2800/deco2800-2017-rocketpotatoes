@@ -49,8 +49,8 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerHostBackButton;
 
     private VerticalGroup optionsButtonGroup;
-    private Label optionsMasterVolumeLabel;
-    private Slider optionsMasterVolumeSlider;
+    private Label optionsEffectsVolumeLabel;
+    private Slider optionsEffectsVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
     private CheckBox optionsFullscreenCheckbox;
@@ -131,8 +131,8 @@ public class MainMenuGui extends Gui {
         multiplayerHostButtonGroup.addActor(multiplayerHostBackButton);
 
         // Options State
-        optionsMasterVolumeLabel = new Label("Master Volume", uiSkin);
-        optionsMasterVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsEffectsVolumeLabel = new Label("SFX Volume", uiSkin);
+        optionsEffectsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsFullscreenCheckbox = new CheckBox("Fullscreen", uiSkin);
@@ -140,14 +140,14 @@ public class MainMenuGui extends Gui {
         optionsBackButton = new TextButton("Back", uiSkin);
 
         optionsButtonGroup = new VerticalGroup();
-        optionsButtonGroup.addActor(optionsMasterVolumeLabel);
-        optionsButtonGroup.addActor(optionsMasterVolumeSlider);
+        optionsButtonGroup.addActor(optionsEffectsVolumeLabel);
+        optionsButtonGroup.addActor(optionsEffectsVolumeSlider);
         optionsButtonGroup.addActor(optionsMusicVolumeLabel);
         optionsButtonGroup.addActor(optionsMusicVolumeSlider);
         optionsButtonGroup.addActor(optionsFullscreenCheckbox);
         optionsButtonGroup.addActor(optionsColourblindCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
-        optionsMasterVolumeSlider.setValue(mainMenuScreen.getMasterVolume());
+        optionsEffectsVolumeSlider.setValue(mainMenuScreen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(mainMenuScreen.getMusicVolume());
 
         setupListeners();
@@ -288,10 +288,10 @@ public class MainMenuGui extends Gui {
 
         // Options State
 
-        optionsMasterVolumeSlider.addListener(new ChangeListener() {
+        optionsEffectsVolumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenuScreen.setMasterVolume(optionsMasterVolumeSlider.getValue());
+                mainMenuScreen.setEffectsVolume(optionsEffectsVolumeSlider.getValue());
             }
         });
 

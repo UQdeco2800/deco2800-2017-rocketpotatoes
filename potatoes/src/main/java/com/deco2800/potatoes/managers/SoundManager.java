@@ -16,7 +16,7 @@ public class SoundManager extends Manager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundManager.class);
 
-	private float masterVolume = 1f;
+	private float effectsVolume = 1f;
 	private float musicVolume = 1f;
 
 	private Music music;
@@ -27,7 +27,7 @@ public class SoundManager extends Manager {
 	public void playSound(String soundString) {
 		LOGGER.info("Playing sound effect");
 		Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + soundString));
-		sound.play(masterVolume);
+		sound.play(effectsVolume);
 	}
 
 	/**
@@ -36,32 +36,41 @@ public class SoundManager extends Manager {
 	public void playMusic(String musicString){
 		LOGGER.info("Playing music.");
 		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/" + musicString));
-		music.setVolume(masterVolume *  musicVolume);
-		music.setLooping(true);
-		music.play();
+		if (music != null) {
+			music.setVolume(musicVolume);
+			music.setLooping(true);
+			music.play();
+		}
 	}
 
 	/**
 	 * Stops music playing.
 	 */
 	public void  stopMusic(){
-		music.stop();
-	}
-
-	/**
-	 * Sets a new master volume.
-	 */
-	public void setMasterVolume(float v) {
-		masterVolume = v;
 		if (music != null) {
-			music.setVolume(masterVolume * musicVolume);
+			music.stop();
 		}
 	}
 
 	/**
-	 * Gets the current master volume.
+	 * Check if music is playing.
 	 */
-	public float getMasterVolume(){return masterVolume;}
+	public boolean musicPlaying(){return music.isPlaying();}
+
+	/**
+	 * Sets a new sound effects volume.
+	 */
+	public void setEffectsVolume(float v) {
+		effectsVolume = v;
+		if (music != null) {
+			music.setVolume(effectsVolume);
+		}
+	}
+
+	/**
+	 * Gets the current sound effects volume.
+	 */
+	public float getEffectsVolume(){return effectsVolume;}
 
 	/**
 	 * Sets a new music volume. (music is played at master * music volume)
@@ -69,7 +78,7 @@ public class SoundManager extends Manager {
 	public void setMusicVolume(float v) {
 		musicVolume = v;
 		if (music != null) {
-			music.setVolume(masterVolume * musicVolume);
+			music.setVolume(musicVolume);
 		}
 	}
 

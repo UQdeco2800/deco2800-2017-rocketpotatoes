@@ -169,11 +169,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			newPos.setX(getPosX() + changeX);
 			newPos.setY(getPosY() + changeY);
 
-			 
+			/*
+			 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
+			 *     -> Enemies of the same type, projectiles, resources.
+			 */
 			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 			boolean collided = false;
 			for (AbstractEntity entity : entities.values()) {
-				if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
+				if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
+						newPos.overlaps(entity.getBox3D()) ) {
 					if(entity instanceof Player) {
 						//soundManager.playSound("ree1.wav");
 					}
@@ -210,11 +214,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 			newPos.setX(getPosX() + changeX);
 			newPos.setY(getPosY() + changeY);
- 
+
+			/*
+			 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
+			 *     -> Enemies of the same type, projectiles, resources.
+			 */
 			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 			boolean collided = false;
 			for (AbstractEntity entity : entities.values()) {
-				if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
+				if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
+						newPos.overlaps(entity.getBox3D()) ) {
 					if(entity instanceof Tower) {
 						//soundManager.playSound("ree1.wav");
 					}

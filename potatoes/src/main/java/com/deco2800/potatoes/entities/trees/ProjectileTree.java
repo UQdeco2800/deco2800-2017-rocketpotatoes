@@ -7,7 +7,8 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 
 public class ProjectileTree extends AbstractTree implements Tickable {
-	private static final transient String TEXTURE = "real_tree";
+	private static final transient String TEXTURE = "tree";
+	private static final transient String[] GROW_ANIMATION = createGrowList();
 	private static final transient List<UpgradeStats> STATS = initStats();
 
 	/**
@@ -15,6 +16,14 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 */
 	public ProjectileTree() {
 		// default method
+	}
+
+	private static String[] createGrowList() {
+		String[] result = new String[7];
+		for (int i = 1; i < 8; i++) {
+			result[i - 1] = "basictree_grow" + i;
+		}
+		return result;
 	}
 
 	/**
@@ -59,5 +68,17 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Lazy animation implementation just to use the images
+	 */
+	@Override
+	public String getTexture() {
+		if (getConstructionLeft() > 0) {
+			return GROW_ANIMATION[Math.round((GROW_ANIMATION.length - 1) * (1 - getConstructionLeft() / 100f))];
+		} else {
+			return super.getTexture();
+		}
 	}
 }
