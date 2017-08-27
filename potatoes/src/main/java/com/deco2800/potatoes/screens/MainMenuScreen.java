@@ -6,16 +6,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.gui.MainMenuGui;
 import com.deco2800.potatoes.gui.OptionsMenuGui;
-import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
@@ -39,7 +35,7 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
 
     private MainMenuGui mainMenuGui;
-    private OptionsMenuGui optionsMenuGui;
+    // private OptionsMenuGui optionsMenuGui;
     private OrthographicCamera camera;
     private TextureManager texturemanager;
 
@@ -174,10 +170,8 @@ public class MainMenuScreen implements Screen {
         } catch (Exception ex) {
             LOGGER.warn("Failed to get host IP address.", ex);
         }
-        // If it fails to find an IP address, return loopback.
-        //TODO: this will change
+        return "Couldn't find IP address";
 
-        return "127.0.0.1";
     }
 
     public void setMasterVolume(float v){

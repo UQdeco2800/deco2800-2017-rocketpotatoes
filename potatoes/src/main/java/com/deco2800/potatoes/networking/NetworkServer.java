@@ -24,6 +24,7 @@ public class NetworkServer {
     private Server server;
     private int tcpPort;
     private int udpPort;
+    private String ipAddress;
 
     // If connection is established and everything is initialized this should be true.
     public volatile boolean ready;
@@ -53,6 +54,9 @@ public class NetworkServer {
 
         // Register classes for serialization
         Network.register(server);
+
+        // ToDo: Get IP Address
+        ipAddress = "Local Host";
 
         // Setup our listeners
 
@@ -198,7 +202,7 @@ public class NetworkServer {
         server.bind(tcpPort, udpPort);
         server.start();
         this.ready = true;
-        sendSystemMessage("Broadcasting on 0.0.0.0:" + tcpPort);
+        sendSystemMessage("Broadcasting on " + ipAddress + ":" + tcpPort);
     }
 
     public void broadcastNewEntity(int id) {
