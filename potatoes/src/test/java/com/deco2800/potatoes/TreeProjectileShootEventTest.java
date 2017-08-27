@@ -29,7 +29,7 @@ public class TreeProjectileShootEventTest {
         GameManager.get().setWorld(new TestWorld());
         GameManager.get().getWorld().addEntity(testTree);
         testEvent.action(testTree);
-        GameManager.get().getWorld().addEntity(new Squirrel(5, 10, 0));
+        GameManager.get().getWorld().addEntity(new Squirrel(9, 9, 0));
         testEvent.action(testTree);
     }
     private class TestWorld extends AbstractWorld {
