@@ -4,7 +4,6 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.worlds.AbstractWorld;
-import org.lwjgl.Sys;
 
 import java.util.*;
 
@@ -22,13 +21,15 @@ public class PathManager extends Manager {
      * expanded so that multiple different goals can be set.
      */
     private Map<Box3D, Box3D> spanningTree;
+    private Set<Box3D> nodes = new HashSet<>();
+    private Map<DoubleBox3D, Float> edges = new HashMap<>();
+    private Map<Box3D, Boolean> directNode = new HashMap<>(); //nodes which have a direct line of sight
 
     public PathManager() {
         spanningTree = new HashMap<>();
     }
 
-    private Set<Box3D> nodes = new HashSet<>();
-    private Map<DoubleBox3D, Float> edges = new HashMap<>();
+
 
     private AbstractWorld world;
 
@@ -107,6 +108,36 @@ public class PathManager extends Manager {
         }
 
         // build the minimum spanning tree from the graph - and set the spanningTree variable.
+    }
+
+    /**
+     * To be run on every game tick, the pathManager needs to know the location of the player
+     *
+     * @param player coordinates of the player
+     */
+    public void onTick(Box3D player) {
+
+        //TODO if player hasn't moved since last tick, can skip this
+
+        //populates directNode
+        boolean doesCollide;
+        for (Box3D node : this.nodes) {
+            doesCollide = false;
+            for (AbstractEntity e : world.getEntities().values()) {
+                if (e.isStaticCollideable() &&
+                        e.getBox3D().doesIntersectLine(node.getX(),node.getY(),0,player.getX(), player.getY(),0)) {
+                    doesCollide = true;
+                    break;
+                }
+            }
+            if(!doesCollide) {
+                this.directNode.put(node, true);
+            }
+        }
+
+
+
+        //for ( Map.Entry<DoubleBox3D, Float> edge : this.edges.entrySet()) {
     }
 
     /**

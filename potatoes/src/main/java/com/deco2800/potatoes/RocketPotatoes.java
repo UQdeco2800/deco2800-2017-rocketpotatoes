@@ -285,6 +285,8 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
+
+		pathManager.onTick(playerManager.getPlayer().getBox3D());
 	}
 
 	/**

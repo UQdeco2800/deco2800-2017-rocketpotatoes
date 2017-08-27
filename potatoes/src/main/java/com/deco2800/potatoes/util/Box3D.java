@@ -211,7 +211,8 @@ public class Box3D {
 
 	/**
 	 * Checks to see if a line intersects with this Box3D.
-	 * The line goes from point (x1,y1,z1) to (x2,y2,z2)
+	 * The line goes from point (x1,y1,z1) to (x2,y2,z2).
+	 * Uses Axis-Aligned Bounding Box (AABB) Intersection
 	 *
 	 * @param x1 The x coord of point 1 of the line
 	 * @param y1 The y coord of point 1 of the line
