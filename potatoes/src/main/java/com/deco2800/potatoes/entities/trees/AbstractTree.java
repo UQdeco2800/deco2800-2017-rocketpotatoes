@@ -187,7 +187,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public float getProgressRatio() {
-		return constructionLeft / 100;
+		return constructionLeft / 100f;
 	}
 
 	@Override
