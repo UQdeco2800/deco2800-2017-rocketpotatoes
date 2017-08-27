@@ -1,8 +1,10 @@
 package com.deco2800.potatoes.entities;
 
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public class HomingProjectile extends Projectile {
@@ -27,9 +29,9 @@ public class HomingProjectile extends Projectile {
 
 	private int rocketEffectTimer;
 	private int rocketCurrentSpriteIndexCount;
-	private String[] rocketSpriteArray = {"rocket1", "rocket2", "rocket3"};
+	private String[] rocketSpriteArray = { "rocket1", "rocket2", "rocket3" };
 
-
+	private Class<?> targetClass;
 
 	public HomingProjectile() {
 		// empty for serialization
@@ -39,9 +41,9 @@ public class HomingProjectile extends Projectile {
 	}
 
 	/**
-	 * Creates a new Homing Projectile. Homing Projectiles changes
-	 * direction once fired. The initial direction is based on the direction to the
-	 * closest entity and follows it.
+	 * Creates a new Homing Projectile. Homing Projectiles changes direction once
+	 * fired. The initial direction is based on the direction to the closest entity
+	 * and follows it.
 	 *
 	 * @param posX
 	 *            x start position
@@ -57,9 +59,9 @@ public class HomingProjectile extends Projectile {
 	 *            Projectile damage
 	 */
 
-	public HomingProjectile(float posX, float posY, float posZ, Optional<AbstractEntity> target, float range,
-			float DAMAGE) {
-		super(posX, posY, posZ, 1, 1,TEXTURE);
+	public HomingProjectile(Class<?> targetClass, float posX, float posY, float posZ, Optional<AbstractEntity> target,
+			float range, float DAMAGE) {
+		super(posX, posY, posZ, 1, 1, TEXTURE);
 		this.DAMAGE = DAMAGE;
 		this.mainTarget = target;
 		this.goalX = target.get().getPosX();
@@ -67,6 +69,7 @@ public class HomingProjectile extends Projectile {
 		this.goalZ = target.get().getPosZ();
 
 		this.range = range;
+		this.targetClass = targetClass;
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
@@ -86,9 +89,9 @@ public class HomingProjectile extends Projectile {
 	 * ****************************************************************************
 	 * ****************************************************************************
 	 *
-	 * Creates a new Homing Projectile. Homing Projectiles changes
-	 * direction once fired. The initial direction is based on the direction to the
-	 * closest entity and follows it.
+	 * Creates a new Homing Projectile. Homing Projectiles changes direction once
+	 * fired. The initial direction is based on the direction to the closest entity
+	 * and follows it.
 	 *
 	 * @param posX
 	 *            x start position
@@ -109,8 +112,8 @@ public class HomingProjectile extends Projectile {
 	 */
 
 	public HomingProjectile(float posX, float posY, float posZ, float fposX, float fposY, float fposZ, float range,
-							float DAMAGE) {
-		super(posX, posY, posZ, TEXTURE);
+			float DAMAGE) {
+		super(posX, posY, posZ, 1, 2, TEXTURE);
 		this.DAMAGE = DAMAGE;
 		this.goalX = fposX;
 		this.goalY = fposY;
@@ -136,11 +139,10 @@ public class HomingProjectile extends Projectile {
 	@Override
 	public void onTick(long time) {
 
-		if(mainTarget != null){
+		if (mainTarget != null) {
 			this.goalX = mainTarget.get().getPosX();
 			this.goalY = mainTarget.get().getPosY();
 		}
-
 
 		float deltaX = getPosX() - this.goalX;
 		float deltaY = getPosY() - this.goalY;
@@ -149,19 +151,6 @@ public class HomingProjectile extends Projectile {
 
 		changeX = (float) (speed * Math.cos(angle));
 		changeY = (float) (speed * Math.sin(angle));
-
-		rocketEffectTimer++;
-		if (rocketEffectTimer % 6 == 0) {
-			if (rocketCurrentSpriteIndexCount <= 2) {
-				setTexture(rocketSpriteArray[rocketCurrentSpriteIndexCount]);
-				if (rocketCurrentSpriteIndexCount < 3) {
-					rocketCurrentSpriteIndexCount++;
-				}else {
-					GameManager.get().getWorld().removeEntity(this);
-				}
-			}
-		}
-
 
 		if (range < speed) {
 			setPosX(goalX);
@@ -174,23 +163,28 @@ public class HomingProjectile extends Projectile {
 
 		range -= speed;
 
+		rocketEffectTimer++;
+		if (rocketEffectTimer % 4 == 0) {
+			setTexture(rocketSpriteArray[rocketCurrentSpriteIndexCount]);
+			if (rocketCurrentSpriteIndexCount == rocketSpriteArray.length - 1)
+				rocketCurrentSpriteIndexCount = 0;
+			else
+				rocketCurrentSpriteIndexCount++;
+		}
+
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
-		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-		for (AbstractEntity entity : entities) {
-
-			if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
-				((EnemyEntity) entity).getShot(this);
-				GameManager.get().getWorld().removeEntity(this);
-//				float AOE_width = 5f;
-//				float AOE_height = 2f;
-
-				ExplosionEffect expEffect = new ExplosionEffect(goalX,goalY, goalZ, 5f, 5f, 0,
-				1f,1f);
+		Box3D newPos = getBox3D();
+		newPos.setX(getPosX() + changeX);
+		newPos.setY(getPosY() + changeY);
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		boolean collided = false;
+		for (AbstractEntity entity : entities.values()) {
+			if (targetClass.isInstance(entity) && newPos.overlaps(entity.getBox3D())) {
+				((MortalEntity) entity).damage(DAMAGE);
+				ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
 				GameManager.get().getWorld().addEntity(expEffect);
-
-
-				return;
+				GameManager.get().getWorld().removeEntity(this);
 			}
 		}
 

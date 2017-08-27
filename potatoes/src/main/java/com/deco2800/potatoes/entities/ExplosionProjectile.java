@@ -62,13 +62,8 @@ public class ExplosionProjectile extends Projectile {
         if (dmgTimer % 6 == 0) {
             Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
             for (AbstractEntity entity : entities) {
-                if (entity instanceof Player && this.collidesWith(entity)) {
-
-                }
-
                 if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
                     ((EnemyEntity) entity).getShot(this);
-//                    System.out.println(DAMAGE);
                 }
             }
 
