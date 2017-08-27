@@ -13,7 +13,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 public abstract class EnemyEntity extends MortalEntity implements HasProgress, Tickable {
 	private transient Random random = new Random();
 	private float speed;
-	private Class goal;
+	private Class<?> goal;
 
 
 	/**
@@ -49,7 +49,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	 *            The initial maximum health of the enemy
 	 */
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float maxHealth, float speed, Class goal) {
+			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
 		this.speed = speed;
 		this.goal = goal;
@@ -83,7 +83,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	 *            The initial maximum health of the enemy
 	 */
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class goal) {
+			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
 		this.speed = speed;
 		this.goal = goal;
@@ -121,7 +121,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	 *            The initial maximum health of the enemy
 	 */
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class goal) {
+			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
 		this.speed = speed;
 		this.goal = goal;
@@ -238,6 +238,38 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	public void setProgress(int p) { health = p; }
 
 	
+	/**
+	 * Get the goal of the enemy
+	 * @return this enemy's goal
+	 */
+	public Class<?> getGoal() {
+		return this.goal;
+	}
+	
+	/**
+	 * Set the enemy's goal to the given entity class
+	 * @param g enemy's new goal(entity class)
+	 */
+	public void setGoal(Class<?> g) {
+		this.goal = g;
+	}
+	
+	/**
+	 * Get the speed of this enemy
+	 * @return the speed of this enemy
+	 */
+	public float getSpeed() {
+		return this.speed;
+	}
+	
+	/**
+	 * Set this enemy's speed to given speed
+	 * @param s enemy's new speed
+	 */
+	public void setSpeed(Float s) {
+		this.speed = s;
+	}
+
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
 	 * @param projectile, the projectile shot

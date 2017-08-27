@@ -31,7 +31,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
     private static final transient float HEALTH = 65f;
     private static float speed = 0.15f;
-    private static Class goal = ResourceTree.class;
+    private static Class<?> goal = ResourceTree.class;
 
     public SpeedyEnemy() {
         super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);

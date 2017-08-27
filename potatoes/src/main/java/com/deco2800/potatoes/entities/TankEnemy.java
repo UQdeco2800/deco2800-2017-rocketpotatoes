@@ -30,7 +30,7 @@ public class TankEnemy extends EnemyEntity implements Tickable{
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 200f;
 	private static float speed = 0.04f;
-	private static Class goal = Tower.class;
+	private static Class<?> goal = Tower.class;
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
 		this.speed = speed;
