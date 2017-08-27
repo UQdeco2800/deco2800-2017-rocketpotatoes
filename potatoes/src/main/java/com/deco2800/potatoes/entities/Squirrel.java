@@ -45,6 +45,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		if(playerManager == null) {
 			playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
 		}
+		//in case squirrel is made before pathManager
+		if(pathManager == null) {
+			pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
+		}
 
 		//check collision
 		boolean collided = false;
