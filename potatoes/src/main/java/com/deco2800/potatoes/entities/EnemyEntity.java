@@ -5,16 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.managers.EventManager;
 
 public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
+
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+
 	private transient Random random = new Random();
 	private float speed;
 	private Class<?> goal;
@@ -241,8 +248,14 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
 					newPos.overlaps(entity.getBox3D()) ) {
+
 				if(entity instanceof Tower) {
 					//soundManager.playSound("ree1.wav");
+				}
+
+				if(entity instanceof Player) {
+					LOGGER.info("Ouch! a " + this + " hit the player!");
+					((Player) entity).damage(1);
 				}
 				collided = true;
 			}
@@ -327,7 +340,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
-		//System.out.println(this + " was shot. Health now " + getHealth());
+		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
 
 	/**
