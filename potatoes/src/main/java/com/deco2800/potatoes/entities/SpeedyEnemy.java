@@ -34,11 +34,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
 	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 30, 1);
-	
-    
-    /*Testing attacking*/
     private static final BasicStats STATS = initStats();
-	/*Testing attacking*/
 
     private static float speed = 0.08f;
     private static Class<?> goal = ResourceTree.class;
@@ -167,11 +163,10 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     private static BasicStats initStats() {
         List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-        BasicStats result = new BasicStats(65f, 0.15f, 2f, 500, normalEvents,"speedyRaccoon");
+        BasicStats result = new BasicStats(HEALTH, speed, 2f, 500, normalEvents, TEXTURE);
         //result.getNormalEventsReference().add(new MeleeAttackEvent(500));
         return result;
     }
-
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
