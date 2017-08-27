@@ -25,8 +25,7 @@ public class PathManager extends Manager {
     private Set<Box3D> nodes = new HashSet<>();
     private Map<DoubleBox3D, Float> edges = new HashMap<>();
     private Map<Box3D, Boolean> directNode = new HashMap<>(); //nodes which have a direct line of sight
-    private float lastPlayerX = -9999;
-    private float lastPlayerY = -9999;
+    private Box3D lastPlayerPosition;
 
 
     /**
@@ -44,7 +43,8 @@ public class PathManager extends Manager {
      * Populates the internal graph representation of the path manager, based on the initial world state.
      * Should be run after loading the map
      */
-    public void initialise() {
+    public void initialise(Box3D player) {
+        this.lastPlayerPosition = player;
         this.nodes = new HashSet<>();
         this.edges = new HashMap<>();
 
@@ -111,6 +111,7 @@ public class PathManager extends Manager {
         }
 
         // build the minimum spanning tree from the graph - and set the spanningTree variable.
+        optimiseGraph(lastPlayerPosition, nodes, edges);
     }
 
     /**
@@ -123,12 +124,8 @@ public class PathManager extends Manager {
         AbstractWorld world = GameManager.get().getWorld();
 
         //if player hasn't moved since last tick, can skip this
-        float playerX = player.getX() + (player.getXLength() / 2); //centre x of player
-        float playerY = player.getY() + (player.getYLength() / 2); //centre y of player
-
-        if (playerX != this.lastPlayerX || playerY != this.lastPlayerY ) {
-            this.lastPlayerX = playerX;
-            this.lastPlayerY = playerY;
+        if (!player.equals(lastPlayerPosition)) {
+            lastPlayerPosition = player;
 
             //populates directNode, nodes which have a direct line of sight
             boolean doesCollide;
@@ -207,13 +204,6 @@ public class PathManager extends Manager {
 
     }
 
-    public Path generatePathPlayer() {
-        Path path = new Path();
-        path.addNode(new Box3D(0, 0, 0, 0, 0, 0));
-        path.addNode(new Box3D(5, 5, 0, 0, 0, 0));
-        return path;
-    }
-
     /**
      * Allocates a path to a given entity. Not guaranteed to be the optimal path, but at the time it is created it will
      * have no collisions. Paths cannot be shared by multiple entities.
@@ -224,22 +214,24 @@ public class PathManager extends Manager {
      */
     public Path generatePath(Box3D start, Box3D goal) {
         ArrayDeque<Box3D> nodes = new ArrayDeque<>();
-        if (spanningTree.size() == 0) {
-            nodes.add(start);
-            nodes.add(goal);
-        } else {
-            nodes.add(start);
-            Box3D closest = null;
-            for (Box3D other : spanningTree.keySet()) {
-                if (closest == null || closest.distance(start) > other.distance(start)) {
-                    closest = other;
-                }
-            }
-            do {
-                nodes.add(closest);
-                closest = spanningTree.get(closest);
-            } while (closest != null);
+        if (spanningTree.size() == 0 || goal != lastPlayerPosition) {
+            initialise(start);
         }
+        nodes.add(start);
+        if (spanningTree.size() == 0) {
+            nodes.add(goal);
+            return new Path(nodes);
+        }
+        Box3D closest = null;
+        for (Box3D other : spanningTree.keySet()) {
+            if (closest == null || closest.distance(start) > other.distance(start)) {
+                closest = other;
+            }
+        }
+        do {
+            nodes.add(closest);
+            closest = spanningTree.get(closest);
+        } while (closest != null);
         return new Path(nodes);
     }
 

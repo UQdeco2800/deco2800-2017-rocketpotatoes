@@ -219,7 +219,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		}
 
-		pathManager.initialise();
+		pathManager.initialise(playerManager.getPlayer().getBox3D());
 	}
 
 	private void tickGame(long timeDelta) {

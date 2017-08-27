@@ -23,44 +23,36 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Path path = null;
 	private Box3D target = null;
 
-	private PlayerManager playerManager;
-	private SoundManager soundManager;
-	private PathManager pathManager;
-	
-
 
 	public Squirrel(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 		//this.setTexture("squirrel");
 		//this.random = new Random();
-		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 		PathManager pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
-		this.path = pathManager.generatePathPlayer();
+		this.path = null;
 	}
 
 	@Override
 	public void onTick(long i) {
-		//in case squirrel is made before playerManager
-		if(playerManager == null) {
-			playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		}
-		//in case squirrel is made before pathManager
-		if(pathManager == null) {
-			pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
-		}
+		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+		PathManager pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
+
+        // check paths
 
 		//check collision
-		boolean collided = false;
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
 				//collided with wall
-				path = pathManager.generatePathPlayer(); //TODO squirel is requesting path here
-				if (path.isEmpty()) {return;} //stuck in wall no way to get to target
+                path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
 				target = path.pop();
 				break;
 			}
 		}
+
+        // check that we actually have a path
+        if (path == null || path.isEmpty()) {
+            path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+        }
 
 
 		//check if close enough to target, or collide with staticCollideable entity
@@ -78,13 +70,11 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 
 		if (target == null) {
-			Player player = playerManager.getPlayer();
-			targetX = player.getPosX();
-			targetY = player.getPosY();
-		} else {
-			targetX = target.getX();
-			targetY = target.getY();
-		}
+            target = playerManager.getPlayer().getBox3D();
+		} 
+
+        targetX = target.getX();
+        targetY = target.getY();
 
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
