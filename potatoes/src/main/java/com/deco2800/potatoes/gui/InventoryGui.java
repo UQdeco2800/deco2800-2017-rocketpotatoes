@@ -45,8 +45,8 @@ public class InventoryGui extends Gui {
 		/* Set up the table for positioning Inventory Gui */
 		instantiateTable();
 
-		/* position table in the bottom left */
-		inventoryTable.left().bottom();
+		/* position table in the bottom right */
+		inventoryTable.right().bottom();
 
 		/* add in the table finally */
 		stage.addActor(inventoryTable);
