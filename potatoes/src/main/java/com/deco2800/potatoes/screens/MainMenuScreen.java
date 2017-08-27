@@ -178,8 +178,16 @@ public class MainMenuScreen implements Screen {
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMasterVolume(v);
     }
 
+    public float getMasterVolume(){
+        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMasterVolume();
+    }
+
     public void setMusicVolume(float v){
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+    }
+
+    public float getMusicVolume(){
+        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMusicVolume();
     }
 
     public void menuBlipSound(){

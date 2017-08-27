@@ -147,6 +147,8 @@ public class MainMenuGui extends Gui {
         optionsButtonGroup.addActor(optionsFullscreenCheckbox);
         optionsButtonGroup.addActor(optionsColourblindCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
+        optionsMasterVolumeSlider.setValue(mainMenuScreen.getMasterVolume());
+        optionsMusicVolumeSlider.setValue(mainMenuScreen.getMusicVolume());
 
         setupListeners();
 

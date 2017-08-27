@@ -4,6 +4,7 @@ import com.deco2800.potatoes.gui.MainMenuGui;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 import com.deco2800.potatoes.RocketPotatoes;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -11,15 +12,20 @@ import org.junit.Test;
  */
 public class MainMenuTest {
 
+    @BeforeClass
+    public static void beforeAnyTest() {
+
+    }
+
     @Before
-    public void setUp(){
+    public void beforeEachTest(){
 
     }
 
     // Test initialisation.
     @Test
     public void initMenuScreenTest(){
-        
+
     }
 
     // Test that you can start a singleplayer game from opening game.

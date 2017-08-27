@@ -73,4 +73,9 @@ public class SoundManager extends Manager {
 		}
 	}
 
+	/**
+	 * Gets the current music volume.
+	 */
+	public float getMusicVolume(){return musicVolume;}
+
 }
