@@ -48,7 +48,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-        //this.steal
+        // this.steal
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();
@@ -98,7 +98,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// Optional<AbstractEntity> target =
 	// WorldUtil.getClosestEntityOfClass(ResourceTree.class, getPosX(), getPosY());
 	//
-	// //get the position of the target
+	// // get the position of the target
 	// float goalX = target.get().getPosX();
 	// float goalY = target.get().getPosY();
 	//
@@ -140,7 +140,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// if (!collided) {
 	// setPosX(getPosX() + changeX);
 	// setPosY(getPosY() + changeY);
-	// //speedy enemy change direction if something blocked.
+	// // speedy enemy change direction if something blocked.
 	//
 	// if(this.getPosX()>goalX){
 	// this.setTexture(TEXTURE);

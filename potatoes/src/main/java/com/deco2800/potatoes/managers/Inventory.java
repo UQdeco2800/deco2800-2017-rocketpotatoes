@@ -179,7 +179,7 @@ public class Inventory {
 					((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(
 							resource.getTypeName(), currentAmount + amount);
 				} catch (NullPointerException exception) {
-					//catch exception for tests when the gui isn't initialised
+					// catch exception for tests when the gui isn't initialised
 				}
 			}
 		}

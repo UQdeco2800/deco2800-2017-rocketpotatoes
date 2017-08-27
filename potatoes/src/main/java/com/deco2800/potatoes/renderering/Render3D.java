@@ -112,21 +112,21 @@ public class Render3D implements Renderer {
 			// NEW: changed the render method to allow for sprite rotation.
 
 			batch.draw(tex,
-					//x, y
+					// x, y
 					isoPosition.x, isoPosition.y,
-					//originX, originY
+					// originX, originY
 					(tileWidth * entity.getXRenderLength()) / 2,
 					(tileHeight * entity.getYRenderLength()) / 2,
-					//width, height
+					// width, height
 					tileWidth * entity.getXRenderLength(),
 					(tex.getHeight() / aspect) * entity.getYRenderLength(),
-					//scaleX, scaleY, rotation
+					// scaleX, scaleY, rotation
 					1, 1, 0 - entity.rotateAngle(),
-					//srcX, srcY
+					// srcX, srcY
 					0, 0,
-					//srcWidth, srcHeight
+					// srcWidth, srcHeight
 					tex.getWidth(), tex.getHeight(),
-					//flipX, flipY
+					// flipX, flipY
 					false, false);
 		}
 
@@ -149,21 +149,23 @@ public class Render3D implements Renderer {
 				// draws the progress bar
 				Texture entityTexture = reg.getTexture(entity.getTexture());
 				float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
+				float barWidth = tileWidth * entity.getXRenderLength() * progressBar.getWidthScale()
+					* ((HasProgress) entity).getProgressRatio();
+
 				batch.draw(barTexture,
-						//x, y
+						// x, y
 						isoPosition.x,
 						isoPosition.y + (progressBar.getHeight() != 0 ? progressBar.getHeight() 
 						: entityTexture.getHeight() / aspect2 + 10),
-						//width
-						tileWidth * entity.getXRenderLength() * ((HasProgress) entity).getProgress()
-						/ ((HasProgressBar) entity).getMaxProgress(),
-						//height
-						(barTexture.getHeight() / aspect) * entity.getYRenderLength(),
-						//srcX, srcY
+						// width, height
+						barWidth, barWidth / 8,
+						// old height
+						// (barTexture.getHeight() / aspect) * entity.getYRenderLength(),
+						// srcX, srcY
 						0, 0,
-						//srcWidth, srcHeight
+						// srcWidth, srcHeight
 						barTexture.getWidth(), barTexture.getHeight(),
-						//flipX, flipY
+						// flipX, flipY
 						false, false);
 
 				// reset the batch colour

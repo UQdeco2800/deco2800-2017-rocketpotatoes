@@ -161,7 +161,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
 			SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
 
-			//The X and Y position of the player without random floats generated
+			// The X and Y position of the player without random floats generated
 			goalX = playerManager.getPlayer().getPosX() ;
 			goalY = playerManager.getPlayer().getPosY() ;
 		
@@ -205,9 +205,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 //				setPosY(getPosY() + changeY);
 //			}
 		} else {
-			//set the target of tankEnemy to the closest goal
+			// set the target of tankEnemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
-			//get the position of the target
+			// get the position of the target
 			goalX = target.get().getPosX(); 
 			goalY = target.get().getPosY(); 
 			if(this.distance(target.get()) < speed) {

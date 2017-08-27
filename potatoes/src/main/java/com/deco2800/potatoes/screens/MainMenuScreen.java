@@ -44,7 +44,7 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         // TODO config?
         camera.setToOrtho(false, 1920, 1080);
-        //game screen background
+        // game screen background
         texturemanager=(TextureManager)GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
