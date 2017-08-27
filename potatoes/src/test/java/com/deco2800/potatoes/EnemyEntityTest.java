@@ -10,6 +10,9 @@ import java.util.List;
 
 import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.Tower;
+
+import org.junit.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,13 +67,13 @@ public class EnemyEntityTest {
 	private Class<?> goal = Player.class;
 	
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		//a fake game world so deathHandler can interact with it
-		InitialWorld mockWorld = mock(InitialWorld.class);
-		GameManager gm = GameManager.get();
-		gm.setWorld(mockWorld);
-	}
+//	@BeforeClass
+//	public static void setUpBeforeClass() throws Exception {
+//		//a fake game world so deathHandler can interact with it
+//		InitialWorld mockWorld = mock(InitialWorld.class);
+//		GameManager gm = GameManager.get();
+//		gm.setWorld(mockWorld);
+//	}
 
 	
 	@Before
@@ -107,7 +110,6 @@ public class EnemyEntityTest {
 	}
 
 
-
 	@Test
 	public void emptyTest() {
 		try {
@@ -115,6 +117,18 @@ public class EnemyEntityTest {
 		} catch (Exception E) {
 			fail("No EnemyEntity serializable constructor");
 		}
+	}
+	
+	@Test
+	public void testSetSpeed() {
+		enemyEntity.setSpeed(3f);
+		Assert.assertEquals("Failed to set Speed",3f, enemyEntity.getSpeed(), 0f);
+	}
+	
+	@Test
+	public void testSetGoal() {
+		enemyEntity.setGoal(Tower.class);
+		Assert.assertEquals("Failed to set Goal",Tower.class, enemyEntity.getGoal());
 	}
 	
 	
