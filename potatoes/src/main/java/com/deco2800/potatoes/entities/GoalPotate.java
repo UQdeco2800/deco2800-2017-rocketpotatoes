@@ -20,6 +20,7 @@ public class GoalPotate extends AbstractEntity{
 
 	public GoalPotate(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE);
+		this.setStaticCollideable(true);
 	}
 
 }
