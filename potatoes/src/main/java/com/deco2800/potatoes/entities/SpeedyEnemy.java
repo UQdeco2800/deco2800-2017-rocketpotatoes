@@ -40,14 +40,16 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     public SpeedyEnemy() {
         super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-        this.speed = speed;
-        this.goal = goal;
+        //this.speed = speed;
+        //this.goal = goal;
+        //resetStats();
     }
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-        this.speed = speed;
-        this.goal = goal;
+        //this.speed = speed;
+        //this.goal = goal;
+        //resetStats();
     }
 
 //    @Override
@@ -117,9 +119,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
         return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
     }
 
-
-
-
     @Override
     public BasicStats getBasicStats() {
         return STATS;
@@ -127,7 +126,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     private static BasicStats initStats() {
         List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-        BasicStats result = new BasicStats(200, 500, 8f, 500, normalEvents,"tankBear");
+        BasicStats result = new BasicStats(65f, 0.15f, 2f, 500, normalEvents,"speedyRaccoon");
         //result.getNormalEventsReference().add(new MeleeAttackEvent(500));
         return result;
     }

@@ -241,9 +241,13 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	 * */
 	public abstract BasicStats getBasicStats();
 
-	private void resetStats() {
-			registerNewEvents(getBasicStats().getNormalEventsCopy());
-			}
+	public void resetStats() {
+		this.addMaxHealth(getBasicStats().getHealth() - this.getMaxHealth());
+		this.heal(getMaxHealth());
+		setTexture(getBasicStats().getTexture());
+		this.speed = getBasicStats().getSpeed();
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
+	}
 
 	@Override
 	public int getProgress() {

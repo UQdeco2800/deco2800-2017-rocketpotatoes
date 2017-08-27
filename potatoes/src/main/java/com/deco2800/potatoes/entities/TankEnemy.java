@@ -42,20 +42,22 @@ public class TankEnemy extends EnemyEntity implements Tickable{
 	private static Class goal = Tower.class;
 	public TankEnemy() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		//this.speed = getBasicStats().getSpeed();
+		//this.goal = goal;
+		//resetStats();
 	}
 
 	public TankEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		//this.speed = getBasicStats().getSpeed();
+		//this.goal = goal;
+		//resetStats();
 	}
 
 
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(200, 500, .8f, 500, normalEvents,"tankBear");
+		BasicStats result = new BasicStats(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
 		result.getNormalEventsReference().add(new MeleeAttackEvent(500));
 		return result;
 	}

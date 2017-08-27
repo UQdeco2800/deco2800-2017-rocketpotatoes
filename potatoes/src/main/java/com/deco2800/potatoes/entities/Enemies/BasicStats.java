@@ -17,8 +17,8 @@ import java.util.List;
 public class BasicStats {
 
     /*Example stats for an enemy*/
-    private float speed = 0.1f;
-    private int attackSpeed = 500;
+    private float speed = 100f;
+    private float attackSpeed = 500;
     private float health = 100f;
     private float range = 0;
    // private Class<?> goal = Squirrel.class;
@@ -45,7 +45,7 @@ public class BasicStats {
      * @param texture
      *          The enemy's starting texture
      */
-    public BasicStats(float health, int speed, float range, int attackSpeed, List<TimeEvent<EnemyEntity>> normalEvents, String texture) {
+    public BasicStats(float health, float speed, float range, float attackSpeed, List<TimeEvent<EnemyEntity>> normalEvents, String texture) {
         this.health = health;
         this.speed = speed;
         this.range = range;
@@ -85,7 +85,15 @@ public class BasicStats {
 
     /**
      *
-     * @return returns enemy's current speed
+     * @return returns enemy's current attack speed
+     */
+    public float getSpeed() {
+        return this.attackSpeed;
+    }
+
+    /**
+     *
+     * @return returns enemy's current attack speed
      */
     public float getAttackSpeed() {
         return this.attackSpeed;
