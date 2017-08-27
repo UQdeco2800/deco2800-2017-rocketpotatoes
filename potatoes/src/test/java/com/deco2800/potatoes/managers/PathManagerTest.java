@@ -5,8 +5,20 @@ import com.deco2800.potatoes.util.Box3D;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+
+import com.deco2800.potatoes.worlds.InitialWorld;
 
 public class PathManagerTest {
+    @Before
+    public void setUp() throws Exception {
+        InitialWorld mockWorld = mock(InitialWorld.class);
+        GameManager gm = GameManager.get();
+        gm.setWorld(mockWorld);
+    }
+
     @Test
     public void reachesGoal() {
         PathManager m = new PathManager();
