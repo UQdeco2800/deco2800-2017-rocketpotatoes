@@ -1,29 +1,48 @@
 package com.deco2800.potatoes.entities;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import java.util.List;
+
+import com.badlogic.gdx.graphics.Color;
 
 /**
+ * An interface to handle the progress bar. WARNING will conflict with
+ * ProgressBar from com.badlogic.gdx.scenes.scene2d.ui.ProgressBar
  * 
  * Created by fff134 on 23/08/17.
  *
  */
 public interface ProgressBar {
+	/**
+	 * 
+	 * @return a string of the textureID
+	 */
+	public String getTexture();
 
 	/**
-	 * Renders the progress bar
 	 * 
-	 * @param entity
-	 *            The entity
-	 * @param progressBar
-	 *            The texture of the progress bar
-	 * @param batch
-	 *            The sprite batch used for rendering
-	 * @param xLength
-	 *            The x-axis of where the progress bar will be rendered
-	 * @param yLength
-	 *            The y-axis of where the progress bar will be rendered
+	 * @param currentHealth
+	 * @return the colour based on the current health of the entity
 	 */
-	void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength);
+	public Color getColour(float progressRatio);
+
+	/**
+	 * 
+	 * @return A list of colours used for the progress bar
+	 */
+	public List<Color> getColours();
+
+	/**
+	 * 
+	 * @return the height of the progress bar in relation to the location of the
+	 *         entity
+	 */
+	public int getHeight();
+
+	/**
+	 * 
+	 * @return the scale of the progress bar in relation to its entity
+	 */
+	public float getWidthScale();
+
 
 }

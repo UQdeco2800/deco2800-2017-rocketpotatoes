@@ -60,7 +60,6 @@ public class GameScreen implements Screen {
 
     private long lastGameTick = 0;
     private boolean playing = true;
-    private int gameLevel = 1;
 
     /**
      * Start's a multiplayer game
@@ -78,6 +77,7 @@ public class GameScreen implements Screen {
         // setup multiplayer
         if (isHost) {
             multiplayerManager.createHost(port);
+            // Loopback for host's connection to itself
             multiplayerManager.joinGame(name, "127.0.0.1", port);
         } else {
             multiplayerManager.joinGame(name, IP, port);
@@ -190,7 +190,7 @@ public class GameScreen implements Screen {
      * Initializes everything needed to actually play the game
      * Can be used to `reset` the state of the game
      *
-     * TODO this logic should be state-machined'd (i.e. Main Menu <-> Playing <-> Paused. With every state having
+     * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <-> Paused. With every state having
      * TODO it's own menu(s), initialization etc. And when we setup custom transition logic.
      */
     private void initializeGame() {
@@ -203,29 +203,29 @@ public class GameScreen implements Screen {
 
         MultiplayerManager m = multiplayerManager;
         if (m.isMaster() || !m.isMultiplayer()) {
-            //generate 5*gameLevel squirrels
-        	for (int i = 0; i < 5*gameLevel; i++) {
-                GameManager.get().getWorld().addEntity(
-                		new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+            for (int i = 0; i < 5; i++) {
+                GameManager.get().getWorld().addEntity(new Squirrel(
+                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-            
-            //generate 2*gameLevel tankEnemies
-            for (int i = 0; i < 2*gameLevel; i++) {
-            	GameManager.get().getWorld().addEntity(
-            			new TankEnemy(20, 25+random.nextFloat()*10, 0));
+
+            for (int i = 0; i < 3; i++) {
+                GameManager.get().getWorld().addEntity(
+                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
-            
+
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
-            GameManager.get().getWorld().addEntity(new SpeedyEnemy(24,20,0));
+
+            for(int i=0 ; i<3 ; i++) {
+                GameManager.get().getWorld().addEntity(
+                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+            }
+            addResourceTrees();
             initialiseResources();
             
         }
-
-
-
+        
         if (!multiplayerManager.isMultiplayer()) {
 			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
 		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
@@ -236,6 +236,15 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void addResourceTrees() {
+    		// Seed Trees
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
     }
     
     private void initialiseResources() {

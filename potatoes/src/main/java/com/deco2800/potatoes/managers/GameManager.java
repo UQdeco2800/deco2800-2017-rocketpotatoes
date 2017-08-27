@@ -69,8 +69,7 @@ public class GameManager implements TickableManager {
 			Constructor<?> ctor = type.getConstructor();
 			this.addManager((Manager) ctor.newInstance());
 		} catch (Exception e) {
-			// Gotta catch 'em all
-			e.printStackTrace();
+			LOGGER.error("Failed to create new manager.", e);
 		}
 
 		/* And then return it */

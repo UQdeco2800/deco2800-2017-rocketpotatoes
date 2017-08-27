@@ -5,8 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
-import com.deco2800.potatoes.entities.SeedResource;
+import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -52,21 +53,28 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				((InitialWorld) (world)).deSelectAll();
 			}
 		}
-		int realX = (int)Math.floor(coords.x);
-		int realY = (int)Math.floor(coords.y);
+		int realX = (int) Math.floor(coords.x);
+		int realY = (int) Math.floor(coords.y);
 		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
 			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
 					.getManager(MultiplayerManager.class);
+			AbstractTree newTree;
+			// Select random tree, and either make it in singleplayer or broadcast it in mp
+			switch ((int) (Math.random() * 3 + 1)) {
+				case 1:
+					newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
+					break;
+				case 2:
+					newTree = new ResourceTree(realX, realY, 0);
+					break;
+				default:
+					newTree = new Tower(realX, realY, 0);
+					break;
+			}
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				if (button == 0) {
-					// Adds a projectile tree
-					GameManager.get().getWorld().addEntity(new Tower(realX, realY, 0));
-				} else {
-					// Adds a resource tree
-					GameManager.get().getWorld().addEntity(new ResourceTree(realX, realY, 0, new SeedResource()));
-				}
+				AbstractTree.constructTree(newTree);
 			} else {
-				multiplayerManager.broadcastBuildOrder(realX, realY);
+				multiplayerManager.broadcastBuildOrder(newTree);
 			}
 		}
 

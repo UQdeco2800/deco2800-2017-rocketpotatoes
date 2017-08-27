@@ -6,17 +6,18 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.gui.MainMenuGui;
-import com.deco2800.potatoes.gui.OptionsMenuGui;
-import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
 
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
@@ -27,11 +28,12 @@ import com.deco2800.potatoes.managers.TextureManager;
 public class MainMenuScreen implements Screen {
     private RocketPotatoes game;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainMenuScreen.class);
+
     private SpriteBatch batch;
     private Stage stage;
 
     private MainMenuGui mainMenuGui;
-    private OptionsMenuGui optionsMenuGui;
     private OrthographicCamera camera;
     private TextureManager texturemanager;
 
@@ -42,7 +44,7 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         // TODO config?
         camera.setToOrtho(false, 1920, 1080);
-        //game screen background
+        // game screen background
         texturemanager=(TextureManager)GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
@@ -55,10 +57,12 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    /**
+     * Creates GUI.
+     */
     private void setupGui() {
         mainMenuGui = new MainMenuGui(stage, this);
     }
-
 
     /**
      * Called when the screen should render itself.
@@ -73,12 +77,14 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: "+ Gdx.graphics.getFramesPerSecond());
+        Gdx.graphics.setTitle("DECO2800 " + this.getClass().getCanonicalName() +  " - FPS: " +
+                Gdx.graphics.getFramesPerSecond());
 
         // Draw/update gui
         stage.act();
         stage.getBatch().begin();
-        stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
         stage.getBatch().end();
         
         stage.draw();
@@ -143,18 +149,83 @@ public class MainMenuScreen implements Screen {
 
     }
 
+    /**
+     * Start a singleplayer game.
+     */
     public void startSinglePlayer() {
         game.setScreen(new GameScreen(game));
     }
 
-    public void startMultiplayer(String name, String IP, int port, boolean isHost) {
+    /**
+     * Start / join a multiplayer game.
+     * @param name name of player
+     * @param ip IP address to connect to
+     * @param port Port to connect to
+     * @param isHost whether starting multiplayer as host
+     */
+    public void startMultiplayer(String name, String ip, int port, boolean isHost) {
         try {
-            game.setScreen(new GameScreen(game, name, IP, port, isHost));
+            game.setScreen(new GameScreen(game, name, ip, port, isHost));
         }
         catch (Exception ex) {
-            // TODO handle this stuff yo
-            ex.printStackTrace();
+            // TODO handle a failed connection.
+            LOGGER.warn("Failed to get connect to host.", ex);
             System.exit(-1);
         }
     }
+
+    /**
+     * Gets the string of the host's LocalHost IP address.
+     */
+    public static String multiplayerHostAddress() {
+        // TODO: Get Actual IP Addresses, not just the local host
+        try {
+            InetAddress ip = InetAddress.getLoopbackAddress();
+            return ip.getHostAddress();
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to get host IP address.", ex);
+        }
+        return "Couldn't find IP address";
+
+    }
+
+    /**
+     * Sets the sound effects volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
+    public void setEffectsVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setEffectsVolume(v);
+    }
+
+    /**
+     * Returns the current sound effects volume from SoundManager.
+     * @return float from 0 to 1.
+     */
+    public float getEffectsVolume(){
+        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getEffectsVolume();
+    }
+
+    /**
+     * Sets the music volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
+    public void setMusicVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+    }
+
+    /**
+     * Returns the current music volume from SoundManager.
+     * @return float from 0 to 1.
+     */
+    public float getMusicVolume(){
+        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMusicVolume();
+    }
+
+    /**
+     * Plays a blip sound.
+     */
+    public void menuBlipSound(){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
+    }
+
 }

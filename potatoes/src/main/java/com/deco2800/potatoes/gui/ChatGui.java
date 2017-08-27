@@ -26,7 +26,7 @@ public class ChatGui extends Gui {
     private TextField textField;
     private Button sendButton;
 
-    //icc
+    // Chat state initialisation
     private TextButton minButton;
     private enum chatStates{
         CHAT,
@@ -72,7 +72,7 @@ public class ChatGui extends Gui {
             }
         });
 
-        //icc Button to minimise chat
+        // Button to minimise chat
         minButton = new TextButton("Hide Chat", uiSkin);
         minButton.addListener(new ChangeListener(){
             @Override
@@ -88,7 +88,6 @@ public class ChatGui extends Gui {
                         resetGui(stage);
                         break;
                 }
-               // resetGui(stage);
             }
         });
 
@@ -157,9 +156,8 @@ public class ChatGui extends Gui {
 
     private void resetGui(Stage stage) {
         table.reset();
-        //table.debugAll();
 
-        //icc
+        // Hidden vs Chat states for reset
         switch (cState){
             case CHAT:
                 table.add(minButton).height(30.0f).padLeft(Align.left);
@@ -184,11 +182,11 @@ public class ChatGui extends Gui {
                 textList.getColor().a = 1.0f / table.getColor().a;
                 break;
 
-        case HIDDEN:
-            table.add(minButton).height(30.0f).align(Align.left);
-            table.left().bottom();
-            minButton.setText("Show Chat");
-            break;
+            case HIDDEN:
+                table.add(minButton).height(30.0f).align(Align.left);
+                table.left().bottom();
+                minButton.setText("Show Chat");
+                break;
         }
     }
 

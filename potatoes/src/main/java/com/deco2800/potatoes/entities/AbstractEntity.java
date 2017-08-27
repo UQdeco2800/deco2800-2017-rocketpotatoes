@@ -21,9 +21,11 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	private boolean centered;
 
+	private boolean staticCollideable = false;
+
 	private String texture = "error_box";
-	
-	public int rotateAngle(){
+
+	public int rotateAngle() {
 		return 0;
 	}
 
@@ -31,9 +33,8 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * Default constructor for the purposes of serialization
 	 */
 	public AbstractEntity() {
-		// empty for serialization
+		this(0, 0, 0, 0, 0, 0, "error_box");
 	}
-
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -125,27 +126,23 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
 		this.centered = centered;
-		
+
 		this.texture = texture;
 
-		if (centered) {
-			posX += (1 - xLength / 2);
-			posY += (1 - yLength / 2);
-		}
-		this.position = new Box3D(posX, posY, posZ, xLength, yLength, zLength);
+		System.out.println("const:x:" + posX + ":wid:" + xLength);
+		this.position = new Box3D(posX + getCenterOffset(xLength), posY + getCenterOffset(yLength), posZ, xLength,
+				yLength, zLength);
 	}
 
 	/**
-	 * Get the X coordinate of this AbstractEntity.
+	 * Get the X coordinate of this AbstractEntity. This may have a bug, please
+	 * check before using.
 	 * 
 	 * @return The X coordinate.
 	 */
 	public float getPosX() {
-		float x = position.getX();
-		if (this.centered) {
-			x -= (1 - this.position.getYLength() / 2);
-		}
-		return x;
+		// Using Y offset seems wrong but passes test and leggy was using Y offset here
+		return position.getX() - getCenterOffsetY();
 	}
 
 	/**
@@ -154,11 +151,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * @return The Y coordinate.
 	 */
 	public float getPosY() {
-		float y = position.getY();
-		if (this.centered) {
-			y -= (1 - this.position.getYLength() / 2);
-		}
-		return y;
+		return position.getY() - getCenterOffsetY();
 	}
 
 	/**
@@ -181,27 +174,17 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            The z-coordinate.
 	 */
 	public void setPosition(float x, float y, float z) {
-		if (this.centered) {
-			y += (1 - this.position.getYLength() / 2);
-			x += (1 - this.position.getXLength() / 2);
-		}
-		this.position.setX(x);
-		this.position.setY(y);
-		this.position.setZ(z);
+		setPosX(x);
+		setPosY(y);
+		setPosZ(z);
 	}
 
 	public void setPosX(float x) {
-		if (this.centered) {
-			x += (1 - this.position.getXLength() / 2);
-		}
-		this.position.setX(x);
+		this.position.setX(x + getCenterOffsetX());
 	}
 
 	public void setPosY(float y) {
-		if (this.centered) {
-			y += (1 - this.position.getYLength() / 2);
-		}
-		this.position.setY(y);
+		this.position.setY(y + getCenterOffsetY());
 	}
 
 	public void setPosZ(float z) {
@@ -271,6 +254,14 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 	/**
+	 * Sets this entity to be a static collideable entity that gets pathed around
+	 * when considering path finding in the PathManager
+	 *
+	 * @param staticCollideable true iff this entity is intended to be stationary and have a collision box
+	 */
+	public void setStaticCollideable(boolean staticCollideable) { this.staticCollideable = staticCollideable; }
+
+	/**
 	 * Allows sorting of WorldEntities for Isometric rendering
 	 * 
 	 * @param o
@@ -284,19 +275,19 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		float isoX = ((cartX - cartY) / 2.0f);
 		float isoY = ((cartX + cartY) / 2.0f);
 
-		float cartX_o = o.getPosX();
-		float cartY_o = gameManager.getWorld().getLength() - o.getPosY();
+		float otherCartX = o.getPosX();
+		float otherCartY = gameManager.getWorld().getLength() - o.getPosY();
 
-		float isoX_o = ((cartX_o - cartY_o) / 2.0f);
-		float isoY_o = ((cartX_o + cartY_o) / 2.0f);
-		
-		if (Float.compare(isoY, isoY_o) == 0) {
-			return Float.compare(isoX_o, isoX);
-		} 
-		if(o instanceof ExplosionProjectile) {
+		float otherIsoX = ((otherCartX - otherCartY) / 2.0f);
+		float otherIsoY = ((otherCartX + otherCartY) / 2.0f);
+
+		if (Float.compare(isoY, otherIsoY) == 0) {
+			return Float.compare(otherIsoX, isoX);
+		}
+		if (o instanceof ExplosionProjectile) {
 			return 2;
 		}
-		return Float.compare(isoY_o, isoY);
+		return Float.compare(otherIsoY, isoY);
 	}
 
 	@Override
@@ -335,20 +326,57 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	public float distance(AbstractEntity entity) {
 		return this.getBox3D().distance(entity.getBox3D());
 	}
-	
 
 	/**
 	 * Calculates the distance this entity and the given coordinates.
-	 * @param x	The x-coordinate.
-	 * @param y	The y-coordinate.
-	 * @param z	The z-coordinate.
-	 * @return	Returns the euclidean distance between this and the specified coordinates.
+	 * 
+	 * @param x
+	 *            The x-coordinate.
+	 * @param y
+	 *            The y-coordinate.
+	 * @param z
+	 *            The z-coordinate.
+	 * @return Returns the euclidean distance between this and the specified
+	 *         coordinates.
 	 */
 	public float distance(float x, float y, float z) {
 		return this.getBox3D().distance(x, y, z);
 	}
-	
+
 	public void moveTowards(float x, float y, float z) {
-		
+
+	}
+
+	/**
+	 * Gets the offset if this entity is centered, 0 if it isn't. The offset is 1 -
+	 * size / 2
+	 */
+	private float getCenterOffset(float size) {
+		return this.centered ? (1 - size / 2) : 0;
+	}
+
+	/**
+	 * Returns the centered offset for X
+	 */
+	private float getCenterOffsetX() {
+		return getCenterOffset(this.position.getXLength());
+	}
+
+	/**
+	 * Returns the centered offset for Y
+	 */
+	private float getCenterOffsetY() {
+		return getCenterOffset(this.position.getYLength());
+	}
+
+
+	/**
+	 * Checks if this entity is a static collideable entity that gets pathed around
+	 * when considering path finding in the PathManager
+	 *
+	 * @return true iff this entity is intended to be stationary and have a collision box
+	 */
+	public boolean isStaticCollideable() {
+		return this.staticCollideable;
 	}
 }
