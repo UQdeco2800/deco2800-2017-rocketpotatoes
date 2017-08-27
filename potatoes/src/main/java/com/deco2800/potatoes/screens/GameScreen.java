@@ -77,8 +77,8 @@ public class GameScreen implements Screen {
         // setup multiplayer
         if (isHost) {
             multiplayerManager.createHost(port);
-            // ToDo: make IP address configurable
-            multiplayerManager.joinGame(name, IP, port);
+            // Loopback for host's connection to itself
+            multiplayerManager.joinGame(name, "127.0.0.1", port);
         } else {
             multiplayerManager.joinGame(name, IP, port);
         }
