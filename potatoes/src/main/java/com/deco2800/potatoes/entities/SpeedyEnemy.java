@@ -4,11 +4,23 @@ package com.deco2800.potatoes.entities;
 import java.util.*;
 
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A class for speedy enemy
@@ -36,12 +48,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-        //this.steal
+        // this.steal
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();
     }
-    /*
+
     private void steal() {
         double interactRange = 3f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
@@ -53,7 +65,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
         }
 
     }
-    **/
+
 
 
 
@@ -86,7 +98,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// Optional<AbstractEntity> target =
 	// WorldUtil.getClosestEntityOfClass(ResourceTree.class, getPosX(), getPosY());
 	//
-	// //get the position of the target
+	// // get the position of the target
 	// float goalX = target.get().getPosX();
 	// float goalY = target.get().getPosY();
 	//
@@ -128,7 +140,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// if (!collided) {
 	// setPosX(getPosX() + changeX);
 	// setPosY(getPosY() + changeY);
-	// //speedy enemy change direction if something blocked.
+	// // speedy enemy change direction if something blocked.
 	//
 	// if(this.getPosX()>goalX){
 	// this.setTexture(TEXTURE);

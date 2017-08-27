@@ -26,7 +26,7 @@ public class ChatGui extends Gui {
     private TextField textField;
     private Button sendButton;
 
-    //icc
+    // icc
     private TextButton minButton;
     private enum chatStates{
         CHAT,
@@ -72,7 +72,7 @@ public class ChatGui extends Gui {
             }
         });
 
-        //icc Button to minimise chat
+        // icc Button to minimise chat
         minButton = new TextButton("Hide Chat", uiSkin);
         minButton.addListener(new ChangeListener(){
             @Override
@@ -159,7 +159,7 @@ public class ChatGui extends Gui {
         table.reset();
         //table.debugAll();
 
-        //icc
+        // icc
         switch (cState){
             case CHAT:
                 table.add(minButton).height(30.0f).padLeft(Align.left);

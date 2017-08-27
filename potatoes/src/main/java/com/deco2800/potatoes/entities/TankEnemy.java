@@ -21,6 +21,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final BasicStats STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 400f;
+	private static final transient float attackRange = 0.5f;
+	private static final transient int attackSpeed = 1000;
 
 	private static float speed = 0.02f;
 	private static Class<?> goal = Tower.class;
@@ -60,7 +62,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(HEALTH, speed, .5f, 1000, normalEvents, TEXTURE);
+		BasicStats result = new BasicStats(HEALTH, speed, attackRange, attackSpeed, normalEvents, TEXTURE);
 		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed()));
 		return result;
 	}
@@ -97,11 +99,11 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	// @Override
 	// public void onTick(long i) {
 	//
-	//// //set the target of tankEnemy to the closest goal
+	// // //set the target of tankEnemy to the closest goal
 	// Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal,
 	// getPosX(), getPosY());
 	//
-	// //get the position of the target
+	// // get the position of the target
 	// float goalX = target.get().getPosX();
 	// float goalY = target.get().getPosY();
 	//
@@ -145,7 +147,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	// if (!collided) {
 	// setPosX(getPosX() + changeX);
 	// setPosY(getPosY() + changeY);
-	// //tankEnemy changes direction when moving towards tree/tower
+	// // tankEnemy changes direction when moving towards tree/tower
 	//
 	// if(this.getPosX()>goalX){
 	// this.setTexture(TEXTURE);
