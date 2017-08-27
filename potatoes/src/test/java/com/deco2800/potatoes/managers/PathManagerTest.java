@@ -15,7 +15,7 @@ public class PathManagerTest {
 
         Path p = m.generatePath(start, finish);
 
-        assertEquals(p.nextPoint(), start);
-        assertEquals(p.goal(), finish);
+        assertEquals(start, p.nextPoint());
+        assertEquals(finish, p.goal());
     }
 }

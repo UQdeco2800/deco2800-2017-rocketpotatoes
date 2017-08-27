@@ -33,6 +33,8 @@ public class PathManager extends Manager {
      */
     public PathManager() {
         spanningTree = new HashMap<>();
+        nodes = new HashSet<>();
+        edges = new HashMap<>();
     }
 
 
@@ -45,10 +47,12 @@ public class PathManager extends Manager {
      */
     public void initialise(Box3D player) {
         this.lastPlayerPosition = player;
-        this.nodes = new HashSet<>();
-        this.edges = new HashMap<>();
+        nodes.clear();
+        edges.clear();
 
         AbstractWorld world = GameManager.get().getWorld();
+
+        nodes.add(player);
 
         //add points in corners of map
         nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0));//left
@@ -152,8 +156,7 @@ public class PathManager extends Manager {
      * new paths for enemies.
      *
      * @param start The initial vertex within the graph where the search starts, and where each generated path will end.
-     * @param vertices The vertices of the graph of internode connections. This set is effectively destroyed by the
-     * time this function has completed.
+     * @param vertices The vertices of the graph of internode connections.
      * @param edges The edges of the graph of internode connections.
      */
     private void optimiseGraph(Box3D start, Set<Box3D> vertices, Map<DoubleBox3D, Float> edges) {
@@ -172,13 +175,11 @@ public class PathManager extends Manager {
                     current = other;
                 }
             }
+            vertices.remove(current);
             workQueue.remove(current);
 
             // TODO make this more efficient by improving the way we store the graph
             for (Box3D other : vertices) {
-                if (other.equals(current)) {
-                    continue;
-                }
 
                 DoubleBox3D pair = new DoubleBox3D(current, other);
 
@@ -214,8 +215,8 @@ public class PathManager extends Manager {
      */
     public Path generatePath(Box3D start, Box3D goal) {
         ArrayDeque<Box3D> nodes = new ArrayDeque<>();
-        if (spanningTree.size() == 0 || goal != lastPlayerPosition) {
-            initialise(start);
+        if (spanningTree.size() == 0 || !goal.equals(lastPlayerPosition)) {
+            initialise(goal);
         }
         nodes.add(start);
         if (spanningTree.size() == 0) {

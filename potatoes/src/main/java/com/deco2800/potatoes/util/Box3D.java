@@ -280,4 +280,9 @@ public class Box3D {
 
 	}
 
+    @Override
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ", " + getZ() + ")";
+    }
+
 }
