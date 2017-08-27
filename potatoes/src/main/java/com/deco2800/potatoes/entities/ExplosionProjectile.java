@@ -74,7 +74,9 @@ public class ExplosionProjectile extends Projectile {
 
         }
     }
-
+    /**
+     * Returns Damage value
+     */
     @Override
     public float getDamage() {
         return DAMAGE;

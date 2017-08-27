@@ -128,7 +128,9 @@ public class HomingProjectile extends Projectile {
 
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 	}
-
+	/**
+	 * Returns rotated angle value
+	 */
 	public int rotateAngle() {
 		return rotateAngle;
 	}
@@ -184,7 +186,9 @@ public class HomingProjectile extends Projectile {
 				GameManager.get().getWorld().removeEntity(this);
 //				float AOE_width = 5f;
 //				float AOE_height = 2f;
-
+				/**
+				 * Spawn explosion effect when projectile hits entity
+				 */
 				ExplosionEffect expEffect = new ExplosionEffect(goalX,goalY, goalZ, 5f, 5f, 0,
 				1f,1f);
 				GameManager.get().getWorld().addEntity(expEffect);
@@ -198,7 +202,9 @@ public class HomingProjectile extends Projectile {
 			GameManager.get().getWorld().removeEntity(this);
 		}
 	}
-
+	/**
+	 * Returns Damage value
+	 */
 	@Override
 	public float getDamage() {
 		return DAMAGE;

@@ -17,7 +17,9 @@ public class ExplosionEffect extends Projectile {
         // empty for serialization
 
     }
-
+    /**
+     * Returns damage value, value will always be 0 because this is just showing animation
+     */
     @Override
     public float getDamage() {
         return 0;

@@ -132,7 +132,9 @@ public class BallisticProjectile extends Projectile {
 
         rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
     }
-
+    /**
+     * Returns rotated angle value
+     */
     public int rotateAngle() {
         return rotateAngle;
     }
@@ -161,7 +163,7 @@ public class BallisticProjectile extends Projectile {
                 GameManager.get().getWorld().removeEntity(this);
 
                 /**
-                 * Spawn explosion when projectile hits entity
+                 * Spawn AOE explosion when projectile hits entity
                  */
                 ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
                         AOE_width, AOE_height, 0, AOE_width, AOE_height, aoeDAMAGE);
@@ -176,6 +178,10 @@ public class BallisticProjectile extends Projectile {
         }
     }
 
+    /**
+     * Updates target pos
+     *
+     **/
     public void updatePos() {
         maxRange = false;
         if (RANGE < speed) {
