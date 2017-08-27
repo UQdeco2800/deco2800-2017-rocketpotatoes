@@ -1,36 +1,46 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+
 
 /**
  * A generic player instance for the game
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
+
 	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient String TEXTURE_RIGHT = "squirrel2";
+	private static final transient String TEXTURE_RIGHT = "squirrel_right";
 	private static final transient float HEALTH = 100f;
 
-	private static float speed = 0.1f;
+	/*Testing attacking*/
+	private static final BasicStats STATS = initStats();
+	/*Testing attacking*/
+
+
+	private static float speed = 0.04f;
 	private static Class<?> goal = Player.class;
 
-	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50, 1);	
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", 40, 1);	
 	
 	public Squirrel() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 	}
+	
 
 //	@Override
 //	public void onTick(long i) {
@@ -93,7 +103,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 //		}
 //	}
 
-	
 	@Override
 	public String toString() {
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
@@ -102,6 +111,18 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
+	}
+
+	private static BasicStats initStats() {
+		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+		BasicStats result = new BasicStats(200, 500, 8f, 500, normalEvents,"squirrel");
+		//result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+		return result;
+	}
+
+	@Override
+	public BasicStats getBasicStats() {
+		return STATS;
 	}
 
 }

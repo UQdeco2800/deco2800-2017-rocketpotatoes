@@ -33,6 +33,7 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
+
     	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
@@ -51,10 +52,12 @@ public class TextureManager extends Manager {
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
 		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
-        saveTexture("squirrel2", "resources/placeholderassets/squirrelFaceRight.png");
+        saveTexture("squirrel2", "resources/placeholderassets/squirrel_right.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
+        saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
+        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");
         saveTexture("progress_bar","resources/placeholderassets/progress_bar.png");
 		saveTexture("seed", "resources/placeholderassets/seed.png");
 		saveTexture("food", "resources/placeholderassets/food.png");
@@ -73,8 +76,7 @@ public class TextureManager extends Manager {
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
         saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
-
-
+        
     }
 
     /**

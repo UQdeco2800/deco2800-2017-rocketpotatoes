@@ -208,6 +208,7 @@ public class GameScreen implements Screen {
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+
             for (int i = 0; i < 3; i++) {
                 GameManager.get().getWorld().addEntity(
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
