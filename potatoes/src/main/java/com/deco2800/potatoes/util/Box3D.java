@@ -209,6 +209,28 @@ public class Box3D {
 		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 	}
 
+	//TODO desc
+	public boolean doesIntersectLine(float x1, float y1, float z1, float x2, float y2, float z2) {
+		float fMin = 0;
+		float fMax = 1;
+
+		float[] lineMin = {Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2)};
+		float[] lineMax = {Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)};
+		float[] boxMin = {this.x, this.y, this.z};
+		float[] boxMax = {this.x + this.xLength, this.y + this.yLength, this.z + this.zLength};
+
+		for (int i = 0; i < 3; i++) {
+			float lineDist = lineMax[i] - lineMin[i];
+			if (lineDist != 0) {
+				fMin = Math.max(fMin, (boxMax[i] - lineMin[i]) / lineDist);
+				fMax = Math.min(fMax, (boxMax[i] - lineMax[i]) / lineDist);
+				if (fMin > fMax) { return false;}
+			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
+
+		}
+		return true;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y, z, xLength, yLength, zLength);
