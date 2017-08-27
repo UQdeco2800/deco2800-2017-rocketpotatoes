@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.esotericsoftware.kryonet.Connection;
@@ -138,8 +137,8 @@ public class ServerMessageProcessor {
      */
     private static void processBuildOrderMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                                  Network.ClientBuildOrderMessage m) {
-        if (!WorldUtil.getEntityAtPosition(m.x, m.y).isPresent()) {
-            GameManager.get().getWorld().addEntity(new Tower(m.x, m.y, 0));
+        if (!WorldUtil.getEntityAtPosition(m.tree.getPosX(), m.tree.getPosY()).isPresent()) {
+            GameManager.get().getWorld().addEntity(m.tree);
         }
     }
 

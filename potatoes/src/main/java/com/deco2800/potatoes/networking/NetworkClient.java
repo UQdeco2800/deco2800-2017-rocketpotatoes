@@ -2,6 +2,7 @@ package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
@@ -138,14 +139,11 @@ public class NetworkClient {
 
     /**
      * Tells the server we want to build something somewhere
-     * @param x coord
-     * @param y coord
+     * @param tree Tree to build
      */
-    public void broadcastBuildOrder(int x, int y) {
+    public void broadcastBuildOrder(AbstractTree tree) {
         ClientBuildOrderMessage m = new ClientBuildOrderMessage();
-        m.x = x;
-        m.y = y;
-
+        m.tree = tree;
         client.sendTCP(m);
     }
 
