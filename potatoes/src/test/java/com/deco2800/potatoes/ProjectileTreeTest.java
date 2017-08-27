@@ -82,6 +82,5 @@ public class ProjectileTreeTest {
 		testTree.getProgressRatio();
 		testTree.setMaxProgress(1);
 		testTree.getMaxProgress();
-		testTree.constructTree(new ProjectileTree(12, 12, 0, "real_tree", RELOAD, RANGE, HEALTH));
 	}
 }
