@@ -13,21 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class ClientMessageProcessorTest {
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidMessage() {
-        NetworkClient nc = new NetworkClient();
-        Object message = new Object();
-        ClientMessageProcessor.processMessage(nc, message);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidMessageWhenReady() {
-        NetworkClient nc = new NetworkClient();
-        nc.ready = true;
-        Object message = new Object();
-        ClientMessageProcessor.processMessage(nc, message);
-    }
-
     @Test
     public void testConnectionConfirmMessage() {
         NetworkClient nc = new NetworkClient();

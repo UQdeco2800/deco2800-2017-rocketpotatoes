@@ -57,12 +57,6 @@ public class ClientMessageProcessor {
             else if (object instanceof Network.HostChatMessage) {
                 chatMessage(client, (Network.HostChatMessage) object);
             }
-            else {
-                throw new IllegalArgumentException("Unhandled message type: " + object);
-            }
-        }
-        else {
-            throw new IllegalArgumentException("Unhandled message type: " + object);
         }
     }
 
