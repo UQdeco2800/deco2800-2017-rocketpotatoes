@@ -18,13 +18,18 @@ public class TreeProjectileShootEventTest {
     private static final float HEALTH = 10f;
     private static final float RANGE = 8f;
     ProjectileTree testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
+
     @Test
     public void emptyTest() {
         TreeProjectileShootEvent nullEvent = new TreeProjectileShootEvent();
     }
+
+    @Test
     public void copyTest() {
         testEvent.copy();
     }
+
+    @Test
     public void actionTest() {
         GameManager.get().setWorld(new TestWorld());
         GameManager.get().getWorld().addEntity(testTree);

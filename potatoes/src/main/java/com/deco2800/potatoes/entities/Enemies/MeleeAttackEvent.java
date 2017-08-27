@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.Enemies;
 
 import java.util.Optional;
+
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -10,7 +11,7 @@ import com.deco2800.potatoes.util.WorldUtil;
  *
  * -Implementation inspired by "../trees/TreeProjectileShootEvent" - ty trees team
  **/
-public class MeleeAttackEvent extends TimeEvent<EnemyEntity>{
+public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 
     /**
      * Default constructor for serialization
@@ -37,7 +38,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity>{
      *          The enemy that this melee attack belongs to
      * */
     public void action(EnemyEntity enemy) {
-        Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Squirrel.class, enemy.getPosX(),
+        Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Player.class, enemy.getPosX(),
                 enemy.getPosY());
 
         //no target exists or target is out of range
@@ -45,12 +46,14 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity>{
             return;
         }
 
-        /*Have to make sure appropriate projectile is used*/
+        /*Currently BallisticProjectile assumes Enemies are the ones being attacked which results in
+        * the enemies that are shooting being the ones being damaged (suicidal), requires re-thinking:
+        * create entirely new EnemyMelee attack or re-work projectiles?*/
         GameManager.get().getWorld().addEntity(new BallisticProjectile(
-                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, .5f, 10f, 0f));
+                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, .4f, 1, 1));
 
         /*If the enemy this attack event belongs to, stop firing
-        * !DOES NOT REMOVE EVENT, JUST STOPS REPEATING IT!*/
+        * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/
         if (enemy.isDead()) {
             setDoReset(false);
         }

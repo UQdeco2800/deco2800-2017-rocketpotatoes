@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 
 
 /**
