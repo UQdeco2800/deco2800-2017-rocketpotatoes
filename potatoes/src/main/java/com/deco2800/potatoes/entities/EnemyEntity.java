@@ -230,6 +230,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	}
 
+	/**
+	 * Registers the list of events given with the event manager and unregisters all
+	 * other events for this object
+	 */
 	private void registerNewEvents(List<TimeEvent<EnemyEntity>> events) {
 		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
 		eventManager.unregisterAll(this);

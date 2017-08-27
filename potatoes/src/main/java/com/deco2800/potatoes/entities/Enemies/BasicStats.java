@@ -21,7 +21,6 @@ public class BasicStats {
     private float attackSpeed = 500;
     private float health = 100f;
     private float range = 0;
-   // private Class<?> goal = Squirrel.class;
 
     private List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
     private String texture = "";
