@@ -31,12 +31,13 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasProgress {
 	
 
 
-	public TankEnemy() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+	public TankEnemy()
+	{
+	//	super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 	}
 
 	public TankEnemy(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+		//super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
 
 		//this.setTexture("squirrel");
 		//this.random = new Random();
