@@ -13,6 +13,14 @@ public class Path {
     private float angle;
 
     /**
+     * Creates a new path, with no nodes.
+     */
+    public Path() {
+        this.nodes = new ArrayDeque<Box3D>();
+        this.angle = 0;
+    }
+
+    /**
      * Creates a new path, with given nodes.
      * @param nodes - List of positions in path to target.
      */
@@ -108,4 +116,27 @@ public class Path {
         return new Box3D(nodes.getLast());
     }
 
+    /**
+     * add node to end of path
+     * @param node
+     */
+    public void addNode(Box3D node) {
+        nodes.add(node);
+    }
+
+    /**
+     * Checks if there are any more nodes left on the path
+     *
+      * @return true iff there are no more nodes in the path
+     */
+    public boolean isEmpty() { return nodes.isEmpty(); }
+
+    /**
+     * Gets the next point and removes it from the que
+     *
+     * @return A Box3D representation of the point.
+     */
+    public Box3D pop() {
+        return nodes.pop();
+    }
 }

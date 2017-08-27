@@ -86,6 +86,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		/* Path Manager, for enemy movement */
 		pathManager = new PathManager();
+		GameManager.get().addManager(pathManager);
 
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our stage etc.
@@ -218,8 +219,7 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		}
 
-		pathManager.setWorld(GameManager.get().getWorld());
-		pathManager.initialiseGraph();
+		pathManager.initialise();
 	}
 
 	private void tickGame(long timeDelta) {

@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.worlds.AbstractWorld;
@@ -24,14 +25,18 @@ public class PathManager extends Manager {
     private Set<Box3D> nodes = new HashSet<>();
     private Map<DoubleBox3D, Float> edges = new HashMap<>();
     private Map<Box3D, Boolean> directNode = new HashMap<>(); //nodes which have a direct line of sight
+    private float lastPlayerX = -9999;
+    private float lastPlayerY = -9999;
 
+
+    /**
+     *
+     */
     public PathManager() {
         spanningTree = new HashMap<>();
     }
 
 
-
-    private AbstractWorld world;
 
     private static float nodeOffset = (float) 0.5;
 
@@ -39,19 +44,18 @@ public class PathManager extends Manager {
      * Populates the internal graph representation of the path manager, based on the initial world state.
      * Should be run after loading the map
      */
-    public void initialiseGraph() {
+    public void initialise() {
         this.nodes = new HashSet<>();
         this.edges = new HashMap<>();
 
+        AbstractWorld world = GameManager.get().getWorld();
+
         //add points in corners of map
-        nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, //left
-                0, 0, 0, 0));
-        nodes.add(new Box3D(this.world.getWidth() - this.nodeOffset, 0 + this.nodeOffset, //top
-                0, 0, 0, 0));
-        nodes.add(new Box3D(0 + this.nodeOffset, this.world.getLength() - this.nodeOffset, //bottom
-                0, 0, 0, 0));
-        nodes.add(new Box3D(this.world.getWidth() - this.nodeOffset, this.world.getLength() - this.nodeOffset, //right
-                0, 0, 0, 0));
+        nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0));//left
+        nodes.add(new Box3D(world.getWidth() - this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0)); //top
+        nodes.add(new Box3D(0 + this.nodeOffset, world.getLength() - this.nodeOffset, 0, 0, 0, 0)); //bottom
+        nodes.add(new Box3D(world.getWidth() - this.nodeOffset, world.getLength() - this.nodeOffset, 0, 0, 0, 0)); //right
+
 
         //loop through entities, put nodes off of corners
         for (AbstractEntity e : world.getEntities().values()) {
@@ -67,14 +71,13 @@ public class PathManager extends Manager {
             }
         }
 
-
         //potentially make random nodes here
 
         //loop through all nodes and all entities, removing any nodes that intersect with the entity
         Set<Box3D> removedNodes = new HashSet<>();
         for (Box3D node : this.nodes) {
-            for (AbstractEntity e : world.getEntities().values()) {
-                if (e.isStaticCollideable() && e.getBox3D().overlaps(node)) {
+            for (AbstractEntity entity : world.getEntities().values()) {
+                if (entity.isStaticCollideable() && entity.getBox3D().overlaps(node)) {
                     removedNodes.add(node);
                 }
             }
@@ -92,9 +95,9 @@ public class PathManager extends Manager {
             for (Box3D node2 : this.nodes) {
                 if (node1 == node2) { break; }
                 doesCollide = false;
-                for (AbstractEntity e : world.getEntities().values()) {
-                    if (e.isStaticCollideable() &&
-                            e.getBox3D().doesIntersectLine(node1.getX(),node1.getY(),0,node2.getX(), node2.getY(),0)) {
+                for (AbstractEntity entity : world.getEntities().values()) {
+                    if (entity.isStaticCollideable() &&
+                            entity.getBox3D().doesIntersectLine(node1.getX(),node1.getY(),0,node2.getX(), node2.getY(),0)) {
                         doesCollide = true;
                         break;
                     }
@@ -112,32 +115,38 @@ public class PathManager extends Manager {
 
     /**
      * To be run on every game tick, the pathManager needs to know the location of the player
+     * It set the path of sqirrels on the map that have run into a wall //TODO
      *
      * @param player coordinates of the player
      */
     public void onTick(Box3D player) {
+        AbstractWorld world = GameManager.get().getWorld();
 
-        //TODO if player hasn't moved since last tick, can skip this
+        //if player hasn't moved since last tick, can skip this
+        float playerX = player.getX() + (player.getXLength() / 2); //centre x of player
+        float playerY = player.getY() + (player.getYLength() / 2); //centre y of player
 
-        //populates directNode
-        boolean doesCollide;
-        for (Box3D node : this.nodes) {
-            doesCollide = false;
-            for (AbstractEntity e : world.getEntities().values()) {
-                if (e.isStaticCollideable() &&
-                        e.getBox3D().doesIntersectLine(node.getX(),node.getY(),0,player.getX(), player.getY(),0)) {
-                    doesCollide = true;
-                    break;
+        if (playerX != this.lastPlayerX || playerY != this.lastPlayerY ) {
+            this.lastPlayerX = playerX;
+            this.lastPlayerY = playerY;
+
+            //populates directNode, nodes which have a direct line of sight
+            boolean doesCollide;
+            for (Box3D node : this.nodes) {
+                doesCollide = false;
+                for (AbstractEntity entity : world.getEntities().values()) {
+                    if (entity.isStaticCollideable() &&
+                            entity.getBox3D().doesIntersectLine(node.getX(), node.getY(), 0, player.getX(), player.getY(), 0)) {
+                        doesCollide = true;
+                        break;
+                    }
                 }
-            }
-            if(!doesCollide) {
-                this.directNode.put(node, true);
+                if (!doesCollide) {
+                    this.directNode.put(node, true);
+                }
             }
         }
 
-
-
-        //for ( Map.Entry<DoubleBox3D, Float> edge : this.edges.entrySet()) {
     }
 
     /**
@@ -198,6 +207,13 @@ public class PathManager extends Manager {
 
     }
 
+    public Path generatePathPlayer() {
+        Path path = new Path();
+        path.addNode(new Box3D(0, 0, 0, 0, 0, 0));
+        path.addNode(new Box3D(5, 5, 0, 0, 0, 0));
+        return path;
+    }
+
     /**
      * Allocates a path to a given entity. Not guaranteed to be the optimal path, but at the time it is created it will
      * have no collisions. Paths cannot be shared by multiple entities.
@@ -227,14 +243,6 @@ public class PathManager extends Manager {
         return new Path(nodes);
     }
 
-    /**
-     * Sets the world state so that it can be accessed when generating paths
-     *
-     * @param world the current state of the world
-     */
-    public void setWorld(AbstractWorld world) {
-        this.world = world;
-    }
 
     /**
      * An unordered pair of two 3D boxes. Used as the keys in the mapping from edges to weights in the interal graph
