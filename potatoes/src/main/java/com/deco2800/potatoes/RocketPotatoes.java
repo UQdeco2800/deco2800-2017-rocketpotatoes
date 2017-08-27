@@ -194,11 +194,12 @@ public class RocketPotatoes extends ApplicationAdapter implements ApplicationLis
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			for (int i = 0; i < 5; i++) {
-				GameManager.get().getWorld().addEntity(new Squirrel(
-						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-			}
+//			for (int i = 0; i < 5; i++) {
+//				GameManager.get().getWorld().addEntity(new Squirrel(
+//						10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+//			}
 
+			GameManager.get().getWorld().addEntity(new Squirrel(10,10,0));
 			GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));

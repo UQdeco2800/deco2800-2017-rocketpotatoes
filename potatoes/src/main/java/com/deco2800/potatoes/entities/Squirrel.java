@@ -8,6 +8,7 @@ import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.Path;
 
 /**
  * A generic player instance for the game
@@ -38,42 +39,49 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
 		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
 
-		if(this.distance(playerManager.getPlayer()) < speed) {
-			this.setPosX(goalX);
-			this.setPosY(goalY);
-			return;
-		}
+		PathManager pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
 
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
+		Path nodes = pathManager.generatePath(this.getBox3D(),playerManager.getPlayer().getBox3D());
 
-		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
 
-		Box3D newPos = getBox3D();
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
-		
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
-				if(entity instanceof Player) {
-					//soundManager.playSound("ree1.wav");
-				}
-				collided = true;
-			}
-		}
-
-		if (!collided) {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
+//		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
+//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
+//
+//		if(this.distance(playerManager.getPlayer()) < speed) {
+//			this.setPosX(goalX);
+//			this.setPosY(goalY);
+//			return;
+//		}
+//
+//		float deltaX = getPosX() - goalX;
+//		float deltaY = getPosY() - goalY;
+//
+//		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+//
+//		float changeX = (float)(speed * Math.cos(angle));
+//		float changeY = (float)(speed * Math.sin(angle));
+//
+//		Box3D newPos = getBox3D();
+//		newPos.setX(getPosX() + changeX);
+//		newPos.setY(getPosY() + changeY);
+//
+//		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+//		boolean collided = false;
+//		for (AbstractEntity entity : entities.values()) {
+//			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
+//				if(entity instanceof Player) {
+//					//soundManager.playSound("ree1.wav");
+//				}
+//				collided = true;
+//			}
+//		}
+//
+//		if (!collided) {
+//			setPosX(getPosX() + changeX);
+//			setPosY(getPosY() + changeY);
+//		}
 	}
 	
 	@Override
