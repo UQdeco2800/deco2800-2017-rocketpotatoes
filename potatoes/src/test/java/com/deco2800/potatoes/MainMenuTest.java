@@ -1,0 +1,43 @@
+package com.deco2800.potatoes;
+
+import com.deco2800.potatoes.gui.MainMenuGui;
+import com.deco2800.potatoes.screens.MainMenuScreen;
+import com.deco2800.potatoes.RocketPotatoes;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * Tests for the MainMenuScreen class
+ */
+public class MainMenuTest {
+
+    @Before
+    public void setUp(){
+
+    }
+
+    // Test initialisation.
+    @Test
+    public void initMenuScreenTest(){
+        
+    }
+
+    // Test that you can start a singleplayer game from opening game.
+    @Test
+    public void testSingleplayerStart(){
+
+    }
+
+    // Test that you can start a multiplayer game.
+    @Test
+    public void testMultiplayerStart(){
+
+    }
+
+    // Test that you can change the volume from options.
+    @Test
+    public void testVolumeChange(){
+
+    }
+
+}

@@ -33,8 +33,6 @@ import com.deco2800.potatoes.screens.GameScreen;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 
 public class RocketPotatoes extends Game {
-
-	
 	/**
 	 * Called when the {@link Application} is first created.
 	 */

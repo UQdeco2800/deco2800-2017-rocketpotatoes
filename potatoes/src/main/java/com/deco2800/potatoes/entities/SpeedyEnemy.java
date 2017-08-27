@@ -1,11 +1,10 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
 
+import java.util.*;
+
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,27 +27,36 @@ import com.deco2800.potatoes.util.WorldUtil;
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
-	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
-	private static final transient float HEALTH = 65f;
-	private static float speed = 0.15f;
-	private static Class<?> goal = ResourceTree.class;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
+    private static final transient String TEXTURE = "speedyRaccoon";
+    private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
+    private static final transient float HEALTH = 80f;
 
 	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 55, 1);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 30, 1);
+	
+    
+    /*Testing attacking*/
+    private static final BasicStats STATS = initStats();
+	/*Testing attacking*/
 
-	public SpeedyEnemy() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
-	}
+    private static float speed = 0.08f;
+    private static Class<?> goal = ResourceTree.class;
 
-	public SpeedyEnemy(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
-	}
+    public SpeedyEnemy() {
+        super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        //this.speed = speed;
+        //this.goal = goal;
+        //resetStats();
+    }
+
+    public SpeedyEnemy(float posX, float posY, float posZ) {
+        super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        //this.speed = speed;
+        //this.goal = goal;
+        //resetStats();
+    }
+
 
 	// @Override
 	// public void onTick(long i) {
@@ -114,10 +122,23 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	// }
 	// }
 
-	@Override
-	public String toString() {
-		return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
-	}
+    @Override
+    public String toString() {
+        return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
+    }
+
+    @Override
+    public BasicStats getBasicStats() {
+        return STATS;
+    }
+
+    private static BasicStats initStats() {
+        List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+        BasicStats result = new BasicStats(65f, 0.15f, 2f, 500, normalEvents,"speedyRaccoon");
+        //result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+        return result;
+    }
+
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
