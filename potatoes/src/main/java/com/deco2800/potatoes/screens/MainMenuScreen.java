@@ -6,18 +6,17 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.gui.MainMenuGui;
 import com.deco2800.potatoes.gui.OptionsMenuGui;
-import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 
@@ -30,11 +29,13 @@ import java.net.InetAddress;
 public class MainMenuScreen implements Screen {
     private RocketPotatoes game;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainMenuScreen.class);
+
     private SpriteBatch batch;
     private Stage stage;
 
     private MainMenuGui mainMenuGui;
-    private OptionsMenuGui optionsMenuGui;
+    // private OptionsMenuGui optionsMenuGui;
     private OrthographicCamera camera;
     private TextureManager texturemanager;
 
@@ -156,7 +157,7 @@ public class MainMenuScreen implements Screen {
         }
         catch (Exception ex) {
             // TODO handle this stuff yo
-            ex.printStackTrace();
+            LOGGER.warn("Failed to get connect to host.", ex);
             System.exit(-1);
         }
     }
@@ -167,11 +168,10 @@ public class MainMenuScreen implements Screen {
             InetAddress IP = InetAddress.getLocalHost();
             return IP.getHostAddress();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.warn("Failed to get host IP address.", ex);
         }
-        // If it fails to find an IP address, return loopback.
-        //TODO: this will change
-        return "127.0.0.1";
+        return "Couldn't find IP address";
+
     }
 
     public void setMasterVolume(float v){
@@ -180,6 +180,10 @@ public class MainMenuScreen implements Screen {
 
     public void setMusicVolume(float v){
         ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+    }
+
+    public static void menuBlipSound(){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
     }
 
 }

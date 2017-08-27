@@ -46,7 +46,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public ResourceTree(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
+		super(posX, posY, posZ, 1f, 1f, 1f, null);
 		this.gatherCount = 0;
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
@@ -69,11 +69,11 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 			maximum number of resources that can be held by the tree.
 	 */
 	public ResourceTree(float posX, float posY, float posZ, Resource gatherType, int gatherCapacity) {
-		super(posX, posY, posZ, 1f, 1f, 1f, null, 0);
+		super(posX, posY, posZ, 1f, 1f, 1f, null);
 		this.gatherCount = 0;
 		this.setGatherCapacity(gatherCapacity);
 		if (gatherType == null) {
-			LOGGER.warn("Resource type was set to null. Deafaulting to seed resouce.");
+			LOGGER.warn("Resource type was set to null. Defaulting to seed resource.");
 			this.gatherType = new SeedResource();
 		} else {
 			this.gatherType = gatherType;
@@ -215,7 +215,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/**
 	 * Transfers the resources gathered from the tree
 	 * into the specified inventory. Once resources
-	 * are transfered, the resourceCount of the tree will 
+	 * are transferred, the resourceCount of the tree will
 	 * reset to zero.
 	 * 
 	 * 	@param inventory

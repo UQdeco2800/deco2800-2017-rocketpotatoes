@@ -16,8 +16,13 @@ public class TowerTest {
     private static final int RELOAD = 100;
     private static final float HEALTH = 10f;
     private static final float RANGE = 8f;
-    Tower testTower = new Tower(1,2,0);
+    Tower testTower;
 
+    @Before
+    public void setup() {
+    	testTower = new Tower(1,2,0);
+    }
+    
     @Test
     public void emptyTest() {
         Tower nullTower = new Tower();

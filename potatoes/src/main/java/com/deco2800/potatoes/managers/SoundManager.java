@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 
 /**
  * SoundManager
@@ -18,8 +19,10 @@ public class SoundManager extends Manager {
 	private float masterVolume = 1f;
 	private float musicVolume = 1f;
 
+	private Music music;
+
 	/**
-	 * Plays a fun test sound on a new thread
+	 * Plays sound effects on a new thread
 	 */
 	public void playSound(String soundString) {
 		LOGGER.info("Playing sound effect");
@@ -28,15 +31,46 @@ public class SoundManager extends Manager {
 	}
 
 	/**
+	 * Plays music.
+	 */
+	public void playMusic(String musicString){
+		LOGGER.info("Playing music.");
+		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/" + musicString));
+		music.setVolume(masterVolume *  musicVolume);
+		music.setLooping(true);
+		music.play();
+	}
+
+	/**
+	 * Stops music playing.
+	 */
+	public void  stopMusic(){
+		music.stop();
+	}
+
+	/**
 	 * Sets a new master volume.
 	 */
-	public void setMasterVolume(float v) {masterVolume = v;}
+	public void setMasterVolume(float v) {
+		masterVolume = v;
+		if (music != null) {
+			music.setVolume(masterVolume * musicVolume);
+		}
+	}
 
 	/**
 	 * Gets the current master volume.
 	 */
 	public float getMasterVolume(){return masterVolume;}
 
-	public void setMusicVolume(float v) {musicVolume = v;}
+	/**
+	 * Sets a new music volume. (music is played at master * music volume)
+	 */
+	public void setMusicVolume(float v) {
+		musicVolume = v;
+		if (music != null) {
+			music.setVolume(masterVolume * musicVolume);
+		}
+	}
 
 }

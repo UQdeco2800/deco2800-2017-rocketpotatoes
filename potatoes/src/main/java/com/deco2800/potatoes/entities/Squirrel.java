@@ -2,18 +2,8 @@ package com.deco2800.potatoes.entities;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 
 /**
  * A generic player instance for the game
@@ -25,11 +15,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	private static final transient float HEALTH = 100f;
 
 	private static float speed = 0.1f;
-	private static Class goal = Player.class;
+	private static Class<?> goal = Player.class;
 
-	private static final List<Color> colours = Arrays.asList(Color.GREEN, Color.ORANGE, Color.RED);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50);	
-	
+	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50, 1);	
 	
 	public Squirrel() {
 		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
@@ -110,6 +99,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
+	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
 	}
