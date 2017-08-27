@@ -52,6 +52,17 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public BasicStats getBasicStats() {
 		return STATS;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Tank Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
+	}
+
+	@Override
+	public ProgressBarEntity getProgressBar() {
+		return progressBar;
+	}
+
 
 	// @Override
 	// public void onTick(long i) {
@@ -115,15 +126,4 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	// }
 	//
 	// }
-
-	@Override
-	public String toString() {
-		return String.format("Tank Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
-	}
-
-	@Override
-	public ProgressBarEntity getProgressBar() {
-		return progressBar;
-	}
-
 }
