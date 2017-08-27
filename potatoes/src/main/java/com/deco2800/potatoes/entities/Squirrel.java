@@ -63,7 +63,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
         }
 
 
-		//check if close enough to target, or collide with staticCollideable entity
+		//check if close enough to target
 		if (target != null && target.overlaps(this.getBox3D())) {
 			target = null;
 		}
