@@ -34,7 +34,7 @@ public class BallisticProjectile extends Projectile {
 
     private int rotateAngle = 0;
 
-    private final float speed = 0.2f;
+    private final float speed = 0.1f;
     private Optional<AbstractEntity> mainTarget;
     private float changeX;
     private float changeY;

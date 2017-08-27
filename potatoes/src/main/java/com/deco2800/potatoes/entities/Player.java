@@ -62,7 +62,7 @@ public class Player extends MortalEntity implements Tickable {
 	public Player(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f,
 				0.48f, TEXTURE_RIGHT, HEALTH);
-		movementSpeed = 0.1f;
+		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
 		this.direction = 1;
