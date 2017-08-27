@@ -70,11 +70,34 @@ public class EnemyEntityTest {
 		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, "texture", 100f, speed, goal);
 	}
 	
+	
 	//Common to all initialization test
 	private void initTestCommon() {
 		assertEquals("getSpeed() bad init ", speed, enemyEntity.getSpeed(), 0f);
 		assertEquals("getGoal() bad init ", goal, enemyEntity.getGoal());
 	}
+	
+	
+	@Test
+	public void initTest() {
+		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, "texture", 100f, speed, goal);
+		initTestCommon();
+	}
+	
+	
+	@Test
+	public void initTest2() {
+		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, 7, 8, "texture", 100f, speed, goal);
+		initTestCommon();
+	}
+	
+	
+	@Test
+	public void initTest3() {
+		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, 7, 8, true, "texture", 100f, speed, goal);
+		initTestCommon();
+	}
+	
 	
 	
 	@Test
