@@ -152,7 +152,6 @@ public class Player extends MortalEntity implements Tickable {
 			tossItem(new FoodResource());
 			break;
 		case Input.Keys.E:
-			((SoundManager) GameManager.get().getManager(SoundManager.class)).playSound("harvesting.mp3");
 			harvestResources();
 			break;
 		case Input.Keys.NUM_1:
@@ -211,8 +210,12 @@ public class Player extends MortalEntity implements Tickable {
 		double interactRange = 3f; // TODO: Could this be a class variable?
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				((ResourceTree) entitiy).transferResources(this.inventory);
+			if (entitiy instanceof ResourceTree && entitiy.distance(this)  <= interactRange) {
+				if(((ResourceTree) entitiy).getGatherCount() >0) {
+					((SoundManager) GameManager.get().getManager(SoundManager.class)).playSound("harvesting.mp3");
+					((ResourceTree) entitiy).transferResources(this.inventory);
+				}
+
 			}
 		}
 	}
