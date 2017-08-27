@@ -22,7 +22,7 @@ public class SoundManager extends Manager {
 	private Music music;
 
 	/**
-	 * Plays sound effects on a new thread
+	 * Plays sound effects file at resources/sounds/soundString.
 	 */
 	public void playSound(String soundString) {
 		LOGGER.info("Playing sound effect");
@@ -31,7 +31,7 @@ public class SoundManager extends Manager {
 	}
 
 	/**
-	 * Plays music.
+	 * Plays music file at resources/sounds/musicString.
 	 */
 	public void playMusic(String musicString){
 		LOGGER.info("Playing music.");
@@ -55,7 +55,12 @@ public class SoundManager extends Manager {
 	/**
 	 * Check if music is playing.
 	 */
-	public boolean musicPlaying(){return music.isPlaying();}
+	public boolean musicPlaying() {
+		if (music != null) {
+			return music.isPlaying();
+		}
+		return false;
+	}
 
 	/**
 	 * Sets a new sound effects volume.
