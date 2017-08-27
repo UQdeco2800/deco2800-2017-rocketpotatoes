@@ -103,13 +103,6 @@ public class BasicStats {
         return this.range;
     }
 
-    /*RETURNS A REFERENCE*/
-    /**
-     * @return returns a reference to the normal events list of these stats
-     */
-    public List<TimeEvent<EnemyEntity>> getNormalEvents() {
-        return normalEvents;
-    }
 
     /**
      * @return return enemy's current texture
