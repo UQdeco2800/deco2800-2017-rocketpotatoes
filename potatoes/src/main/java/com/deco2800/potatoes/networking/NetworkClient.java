@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class NetworkClient {
     private static final transient Logger LOGGER = LoggerFactory.getLogger(NetworkClient.class);
 
-    private Client client;
+    public Client client;
     private String IP;
     private String name;
     private int tcpPort;
@@ -49,6 +49,11 @@ public class NetworkClient {
         this.udpPort = 0;
         this.ready = false;
         this.clientList = new ArrayList<>();
+
+        // Allow up to 16 clients
+        for (int i = 0; i < 16; ++i) {
+            clientList.add(null);
+        }
     }
 
     /**
@@ -65,10 +70,6 @@ public class NetworkClient {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
 
-        // Allow up to 16 clients
-        for (int i = 0; i < 16; ++i) {
-            clientList.add(null);
-        }
 
         // Kyro warning level
         Log.set(Log.LEVEL_WARN);
@@ -182,5 +183,6 @@ public class NetworkClient {
     public void disconnect() {
         LOGGER.info("Disconnecting from the server");
         client.close();
+        client = null;
     }
 }

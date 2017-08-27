@@ -129,21 +129,24 @@ public class ClientMessageProcessor {
 
         client.getClients().set(m.id, m.name);
 
+        // Make the player
+        Player p = new Player(10 + m.id, 10 + m.id, 0);
+
         try {
-            // Make the player
-            Player p = new Player(10 + m.id, 10 + m.id, 0);
             GameManager.get().getWorld().addEntity(p, m.id);
 
-            if (client.getID() == m.id) {
-                //System.out.println("[CLIENT]: IT'S ME!");
-                // Give the player manager me
-                ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
-
-            } else {
-                client.sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
-            }
         } catch (Exception ex) {
             // TODO Throws when we try run this in a test, this is a hacky fix for now!
+        }
+
+
+        if (client.getID() == m.id) {
+            System.out.println("[CLIENT]: IT'S ME!");
+            // Give the player manager me
+            ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
+
+        } else {
+            client.sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
         }
 
         client.getClients().add(m.name);
@@ -164,7 +167,13 @@ public class ClientMessageProcessor {
         client.sendSystemMessage("Player Disconnected: " + client.getClients().get(m.id) + "(" + m.id + ")");
 
         client.getClients().set(m.id, null);
-        GameManager.get().getWorld().removeEntity(m.id);
+
+        try {
+            GameManager.get().getWorld().removeEntity(m.id);
+        } catch (Exception ex) {
+            // TODO Throws when we try run this in a test, this is a hacky fix for now!
+        }
+
     }
 
     /**
@@ -260,9 +269,12 @@ public class ClientMessageProcessor {
      */
     private static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
         GuiManager g = (GuiManager) GameManager.get().getManager(GuiManager.class);
-        ((ChatGui) g.getGui(ChatGui.class)).addMessage(
-                client.getClients().get(m.id) + " (" + m.id + ")",
-                m.message, Color.WHITE);
+        ChatGui c = ((ChatGui) g.getGui(ChatGui.class));
+        if (c != null) {
+            c.addMessage(
+                    client.getClients().get(m.id) + " (" + m.id + ")",
+                    m.message, Color.WHITE);
+        }
 
     }
 
