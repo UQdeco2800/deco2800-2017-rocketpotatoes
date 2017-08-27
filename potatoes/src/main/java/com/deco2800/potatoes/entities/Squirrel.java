@@ -109,6 +109,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
+	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
 	}

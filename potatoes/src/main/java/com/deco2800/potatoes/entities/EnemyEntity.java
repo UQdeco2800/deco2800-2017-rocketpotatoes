@@ -221,12 +221,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 
 	}
 
-	
-	
 
 	@Override
 	public int getProgress() {
-		return (int)health;
+		return (int) getHealth();
+	}
+
+	@Override
+	public void setProgress(int p) {
+		return;
 	}
 
 	@Override
@@ -234,10 +237,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 		return true;
 	}
 
-	@Override
-	public void setProgress(int p) { health = p; }
-
-	
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
 	 * @param projectile, the projectile shot
@@ -247,6 +246,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
-	
+	public ProgressBarEntity getProgressBar() {
+		return progressBar;
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return (getHealth() / getMaxHealth());
+	}
+
+	@Override
+	public int getMaxProgress() {
+		return (int) getMaxHealth();
+	}
+
+	@Override
+	public void setMaxProgress(int p) { return; }
 
 }
