@@ -32,6 +32,64 @@ public class PathManager extends Manager {
     }
 
     /**
+     * Takes as inputs a representation of the graph of internode connections that can be used to create paths.
+     * Calculates the minimum spanning tree of the graph, and then stores this internally so it can be used to generate
+     * new paths for enemies.
+     *
+     * @param start The initial vertex within the graph where the search starts, and where each generated path will end.
+     * @param vertices The vertices of the graph of internode connections. This set is effectively destroyed by the 
+     * time this function has completed.
+     * @param edges The edges of the graph of internode connections.
+     */
+    private void optimiseGraph(Box3D start, Set<Box3D> vertices, Map<DoubleBox3D, Float> edges) {
+        List<Box3D> workQueue = new ArrayList<>();
+        Map<Box3D, Float> distances = new HashMap<>();
+
+        spanningTree.clear();
+        workQueue.add(start);
+        distances.put(start, new Float(0));
+
+        while (workQueue.size() > 0) {
+            // find the closest thing within the work queue
+            Box3D current = workQueue.get(0);
+            for (Box3D other : workQueue) {
+                if (distances.get(other) < distances.get(current)) {
+                    current = other;
+                }
+            }
+            workQueue.remove(current);
+
+            // TODO make this more efficient by improving the way we store the graph
+            for (Box3D other : vertices) {
+                if (other.equals(current)) {
+                    continue;
+                }
+
+                DoubleBox3D pair = new DoubleBox3D(current, other);
+
+                if (!edges.containsKey(pair)) {
+                    continue;
+                }
+
+                Float distance = edges.get(pair);
+
+                if (!distances.containsKey(other) || distances.get(other) > distance) {
+                    spanningTree.put(other, current);
+                    distances.put(other, distance);
+                }
+
+                if (!workQueue.contains(other)) {
+                    workQueue.add(other);
+                }
+            }
+
+        }
+
+
+
+    }
+
+    /**
      * Allocates a path to a given entity. Not guaranteed to be the optimal path, but at the time it is created it will
      * have no collisions. Paths cannot be shared by multiple entities.
      *
