@@ -1,20 +1,25 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
-public abstract class EnemyEntity extends MortalEntity implements HasProgress, Tickable {
+public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
 	private transient Random random = new Random();
 	private float speed;
 	private Class goal;
 
+	private static final List<Color> colours = Arrays.asList(Color.RED);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50, 1);
 
 	/**
 	 * Default constructor for serialization
