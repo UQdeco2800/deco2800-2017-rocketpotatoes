@@ -48,6 +48,10 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity>{
         /*Have to make sure appropriate projectile is used*/
         GameManager.get().getWorld().addEntity(new BallisticProjectile(
                 enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, .5f, 10f, 0f));
+
+        if (enemy.isDead()) {
+            setDoReset(false);
+        }
     }
 
 
