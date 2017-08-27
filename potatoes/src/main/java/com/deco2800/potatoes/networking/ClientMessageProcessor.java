@@ -23,46 +23,46 @@ public class ClientMessageProcessor {
      */
     public static void processMessage(NetworkClient client, Object object) {
         if (object instanceof Network.HostConnectionConfirmMessage) {
-            ClientMessageProcessor.connectionConfirmMessage(client, (Network.HostConnectionConfirmMessage) object);
+            connectionConfirmMessage(client, (Network.HostConnectionConfirmMessage) object);
         }
         else if (object instanceof Network.HostDisconnectMessage) {
-            ClientMessageProcessor.disconnectMessage(client, (Network.HostDisconnectMessage) object);
+            disconnectMessage(client, (Network.HostDisconnectMessage) object);
         }
         else if (object instanceof Network.HostPlayReadyMessage) {
-            ClientMessageProcessor.playReadyMessage(client, (Network.HostPlayReadyMessage) object);
+            playReadyMessage(client, (Network.HostPlayReadyMessage) object);
         }
         else if (object instanceof Network.HostNewPlayerMessage) {
-            ClientMessageProcessor.newPlayerMessage(client, (Network.HostNewPlayerMessage) object);
+            newPlayerMessage(client, (Network.HostNewPlayerMessage) object);
         }
         else if (object instanceof Network.HostPlayerDisconnectedMessage) {
-            ClientMessageProcessor.playerDisconnectMessage(client, (Network.HostPlayerDisconnectedMessage) object);
+            playerDisconnectMessage(client, (Network.HostPlayerDisconnectedMessage) object);
         }
         else if (object instanceof Network.HostExistingPlayerMessage) {
-            ClientMessageProcessor.existingPlayerMessage(client, (Network.HostExistingPlayerMessage) object);
+            existingPlayerMessage(client, (Network.HostExistingPlayerMessage) object);
         }
         else if (object instanceof Network.HostEntityCreationMessage) {
-            ClientMessageProcessor.entityCreationMessage(client, (Network.HostEntityCreationMessage) object);
+            entityCreationMessage(client, (Network.HostEntityCreationMessage) object);
         }
         else if (object instanceof Network.HostEntityDestroyMessage) {
-            ClientMessageProcessor.entityDestroyMessage(client, (Network.HostEntityDestroyMessage) object);
+            entityDestroyMessage(client, (Network.HostEntityDestroyMessage) object);
         }
         /* Gameplay messages. i.e. none of these should be processed until the client is ready! */
         else if (client.ready) {
             if (object instanceof Network.HostEntityUpdatePositionMessage) {
-                ClientMessageProcessor.entityUpdatePositionMessage(client, (Network.HostEntityUpdatePositionMessage) object);
+                entityUpdatePositionMessage(client, (Network.HostEntityUpdatePositionMessage) object);
             }
             else if (object instanceof Network.HostEntityUpdateProgressMessage) {
-                ClientMessageProcessor.entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
+                entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
             }
             else if (object instanceof Network.HostChatMessage) {
-                ClientMessageProcessor.chatMessage(client, (Network.HostChatMessage) object);
+                chatMessage(client, (Network.HostChatMessage) object);
             }
             else {
-                throw new IllegalArgumentException("Unhandled message type");
+                throw new IllegalArgumentException("Unhandled message type: " + object);
             }
         }
         else {
-            throw new IllegalArgumentException("Unhandled message type");
+            throw new IllegalArgumentException("Unhandled message type: " + object);
         }
     }
 

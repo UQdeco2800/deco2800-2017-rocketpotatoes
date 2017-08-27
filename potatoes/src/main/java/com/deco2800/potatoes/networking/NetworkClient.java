@@ -10,6 +10,7 @@ import com.deco2800.potatoes.networking.Network.ClientChatMessage;
 import com.deco2800.potatoes.networking.Network.ClientPlayerUpdatePositionMessage;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import org.slf4j.Logger;
@@ -89,6 +90,10 @@ public class NetworkClient {
             @Override
             public void received(Connection connection, Object object) {
                 super.received(connection, object);
+
+                if (object instanceof FrameworkMessage) {
+                    return;
+                }
                 ClientMessageProcessor.processMessage(thisClient, object);
             }
 
