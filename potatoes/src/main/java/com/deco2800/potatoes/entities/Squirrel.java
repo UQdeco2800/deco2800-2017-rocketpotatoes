@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -20,109 +21,107 @@ import com.deco2800.potatoes.util.Box3D;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress, ProgressBar{
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel2";
 	private static final transient float HEALTH = 100f;
 	private transient Random random = new Random();
-	private static Class goal = Player.class;
-	private static float speed = 0.1f;
 
 	/*Testing attacking*/
 	private static final BasicStats STATS = initStats();
 	/*Testing attacking*/
 
+
+	private static float speed = 0.1f;
+	private static Class goal = Player.class;
+
+	private static final List<Color> colours = Arrays.asList(Color.GREEN, Color.ORANGE, Color.RED);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 50);	
+	
+	
 	public Squirrel() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
+		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		this.speed = speed;
+		this.goal = goal;
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
-		//this.setTexture("squirrel");
-		//this.random = new Random();
-	}
-
-	@Override
-	public void onTick(long i) {
-		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
-
-//		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
-
-		//The X and Y position of the player without random floats generated
-		float goalX = playerManager.getPlayer().getPosX() ;
-		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
-		
-
-		if(this.distance(playerManager.getPlayer()) < speed) {
-			this.setPosX(goalX);
-			this.setPosY(goalY);
-			return;
-		}
-
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-
-
-
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
-
-		Box3D newPos = getBox3D();
-
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
-
-		 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
-				if(entity instanceof Player) {
-					//soundManager.playSound("ree1.wav");
-				}
-				collided = true;
-			}
-		}
-
-		if (!collided) {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		this.speed = speed;
+		this.goal = goal;
 	}
 	
 
-//	Not working **********
-//	public void squirrelAttack() {
+//	@Override
+//	public void onTick(long i) {
+//
 //		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-//		if (this.distance(playerManager.getPlayer())< 5f) {
-//			playerManager.getPlayer().damage(10);
+//		SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
+//
+////		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
+////		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
+//
+//		//The X and Y position of the player without random floats generated
+//		float goalX = playerManager.getPlayer().getPosX() ;
+//		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 -3;
+//		
+//
+//		if(this.distance(playerManager.getPlayer()) < speed) {
+//			this.setPosX(goalX);
+//			this.setPosY(goalY);
+//			return;
+//		}
+//
+//		float deltaX = getPosX() - goalX;
+//		float deltaY = getPosY() - goalY;
+//
+//		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+//
+//
+//
+//		float changeX = (float)(speed * Math.cos(angle));
+//		float changeY = (float)(speed * Math.sin(angle));
+//
+//		Box3D newPos = getBox3D();
+//
+//		newPos.setX(getPosX() + changeX);
+//		newPos.setY(getPosY() + changeY);
+//
+//		 
+//		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+//		boolean collided = false;
+//		for (AbstractEntity entity : entities.values()) {
+//			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
+//				if(entity instanceof Player) {
+//					//soundManager.playSound("ree1.wav");
+//				}
+//				collided = true;
+//			}
+//		}
+//
+//		if (!collided) {
+//			setPosX(getPosX() + changeX);
+//			setPosY(getPosY() + changeY);
+//			//Squirrel changes direction when moving towards player.
+//
+//			if(this.getPosX()>goalX){
+//				this.setTexture(TEXTURE_LEFT);
+//			}
+//			else{
+//				this.setTexture(TEXTURE_RIGHT);
+//			}
 //		}
 //	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
-	@Override
-	public void setProgressBar(AbstractEntity entity, Texture progressBar, SpriteBatch batch, int xLength, int yLength) {
-		if (health > 60) {
-			batch.setColor(Color.GREEN);
-		} else if (health > 20) {
-			batch.setColor(Color.ORANGE);
-		} else {
-			batch.setColor(Color.RED);
-		}
-
-		batch.draw(progressBar, xLength, yLength, health/3, 5);
-		batch.setColor(Color.WHITE);
-		
+	public ProgressBarEntity getProgressBar() {
+		return progressBar;
 	}
 
 	private static BasicStats initStats() {

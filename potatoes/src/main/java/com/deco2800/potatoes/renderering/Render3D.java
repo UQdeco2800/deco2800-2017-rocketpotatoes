@@ -12,6 +12,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.ExplosionProjectile;
 import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -33,7 +34,6 @@ import java.util.TreeMap;
  * @Author Tim Hadwen
  */
 public class Render3D implements Renderer {
-
 
 	BitmapFont font;
 	SpriteBatch renderBatch;
@@ -64,7 +64,7 @@ public class Render3D implements Renderer {
 			@Override
 			public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
 				int val = abstractEntity.compareTo(t1);
-				//System.out.println(abstractEntity+" "+t1);
+				// System.out.println(abstractEntity+" "+t1);
 				if (abstractEntity instanceof ExplosionProjectile) {
 					val = -1;
 				}
@@ -88,7 +88,7 @@ public class Render3D implements Renderer {
 
 		batch.begin();
 
-		//drawTextureBetween("Lightning",0, 0, 1, 1);
+		// drawTextureBetween("Lightning",0, 0, 1, 1);
 
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
@@ -103,10 +103,13 @@ public class Render3D implements Renderer {
 			// We want to keep the aspect ratio of the image so...
 			float aspect = (float) (tex.getWidth()) / (float) (tileWidth);
 
+			// old method of draw:
+			// batch.draw(tex, isoPosition.x, isoPosition.y,
+			// tileWidth*entity.getXRenderLength(),
+			// (tex.getHeight()/aspect)*entity.getYRenderLength());
 
-			/**
-			 * A render method utilizing sprite rotation (useful for projectile and effect animations)
-			 */
+			// NEW: changed the render method to allow for sprite rotation.
+
 			batch.draw(tex, isoPosition.x, isoPosition.y, (tileWidth * entity.getXRenderLength()) / 2,
 					(tileHeight * entity.getYRenderLength()) / 2, tileWidth * entity.getXRenderLength(),
 					(tex.getHeight() / aspect) * entity.getYRenderLength(), 1, 1, 0 - entity.rotateAngle(), 0, 0,
@@ -119,16 +122,49 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgress && ((HasProgress) entity).showProgress()) {
-				// Hacky way of getting progress bars
-            	TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-				Texture tex = reg.getTexture("progress_bar");
-				((ProgressBar) entity).setProgressBar(entity, tex, batch, (int)(isoPosition.x + tileWidth / 2 - 10),
-						(int) (isoPosition.y + 50));
-            	/*
-                font.setColor(Color.RED);
-                font.getData().setScale(1.0f);
-                font.draw(batch, String.format("%d%%", ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth/2 - 10, isoPosition.y + 60);
-                */
+				// SUPER Hacky way of getting progress bars
+				TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+				float aspect = (float) 1 / 5;
+
+				if (entity.toString().split(" ")[0].equals("Squirrel")) {
+					Texture barTexture = reg.getTexture((((Squirrel) entity).getProgressBar().getTexture()));
+
+					// sets colour palette
+					batch.setColor(((Squirrel) entity).getProgressBar().getColour(((HasProgress) entity).getProgress(),
+							(int) ((Squirrel) entity).getMaxHealth()));
+					// draws the progress bar
+					batch.draw(barTexture, isoPosition.x,
+							isoPosition.y + ((Squirrel) entity).getProgressBar().getHeight(),
+							(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+							tileWidth * entity.getXRenderLength() * ((HasProgress) entity).getProgress()
+									/ ((Squirrel) entity).getMaxHealth(),
+							(barTexture.getHeight() / aspect) * entity.getYRenderLength(), 1, 1,
+							0 - entity.rotateAngle(), 0, 0, barTexture.getWidth(), barTexture.getHeight(), false,
+							false);
+
+				} else {
+					// default progress bar
+					Texture barTexture = reg.getTexture("progress_bar");
+					Texture entityTecture = reg.getTexture(entity.getTexture());
+					float aspect2 = (float) (entityTecture.getWidth()) / (float) (tileWidth);
+					// set default colour to red
+					batch.setColor(Color.RED);
+					// draws the progress bar
+					batch.draw(barTexture, isoPosition.x, isoPosition.y + entityTecture.getHeight() / aspect2 + 10,
+							(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+							((HasProgress) entity).getProgress() / 3,
+							(barTexture.getHeight() / aspect) * entity.getYRenderLength(), 1, 1,
+							0 - entity.rotateAngle(), 0, 0, barTexture.getWidth(), barTexture.getHeight(), false,
+							false);
+				}
+				// reset the batch colour
+				batch.setColor(Color.WHITE);
+				
+				/* display font (used for debugging)
+				 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
+				 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
+				 * tileWidth / 2 - 10, isoPosition.y + 60);
+				 */
 			}
 			/*
 			 * Construction percentage displayed in yellow
@@ -143,10 +179,10 @@ public class Render3D implements Renderer {
 			/*
 			 * Display resource collected for Resource Tree
 			 */
-			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceCount() > 0) {
+			if (entity instanceof ResourceTree && ((ResourceTree) entity).getGatherCount() > 0) {
 				font.setColor(Color.GREEN);
 				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%s", ((ResourceTree) entity).getResourceCount()),
+				font.draw(batch, String.format("%s", ((ResourceTree) entity).getGatherCount()),
 						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
 			}
 
@@ -170,17 +206,16 @@ public class Render3D implements Renderer {
 		// It renders the rendering order onto entites so you can see what gets rendered
 		// when
 		//
-		// */
+		// */s
 		// for (int index = 0; index < entities.size(); index++) {
 		// Renderable entity = entities.get(index);
 		// float cartX = entity.getPosX();
 		// float cartY = (worldWidth-1) - entity.getPosY();
-
 		//
-		//float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
-		//float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
+		// float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
+		// float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
 		//
-		//font.draw(batch, String.format("%d", index), isoX + 32, isoY + 32);
+		// font.draw(batch, String.format("%d", index), isoX + 32, isoY + 32);
 		// }
 
 		batch.end();
@@ -276,9 +311,9 @@ public class Render3D implements Renderer {
 		return worldToScreenCoordinates(p.x, p.y);
 	}
 
-    public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
-		return ((CameraManager)GameManager.get().getManager(CameraManager.class)).getCamera().
-				unproject(new Vector3(x, y, z));
+	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
+		return ((CameraManager) GameManager.get().getManager(CameraManager.class)).getCamera()
+				.unproject(new Vector3(x, y, z));
 	}
 
 	public static Vector2 worldPosToTile(float x, float y) {

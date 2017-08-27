@@ -13,6 +13,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * Default constructor for serialization
 	 */
 	public ProjectileTree() {
+		//default method
 	}
 
 
@@ -32,9 +33,11 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * @param maxHealth
 	 *            The initial maximum health of the tower
 	 */
-	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime,
-		    	float range, float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f, texture, maxHealth);
+
+	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, 
+			float range, float maxHealth) {
+		super(posX, posY, posZ, 1f, 1f, 1f, texture);
+
 	}
 
 	@Override

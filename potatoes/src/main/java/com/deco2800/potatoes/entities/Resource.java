@@ -6,12 +6,17 @@ package com.deco2800.potatoes.entities;
  * player inventory or on the map as a ResourceEntity where its type is a
  * Resource. The primary two resources are FoodResource and SeedResource.
  *
+ *@author Dion, Jordan
  */
 public class Resource implements Comparable<Resource> {
 
-	// A string representation of the resource
+	/*
+	 * A string representation of the resource
+	 */
 	protected String resourceType;
-	// The resource image texture
+	/*
+	 * The resource image texture
+	 */
 	protected String texture;
 
 	/**
@@ -25,6 +30,9 @@ public class Resource implements Comparable<Resource> {
 
 	/**
 	 * Returns the name of the resource.
+	 * 
+	 * @return resourceType
+	 * 				The string representation of the resource.
 	 */
 	public String getTypeName() {
 		return resourceType;
@@ -32,21 +40,14 @@ public class Resource implements Comparable<Resource> {
 
 	/**
 	 * Returns the texture of the resource.
+	 * 
+	 * @return texture
+	 * 				The texture location.
 	 */
 	public String getTexture() {
 		return texture;
 	}
 
-	/**
-	 * <p>
-	 * Returns the string representation of the resource.
-	 * </p>
-	 * 
-	 * @return string The string representation of the resource.
-	 */
-	public String toString() {
-		return resourceType;
-	}
 
 	@Override
 	public boolean equals(Object object) {
@@ -69,6 +70,16 @@ public class Resource implements Comparable<Resource> {
 	@Override
 	public int compareTo(Resource other) {
 		return resourceType.compareTo(other.getTypeName());
+	}
+	
+	/**
+	 * Returns the string representation of the resource.
+	 * 
+	 * @return string The string representation of the resource.
+	 */
+	@Override
+	public String toString() {
+		return resourceType;
 	}
 
 }

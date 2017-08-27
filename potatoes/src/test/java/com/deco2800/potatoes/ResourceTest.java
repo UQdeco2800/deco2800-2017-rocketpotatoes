@@ -65,10 +65,11 @@ public class ResourceTest {
 		assert(foodEntity.toString().equals("3 " + new FoodResource().toString()));
 	}
 	
-	@Test(expected = InvalidResourceException.class)
+	@Test
 	public void testNullResourceSetFunction() {
 		ResourceEntity entity = new ResourceEntity();
 		entity.setResourceType(null);
+		assert(entity.getType().equals(new Resource()));
 	}
 	
 	@Test
@@ -79,5 +80,13 @@ public class ResourceTest {
 		assert(entity.getType().getTexture().equals("default"));
 		assert(seed.getType().getTexture().equals("seed"));
 		assert(food.getType().getTexture().equals("food"));
+	}
+	
+	@Test
+	public void testToString() {
+		ResourceEntity entity = new ResourceEntity();
+		assert(entity.getType().toString().equals("default"));
+		entity.setResourceType(new SeedResource());
+		assert(entity.getType().toString().equals("seed"));
 	}
 }

@@ -38,6 +38,8 @@ public class TextureManager extends Manager {
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("tree", "resources/placeholderassets/spacman.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
+        saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
+        saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -59,16 +61,20 @@ public class TextureManager extends Manager {
         saveTexture("progress_bar","resources/placeholderassets/progress_bar.png");
 		saveTexture("seed", "resources/placeholderassets/seed.png");
 		saveTexture("food", "resources/placeholderassets/food.png");
-		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
-        saveTexture("aoe2","resources/placeholderassets/aoe2.png");
-        saveTexture("aoe3","resources/placeholderassets/aoe3.png");
-        saveTexture("proj1","resources/placeholderassets/proj1.png");
-
+		saveTexture("aoe1","resources/projectiles/aoe1.png");
+        saveTexture("aoe2","resources/projectiles/aoe2.png");
+        saveTexture("aoe3","resources/projectiles/aoe3.png");
+        saveTexture("rocket1","resources/projectiles/rocket1.png");
+        saveTexture("rocket2","resources/projectiles/rocket2.png");
+        saveTexture("rocket3","resources/projectiles/rocket3.png");
+        saveTexture("exp1","resources/projectiles/explosion1.png");
+        saveTexture("exp2","resources/projectiles/explosion2.png");
+        saveTexture("exp3","resources/projectiles/explosion3.png");
         saveTexture("Lightning","resources/placeholderassets/Lightning.png");
         saveTexture("ring","resources/placeholderassets/ring.png");
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
-        saveTexture("speedySquirrel","resources/placeholderassets/speedySquirrel.png");
+        saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
         saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
         
     }

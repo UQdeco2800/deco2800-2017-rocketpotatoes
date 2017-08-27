@@ -1,27 +1,25 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
 import java.util.Map;
-
+import java.util.Optional;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.deco2800.potatoes.managers.InputManager;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.InitialWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Input;
-import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 
 /**
  * Entity for the playable character.
@@ -80,37 +78,6 @@ public class Player extends MortalEntity implements Tickable {
 		return this.inventory;
 	}
 
-	// * GUI display for the inventory menu
-	public void inventoryMenu(Stage stage) {
-
-		// Create inventory
-		// Inventory inventory = new Inventory();
-
-		// Get inventory number (getQuantity from Inventory)
-		int seedNo = 0;
-		int foodNo = 0;
-
-		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		// Set up a table for the inventory menu
-
-		Label seedLabel = new Label("Seed", skin);
-		TextField seedNumber = new TextField(Integer.toString(foodNo), skin);
-		Label foodLabel = new Label("Food:", skin);
-		TextField foodNumber = new TextField(Integer.toString(seedNo), skin);
-
-		Table table = new Table();
-		table.setFillParent(true);
-		table.add(seedLabel);
-		table.add(seedNumber).width(30);
-		table.row();
-		table.add(foodLabel);
-		table.add(foodNumber).width(30);
-
-		table.left().bottom();
-
-		stage.addActor(table);
-	}
-
 	/**
 	 * Returns the string representation of which way the player is facing.
 	 */
@@ -154,6 +121,7 @@ public class Player extends MortalEntity implements Tickable {
 	 * @param keycode
 	 */
 	public void handleKeyDown(int keycode) {
+
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy -= movementSpeed;
@@ -180,11 +148,45 @@ public class Player extends MortalEntity implements Tickable {
 		case Input.Keys.T:
 			tossItem(new SeedResource());
 			break;
+		case Input.Keys.F:
+			tossItem(new FoodResource());
+			break;
+		case Input.Keys.E:
+			((SoundManager) GameManager.get().getManager(SoundManager.class)).playSound("harvesting.mp3");
+			harvestResources();
+			break;
+		case Input.Keys.NUM_1:
+            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                GameManager.get().getWorld().addEntity(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+            }
+            break;
+		case Input.Keys.NUM_2:
+            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+            GameManager.get().getWorld().addEntity(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+            }
+            break;
+		case Input.Keys.NUM_3:
+            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+            GameManager.get().getWorld().addEntity(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+            }
+            break;
 		default:
 			break;
 		}
 	}
-
+	
+	private Vector2 getCursorCoords() {
+		Vector3 worldCoords = Render3D.screenToWorldCoordiates(Gdx.input.getX(), Gdx.input.getY(), 0);
+		Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
+        return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
+    }
+	
+	/**
+	 * Handles removing an item from an inventory and placing it on the map.
+	 * 
+	 * @param item
+	 * 			The resource to be thrown.
+	 */
 	private void tossItem(Resource item) {
 		// tosses a item in front of player
 		float x = this.getPosX();
@@ -194,11 +196,24 @@ public class Player extends MortalEntity implements Tickable {
 		x = (direction == 0) ? x - 1 : x + 1;
 		y = (direction == 0) ? y - 2 : y + 2;
 
-		try {
-			this.getInventory().updateQuantity(item, -1);
+		//only toss an item if there are items to toss
+		if (this.getInventory().updateQuantity(item, -1) == 1) {
 			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
-		} catch (Exception e) {
-			// not enough of this item
+		}
+
+	}
+	
+	/**
+	 * Handles harvesting resources from resource tree that are in 
+	 * range. Resources are added to the player's inventory.
+	 */
+	private void harvestResources() {
+		double interactRange = 3f; // TODO: Could this be a class variable?
+		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+		for (AbstractEntity entitiy : entities) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+				((ResourceTree) entitiy).transferResources(this.inventory);
+			}
 		}
 	}
 
