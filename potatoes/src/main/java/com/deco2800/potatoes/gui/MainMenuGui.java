@@ -4,15 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MainMenuGui extends Gui {
     private MainMenuScreen mainMenuScreen;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainMenuGui.class);
 
     private Stage stage;
     private Skin uiSkin;
@@ -30,24 +32,38 @@ public class MainMenuGui extends Gui {
     private TextButton startBackButton;
 
     private VerticalGroup startMultiplayerButtonGroup;
-    private TextButton multiplayerConnectButton;
+    private TextButton multiplayerClientButton;
     private TextButton multiplayerHostButton;
     private TextButton multiplayerBackButton;
 
-    //icc
-    private VerticalGroup optionsButtonGroup;
-    private TextButton soundsEffsButton;
-    private TextButton musicButton;
-    private TextButton fullscreenButton;
-    private TextButton colourblindButton;
-    private TextButton optionsBackButton;
+    private VerticalGroup multiplayerClientButtonGroup;
+    private TextField multiplayerClientName;
+    private TextField multiplayerClientIpAddConnection;
+    private TextButton multiplayerClientConnectButton;
+    private TextButton multiplayerClientBackButton;
 
+    private VerticalGroup multiplayerHostButtonGroup;
+    private Label multiplayerHostIpAddress;
+    private TextField multiplayerHostName;
+    private TextButton multiplayerHostConnectButton;
+    private TextButton multiplayerHostBackButton;
+
+    private VerticalGroup optionsButtonGroup;
+    private Label optionsMasterVolumeLabel;
+    private Slider optionsMasterVolumeSlider;
+    private Label optionsMusicVolumeLabel;
+    private Slider optionsMusicVolumeSlider;
+    private CheckBox optionsFullscreenCheckbox;
+    private CheckBox optionsColourblindCheckbox;
+    private TextButton optionsBackButton;
 
     // State indicator
     private enum States {
         PRIMARY,
         START_GAME,
         START_MULTIPLAYER,
+        MULTIPLAYER_CLIENT,
+        MULTIPLAYER_HOST,
         OPTIONS
     }
 
@@ -81,29 +97,56 @@ public class MainMenuGui extends Gui {
         startButtonGroup.addActor(startBackButton);
 
         // Start Multiplayer state
-        multiplayerConnectButton = new TextButton("Connect", uiSkin);
+        multiplayerClientButton = new TextButton("Client", uiSkin);
         multiplayerHostButton = new TextButton("Host", uiSkin);
         multiplayerBackButton = new TextButton("Back", uiSkin);
 
         startMultiplayerButtonGroup = new VerticalGroup();
-        startMultiplayerButtonGroup.addActor(multiplayerConnectButton);
+        startMultiplayerButtonGroup.addActor(multiplayerClientButton);
         startMultiplayerButtonGroup.addActor(multiplayerHostButton);
         startMultiplayerButtonGroup.addActor(multiplayerBackButton);
 
-        //icc Options state
-        soundsEffsButton = new TextButton("Sound Effects: ON",uiSkin);
-        musicButton = new TextButton("Music: OFF",uiSkin);
-        fullscreenButton = new TextButton("Fullscreen Mode: OFF",uiSkin);
-        colourblindButton = new TextButton("Colourblind Mode: OFF",uiSkin);
-        optionsBackButton = new TextButton("Back",uiSkin);
+        // Multiplayer Client state
+        multiplayerClientName = new TextField("Client Name", uiSkin);
+        multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
+        multiplayerClientConnectButton = new TextButton("Connect", uiSkin);
+        multiplayerClientBackButton = new TextButton("Back", uiSkin);
+
+        multiplayerClientButtonGroup = new VerticalGroup();
+        multiplayerClientButtonGroup.addActor(multiplayerClientName);
+        multiplayerClientButtonGroup.addActor(multiplayerClientIpAddConnection);
+        multiplayerClientButtonGroup.addActor(multiplayerClientConnectButton);
+        multiplayerClientButtonGroup.addActor(multiplayerClientBackButton);
+
+        // Multiplayer Host state
+        multiplayerHostIpAddress = new Label("Host IP:  " + MainMenuScreen.multiplayerHostAddress(), uiSkin);
+        multiplayerHostName = new TextField("Host Name", uiSkin);
+        multiplayerHostConnectButton = new TextButton("Connect", uiSkin);
+        multiplayerHostBackButton = new TextButton("Back", uiSkin);
+
+        multiplayerHostButtonGroup = new VerticalGroup();
+        multiplayerHostButtonGroup.addActor(multiplayerHostIpAddress);
+        multiplayerHostButtonGroup.addActor(multiplayerHostName);
+        multiplayerHostButtonGroup.addActor( multiplayerHostConnectButton);
+        multiplayerHostButtonGroup.addActor(multiplayerHostBackButton);
+
+        // Options State
+        optionsMasterVolumeLabel = new Label("Master Volume", uiSkin);
+        optionsMasterVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
+        optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
+        optionsFullscreenCheckbox = new CheckBox("Fullscreen", uiSkin);
+        optionsColourblindCheckbox = new CheckBox("Colour Blind", uiSkin);
+        optionsBackButton = new TextButton("Back", uiSkin);
 
         optionsButtonGroup = new VerticalGroup();
-        optionsButtonGroup.addActor(soundsEffsButton);
-        optionsButtonGroup.addActor(musicButton);
-        optionsButtonGroup.addActor(fullscreenButton);
-        optionsButtonGroup.addActor(colourblindButton);
+        optionsButtonGroup.addActor(optionsMasterVolumeLabel);
+        optionsButtonGroup.addActor(optionsMasterVolumeSlider);
+        optionsButtonGroup.addActor(optionsMusicVolumeLabel);
+        optionsButtonGroup.addActor(optionsMusicVolumeSlider);
+        optionsButtonGroup.addActor(optionsFullscreenCheckbox);
+        optionsButtonGroup.addActor(optionsColourblindCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
-
 
         setupListeners();
 
@@ -127,10 +170,6 @@ public class MainMenuGui extends Gui {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // TODO
-                //state = States.OPTIONS;
-                //resetGui(stage);
-
                 state = States.OPTIONS;
                 resetGui(stage);
             }
@@ -171,17 +210,19 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer start state
 
-        multiplayerConnectButton.addListener(new ChangeListener() {
+        multiplayerClientButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenuScreen.startMultiplayer("Bob", "127.0.0.1",1337, false);
+                state = States.MULTIPLAYER_CLIENT;
+                resetGui(stage);
             }
         });
 
         multiplayerHostButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenuScreen.startMultiplayer("Fred", "",1337, true);
+                state = States.MULTIPLAYER_HOST;
+                resetGui(stage);
             }
         });
 
@@ -193,13 +234,79 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        //Options state
-        optionsBackButton.addListener(new ChangeListener() {
+
+        // Multiplayer Client state
+
+        multiplayerClientConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state = States.PRIMARY;
+                mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
+                        multiplayerClientIpAddConnection.getText(),1337, false);
+            }
+        });
+
+        multiplayerClientBackButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state = States.START_MULTIPLAYER;
                 resetGui(stage);
             }
+        });
+
+        // Multiplayer Host state
+
+        multiplayerHostConnectButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
+                        MainMenuScreen.multiplayerHostAddress(),1337, true);
+            }
+        });
+
+        multiplayerHostBackButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state = States.START_MULTIPLAYER;
+                resetGui(stage);
+            }
+        });
+
+        // Options State
+
+        optionsMasterVolumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.setMasterVolume(optionsMasterVolumeSlider.getValue());
+            }
+        });
+
+        optionsMusicVolumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.setMusicVolume(optionsMusicVolumeSlider.getValue());
+            }
+        });
+
+        optionsFullscreenCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO
+            }
+        });
+
+        optionsColourblindCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO
+            }
+        });
+
+        optionsBackButton.addListener(new ChangeListener() {
+           @Override
+           public void changed(ChangeEvent event, Actor actor) {
+               state = States.PRIMARY;
+               resetGui(stage);
+           }
         });
     }
 
@@ -225,7 +332,6 @@ public class MainMenuGui extends Gui {
 
     private void resetGui(Stage stage) {
         root.reset();
-        //root.debugAll();
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight());
@@ -241,9 +347,17 @@ public class MainMenuGui extends Gui {
             case START_MULTIPLAYER:
                 root.add(startMultiplayerButtonGroup).expandX().center();
                 break;
+            case MULTIPLAYER_CLIENT:
+                root.add(multiplayerClientButtonGroup).expandX().center();
+                break;
+            case MULTIPLAYER_HOST:
+                root.add(multiplayerHostButtonGroup).expandX().center();
+                break;
             case OPTIONS:
-                // TODO
                 root.add(optionsButtonGroup).expandX().center();
+                break;
+            default:
+                LOGGER.error("Failed to find main menu state.");
                 break;
         }
     }

@@ -49,8 +49,9 @@ public class ProgressBarEntity implements ProgressBar {
 	@Override
 	public Color getColour(int currentHealth, int maxHealth) {
 		// based on percentage of health
-		int ratio = maxHealth / (colours.size() - 1);
-		return colours.get(currentHealth / ratio);	}
+		int ratio = maxHealth / (colours.size());
+		return colours.get(Math.min(colours.size()-1, (maxHealth - currentHealth) / ratio));
+	}
 
 	@Override
 	public int getHeight() {

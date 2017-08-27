@@ -16,7 +16,13 @@ import com.deco2800.potatoes.gui.OptionsMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
 
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
@@ -26,6 +32,8 @@ import com.deco2800.potatoes.managers.TextureManager;
  */
 public class MainMenuScreen implements Screen {
     private RocketPotatoes game;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainMenuScreen.class);
 
     private SpriteBatch batch;
     private Stage stage;
@@ -153,8 +161,31 @@ public class MainMenuScreen implements Screen {
         }
         catch (Exception ex) {
             // TODO handle this stuff yo
-            ex.printStackTrace();
+            LOGGER.warn("Failed to get connect to host.", ex);
             System.exit(-1);
         }
     }
+
+    public static String multiplayerHostAddress() {
+        // TODO: Get Actual IP Addresses, not just the local host
+        try {
+            InetAddress IP = InetAddress.getLocalHost();
+            return IP.getHostAddress();
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to get host IP address.", ex);
+        }
+        // If it fails to find an IP address, return loopback.
+        //TODO: this will change
+
+        return "127.0.0.1";
+    }
+
+    public void setMasterVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMasterVolume(v);
+    }
+
+    public void setMusicVolume(float v){
+        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+    }
+
 }

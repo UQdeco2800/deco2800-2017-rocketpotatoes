@@ -125,7 +125,7 @@ public class Render3D implements Renderer {
 				// SUPER Hacky way of getting progress bars
 				TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
 				float aspect = (float) 1 / 5;
-				
+
 				if (entity.toString().split(" ")[0].equals("Squirrel")) {
 					ProgressBar progressBar = ((Squirrel) entity).getProgressBar();
 					Texture barTexture = reg.getTexture((progressBar.getTexture()));
@@ -194,12 +194,12 @@ public class Render3D implements Renderer {
 				}
 				// reset the batch colour
 				batch.setColor(Color.WHITE);
-
-				font.setColor(Color.RED);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d", ((HasProgress) entity).getProgress()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
-
+				
+				/* display font (used for debugging)
+				 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
+				 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
+				 * tileWidth / 2 - 10, isoPosition.y + 60);
+				 */
 			}
 
 			/*
@@ -215,10 +215,10 @@ public class Render3D implements Renderer {
 			/*
 			 * Display resource collected for Resource Tree
 			 */
-			if (entity instanceof ResourceTree && ((ResourceTree) entity).getResourceCount() > 0) {
+			if (entity instanceof ResourceTree && ((ResourceTree) entity).getGatherCount() > 0) {
 				font.setColor(Color.GREEN);
 				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%s", ((ResourceTree) entity).getResourceCount()),
+				font.draw(batch, String.format("%s", ((ResourceTree) entity).getGatherCount()),
 						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
 			}
 

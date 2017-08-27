@@ -211,17 +211,19 @@ public class GameScreen implements Screen {
                 GameManager.get().getWorld().addEntity(
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
-            
+
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
-            GameManager.get().getWorld().addEntity(new SpeedyEnemy(24,20,0));
+
+            for(int i=0 ; i<3 ; i++) {
+                GameManager.get().getWorld().addEntity(
+                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+            }
+            addResourceTrees();
             initialiseResources();
             
         }
-
-
-
+        
         if (!multiplayerManager.isMultiplayer()) {
 			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
 		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
@@ -232,6 +234,15 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void addResourceTrees() {
+    		// Seed Trees
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
     }
     
     private void initialiseResources() {
