@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * A generic player instance for the game
+ * A stronger but slower enemy type, only attacks towers/trees 
  */
 public class TankEnemy extends EnemyEntity implements Tickable {
 
@@ -29,13 +29,26 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 90, 1);
 
+	
+	/**
+	 * Empty constructor for serialization
+	 */
 	public TankEnemy() {
-		super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
+		//super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
 		//this.speed = getBasicStats().getSpeed();
 		//this.goal = goal;
 		//resetStats();
 	}
 
+	/**
+	 * Construct a new Tank Enemy at specific position
+	 * @param posX
+	 *            The x-coordinate of the Tank Enemy.
+	 * @param posY
+	 *            The y-coordinate of the Tank Enemy.
+	 * @param posZ
+	 *            The z-coordinate of the Tank Enemy.
+	 */
 	public TankEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
 		//this.speed = getBasicStats().getSpeed();
@@ -43,6 +56,10 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		//resetStats();
 	}
 
+	/**
+	 * Initialize basic statistics for Tank Enemy
+	 * @return basic statistics of this Tank Enemy
+	 */
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 		BasicStats result = new BasicStats(HEALTH, speed, attackRange, attackSpeed, normalEvents, TEXTURE);
@@ -50,16 +67,29 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		return result;
 	}
 
+	/**
+	 * Get basic statistics of this Tank Enemy
+	 * @return Get basic statistics of this Tank Enemy
+	 */
 	@Override
 	public BasicStats getBasicStats() {
 		return STATS;
 	}
 	
+	/**
+	 * String representation of this Tank Enemy and its position
+	 * 
+	 * @return String representation of this Tank Enemy and its position
+	 */
 	@Override
 	public String toString() {
 		return String.format("Tank Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
+	/**
+	 * Get the health progressBar of this Tank Enemy
+	 * @return the health progressBar of this Tank Enemy
+	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
