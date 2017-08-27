@@ -19,11 +19,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel_right";
 	private static final transient float HEALTH = 100f;
-
-	/*Testing attacking*/
 	private static final BasicStats STATS = initStats();
-	/*Testing attacking*/
-
 
 	private static float speed = 0.04f;
 	private static Class<?> goal = Player.class;
@@ -116,8 +112,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(200, 500, 8f, 500, normalEvents,"squirrel");
-		//result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+		BasicStats result = new BasicStats(HEALTH, speed, 8f, 500, normalEvents, TEXTURE_LEFT);
 		return result;
 	}
 

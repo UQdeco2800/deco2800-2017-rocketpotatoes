@@ -50,7 +50,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         * the enemies that are shooting being the ones being damaged (suicidal), requires re-thinking:
         * create entirely new EnemyMelee attack or re-work projectiles?*/
         GameManager.get().getWorld().addEntity(new BallisticProjectile(
-                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, .4f, 1, 1));
+                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange(), 1, 1));
 
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/
@@ -60,12 +60,16 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
     }
 
     /**
-     * @return a copy of this MeleeAttackEvent*/
+     * @return a copy of this MeleeAttackEvent
+     * */
     @Override
     public TimeEvent<EnemyEntity> copy() {
         return new MeleeAttackEvent(getResetAmount());
     }
 
+    /**
+     * @return string representation of meleee attack
+     * */
     @Override
     public String toString() {
         return String.format("Melee attack with %d attackspeed", this.getResetAmount());
