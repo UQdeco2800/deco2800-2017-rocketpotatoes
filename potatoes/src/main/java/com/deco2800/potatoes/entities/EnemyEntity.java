@@ -11,10 +11,10 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public abstract class EnemyEntity extends MortalEntity implements HasProgress, Tickable {
-	private transient Random random = new Random();
+
 	private float speed;
 	private Class<?> goal;
-
+	//private transient Random random = new Random();
 
 	/**
 	 * Default constructor for serialization
