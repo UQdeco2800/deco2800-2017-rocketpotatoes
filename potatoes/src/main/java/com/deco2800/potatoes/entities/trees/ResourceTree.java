@@ -63,7 +63,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The y-coordinate.
 	 * @param posZ
 	 *            The z-coordinate.
-	 * @param resourceType
+	 * @param gatherType
 	 * 			The type of resource gathered by the tree.
 	 * @param gatherCapacity
 	 * 			maximum number of resources that can be held by the tree.
@@ -218,7 +218,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * are transferred, the resourceCount of the tree will
 	 * reset to zero.
 	 * 
-	 * 	@param inventory
+	 * 	@param otherInventory
 	 * 		The inventory of the player to receive gathered resources
 	 */
 	public void transferResources(Inventory otherInventory) {
@@ -242,6 +242,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 */
 	@Override
 	public String toString() {
-		return "Resource tree (" + this.gatherType + ": " + this.gatherCount + ")";
+		return "Resource tree (" + this.gatherType + ": " + this.gatherCount + "/" + this.gatherCapacity + ")";
 	}
 }

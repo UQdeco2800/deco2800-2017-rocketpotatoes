@@ -1,26 +1,33 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.managers.EventManager;
 
-public abstract class EnemyEntity extends MortalEntity implements HasProgress, Tickable {
-
+public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
+	private transient Random random = new Random();
 	private float speed;
 	private Class<?> goal;
-	//private transient Random random = new Random();
+
+	private static final List<Color> colours = Arrays.asList(Color.RED);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 0, 1);
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
 		// empty for serialization
+		resetStats();
 	}
 
 
@@ -51,6 +58,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
+		resetStats();
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -85,9 +93,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
+		resetStats();
 		this.speed = speed;
 		this.goal = goal;
-
 	}
 
 	/**
@@ -123,6 +131,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
+		resetStats();
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -221,12 +230,37 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 
 	}
 
-	
-	
+	private void registerNewEvents(List<TimeEvent<EnemyEntity>> events) {
+		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		eventManager.unregisterAll(this);
+		for (TimeEvent<EnemyEntity> timeEvent : events) {
+		eventManager.registerEvent(this, timeEvent);
+		}
+	}
+
+	/**
+	 * Gets the basic stats that apply to this enemy
+	 *
+	 * @return the basic stats (BasicStats) for this enemy
+	 * */
+	public abstract BasicStats getBasicStats();
+
+	public void resetStats() {
+		this.addMaxHealth(getBasicStats().getHealth() - this.getMaxHealth());
+		this.heal(getMaxHealth());
+		setTexture(getBasicStats().getTexture());
+		this.speed = getBasicStats().getSpeed();
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
+	}
 
 	@Override
 	public int getProgress() {
-		return (int)health;
+		return (int) getHealth();
+	}
+
+	@Override
+	public void setProgress(int p) {
+		return;
 	}
 
 	@Override
@@ -234,10 +268,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 		return true;
 	}
 
-	@Override
-	public void setProgress(int p) { health = p; }
-
-	
 	/**
 	 * Get the goal of the enemy
 	 * @return this enemy's goal
@@ -279,6 +309,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgress, T
 		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
-	
+	public ProgressBarEntity getProgressBar() {
+		return progressBar;
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return (getHealth() / getMaxHealth());
+	}
+
+	@Override
+	public int getMaxProgress() {
+		return (int) getMaxHealth();
+	}
+
+	@Override
+	public void setMaxProgress(int p) { return; }
 
 }
