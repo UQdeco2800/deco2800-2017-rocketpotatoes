@@ -180,7 +180,7 @@ public class MainMenuScreen implements Screen {
     public static String multiplayerHostAddress() {
         // TODO: Get Actual IP Addresses, not just the local host
         try {
-            InetAddress ip = InetAddress.getLocalHost();
+            InetAddress ip = InetAddress.getLoopbackAddress();
             return ip.getHostAddress();
         } catch (Exception ex) {
             LOGGER.warn("Failed to get host IP address.", ex);

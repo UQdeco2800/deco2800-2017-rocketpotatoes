@@ -1,7 +1,5 @@
 package com.deco2800.potatoes;
 
-
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 
