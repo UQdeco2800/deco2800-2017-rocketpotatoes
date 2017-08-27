@@ -27,7 +27,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress{
 	private static float speed = 0.04f;
 	private static Class<?> goal = Player.class;
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", 50, 1);	
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", 40, 1);	
 	
 	public Squirrel() {
 		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
