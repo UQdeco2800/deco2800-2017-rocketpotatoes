@@ -8,10 +8,59 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 
-/*
-    Static processor for messages
+/**
+ * Static processor for messages
  */
 public class ClientMessageProcessor {
+
+
+    /**
+     * Calls the appropriate handler for the given message
+     * @param client
+     * @param object
+     */
+    public static void processMessage(NetworkClient client, Object object) {
+
+        // Connection message (gives us our client id)
+        if (object instanceof Network.HostConnectionConfirmMessage) {
+            ClientMessageProcessor.connectionConfirmMessage(client, (Network.HostConnectionConfirmMessage) object);
+        }
+        if (object instanceof Network.HostDisconnectMessage) {
+            ClientMessageProcessor.disconnectMessage(client, (Network.HostDisconnectMessage) object);
+        }
+        if (object instanceof Network.HostPlayReadyMessage) {
+            ClientMessageProcessor.playReadyMessage(client, (Network.HostPlayReadyMessage) object);
+        }
+        if (object instanceof Network.HostNewPlayerMessage) {
+            ClientMessageProcessor.newPlayerMessage(client, (Network.HostNewPlayerMessage) object);
+        }
+        if (object instanceof Network.HostPlayerDisconnectedMessage) {
+            ClientMessageProcessor.playerDisconnectMessage(client, (Network.HostPlayerDisconnectedMessage) object);
+        }
+        if (object instanceof Network.HostExistingPlayerMessage) {
+            ClientMessageProcessor.existingPlayerMessage(client, (Network.HostExistingPlayerMessage) object);
+        }
+        if (object instanceof Network.HostEntityCreationMessage) {
+            ClientMessageProcessor.entityCreationMessage(client, (Network.HostEntityCreationMessage) object);
+        }
+        if (object instanceof Network.HostEntityDestroyMessage) {
+            ClientMessageProcessor.entityDestroyMessage(client, (Network.HostEntityDestroyMessage) object);
+        }
+
+        /* Gameplay messages. i.e. none of these should be processed until the client is ready! */
+        if (client.ready) {
+            if (object instanceof Network.HostEntityUpdatePositionMessage) {
+                ClientMessageProcessor.entityUpdatePositionMessage(client, (Network.HostEntityUpdatePositionMessage) object);
+            }
+            if (object instanceof Network.HostEntityUpdateProgressMessage) {
+                ClientMessageProcessor.entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
+            }
+                    /* Generic chat message */
+            if (object instanceof Network.HostChatMessage) {
+                ClientMessageProcessor.chatMessage(client, (Network.HostChatMessage) object);
+            }
+        }
+    }
 
     /**
      * Handles a connection confirm message
@@ -39,7 +88,7 @@ public class ClientMessageProcessor {
     public static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
 
         //System.out.println("[CLIENT]: disconnected because: " + m.message);
-        client.close();
+        client.disconnect();
         // TODO notify game somehow. (Maybe we wait for connection confirmation before we start the client
          // thread?
     }
@@ -214,4 +263,5 @@ public class ClientMessageProcessor {
                 m.message, Color.WHITE);
 
     }
+
 }

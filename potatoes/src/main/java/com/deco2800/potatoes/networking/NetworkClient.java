@@ -68,47 +68,7 @@ public class NetworkClient {
             @Override
             public void received(Connection connection, Object object) {
                 super.received(connection, object);
-
-                // Connection message (gives us our client id)
-                if (object instanceof HostConnectionConfirmMessage) {
-                    ClientMessageProcessor.connectionConfirmMessage(thisClient, (HostConnectionConfirmMessage) object);
-                }
-                if (object instanceof HostDisconnectMessage) {
-                    ClientMessageProcessor.disconnectMessage(thisClient, (HostDisconnectMessage) object);
-                }
-                if (object instanceof HostPlayReadyMessage) {
-                    ClientMessageProcessor.playReadyMessage(thisClient, (HostPlayReadyMessage) object);
-                }
-                if (object instanceof HostNewPlayerMessage) {
-                    ClientMessageProcessor.newPlayerMessage(thisClient, (HostNewPlayerMessage) object);
-                }
-                if (object instanceof HostPlayerDisconnectedMessage) {
-                    ClientMessageProcessor.playerDisconnectMessage(thisClient, (HostPlayerDisconnectedMessage) object);
-                }
-                if (object instanceof HostExistingPlayerMessage) {
-                    ClientMessageProcessor.existingPlayerMessage(thisClient, (HostExistingPlayerMessage) object);
-                }
-                if (object instanceof HostEntityCreationMessage) {
-                    ClientMessageProcessor.entityCreationMessage(thisClient, (HostEntityCreationMessage) object);
-                }
-                if (object instanceof HostEntityDestroyMessage) {
-                    ClientMessageProcessor.entityDestroyMessage(thisClient, (HostEntityDestroyMessage) object);
-                }
-
-                /* Gameplay messages. i.e. none of these should be processed until the client is ready! */
-
-                if (ready) {
-                    if (object instanceof HostEntityUpdatePositionMessage) {
-                        ClientMessageProcessor.entityUpdatePositionMessage(thisClient, (HostEntityUpdatePositionMessage) object);
-                    }
-                    if (object instanceof HostEntityUpdateProgressMessage) {
-                        ClientMessageProcessor.entityUpdateProgressMessage(thisClient, (HostEntityUpdateProgressMessage) object);
-                    }
-                    /* Generic chat message */
-                    if (object instanceof HostChatMessage) {
-                        ClientMessageProcessor.chatMessage(thisClient, (HostChatMessage) object);
-                    }
-                }
+                ClientMessageProcessor.processMessage(thisClient, object);
             }
 
             @Override
@@ -127,15 +87,21 @@ public class NetworkClient {
         client.sendTCP(cr);
     }
 
-    /* Messages to be sent to the server from clients. Note that master should always be directly interacting with the
-     * server. And as such methods such as creation/destruction of entities are located in the NetworkServer class. */
 
+    /**
+     * Broadcasts a chat message to the server to distribute to the rest of the clients
+     * @param message simple message to be sent
+     */
     public void broadcastMessage(String message) {
         ClientChatMessage m = new ClientChatMessage();
         m.message = message;
         client.sendTCP(m);
     }
 
+    /**
+     * Updates the current player position to the server, which is then sent the rest of the clients
+     * @param entity the player entity to be used for update
+     */
     public void broadcastPlayerUpdatePosition(Player entity) {
         ClientPlayerUpdatePositionMessage message = new ClientPlayerUpdatePositionMessage();
         message.x = entity.getPosX();
@@ -144,6 +110,11 @@ public class NetworkClient {
         client.sendUDP(message);
     }
 
+    /**
+     * Tells the server we want to build something somewhere
+     * @param x coord
+     * @param y coord
+     */
     public void broadcastBuildOrder(int x, int y) {
         ClientBuildOrderMessage m = new ClientBuildOrderMessage();
         m.x = x;
@@ -154,7 +125,7 @@ public class NetworkClient {
 
     /**
      * Posts a system message to the chat of this client
-     * @param m
+     * @param m message to be posted
      */
     public void sendSystemMessage(String m) {
         GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
@@ -164,18 +135,30 @@ public class NetworkClient {
         }
     }
 
-    public void close() { client.close(); }
-
+    /**
+     * @return the client id
+     */
     public int getID() {
         return clientID;
     }
 
+    /**
+     * Changes the client id
+     * @param id new id
+     */
     public void setID(int id) { clientID = id; }
 
+    /**
+     * @return the list of clients we know about
+     */
     public ArrayList<String> getClients() {
         return clientList;
     }
 
+
+    /**
+     * Rudely closes the server
+     */
     public void disconnect() {
         client.close();
     }
