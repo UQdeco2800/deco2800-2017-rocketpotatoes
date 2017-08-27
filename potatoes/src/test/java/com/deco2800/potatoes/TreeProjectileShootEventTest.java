@@ -1,8 +1,9 @@
 package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.AbstractWorld;
 import com.deco2800.potatoes.managers.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,6 +26,14 @@ public class TreeProjectileShootEventTest {
         testEvent.copy();
     }
     public void actionTest() {
+        GameManager.get().setWorld(new TestWorld());
+        GameManager.get().getWorld().addEntity(testTree);
+        testEvent.action(testTree);
+        GameManager.get().getWorld().addEntity(new Squirrel(5, 10, 0));
         testEvent.action(testTree);
     }
+    private class TestWorld extends AbstractWorld {
+
+    }
+
 }
