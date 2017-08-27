@@ -149,16 +149,21 @@ public class Render3D implements Renderer {
 				// draws the progress bar
 				Texture entityTexture = reg.getTexture(entity.getTexture());
 				float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
-				float barWidth = tileWidth * entity.getXRenderLength() * progressBar.getWidthScale()
-					* ((HasProgress) entity).getProgressRatio();
+				float maxBarWidth = tileWidth * entity.getXRenderLength()
+					* progressBar.getWidthScale();
+				float barWidth = maxBarWidth * ((HasProgress) entity).getProgressRatio();
 
 				batch.draw(barTexture,
-						// x, y
-						isoPosition.x,
+						// x co-ordinate
+						// finds the overlap length of the bar and moves it half as much left
+						isoPosition.x - (tileWidth * entity.getXRenderLength()
+							* (progressBar.getWidthScale() - 1) / 2),
+						// y co-ordinate
+						// If height is specified, use it, otherwise estimate the right height
 						isoPosition.y + (progressBar.getHeight() != 0 ? progressBar.getHeight() 
 						: entityTexture.getHeight() / aspect2 + 10),
 						// width, height
-						barWidth, barWidth / 8,
+						barWidth, maxBarWidth / 8,
 						// old height
 						// (barTexture.getHeight() / aspect) * entity.getYRenderLength(),
 						// srcX, srcY
