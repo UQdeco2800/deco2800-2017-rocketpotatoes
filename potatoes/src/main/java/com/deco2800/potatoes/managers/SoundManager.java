@@ -51,7 +51,12 @@ public class SoundManager extends Manager {
 	/**
 	 * Sets a new master volume.
 	 */
-	public void setMasterVolume(float v) {masterVolume = v;}
+	public void setMasterVolume(float v) {
+		masterVolume = v;
+		if (music != null) {
+			music.setVolume(masterVolume * musicVolume);
+		}
+	}
 
 	/**
 	 * Gets the current master volume.
@@ -61,6 +66,11 @@ public class SoundManager extends Manager {
 	/**
 	 * Sets a new music volume. (music is played at master * music volume)
 	 */
-	public void setMusicVolume(float v) {musicVolume = v;}
+	public void setMusicVolume(float v) {
+		musicVolume = v;
+		if (music != null) {
+			music.setVolume(masterVolume * musicVolume);
+		}
+	}
 
 }
