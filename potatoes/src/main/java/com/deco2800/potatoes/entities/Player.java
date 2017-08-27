@@ -1,7 +1,9 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
@@ -26,11 +29,11 @@ import com.deco2800.potatoes.util.WorldUtil;
  * @author leggy
  *
  */
-public class Player extends MortalEntity implements Tickable {
+public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private final static transient float HEALTH = 100f;
+	private final static transient float HEALTH = 200f;
 	private static final transient String TEXTURE_RIGHT = "spacman_blue";
 	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
@@ -40,6 +43,13 @@ public class Player extends MortalEntity implements Tickable {
 	private int direction; // facing left=0, right=1
 
 	private Inventory inventory;
+
+	private static final List<Color> colours = Arrays.asList(Color.valueOf("ed1c24"),
+			Color.valueOf("ed184a"), Color.valueOf("f47721"), Color.valueOf("fcb315"),
+			Color.valueOf("fff200"), Color.valueOf("b7d432"), Color.valueOf("5dbb46"), 
+			Color.valueOf("00a651"));
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", 
+				colours, 50, 2);
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -104,7 +114,12 @@ public class Player extends MortalEntity implements Tickable {
 			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)
 					&& newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
-				// wSystem.out.println(this + " colliding with " + entity);
+				collided = true;
+
+			}
+
+			if (!this.equals(entity) && (entity instanceof EnemyEntity)
+					&& newPos.overlaps(entity.getBox3D())) {
 				collided = true;
 
 			}
@@ -196,7 +211,7 @@ public class Player extends MortalEntity implements Tickable {
 		x = (direction == 0) ? x - 1 : x + 1;
 		y = (direction == 0) ? y - 2 : y + 2;
 
-		//only toss an item if there are items to toss
+		// only toss an item if there are items to toss
 		if (this.getInventory().updateQuantity(item, -1) == 1) {
 			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
 		}
@@ -255,6 +270,41 @@ public class Player extends MortalEntity implements Tickable {
 	@Override
 	public String toString() {
 		return "The player";
+	}
+
+	@Override
+	public int getProgress() {
+		return (int) getHealth();
+	}
+
+	@Override
+	public void setProgress(int p) {
+		return;
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return getHealth() / getMaxHealth();
+	}
+
+	@Override
+	public int getMaxProgress() {
+		return (int) getMaxHealth();
+	}
+
+	@Override
+	public void setMaxProgress(int p) {
+		return;
+	}
+
+	@Override
+	public boolean showProgress() {
+		return true;
+	}
+
+	@Override
+	public ProgressBar getProgressBar() {
+		return progressBar;
 	}
 
 }

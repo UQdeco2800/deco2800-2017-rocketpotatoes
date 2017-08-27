@@ -190,7 +190,7 @@ public class GameScreen implements Screen {
      * Initializes everything needed to actually play the game
      * Can be used to `reset` the state of the game
      *
-     * TODO this logic should be state-machined'd (i.e. Main Menu <-> Playing <-> Paused. With every state having
+     * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <-> Paused. With every state having
      * TODO it's own menu(s), initialization etc. And when we setup custom transition logic.
      */
     private void initializeGame() {

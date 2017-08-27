@@ -34,11 +34,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
 	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 30, 1);
-	
-    
-    /*Testing attacking*/
     private static final BasicStats STATS = initStats();
-	/*Testing attacking*/
 
     private static float speed = 0.08f;
     private static Class<?> goal = ResourceTree.class;
@@ -52,7 +48,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     public SpeedyEnemy(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-        //this.steal
+        // this.steal
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();
@@ -102,7 +98,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// Optional<AbstractEntity> target =
 	// WorldUtil.getClosestEntityOfClass(ResourceTree.class, getPosX(), getPosY());
 	//
-	// //get the position of the target
+	// // get the position of the target
 	// float goalX = target.get().getPosX();
 	// float goalY = target.get().getPosY();
 	//
@@ -144,7 +140,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// if (!collided) {
 	// setPosX(getPosX() + changeX);
 	// setPosY(getPosY() + changeY);
-	// //speedy enemy change direction if something blocked.
+	// // speedy enemy change direction if something blocked.
 	//
 	// if(this.getPosX()>goalX){
 	// this.setTexture(TEXTURE);
@@ -167,11 +163,10 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
     private static BasicStats initStats() {
         List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-        BasicStats result = new BasicStats(65f, 0.15f, 2f, 500, normalEvents,"speedyRaccoon");
+        BasicStats result = new BasicStats(HEALTH, speed, 2f, 500, normalEvents, TEXTURE);
         //result.getNormalEventsReference().add(new MeleeAttackEvent(500));
         return result;
     }
-
 
 	@Override
 	public ProgressBarEntity getProgressBar() {

@@ -18,7 +18,7 @@ public class BasicStats {
 
     /*Example stats for an enemy*/
     private float speed = 100f;
-    private float attackSpeed = 500;
+    private int attackSpeed = 500;
     private float health = 100f;
     private float range = 0;
 
@@ -44,7 +44,7 @@ public class BasicStats {
      * @param texture
      *          The enemy's starting texture
      */
-    public BasicStats(float health, float speed, float range, float attackSpeed, List<TimeEvent<EnemyEntity>> normalEvents, String texture) {
+    public BasicStats(float health, float speed, float range, int attackSpeed, List<TimeEvent<EnemyEntity>> normalEvents, String texture) {
         this.health = health;
         this.speed = speed;
         this.range = range;
@@ -53,8 +53,6 @@ public class BasicStats {
         this.normalEvents = getNormalEventsCopy();
         this.texture = texture;
     }
-
-
 
     /**
      * @return A deep copy of the normal events associated with these stats
@@ -94,7 +92,7 @@ public class BasicStats {
      *
      * @return returns enemy's current attack speed
      */
-    public float getAttackSpeed() {
+    public int getAttackSpeed() {
         return this.attackSpeed;
     }
 
@@ -105,13 +103,6 @@ public class BasicStats {
         return this.range;
     }
 
-    /*RETURNS A REFERENCE*/
-    /**
-     * @return returns a reference to the normal events list of these stats
-     */
-    public List<TimeEvent<EnemyEntity>> getNormalEvents() {
-        return normalEvents;
-    }
 
     /**
      * @return return enemy's current texture

@@ -16,7 +16,7 @@ public class Tower extends ProjectileTree {
 	 * Default constructor for serialization
 	 */
 	public Tower() {
-		//generic constructor
+		// generic constructor
 	}
 
 	/**
@@ -33,6 +33,7 @@ public class Tower extends ProjectileTree {
 	 */
 	public Tower(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, TEXTURE, 1000, 8f, 100f);
+		this.setStaticCollideable(true);
 	}
 
 	@Override

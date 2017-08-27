@@ -80,7 +80,13 @@ public class HomingProjectile extends Projectile {
 	}
 
 	/**
-	 *Creates a new Homing Projectile. Homing Projectiles changes
+	 * ****************************************************************************
+	 * ****************************************************************************
+	 * DO NOT USE THIS CONSTRUCTOR METHOD, USED FOR TESTING ONLY.
+	 * ****************************************************************************
+	 * ****************************************************************************
+	 *
+	 * Creates a new Homing Projectile. Homing Projectiles changes
 	 * direction once fired. The initial direction is based on the direction to the
 	 * closest entity and follows it.
 	 *
@@ -130,9 +136,11 @@ public class HomingProjectile extends Projectile {
 	@Override
 	public void onTick(long time) {
 
+		if(mainTarget != null){
+			this.goalX = mainTarget.get().getPosX();
+			this.goalY = mainTarget.get().getPosY();
+		}
 
-		this.goalX = mainTarget.get().getPosX();
-		this.goalY = mainTarget.get().getPosY();
 
 		float deltaX = getPosX() - this.goalX;
 		float deltaY = getPosY() - this.goalY;

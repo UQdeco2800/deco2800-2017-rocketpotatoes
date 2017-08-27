@@ -16,7 +16,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
      * Default constructor for serialization
      */
     public TreeProjectileShootEvent() {
-        //default constructer
+        // default constructer
     }
 
     /**

@@ -21,6 +21,10 @@ public class BasicStatsTest {
     @Before
     public void setup() {
         normalEvents = new LinkedList<>();
+        float speed = 100f;
+        int attackSpeed = 500;
+        float health = 100f;
+        float range = 0;
         testStats = new BasicStats(200, 500, 4f, 500, normalEvents, "squirrel");
     }
 
@@ -30,6 +34,11 @@ public class BasicStatsTest {
                 testStats.getNormalEventsCopy() == testStats.getNormalEventsCopy());
         assertTrue("Normal events copy didn't return the same object",
                 testStats.getNormalEventsReference() == testStats.getNormalEventsReference());
+    }
+
+    @Test
+    public void emptyTest() {
+        BasicStats test = new BasicStats();
     }
 
     @Test
