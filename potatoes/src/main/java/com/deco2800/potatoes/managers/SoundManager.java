@@ -36,17 +36,26 @@ public class SoundManager extends Manager {
 	public void playMusic(String musicString){
 		LOGGER.info("Playing music.");
 		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/" + musicString));
-		music.setVolume(musicVolume);
-		music.setLooping(true);
-		music.play();
+		if (music != null) {
+			music.setVolume(musicVolume);
+			music.setLooping(true);
+			music.play();
+		}
 	}
 
 	/**
 	 * Stops music playing.
 	 */
 	public void  stopMusic(){
-		music.stop();
+		if (music != null) {
+			music.stop();
+		}
 	}
+
+	/**
+	 * Check if music is playing.
+	 */
+	public boolean musicPlaying(){return music.isPlaying();}
 
 	/**
 	 * Sets a new sound effects volume.
