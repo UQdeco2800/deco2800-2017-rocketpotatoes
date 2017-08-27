@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.screens.MainMenuScreen;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,8 +73,7 @@ public class MainMenuGui extends Gui {
         this.stage = stage;
         this.mainMenuScreen = screen;
 
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
-
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         // State 1
         startButton = new TextButton("Start Game", uiSkin);
         optionsButton = new TextButton("Options", uiSkin);

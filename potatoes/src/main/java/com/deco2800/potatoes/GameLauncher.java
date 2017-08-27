@@ -18,7 +18,7 @@ public class GameLauncher {
 	 *            Command line arguments (we wont use these)
 	 */
 	public static void main(String[] args) {
-		BasicConfigurator.configure();
+		//BasicConfigurator.configure();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;

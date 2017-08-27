@@ -4,6 +4,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
 import com.deco2800.potatoes.entities.trees.UpgradeStats;
 import com.deco2800.potatoes.managers.Inventory;
@@ -151,7 +152,7 @@ public class Network {
     /* Message indicating our player wants to build something
      * TODO support other types? AbstractTree?? */
     static public class ClientBuildOrderMessage {
-        public float x, y;
+        public AbstractTree tree;
     }
 
     /* Message from the host indicating a new position of an entity */

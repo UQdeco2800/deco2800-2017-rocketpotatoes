@@ -9,7 +9,7 @@ public class ExplosionEffect extends Projectile {
     private final static transient String TEXTURE = "exp1";
 
     private int currentSpriteIndexCount = 1;
-    private String[] currentSpriteIndex = {"exp1","exp2","exp3"};
+    private String[] currentSpriteIndex = {"exp1", "exp2", "exp3"};
     private int effectsTimer = 0;
 
 
@@ -18,6 +18,9 @@ public class ExplosionEffect extends Projectile {
 
     }
 
+    /**
+     * Returns damage value, value will always be 0 because this is just showing animation
+     */
     @Override
     public float getDamage() {
         return 0;
@@ -61,7 +64,6 @@ public class ExplosionEffect extends Projectile {
 
 
     }
-
 
 
 }
