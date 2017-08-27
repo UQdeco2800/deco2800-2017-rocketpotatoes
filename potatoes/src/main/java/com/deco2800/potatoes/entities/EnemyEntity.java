@@ -27,7 +27,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	public EnemyEntity() {
 		// empty for serialization
-		resetStats();
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
 	}
 
 
@@ -58,7 +58,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		resetStats();
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -93,7 +93,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-		resetStats();
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -131,7 +131,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		resetStats();
+		registerNewEvents(getBasicStats().getNormalEventsCopy());
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -252,19 +252,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Gets the basic stats that apply to this enemy
+	 * Get the basic stats of this enemy
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
 	public abstract BasicStats getBasicStats();
-
-	public void resetStats() {
-		this.addMaxHealth(getBasicStats().getHealth() - this.getMaxHealth());
-		this.heal(getMaxHealth());
-		setTexture(getBasicStats().getTexture());
-		this.speed = getBasicStats().getSpeed();
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
-	}
 
 	@Override
 	public int getProgress() {
@@ -322,6 +314,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		//System.out.println(this + " was shot. Health now " + getHealth());
 	}
 
+	/**
+	 * Returns the ProgressBar of an entity
+	 * @return
+	 */
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
 	}
