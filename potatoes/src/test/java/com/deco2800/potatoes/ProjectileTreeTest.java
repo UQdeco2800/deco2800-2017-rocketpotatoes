@@ -77,4 +77,11 @@ public class ProjectileTreeTest {
 		assertTrue(30f == testTree.getHealth());
 		assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
 	}
+	@Test
+	public void progressTest2() {
+		testTree.getProgressRatio();
+		testTree.setMaxProgress(1);
+		testTree.getMaxProgress();
+		testTree.constructTree(new ProjectileTree(12, 12, 0, "real_tree", RELOAD, RANGE, HEALTH));
+	}
 }
