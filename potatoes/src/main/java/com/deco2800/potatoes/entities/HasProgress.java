@@ -5,34 +5,16 @@ package com.deco2800.potatoes.entities;
  */
 public interface HasProgress {
 	/**
-	 * Returns the current progress
+	 * Returns the current progress out of 100
 	 * @return
 	 */
 	int getProgress();
 
 	/**
-	 * Sets the progress to the given value.
+	 * Set's the progress to the given value.
 	 * @param p
 	 */
 	void setProgress(int p);
-
-	/**
-	 * Returns the current progress ratio
-	 * @return
-	 */
-	float getProgressRatio();
-
-	/**
-	 * Returns the maximum possible progress
-	 * @return
-	 */
-	int getMaxProgress();
-
-	/**
-	 * Sets the maximum progress to the given value.
-	 * @param p
-	 */
-	void setMaxProgress(int p);
 
 	/**
 	 * Should i show the progress

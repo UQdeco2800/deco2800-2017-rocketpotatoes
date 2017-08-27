@@ -15,10 +15,8 @@ public class ProgressBarEntity implements ProgressBar {
 	protected String texture;
 	// the colour palette used for the progress bar
 	protected List<Color> colours;
-	// the height of the progress bar in relation to the location of the entity
+	// the of the progress bar in relation to the location of the entity
 	protected int height;
-	// the scale of the progress bar in relation to its entity
-	protected float widthScale;
 
 	public ProgressBarEntity() {
 		// empty because serialization
@@ -33,11 +31,10 @@ public class ProgressBarEntity implements ProgressBar {
 	 * @param height
 	 *            the of the progress bar in relation to the location of the entity
 	 */
-	public ProgressBarEntity(String texture, List<Color> colours, int height, float widthScale) {
+	public ProgressBarEntity(String texture, List<Color> colours, int height) {
 		this.texture = texture;
 		this.colours = colours;
 		this.height = height;
-		this.widthScale = widthScale;
 
 	}
 
@@ -47,8 +44,10 @@ public class ProgressBarEntity implements ProgressBar {
 	}
 
 	@Override
-	public Color getColour(float progressRatio) {
-		return colours.get(Math.max(0, (int) Math.ceil(progressRatio * colours.size() - 1)));
+	public Color getColour(int currentHealth, int maxHealth) {
+		// based on percentage of health
+		int ratio = maxHealth / (colours.size());
+		return colours.get(Math.min(colours.size()-1, (maxHealth - currentHealth) / ratio));
 	}
 
 	@Override
@@ -59,11 +58,6 @@ public class ProgressBarEntity implements ProgressBar {
 	@Override
 	public List<Color> getColours() {
 		return new ArrayList<Color>(colours);
-	}
-
-	@Override
-	public float getWidthScale() {
-		return widthScale;
 	}
 
 }

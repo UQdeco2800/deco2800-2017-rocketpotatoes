@@ -184,21 +184,4 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public boolean showProgress() {
 		return false;
 	}
-
-	@Override
-	public float getProgressRatio() {
-		return constructionLeft / 100;
-	}
-
-	@Override
-	public int getMaxProgress() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setMaxProgress(int p) {
-		
-
-	}
 }

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ProgressBarEntityTest {
 
-	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN);
+	private static final List<Color> colours = Arrays.asList(Color.GREEN, Color.ORANGE, Color.RED);
 	ProgressBarEntity progressBarEntity;
 
 	private class TestableProgressBarEntity extends ProgressBarEntity {
@@ -20,7 +20,7 @@ public class ProgressBarEntityTest {
 		};
 
 		public TestableProgressBarEntity(String texture, List<Color> colours, int height) {
-			super(texture, colours, height, 1);
+			super(texture, colours, height);
 		};
 	}
 	
@@ -54,26 +54,26 @@ public class ProgressBarEntityTest {
 	@Test
 	public void getColourTest() {
 		// test 3 colours
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.GREEN);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.ORANGE);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(100, 100), Color.GREEN);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(50, 100), Color.ORANGE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0, 100), Color.RED);
 		
 		// test 1 colour
-		List<Color> colours = Arrays.asList(Color.RED);
+		List<Color> colours = Arrays.asList( Color.RED);
 		progressBarEntity = new TestableProgressBarEntity("progress_bar", colours, 50);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.RED);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.RED);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(100, 100), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(50, 100), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0, 100), Color.RED);
 		
 		// test 5 colour
-		colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN, Color.BLUE, Color.PURPLE);
+		colours = Arrays.asList(Color.PURPLE, Color.BLUE, Color.GREEN, Color.ORANGE, Color.RED);
 		progressBarEntity = new TestableProgressBarEntity("progress_bar", colours, 50);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.PURPLE);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.8f), Color.BLUE);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.6f), Color.GREEN);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.4f), Color.ORANGE);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.2f), Color.RED);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(100, 100), Color.PURPLE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(80, 100), Color.BLUE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(60, 100), Color.GREEN);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(40, 100), Color.ORANGE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(20, 100), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0, 100), Color.RED);
 
 
 	}
