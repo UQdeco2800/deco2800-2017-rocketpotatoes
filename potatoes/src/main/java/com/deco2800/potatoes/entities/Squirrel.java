@@ -14,8 +14,9 @@ import com.deco2800.potatoes.util.Path;
  * A generic player instance for the game
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
-	
-	private static final transient String TEXTURE = "squirrel";
+
+	private static final transient String TEXTURE_LEFT = "squirrel";
+	private static final transient String TEXTURE_RIGHT = "squirrel_right";
 	private static final transient float HEALTH = 100f;
 	private transient Random random = new Random();
 
@@ -30,7 +31,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 
 	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH);
+		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
 		//this.setTexture("squirrel");
 		//this.random = new Random();
 		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
@@ -39,6 +40,13 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		this.path = pathManager.generatePathPlayer();
 	}
 
+
+	/**
+	 * Squirrel follows it's path.
+	 * Requests a new path whenever it collides with a staticCollideable entity
+	 * moves directly towards the player once it reaches the end of it's path
+	 * @param i
+	 */
 	@Override
 	public void onTick(long i) {
 		//in case squirrel is made before playerManager
@@ -56,7 +64,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
 				//collided with wall
 				path = pathManager.generatePathPlayer(); //TODO squirel is requesting path here
-				if (path.isEmpty()) {return;} //stuck in wall no way to get to target
+				if (path.isEmpty()) { return; } //stuck in wall no way to get to target
 				target = path.pop();
 				break;
 			}
@@ -90,6 +98,13 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		float deltaY = getPosY() - targetY;
 
 		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+
+		//flip sprite
+		if (deltaX + deltaY >= 0) {
+			this.setTexture(TEXTURE_LEFT);
+		} else {
+			this.setTexture(TEXTURE_RIGHT);
+		}
 
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));
