@@ -52,7 +52,7 @@ public class WorldUtil {
 	public static List<AbstractEntity> getEntitiesOfClass(Collection<AbstractEntity> entities, Class<?> c) {
 		List<AbstractEntity> classEntities = new ArrayList<>();
 		for (AbstractEntity w : entities) {
-			if (w.getClass() == c) {
+			if (c.isAssignableFrom(w.getClass())) {
 				classEntities.add(w);
 			}
 		}

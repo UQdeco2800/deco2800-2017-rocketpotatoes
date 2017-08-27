@@ -3,7 +3,11 @@
  */
 package com.deco2800.potatoes.entities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.deco2800.potatoes.managers.GameManager;
+
 
 /**
  * @author michaelruigrok
@@ -15,6 +19,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	protected float maxHealth;
 	protected float damageOffset = 0f;
 	protected float damageScaling = 1f;
+
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
 	/**
 	 * Default constructor for serialization
@@ -47,8 +53,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
 	 */
-	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float maxHealth) {
+	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength,
+			float zLength, String texture, float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture);
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
@@ -81,8 +87,9 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
 	 */
-	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String texture, float maxHealth) {
+	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength,
+			float zLength, float xRenderLength, float yRenderLength, String texture,
+			float maxHealth) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture);
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
@@ -119,13 +126,16 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
 	 */
-	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture);
+	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength,
+			float zLength, float xRenderLength, float yRenderLength, boolean centered,
+			String texture, float maxHealth) {
+
+		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength,
+				centered, texture);
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
 	}
-	
+
 
 	/**
 	 * {@inheritDoc}
@@ -152,6 +162,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
+		if (this.maxHealth <= 0 ) { maxHealth = 1; }
 		return this.maxHealth;
 	}
 
@@ -187,11 +198,14 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public boolean damage(float amount) {
-		float damage = (amount * getDamageScaling());
+		float damage = amount * getDamageScaling();
 
 		if (damage > 0) {
-			health -= damage;
-			health += Math.min(getDamageOffset(), damage);
+			if (getDamageOffset() < damage) {
+				health -= damage - getDamageOffset();
+				LOGGER.info("{} has been damaged for {} points (health now {})", this, amount,
+						getHealth());
+			}
 		} else {
 			heal(-damage);
 		}
@@ -211,8 +225,11 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 		health += amount;
 		if (health > maxHealth) {
 			health = maxHealth;
+			LOGGER.info("{} has been healed for {} points (health now {})", this, amount,
+					getHealth());
 			return false;
 		}
+		LOGGER.info("{} has been healed for {} points (health now {})", this, amount, getHealth());
 		return true;
 	}
 
@@ -221,7 +238,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public void deathHandler() {
-		//System.out.println(this + " is dead.");
+		LOGGER.info(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
 	}
 

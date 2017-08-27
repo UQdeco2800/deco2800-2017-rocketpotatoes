@@ -53,6 +53,10 @@ public class Network {
         k.register(SeedResource.class);
         k.register(Inventory.class);
         k.register(TreeMap.class);
+        k.register(float[][].class);
+        k.register(float[].class);
+        k.register(String[].class);
+        k.register(Class.class);
 
         /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
          * actions? Requires as much abstraction as possible with regards to custom behaviour, shouldn't be too tedious

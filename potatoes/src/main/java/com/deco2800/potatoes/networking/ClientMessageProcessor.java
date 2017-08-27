@@ -13,6 +13,14 @@ import com.deco2800.potatoes.managers.PlayerManager;
  */
 public class ClientMessageProcessor {
 
+    /**
+     * Handles a connection confirm message
+     *
+     * This message will be the first message back from a successful connection. And supplies the client id
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
 
         //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
@@ -20,6 +28,14 @@ public class ClientMessageProcessor {
         client.setID(m.id);
     }
 
+    /**
+     * This message informs a connecting/connected client that they have been disconnected
+     *
+     * Currently the disconnection is fairly abrupt and will likely crash the client.
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
 
         //System.out.println("[CLIENT]: disconnected because: " + m.message);
@@ -28,12 +44,32 @@ public class ClientMessageProcessor {
          // thread?
     }
 
+    /**
+     * Handles a ready message
+     *
+     * Tells the client that they have successfully joined the server and have been sent all sync data
+     * The client should block when connecting until this message (client.ready is set to true)
+     * This also sends a system chat message informing the connection was complete
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void playReadyMessage(NetworkClient client, Network.HostPlayReadyMessage m) {
         //System.out.println("[CLIENT]: I'm ready to go!");
         client.sendSystemMessage("Successfully joined server!");
         client.ready = true;
     }
 
+    /**
+     * Handles a new player join message
+     *
+     * Upon a new client joining all clients (including the new one) will receive this and as a result should
+     * create the player entity associated with the new clients id.
+     * Also informs the client via chat of the new player
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
         //System.out.println("[CLIENT]: Got host new player message: " + m.id);
 
@@ -60,6 +96,15 @@ public class ClientMessageProcessor {
         client.getClients().add(m.name);
     }
 
+    /**
+     * Handles a player disconnecting
+     *
+     * All clients upon a player disconnecting will receive this message. As a result the players entity object will
+     * be destroyed and the client informed via chat
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void playerDisconnectMessage(NetworkClient client, Network.HostPlayerDisconnectedMessage m) {
 
         //System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
@@ -71,6 +116,16 @@ public class ClientMessageProcessor {
         return;
     }
 
+    /**
+     * Handles a existing player message
+     *
+     * Tells a joining client of an existing player. Will simply add it to the clients list of other clients
+     * this is accessed via (client.getClients()). The entity will be created when syncing other entities
+     * Also informs the new client via chat
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void existingPlayerMessage(NetworkClient client, Network.HostExistingPlayerMessage m) {
 
         //System.out.println("[CLIENT]: Got host existing player message: " + m.id);
@@ -78,6 +133,14 @@ public class ClientMessageProcessor {
         client.getClients().set(m.id, m.name);
     }
 
+    /**
+     * Handles a entity creation message
+     *
+     * Upon syncing of state and during game play this message will often be sent. Creates an entity of the given id
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void entityCreationMessage(NetworkClient client, Network.HostEntityCreationMessage m) {
 
         //System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
@@ -91,18 +154,43 @@ public class ClientMessageProcessor {
         }
     }
 
+    /**
+     * Handles a entity destroy message
+     *
+     * Will destroy the designated entity
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void entityDestroyMessage(NetworkClient client, Network.HostEntityDestroyMessage m) {
 
         //System.out.println("[CLIENT]: Got host destroy entity message: " + m.id);
         GameManager.get().getWorld().removeEntity(m.id);
     }
 
+    /**
+     * Handles a entity update position
+     *
+     * Updates the position of an existing entity via id. Also used to update player positions
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void entityUpdatePositionMessage(NetworkClient client, Network.HostEntityUpdatePositionMessage m) {
 
         GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
         GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
     }
 
+    /**
+     * Handles a update progress message
+     *
+     * Simple message to handle health, timers etc for entities. Only supports a single counter and will need to be
+     * expanded.
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void entityUpdateProgressMessage(NetworkClient client, Network.HostEntityUpdateProgressMessage m) {
 
         // TODO verification?
@@ -110,6 +198,15 @@ public class ClientMessageProcessor {
 
     }
 
+    /**
+     * Handles a chat message
+     *
+     * Received upon a chat message being sent from any client (including the receiver)
+     * Adds the message to the chat gui
+     *
+     * @param client the network client to process this event
+     * @param m the message
+     */
     public static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
         GuiManager g = (GuiManager) GameManager.get().getManager(GuiManager.class);
         ((ChatGui) g.getGui(ChatGui.class)).addMessage(

@@ -18,6 +18,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
+import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -76,6 +77,7 @@ public class GameScreen implements Screen {
         // setup multiplayer
         if (isHost) {
             multiplayerManager.createHost(port);
+            // Loopback for host's connection to itself
             multiplayerManager.joinGame(name, "127.0.0.1", port);
         } else {
             multiplayerManager.joinGame(name, IP, port);
@@ -147,6 +149,9 @@ public class GameScreen implements Screen {
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
+        
+        // Make our inventory window
+        guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		/* Setup inputs */
         setupInputHandling();
@@ -202,28 +207,25 @@ public class GameScreen implements Screen {
                 GameManager.get().getWorld().addEntity(new Squirrel(
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
-            
-            GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+
+            for (int i = 0; i < 3; i++) {
+                GameManager.get().getWorld().addEntity(
+                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+            }
+
+            GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
+
+            for(int i=0 ; i<3 ; i++) {
+                GameManager.get().getWorld().addEntity(
+                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+            }
+            addResourceTrees();
+            initialiseResources();
             
-            SeedResource seedResource = new SeedResource();
-			FoodResource foodResource = new FoodResource();
-			
-			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-			
-			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-			GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
         }
-
-
-
+        
         if (!multiplayerManager.isMultiplayer()) {
 			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
 		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
@@ -234,6 +236,31 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void addResourceTrees() {
+    		// Seed Trees
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
+    }
+    
+    private void initialiseResources() {
+
+        SeedResource seedResource = new SeedResource();
+		FoodResource foodResource = new FoodResource();
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
     }
 
     private void tickGame(long timeDelta) {
