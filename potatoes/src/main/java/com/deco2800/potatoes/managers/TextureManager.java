@@ -95,9 +95,9 @@ public class TextureManager extends Manager {
             if(i<8){
                 saveTexture("Lightning_dead"+i,"resources/trees/lightningDead"+i+".png");
             }
-
         }
-        //damage tree:
+        //damage tree:ice
+        saveTexture("ice_basic_tree","resources/trees/iceBasicTree.png");
 
 
         
