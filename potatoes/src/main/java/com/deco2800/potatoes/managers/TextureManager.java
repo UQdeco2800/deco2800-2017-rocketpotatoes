@@ -83,13 +83,19 @@ public class TextureManager extends Manager {
         for (int i = 1; i < 8; i++) {
         	saveTexture("basictree_grow" + i, "resources/trees/Grow" + i + ".png");
         }
-        //damage tree:lightning
+//        //damage tree:lightning
         for(int i=1;i<10;i++){
-            saveTexture("lightning_tree"+i,"resources/tree/Lightning"+i+".png");
-            saveTexture("Lightning_being_damaged"+i,"resources/tree/LightningBeingDamaged"+i+".png");
-            saveTexture("Lightning_damaged"+i,"resources/tree/lightningDamaged"+i+".png");
-            saveTexture("Lightning_damaged_being_damaged"+i,"resources/tree/LightningDamagedBeingDamaged"+i+".png");
-            saveTexture("Lightning_dead"+i,"resources/tree/lightningDead"+i+".png");
+            saveTexture("lightning_tree"+i,"resources/trees/Lightning"+i+".png");
+            saveTexture("Lightning_being_damaged"+i,"resources/trees/LightningBeingDamaged"+i+".png");
+            saveTexture("Lightning_damaged"+i,"resources/trees/lightningDamaged"+i+".png");
+
+            if(i<9){
+                saveTexture("Lightning_damaged_being_damaged"+i,"resources/trees/LightningDamagedBeingDamaged"+i+".png");
+            }
+            if(i<8){
+                saveTexture("Lightning_dead"+i,"resources/trees/lightningDead"+i+".png");
+            }
+
         }
         //damage tree:
 
