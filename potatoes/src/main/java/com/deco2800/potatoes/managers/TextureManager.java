@@ -87,6 +87,9 @@ public class TextureManager extends Manager {
         for(int i=1;i<10;i++){
             saveTexture("lightning_tree"+i,"resources/tree/Lightning"+i+".png");
             saveTexture("Lightning_being_damaged"+i,"resources/tree/LightningBeingDamaged"+i+".png");
+            saveTexture("Lightning_damaged"+i,"resources/tree/lightningDamaged"+i+".png");
+            saveTexture("Lightning_damaged_being_damaged"+i,"resources/tree/LightningDamagedBeingDamaged"+i+".png");
+            saveTexture("Lightning_dead"+i,"resources/tree/lightningDead"+i+".png");
         }
         //damage tree:
 
