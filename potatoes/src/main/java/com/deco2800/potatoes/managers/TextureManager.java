@@ -33,11 +33,13 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
+
     	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
-        saveTexture("tree", "resources/placeholderassets/spacman.png");
+        saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
-        saveTexture("resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
+        saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
+        saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -48,27 +50,61 @@ public class TextureManager extends Manager {
         saveTexture("selected", "resources/placeholderassets/selected.png");
         saveTexture("selected_black", "resources/placeholderassets/selected_black.png");
         saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
-		saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
 		saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
-        saveTexture("squirrel2", "resources/placeholderassets/squirrelFaceRight.png");
+		saveTexture("squirrel_right", "resources/placeholderassets/squirrel_right.png");
 		saveTexture("tower", "resources/placeholderassets/tower.png");
 		saveTexture("potate", "resources/placeholderassets/potate.png");
 		saveTexture("projectile", "resources/placeholderassets/projectile.png");
+        saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
+        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");
         saveTexture("progress_bar","resources/placeholderassets/progress_bar.png");
 		saveTexture("seed", "resources/placeholderassets/seed.png");
 		saveTexture("food", "resources/placeholderassets/food.png");
-		saveTexture("aoe1","resources/placeholderassets/aoe1.png");
-        saveTexture("aoe2","resources/placeholderassets/aoe2.png");
-        saveTexture("aoe3","resources/placeholderassets/aoe3.png");
-        saveTexture("proj1","resources/placeholderassets/proj1.png");
+		saveTexture("aoe1","resources/projectiles/aoe1.png");
+        saveTexture("aoe2","resources/projectiles/aoe2.png");
+        saveTexture("aoe3","resources/projectiles/aoe3.png");
+        saveTexture("rocket1","resources/projectiles/rocket1.png");
+        saveTexture("rocket2","resources/projectiles/rocket2.png");
+        saveTexture("rocket3","resources/projectiles/rocket3.png");
+        saveTexture("exp1","resources/projectiles/explosion1.png");
+        saveTexture("exp2","resources/projectiles/explosion2.png");
+        saveTexture("exp3","resources/projectiles/explosion3.png");
         saveTexture("Lightning","resources/placeholderassets/Lightning.png");
         saveTexture("ring","resources/placeholderassets/ring.png");
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
-        saveTexture("speedySquirrel","resources/placeholderassets/speedySquirrel.png");
-        saveTexture("screen_background", "resources/placeholderassets/screen_background.png");
+        saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
+
+        // GUI
+        saveTexture("screen_background", "resources/menu/background.png");
+        saveTexture("start_btn", "resources/menu/start_btn.png");
+        saveTexture("resume_btn", "resources/menu/resume_btn.png");
+        saveTexture("options_btn", "resources/menu/options_btn.png");
+        saveTexture("exit_btn", "resources/menu/exit_btn.png");
+        saveTexture("pause_menu_bg", "resources/menu/pause_menu_bg.png");
+
+        // Tree growing animation, should maybe be moved to TextureRegion later
+        for (int i = 1; i < 8; i++) {
+        	saveTexture("basictree_grow" + i, "resources/trees/Grow" + i + ".png");
+        }
+//        //damage tree:lightning
+        for(int i=1;i<10;i++){
+            saveTexture("lightning_tree"+i,"resources/trees/Lightning"+i+".png");
+            saveTexture("Lightning_being_damaged"+i,"resources/trees/LightningBeingDamaged"+i+".png");
+            saveTexture("Lightning_damaged"+i,"resources/trees/lightningDamaged"+i+".png");
+
+            if(i<9){
+                saveTexture("Lightning_damaged_being_damaged"+i,"resources/trees/LightningDamagedBeingDamaged"+i+".png");
+            }
+            if(i<8){
+                saveTexture("Lightning_dead"+i,"resources/trees/lightningDead"+i+".png");
+            }
+        }
+        //damage tree:ice
+        saveTexture("ice_basic_tree","resources/trees/iceBasicTree.png");
 
 
+        
     }
 
     /**

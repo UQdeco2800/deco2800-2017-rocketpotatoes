@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 import com.google.common.net.InetAddresses;
@@ -112,7 +113,8 @@ public class MultiplayerManager extends Manager {
         clientPort = port;
         multiplayer = true;
         ip = IP;
-        client = new NetworkClient(name, IP, port, port);
+        client = new NetworkClient();
+        client.connect(name, IP, port, port);
 
         while (!isClientReady());
     }
@@ -211,12 +213,11 @@ public class MultiplayerManager extends Manager {
 
     /**
      * Broadcasts a build order from a client (should only be used by non-master)
-     * @param x
-     * @param y
+     * @param tree The tree to be built
      */
-    public void broadcastBuildOrder(int x, int y) {
+    public void broadcastBuildOrder(AbstractTree tree) {
         if (client != null) {
-            client.broadcastBuildOrder(x, y);
+            client.broadcastBuildOrder(tree);
         }
     }
 

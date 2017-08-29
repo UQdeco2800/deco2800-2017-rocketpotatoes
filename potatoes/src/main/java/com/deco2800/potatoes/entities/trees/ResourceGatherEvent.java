@@ -3,6 +3,8 @@ import com.deco2800.potatoes.entities.TimeEvent;
 
 /**
  * An time event that increments the resource count of a resource tree.
+ * 
+ * @author Peter
  */
 public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	
@@ -15,6 +17,8 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	}
 	
 	/**
+	 * Initialises with a gather rate and amount.
+	 * 
 	 * @param gatherRate
 	 *            the rate at which resources are collected
 	 * @param gatherAmount
@@ -34,7 +38,7 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	public void action(AbstractTree tree) {
 		ResourceTree resourceTree = (ResourceTree) tree;
 		if (resourceTree.gatherEnabled) {
-			resourceTree.addResources(gatherAmount);
+			resourceTree.gather(gatherAmount);
 		}
 	}
 

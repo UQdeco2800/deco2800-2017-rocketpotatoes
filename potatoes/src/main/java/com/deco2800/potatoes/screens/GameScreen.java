@@ -19,6 +19,7 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.gui.InventoryGui;
+import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -77,6 +78,7 @@ public class GameScreen implements Screen {
         // setup multiplayer
         if (isHost) {
             multiplayerManager.createHost(port);
+            // Loopback for host's connection to itself
             multiplayerManager.joinGame(name, "127.0.0.1", port);
         } else {
             multiplayerManager.joinGame(name, IP, port);
@@ -146,6 +148,9 @@ public class GameScreen implements Screen {
         // Make our GameMenuGui
         guiManager.addGui(new GameMenuGui(guiManager.getStage(), this));
 
+        // Make our PauseMenuGui
+        guiManager.addGui(new PauseMenuGui(guiManager.getStage(), this));
+
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
         
@@ -174,6 +179,7 @@ public class GameScreen implements Screen {
 
         inputManager = (InputManager) GameManager.get().getManager(InputManager.class);
         inputManager.addKeyDownListener(new CameraHandler());
+        inputManager.addKeyDownListener(new PauseHandler());
         inputManager.addScrollListener(new ScrollTester());
 
         MouseHandler mouseHandler = new MouseHandler();
@@ -189,7 +195,7 @@ public class GameScreen implements Screen {
      * Initializes everything needed to actually play the game
      * Can be used to `reset` the state of the game
      *
-     * TODO this logic should be state-machined'd (i.e. Main Menu <-> Playing <-> Paused. With every state having
+     * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <-> Paused. With every state having
      * TODO it's own menu(s), initialization etc. And when we setup custom transition logic.
      */
     private void initializeGame() {
@@ -207,21 +213,24 @@ public class GameScreen implements Screen {
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+
             for (int i = 0; i < 3; i++) {
                 GameManager.get().getWorld().addEntity(
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
-            
+
             GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-            GameManager.get().getWorld().addEntity(new ResourceTree(16, 11, 0, new SeedResource()));
-            GameManager.get().getWorld().addEntity(new SpeedyEnemy(24,20,0));
+
+            for(int i=0 ; i<3 ; i++) {
+                GameManager.get().getWorld().addEntity(
+                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+            }
+            addResourceTrees();
             initialiseResources();
             
         }
-
-
-
+        
         if (!multiplayerManager.isMultiplayer()) {
 			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
 		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
@@ -232,6 +241,15 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+    }
+    
+    private void addResourceTrees() {
+    		// Seed Trees
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
+        GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
     }
     
     private void initialiseResources() {
@@ -507,6 +525,17 @@ public class GameScreen implements Screen {
         }
     }
 
+    private class PauseHandler implements KeyDownObserver {
+        @Override
+        public void notifyKeyDown(int keycode) {
+            if (keycode == Input.Keys.ESCAPE) {
+                // Pause the Game
+                // ToDo
+                // Show the Pause Menu
+                ((PauseMenuGui) guiManager.getGui(PauseMenuGui.class)).show();
+            }
+        }
+    }
 
     private class ScrollTester implements ScrollObserver {
 
@@ -517,5 +546,43 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Sets the sound effects volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
+    public void setEffectsVolume(float v){
+        soundManager.setEffectsVolume(v);
+    }
+
+    /**
+     * Returns the current sound effects volume from SoundManager.
+     * @return float from 0 to 1.
+     */
+    public float getEffectsVolume(){
+        return soundManager.getEffectsVolume();
+    }
+
+    /**
+     * Sets the music volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
+    public void setMusicVolume(float v){
+        soundManager.setMusicVolume(v);
+    }
+
+    /**
+     * Returns the current music volume from SoundManager.
+     * @return float from 0 to 1.
+     */
+    public float getMusicVolume(){
+        return soundManager.getMusicVolume();
+    }
+
+    /**
+     * Plays a blip sound.
+     */
+    public void menuBlipSound(){
+        soundManager.playSound("menu_blip.wav");
+    }
 
 }
