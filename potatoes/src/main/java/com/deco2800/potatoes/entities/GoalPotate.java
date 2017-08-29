@@ -14,7 +14,7 @@ public class GoalPotate extends AbstractEntity{
 	private final static transient String TEXTURE = "potate";
 
 	public GoalPotate() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 

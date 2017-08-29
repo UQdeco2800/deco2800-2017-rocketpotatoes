@@ -12,45 +12,40 @@ import com.deco2800.potatoes.util.WorldUtil;
  */
 public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 
-	/**
-	 * Default constructor for serialization
-	 */
-	public TreeProjectileShootEvent() {
-	}
+    /**
+     * Default constructor for serialization
+     */
+    public TreeProjectileShootEvent() {
+        // default constructer
+    }
 
-	/**
-	 * @param shootDelay
-	 *            the delay between shots
-	 */
-	public TreeProjectileShootEvent(int shootDelay) {
-		setDoReset(true);
-		setResetAmount(shootDelay);
-		reset();
-	}
-
-	/**
-	 * Temporary action for testing
-	 */
-	@Override
-	public void action(AbstractTree tree) {
-		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(Squirrel.class, tree.getPosX(),
-				tree.getPosY());
-
-		if (!target.isPresent() || tree.distance(target.get()) > tree.getUpgradeStats().getRange()) {
-			return;
-		}
-
-		//Added custom damages to projectiles
-
-		GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
-				target, tree.getUpgradeStats().getRange(),1));
+    /**
+     * @param shootDelay the delay between shots
+     */
+    public TreeProjectileShootEvent(int shootDelay) {
+        setDoReset(true);
+        setResetAmount(shootDelay);
+        reset();
+    }
 
 
-	}
+    @Override
+    public void action(AbstractTree tree) {
+        Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, tree.getPosX(),
+                tree.getPosY());
+        if (target1.isPresent() && (tree.distance(target1.get()) <= tree.getUpgradeStats().getRange())) {
+            GameManager.get().getWorld().addEntity(new BallisticProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+                    target1, tree.getUpgradeStats().getRange(), 0, 10));
+//					GameManager.get().getWorld().addEntity(new HomingProjectile(tree.getPosX(), tree.getPosY(), tree.getPosZ(),
+//				target1, tree.getUpgradeStats().getRange(),50));
+        }
 
-	@Override
-	public TimeEvent<AbstractTree> copy() {
-		return new TreeProjectileShootEvent(getResetAmount());
-	}
+
+    }
+
+    @Override
+    public TimeEvent<AbstractTree> copy() {
+        return new TreeProjectileShootEvent(getResetAmount());
+    }
 
 }

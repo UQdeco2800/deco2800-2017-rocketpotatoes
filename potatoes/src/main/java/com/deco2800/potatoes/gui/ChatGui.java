@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -26,6 +25,14 @@ public class ChatGui extends Gui {
 
     private TextField textField;
     private Button sendButton;
+
+    // Chat state initialisation
+    private TextButton minButton;
+    private enum chatStates{
+        CHAT,
+        HIDDEN
+    }
+    private chatStates cState = chatStates.CHAT;
 
     /**
      * Initializes this ChatGui
@@ -62,6 +69,25 @@ public class ChatGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 sendMessage();
+            }
+        });
+
+        // Button to minimise chat
+        minButton = new TextButton("Hide Chat", uiSkin);
+        minButton.addListener(new ChangeListener(){
+            @Override
+
+            public void changed(ChangeEvent event, Actor actor){
+                switch (cState){
+                    case HIDDEN:
+                        cState = chatStates.CHAT;
+                        resetGui(stage);
+                        break;
+                    case CHAT:
+                        cState = chatStates.HIDDEN;
+                        resetGui(stage);
+                        break;
+                }
             }
         });
 
@@ -114,7 +140,7 @@ public class ChatGui extends Gui {
     public void show() {
         super.show();
 
-        ((GuiManager) GameManager.get().getManager(GuiManager.class)).getStage().addActor(table);
+        stage.addActor(table);
     }
 
     /**
@@ -131,22 +157,37 @@ public class ChatGui extends Gui {
     private void resetGui(Stage stage) {
         table.reset();
 
-        // TODO refine these measurements
-        table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
-        table.row();
-        table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
-        table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
+        // Hidden vs Chat states for reset
+        switch (cState){
+            case CHAT:
+                table.add(minButton).height(30.0f).padLeft(Align.left);
+                minButton.setText("Hide Chat");
+                table.row();
 
-        table.getColor().a = 0.3f;
-        table.setPosition(0, 0);
-        table.pack();
+                // TODO refine these measurements
+                table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
+                table.row();
+                table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
+                table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
 
-        // Realign messages
-        for (Cell l : textList.getCells()) {
-            l.width(stage.getWidth() * 0.4f - 10.0f);
+                table.getColor().a = 0.3f;
+                table.setPosition(0, 0);
+                table.pack();
+
+                // Realign messages
+                for (Cell l : textList.getCells()) {
+                    l.width(stage.getWidth() * 0.4f - 10.0f);
+                }
+                // Automatically adjust alpha to counter the parent table
+                textList.getColor().a = 1.0f / table.getColor().a;
+                break;
+
+            case HIDDEN:
+                table.add(minButton).height(30.0f).align(Align.left);
+                table.left().bottom();
+                minButton.setText("Show Chat");
+                break;
         }
-        // Automatically adjust alpha to counter the parent table
-        textList.getColor().a = 1.0f / table.getColor().a;
     }
 
     /**

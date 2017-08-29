@@ -1,7 +1,13 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+
+import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
@@ -18,20 +24,29 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel_right";
 	private static final transient float HEALTH = 100f;
-	private transient Random random = new Random();
+	private static final BasicStats STATS = initStats();
 
-	private float speed = 0.1f;
+	private static float speed = 0.04f;
+	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
 
-
-	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH);
-		//this.setTexture("squirrel");
-		//this.random = new Random();
-		PathManager pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", 40, 1);	
+	
+	public Squirrel() {
+		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
+		this.speed = speed;
+		this.goal = goal;
 		this.path = null;
 	}
+
+	public Squirrel(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
+		this.speed = speed;
+		this.goal = goal;
+		this.path = null;
+	}
+	
 
 
 	/**
@@ -101,6 +116,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
+	}
 
 /*
 
@@ -117,35 +133,27 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		float deltaY = getPosY() - goalY;
 
 		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
-
-		Box3D newPos = getBox3D();
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
-
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && newPos.overlaps(entity.getBox3D()) ) {
-				if(entity instanceof Player) {
-					//soundManager.playSound("ree1.wav");
-				}
-				collided = true;
-			}
-		}
-
-		if (!collided) {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
 */
-	}
-	
+
 	@Override
 	public String toString() {
-		return "Squirrel";
+		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
+	}
+
+	@Override
+	public ProgressBarEntity getProgressBar() {
+		return progressBar;
+	}
+
+	private static BasicStats initStats() {
+		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+		BasicStats result = new BasicStats(HEALTH, speed, 8f, 500, normalEvents, TEXTURE_LEFT);
+		return result;
+	}
+
+	@Override
+	public BasicStats getBasicStats() {
+		return STATS;
 	}
 
     }

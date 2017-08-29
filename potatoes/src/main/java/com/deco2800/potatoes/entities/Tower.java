@@ -16,6 +16,7 @@ public class Tower extends ProjectileTree {
 	 * Default constructor for serialization
 	 */
 	public Tower() {
+		// generic constructor
 	}
 
 	/**

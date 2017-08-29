@@ -29,6 +29,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		public void action(AbstractTree param) {
 			param.decrementConstructionLeft();
 			if (param.getConstructionLeft() <= 0) {
+				// Changes to the normal events since construction is over
 				param.setRegisteredEvents(false);
 			}
 		}
@@ -38,7 +39,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			return null;
 		}
 	}
-//	private int test = 300;
+
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 
@@ -50,9 +51,9 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength, String texture,
-			float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, texture, maxHealth);
+	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+			String texture) {
+		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
 		resetStats();
 	}
 
@@ -60,7 +61,22 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void onTick(long time) {
 		// Nothing here now
 	}
-	
+
+	/**
+	 * Adds the tree to the world and reduces the player resources by the build cost
+	 * if the player has enough resources
+	 * 
+	 * @param tree
+	 * @return
+	 */
+	public static boolean constructTree(AbstractTree tree) {
+		boolean result = tree.getUpgradeStats().removeConstructionResources();
+		if (result) {
+			GameManager.get().getWorld().addEntity(tree);
+		}
+		return result;
+	}
+
 	/**
 	 * Sets the registered events to the construction events or the normal events
 	 * 
@@ -75,10 +91,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		} else {
 			registerNewEvents(getUpgradeStats().getNormalEventsCopy());
 		}
-//		if (test--<0){
-//			test = 300;
-//			this.upgrade();
-//		}
 	}
 
 	/**
@@ -107,6 +119,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void setConstructionLeft(int constructionLeft) {
 		this.constructionLeft = constructionLeft;
 		if (constructionLeft > 0) {
+			// Construction starts again
 			setRegisteredEvents(true);
 		}
 	}
@@ -185,5 +198,22 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	@Override
 	public boolean showProgress() {
 		return false;
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return constructionLeft / 100f;
+	}
+
+	@Override
+	public int getMaxProgress() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setMaxProgress(int p) {
+		
+
 	}
 }
