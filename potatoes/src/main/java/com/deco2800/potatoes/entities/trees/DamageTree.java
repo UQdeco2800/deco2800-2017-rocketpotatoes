@@ -43,17 +43,17 @@ public class DamageTree extends AbstractTree implements Tickable {
             case "lightning_tree":
                 for(int i=1;i<10;i++) result.add("lightning_tree"+i);
                 break;
-            case "Lightning_being_damaged":
-                for(int i=1;i<10;i++) result.add("Lightning_being_damaged"+i);
+            case "lightning_being_damaged":
+                for(int i=1;i<10;i++) result.add("lightning_being_damaged"+i);
                 break;
-            case "Lightning_damaged":
-                for(int i=1;i<9;i++) result.add("Lightning_damaged"+i);
+            case "lightning_damaged":
+                for(int i=1;i<9;i++) result.add("lightning_damaged"+i);
                 break;
-            case "Lightning_damaged_being_damaged":
-                for(int i=1;i<10;i++) result.add("Lightning_damaged_being_damaged"+i);
+            case "lightning_damaged_being_damaged":
+                for(int i=1;i<10;i++) result.add("lightning_damaged_being_damaged"+i);
                 break;
-            case "Lightning_dead":
-                for(int i=1;i<8;i++) result.add("Lightning_dead"+i);
+            case "lightning_dead":
+                for(int i=1;i<8;i++) result.add("lightning_dead"+i);
                 break;
             default:
                 for(int i=1;i<10;i++) result.add("lightning_tree"+i);

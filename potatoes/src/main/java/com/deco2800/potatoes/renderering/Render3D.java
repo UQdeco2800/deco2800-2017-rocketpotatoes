@@ -84,7 +84,7 @@ public class Render3D implements Renderer {
 
 		batch.begin();
 
-		// drawTextureBetween("Lightning",0, 0, 1, 1);
+		// drawTextureBetween("lightning",0, 0, 1, 1);
 
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
