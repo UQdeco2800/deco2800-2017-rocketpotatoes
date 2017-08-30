@@ -204,6 +204,8 @@ public class GameScreen implements Screen {
             guiManager.getGui(ChatGui.class).hide();
         }
 
+        ((EventManager) GameManager.get().getManager(EventManager.class)).unregisterAll();
+        
         Random random = new Random();
 
         MultiplayerManager m = multiplayerManager;
