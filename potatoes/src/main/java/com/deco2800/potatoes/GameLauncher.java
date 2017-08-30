@@ -2,6 +2,7 @@ package com.deco2800.potatoes;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import org.apache.log4j.BasicConfigurator;
 
 /**
  * Launches RocketPotatoes.
@@ -17,7 +18,7 @@ public class GameLauncher {
 	 *            Command line arguments (we wont use these)
 	 */
 	public static void main(String[] args) {
-		//BasicConfigurator.configure();
+		BasicConfigurator.configure();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;
