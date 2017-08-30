@@ -53,7 +53,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         *   -create new EnemyMelee attack (may be duplicating work from Projectile)
         *   */
         GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),
-                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange()+18, 10));
+                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange()+8, 10));
 
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/
