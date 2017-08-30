@@ -1,10 +1,12 @@
 package com.deco2800.potatoes.entities;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.Box3D;
 
 public class BallisticProjectile extends Projectile {
 
@@ -165,19 +167,24 @@ public class BallisticProjectile extends Projectile {
 				rocketCurrentSpriteIndexCount++;
 		}
 
-		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+		Box3D newPos = getBox3D();
+		newPos.setX(this.getPosX());
+		newPos.setY(this.getPosY());
 
-		for (AbstractEntity entity : entities) {
-			if (this.collidesWith(entity)&&targetClass.isInstance(entity)) {
-				((MortalEntity) entity).damage(DAMAGE);
-				ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
-						AOE_width, AOE_height, 0, AOE_width, AOE_height, aoeDAMAGE);
-				GameManager.get().getWorld().addEntity(exp);
-				GameManager.get().getWorld().removeEntity(this);
-				break;
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		// Check surroundings
+		for (AbstractEntity entity : entities.values()) {
+			if (targetClass.isInstance(entity)) {
+				if (newPos.overlaps(entity.getBox3D())) {
+					((MortalEntity) entity).damage(DAMAGE);
+					ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
+							AOE_width, AOE_height, 0, AOE_width, AOE_height, aoeDAMAGE);
+					GameManager.get().getWorld().addEntity(exp);
+					GameManager.get().getWorld().removeEntity(this);
+				}
+
 			}
 		}
-
 		if (maxRange) {
 			GameManager.get().getWorld().removeEntity(this);
 		}

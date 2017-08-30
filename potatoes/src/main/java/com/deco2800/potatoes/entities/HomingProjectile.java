@@ -152,13 +152,11 @@ public class HomingProjectile extends Projectile {
 		changeX = (float) (speed * Math.cos(angle));
 		changeY = (float) (speed * Math.sin(angle));
 
+		setPosX(getPosX() + changeX);
+		setPosY(getPosY() + changeY);
+
 		if (range < speed) {
-			setPosX(goalX);
-			setPosY(goalY);
 			maxRange = true;
-		} else {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
 		}
 
 		range -= speed;
@@ -175,19 +173,22 @@ public class HomingProjectile extends Projectile {
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
 		Box3D newPos = getBox3D();
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
+		newPos.setX(this.getPosX());
+		newPos.setY(this.getPosY());
+
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
+		// Check surroundings
 		for (AbstractEntity entity : entities.values()) {
-			if (targetClass.isInstance(entity) && newPos.overlaps(entity.getBox3D())) {
-				((MortalEntity) entity).damage(DAMAGE);
-				ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
-				GameManager.get().getWorld().addEntity(expEffect);
-				GameManager.get().getWorld().removeEntity(this);
+			if (targetClass.isInstance(entity)) {
+					if (newPos.overlaps(entity.getBox3D())) {
+						((MortalEntity) entity).damage(DAMAGE);
+						ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
+						GameManager.get().getWorld().addEntity(expEffect);
+						GameManager.get().getWorld().removeEntity(this);
+					}
+
 			}
 		}
-
 		if (maxRange) {
 			GameManager.get().getWorld().removeEntity(this);
 		}
