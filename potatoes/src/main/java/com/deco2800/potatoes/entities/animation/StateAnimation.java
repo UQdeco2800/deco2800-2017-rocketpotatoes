@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.animation;
 
 import java.util.function.Supplier;
 
@@ -10,7 +10,7 @@ public class StateAnimation implements Animation {
 
 	private final transient int maxValue;
 	private final transient int minValue;
-	private final transient String[] frames;
+	private final transient Animation[] frames;
 	private final transient Supplier<Float> valueFunction;
 
 	/**
@@ -19,7 +19,7 @@ public class StateAnimation implements Animation {
 	public StateAnimation() {
 		maxValue = 0;
 		minValue = 0;
-		frames = new String[] {};
+		frames = new Animation[] {};
 		valueFunction = () -> 0f;
 	}
 
@@ -38,7 +38,7 @@ public class StateAnimation implements Animation {
 	 *            The function whose value this animation depends on. Note that a
 	 *            Supplier<Integer> will also work
 	 */
-	public StateAnimation(int maxValue, int minValue, String[] frames, Supplier<Float> valueFunction) {
+	public StateAnimation(int maxValue, int minValue, Animation[] frames, Supplier<Float> valueFunction) {
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 		this.frames = frames;
@@ -53,7 +53,12 @@ public class StateAnimation implements Animation {
 	 */
 	@Override
 	public String getFrame() {
-		return frames[(int) (frames.length - 1 - frames.length * (valueFunction.get() - minValue) / maxValue)];
+		return getAnimation().getFrame();
+	}
+
+	@Override
+	public Animation getAnimation() {
+		return frames[Math.round((frames.length - 1) * (1 - (valueFunction.get() - minValue) / maxValue))];
 	}
 
 }

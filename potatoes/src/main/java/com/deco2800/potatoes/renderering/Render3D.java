@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
@@ -89,9 +90,14 @@ public class Render3D implements Renderer {
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			String textureString = entity.getTexture();
 			TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-			Texture tex = reg.getTexture(textureString);
+			Texture tex;
+			if (e.getKey() instanceof Animated) {
+				// Animations should probably be changed to TextureRegion for performance
+				tex = reg.getTexture(((Animated) e.getKey()).getAnimation().getFrame());
+			} else {
+				tex = reg.getTexture(entity.getTexture());
+			}
 
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 

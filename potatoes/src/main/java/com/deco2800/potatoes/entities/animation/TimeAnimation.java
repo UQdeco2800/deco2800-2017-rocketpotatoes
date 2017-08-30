@@ -1,4 +1,7 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.animation;
+
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.TimeEvent;
 
 /**
  * An traditional animation where the frame changes over time <br>
@@ -6,13 +9,13 @@ package com.deco2800.potatoes.entities;
  */
 public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 
-	private final transient String[] frames;
+	private final transient Animation[] frames;
 
 	/**
 	 * Construction for serialization
 	 */
 	public TimeAnimation() {
-		frames = new String[] {};
+		frames = new Animation[] {};
 	}
 
 	/**
@@ -21,7 +24,7 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 	 * @param maxAnimationTime
 	 * @param frames
 	 */
-	public TimeAnimation(int maxAnimationTime, String[] frames) {
+	public TimeAnimation(int maxAnimationTime, Animation[] frames) {
 		this.frames = frames;
 		setResetAmount(maxAnimationTime);
 		setDoReset(true);
@@ -39,6 +42,11 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 	 */
 	@Override
 	public String getFrame() {
+		return getAnimation().getFrame();
+	}
+
+	@Override
+	public Animation getAnimation() {
 		return frames[(int) (frames.length - 1 - frames.length * (float) getProgress() / getResetAmount())];
 	}
 
