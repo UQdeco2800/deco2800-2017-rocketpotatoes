@@ -2,9 +2,8 @@ package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.TankEnemy;
+import com.deco2800.potatoes.entities.Enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
-import static org.mockito.Mockito.*;
 
 import com.deco2800.potatoes.worlds.AbstractWorld;
 import org.junit.Test;

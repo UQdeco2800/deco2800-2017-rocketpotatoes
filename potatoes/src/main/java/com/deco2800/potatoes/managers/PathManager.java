@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.worlds.AbstractWorld;

@@ -1,9 +1,7 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.SpeedyEnemy;
+import com.deco2800.potatoes.entities.Enemies.SpeedyEnemy;
 import org.junit.*;
-
-import com.deco2800.potatoes.entities.TankEnemy;
 
 public class SpeedyEnemyTest {
     SpeedyEnemy testSpeedy;

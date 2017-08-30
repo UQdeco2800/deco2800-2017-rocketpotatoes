@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.Enemies.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,10 +1,9 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class ExplosionProjectile extends Projectile {
 

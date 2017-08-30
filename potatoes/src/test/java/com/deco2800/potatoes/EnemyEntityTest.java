@@ -2,7 +2,6 @@ package com.deco2800.potatoes;
 
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,12 +12,11 @@ import com.deco2800.potatoes.entities.Tower;
 
 import org.junit.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
 import com.deco2800.potatoes.entities.BallisticProjectile;
-import com.deco2800.potatoes.entities.EnemyEntity;
+import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Projectile;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
