@@ -5,7 +5,8 @@ import com.deco2800.potatoes.entities.TimeEvent;
 
 /**
  * An traditional animation where the frame changes over time <br>
- * Feel free to modify this class in any way
+ * Feel free to modify this class in any way. This could be changed to
+ * com.badlogic.gdx.graphics.g2d.Animation
  */
 public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 
@@ -19,7 +20,8 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 	}
 
 	/**
-	 * Creates time animation where the frames are distributed between 
+	 * Creates time animation where the frames are distributed between. Must be
+	 * registered with the event manager to function properly.
 	 * 
 	 * @param maxAnimationTime
 	 * @param frames
@@ -47,7 +49,7 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 
 	@Override
 	public Animation getAnimation() {
-		return frames[(int) (frames.length - 1 - frames.length * (float) getProgress() / getResetAmount())];
+		return frames[Math.round((frames.length - 1) * (1 - (float) getProgress() / getResetAmount()))];
 	}
 
 }
