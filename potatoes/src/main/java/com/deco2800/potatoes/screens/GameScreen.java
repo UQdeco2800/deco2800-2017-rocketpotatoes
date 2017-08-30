@@ -502,6 +502,7 @@ public class GameScreen implements Screen {
     }
 
     public void exitToMenu() {
+        GameManager.get().clearManagers();
         game.setScreen(new MainMenuScreen(game));
         dispose();
     }

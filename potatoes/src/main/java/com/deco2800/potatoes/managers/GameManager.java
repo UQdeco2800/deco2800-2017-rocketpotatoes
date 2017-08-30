@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.worlds.AbstractWorld;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,4 +111,10 @@ public class GameManager implements TickableManager {
 		}
 	}
 
+	/**
+	 * Deletes all existing managers. Used to reset the game
+	 */
+	public void clearManagers() {
+		managers.clear();
+	}
 }
