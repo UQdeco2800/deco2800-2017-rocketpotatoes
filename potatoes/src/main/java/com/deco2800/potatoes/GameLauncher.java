@@ -2,7 +2,6 @@ package com.deco2800.potatoes;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import org.apache.log4j.BasicConfigurator;
 
 /**
  * Launches RocketPotatoes.
