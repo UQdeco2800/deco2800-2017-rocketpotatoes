@@ -74,6 +74,8 @@ public class TextureManager extends Manager {
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
+        saveTexture("healthbar","resources/healthproperties/Full_Health_Bar.png");
+        saveTexture("greybar","resources/healthproperties/greyBar.png");
 
         // GUI
         saveTexture("screen_background", "resources/menu/background.png");

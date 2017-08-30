@@ -151,7 +151,11 @@ public class Render3D implements Renderer {
 				float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
 				float maxBarWidth = tileWidth * entity.getXRenderLength()
 					* progressBar.getWidthScale();
-				float barWidth = maxBarWidth * ((HasProgress) entity).getProgressRatio();
+				float barWidth = maxWidth * ((HasProgress) entity).getProgressRatio();
+				float width = maxBarWidth * (1 - entity.getProgressRatio());
+				//endX (the first bit of the bar) = barX + (maxWidth * entity.getProgressRatio())
+				//or endX = barX + maxWidth - width
+				//greyBarX = endX + endWidth
 
 				batch.draw(barTexture,
 						// x co-ordinate
