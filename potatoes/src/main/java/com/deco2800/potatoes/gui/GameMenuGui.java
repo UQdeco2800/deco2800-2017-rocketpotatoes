@@ -24,6 +24,7 @@ public class GameMenuGui extends Gui {
     private Button duckSoundButton;
     private Button resetButton;
     private Button selectButton;
+    private Button godModeButton;
     private Window window;
 
     public GameMenuGui(Stage stage, GameScreen screen) {
@@ -39,6 +40,18 @@ public class GameMenuGui extends Gui {
         duckSoundButton = new TextButton("Play Duck Sound", uiSkin);
         resetButton = new TextButton("Reset", uiSkin);
         selectButton = new TextButton("Select a Unit", uiSkin);
+        godModeButton = new TextButton("God",uiSkin);
+
+           /* Listener to godMode button */
+        godModeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //Sound added just to alert a change in game state
+                screen.menuBlipSound();
+                ((DebugModeGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(DebugModeGui.class)).show();
+
+            }
+        });
 
 		/* Add a programatic listener to the quit button */
         quitButton.addListener(new ChangeListener() {
@@ -87,6 +100,7 @@ public class GameMenuGui extends Gui {
         window.add(duckSoundButton);
         window.add(resetButton);
         window.add(selectButton);
+        window.add(godModeButton);
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen
