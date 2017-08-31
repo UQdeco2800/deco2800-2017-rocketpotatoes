@@ -33,12 +33,12 @@ public class GameMenuGui extends Gui {
 
         // Make window, with the given skin
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
-        window = new Window("menu", uiSkin);
+        window = new Window("Menu", uiSkin);
 
 		// Make our buttons
-        quitButton = new TextButton("Menu", uiSkin);
+        quitButton = new TextButton("Pause", uiSkin);
         duckSoundButton = new TextButton("Play Duck Sound", uiSkin);
-        resetButton = new TextButton("Reset", uiSkin);
+        resetButton = new TextButton("Exit to Main", uiSkin);
         selectButton = new TextButton("Select a Unit", uiSkin);
         godModeButton = new TextButton("God",uiSkin);
 
@@ -96,9 +96,9 @@ public class GameMenuGui extends Gui {
 		/* Add all buttons to the menu
 		*   Note: this is left to right order
 		* */
+        window.add(resetButton);
         window.add(quitButton);
         window.add(duckSoundButton);
-        window.add(resetButton);
         window.add(selectButton);
         window.add(godModeButton);
         window.pack();
