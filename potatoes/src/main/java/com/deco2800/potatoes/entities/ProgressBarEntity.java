@@ -39,7 +39,7 @@ public class ProgressBarEntity implements ProgressBar {
 
 
 	/**
-	 * Default Constructor for custom textures
+	 * Default Constructor for custom textures.
 	 * 
 	 * @param texture
 	 *            the textureID used for the entity
@@ -49,6 +49,7 @@ public class ProgressBarEntity implements ProgressBar {
 	public ProgressBarEntity(String texture, float widthScale) {
 		this.texture = texture;
 		this.widthScale = widthScale;
+		this.colours = Arrays.asList(Color.WHITE);
 	}
 
 	/**

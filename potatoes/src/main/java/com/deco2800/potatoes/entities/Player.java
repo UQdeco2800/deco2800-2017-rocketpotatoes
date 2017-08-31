@@ -46,15 +46,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	private Inventory inventory;
 
-	/*
-	private static final List<Color> colours = Arrays.asList(Color.valueOf("ed1c24"),
-			Color.valueOf("ed184a"), Color.valueOf("f47721"), Color.valueOf("fcb315"),
-			Color.valueOf("fff200"), Color.valueOf("b7d432"), Color.valueOf("5dbb46"), 
-			Color.valueOf("00a651"));
-			*/
-	private static final List<Color> colours = Arrays.asList(Color.WHITE);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 
-				colours, 50, 5);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 4);
 
 	/**
 	 * Default constructor for the purposes of serialization
