@@ -222,7 +222,11 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 */
 	@Override
 	public boolean setProgress(float amount) {
-		health = amount;
+		if (maxHealth <= amount) {
+			health = maxHealth;
+		} else {
+			health = amount;
+		}
 		return health == maxHealth;
 	}
 
