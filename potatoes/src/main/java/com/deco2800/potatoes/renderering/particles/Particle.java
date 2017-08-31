@@ -1,11 +1,9 @@
 package com.deco2800.potatoes.renderering.particles;
 
-import java.awt.*;
-
 public class Particle {
-    public Color color;
-
-    public Particle(Color color) {
-        this.color = color;
-    }
+    public boolean alive = false;
+    public float lifeTime;
+    public float x, y;
+    public float rotation;
+    public float vectorX, vectorY;
 }

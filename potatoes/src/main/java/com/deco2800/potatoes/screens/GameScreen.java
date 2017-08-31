@@ -245,6 +245,8 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+
+        GameManager.get().getManager(ParticleManager.class);
     }
     
     private void addResourceTrees() {
