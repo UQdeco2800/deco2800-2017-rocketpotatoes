@@ -71,6 +71,9 @@ public class MortalEntityTest {
 		assertEquals("addMaxHealth() can't add", HEALTH + 37, mortalEntity.getMaxHealth(), 0f);
 		mortalEntity.addMaxHealth(-39);
 		assertEquals("addMaxHealth() can't subtract", HEALTH - 2, mortalEntity.getMaxHealth(), 0f);
+		mortalEntity.addMaxHealth(-99);
+		assertEquals("addMaxHealth() can't subtract", 1f, mortalEntity.getMaxHealth(), 0f);
+
 	}
 
 	@Test
@@ -186,6 +189,12 @@ public class MortalEntityTest {
 		reset(GameManager.get().getWorld()); //resets all invocation counters related to mockWorld
 		mortalEntity.deathHandler();
 		verify(GameManager.get().getWorld()).removeEntity(any()); //ensure deathHandler called removeEntity()
+	}
+	
+	@Test
+	public void setProgressTest() {
+		assertFalse("Health should be set to 0f", mortalEntity.setProgress(0f));
+		assertTrue("Health should be set to 100f", mortalEntity.setProgress(100f));
 	}
 
 }
