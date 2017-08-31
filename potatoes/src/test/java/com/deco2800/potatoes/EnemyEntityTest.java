@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.Tower;
 
@@ -16,11 +18,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
-import com.deco2800.potatoes.entities.BallisticProjectile;
 import com.deco2800.potatoes.entities.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Projectile;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
 
 

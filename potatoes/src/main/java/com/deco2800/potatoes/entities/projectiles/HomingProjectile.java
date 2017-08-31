@@ -1,5 +1,8 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.projectiles;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.MortalEntity;
+import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 

@@ -1,12 +1,14 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.effects;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public class ExplosionProjectile extends Projectile {
+public class AOEEffect extends Effect {
 
     private final static transient String TEXTURE = "aoe1";
     private float DAMAGE = 1;
@@ -16,7 +18,7 @@ public class ExplosionProjectile extends Projectile {
     private int effectsTimer = 0;
     private int dmgTimer = 0;
 
-    public ExplosionProjectile() {
+    public AOEEffect() {
         // empty for serialization
         DAMAGE = 1;
     }
@@ -36,7 +38,7 @@ public class ExplosionProjectile extends Projectile {
      * @param DAMAGE        Projectile damage
      */
 
-    public ExplosionProjectile(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+    public AOEEffect(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
                                float xRenderLength, float yRenderLength, float DAMAGE) {
         super(posX, posY, posZ, xLength + 3, yLength + 3, zLength, xRenderLength, yRenderLength, TEXTURE);
         this.DAMAGE = DAMAGE;

@@ -14,6 +14,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -111,7 +113,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)
+			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)&&!(entity instanceof Effect)
 					&& newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				collided = true;

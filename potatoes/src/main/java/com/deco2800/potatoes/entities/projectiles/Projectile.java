@@ -1,4 +1,7 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.projectiles;
+
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
 
 public abstract class Projectile extends AbstractEntity implements Tickable{
 
