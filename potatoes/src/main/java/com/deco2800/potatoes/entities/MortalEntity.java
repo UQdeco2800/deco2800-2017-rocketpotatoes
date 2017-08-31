@@ -216,7 +216,17 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 		}
 		return false;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean setProgress(float amount) {
+		health = amount;
+		return health == maxHealth;
+	}
 
+	
 	/**
 	 * {@inheritDoc}
 	 */
