@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Random;
 
 public class ParticleEmitter {
+    // Emitter parameters
+    float originX, originY;
+
     // Particle types (defines the settings of the particles we create)
     List<ParticleType> particleTypes;
 
@@ -23,7 +26,7 @@ public class ParticleEmitter {
     // Random gen
     Random random = new Random();
 
-    /**
+    /**awawdZ
      * Create a particle emitter with the given particleTypes TODO emitter settings
      * @param x position of the emitter
      * @param y position of the emitter
@@ -32,12 +35,13 @@ public class ParticleEmitter {
     public ParticleEmitter(float x, float y, ParticleType... particleTypes) {
         this.particleTypes = new ArrayList<>();
         this.particles = new ArrayList<>();
+        this.originX = 300;
+        this.originY = 50;
 
         for (ParticleType particleType : particleTypes) {
             this.particleTypes.add(particleType);
         }
-        Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGB888);
-        p.setColor(Color.RED);
+        Pixmap p = new Pixmap(5, 5, Pixmap.Format.RGB888);
         texture = new Texture(p);
     }
 
@@ -58,29 +62,53 @@ public class ParticleEmitter {
             p.lifeTime += deltaTime;
 
             // Delete expired
-            if (p.lifeTime > 1.0f) {
+            if (p.lifeTime > 0.5f * 1000.0f) {
                 p.alive = false;
                 iter.remove();
             }
         }
 
         // Create new
-        while (particles.size() < 10) {
+        while (particles.size() < 1024) {
+            Particle newP = null;
+
+            // Find particle
             for (Particle p : particlePool) {
                 if (!p.alive) {
-                    p.alive = true;
-                    p.vectorX = (random.nextFloat() * 2.0f) - 1.0f; // -1.0 < x < 1.0
-                    p.vectorY = (random.nextFloat() * 2.0f) - 1.0f; // -1.0 < x < 1.0
-                    p.lifeTime = 0.0f;
-                    particles.add(p);
+                    newP = p;
+                    break;
                 }
+            }
+
+            // Add it
+            if (newP == null) {
+                throw new IllegalStateException("Ayyyyyy too many particles");
+            }
+            else {
+                newP.alive = true;
+                newP.x = originX;
+                newP.y = originY;
+                float factor = 8.0f;
+                newP.vectorX = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
+                newP.vectorY = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
+                newP.lifeTime = 0.0f;
+                particles.add(newP);
             }
         }
     }
 
     public void draw(SpriteBatch batch) {
+        Color prev = batch.getColor();
+        batch.setColor(1.0f, 0, 0, 1.0f);
+
+        batch.begin();
         for (Particle p : particles) {
+            Color col = batch.getColor();
+            batch.setColor(col.r, col.g, col.b, col.a / 0.0015f);
             batch.draw(texture, p.x, p.y);
         }
+        batch.end();
+
+        batch.setColor(prev);
     }
 }
