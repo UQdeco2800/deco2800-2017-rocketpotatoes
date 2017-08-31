@@ -15,6 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -250,7 +254,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
+			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof Effect) && !(entity instanceof ResourceEntity) &&
 					newPos.overlaps(entity.getBox3D()) ) {
 
 				if(entity instanceof Tower) {
@@ -344,6 +348,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
+		LOGGER.info(this + " was shot. Health now " + getHealth());
+	}
+	
+	/**
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * @param projectile, the projectile shot
+	 */
+	public void getShot(Effect effect) {
+		this.damage(effect.getDamage());
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
 
