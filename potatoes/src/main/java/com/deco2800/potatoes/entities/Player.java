@@ -314,11 +314,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	@Override
 	public void deathHandler() {
-		GameManager.get().getWorld().removeEntity(this);
 		LOGGER.info(this + " is dead.");
 		this.heal(maxHealth);
 		this.setPosition(5, 10, 0);
-		GameManager.get().getWorld().addEntity(this);
 	}
 	
 }
