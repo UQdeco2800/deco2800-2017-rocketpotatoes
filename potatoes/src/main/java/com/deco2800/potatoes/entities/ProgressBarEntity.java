@@ -14,12 +14,8 @@ import com.badlogic.gdx.graphics.Color;
 public class ProgressBarEntity implements ProgressBar {
 	// the textureID used for the progress bar
 	protected String texture = "progress_bar";
-	// the textureID used for the progress bar background
-	protected String backgroundTexture = "progress_bar";
 	// the colour palette used for the progress bar
 	protected List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
-	// the the background colour of the bar
-	protected Color backgroundColour = Color.valueOf("515153");
 	// the height of the progress bar relative to the entity's height
 	protected int height = 0;
 	// the scale of the progress bar in relation to its entity
@@ -79,11 +75,6 @@ public class ProgressBarEntity implements ProgressBar {
 	}
 
 	@Override
-	public String getBackgroundTexture() {
-		return backgroundTexture;
-	}
-
-	@Override
 	public Color getColour(float progressRatio) {
 		return colours.get(Math.max(0, (int) Math.ceil(progressRatio * colours.size() - 1)));
 	}
@@ -101,11 +92,6 @@ public class ProgressBarEntity implements ProgressBar {
 	@Override
 	public float getWidthScale() {
 		return widthScale;
-	}
-
-	@Override
-	public Color getBackgroundColour() {
-		return backgroundColour;
 	}
 
 }

@@ -141,7 +141,6 @@ public class Render3D implements Renderer {
 
 				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
 				Texture barTexture = reg.getTexture((progressBar.getTexture()));
-				Texture barBackgroundTexture = reg.getTexture((progressBar.getBackgroundTexture()));
 
 				// sets colour palette
 				batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
@@ -150,10 +149,11 @@ public class Render3D implements Renderer {
 				Texture entityTexture = reg.getTexture(entity.getTexture());
 				float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
 
+				float barRatio = ((HasProgress) entity).getProgressRatio();
 				float maxBarWidth = tileWidth * entity.getXRenderLength()
 					* progressBar.getWidthScale();
-				float barWidth = maxBarWidth * ((HasProgress) entity).getProgressRatio();
-				float barBackgroundWidth = maxBarWidth * (1 - ((HasProgress) entity).getProgressRatio());
+				float barWidth = maxBarWidth * barRatio;
+				float barBackgroundWidth = maxBarWidth * (1 - barRatio);
 
 				// x co-ordinate,
 				// finds the overlap length of the bar and moves it half as much left
@@ -166,6 +166,7 @@ public class Render3D implements Renderer {
 				// We haven't implemented rounded corners, but when we do:
 				// float greyBarX = endX + endWidth;
 
+				//draw half of bar that represents current health
 				batch.draw(barTexture,
 						// x, y
 						barX, barY,
@@ -174,24 +175,21 @@ public class Render3D implements Renderer {
 						// srcX, srcY
 						0, 0,
 						// srcWidth, srcHeight
-						(int) (barTexture.getWidth() * ((HasProgress) entity).getProgressRatio()), barTexture.getHeight(),
+						(int) (barTexture.getWidth() * barRatio), barTexture.getHeight(),
 						// flipX, flipY
 						false, false);
 
-				System.out.println(barTexture.getWidth());
-				System.out.println(barTexture.getWidth() * ((HasProgress) entity).getProgressRatio());
-
-				batch.setColor(Color.GRAY);
+				//draw shadow half of bar that represents health lost
+				batch.setColor(0.5f, 0.5f, 0.5f, 1f);
 				batch.draw(barTexture,
 						// x, y
 						endX, barY,
 						// width, height
 						barBackgroundWidth, maxBarWidth / 8,
 						// srcX, srcY
-						(int) (barTexture.getWidth() * (((HasProgress) entity).getProgressRatio())), 0,
+						(int) (barTexture.getWidth() * barRatio), 0,
 						// srcWidth, srcHeight
-						//barBackgroundTexture.getWidth(), barBackgroundTexture.getHeight(),
-						(int) (barTexture.getWidth() * (1 - ((HasProgress) entity).getProgressRatio())), barTexture.getHeight(),
+						(int) (barTexture.getWidth() * (1 - barRatio)), barTexture.getHeight(),
 						// flipX, flipY
 						false, false);
 
