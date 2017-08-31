@@ -59,10 +59,10 @@ public class ParticleEmitter {
             // Tick particles
             p.x += p.vectorX * deltaTime;
             p.y += p.vectorY * deltaTime;
-            p.lifeTime += deltaTime;
+            p.lifeTime -= deltaTime;
 
             // Delete expired
-            if (p.lifeTime > 0.5f * 1000.0f) {
+            if (p.lifeTime <= 0.0f) {
                 p.alive = false;
                 iter.remove();
             }
@@ -91,7 +91,7 @@ public class ParticleEmitter {
                 float factor = 8.0f;
                 newP.vectorX = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
                 newP.vectorY = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
-                newP.lifeTime = 0.0f;
+                newP.lifeTime = 5.0f * 1000.0f; // 5s
                 particles.add(newP);
             }
         }
@@ -104,7 +104,14 @@ public class ParticleEmitter {
         batch.begin();
         for (Particle p : particles) {
             Color col = batch.getColor();
-            batch.setColor(col.r, col.g, col.b, col.a / 0.0015f);
+            float alpha = 1.0f;
+
+            float fadeOutThreshold = (5.0f * 1000.0f) * 1.0f;
+            if (p.lifeTime < fadeOutThreshold) {
+                alpha = p.lifeTime / fadeOutThreshold;
+            }
+
+            batch.setColor(col.r, col.g, col.b, alpha);
             batch.draw(texture, p.x, p.y);
         }
         batch.end();
