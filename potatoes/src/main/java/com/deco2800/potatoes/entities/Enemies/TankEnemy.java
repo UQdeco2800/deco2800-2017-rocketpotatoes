@@ -1,12 +1,11 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.Enemies;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 
 
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
-import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

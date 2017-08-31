@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
@@ -82,15 +83,20 @@ public class Render3D implements Renderer {
 
 		batch.begin();
 
-		// drawTextureBetween("Lightning",0, 0, 1, 1);
+		// drawTextureBetween("lightning",0, 0, 1, 1);
 
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			String textureString = entity.getTexture();
 			TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-			Texture tex = reg.getTexture(textureString);
+			Texture tex;
+			if (e.getKey() instanceof Animated) {
+				// Animations should probably be changed to TextureRegion for performance
+				tex = reg.getTexture(((Animated) e.getKey()).getAnimation().getFrame());
+			} else {
+				tex = reg.getTexture(entity.getTexture());
+			}
 
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
@@ -145,6 +151,10 @@ public class Render3D implements Renderer {
 				float maxBarWidth = tileWidth * entity.getXRenderLength()
 					* progressBar.getWidthScale();
 				float barWidth = maxBarWidth * ((HasProgress) entity).getProgressRatio();
+				float width = maxBarWidth * (1 - ((HasProgress) entity).getProgressRatio());
+				//endX (the first bit of the bar) = barX + (maxWidth * entity.getProgressRatio())
+				//or endX = barX + maxWidth - width
+				//greyBarX = endX + endWidth
 
 				batch.draw(barTexture,
 						// x co-ordinate

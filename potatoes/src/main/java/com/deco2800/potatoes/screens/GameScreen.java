@@ -15,8 +15,12 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.Enemies.SpeedyEnemy;
+import com.deco2800.potatoes.entities.Enemies.Squirrel;
+import com.deco2800.potatoes.entities.Enemies.TankEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
+import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.gui.PauseMenuGui;
@@ -151,6 +155,9 @@ public class GameScreen implements Screen {
         // Make our PauseMenuGui
         guiManager.addGui(new PauseMenuGui(guiManager.getStage(), this));
 
+        // Make our DebugMenuGui
+        guiManager.addGui(new DebugModeGui(guiManager.getStage(), this));
+
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
         
@@ -221,7 +228,6 @@ public class GameScreen implements Screen {
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
 
-            GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
             for(int i=0 ; i<3 ; i++) {
@@ -496,6 +502,7 @@ public class GameScreen implements Screen {
     }
 
     public void exitToMenu() {
+        GameManager.get().clearManagers();
         game.setScreen(new MainMenuScreen(game));
         dispose();
     }

@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.Enemies;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import com.deco2800.potatoes.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;

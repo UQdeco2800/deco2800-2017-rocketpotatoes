@@ -1,12 +1,10 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.EnemyEntity;
+import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class AOEEffect extends Effect {
 

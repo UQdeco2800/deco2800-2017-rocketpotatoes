@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.animation.AnimationFactory;
 
 public class ProjectileTree extends AbstractTree implements Tickable {
 	private static final transient String TEXTURE = "tree";
@@ -46,7 +47,9 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range,
 			float maxHealth) {
 		super(posX, posY, posZ, 1f, 1f, 1f, texture);
-
+		// Lazily added here, will need to move to upgradeStats
+		setAnimation(AnimationFactory.createSimpleStateAnimation(100, 0, GROW_ANIMATION,
+				() -> (float) this.getConstructionLeft()));
 	}
 
 	@Override
@@ -68,17 +71,5 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Lazy animation implementation just to use the images
-	 */
-	@Override
-	public String getTexture() {
-		if (getConstructionLeft() > 0) {
-			return GROW_ANIMATION[Math.round((GROW_ANIMATION.length - 1) * (1 - getConstructionLeft() / 100f))];
-		} else {
-			return super.getTexture();
-		}
 	}
 }

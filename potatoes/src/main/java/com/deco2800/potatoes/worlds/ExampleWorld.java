@@ -3,7 +3,7 @@ package com.deco2800.potatoes.worlds;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tree;
+import com.deco2800.potatoes.entities.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class ExampleWorld extends AbstractWorld {
                 /* Spawn trees with a 10% chance */
                 Random r = new Random();
                 if (r.nextInt(100) < 100) {
-                    this.entities.add(new Tree(i, j, 0));
+                    this.entities.add(new Tower(i, j, 0));
                 }
             }
         }
