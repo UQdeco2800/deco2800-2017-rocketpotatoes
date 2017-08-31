@@ -12,10 +12,14 @@ import com.badlogic.gdx.graphics.Color;
  *
  */
 public class ProgressBarEntity implements ProgressBar {
-	// the textureID used for the entity
+	// the textureID used for the progress bar
 	protected String texture;
+	// the textureID used for the progress bar background
+	protected String backgroundTexture;
 	// the colour palette used for the progress bar
 	protected List<Color> colours;
+	// the the background colour of the bar
+	protected Color backgroundColour;
 	// the height of the progress bar in relation to the location of the entity
 	protected int height;
 	// the scale of the progress bar in relation to its entity
@@ -37,7 +41,9 @@ public class ProgressBarEntity implements ProgressBar {
 	public ProgressBarEntity(String texture, int height, float widthScale) {
 		List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
 		this.texture = texture;
+		this.backgroundTexture = "progess_bar";
 		this.colours = colours;
+		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
 		this.widthScale = widthScale;
 	}
@@ -53,7 +59,9 @@ public class ProgressBarEntity implements ProgressBar {
 	 */
 	public ProgressBarEntity(List<Color> colours, int height, float widthScale) {
 		this.texture = "progress_bar";
+		this.backgroundTexture = "progess_bar";
 		this.colours = colours;
+		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
 		this.widthScale = widthScale;
 	}
@@ -71,7 +79,9 @@ public class ProgressBarEntity implements ProgressBar {
 	 */
 	public ProgressBarEntity(String texture, List<Color> colours, int height, float widthScale) {
 		this.texture = texture;
+		this.backgroundTexture = "progress_bar";
 		this.colours = colours;
+		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
 		this.widthScale = widthScale;
 	}
@@ -79,6 +89,11 @@ public class ProgressBarEntity implements ProgressBar {
 	@Override
 	public String getTexture() {
 		return texture;
+	}
+
+	@Override
+	public String getBackgroundTexture() {
+		return backgroundTexture;
 	}
 
 	@Override
@@ -99,6 +114,11 @@ public class ProgressBarEntity implements ProgressBar {
 	@Override
 	public float getWidthScale() {
 		return widthScale;
+	}
+
+	@Override
+	public Color getBackgroundColour() {
+		return backgroundColour;
 	}
 
 }

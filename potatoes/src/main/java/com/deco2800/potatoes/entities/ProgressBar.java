@@ -20,10 +20,23 @@ public interface ProgressBar {
 
 	/**
 	 * 
+	 * @return a string of the textureID for the progress bar background
+	 */
+	public String getBackgroundTexture();
+
+	/**
+	 * 
 	 * @param currentHealth
 	 * @return the colour based on the current health of the entity
 	 */
 	public Color getColour(float progressRatio);
+
+	/**
+	 * 
+	 * @param currentHealth
+	 * @return the colour based on the current health of the entity
+	 */
+	public Color getBackgroundColour();
 
 	/**
 	 * 
