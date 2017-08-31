@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -11,13 +11,18 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.Enemies.Squirrel;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.health.ProgressBar;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -43,6 +48,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private float speedx;
 	private float speedy;
 	private int direction; // facing left=0, right=1
+	
+	private static final int respawnTime = 5000; // milliseconds
 
 	private Inventory inventory;
 
@@ -52,8 +59,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f,
-				0.48f, TEXTURE_RIGHT, HEALTH);
+		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -67,8 +73,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f,
-				0.48f, TEXTURE_RIGHT, HEALTH);
+		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
@@ -115,8 +120,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 			}
 
-			if (!this.equals(entity) && (entity instanceof EnemyEntity)
-					&& newPos.overlaps(entity.getBox3D())) {
+			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
 				collided = true;
 
 			}
@@ -168,36 +172,37 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			harvestResources();
 			break;
 		case Input.Keys.NUM_1:
-            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
-            }
-            break;
+			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+				AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+			}
+			break;
 		case Input.Keys.NUM_2:
-            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-            	AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
-            }
-            break;
+			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+				AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+			}
+			break;
 		case Input.Keys.NUM_3:
-            if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-            	AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
-            }
-            break;
+			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+				AbstractTree.constructTree(
+						new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+			}
+			break;
 		default:
 			break;
 		}
 	}
-	
+
 	private Vector2 getCursorCoords() {
 		Vector3 worldCoords = Render3D.screenToWorldCoordiates(Gdx.input.getX(), Gdx.input.getY(), 0);
 		Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
-        return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
-    }
-	
+		return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
+	}
+
 	/**
 	 * Handles removing an item from an inventory and placing it on the map.
 	 * 
 	 * @param item
-	 * 			The resource to be thrown.
+	 *            The resource to be thrown.
 	 */
 	private void tossItem(Resource item) {
 		// tosses a item in front of player
@@ -214,18 +219,18 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		}
 
 	}
-	
+
 	/**
-	 * Handles harvesting resources from resource tree that are in 
-	 * range. Resources are added to the player's inventory.
+	 * Handles harvesting resources from resource tree that are in range. Resources
+	 * are added to the player's inventory.
 	 */
 	private void harvestResources() {
 		double interactRange = 3f; // TODO: Could this be a class variable?
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this)  <= interactRange) {
-				if(((ResourceTree) entitiy).getGatherCount() >0) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+				if (((ResourceTree) entitiy).getGatherCount() > 0) {
 					didHarvest = true;
 					((ResourceTree) entitiy).transferResources(this.inventory);
 				}
@@ -307,8 +312,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	@Override
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
-		this.setProgress(maxHealth);
-		this.setPosition(5, 10, 0);
+		// destroy the player
+        GameManager.get().getWorld().removeEntity(this);
+        // get the event manager
+		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		// add the respawn event
+		eventManager.registerEvent(new Player(5, 10, 0), new RespawnEvent(respawnTime));
 	}
-	
+
+
 }

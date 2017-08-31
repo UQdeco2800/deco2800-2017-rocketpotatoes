@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.health;
 
 /**
  * An interface to handle heatlh, damage taken, healing, and death

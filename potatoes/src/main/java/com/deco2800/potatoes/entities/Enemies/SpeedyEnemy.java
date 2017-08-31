@@ -4,6 +4,8 @@ package com.deco2800.potatoes.entities.Enemies;
 import java.util.*;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

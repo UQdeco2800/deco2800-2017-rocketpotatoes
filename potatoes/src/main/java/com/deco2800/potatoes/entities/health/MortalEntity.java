@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.health;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
 

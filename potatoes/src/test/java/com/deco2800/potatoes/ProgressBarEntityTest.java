@@ -1,7 +1,8 @@
 package com.deco2800.potatoes;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.ProgressBarEntity;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.junit.Before;
 import org.junit.Test;
 

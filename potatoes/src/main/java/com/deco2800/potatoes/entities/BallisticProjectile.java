@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 

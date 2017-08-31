@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.health;
 
 /**
  * Created by timhadwen on 29/7/17.

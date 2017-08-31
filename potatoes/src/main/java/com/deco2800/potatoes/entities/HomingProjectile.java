@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 

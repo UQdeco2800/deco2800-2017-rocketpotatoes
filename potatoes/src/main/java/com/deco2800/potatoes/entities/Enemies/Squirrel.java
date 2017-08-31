@@ -4,7 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.*;
-
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;

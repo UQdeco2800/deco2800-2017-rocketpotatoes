@@ -2,13 +2,13 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.List;
 
-import com.deco2800.potatoes.entities.HasProgress;
-import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 
