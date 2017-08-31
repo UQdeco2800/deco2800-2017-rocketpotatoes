@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -45,6 +46,7 @@ public class MainMenuScreen implements Screen {
         // TODO config?
         camera.setToOrtho(false, 1920, 1080);
         // game screen background
+
         texturemanager=(TextureManager)GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
@@ -85,9 +87,13 @@ public class MainMenuScreen implements Screen {
         stage.getBatch().begin();
         stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),
                 Gdx.graphics.getHeight());
+
+
         stage.getBatch().end();
         
         stage.draw();
+
+
 
     }
 
@@ -180,7 +186,7 @@ public class MainMenuScreen implements Screen {
     public static String multiplayerHostAddress() {
         // TODO: Get Actual IP Addresses, not just the local host
         try {
-            InetAddress ip = InetAddress.getLocalHost();
+            InetAddress ip = InetAddress.getLoopbackAddress();
             return ip.getHostAddress();
         } catch (Exception ex) {
             LOGGER.warn("Failed to get host IP address.", ex);

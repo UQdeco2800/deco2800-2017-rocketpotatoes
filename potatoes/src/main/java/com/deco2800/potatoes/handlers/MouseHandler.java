@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.handlers;
 
-import java.util.Optional;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -21,6 +19,8 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.worlds.AbstractWorld;
 import com.deco2800.potatoes.worlds.InitialWorld;
+
+import java.util.Optional;
 
 /**
  * Really crappy mouse handler for the game
@@ -58,21 +58,23 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
 			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
 					.getManager(MultiplayerManager.class);
-			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				// Spawn a random tree
-				switch ((int) (Math.random() * 3 + 1)) {
+			AbstractTree newTree;
+			// Select random tree, and either make it in singleplayer or broadcast it in mp
+			switch ((int) (Math.random() * 3 + 1)) {
 				case 1:
-					AbstractTree.constructTree(new ResourceTree(realX, realY, 0, new FoodResource(), 8));
+					newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
 					break;
 				case 2:
-					AbstractTree.constructTree(new ResourceTree(realX, realY, 0));
+					newTree = new ResourceTree(realX, realY, 0);
 					break;
 				default:
-					AbstractTree.constructTree(new Tower(realX, realY, 0));
+					newTree = new Tower(realX, realY, 0);
 					break;
-				}
+			}
+			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+				AbstractTree.constructTree(newTree);
 			} else {
-				multiplayerManager.broadcastBuildOrder(realX, realY);
+				multiplayerManager.broadcastBuildOrder(newTree);
 			}
 		}
 

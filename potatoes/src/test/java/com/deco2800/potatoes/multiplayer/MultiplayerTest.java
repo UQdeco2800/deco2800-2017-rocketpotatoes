@@ -1,19 +1,18 @@
-package com.deco2800.potatoes;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.Set;
-
-import org.junit.Test;
-import org.reflections.Reflections;
+package com.deco2800.potatoes.multiplayer;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.networking.Network;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.EndPoint;
+import org.junit.Test;
+import org.reflections.Reflections;
+
+import java.io.IOException;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class MultiplayerTest {
 

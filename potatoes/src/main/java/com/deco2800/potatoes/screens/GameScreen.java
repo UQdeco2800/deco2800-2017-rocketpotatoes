@@ -15,10 +15,15 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.Enemies.SpeedyEnemy;
+import com.deco2800.potatoes.entities.Enemies.Squirrel;
+import com.deco2800.potatoes.entities.Enemies.TankEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
+import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.gui.InventoryGui;
+import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -147,6 +152,12 @@ public class GameScreen implements Screen {
         // Make our GameMenuGui
         guiManager.addGui(new GameMenuGui(guiManager.getStage(), this));
 
+        // Make our PauseMenuGui
+        guiManager.addGui(new PauseMenuGui(guiManager.getStage(), this));
+
+        // Make our DebugMenuGui
+        guiManager.addGui(new DebugModeGui(guiManager.getStage(), this));
+
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
         
@@ -175,6 +186,7 @@ public class GameScreen implements Screen {
 
         inputManager = (InputManager) GameManager.get().getManager(InputManager.class);
         inputManager.addKeyDownListener(new CameraHandler());
+        inputManager.addKeyDownListener(new PauseHandler());
         inputManager.addScrollListener(new ScrollTester());
 
         MouseHandler mouseHandler = new MouseHandler();
@@ -190,7 +202,7 @@ public class GameScreen implements Screen {
      * Initializes everything needed to actually play the game
      * Can be used to `reset` the state of the game
      *
-     * TODO this logic should be state-machined'd (i.e. Main Menu <-> Playing <-> Paused. With every state having
+     * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <-> Paused. With every state having
      * TODO it's own menu(s), initialization etc. And when we setup custom transition logic.
      */
     private void initializeGame() {
@@ -199,6 +211,8 @@ public class GameScreen implements Screen {
             guiManager.getGui(ChatGui.class).hide();
         }
 
+        ((EventManager) GameManager.get().getManager(EventManager.class)).unregisterAll();
+        
         Random random = new Random();
 
         MultiplayerManager m = multiplayerManager;
@@ -214,7 +228,6 @@ public class GameScreen implements Screen {
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
 
-            GameManager.get().getWorld().addEntity(new Peon(7, 7, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
             for(int i=0 ; i<3 ; i++) {
@@ -489,6 +502,7 @@ public class GameScreen implements Screen {
     }
 
     public void exitToMenu() {
+        GameManager.get().clearManagers();
         game.setScreen(new MainMenuScreen(game));
         dispose();
     }
@@ -520,6 +534,17 @@ public class GameScreen implements Screen {
         }
     }
 
+    private class PauseHandler implements KeyDownObserver {
+        @Override
+        public void notifyKeyDown(int keycode) {
+            if (keycode == Input.Keys.ESCAPE) {
+                // Pause the Game
+                // ToDo
+                // Show the Pause Menu
+                ((PauseMenuGui) guiManager.getGui(PauseMenuGui.class)).show();
+            }
+        }
+    }
 
     private class ScrollTester implements ScrollObserver {
 
@@ -530,5 +555,43 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Sets the sound effects volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
+    public void setEffectsVolume(float v){
+        soundManager.setEffectsVolume(v);
+    }
+
+    /**
+     * Returns the current sound effects volume from SoundManager.
+     * @return float from 0 to 1.
+     */
+    public float getEffectsVolume(){
+        return soundManager.getEffectsVolume();
+    }
+
+    /**
+     * Sets the music volume (v) in SoundManager. (from 0 to 1)
+     * @param v
+     */
+    public void setMusicVolume(float v){
+        soundManager.setMusicVolume(v);
+    }
+
+    /**
+     * Returns the current music volume from SoundManager.
+     * @return float from 0 to 1.
+     */
+    public float getMusicVolume(){
+        return soundManager.getMusicVolume();
+    }
+
+    /**
+     * Plays a blip sound.
+     */
+    public void menuBlipSound(){
+        soundManager.playSound("menu_blip.wav");
+    }
 
 }

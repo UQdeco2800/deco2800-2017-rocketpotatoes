@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.screens.GameScreen;
@@ -23,6 +24,7 @@ public class GameMenuGui extends Gui {
     private Button duckSoundButton;
     private Button resetButton;
     private Button selectButton;
+    private Button godModeButton;
     private Window window;
 
     public GameMenuGui(Stage stage, GameScreen screen) {
@@ -31,19 +33,33 @@ public class GameMenuGui extends Gui {
 
         // Make window, with the given skin
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
-        window = new Window("Menu", uiSkin);
+        window = new Window("menu", uiSkin);
 
 		// Make our buttons
-        quitButton = new TextButton("Quit", uiSkin);
+        quitButton = new TextButton("Menu", uiSkin);
         duckSoundButton = new TextButton("Play Duck Sound", uiSkin);
         resetButton = new TextButton("Reset", uiSkin);
         selectButton = new TextButton("Select a Unit", uiSkin);
+        godModeButton = new TextButton("God",uiSkin);
+
+           /* Listener to godMode button */
+        godModeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //Sound added just to alert a change in game state
+                screen.menuBlipSound();
+                ((DebugModeGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(DebugModeGui.class)).show();
+
+            }
+        });
 
 		/* Add a programatic listener to the quit button */
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.exit(0);
+                screen.menuBlipSound();
+                ((PauseMenuGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(PauseMenuGui.class)).show();
+
             }
         });
 
@@ -84,6 +100,7 @@ public class GameMenuGui extends Gui {
         window.add(duckSoundButton);
         window.add(resetButton);
         window.add(selectButton);
+        window.add(godModeButton);
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen

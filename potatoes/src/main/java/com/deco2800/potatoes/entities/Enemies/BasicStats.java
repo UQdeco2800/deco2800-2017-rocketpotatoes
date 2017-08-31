@@ -1,10 +1,6 @@
 package com.deco2800.potatoes.entities.Enemies;
 
-import com.deco2800.potatoes.entities.EnemyEntity;
-import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -103,13 +99,6 @@ public class BasicStats {
         return this.range;
     }
 
-    /*RETURNS A REFERENCE*/
-    /**
-     * @return returns a reference to the normal events list of these stats
-     */
-    public List<TimeEvent<EnemyEntity>> getNormalEvents() {
-        return normalEvents;
-    }
 
     /**
      * @return return enemy's current texture

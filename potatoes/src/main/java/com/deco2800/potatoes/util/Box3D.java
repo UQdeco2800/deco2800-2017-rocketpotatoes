@@ -195,6 +195,55 @@ public class Box3D {
 		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
+	/**
+	 * Find the angle between two _Box3D_. Starts from calling box to target box
+	 * @param target end point of the line
+	 * @return angle in radians
+	 */
+	public float angle(Box3D target) {
+
+		// Find the difference of X and Y coordinates
+		float deltaX = this.getX() - target.getX();
+		float deltaY = this.getY() - target.getY();
+		// Return angle
+		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+	}
+
+	/**
+	 * Checks to see if a line intersects with this Box3D.
+	 * The line goes from point (x1,y1,z1) to (x2,y2,z2).
+	 * Uses Axis-Aligned Bounding Box (AABB) Intersection
+	 *
+	 * @param x1 The x coord of point 1 of the line
+	 * @param y1 The y coord of point 1 of the line
+	 * @param z1 The z coord of point 1 of the line
+	 * @param x2 The x coord of point 2 of the line
+	 * @param y2 The y coord of point 2 of the line
+	 * @param z2 The z coord of point 2 of the line
+	 * @return
+	 */
+	public boolean doesIntersectLine(float x1, float y1, float z1, float x2, float y2, float z2) {
+		float fMin = 0;
+		float fMax = 1;
+
+		float[] lineMin = {Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2)};
+		float[] lineMax = {Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)};
+		float[] boxMin = {this.x, this.y, this.z};
+		float[] boxMax = {this.x + this.xLength, this.y + this.yLength, this.z + this.zLength};
+
+		for (int i = 0; i < 3; i++) {
+			float lineDist = lineMax[i] - lineMin[i];
+			if (lineDist != 0) {
+				fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
+				fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
+				if (fMin > fMax) { return false; }
+
+			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
+		}
+
+		return true;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y, z, xLength, yLength, zLength);
@@ -231,5 +280,9 @@ public class Box3D {
 
 	}
 
+    @Override
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ", " + getZ() + ")";
+    }
 
 }

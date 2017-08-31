@@ -1,10 +1,9 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class ExplosionProjectile extends Projectile {
 
@@ -62,19 +61,17 @@ public class ExplosionProjectile extends Projectile {
         if (dmgTimer % 6 == 0) {
             Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
             for (AbstractEntity entity : entities) {
-                if (entity instanceof Player && this.collidesWith(entity)) {
-
-                }
-
                 if (entity instanceof EnemyEntity && this.collidesWith(entity)) {
                     ((EnemyEntity) entity).getShot(this);
-//                    System.out.println(DAMAGE);
                 }
             }
 
         }
     }
 
+    /**
+     * Returns Damage value
+     */
     @Override
     public float getDamage() {
         return DAMAGE;

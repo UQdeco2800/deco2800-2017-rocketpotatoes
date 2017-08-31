@@ -1,13 +1,5 @@
 package com.deco2800.potatoes.renderering;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,18 +8,21 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.ExplosionProjectile;
-import com.deco2800.potatoes.entities.HasProgress;
-import com.deco2800.potatoes.entities.HasProgressBar;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.ProgressBar;
+import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -89,15 +84,20 @@ public class Render3D implements Renderer {
 
 		batch.begin();
 
-		// drawTextureBetween("Lightning",0, 0, 1, 1);
+		// drawTextureBetween("lightning",0, 0, 1, 1);
 
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			String textureString = entity.getTexture();
 			TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-			Texture tex = reg.getTexture(textureString);
+			Texture tex;
+			if (e.getKey() instanceof Animated) {
+				// Animations should probably be changed to TextureRegion for performance
+				tex = reg.getTexture(((Animated) e.getKey()).getAnimation().getFrame());
+			} else {
+				tex = reg.getTexture(entity.getTexture());
+			}
 
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 

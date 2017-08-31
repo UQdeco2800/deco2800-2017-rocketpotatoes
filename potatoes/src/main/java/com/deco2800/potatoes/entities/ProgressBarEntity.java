@@ -41,7 +41,7 @@ public class ProgressBarEntity implements ProgressBar {
 	public ProgressBarEntity(String texture, int height, float widthScale) {
 		List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
 		this.texture = texture;
-		this.backgroundTexture = "progess_bar";
+		this.backgroundTexture = "progress_bar";
 		this.colours = colours;
 		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
@@ -59,7 +59,7 @@ public class ProgressBarEntity implements ProgressBar {
 	 */
 	public ProgressBarEntity(List<Color> colours, int height, float widthScale) {
 		this.texture = "progress_bar";
-		this.backgroundTexture = "progess_bar";
+		this.backgroundTexture = "progress_bar";
 		this.colours = colours;
 		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;

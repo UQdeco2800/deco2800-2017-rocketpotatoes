@@ -21,6 +21,8 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	private boolean centered;
 
+	private boolean staticCollideable = false;
+
 	private String texture = "error_box";
 
 	public int rotateAngle() {
@@ -127,7 +129,6 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		this.texture = texture;
 
-		System.out.println("const:x:" + posX + ":wid:" + xLength);
 		this.position = new Box3D(posX + getCenterOffset(xLength), posY + getCenterOffset(yLength), posZ, xLength,
 				yLength, zLength);
 	}
@@ -252,6 +253,18 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 	/**
+	 * Sets this entity to be a static collideable entity that gets pathed around
+	 * when considering path finding in the PathManager
+	 *
+	 * @param staticCollideable
+	 *            true iff this entity is intended to be stationary and have a
+	 *            collision box
+	 */
+	public void setStaticCollideable(boolean staticCollideable) {
+		this.staticCollideable = staticCollideable;
+	}
+
+	/**
 	 * Allows sorting of WorldEntities for Isometric rendering
 	 * 
 	 * @param o
@@ -262,14 +275,14 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		float cartX = this.position.getX();
 		float cartY = gameManager.getWorld().getLength() - this.position.getY();
 
-		float isoX = ((cartX - cartY) / 2.0f);
-		float isoY = ((cartX + cartY) / 2.0f);
+		float isoX = (cartX - cartY) / 2.0f;
+		float isoY = (cartX + cartY) / 2.0f;
 
 		float otherCartX = o.getPosX();
 		float otherCartY = gameManager.getWorld().getLength() - o.getPosY();
 
-		float otherIsoX = ((otherCartX - otherCartY) / 2.0f);
-		float otherIsoY = ((otherCartX + otherCartY) / 2.0f);
+		float otherIsoX = (otherCartX - otherCartY) / 2.0f;
+		float otherIsoY = (otherCartX + otherCartY) / 2.0f;
 
 		if (Float.compare(isoY, otherIsoY) == 0) {
 			return Float.compare(otherIsoX, isoX);
@@ -357,5 +370,16 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 */
 	private float getCenterOffsetY() {
 		return getCenterOffset(this.position.getYLength());
+	}
+
+	/**
+	 * Checks if this entity is a static collideable entity that gets pathed around
+	 * when considering path finding in the PathManager
+	 *
+	 * @return true iff this entity is intended to be stationary and have a
+	 *         collision box
+	 */
+	public boolean isStaticCollideable() {
+		return this.staticCollideable;
 	}
 }

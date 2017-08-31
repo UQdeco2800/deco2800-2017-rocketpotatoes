@@ -14,6 +14,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.Enemies.Squirrel;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -33,7 +35,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private final static transient float HEALTH = 100f;
+	private final static transient float HEALTH = 200f;
 	private static final transient String TEXTURE_RIGHT = "spacman_blue";
 	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
@@ -123,8 +125,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 			if (!this.equals(entity) && (entity instanceof EnemyEntity)
 					&& newPos.overlaps(entity.getBox3D())) {
-				LOGGER.info("Ouch! a " + entity + " hit the player!");
-				damage(1);
 				collided = true;
 
 			}
