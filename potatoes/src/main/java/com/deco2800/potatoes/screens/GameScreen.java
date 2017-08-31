@@ -20,6 +20,7 @@ import com.deco2800.potatoes.entities.Enemies.Squirrel;
 import com.deco2800.potatoes.entities.Enemies.TankEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
+import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.gui.PauseMenuGui;
@@ -153,6 +154,9 @@ public class GameScreen implements Screen {
 
         // Make our PauseMenuGui
         guiManager.addGui(new PauseMenuGui(guiManager.getStage(), this));
+
+        // Make our DebugMenuGui
+        guiManager.addGui(new DebugModeGui(guiManager.getStage(), this));
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
@@ -500,6 +504,7 @@ public class GameScreen implements Screen {
     }
 
     public void exitToMenu() {
+        GameManager.get().clearManagers();
         game.setScreen(new MainMenuScreen(game));
         dispose();
     }

@@ -84,7 +84,7 @@ public class Render3D implements Renderer {
 
 		batch.begin();
 
-		// drawTextureBetween("Lightning",0, 0, 1, 1);
+		// drawTextureBetween("lightning",0, 0, 1, 1);
 
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
@@ -152,6 +152,10 @@ public class Render3D implements Renderer {
 				float maxBarWidth = tileWidth * entity.getXRenderLength()
 					* progressBar.getWidthScale();
 				float barWidth = maxBarWidth * ((HasProgress) entity).getProgressRatio();
+				float width = maxBarWidth * (1 - ((HasProgress) entity).getProgressRatio());
+				//endX (the first bit of the bar) = barX + (maxWidth * entity.getProgressRatio())
+				//or endX = barX + maxWidth - width
+				//greyBarX = endX + endWidth
 
 				batch.draw(barTexture,
 						// x co-ordinate

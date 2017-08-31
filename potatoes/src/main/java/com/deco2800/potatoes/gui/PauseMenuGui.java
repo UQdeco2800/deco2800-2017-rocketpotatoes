@@ -138,7 +138,7 @@ public class PauseMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
-                System.exit(0);
+                screen.exitToMenu();
             }
         });
 
