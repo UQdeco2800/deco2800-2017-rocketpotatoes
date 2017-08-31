@@ -14,12 +14,13 @@ public class GoalPotate extends AbstractEntity{
 	private final static transient String TEXTURE = "potate";
 
 	public GoalPotate() {
-		//empty for serialization
+		// empty for serialization
 	}
 
 
 	public GoalPotate(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE);
+		this.setStaticCollideable(true);
 	}
 
 }

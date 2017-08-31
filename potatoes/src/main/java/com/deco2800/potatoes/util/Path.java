@@ -1,34 +1,100 @@
 package com.deco2800.potatoes.util;
 
 import java.util.ArrayDeque;
-import java.util.List;
-import java.util.Deque;
-import java.util.Queue;
+
+
 
 /**
- *
+ * Class to encapsulate positions as Box3D objects in an entities path to target. Also
+ * holds the current angle the entity is traveling in.
  */
 public class Path {
-    private Deque<Box3D> nodes;
+    private ArrayDeque<Box3D> nodes;
+    private float angle;
 
     /**
-     * Creates a new path, with given nodes.
-     * 
-     * @param nodes The nodes the created path will consist of.
+     * Creates a new path, with no nodes.
      */
-    public Path(List<Box3D> nodes) {
-        this.nodes = new ArrayDeque<>();
-        this.nodes.addAll(nodes);
+    public Path() {
+        this.nodes = new ArrayDeque<Box3D>();
+        this.angle = 0;
     }
 
     /**
      * Creates a new path, with given nodes.
-     * 
-     * @param nodes The nodes the created path will consist of.
+     * @param nodes - List of positions in path to target.
      */
-    public Path(Queue<Box3D> nodes) {
-        this.nodes = new ArrayDeque<>();
-        this.nodes.addAll(nodes);
+    public Path(ArrayDeque<Box3D> nodes) {
+        this.nodes = nodes;
+        this.angle = 0;
+    }
+
+    /**
+     * Get the deque of nodes.
+     * @return nodes as ArrayList of Box3d elements
+     */
+    public ArrayDeque<Box3D> getNodes() {
+        return nodes;
+    }
+
+    /**
+     * Set a new deque of nodes
+     * @param nodes list of positions in path
+     */
+    public void setNodes(ArrayDeque<Box3D> nodes) {
+        this.nodes = nodes;
+    }
+
+    /**
+     * Get the current angle of path based on entity trajectory.
+     * @return angle in radians
+     */
+    public float getAngle() {
+        return angle;
+    }
+
+    /**
+     * Set the current angle of path based on entity trajectory.
+     * @param angle in radians
+     */
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
+
+    /**
+     * Get Box3D of target position calculated between current position
+     * and next target node in list.
+     * @param currentPosition current Box3D of entity
+     * @param speed distance/tick the entity moves
+     * @return new Box3D for the entity per tick cycle
+     */
+    public Box3D getTargetPosition(Box3D currentPosition, float speed) {
+
+        // Construct new Box3D from _currentPosition_
+        Box3D newPos = new Box3D(currentPosition);
+        // Check if the current position overlaps the first node in list
+        if (currentPosition.overlaps(nodes.getFirst())) {
+            // Remove first node from list as it's been reached
+            nodes.removeFirst();
+            // Set angle to angle between _currentPosition_ and next node
+            setAngle(currentPosition.angle(nodes.getFirst()));
+            // Calculate new x and y positions
+            float newX = (float) (speed * Math.cos(getAngle()));
+            float newY = (float) (speed * Math.sin(getAngle()));
+            newPos.setX(newX);
+            newPos.setY(newY);
+            return newPos;
+        }
+        // Haven't reached the next node in list
+        // Set angle to angle between _currentPosition_ and next node
+        setAngle(currentPosition.angle(nodes.getFirst()));
+        // Calculate new x and y positions
+        float newX = (float) (speed * Math.cos(getAngle()));
+        float newY = (float) (speed * Math.sin(getAngle()));
+        newPos.setX(newX);
+        newPos.setY(newY);
+        return newPos;
     }
 
     /**
@@ -50,4 +116,27 @@ public class Path {
         return new Box3D(nodes.getLast());
     }
 
+    /**
+     * add node to end of path
+     * @param node
+     */
+    public void addNode(Box3D node) {
+        nodes.add(node);
+    }
+
+    /**
+     * Checks if there are any more nodes left on the path
+     *
+      * @return true iff there are no more nodes in the path
+     */
+    public boolean isEmpty() { return nodes.isEmpty(); }
+
+    /**
+     * Gets the next point and removes it from the que
+     *
+     * @return A Box3D representation of the point.
+     */
+    public Box3D pop() {
+        return nodes.pop();
+    }
 }

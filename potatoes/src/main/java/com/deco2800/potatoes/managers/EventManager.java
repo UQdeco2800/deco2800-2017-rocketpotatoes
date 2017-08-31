@@ -81,4 +81,8 @@ public class EventManager extends Manager {
 			unregisterEvent(eventPair.tickable, eventPair.event);
 		}
 	}
+
+	public void unregisterAll() {
+		events = new ArrayList<>();
+	}
 }
