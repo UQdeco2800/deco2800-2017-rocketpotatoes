@@ -20,16 +20,30 @@ public class ProgressBarEntity implements ProgressBar {
 	protected List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
 	// the the background colour of the bar
 	protected Color backgroundColour = Color.valueOf("515153");
-	// the height of the progress bar in relation to the location of the entity
+	// the height of the progress bar relative to the entity's height
 	protected int height = 0;
 	// the scale of the progress bar in relation to its entity
-	protected float widthScale;
+	protected float widthScale = 1;
 
 	public ProgressBarEntity() {
 		// empty because serialization
 	}
 
 	/**
+	 * Default Constructor for solid colour bars
+	 * 
+	 * @param colours
+	 *            the colour palette used for the progress bar
+	 * @param widthScale
+	 *            the scale of the progress bar in relation to its entity
+	 */
+	public ProgressBarEntity(List<Color> colours) {
+		this.colours = colours;
+	}
+
+
+	/**
+	 * Default Constructor for custom textures
 	 * 
 	 * @param texture
 	 *            the textureID used for the entity
@@ -38,36 +52,6 @@ public class ProgressBarEntity implements ProgressBar {
 	 */
 	public ProgressBarEntity(String texture, float widthScale) {
 		this.texture = texture;
-		this.widthScale = widthScale;
-	}
-
-	/**
-	 * 
-	 * @param texture
-	 *            the textureID used for the entity
-	 * @param height
-	 *            the of the progress bar in relation to the location of the entity
-	 * @param widthScale
-	 *            the scale of the progress bar in relation to its entity
-	 */
-	public ProgressBarEntity(String texture, int height, float widthScale) {
-		this.texture = texture;
-		this.height = height;
-		this.widthScale = widthScale;
-	}
-
-	/**
-	 * 
-	 * @param colours
-	 *            the colour palette used for the progress bar
-	 * @param height
-	 *            the of the progress bar in relation to the location of the entity
-	 * @param widthScale
-	 *            the scale of the progress bar in relation to its entity
-	 */
-	public ProgressBarEntity(List<Color> colours, int height, float widthScale) {
-		this.colours = colours;
-		this.height = height;
 		this.widthScale = widthScale;
 	}
 

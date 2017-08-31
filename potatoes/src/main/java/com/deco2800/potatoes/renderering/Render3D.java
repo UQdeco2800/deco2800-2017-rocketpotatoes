@@ -138,7 +138,6 @@ public class Render3D implements Renderer {
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
 				TextureManager reg = (TextureManager) GameManager.get()
 					.getManager(TextureManager.class);
-				float aspect = (float) 1 / 5;
 
 				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
 				Texture barTexture = reg.getTexture((progressBar.getTexture()));
@@ -149,7 +148,7 @@ public class Render3D implements Renderer {
 
 				// draws the progress bar
 				Texture entityTexture = reg.getTexture(entity.getTexture());
-				float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
+				float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
 
 				float maxBarWidth = tileWidth * entity.getXRenderLength()
 					* progressBar.getWidthScale();
@@ -162,8 +161,7 @@ public class Render3D implements Renderer {
 						* (progressBar.getWidthScale() - 1) / 2);
 				// y co-ordinate
 				// If height is specified, use it, otherwise estimate the right height
-				float barY = isoPosition.y + (progressBar.getHeight() != 0 ? progressBar.getHeight()
-						: entityTexture.getHeight() * 1.2f);// / aspect2 + 10);
+				float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
 				float endX = barX + barWidth;
 				// We haven't implemented rounded corners, but when we do:
 				// float greyBarX = endX + endWidth;
@@ -172,24 +170,28 @@ public class Render3D implements Renderer {
 						// x, y
 						barX, barY,
 						// width, height
-						maxBarWidth, maxBarWidth / 8,
+						barWidth, maxBarWidth / 8,
 						// srcX, srcY
 						0, 0,
 						// srcWidth, srcHeight
-						barTexture.getWidth(), barTexture.getHeight(),
+						(int) (barTexture.getWidth() * ((HasProgress) entity).getProgressRatio()), barTexture.getHeight(),
 						// flipX, flipY
 						false, false);
 
+				System.out.println(barTexture.getWidth());
+				System.out.println(barTexture.getWidth() * ((HasProgress) entity).getProgressRatio());
+
 				batch.setColor(Color.GRAY);
-				batch.draw(barBackgroundTexture,
+				batch.draw(barTexture,
 						// x, y
 						endX, barY,
 						// width, height
 						barBackgroundWidth, maxBarWidth / 8,
 						// srcX, srcY
-						0, 0,
+						(int) (barTexture.getWidth() * (((HasProgress) entity).getProgressRatio())), 0,
 						// srcWidth, srcHeight
-						barBackgroundTexture.getWidth(), barBackgroundTexture.getHeight(),
+						//barBackgroundTexture.getWidth(), barBackgroundTexture.getHeight(),
+						(int) (barTexture.getWidth() * (1 - ((HasProgress) entity).getProgressRatio())), barTexture.getHeight(),
 						// flipX, flipY
 						false, false);
 
