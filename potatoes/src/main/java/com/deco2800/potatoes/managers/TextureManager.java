@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +106,7 @@ public class TextureManager extends Manager {
         saveTexture("ice_basic_tree","resources/trees/iceBasicTree.png");
 
 
-        
+
     }
 
     /**
@@ -132,13 +131,7 @@ public class TextureManager extends Manager {
     public void saveTexture(String id, String filename) {
         LOGGER.info("Saving texture" + id + " with Filename " + filename);
         if (!textureMap.containsKey(id)) {
-            try {
                 textureMap.put(id, new Texture(filename));
-            }
-            catch (GdxRuntimeException ex) {
-                // Don't crash when we can't find filesd
-                ex.printStackTrace();
-            }
         }
     }
 }
