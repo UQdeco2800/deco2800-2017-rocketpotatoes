@@ -64,9 +64,9 @@ public class ProgressBarEntityTest {
 
 		// test 3 colours
 		progressBarEntity = new ProgressBarEntity("progress_bar", 50);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.GREEN);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.valueOf("fff134"));
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.RED);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.WHITE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.WHITE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.WHITE);
 
 	}
 
