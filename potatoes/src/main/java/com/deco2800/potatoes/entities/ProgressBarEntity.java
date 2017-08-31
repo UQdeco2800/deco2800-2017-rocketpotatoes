@@ -13,20 +13,32 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class ProgressBarEntity implements ProgressBar {
 	// the textureID used for the progress bar
-	protected String texture;
+	protected String texture = "progress_bar";
 	// the textureID used for the progress bar background
-	protected String backgroundTexture;
+	protected String backgroundTexture = "progress_bar";
 	// the colour palette used for the progress bar
-	protected List<Color> colours;
+	protected List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
 	// the the background colour of the bar
-	protected Color backgroundColour;
+	protected Color backgroundColour = Color.valueOf("515153");
 	// the height of the progress bar in relation to the location of the entity
-	protected int height;
+	protected int height = 0;
 	// the scale of the progress bar in relation to its entity
 	protected float widthScale;
 
 	public ProgressBarEntity() {
 		// empty because serialization
+	}
+
+	/**
+	 * 
+	 * @param texture
+	 *            the textureID used for the entity
+	 * @param widthScale
+	 *            the scale of the progress bar in relation to its entity
+	 */
+	public ProgressBarEntity(String texture, float widthScale) {
+		this.texture = texture;
+		this.widthScale = widthScale;
 	}
 
 	/**
@@ -39,11 +51,7 @@ public class ProgressBarEntity implements ProgressBar {
 	 *            the scale of the progress bar in relation to its entity
 	 */
 	public ProgressBarEntity(String texture, int height, float widthScale) {
-		List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
 		this.texture = texture;
-		this.backgroundTexture = "progress_bar";
-		this.colours = colours;
-		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
 		this.widthScale = widthScale;
 	}
@@ -58,10 +66,7 @@ public class ProgressBarEntity implements ProgressBar {
 	 *            the scale of the progress bar in relation to its entity
 	 */
 	public ProgressBarEntity(List<Color> colours, int height, float widthScale) {
-		this.texture = "progress_bar";
-		this.backgroundTexture = "progress_bar";
 		this.colours = colours;
-		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
 		this.widthScale = widthScale;
 	}
@@ -79,9 +84,7 @@ public class ProgressBarEntity implements ProgressBar {
 	 */
 	public ProgressBarEntity(String texture, List<Color> colours, int height, float widthScale) {
 		this.texture = texture;
-		this.backgroundTexture = "progress_bar";
 		this.colours = colours;
-		this.backgroundColour = Color.valueOf("515153");
 		this.height = height;
 		this.widthScale = widthScale;
 	}

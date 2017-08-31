@@ -163,7 +163,7 @@ public class Render3D implements Renderer {
 				// y co-ordinate
 				// If height is specified, use it, otherwise estimate the right height
 				float barY = isoPosition.y + (progressBar.getHeight() != 0 ? progressBar.getHeight()
-						: entityTexture.getHeight() / aspect2 + 10);
+						: entityTexture.getHeight() * 1.2f);// / aspect2 + 10);
 				float endX = barX + barWidth;
 				// We haven't implemented rounded corners, but when we do:
 				// float greyBarX = endX + endWidth;
@@ -173,8 +173,6 @@ public class Render3D implements Renderer {
 						barX, barY,
 						// width, height
 						maxBarWidth, maxBarWidth / 8,
-						// old height
-						// (barTexture.getHeight() / aspect) * entity.getYRenderLength(),
 						// srcX, srcY
 						0, 0,
 						// srcWidth, srcHeight
