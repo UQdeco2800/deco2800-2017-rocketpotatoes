@@ -228,7 +228,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 		} else {
 			health = amount;
 		}
-		return health == maxHealth;
+		float epsilon = 0.00000001f;
+		return Math.abs(health - maxHealth) < epsilon;
 	}
 
 	
