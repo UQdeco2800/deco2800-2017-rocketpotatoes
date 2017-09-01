@@ -14,9 +14,6 @@ import com.deco2800.potatoes.managers.PlayerManager;
  */
 public class RespawnEvent extends TimeEvent<Player> {
 
-	// A player manager used to add a player
-	private PlayerManager playerManager;
-
 	public RespawnEvent() {
 		// empty because serialization
 	}
@@ -28,7 +25,6 @@ public class RespawnEvent extends TimeEvent<Player> {
 
 	@Override
 	public void action(Player param) {
-		playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
 		// sets the location of the player to respawn
 		param.setPosition(5, 10, 0);
 		// sets players health to maximum health
