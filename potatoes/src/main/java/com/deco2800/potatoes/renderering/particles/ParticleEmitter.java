@@ -13,22 +13,15 @@ import java.util.stream.DoubleStream;
 
 public class ParticleEmitter {
     // Emitter parameters
-    float originX, originY;
+    private float originX, originY;
 
     // Particle types (defines the settings of the particles we create)
-    List<ParticleType> particleTypes;
-
-    // List of active particles (from the pool)
-    List<Particle> particles;
-
-    // TEST todo
-    Texture texture;
+    private List<ParticleType> particleTypes;
 
     // Random gen
-    Random random = new Random();
+    private Random random = new Random();
 
-
-    /**awawdZ
+    /**
      * Create a particle emitter with the given particleTypes TODO emitter settings
      * @param x position of the emitter
      * @param y position of the emitter
@@ -36,21 +29,25 @@ public class ParticleEmitter {
      */
     public ParticleEmitter(float x, float y, ParticleType... particleTypes) {
         this.particleTypes = new ArrayList<>();
-        this.particles = new ArrayList<>();
         this.originX = 300;
         this.originY = 50;
 
         for (ParticleType particleType : particleTypes) {
+
+            // Texture is 1x1 repeated
+            Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGB888);
+            p.setColor(particleType.color);
+            p.drawRectangle(0, 0, 1, 1);
+            Texture t = new Texture(p);
+            t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+            particleType.texture = t;
+
             this.particleTypes.add(particleType);
         }
 
         // TODO hack
-        int size = 5;
-        Pixmap p = new Pixmap(size, size, Pixmap.Format.RGB888);
-        p.setColor(Color.RED);
-        p.drawRectangle(0, 0, size, size);
-        
-        texture = new Texture(p);
+
     }
 
     /**
@@ -61,69 +58,77 @@ public class ParticleEmitter {
      * @param particlePool the pool of particles to use (TODO expandable)
      */
     public void onTick(double deltaTime, List<Particle> particlePool) {
-        Iterator<Particle> iter = particles.iterator();
-        while(iter.hasNext()) {
-            Particle p = iter.next();
-            // Tick particles
-            p.x += p.vectorX * deltaTime;
-            p.y += p.vectorY * deltaTime;
-            p.lifeTime -= deltaTime;
+        for (ParticleType particleType : particleTypes) {
 
-            // Delete expired
-            if (p.lifeTime <= 0.0f) {
-                p.alive = false;
-                iter.remove();
+            Iterator<Particle> iter = particleType.particles.iterator();
+            while (iter.hasNext()) {
+                Particle p = iter.next();
+                // Tick particles
+                p.x += p.vectorX * deltaTime;
+                p.y += p.vectorY * deltaTime;
+                p.lifeTime -= deltaTime;
+
+                // Delete expired
+                if (p.lifeTime <= 0.0f) {
+                    p.alive = false;
+                    iter.remove();
+                }
             }
         }
 
         // Create new
-        while (particles.size() < 1000) {
-            Particle newP = null;
+        for (ParticleType particleType : particleTypes) {
+            while (particleType.particles.size() < particleType.number) {
+                Particle newP = null;
 
-            // Find particle
-            for (Particle p : particlePool) {
-                if (!p.alive) {
-                    newP = p;
-                    break;
+                // Find particle
+                for (Particle p : particlePool) {
+                    if (!p.alive) {
+                        newP = p;
+                        break;
+                    }
+                }
+
+                // Add it
+                if (newP == null) {
+                    throw new IllegalStateException("Ayyyyyy too many particles");
+                }
+                else {
+                    newP.alive = true;
+                    newP.x = originX;
+                    newP.y = originY;
+                    float factor = 8.0f;
+                    newP.vectorX = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
+                    newP.vectorY = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
+                    newP.lifeTime = 5.0f * 1000.0f; // 5s
+                    particleType.particles.add(newP);
                 }
             }
-
-            // Add it
-            if (newP == null) {
-                throw new IllegalStateException("Ayyyyyy too many particles");
-            }
-            else {
-                newP.alive = true;
-                newP.x = originX;
-                newP.y = originY;
-                float factor = 8.0f;
-                newP.vectorX = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
-                newP.vectorY = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
-                newP.lifeTime = 5.0f * 1000.0f; // 5s
-                particles.add(newP);
-            }
         }
+
     }
 
     public void draw(SpriteBatch batch) {
         Color prev = batch.getColor();
-        batch.setColor(1.0f, 0, 0, 1.0f);
 
         batch.begin();
-        for (Particle p : particles) {
-            Color col = batch.getColor();
-            float alpha = 1.0f;
+        for (ParticleType particleType : particleTypes) {
+            for (Particle p : particleType.particles) {
+                Color col = batch.getColor();
+                float alpha = 1.0f;
 
-            float fadeOutThreshold = (5.0f * 1000.0f) * 1.0f;
-            if (p.lifeTime < fadeOutThreshold) {
-                alpha = p.lifeTime / fadeOutThreshold;
+                float fadeOutThreshold = (5.0f * 1000.0f) * 1.0f;
+                if (p.lifeTime < fadeOutThreshold) {
+                    alpha = p.lifeTime / fadeOutThreshold;
+                }
+
+                batch.setColor(col.r, col.g, col.b, alpha);
+                batch.draw(particleType.texture, p.x, p.y, particleType.size, particleType.size);
             }
 
-            batch.setColor(col.r, col.g, col.b, alpha);
-            batch.draw(texture, p.x, p.y);
+
+            batch.setColor(prev);
         }
         batch.end();
-
-        batch.setColor(prev);
     }
 }
