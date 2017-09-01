@@ -29,10 +29,12 @@ public class RespawnEvent extends TimeEvent<Player> {
 	@Override
 	public void action(Player param) {
 		playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		// creates a new player
-		// TODO bug: pressed movement keys during respawn will cause unwanted movement.
-		playerManager.setPlayer(new Player(5, 10, 0));
-		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		// sets the location of the player to respawn
+		param.setPosition(5, 10, 0);
+		// sets players health to maximum health
+		param.setProgress(param.getMaxHealth());
+		// readd player to world
+		GameManager.get().getWorld().addEntity(param);
 	}
 
 }

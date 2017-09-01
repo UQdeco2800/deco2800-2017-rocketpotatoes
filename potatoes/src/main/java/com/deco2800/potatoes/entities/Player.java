@@ -317,7 +317,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		// get the event manager
 		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
 		// add the respawn event
-		eventManager.registerEvent(new Player(5, 10, 0), new RespawnEvent(respawnTime));
+		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
 
 
