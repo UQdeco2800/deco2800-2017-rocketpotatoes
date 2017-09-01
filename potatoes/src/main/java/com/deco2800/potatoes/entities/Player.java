@@ -1,9 +1,7 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -315,8 +313,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 		// destroy the player
-        GameManager.get().getWorld().removeEntity(this);
-        // get the event manager
+		GameManager.get().getWorld().removeEntity(this);
+		// get the event manager
 		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
 		// add the respawn event
 		eventManager.registerEvent(new Player(5, 10, 0), new RespawnEvent(respawnTime));
