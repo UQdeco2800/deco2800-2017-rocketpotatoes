@@ -56,6 +56,8 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         *   */
         GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),
                 enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange()+3, 10));
+        //GameManager.get().getWorld().addEntity(new LightningEffect(0,0,0,10));
+
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/
         if (enemy.isDead()) {
