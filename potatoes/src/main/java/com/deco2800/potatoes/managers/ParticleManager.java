@@ -19,14 +19,14 @@ public class ParticleManager extends Manager {
 
         // Initialize our pool of particles (let's start with 1024)
         particlePool = new ArrayList<>();
-        for (int i = 0; i < 2000000; ++i) {
+        for (int i = 0; i < 1000000; ++i) {
             particlePool.add(new Particle());
         }
 
         ParticleEmitter e = new ParticleEmitter(0, 0,
                 new ParticleType(200, 5, Color.RED),
-                new ParticleType(100, 5, Color.BLUE),
-                new ParticleType(100, 5, Color.GREEN));
+                new ParticleType(200, 5, Color.BLUE),
+                new ParticleType(200, 5, Color.GREEN));
 
         addParticleEmitter(e);
     }

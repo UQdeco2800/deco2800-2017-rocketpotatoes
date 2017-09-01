@@ -98,9 +98,11 @@ public class ParticleEmitter {
                     newP.x = originX;
                     newP.y = originY;
                     float factor = 8.0f;
-                    newP.vectorX = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
-                    newP.vectorY = (random.nextFloat() * (2.0f / factor)) - (1.0f / factor); // -1.0 < x < 1.0
-                    newP.lifeTime = 5.0f * 1000.0f; // 5s
+
+                    float direction = random.nextFloat() * 360;
+                    newP.vectorX = (float)Math.sin(direction) * (random.nextFloat() * 2.0f - 1.0f);
+                    newP.vectorY = (float)Math.cos(direction) * (random.nextFloat() * 2.0f - 1.0f);
+                    newP.lifeTime = 1.0f * 1000.0f; // 5s
                     particleType.particles.add(newP);
                 }
             }
@@ -117,7 +119,7 @@ public class ParticleEmitter {
                 Color col = batch.getColor();
                 float alpha = 1.0f;
 
-                float fadeOutThreshold = (5.0f * 1000.0f) * 1.0f;
+                float fadeOutThreshold = (1.0f * 1000.0f) * 1.0f;
                 if (p.lifeTime < fadeOutThreshold) {
                     alpha = p.lifeTime / fadeOutThreshold;
                 }
