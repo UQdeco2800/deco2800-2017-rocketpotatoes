@@ -21,6 +21,12 @@ public class ParticleEmitter {
     // Random gen
     private Random random = new Random();
 
+    // Is this emitter should produce particles
+    private boolean active;
+
+    // If this emitter has any existing particles
+    private boolean hasParticles;
+
     /**
      * Create a particle emitter with the given particleTypes TODO emitter settings
      * @param x position of the emitter
@@ -29,8 +35,9 @@ public class ParticleEmitter {
      */
     public ParticleEmitter(float x, float y, ParticleType... particleTypes) {
         this.particleTypes = new ArrayList<>();
-        this.originX = 300;
-        this.originY = 50;
+        this.originX = x;
+        this.originY = y;
+        this.active = true;
 
         for (ParticleType particleType : particleTypes) {
 
@@ -82,41 +89,58 @@ public class ParticleEmitter {
             }
         }
 
-        // Create new
-        for (ParticleType particleType : particleTypes) {
-            while (particleType.particles.size() < particleType.number) {
-                Particle newP = null;
+        // Create new if active
+        if (active) {
+            for (ParticleType particleType : particleTypes) {
+                while (particleType.particles.size() < particleType.number) {
+                    Particle newP = null;
 
-                // Find particle
-                for (Particle p : particlePool) {
-                    if (!p.alive) {
-                        newP = p;
-                        break;
+                    // Find particle
+                    for (Particle p : particlePool) {
+                        if (!p.alive) {
+                            newP = p;
+                            break;
+                        }
+                    }
+
+                    // Add it
+                    if (newP == null) {
+                        throw new IllegalStateException("Ayyyyyy too many particles");
+                    } else {
+                        newP.alive = true;
+                        newP.x = originX;
+                        newP.y = originY;
+
+                        float factor = (random.nextFloat() * 2.0f - 1.0f);
+                        float direction = random.nextFloat() * 360;
+                        newP.vectorX = (float) Math.sin(Math.toRadians(direction)) * factor;
+                        newP.vectorY = (float) Math.cos(Math.toRadians(direction)) * factor;
+                        newP.lifeTime = 1.0f * 1000.0f;
+
+                        particleType.particles.add(newP);
+                        hasParticles = true;
                     }
                 }
-
-                // Add it
-                if (newP == null) {
-                    throw new IllegalStateException("Ayyyyyy too many particles");
+            }
+        }
+        else {
+            // Check if any particles exist
+            hasParticles = false;
+            for (ParticleType particleType : particleTypes) {
+                if (particleType.particles.size() != 0) {
+                    hasParticles = true;
+                    break;
                 }
-                else {
-                    newP.alive = true;
-                    newP.x = originX;
-                    newP.y = originY;
 
-                    float factor = (random.nextFloat() * 2.0f - 1.0f);
-                    float direction = random.nextFloat() * 360;
-                    newP.vectorX = (float)Math.sin(Math.toRadians(direction)) * factor;
-                    newP.vectorY = (float)Math.cos(Math.toRadians(direction)) * factor;
-                    newP.lifeTime = 1.0f * 1000.0f;
-
-                    particleType.particles.add(newP);
-                }
             }
         }
 
     }
 
+    /**
+     * Draw's all the particles for this emitter. Include fadeout and other transition effects
+     * @param batch batch to draw with
+     */
     public void draw(SpriteBatch batch) {
         Color prev = batch.getColor();
 
@@ -139,5 +163,44 @@ public class ParticleEmitter {
             batch.setColor(prev);
         }
         batch.end();
+    }
+
+    /**
+     * Set's the origin of particles for this emitter
+     * @param x x coord
+     * @param y y coord
+     */
+    public void setOrigin(int x, int y) {
+        originX = x;
+        originY = y;
+    }
+
+    /**
+     * Gracefully stops this emitter (it stops producing more particles)
+     * When no particles exist the hasParticles flag will be set to false
+     */
+    public void stop() {
+        active = false;
+    }
+
+    /**
+     * Start's the emitter if it hasn't started (emitters default to started)
+     */
+    public void start() {
+        active = true;
+    }
+
+    /**
+     * @return if this emitter is active
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * @return if this emitter has particles
+     */
+    public boolean hasParticles() {
+        return hasParticles;
     }
 }
