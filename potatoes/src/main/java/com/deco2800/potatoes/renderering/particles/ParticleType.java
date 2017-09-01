@@ -16,6 +16,11 @@ public class ParticleType {
     public float rotationSpeed = 1.0f;
     public float alphaCeil = 0.8f;
     public float fadeOutPercent = 1.0f;
+    public float speed = 1.0f;
+
+    // Random spread of speed (if this are the same the speed is constant)
+    public float speedVarianceMin = 0.0f;
+    public float speedVarianceMax = 1.0f;
 
     // Not functional yet. Will implement when/if needed
     public float fadeInPercent = 0.1f;
@@ -71,4 +76,6 @@ public class ParticleType {
         }
         particles.clear();
     }
+
+
 }

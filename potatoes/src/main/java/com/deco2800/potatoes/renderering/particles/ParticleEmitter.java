@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.DoubleStream;
 
 public class ParticleEmitter {
     // Emitter parameters
@@ -74,8 +74,8 @@ public class ParticleEmitter {
             while (iter.hasNext()) {
                 Particle p = iter.next();
                 // Tick particles
-                p.x += p.vectorX * deltaTime;
-                p.y += p.vectorY * deltaTime;
+                p.x += p.vector.x * deltaTime;
+                p.y += p.vector.y * deltaTime;
                 p.lifeTime -= deltaTime;
                 p.rotation += particleType.rotationSpeed - (particleType.rotationSpeed  * 2.0f) * (p.hashCode() % 2);
 
@@ -117,10 +117,16 @@ public class ParticleEmitter {
                             newP.x = originX;
                             newP.y = originY;
 
-                            float factor = (random.nextFloat() * 2.0f - 1.0f);
+                            float min = particleType.speedVarianceMin;
+                            float max = particleType.speedVarianceMax;
+                            float factor = (random.nextFloat() * (max - min) + min) * particleType.speed;
                             float direction = random.nextFloat() * 360;
-                            newP.vectorX = (float) Math.sin(Math.toRadians(direction)) * factor / 5.0f;
-                            newP.vectorY = (float) Math.cos(Math.toRadians(direction)) * factor / 5.0f;
+
+                            // Gen normalized vec and scale it by factor
+                            newP.vector = new Vector2(
+                                    (float) Math.sin(Math.toRadians(direction)),
+                                    (float) Math.cos(Math.toRadians(direction))).nor().scl(factor);
+
                             newP.lifeTime = particleType.lifeTime;
                             newP.rotation = random.nextFloat();
 
@@ -148,12 +154,10 @@ public class ParticleEmitter {
 
     /**
      * Draw's all the particles for this emitter. Include fadeout and other transition effects
-     * @param batch batch to draw with
+     * @param batch batch to draw with (must be activated!)
      */
     public void draw(SpriteBatch batch) {
         Color prev = batch.getColor();
-
-        batch.begin();
         for (ParticleType particleType : particleTypes) {
             for (Particle p : particleType.particles) {
                 Color col = batch.getColor();
@@ -177,7 +181,6 @@ public class ParticleEmitter {
 
             batch.setColor(prev);
         }
-        batch.end();
     }
 
     public List<ParticleType> getParticleTypes() {

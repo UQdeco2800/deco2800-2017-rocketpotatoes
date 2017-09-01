@@ -1,13 +1,12 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.Particle;
-import com.deco2800.potatoes.renderering.particles.ParticleType;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
+import com.deco2800.potatoes.renderering.particles.ParticleType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,8 +32,14 @@ public class ParticleManager extends Manager {
             particlePool.add(new Particle());
         }
 
-        ParticleEmitter e = new ParticleEmitter(0, 0,
-                new ParticleType(10000, 3.0f * 1000.0f,5.0f, 1, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
+        //ParticleEmitter e = new ParticleEmitter(0, 0,
+        //        new ParticleType(10000, 3.0f * 1000.0f,5.0f, 1, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
+
+        ParticleType type = new ParticleType(215215, 1.0f * 1000.f, 100.0f, 1024, Color.GOLD, 3, 3);
+        type.speed = 0.1f;
+        //type.alphaCeil = 0.5f;
+        type.speedVarianceMin = 1.0f;
+        ParticleEmitter e = new ParticleEmitter(0, 0, type);
 
         addParticleEmitter(e);
     }
@@ -65,9 +70,12 @@ public class ParticleManager extends Manager {
      * @param batch batch to draw with (will ensure the state of the batch is returned to normal after)
      */
     public void draw(SpriteBatch batch) {
+        // batch begin here so we batch all emitters together for efficiency!
+        batch.begin();
         for (ParticleEmitter emitter : emitters) {
             emitter.draw(batch);
         }
+        batch.end();
     }
 
     /**
