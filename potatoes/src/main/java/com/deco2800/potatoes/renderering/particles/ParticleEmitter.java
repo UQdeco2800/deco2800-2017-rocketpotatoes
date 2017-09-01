@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.DoubleStream;
 
 public class ParticleEmitter {
     // Emitter parameters
@@ -26,6 +27,7 @@ public class ParticleEmitter {
     // Random gen
     Random random = new Random();
 
+
     /**awawdZ
      * Create a particle emitter with the given particleTypes TODO emitter settings
      * @param x position of the emitter
@@ -41,7 +43,13 @@ public class ParticleEmitter {
         for (ParticleType particleType : particleTypes) {
             this.particleTypes.add(particleType);
         }
-        Pixmap p = new Pixmap(5, 5, Pixmap.Format.RGB888);
+
+        // TODO hack
+        int size = 5;
+        Pixmap p = new Pixmap(size, size, Pixmap.Format.RGB888);
+        p.setColor(Color.RED);
+        p.drawRectangle(0, 0, size, size);
+        
         texture = new Texture(p);
     }
 
@@ -69,7 +77,7 @@ public class ParticleEmitter {
         }
 
         // Create new
-        while (particles.size() < 1024) {
+        while (particles.size() < 1000) {
             Particle newP = null;
 
             // Find particle
