@@ -93,7 +93,10 @@ public class ParticleEmitter {
         // Create new if active
         if (active) {
             for (ParticleType particleType : particleTypes) {
+                // How many produced this cycle
+                int count = 0;
                 while (particleType.particles.size() < particleType.number) {
+                    if (count == particleType.rate) { break; }
                     Particle newP = null;
 
                     // Find particle
@@ -120,6 +123,7 @@ public class ParticleEmitter {
                         newP.rotation = random.nextFloat();
 
                         particleType.particles.add(newP);
+                        count++;
                         hasParticles = true;
                     }
                 }

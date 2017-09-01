@@ -34,7 +34,7 @@ public class ParticleManager extends Manager {
         }
 
         ParticleEmitter e = new ParticleEmitter(0, 0,
-                new ParticleType(200, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
+                new ParticleType(2000, 1, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
 
         addParticleEmitter(e);
     }
