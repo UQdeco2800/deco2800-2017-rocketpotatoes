@@ -77,6 +77,9 @@ public class TextureManager extends Manager {
         saveTexture("healthbar","resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar","resources/healthproperties/greyBar.png");
 
+        // Particles
+        saveTexture("snowflake", "resources/particles/snowflake.png");
+
         // GUI
         saveTexture("screen_background", "resources/menu/background.png");
         saveTexture("start_btn", "resources/menu/start_btn.png");

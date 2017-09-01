@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.renderering.Render3D;
@@ -33,9 +34,7 @@ public class ParticleManager extends Manager {
         }
 
         ParticleEmitter e = new ParticleEmitter(0, 0,
-                new ParticleType(200, Color.RED, 5, 5),
-                new ParticleType(200, Color.BLUE, 2, 2),
-                new ParticleType(200, Color.GREEN, 1, 5));
+                new ParticleType(200, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
 
         addParticleEmitter(e);
     }
