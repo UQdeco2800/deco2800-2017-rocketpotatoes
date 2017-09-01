@@ -6,21 +6,50 @@ import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
+import java.util.Random;
+
 public class LightningEffect extends Effect {
 
 	private float lifetime = 0.25f;
+	private float segmentStep=150f;
 
 	float xPos = 0;
 	float yPos = 0;
 	float fxPos = 1;
 	float fyPos = 1;
 
-	public LightningEffect(float startX, float startY, float endX, float endY) {
-		setTexture("Lightning");
-		this.xPos = startX;
-		this.yPos = startY;
-		this.fxPos = endX;
-		this.fyPos = endY;
+	public LightningEffect(float xPos, float yPos, float fxPos, float fyPos) {
+		setTexture("lightning");
+		this.xPos = xPos;
+		this.yPos = yPos;
+		this.fxPos = fxPos;
+		this.fyPos = fyPos;
+	}
+
+	public float[][] positions(float angle,float xPos, float yPos, float fxPos, float fyPos){
+
+
+		float lengthX=(fxPos-xPos);
+		float lengthY=(fyPos-yPos);
+
+		float magnitude=(float)Math.sqrt(lengthX*lengthX+lengthY*lengthY);
+
+		int segments=(int)Math.ceil(magnitude/segmentStep);//do rounding here
+		float[][] pos=new float[segments][2];//remove round
+
+		Random random =new Random();
+
+		//20
+		for(int i=0;i<segments;i++){
+			float rand=random.nextFloat();
+
+			float x=((lengthX)/magnitude)*(float)Math.cos(angle)*rand;
+			float y=((lengthY)/magnitude)*(float)Math.sin(angle)*rand;
+//			pos[i]=[[]];
+			pos[i][0]=x;
+			pos[i][1]=y;
+		}
+		return pos;
 	}
 
 	public void drawEffect(SpriteBatch batch) {
@@ -51,12 +80,12 @@ public class LightningEffect extends Effect {
 		float lScaleY = 0.4f;
 
 		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 90;
-
 		int srcX = 0;
 		int srcY = 0;
 		int srcWidth = tex.getWidth();
 		int srcHeight = tex.getHeight();
-
+	//here
+		System.out.println(positions(rotation,startPos.x,startPos.y,endPos.x,endPos.y)[0][0]+" " + positions(rotation,startPos.x,startPos.y,endPos.x,endPos.y)[0][1]);
 		batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY, rotation, srcX, srcY, srcWidth,
 				srcHeight, false, false);
 
