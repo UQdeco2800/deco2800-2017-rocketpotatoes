@@ -77,7 +77,7 @@ public class ParticleEmitter {
                 p.x += p.vectorX * deltaTime;
                 p.y += p.vectorY * deltaTime;
                 p.lifeTime -= deltaTime;
-                p.rotation += 1.0f - 2.0f * (p.hashCode() % 2);
+                p.rotation += particleType.rotationSpeed - (particleType.rotationSpeed  * 2.0f) * (p.hashCode() % 2);
 
                 // Delete expired
                 if (p.lifeTime <= 0.0f) {

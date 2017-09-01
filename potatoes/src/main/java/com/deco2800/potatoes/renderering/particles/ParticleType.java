@@ -13,9 +13,11 @@ public class ParticleType {
     public float lifeTime;
     public float cycleDelta;
     public float currentCycleTime;
-    public float rotationSpeed;
+    public float rotationSpeed = 1.0f;
     public float alphaCeil = 0.8f;
     public float fadeOutPercent = 1.0f;
+
+    // Not functional yet. Will implement when/if needed
     public float fadeInPercent = 0.1f;
     public Texture texture;
 
