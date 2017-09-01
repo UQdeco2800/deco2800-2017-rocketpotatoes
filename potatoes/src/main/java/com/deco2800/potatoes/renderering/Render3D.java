@@ -183,15 +183,6 @@ public class Render3D implements Renderer {
 				 */
 				}
 
-			/*
-			 * Construction percentage displayed in yellow
-			 */
-			if (entity instanceof AbstractTree && ((AbstractTree) entity).getConstructionLeft() > 0) {
-				font.setColor(Color.YELLOW);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d%%", 100 - ((AbstractTree) entity).getConstructionLeft()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
-			}
 
 			/*
 			 * Display resource collected for Resource Tree
