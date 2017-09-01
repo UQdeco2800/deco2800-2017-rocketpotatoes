@@ -34,14 +34,20 @@ public class ParticleEmitter {
 
         for (ParticleType particleType : particleTypes) {
 
-            // Texture is 1x1 repeated
-            Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGB888);
-            p.setColor(particleType.color);
-            p.drawRectangle(0, 0, 1, 1);
-            Texture t = new Texture(p);
-            t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            // If our type has no texture. Assume we want a square
+            if (particleType.texture == null) {
+                Pixmap p = new Pixmap(5, 5, Pixmap.Format.RGB888);
+                p.setColor(particleType.color);
+                // Fill box with pixels
+                for (int pX = 0; pX < 5; ++pX) {
+                    for (int pY = 0; pY < 5; ++pY) {
+                        p.drawPixel(pX, pY);
+                    }
+                }
+                Texture t = new Texture(p);
 
-            particleType.texture = t;
+                particleType.texture = t;
+            }
 
             this.particleTypes.add(particleType);
         }
@@ -97,12 +103,13 @@ public class ParticleEmitter {
                     newP.alive = true;
                     newP.x = originX;
                     newP.y = originY;
-                    float factor = 8.0f;
 
+                    float factor = (random.nextFloat() * 2.0f - 1.0f);
                     float direction = random.nextFloat() * 360;
-                    newP.vectorX = (float)Math.sin(direction) * (random.nextFloat() * 2.0f - 1.0f);
-                    newP.vectorY = (float)Math.cos(direction) * (random.nextFloat() * 2.0f - 1.0f);
-                    newP.lifeTime = 1.0f * 1000.0f; // 5s
+                    newP.vectorX = (float)Math.sin(Math.toRadians(direction)) * factor;
+                    newP.vectorY = (float)Math.cos(Math.toRadians(direction)) * factor;
+                    newP.lifeTime = 1.0f * 1000.0f;
+
                     particleType.particles.add(newP);
                 }
             }
@@ -125,7 +132,7 @@ public class ParticleEmitter {
                 }
 
                 batch.setColor(col.r, col.g, col.b, alpha);
-                batch.draw(particleType.texture, p.x, p.y, particleType.size, particleType.size);
+                batch.draw(particleType.texture, p.x, p.y);
             }
 
 
