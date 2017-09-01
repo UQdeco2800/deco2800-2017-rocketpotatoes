@@ -80,6 +80,7 @@ public class ParticleEmitter {
                 p.x += p.vectorX * deltaTime;
                 p.y += p.vectorY * deltaTime;
                 p.lifeTime -= deltaTime;
+                p.rotation += 1.0f - 2.0f * (p.hashCode() % 2);
 
                 // Delete expired
                 if (p.lifeTime <= 0.0f) {
@@ -116,6 +117,7 @@ public class ParticleEmitter {
                         newP.vectorX = (float) Math.sin(Math.toRadians(direction)) * factor / 5.0f;
                         newP.vectorY = (float) Math.cos(Math.toRadians(direction)) * factor / 5.0f;
                         newP.lifeTime = 5.0f * 1000.0f;
+                        newP.rotation = random.nextFloat();
 
                         particleType.particles.add(newP);
                         hasParticles = true;
@@ -156,7 +158,11 @@ public class ParticleEmitter {
                 }
 
                 batch.setColor(col.r, col.g, col.b, alpha);
-                batch.draw(particleType.texture, p.x, p.y);
+                batch.draw(particleType.texture, p.x, p.y, 0, 0,
+                        particleType.texture.getWidth(), particleType.texture.getHeight(),
+                        1.0f, 1.0f, p.rotation,
+                        0, 0, particleType.texture.getWidth(), particleType.texture.getHeight(),
+                        false, false);
             }
 
 
