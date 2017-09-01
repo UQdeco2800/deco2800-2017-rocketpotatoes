@@ -33,9 +33,9 @@ public class ParticleManager extends Manager {
         }
 
         ParticleEmitter e = new ParticleEmitter(0, 0,
-                new ParticleType(200, 5, Color.RED),
-                new ParticleType(200, 5, Color.BLUE),
-                new ParticleType(200, 5, Color.GREEN));
+                new ParticleType(200, Color.RED, 5, 5),
+                new ParticleType(200, Color.BLUE, 2, 2),
+                new ParticleType(200, Color.GREEN, 1, 5));
 
         addParticleEmitter(e);
     }

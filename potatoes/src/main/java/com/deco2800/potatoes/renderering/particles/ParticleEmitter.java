@@ -43,11 +43,11 @@ public class ParticleEmitter {
 
             // If our type has no texture. Assume we want a square
             if (particleType.texture == null) {
-                Pixmap p = new Pixmap(5, 5, Pixmap.Format.RGB888);
+                Pixmap p = new Pixmap(particleType.sizeX, particleType.sizeY, Pixmap.Format.RGB888);
                 p.setColor(particleType.color);
                 // Fill box with pixels
-                for (int pX = 0; pX < 5; ++pX) {
-                    for (int pY = 0; pY < 5; ++pY) {
+                for (int pX = 0; pX < particleType.sizeX; ++pX) {
+                    for (int pY = 0; pY < particleType.sizeY; ++pY) {
                         p.drawPixel(pX, pY);
                     }
                 }

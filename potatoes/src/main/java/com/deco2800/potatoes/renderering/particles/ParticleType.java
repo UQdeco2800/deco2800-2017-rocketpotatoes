@@ -8,18 +8,37 @@ import java.util.List;
 
 public class ParticleType {
     public Color color;
-    public int size;
+    public int sizeX, sizeY;
     public int number;
     public Texture texture;
 
     // List of active particles of this type
     List<Particle> particles;
 
-    public ParticleType(int number, int size, Color color) {
+    /**
+     * Creates a square particle of the given color.
+     * @param number maximum number of particles of this type to be produced.
+     * @param color color of this particle
+     * @param sizeX size of the particle in pixels
+     * @param sizeY size of the particle in pixels
+     */
+    public ParticleType(int number, Color color, int sizeX, int sizeY) {
         this.number = number;
-        this.size = size;
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
         this.color = color;
         particles = new ArrayList<>();
+    }
+
+    /**
+     * Creates a particle with the given texture
+     * @param number maximum number of particles to produce
+     * @param texture texture to use for the particle
+     */
+    public ParticleType(int number, Texture texture) {
+        this.number = number;
+        particles = new ArrayList<>();
+        this.texture = texture;
     }
 
     /**
