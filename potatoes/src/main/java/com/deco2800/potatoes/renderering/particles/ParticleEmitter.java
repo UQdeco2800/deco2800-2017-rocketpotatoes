@@ -58,9 +58,6 @@ public class ParticleEmitter {
 
             this.particleTypes.add(particleType);
         }
-
-        // TODO hack
-
     }
 
     /**
@@ -93,38 +90,44 @@ public class ParticleEmitter {
         // Create new if active
         if (active) {
             for (ParticleType particleType : particleTypes) {
-                // How many produced this cycle
-                int count = 0;
-                while (particleType.particles.size() < particleType.number) {
-                    if (count == particleType.rate) { break; }
-                    Particle newP = null;
-
-                    // Find particle
-                    for (Particle p : particlePool) {
-                        if (!p.alive) {
-                            newP = p;
+                particleType.currentCycleTime += deltaTime;
+                if (particleType.currentCycleTime >= particleType.cycleDelta) {
+                    particleType.currentCycleTime = 0;
+                    // How many produced this cycle
+                    int count = 0;
+                    while (particleType.particles.size() < particleType.number) {
+                        if (count == particleType.rate) {
                             break;
                         }
-                    }
+                        Particle newP = null;
 
-                    // Add it
-                    if (newP == null) {
-                        throw new IllegalStateException("Ayyyyyy too many particles");
-                    } else {
-                        newP.alive = true;
-                        newP.x = originX;
-                        newP.y = originY;
+                        // Find particle
+                        for (Particle p : particlePool) {
+                            if (!p.alive) {
+                                newP = p;
+                                break;
+                            }
+                        }
 
-                        float factor = (random.nextFloat() * 2.0f - 1.0f);
-                        float direction = random.nextFloat() * 360;
-                        newP.vectorX = (float) Math.sin(Math.toRadians(direction)) * factor / 5.0f;
-                        newP.vectorY = (float) Math.cos(Math.toRadians(direction)) * factor / 5.0f;
-                        newP.lifeTime = 5.0f * 1000.0f;
-                        newP.rotation = random.nextFloat();
+                        // Add it
+                        if (newP == null) {
+                            throw new IllegalStateException("Ayyyyyy too many particles");
+                        } else {
+                            newP.alive = true;
+                            newP.x = originX;
+                            newP.y = originY;
 
-                        particleType.particles.add(newP);
-                        count++;
-                        hasParticles = true;
+                            float factor = (random.nextFloat() * 2.0f - 1.0f);
+                            float direction = random.nextFloat() * 360;
+                            newP.vectorX = (float) Math.sin(Math.toRadians(direction)) * factor / 5.0f;
+                            newP.vectorY = (float) Math.cos(Math.toRadians(direction)) * factor / 5.0f;
+                            newP.lifeTime = 5.0f * 1000.0f;
+                            newP.rotation = random.nextFloat();
+
+                            particleType.particles.add(newP);
+                            count++;
+                            hasParticles = true;
+                        }
                     }
                 }
             }
