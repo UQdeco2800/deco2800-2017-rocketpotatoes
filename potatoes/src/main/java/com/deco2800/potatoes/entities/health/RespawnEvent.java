@@ -3,7 +3,6 @@ package com.deco2800.potatoes.entities.health;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
  * 
