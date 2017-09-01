@@ -91,8 +91,8 @@ public class ParticleEmitter {
         if (active) {
             for (ParticleType particleType : particleTypes) {
                 particleType.currentCycleTime += deltaTime;
-                if (particleType.currentCycleTime >= particleType.cycleDelta) {
-                    particleType.currentCycleTime = 0;
+                while (particleType.currentCycleTime >= particleType.cycleDelta) {
+                    particleType.currentCycleTime -= particleType.cycleDelta;
                     // How many produced this cycle
                     int count = 0;
                     while (particleType.particles.size() < particleType.number) {
