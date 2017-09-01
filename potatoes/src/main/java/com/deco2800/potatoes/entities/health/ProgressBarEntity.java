@@ -30,13 +30,10 @@ public class ProgressBarEntity implements ProgressBar {
 	 * 
 	 * @param colours
 	 *            the colour palette used for the progress bar
-	 * @param widthScale
-	 *            the scale of the progress bar in relation to its entity
 	 */
 	public ProgressBarEntity(List<Color> colours) {
 		this.colours = colours;
 	}
-
 
 	/**
 	 * Default Constructor for custom textures.
