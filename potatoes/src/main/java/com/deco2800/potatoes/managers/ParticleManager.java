@@ -7,17 +7,24 @@ import com.deco2800.potatoes.renderering.particles.ParticleType;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ParticleManager extends Manager {
+
+    // Emitters currently active
     List<ParticleEmitter> emitters;
+
+    // Emitters waiting to stop
+    List<ParticleEmitter> toDestroyEmitters;
 
     List<Particle> particlePool;
 
     public ParticleManager() {
         emitters = new ArrayList<>();
+        toDestroyEmitters = new ArrayList<>();
 
-        // Initialize our pool of particles (let's start with 1024)
+        // Initialize our pool of particles
         particlePool = new ArrayList<>();
         for (int i = 0; i < 1000000; ++i) {
             particlePool.add(new Particle());
@@ -43,6 +50,8 @@ public class ParticleManager extends Manager {
         for (ParticleEmitter emitter : emitters) {
             emitter.onTick(deltaTime, particlePool);
         }
+
+        toDestroyEmitters.removeIf(emitter -> !emitter.hasParticles());
     }
 
     /**
@@ -52,6 +61,46 @@ public class ParticleManager extends Manager {
     public void draw(SpriteBatch batch) {
         for (ParticleEmitter emitter : emitters) {
             emitter.draw(batch);
+        }
+    }
+
+    /**
+     * Gracefully stops an emitter, stops producing particles and waits until all particles have timed out before
+     * destroying the emitter.
+     * @param emitter the emitter to be removed
+     */
+    public void stopEmitter(ParticleEmitter emitter) {
+        Iterator<ParticleEmitter> emitterIterator = emitters.iterator();
+
+        while (emitterIterator.hasNext()) {
+            ParticleEmitter e = emitterIterator.next();
+
+            // If we ma
+            if (e == emitter) {
+                e.stop();
+                toDestroyEmitters.add(e);
+                emitterIterator.remove();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Instantly stops an emitter from producing particles, and destroys any existing particles.
+     * @param emitter the emitter to be removed
+     */
+    public void forceStopEmitter(ParticleEmitter emitter) {
+        Iterator<ParticleEmitter> emitterIterator = emitters.iterator();
+
+        while (emitterIterator.hasNext()) {
+            ParticleEmitter e = emitterIterator.next();
+
+            // If we ma
+            if (e == emitter) {
+                e.forceStop();
+                emitterIterator.remove();
+                return;
+            }
         }
     }
 }

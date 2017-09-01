@@ -165,6 +165,10 @@ public class ParticleEmitter {
         batch.end();
     }
 
+    public List<ParticleType> getParticleTypes() {
+        return particleTypes;
+    }
+
     /**
      * Set's the origin of particles for this emitter
      * @param x x coord
@@ -202,5 +206,13 @@ public class ParticleEmitter {
      */
     public boolean hasParticles() {
         return hasParticles;
+    }
+
+    public void forceStop() {
+        for (ParticleType particleType : particleTypes) {
+            particleType.cleanup();
+        }
+        active = false;
+        hasParticles = false;
     }
 }

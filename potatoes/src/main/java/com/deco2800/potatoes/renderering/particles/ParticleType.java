@@ -21,4 +21,14 @@ public class ParticleType {
         this.color = color;
         particles = new ArrayList<>();
     }
+
+    /**
+     * Removes all particles from being tracked
+     */
+    public void cleanup() {
+        for (Particle particle : particles) {
+            particle.alive = false;
+        }
+        particles.clear();
+    }
 }
