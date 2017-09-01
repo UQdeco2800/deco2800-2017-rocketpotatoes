@@ -1,8 +1,8 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;

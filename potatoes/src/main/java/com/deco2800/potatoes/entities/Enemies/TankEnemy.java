@@ -6,6 +6,8 @@ import java.util.LinkedList;
 
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static float speed = 0.02f;
 	private static Class<?> goal = Tower.class;
 	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 90, 1);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
 
 	
 	/**

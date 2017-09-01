@@ -3,6 +3,8 @@ package com.deco2800.potatoes.entities.Enemies;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.LightningEffect;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -54,7 +56,6 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         *   */
         GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),
                 enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange()+3, 10));
-
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/
         if (enemy.isDead()) {

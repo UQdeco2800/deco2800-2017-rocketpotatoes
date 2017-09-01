@@ -18,6 +18,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.Enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.Enemies.Squirrel;
 import com.deco2800.potatoes.entities.Enemies.TankEnemy;
+import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;

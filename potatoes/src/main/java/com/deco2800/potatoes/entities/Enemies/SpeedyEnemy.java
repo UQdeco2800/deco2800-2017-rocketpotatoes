@@ -4,6 +4,8 @@ package com.deco2800.potatoes.entities.Enemies;
 import java.util.*;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +24,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static final transient float HEALTH = 80f;
 
 	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 30, 1);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
     private static final BasicStats STATS = initStats();
 
     private static float speed = 0.08f;

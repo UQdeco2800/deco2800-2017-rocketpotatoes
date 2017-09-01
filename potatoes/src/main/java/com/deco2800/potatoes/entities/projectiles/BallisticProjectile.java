@@ -1,10 +1,13 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.projectiles;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 
@@ -177,7 +180,7 @@ public class BallisticProjectile extends Projectile {
 			if (targetClass.isInstance(entity)) {
 				if (newPos.overlaps(entity.getBox3D())) {
 					((MortalEntity) entity).damage(DAMAGE);
-					ExplosionProjectile exp = new ExplosionProjectile(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
+					AOEEffect exp = new AOEEffect(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
 							AOE_width, AOE_height, 0, AOE_width, AOE_height, aoeDAMAGE);
 					GameManager.get().getWorld().addEntity(exp);
 					GameManager.get().getWorld().removeEntity(this);
