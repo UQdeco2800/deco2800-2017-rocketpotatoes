@@ -10,8 +10,13 @@ public class ParticleType {
     public Color color;
     public int sizeX, sizeY;
     public int number, rate;
+    public float lifeTime;
     public float cycleDelta;
     public float currentCycleTime;
+    public float rotationSpeed;
+    public float alphaCeil = 0.8f;
+    public float fadeOutPercent = 1.0f;
+    public float fadeInPercent = 0.1f;
     public Texture texture;
 
     // List of active particles of this type
@@ -20,14 +25,16 @@ public class ParticleType {
     /**
      * Creates a square particle of the given color.
      * @param number maximum number of particles of this type to be produced.
+     * @param lifeTime lifetime of a single particle (in ms)
      * @param cycleDelta how long till a cycle (i.e. when we emit particles). (in ms)
      * @param rate how many particle should be produced on a cycle
      * @param color color of this particle
      * @param sizeX size of the particle in pixels
      * @param sizeY size of the particle in pixels
      */
-    public ParticleType(int number, float cycleDelta, int rate, Color color, int sizeX, int sizeY) {
+    public ParticleType(int number, float lifeTime, float cycleDelta, int rate, Color color, int sizeX, int sizeY) {
         this.number = number;
+        this.lifeTime = lifeTime;
         this.cycleDelta = cycleDelta;
         this.rate = rate;
         this.sizeX = sizeX;
@@ -39,12 +46,14 @@ public class ParticleType {
     /**
      * Creates a particle with the given texture
      * @param number maximum number of particles to produce
+     * @param lifeTime lifetime of a single particle (in ms)
      * @param cycleDelta how long till a cycle (i.e. when we emit particles). (in ms)
      * @param rate the rate particles should be produced per cycle
      * @param texture texture to use for the particle
      */
-    public ParticleType(int number, float cycleDelta, int rate, Texture texture) {
+    public ParticleType(int number, float lifeTime, float cycleDelta, int rate, Texture texture) {
         this.number = number;
+        this.lifeTime = lifeTime;
         this.cycleDelta = cycleDelta;
         this.rate = rate;
         particles = new ArrayList<>();
