@@ -51,7 +51,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private float speedy;
 	private int direction; // facing left=0, right=1
 	
-	private static final int respawnTime = 5000; // milliseconds
+	private int respawnTime = 5000; // milliseconds
 
 	private Inventory inventory;
 
