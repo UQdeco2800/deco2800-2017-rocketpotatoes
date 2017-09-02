@@ -3,8 +3,6 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.List;
 import java.util.Arrays;
 
-import com.deco2800.potatoes.entities.HasProgress;
-import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.HasProgressBar;
@@ -13,6 +11,8 @@ import com.deco2800.potatoes.entities.ProgressBarEntity;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.badlogic.gdx.graphics.Color;
@@ -86,7 +86,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
-			((EventManager)GameManager.get().getManager(EventManager.class)).unregisterAll(tree);;
+			GameManager.get().getManager(EventManager.class).unregisterAll(tree);;
 		}
 		return result;
 	}
@@ -112,7 +112,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * other events for this object
 	 */
 	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
-		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		eventManager.unregisterAll(this);
 		for (TimeEvent<AbstractTree> timeEvent : events) {
 			eventManager.registerEvent(this, timeEvent);

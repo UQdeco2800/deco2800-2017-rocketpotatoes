@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.health;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
 
@@ -160,6 +161,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param offset - the amount the entity's max health is to be altered by
 	 * @return current value of damage offset
 	 */
+	@Override
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
 		if (maxHealth <= 0 ) { maxHealth = 1; }
@@ -216,7 +218,22 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 		}
 		return false;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean setProgress(float amount) {
+		if (maxHealth <= amount) {
+			health = maxHealth;
+		} else {
+			health = amount;
+		}
+		float epsilon = 0.00000001f;
+		return Math.abs(health - maxHealth) < epsilon;
+	}
 
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -249,6 +266,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param offset - the amount of health damage is to be offset by
 	 * @return current value of damage offset
 	 */
+	@Override
 	public float addDamageOffset(float offset) {
 		this.damageOffset += offset;
 		return this.damageOffset;

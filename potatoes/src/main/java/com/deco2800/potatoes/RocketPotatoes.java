@@ -20,5 +20,6 @@ public class RocketPotatoes extends Game {
 
 	@Override
 	public void dispose() {
+		System.exit(0);
 	}
 }

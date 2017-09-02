@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.health;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -12,50 +12,41 @@ import com.badlogic.gdx.graphics.Color;
  *
  */
 public class ProgressBarEntity implements ProgressBar {
-	// the textureID used for the entity
-	protected String texture;
+	// the textureID used for the progress bar
+	protected String texture = "progress_bar";
 	// the colour palette used for the progress bar
-	protected List<Color> colours;
-	// the height of the progress bar in relation to the location of the entity
-	protected int height;
+	protected List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
+	// the height of the progress bar relative to the entity's height
+	protected int height = 0;
 	// the scale of the progress bar in relation to its entity
-	protected float widthScale;
+	protected float widthScale = 1;
 
 	public ProgressBarEntity() {
 		// empty because serialization
 	}
 
 	/**
-	 * 
-	 * @param texture
-	 *            the textureID used for the entity
-	 * @param height
-	 *            the of the progress bar in relation to the location of the entity
-	 * @param widthScale
-	 *            the scale of the progress bar in relation to its entity
-	 */
-	public ProgressBarEntity(String texture, int height, float widthScale) {
-		List<Color> colours = Arrays.asList(Color.RED, Color.valueOf("fff134"), Color.GREEN);
-		this.texture = texture;
-		this.colours = colours;
-		this.height = height;
-		this.widthScale = widthScale;
-	}
-
-	/**
+	 * Default Constructor for solid colour bars
 	 * 
 	 * @param colours
 	 *            the colour palette used for the progress bar
-	 * @param height
-	 *            the of the progress bar in relation to the location of the entity
+	 */
+	public ProgressBarEntity(List<Color> colours) {
+		this.colours = colours;
+	}
+
+	/**
+	 * Default Constructor for custom textures.
+	 * 
+	 * @param texture
+	 *            the textureID used for the entity
 	 * @param widthScale
 	 *            the scale of the progress bar in relation to its entity
 	 */
-	public ProgressBarEntity(List<Color> colours, int height, float widthScale) {
-		this.texture = "progress_bar";
-		this.colours = colours;
-		this.height = height;
+	public ProgressBarEntity(String texture, float widthScale) {
+		this.texture = texture;
 		this.widthScale = widthScale;
+		this.colours = Arrays.asList(Color.WHITE);
 	}
 
 	/**

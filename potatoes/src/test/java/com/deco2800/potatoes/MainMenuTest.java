@@ -1,8 +1,5 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.gui.MainMenuGui;
-import com.deco2800.potatoes.screens.MainMenuScreen;
-import com.deco2800.potatoes.RocketPotatoes;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

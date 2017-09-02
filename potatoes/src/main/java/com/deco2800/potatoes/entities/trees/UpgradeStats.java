@@ -139,7 +139,7 @@ public class UpgradeStats {
 	 *         not.
 	 */
 	public boolean removeConstructionResources() {
-		Inventory inventory = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer()
+		Inventory inventory = GameManager.get().getManager(PlayerManager.class).getPlayer()
 				.getInventory();
 		if (inventory.getQuantity(UPGRADE_RESOURCE) >= resourceCost) {
 			inventory.updateQuantity(UPGRADE_RESOURCE, -resourceCost);			

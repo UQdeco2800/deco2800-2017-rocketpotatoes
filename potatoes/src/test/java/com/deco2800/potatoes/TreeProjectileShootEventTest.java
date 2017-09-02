@@ -1,16 +1,10 @@
 package com.deco2800.potatoes;
 
+import com.deco2800.potatoes.entities.Enemies.Squirrel;
 import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.AbstractWorld;
-import com.deco2800.potatoes.managers.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class TreeProjectileShootEventTest {
     TreeProjectileShootEvent testEvent = new TreeProjectileShootEvent(10);

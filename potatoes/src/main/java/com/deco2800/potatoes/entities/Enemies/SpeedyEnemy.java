@@ -1,26 +1,17 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.Enemies;
 
 
 import java.util.*;
 
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
-import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A class for speedy enemy
@@ -33,7 +24,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static final transient float HEALTH = 80f;
 
 	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 30, 1);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
     private static final BasicStats STATS = initStats();
 
     private static float speed = 0.08f;

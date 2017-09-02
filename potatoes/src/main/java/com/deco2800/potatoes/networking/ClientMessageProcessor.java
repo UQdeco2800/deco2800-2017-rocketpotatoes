@@ -1,8 +1,8 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.HasProgress;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
@@ -137,7 +137,7 @@ public class ClientMessageProcessor {
         if (client.getID() == m.id) {
             System.out.println("[CLIENT]: IT'S ME!");
             // Give the player manager me
-            ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
+            GameManager.get().getManager(PlayerManager.class).setPlayer(p);
 
         } else {
             client.sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
@@ -262,7 +262,7 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
-        GuiManager g = (GuiManager) GameManager.get().getManager(GuiManager.class);
+        GuiManager g = GameManager.get().getManager(GuiManager.class);
         ChatGui c = ((ChatGui) g.getGui(ChatGui.class));
         if (c != null) {
             c.addMessage(

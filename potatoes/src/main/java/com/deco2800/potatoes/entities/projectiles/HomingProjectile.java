@@ -1,9 +1,11 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.projectiles;
 
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -132,6 +134,7 @@ public class HomingProjectile extends Projectile {
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 	}
 
+	@Override
 	public int rotateAngle() {
 		return rotateAngle;
 	}

@@ -19,7 +19,7 @@
         /**
          * @return the current in game time
          */
-            public int getCurrentTime() { return (int) CurrentTime; }
+            public int getCurrentTime() { return CurrentTime; }
 
         /**
          * Resets the Current Time.
@@ -55,7 +55,7 @@
         /**
          * @return the current In Game Day.
          */
-            public int getCurrentDay() { return (int) CurrentDay; }
+            public int getCurrentDay() { return CurrentDay; }
 
         /**
          * Resets the Current Day.

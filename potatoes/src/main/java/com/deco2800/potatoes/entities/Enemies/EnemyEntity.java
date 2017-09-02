@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.Enemies;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,11 +6,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -165,8 +173,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		float goalX;
 		float goalY;
 		if (goal == Player.class) {
-			PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-			SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
+			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			SoundManager soundManager = GameManager.get().getManager(SoundManager.class);
 
 			// The X and Y position of the player without random floats generated
 			goalX = playerManager.getPlayer().getPosX() ;
@@ -246,7 +254,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
+			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof Effect) && !(entity instanceof ResourceEntity) &&
 					newPos.overlaps(entity.getBox3D()) ) {
 
 				if(entity instanceof Tower) {
@@ -273,7 +281,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * other events for this object
 	 */
 	private void registerNewEvents(List<TimeEvent<EnemyEntity>> events) {
-		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		eventManager.unregisterAll(this);
 		for (TimeEvent<EnemyEntity> timeEvent : events) {
 		eventManager.registerEvent(this, timeEvent);
@@ -342,11 +350,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		this.damage(projectile.getDamage());
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
+	
+	/**
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * @param projectile, the projectile shot
+	 */
+	public void getShot(Effect effect) {
+		this.damage(effect.getDamage());
+		LOGGER.info(this + " was shot. Health now " + getHealth());
+	}
 
 	/**
 	 * Returns the ProgressBar of an entity
 	 * @return
 	 */
+	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
 	}

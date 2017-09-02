@@ -1,10 +1,6 @@
 package com.deco2800.potatoes.entities.Enemies;
 
-import com.deco2800.potatoes.entities.EnemyEntity;
-import com.deco2800.potatoes.entities.Squirrel;
 import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
 
 import java.util.LinkedList;
 import java.util.List;
