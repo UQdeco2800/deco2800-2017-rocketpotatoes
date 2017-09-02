@@ -19,7 +19,6 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,18 +88,6 @@ public class Render3D implements Renderer {
 
 		// drawTextureBetween("lightning",0, 0, 1, 1);
 
-		/*
-		 * Temporary prompt when player is dead
-		 */
-		if (GameManager.get().getManager(PlayerManager.class).getPlayer().isDead()) {
-			TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-			Texture tex = reg.getTexture("spacman_red");
-			Vector3 cameraLocation = GameManager.get().getManager(CameraManager.class).getCamera().position;
-			batch.draw(tex, cameraLocation.x, cameraLocation.y, tileWidth, tileHeight, 1, 2, tex.getWidth(), tex.getHeight(), true, true);
-			font.setColor(Color.WHITE);
-			font.draw(batch, "respawn in five", cameraLocation.x-20, cameraLocation.y);
-		}
-		
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
