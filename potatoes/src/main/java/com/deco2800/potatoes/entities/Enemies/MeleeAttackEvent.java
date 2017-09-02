@@ -3,7 +3,6 @@ package com.deco2800.potatoes.entities.Enemies;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.effects.LightningEffect;
 import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -39,7 +38,8 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
      * @param enemy
      *          The enemy that this melee attack belongs to
      * */
-    public void action(EnemyEntity enemy) {
+    @Override
+	public void action(EnemyEntity enemy) {
         Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Player.class, enemy.getPosX(),
                 enemy.getPosY());
 

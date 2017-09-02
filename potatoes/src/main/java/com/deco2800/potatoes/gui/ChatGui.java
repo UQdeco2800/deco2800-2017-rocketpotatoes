@@ -108,7 +108,7 @@ public class ChatGui extends Gui {
         });
 
         // Key listener to focus on textfield when playing
-        ((InputManager)GameManager.get().getManager(InputManager.class)).addKeyDownListener(new KeyDownObserver() {
+        GameManager.get().getManager(InputManager.class).addKeyDownListener(new KeyDownObserver() {
             @Override
             public void notifyKeyDown(int keycode) {
                 if (!hidden) {
@@ -215,7 +215,7 @@ public class ChatGui extends Gui {
 
     private void sendMessage() {
         if (!textField.getText().equals("")) {
-            MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+            MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 
             if (m.isMultiplayer()) {
                 m.broadcastMessage(textField.getText());

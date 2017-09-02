@@ -173,8 +173,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		float goalX;
 		float goalY;
 		if (goal == Player.class) {
-			PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-			SoundManager soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
+			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			SoundManager soundManager = GameManager.get().getManager(SoundManager.class);
 
 			// The X and Y position of the player without random floats generated
 			goalX = playerManager.getPlayer().getPosX() ;
@@ -281,7 +281,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * other events for this object
 	 */
 	private void registerNewEvents(List<TimeEvent<EnemyEntity>> events) {
-		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		eventManager.unregisterAll(this);
 		for (TimeEvent<EnemyEntity> timeEvent : events) {
 		eventManager.registerEvent(this, timeEvent);
@@ -364,6 +364,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * Returns the ProgressBar of an entity
 	 * @return
 	 */
+	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
 	}

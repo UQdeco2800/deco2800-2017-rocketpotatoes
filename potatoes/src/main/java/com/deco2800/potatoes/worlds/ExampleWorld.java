@@ -49,7 +49,8 @@ public class ExampleWorld extends AbstractWorld {
      * Returns the current map for this world
      * @return Map object for this world
      */
-    public TiledMap getMap() {
+    @Override
+	public TiledMap getMap() {
         return this.map;
     }
 

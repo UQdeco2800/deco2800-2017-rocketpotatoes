@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.gui;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -12,21 +11,16 @@ import com.deco2800.potatoes.entities.Enemies.Squirrel;
 import com.deco2800.potatoes.entities.Enemies.TankEnemy;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
-import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.screens.GameScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.deco2800.potatoes.worlds.InitialWorld;
-import org.lwjgl.util.vector.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 import java.util.Set;
 
-import static com.badlogic.gdx.utils.Align.center;
 import static com.badlogic.gdx.utils.Align.left;
 
 public class DebugModeGui extends Gui {
@@ -131,8 +125,8 @@ public class DebugModeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
-                ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().heal(200);
-                ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().addDamageScaling(0);
+                GameManager.get().getManager(PlayerManager.class).getPlayer().heal(200);
+                GameManager.get().getManager(PlayerManager.class).getPlayer().addDamageScaling(0);
             }
         });
 
@@ -140,9 +134,9 @@ public class DebugModeGui extends Gui {
         addResourcesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Set<Resource> rsc = ((PlayerManager)GameManager.get().getManager(PlayerManager.class)).getPlayer().getInventory().getInventoryResources();
+                Set<Resource> rsc = GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory().getInventoryResources();
                 for (Resource rscname: rsc) {
-                    ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().getInventory().updateQuantity(rscname, 10);
+                    GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory().updateQuantity(rscname, 10);
                 }
             }
         });
@@ -156,11 +150,11 @@ public class DebugModeGui extends Gui {
             }
         });*/
 
-        ((InputManager)GameManager.get().getManager(InputManager.class)).addKeyDownListener(new KeyDownObserver() {
+        GameManager.get().getManager(InputManager.class).addKeyDownListener(new KeyDownObserver() {
             @Override
             public void notifyKeyDown(int keycode) {
-                float x = (float)((InputManager)GameManager.get().getManager(InputManager.class)).getMouseX();
-                float y = (float)((InputManager)GameManager.get().getManager(InputManager.class)).getMouseY();
+                float x = GameManager.get().getManager(InputManager.class).getMouseX();
+                float y = GameManager.get().getManager(InputManager.class).getMouseY();
 
                 //Converting mouse coordinates to tiles
                 Vector3 coords = Render3D.screenToWorldCoordiates(x,y,0);
@@ -195,13 +189,15 @@ public class DebugModeGui extends Gui {
 
     }
 
-    public void show() {
+    @Override
+	public void show() {
         table.setVisible(true);
         stage.addActor(table);
         state = States.DEBUGON;
     }
 
-    public void hide() {
+    @Override
+	public void hide() {
         /*((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().addDamageScaling(1f);
         float dmg = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().getDamageScaling();
         String dmgstr = String.valueOf(dmg);

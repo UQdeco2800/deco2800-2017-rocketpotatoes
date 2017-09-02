@@ -7,7 +7,6 @@ import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.SeedResource;
-import com.deco2800.potatoes.exceptions.InvalidResourceException;
 
 public class ResourceTest {
 

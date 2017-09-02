@@ -161,6 +161,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param offset - the amount the entity's max health is to be altered by
 	 * @return current value of damage offset
 	 */
+	@Override
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
 		if (maxHealth <= 0 ) { maxHealth = 1; }
@@ -265,6 +266,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param offset - the amount of health damage is to be offset by
 	 * @return current value of damage offset
 	 */
+	@Override
 	public float addDamageOffset(float offset) {
 		this.damageOffset += offset;
 		return this.damageOffset;

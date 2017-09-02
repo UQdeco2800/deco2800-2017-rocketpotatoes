@@ -53,8 +53,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		PathManager pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
+		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
         // check paths
 

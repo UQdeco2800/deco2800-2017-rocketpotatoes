@@ -60,10 +60,10 @@ public class PauseMenuGui extends Gui {
         table = new Table(uiSkin);
 
         // Make drawables from textures
-        resumeDrawable = new TextureRegionDrawable(new TextureRegion(((TextureManager) GameManager.get().getManager(TextureManager.class)).getTexture("resume_btn")));
-        optionsDrawable = new TextureRegionDrawable(new TextureRegion(((TextureManager) GameManager.get().getManager(TextureManager.class)).getTexture("options_btn")));
-        exitDrawable = new TextureRegionDrawable(new TextureRegion(((TextureManager) GameManager.get().getManager(TextureManager.class)).getTexture("exit_btn")));
-        pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(((TextureManager) GameManager.get().getManager(TextureManager.class)).getTexture("pause_menu_bg")));
+        resumeDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("resume_btn")));
+        optionsDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("options_btn")));
+        exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exit_btn")));
+        pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("pause_menu_bg")));
 
         // Pause State
         pauseMenuLabel = new Label("PAUSED", uiSkin);
@@ -199,13 +199,15 @@ public class PauseMenuGui extends Gui {
         resetGui(stage);
     }
 
-    public void show() {
+    @Override
+	public void show() {
         table.setVisible(true);
 
         stage.addActor(table);
     }
 
-    public void hide() {
+    @Override
+	public void hide() {
         table.setVisible(false);
     }
 

@@ -28,7 +28,7 @@ public class RespawnEvent extends TimeEvent<Player> {
 
 	@Override
 	public void action(Player param) {
-		playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
+		playerManager = GameManager.get().getManager(PlayerManager.class);
 		// sets the location of the player to respawn
 		param.setPosition(5, 10, 0);
 		// sets players health to maximum health

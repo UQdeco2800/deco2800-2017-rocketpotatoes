@@ -56,7 +56,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		int realX = (int) Math.floor(coords.x);
 		int realY = (int) Math.floor(coords.y);
 		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
-			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
+			MultiplayerManager multiplayerManager = GameManager.get()
 					.getManager(MultiplayerManager.class);
 			AbstractTree newTree;
 			// Select random tree, and either make it in singleplayer or broadcast it in mp
@@ -109,7 +109,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	}
 
 	private CameraManager getCameraManager() {
-		return (CameraManager) GameManager.get().getManager(CameraManager.class);
+		return GameManager.get().getManager(CameraManager.class);
 	}
 
 	@Override

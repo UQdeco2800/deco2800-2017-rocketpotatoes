@@ -237,7 +237,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			}
 		}
 		if (didHarvest) {
-			((SoundManager) GameManager.get().getManager(SoundManager.class)).playSound("harvesting.mp3");
+			GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
 		}
 	}
 
@@ -315,7 +315,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		// destroy the player
 		GameManager.get().getWorld().removeEntity(this);
 		// get the event manager
-		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
