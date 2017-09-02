@@ -62,7 +62,11 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
 		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
 
-		result.add(new UpgradeStats(10, 1000, 8f, 5000, 1, normalEvents, constructionEvents, TEXTURE));
+		// result.add(new UpgradeStats(10, 1000, 8f, 5000, 1, normalEvents,
+		// constructionEvents, TEXTURE));
+		result.add(new UpgradeStats().set("hp", 10).set("range", 8f).set("constructionTime", 5000)
+				.set("normalEvents", normalEvents).set("constructionEvents", constructionEvents)
+				.set("texture", TEXTURE));
 		result.add(new UpgradeStats(20, 600, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
 		result.add(new UpgradeStats(30, 100, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
 
