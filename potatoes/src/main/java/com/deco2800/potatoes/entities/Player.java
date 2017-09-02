@@ -102,33 +102,44 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	public void onTick(long arg0) {
 		float newPosX = this.getPosX();
 		float newPosY = this.getPosY();
+		if(!outOfBounds()) {
 
-		newPosX += speedx;
-		newPosY += speedy;
+			newPosX += speedx;
+			newPosY += speedy;
 
-		Box3D newPos = getBox3D();
-		newPos.setX(newPosX);
-		newPos.setY(newPosY);
+			Box3D newPos = getBox3D();
+			newPos.setX(newPosX);
+			newPos.setY(newPosY);
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)&&!(entity instanceof Effect)
-					&& newPos.overlaps(entity.getBox3D())) {
-				LOGGER.info(this + " colliding with " + entity);
-				collided = true;
+			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+			boolean collided = false;
+			for (AbstractEntity entity : entities.values()) {
+				if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+						&& newPos.overlaps(entity.getBox3D())) {
+					LOGGER.info(this + " colliding with " + entity);
+					collided = true;
 
+				}
+
+				if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+					collided = true;
+
+				}
 			}
 
-			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
-				collided = true;
-
+			if (!collided) {
+				this.setPosX(newPosX);
+				this.setPosY(newPosY);
 			}
 		}
+		else{
 
-		if (!collided) {
-			this.setPosX(newPosX);
-			this.setPosY(newPosY);
+			newPosX+=speedx;
+			newPosY+=speedy;
+			if(newPosX >0 && newPosX < GameManager.get().getWorld().getWidth() && newPosY > 0 && newPosY < GameManager.get().getWorld().getLength()){
+				this.setPosX(newPosX);
+				this.setPosY(newPosY);
+			}
 		}
 	}
 
@@ -239,6 +250,19 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		if (didHarvest) {
 			GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
 		}
+	}
+
+	/**
+	 * Checks to see whether the player moving out of the map
+	 */
+	private boolean outOfBounds(){
+		int width = GameManager.get().getWorld().getWidth();
+		int height = GameManager.get().getWorld().getLength();
+		if(this.getPosX()>width || this.getPosX()<0 || this.getPosY()>height || this.getPosY()<0 ) {
+			return true;
+		}
+		return false;
+
 	}
 
 	/**
