@@ -35,7 +35,7 @@ public class MainMenuScreen implements Screen {
 
     private MainMenuGui mainMenuGui;
     private OrthographicCamera camera;
-    private TextureManager texturemanager;
+    private TextureManager textureManager;
 
 
     public MainMenuScreen(RocketPotatoes game) {
@@ -45,7 +45,8 @@ public class MainMenuScreen implements Screen {
         // TODO config?
         camera.setToOrtho(false, 1920, 1080);
         // game screen background
-        texturemanager=(TextureManager)GameManager.get().getManager(TextureManager.class);
+
+        textureManager = GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
 
@@ -83,11 +84,15 @@ public class MainMenuScreen implements Screen {
         // Draw/update gui
         stage.act();
         stage.getBatch().begin();
-        stage.getBatch().draw(texturemanager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),
+        stage.getBatch().draw(textureManager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),
                 Gdx.graphics.getHeight());
+
+
         stage.getBatch().end();
         
         stage.draw();
+
+
 
     }
 
@@ -194,7 +199,7 @@ public class MainMenuScreen implements Screen {
      * @param v
      */
     public void setEffectsVolume(float v){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setEffectsVolume(v);
+        GameManager.get().getManager(SoundManager.class).setEffectsVolume(v);
     }
 
     /**
@@ -202,7 +207,7 @@ public class MainMenuScreen implements Screen {
      * @return float from 0 to 1.
      */
     public float getEffectsVolume(){
-        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getEffectsVolume();
+        return GameManager.get().getManager(SoundManager.class).getEffectsVolume();
     }
 
     /**
@@ -210,7 +215,7 @@ public class MainMenuScreen implements Screen {
      * @param v
      */
     public void setMusicVolume(float v){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+        GameManager.get().getManager(SoundManager.class).setMusicVolume(v);
     }
 
     /**
@@ -218,14 +223,14 @@ public class MainMenuScreen implements Screen {
      * @return float from 0 to 1.
      */
     public float getMusicVolume(){
-        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMusicVolume();
+        return GameManager.get().getManager(SoundManager.class).getMusicVolume();
     }
 
     /**
      * Plays a blip sound.
      */
     public void menuBlipSound(){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
+        GameManager.get().getManager(SoundManager.class).playSound("menu_blip.wav");
     }
 
 }

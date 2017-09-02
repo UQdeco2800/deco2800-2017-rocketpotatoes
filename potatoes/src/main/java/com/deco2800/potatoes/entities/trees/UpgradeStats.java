@@ -8,7 +8,6 @@ import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.Manager;
 import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
@@ -140,7 +139,7 @@ public class UpgradeStats {
 	 *         not.
 	 */
 	public boolean removeConstructionResources() {
-		Inventory inventory = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer()
+		Inventory inventory = GameManager.get().getManager(PlayerManager.class).getPlayer()
 				.getInventory();
 		if (inventory.getQuantity(UPGRADE_RESOURCE) >= resourceCost) {
 			inventory.updateQuantity(UPGRADE_RESOURCE, -resourceCost);			

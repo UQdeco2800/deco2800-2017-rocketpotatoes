@@ -69,21 +69,44 @@ public class TextureManager extends Manager {
         saveTexture("exp1","resources/projectiles/explosion1.png");
         saveTexture("exp2","resources/projectiles/explosion2.png");
         saveTexture("exp3","resources/projectiles/explosion3.png");
-        saveTexture("Lightning","resources/placeholderassets/Lightning.png");
+        saveTexture("lightning","resources/projectiles/lightning.png");
         saveTexture("ring","resources/placeholderassets/ring.png");
         saveTexture("highlight_tile","resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon","resources/placeholderassets/raccoon.png");
+        saveTexture("healthbar","resources/healthproperties/Full_Health_Bar.png");
+        saveTexture("greybar","resources/healthproperties/greyBar.png");
 
         // GUI
         saveTexture("screen_background", "resources/menu/background.png");
         saveTexture("start_btn", "resources/menu/start_btn.png");
-        
+        saveTexture("resume_btn", "resources/menu/resume_btn.png");
+        saveTexture("options_btn", "resources/menu/options_btn.png");
+        saveTexture("exit_btn", "resources/menu/exit_btn.png");
+        saveTexture("pause_menu_bg", "resources/menu/pause_menu_bg.png");
+
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
         	saveTexture("basictree_grow" + i, "resources/trees/Grow" + i + ".png");
         }
-        
+//        //damage tree:lightning
+        for(int i=1;i<10;i++){
+            saveTexture("lightning_tree"+i,"resources/trees/lightning"+i+".png");
+            saveTexture("lightning_being_damaged"+i,"resources/trees/lightningBeingDamaged"+i+".png");
+            saveTexture("lightning_damaged"+i,"resources/trees/lightningDamaged"+i+".png");
+
+            if(i<9){
+                saveTexture("lightning_damaged_being_damaged"+i,"resources/trees/lightningDamagedBeingDamaged"+i+".png");
+            }
+            if(i<8){
+                saveTexture("lightning_dead"+i,"resources/trees/lightningDead"+i+".png");
+            }
+        }
+        //damage tree:ice
+        saveTexture("ice_basic_tree","resources/trees/iceBasicTree.png");
+
+
+
     }
 
     /**
@@ -108,7 +131,7 @@ public class TextureManager extends Manager {
     public void saveTexture(String id, String filename) {
         LOGGER.info("Saving texture" + id + " with Filename " + filename);
         if (!textureMap.containsKey(id)) {
-            textureMap.put(id, new Texture(filename));
+                textureMap.put(id, new Texture(filename));
         }
     }
 }

@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.Enemies;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -37,7 +38,8 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
      * @param enemy
      *          The enemy that this melee attack belongs to
      * */
-    public void action(EnemyEntity enemy) {
+    @Override
+	public void action(EnemyEntity enemy) {
         Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Player.class, enemy.getPosX(),
                 enemy.getPosY());
 
@@ -51,9 +53,10 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         * solutions:
         *   -create new EnemyMelee attack extending from Projectile (hacky to use melee as projectile?)
         *   -create new EnemyMelee attack (may be duplicating work from Projectile)
-        *   -re-work BallisticProjectile*/
-        GameManager.get().getWorld().addEntity(new BallisticProjectile(
-                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange(), 1, 1));
+        *   */
+        GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),
+                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, enemy.getBasicStats().getRange()+3, 10));
+        //GameManager.get().getWorld().addEntity(new LightningEffect(0,0,0,10));
 
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/

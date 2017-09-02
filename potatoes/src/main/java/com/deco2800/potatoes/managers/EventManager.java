@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -80,5 +79,9 @@ public class EventManager extends Manager {
 		for (EventPair eventPair : finishedEvents) {
 			unregisterEvent(eventPair.tickable, eventPair.event);
 		}
+	}
+
+	public void unregisterAll() {
+		events = new ArrayList<>();
 	}
 }

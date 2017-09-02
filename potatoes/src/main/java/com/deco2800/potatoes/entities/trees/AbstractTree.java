@@ -2,10 +2,13 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.List;
 
-import com.deco2800.potatoes.entities.HasProgress;
-import com.deco2800.potatoes.entities.MortalEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.animation.Animated;
+import com.deco2800.potatoes.entities.animation.Animation;
+import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -15,7 +18,7 @@ import com.deco2800.potatoes.managers.GameManager;
  * construction and construction events which are triggered when the tree is
  * being constructed
  */
-public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress {
+public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress, Animated {
 
 	// Maybe move this out
 	private static class ConstructionEvent extends TimeEvent<AbstractTree> {
@@ -42,6 +45,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
+	private transient Animation animation;
 
 	/**
 	 * Default constructor for serialization
@@ -73,6 +77,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		boolean result = tree.getUpgradeStats().removeConstructionResources();
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
+		} else {
+			GameManager.get().getManager(EventManager.class).unregisterAll(tree);;
 		}
 		return result;
 	}
@@ -98,7 +104,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * other events for this object
 	 */
 	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
-		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		eventManager.unregisterAll(this);
 		for (TimeEvent<AbstractTree> timeEvent : events) {
 			eventManager.registerEvent(this, timeEvent);
@@ -149,18 +155,27 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		this.addMaxHealth(getUpgradeStats().getHp() - this.getMaxHealth());
 		this.heal(getMaxHealth());
 		setTexture(getUpgradeStats().getTexture());
+		setAnimation(new SingleFrameAnimation(getUpgradeStats().getTexture()));
 		setRegisteredEvents(true);
 	}
 
 	/**
-	 * Not yet implemented
-	 * 
-	 * @return the default upgrade stats
+	 * Returns the upgrade stats for the current level of the tree
 	 */
 	public UpgradeStats getUpgradeStats() {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
+	@Override
+	public void setAnimation(Animation animation) {
+		this.animation = animation;
+	}
+	
+	@Override
+	public Animation getAnimation() {
+		return animation;
+	}
+	
 	/**
 	 * Returns a list of the stats for each upgrade level in order <br>
 	 * This is called often, so it is recommend you don't create a new object every
