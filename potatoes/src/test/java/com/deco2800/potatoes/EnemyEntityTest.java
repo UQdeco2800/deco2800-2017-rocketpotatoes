@@ -16,7 +16,6 @@ import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Enemies.BasicStats;

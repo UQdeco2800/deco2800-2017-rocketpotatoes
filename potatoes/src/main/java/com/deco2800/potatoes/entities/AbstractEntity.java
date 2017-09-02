@@ -141,6 +141,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * 
 	 * @return The X coordinate.
 	 */
+	@Override
 	public float getPosX() {
 		// Using Y offset seems wrong but passes test and leggy was using Y offset here
 		return position.getX() - getCenterOffsetY();
@@ -151,6 +152,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * 
 	 * @return The Y coordinate.
 	 */
+	@Override
 	public float getPosY() {
 		return position.getY() - getCenterOffsetY();
 	}
@@ -160,6 +162,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * 
 	 * @return The Z coordinate.
 	 */
+	@Override
 	public float getPosZ() {
 		return position.getZ();
 	}
@@ -239,6 +242,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * 
 	 * @return texture string
 	 */
+	@Override
 	public String getTexture() {
 		return texture;
 	}

@@ -6,11 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Inventory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
@@ -187,6 +183,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 * 
 	 * @return string The string representation of the resource.
 	 */
+	@Override
 	public String toString() {
 		return quantity + " " + resourceType.toString();
 	}

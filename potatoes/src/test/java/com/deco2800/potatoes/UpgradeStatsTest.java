@@ -2,13 +2,11 @@ package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.trees.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import com.deco2800.potatoes.entities.TimeEvent;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class UpgradeStatsTest {
 	List<TimeEvent<AbstractTree>> normalEvents;

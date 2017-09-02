@@ -111,38 +111,39 @@ public class GameScreen implements Screen {
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
-        textureManager = (TextureManager)GameManager.get().getManager(TextureManager.class);
+        textureManager = GameManager.get().getManager(TextureManager.class);
 
         /**
          *	Setup managers etc.
          */
 
 		/* Create a sound manager for the whole game */
-        soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
+        soundManager = GameManager.get().getManager(SoundManager.class);
 
 		/* Create a mouse handler for the game */
         mouseHandler = new MouseHandler();
 
 		/* Create a multiplayer manager for the game */
-        multiplayerManager = (MultiplayerManager)GameManager.get().getManager(MultiplayerManager.class);
+        multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 
 		/* Create a player manager. */
-        playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
+        playerManager = GameManager.get().getManager(PlayerManager.class);
 
 		/* Setup camera */
-        cameraManager = (CameraManager)GameManager.get().getManager(CameraManager.class);
+        cameraManager = GameManager.get().getManager(CameraManager.class);
         cameraManager.setCamera(new OrthographicCamera(1920, 1080));
 
         /**
          * GuiManager, which contains all our Gui specific properties/logic. Creates our stage etc.
          */
 
-        guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        guiManager = GameManager.get().getManager(GuiManager.class);
         guiManager.setStage(new Stage(new ScreenViewport()));
 
         // Deselect all gui elements if we click anywhere in the game world
         guiManager.getStage().getRoot().addCaptureListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            @Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (!(event.getTarget() instanceof TextField)) {
                     guiManager.getStage().setKeyboardFocus(null);
                 }
@@ -185,7 +186,7 @@ public class GameScreen implements Screen {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(guiManager.getStage()); // Add the UI as a processor
 
-        inputManager = (InputManager) GameManager.get().getManager(InputManager.class);
+        inputManager = GameManager.get().getManager(InputManager.class);
         inputManager.addKeyDownListener(new CameraHandler());
         inputManager.addKeyDownListener(new PauseHandler());
         inputManager.addScrollListener(new ScrollTester());
@@ -212,7 +213,7 @@ public class GameScreen implements Screen {
             guiManager.getGui(ChatGui.class).hide();
         }
 
-        ((EventManager) GameManager.get().getManager(EventManager.class)).unregisterAll();
+        GameManager.get().getManager(EventManager.class).unregisterAll();
         
         Random random = new Random();
 
@@ -311,7 +312,7 @@ public class GameScreen implements Screen {
 
         // Tick Events
         if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-            ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);
+            GameManager.get().getManager(EventManager.class).tickAll(timeDelta);
         }
 
         // Broadcast updates if we're master TODO only when needed.

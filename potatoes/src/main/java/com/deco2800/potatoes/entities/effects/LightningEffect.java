@@ -52,12 +52,13 @@ public class LightningEffect extends Effect {
 		return pos;
 	}
 
+	@Override
 	public void drawEffect(SpriteBatch batch) {
 
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
-		TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+		TextureManager reg = GameManager.get().getManager(TextureManager.class);
 		Texture tex = reg.getTexture(this.getTexture());
 
 		float lWidth = tex.getWidth();

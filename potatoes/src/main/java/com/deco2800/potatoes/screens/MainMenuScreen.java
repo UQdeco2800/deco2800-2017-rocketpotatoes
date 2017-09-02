@@ -5,7 +5,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -47,7 +46,7 @@ public class MainMenuScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         // game screen background
 
-        textureManager = (TextureManager)GameManager.get().getManager(TextureManager.class);
+        textureManager = GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
 
@@ -200,7 +199,7 @@ public class MainMenuScreen implements Screen {
      * @param v
      */
     public void setEffectsVolume(float v){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setEffectsVolume(v);
+        GameManager.get().getManager(SoundManager.class).setEffectsVolume(v);
     }
 
     /**
@@ -208,7 +207,7 @@ public class MainMenuScreen implements Screen {
      * @return float from 0 to 1.
      */
     public float getEffectsVolume(){
-        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getEffectsVolume();
+        return GameManager.get().getManager(SoundManager.class).getEffectsVolume();
     }
 
     /**
@@ -216,7 +215,7 @@ public class MainMenuScreen implements Screen {
      * @param v
      */
     public void setMusicVolume(float v){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).setMusicVolume(v);
+        GameManager.get().getManager(SoundManager.class).setMusicVolume(v);
     }
 
     /**
@@ -224,14 +223,14 @@ public class MainMenuScreen implements Screen {
      * @return float from 0 to 1.
      */
     public float getMusicVolume(){
-        return ((SoundManager)GameManager.get().getManager(SoundManager.class)).getMusicVolume();
+        return GameManager.get().getManager(SoundManager.class).getMusicVolume();
     }
 
     /**
      * Plays a blip sound.
      */
     public void menuBlipSound(){
-        ((SoundManager)GameManager.get().getManager(SoundManager.class)).playSound("menu_blip.wav");
+        GameManager.get().getManager(SoundManager.class).playSound("menu_blip.wav");
     }
 
 }

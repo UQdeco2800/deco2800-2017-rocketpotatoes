@@ -13,7 +13,7 @@ public class PlayerManager extends Manager {
 	private Player player;
 
 	public PlayerManager() {
-		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+		InputManager input = GameManager.get().getManager(InputManager.class);
 
 		input.addKeyDownListener(this::handleKeyDown);
 		input.addKeyUpListener(this::handleKeyUp);
@@ -28,7 +28,7 @@ public class PlayerManager extends Manager {
 		this.player = player;
 
 		// Set camera manager to target the player
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).setTarget(player);
+		GameManager.get().getManager(CameraManager.class).setTarget(player);
 	}
 
 	public void handleKeyDown(int keycode) {

@@ -1,10 +1,8 @@
 package com.deco2800.potatoes.entities.projectiles;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.AOEEffect;
@@ -153,6 +151,7 @@ public class BallisticProjectile extends Projectile {
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 	}
 
+	@Override
 	public int rotateAngle() {
 		return rotateAngle;
 	}

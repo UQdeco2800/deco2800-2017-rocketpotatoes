@@ -92,7 +92,7 @@ public class Render3D implements Renderer {
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+			TextureManager reg = GameManager.get().getManager(TextureManager.class);
 			Texture tex;
 			if (e.getKey() instanceof Animated) {
 				// Animations should probably be changed to TextureRegion for performance
@@ -138,7 +138,7 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				TextureManager reg = (TextureManager) GameManager.get()
+				TextureManager reg = GameManager.get()
 					.getManager(TextureManager.class);
 
 				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
@@ -226,7 +226,7 @@ public class Render3D implements Renderer {
 			}
 
 			/**************************/
-			MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+			MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 			if (entity instanceof Player && m.isMultiplayer()) {
 				font.setColor(Color.WHITE);
 				font.getData().setScale(1.3f);
@@ -319,7 +319,7 @@ public class Render3D implements Renderer {
 	}
 
 	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
-		return ((CameraManager) GameManager.get().getManager(CameraManager.class)).getCamera()
+		return GameManager.get().getManager(CameraManager.class).getCamera()
 				.unproject(new Vector3(x, y, z));
 	}
 

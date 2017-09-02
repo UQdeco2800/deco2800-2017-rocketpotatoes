@@ -78,7 +78,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
-			((EventManager)GameManager.get().getManager(EventManager.class)).unregisterAll(tree);;
+			GameManager.get().getManager(EventManager.class).unregisterAll(tree);;
 		}
 		return result;
 	}
@@ -104,7 +104,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * other events for this object
 	 */
 	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
-		EventManager eventManager = (EventManager) GameManager.get().getManager(EventManager.class);
+		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		eventManager.unregisterAll(this);
 		for (TimeEvent<AbstractTree> timeEvent : events) {
 			eventManager.registerEvent(this, timeEvent);

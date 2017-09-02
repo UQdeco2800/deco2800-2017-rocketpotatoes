@@ -174,7 +174,7 @@ public class Inventory {
 				result = 0;
 			} else {
 				inventoryMap.put(resource, currentAmount + amount);
-				guiManager = (GuiManager) GameManager.get().getManager(GuiManager.class);
+				guiManager = GameManager.get().getManager(GuiManager.class);
 				try {
 					((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(
 							resource.getTypeName(), currentAmount + amount);
