@@ -64,9 +64,9 @@ public class LightningEffect extends Effect {
 		float lWidth = tex.getWidth();
 		float lHeight = tex.getHeight();
 
-		Vector2 startPos = worldToScreenCoordinates(xPos, yPos);
+		Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
 
-		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos);
+		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
 
 		float l = endPos.x - startPos.x;
 		float h = endPos.y - startPos.y;

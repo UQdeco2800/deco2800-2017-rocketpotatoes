@@ -375,7 +375,7 @@ public class GameScreen implements Screen {
         float tileX = (int)(Math.floor(tileCoords.x));
         float tileY = (int)(Math.floor(tileCoords.y));
 
-        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY);
+        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
         batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
 
         batch.end();
