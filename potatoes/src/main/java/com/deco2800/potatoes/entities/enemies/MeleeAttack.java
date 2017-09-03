@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
+import com.deco2800.potatoes.entities.effects.SwipeEffect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 public class MeleeAttack extends Projectile {
 
-    private final static transient String TEXTURE = "swipe4";
+    private final static transient String TEXTURE = "empty";
     private float DAMAGE = 1;
 
     private float goalX;
@@ -23,7 +24,7 @@ public class MeleeAttack extends Projectile {
 
     private float range = 1.5f;
 
-    private final float speed = 0.2f;
+    private final float speed = 1.4f;
 
     private float changeX;
     private float changeY;
@@ -31,10 +32,13 @@ public class MeleeAttack extends Projectile {
     private boolean maxRange = false;
 
     private int rocketEffectTimer;
-    private int rocketCurrentSpriteIndexCount;
+    private int rocketCurrentSpriteIndexCount = 0;
     private String[] rocketSpriteArray = { "swipe1", "swipe2", "swipe3", "swipe4", "swipe5" };
 
     private Class<?> targetClass;
+
+    private final static float effect_width = 1f;
+    private final static float effect_height = 1f;
 
     public MeleeAttack() {
         // empty for serialization
@@ -94,6 +98,8 @@ public class MeleeAttack extends Projectile {
         if (mainTarget != null) {
             this.goalX = mainTarget.get().getPosX();
             this.goalY = mainTarget.get().getPosY();
+        } else {
+            GameManager.get().getWorld().removeEntity(this);
         }
 
         float deltaX = getPosX() - this.goalX;
@@ -107,6 +113,7 @@ public class MeleeAttack extends Projectile {
         setPosX(getPosX() + changeX);
         setPosY(getPosY() + changeY);
 
+        //Has projectile reached its max range
         if (range < speed) {
             maxRange = true;
         }
@@ -134,20 +141,55 @@ public class MeleeAttack extends Projectile {
             if (targetClass.isInstance(entity)) {
                 if (newPos.overlaps(entity.getBox3D())) {
                     ((MortalEntity) entity).damage(DAMAGE);
-                    ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
-                    GameManager.get().getWorld().addEntity(expEffect);
+                    //ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
+                    //GameManager.get().getWorld().addEntity(expEffect);
+
+                    SwipeEffect swipe = new SwipeEffect(goalX - (effect_width / 2), goalY - (effect_height / 2), 0,
+                            effect_width, effect_height, 0, effect_width, effect_height);
+                    GameManager.get().getWorld().addEntity(swipe);
+
+
                     GameManager.get().getWorld().removeEntity(this);
+                    }
                 }
 
-            }
         }
         if (maxRange) {
             GameManager.get().getWorld().removeEntity(this);
         }
+
     }
 
     @Override
     public float getDamage() {
         return DAMAGE;
     }
+
+    /**
+     * Remove projectile after waiting a certain amount of ticks*/
+    private static void removeProjectileLater(int ticks, Projectile projectile) {
+
+    }
 }
+
+
+
+/*
+*         for (AbstractEntity entity : entities.values()) {
+            if (targetClass.isInstance(entity)) {
+                if (newPos.overlaps(entity.getBox3D())) {
+                    if (ticksWaited == 0) {
+                        ((MortalEntity) entity).damage(DAMAGE);
+                        ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
+                        GameManager.get().getWorld().addEntity(expEffect);
+                        ticksWaited++;
+                    } else if (ticksWaited < 3) {
+                        ticksWaited++;
+                    } else {
+                        GameManager.get().getWorld().removeEntity(this);
+                        ticksWaited = 0;
+                    }
+                }
+            }
+        }
+*/

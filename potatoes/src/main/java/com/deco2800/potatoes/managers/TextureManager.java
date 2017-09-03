@@ -111,6 +111,7 @@ public class TextureManager extends Manager {
         saveTexture("swipe3", "resources/enemies/swipe3.png");
         saveTexture("swipe4", "resources/enemies/swipe4.png");
         saveTexture("swipe5", "resources/enemies/swipe5.png");
+        saveTexture("empty", "resources/enemies/empty.png");
 
     }
 
