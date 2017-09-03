@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.enemies.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.TimeEvent;
@@ -16,9 +16,9 @@ import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.enemies.BasicStats;
 
 
 public class EnemyEntityTest {

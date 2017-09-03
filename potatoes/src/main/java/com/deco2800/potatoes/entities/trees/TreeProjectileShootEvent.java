@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 

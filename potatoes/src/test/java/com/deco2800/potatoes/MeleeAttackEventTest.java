@@ -1,8 +1,8 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.enemies.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
 
 import com.deco2800.potatoes.worlds.AbstractWorld;
