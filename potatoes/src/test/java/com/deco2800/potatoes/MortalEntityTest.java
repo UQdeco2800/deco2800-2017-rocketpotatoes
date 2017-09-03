@@ -194,7 +194,10 @@ public class MortalEntityTest {
 	@Test
 	public void setProgressTest() {
 		assertFalse("Health should be set to 0f", mortalEntity.setProgress(0f));
+		assertEquals(0f, mortalEntity.getHealth(), 0f);
 		assertTrue("Health should be set to 100f", mortalEntity.setProgress(100f));
+		assertEquals(1f, mortalEntity.getHealth(), 100f);
+
 	}
 
 }
