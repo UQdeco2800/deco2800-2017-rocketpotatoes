@@ -28,8 +28,8 @@ public class BetaWorldGen extends AbstractWorld {
 	public BetaWorldGen() {
 			textureManager = GameManager.get().getManager(TextureManager.class);
 		/* Load up the map for this world */
-			this.setWidth(20);
-			this.setLength(20);
+			this.setWidth(25);
+			this.setLength(25);
 			this.map = new TiledMap();
 			map.getProperties().put("tilewidth",55);
 			map.getProperties().put("tileheight",32);
@@ -37,11 +37,16 @@ public class BetaWorldGen extends AbstractWorld {
 		TiledMapTileLayer layer = new TiledMapTileLayer(25, 25, 55, 32);
 
 		Cell cell = new Cell();
-		cell.setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("grass"))));
-		for(int i = 0; i < 20; i++) {
-			for(int j = 0; j < 20; j++) {
-				layer.setCell(i, j, cell);
-
+		cell.setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("ground_1"))));
+		Cell cell2 = new Cell();
+		cell2.setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("grass"))));
+		for(int i = 0; i < 25; i++) {
+			for(int j = 0; j < 25; j++) {
+				if (i<14 && j>17){
+					layer.setCell(i, j, cell2);
+				} else {
+					layer.setCell(i, j, cell);
+				}
 			}
 		}
 		layers.add(layer);
