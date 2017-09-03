@@ -32,7 +32,7 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -170,7 +170,7 @@ public class GameScreen implements Screen {
         setupInputHandling();
 
         /* Create an example world for the engine */
-        GameManager.get().setWorld(new InitialWorld());
+        GameManager.get().setWorld(new BetaWorldGen());
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
