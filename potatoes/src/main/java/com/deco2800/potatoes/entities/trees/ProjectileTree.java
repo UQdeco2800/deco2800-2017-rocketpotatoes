@@ -64,11 +64,11 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 
 		// result.add(new UpgradeStats(10, 1000, 8f, 5000, 1, normalEvents,
 		// constructionEvents, TEXTURE));
-		result.add(new UpgradeStats().set("hp", 10).set("range", 8f).set("constructionTime", 5000)
-				.set("normalEvents", normalEvents).set("constructionEvents", constructionEvents)
+		result.add(new UpgradeStats().set("hp", 10).set("speed", 3000).set("range", 8f).set("constructionTime", 5000)
+				.set("resourceCost", 1).set("normalEvents", normalEvents).set("constructionEvents", constructionEvents)
 				.set("texture", TEXTURE));
-		result.add(new UpgradeStats(20, 600, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
-		result.add(new UpgradeStats(30, 100, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
+		result.add(new UpgradeStats(20, 2500, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
+		result.add(new UpgradeStats(30, 1500, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
 
 		for (UpgradeStats upgradeStats : result) {
 			upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));

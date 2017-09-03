@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
@@ -70,17 +70,19 @@ public class UpgradeStats {
 	}
 
 	/**
-	 * Gets the value associated with the specified property
+	 * Gets the value associated with the property specified.
 	 * 
 	 * @param property
-	 *            The property to get
-	 * @return The value of the property
+	 *            The property to get the value of
+	 * @return The value associated with the property
+	 * @throws NoSuchElementException
+	 *             If the property is not set in the stats
 	 */
-	public Object get(String property) {
+	public Object get(String property) throws NoSuchElementException {
 		if (map.containsKey(property)) {
 			return map.get(property);
 		} else {
-			throw new NullPointerException("");
+			throw new NoSuchElementException("Given property not in stats");
 		}
 	}
 
@@ -94,10 +96,9 @@ public class UpgradeStats {
 	/**
 	 * @return A deep copy of the normal events associated with these stats
 	 */
-	@SuppressWarnings("unchecked")
 	public List<TimeEvent<AbstractTree>> getNormalEventsCopy() {
 		List<TimeEvent<AbstractTree>> result = new LinkedList<>();
-		for (TimeEvent<AbstractTree> timeEvent : (List<TimeEvent<AbstractTree>>) get("normalEvents")) {
+		for (TimeEvent<AbstractTree> timeEvent : getNormalEventsReference()) {
 			result.add(timeEvent.copy());
 		}
 		return result;
@@ -106,10 +107,9 @@ public class UpgradeStats {
 	/**
 	 * @return A deep copy of the construction events associated with these stats
 	 */
-	@SuppressWarnings("unchecked")
 	public List<TimeEvent<AbstractTree>> getConstructionEventsCopy() {
 		List<TimeEvent<AbstractTree>> result = new LinkedList<>();
-		for (TimeEvent<AbstractTree> timeEvent : (List<TimeEvent<AbstractTree>>) get("constructionEvents")) {
+		for (TimeEvent<AbstractTree> timeEvent : getConstructionEventsReference()) {
 			result.add(timeEvent.copy());
 		}
 		return result;
@@ -174,11 +174,7 @@ public class UpgradeStats {
 	 *         not.
 	 */
 	public boolean removeConstructionResources() {
-		Inventory inventory = GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory();
-		if (inventory.getQuantity(UPGRADE_RESOURCE) >= (int) get("resourceCost")) {
-			inventory.updateQuantity(UPGRADE_RESOURCE, -(int) get("resourceCost"));
-			return true;
-		}
-		return false;
+		return 1 == GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
+				.updateQuantity(UPGRADE_RESOURCE, -(int) get("resourceCost"));
 	}
 }
