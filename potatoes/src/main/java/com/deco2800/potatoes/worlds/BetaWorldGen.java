@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.worlds;
 
+import java.util.Arrays;
 import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,17 +37,22 @@ public class BetaWorldGen extends AbstractWorld {
 		MapLayers layers = map.getLayers();
 		TiledMapTileLayer layer = new TiledMapTileLayer(25, 25, 55, 32);
 
-		Cell cell = new Cell();
-		cell.setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("ground_1"))));
-		Cell cell2 = new Cell();
-		cell2.setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("grass"))));
+		Cell[] cells = {new Cell(), new Cell(), new Cell()};
+		cells[0].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("grass"))));
+		cells[1].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("ground_1"))));
+		cells[2].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("w1"))));
+		// Random tile choice
+		float[][] randomTiles = new float[25][25];
+		for (int x = 0; x < randomTiles.length; x++) {
+			for (int y = 0; y < randomTiles[x].length; y++) {
+				randomTiles[x][y] = 0.5f;
+			}
+		}
+		// random array for tile choice should be 1/2 size and smoothed instead
+		RandomWorldGeneration.diamondSquareAlgorithm(randomTiles, 25, 0.5f, 0.9f);
 		for(int i = 0; i < 25; i++) {
 			for(int j = 0; j < 25; j++) {
-				if (i<14 && j>17){
-					layer.setCell(i, j, cell2);
-				} else {
-					layer.setCell(i, j, cell);
-				}
+				layer.setCell(i, j, cells[Math.round(randomTiles[i][j] * 2)]);
 			}
 		}
 		layers.add(layer);

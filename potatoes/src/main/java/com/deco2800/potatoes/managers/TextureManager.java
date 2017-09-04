@@ -36,6 +36,7 @@ public class TextureManager extends Manager {
 
     	saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
+        saveTexture("w1", "resources/placeholderassets/w1.png");
         saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
         saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
