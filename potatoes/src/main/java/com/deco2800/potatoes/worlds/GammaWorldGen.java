@@ -26,7 +26,7 @@ public class GammaWorldGen extends AbstractWorld {
 	 * Constructor for InitialWorld
 	 */
 	private TextureManager textureManager;
-	
+	private int rando = 0;
 	public GammaWorldGen() {
 		textureManager = GameManager.get().getManager(TextureManager.class);
 		/* Load up the map for this world */
@@ -50,16 +50,17 @@ public class GammaWorldGen extends AbstractWorld {
 					if (y<1){
 						randomTiles[x][y] = (float)Math.random()*3;
 					} else {
-						randomTiles[x][y] = randomTiles[x][y - 1] + (float)Math.random();
+						randomTiles[x][y] = randomTiles[x][y - 1] + (float)(Math.round(Math.random())*(Math.random()+1));
 					}
 				} else 	if (y<1){
 					if (x<1){
 						randomTiles[x][y] = (float)Math.random()*3;
 					} else {
-						randomTiles[x][y] = randomTiles[x - 1][y] + (float)Math.random();
+						randomTiles[x][y] = randomTiles[x - 1][y] + (float)(Math.round(Math.random())*(Math.random()+1));
 					}
 				} else{
-					randomTiles[x][y] = randomTiles[x - 1][y - 1] + (float)Math.random();
+					rando = (int)Math.round(Math.random());
+					randomTiles[x][y] = randomTiles[x - rando][y-(1-rando)]+ (float)(Math.round(Math.random())*(Math.random()+1));
 				}
 			}
 		}
