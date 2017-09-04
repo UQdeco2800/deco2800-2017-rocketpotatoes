@@ -90,4 +90,19 @@ public class GammaWorldGen extends AbstractWorld {
 			}
 		}
 	}
+	public float[][] smooth (float[][] randomTiles){
+		for (int x = 1; x < randomTiles.length-1; x++) {
+			for (int y = 1; y < randomTiles[x].length-1; y++) {
+				rando = (int)Math.round(Math.random());
+				if ((int)(Math.round(randomTiles[x-1][y]))==(int)(Math.round(randomTiles[x+1][y]))){
+					randomTiles[x][y]=randomTiles[x+1][y];
+				}
+				if ((int)(Math.round(randomTiles[x][y-1]))==(int)(Math.round(randomTiles[x][y+1]))){
+					randomTiles[x][y]=randomTiles[x][y+1];
+				}
+
+			}
+		}
+		return randomTiles;
+	}
 }
