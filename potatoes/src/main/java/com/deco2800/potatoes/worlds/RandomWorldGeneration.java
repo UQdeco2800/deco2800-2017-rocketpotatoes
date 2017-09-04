@@ -23,19 +23,25 @@ public class RandomWorldGeneration {
 	/********************************
 	 * FOR TESTING
 	 ********************************
-	 * Outputs and image from the algorithm output, try not to add the heightmap file to git
+	 * Outputs and image from the algorithm output, try not to add the heightmap
+	 * file to git
 	 */
 	public static void main(String[] args) throws IOException {
-		final int SIZE = 201;
+		final int SIZE = 512;
 		BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_RGB);
 		float[][] heightmap = new float[SIZE][SIZE];
-		for (int i = 0; i < 100; i++) {
-			heightmap = diamondSquareAlgorithm(heightmap, SIZE, 0.8f);
+		for (int x = 0; x < heightmap.length; x++) {
+			for (int y = 0; y < heightmap[x].length; y++) {
+				heightmap[x][y] = 0.5f;
+			}
+		}
+		for (int i = 0; i < 1; i++) {
+			heightmap = diamondSquareAlgorithm(heightmap, SIZE, 0.4f, 0.9f);
 		}
 
 		for (int i = 0; i < heightmap.length; i++) {
 			for (int j = 0; j < heightmap[i].length; j++) {
-				Color color = new Color(heightmap[i][j], heightmap[i][j], heightmap[i][j]);
+				Color color = new Color(0, heightmap[i][j] / 2, 0);
 				image.setRGB(i, j, color.getRGB());
 			}
 		}
@@ -46,48 +52,51 @@ public class RandomWorldGeneration {
 	private static final int[][] DIAMOND_SAMPLES = { { 1, 1 }, { -1, 1 }, { 1, -1 }, { -1, -1 } };
 
 	/**
-	 * Diamond square algorithm for generating noise
-	 * Definitely has a bug at the moment
+	 * Diamond square algorithm for generating noise Definitely has a bug at the
+	 * moment
 	 */
-	public static float[][] diamondSquareAlgorithm(float[][] result, int gridSize, float roughness) {
-		int size = gridSize % 2 == 0 ? gridSize + 1 : gridSize;
+	public static float[][] diamondSquareAlgorithm(float[][] result, int gridSize, float roughness, float roughScale) {
+		float size = gridSize % 2 == 0 ? gridSize + 1 : gridSize;
 		size /= 2;
 		float rough = roughness;
-		Set<int[]> nodes = new HashSet<>();
-		nodes.add(new int[] { size, size });
-		while (size > 0) {
-			Set<int[]> newNodes = new HashSet<>();
-			for (int[] coords : nodes) {
-				// Diamond step
-				sampleStep(result, SQUARE_SAMPLES, coords[0], coords[1], size, rough * Math.random());
-				for (int j = 0; j < 4; j++) {
-					// Square step
-					sampleStep(result, DIAMOND_SAMPLES, coords[0] + SQUARE_SAMPLES[j][0] * size,
-							coords[1] + SQUARE_SAMPLES[j][1] * size, size, rough * Math.random());
-					// Nodes for diamond step
-					newNodes.add(new int[] { coords[0] + DIAMOND_SAMPLES[j][0] * size / 2,
-							coords[1] + DIAMOND_SAMPLES[j][1] * size / 2 });
+		while (Math.round(size) > 0) {
+			for (float x = 0; x < result.length; x += size) {
+				for (float y = 0; y < result[0].length; y += size) {
+					sampleStep(result, SQUARE_SAMPLES, x, y, size, (float) (rough * (Math.random() * 2 - 1)));
 				}
 			}
-			nodes = newNodes;
-			size /= 2;
-			//rough *= roughness;
+			float half = size / 2;
+			for (float x = half; x < result.length; x += half) {
+				for (float y = half; y < result[0].length; y += half) {
+					sampleStep(result, DIAMOND_SAMPLES, x, y, half, (float) (rough * (Math.random() * 2 - 1)));
+				}
+			}
+			size = half;
+			rough *= roughScale;
 		}
 		return result;
 	}
 
-	private static void sampleStep(float[][] array, int[][] sampleType, int x, int y, int size, double random) {
-		float sum = 0;
-		for (int[] is : sampleType) {
-			sum += get(array, x + is[0] * size, y + is[1] * size);
+	private static void sampleStep(float[][] array, int[][] sampleType, float x, float y, float size, float random) {
+		if (isValidCoords(array, (int) Math.floor(x), (int) Math.floor(y))) {
+			float sum = 0;
+			int count = 0;
+			for (int[] is : sampleType) {
+				int sampleX = (int) Math.floor(x + is[0] * size);
+				int sampleY = (int) Math.floor(y + is[1] * size);
+				if (isValidCoords(array, sampleX, sampleY)) {
+					count++;
+					sum += array[sampleX][sampleY];
+				}
+			}
+			
+			float newValue = random + sum / count;
+			// Make sure its 0.0 to 1.0
+			array[(int) Math.floor(x)][(int) Math.floor(y)] = newValue > 1 ? 1f : newValue < 0 ? 0f : newValue;
 		}
-		float newValue = (float) (random * 2) - 1f + sum / sampleType.length;
-		// Make sure its 0.0 to 1.0
-		array[x][y] = newValue > 1 ? 1f : newValue < 0 ? 0f : newValue;
-
 	}
 
-	private static float get(float[][] array, int x, int y) {
-		return x >= 0 && y >= 0 && x < array.length && y < array[0].length ? array[x][y] : 0;
+	private static boolean isValidCoords(float[][] array, int x, int y) {
+		return x >= 0 && y >= 0 && x < array.length && y < array[0].length;
 	}
 }
