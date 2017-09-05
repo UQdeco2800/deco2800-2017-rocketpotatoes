@@ -19,6 +19,10 @@ public abstract class ParticleType {
     public float fadeOutPercent = 1.0f;
     public float speed = 1.0f;
 
+    // Random angle spread
+    public float lowerAngleBound = 300.0f;
+    public float upperAngleBound = 360.0f;
+
     // Random spread of speed (if this are the same the speed is constant)
     public float speedVarianceMin = 0.0f;
     public float speedVarianceMax = 1.0f;
@@ -56,7 +60,26 @@ public abstract class ParticleType {
      * Draws the particles associated with this type. The batch should have begun before this is called.
      * @param batch batch to draw withh
      */
-    public abstract void draw(SpriteBatch batch);
+    public void draw(SpriteBatch batch) {
+        for (Particle p : this.particles) {
+            Color col = batch.getColor();
+            float alpha = 1.0f;
+
+            float fadeOutThreshold = (this.lifeTime) * this.fadeOutPercent;
+            if (p.lifeTime < fadeOutThreshold) {
+                alpha = p.lifeTime / fadeOutThreshold;
+            }
+
+            if (alpha > this.alphaCeil) { alpha = this.alphaCeil; }
+
+            batch.setColor(col.r, col.g, col.b, alpha);
+            batch.draw(this.texture, p.x, p.y, 0, 0,
+                    this.texture.getWidth(), this.texture.getHeight(),
+                    1.0f, 1.0f, p.rotation,
+                    0, 0, this.texture.getWidth(), this.texture.getHeight(),
+                    false, false);
+        }
+    }
 
 
 }

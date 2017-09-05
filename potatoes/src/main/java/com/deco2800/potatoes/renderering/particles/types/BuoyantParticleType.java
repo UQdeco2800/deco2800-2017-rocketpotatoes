@@ -10,11 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class BasicParticleType extends ParticleType {
+public class BuoyantParticleType extends ParticleType {
 
-    // Random gen
     private Random random = new Random();
-
     /**
      * Creates a square particle of the given color.
      * @param number maximum number of particles of this type to be produced.
@@ -25,7 +23,7 @@ public class BasicParticleType extends ParticleType {
      * @param sizeX size of the particle in pixels
      * @param sizeY size of the particle in pixels
      */
-    public BasicParticleType(int number, float lifeTime, float cycleDelta, int rate, Color color, int sizeX, int sizeY) {
+    public BuoyantParticleType(int number, float lifeTime, float cycleDelta, int rate, Color color, int sizeX, int sizeY) {
         this.number = number;
         this.lifeTime = lifeTime;
         this.cycleDelta = cycleDelta;
@@ -44,7 +42,7 @@ public class BasicParticleType extends ParticleType {
      * @param rate the rate particles should be produced per cycle
      * @param texture texture to use for the particle
      */
-    public BasicParticleType(int number, float lifeTime, float cycleDelta, int rate, Texture texture) {
+    public BuoyantParticleType(int number, float lifeTime, float cycleDelta, int rate, Texture texture) {
         this.number = number;
         this.lifeTime = lifeTime;
         this.cycleDelta = cycleDelta;
@@ -53,18 +51,18 @@ public class BasicParticleType extends ParticleType {
         this.texture = texture;
     }
 
+
     /**
      * Tick's the particles associated with this type
      *
-     * @param deltaTime delta to use
+     * @param deltaTime    delta to use
      * @param particlePool pool to fetch new particles from
-     * @param originX origin point for new particles
-     * @param originY origin point for new particles
-     * @param active should this spawn new particles?
+     * @param originX      origin point for new particles
+     * @param originY      origin point for new particles
+     * @param active       should this spawn new particles?
      */
     @Override
     public void onTick(double deltaTime, List<Particle> particlePool, float originX, float originY, boolean active) {
-
         // Tick particles
         Iterator<Particle> iter = this.particles.iterator();
         while (iter.hasNext()) {
@@ -115,9 +113,7 @@ public class BasicParticleType extends ParticleType {
                         float min = this.speedVarianceMin;
                         float max = this.speedVarianceMax;
                         float factor = (random.nextFloat() * (max - min) + min) * this.speed;
-
-
-                        float direction = random.nextFloat() * (upperAngleBound - lowerAngleBound);
+                        float direction = random.nextFloat() * 360;
 
                         // Gen normalized vec and scale it by factor
                         newP.vector = new Vector2(
