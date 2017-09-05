@@ -41,11 +41,15 @@ public class BetaWorldGen extends AbstractWorld {
 		cells[0].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("grass"))));
 		cells[1].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("ground_1"))));
 		cells[2].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("w1"))));
+		cells[2].getTile().setId(2);
+		cells[0].getTile().setId(0);
+		cells[1].getTile().setId(1);
 		// Random tile generation
 		float[][] randomTiles = RandomWorldGeneration.smoothDiamondSquareAlgorithm(25, 0.3f, 2);
 		for(int i = 0; i < 25; i++) {
 			for(int j = 0; j < 25; j++) {
 				layer.setCell(i, j, cells[Math.round(randomTiles[i][j] * 2)]);
+
 			}
 		}
 		layers.add(layer);

@@ -30,6 +30,19 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.*;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.deco2800.potatoes.entities.Selectable;
+import com.deco2800.potatoes.renderering.Renderable;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.*;
+import com.badlogic.gdx.maps.MapLayer.*;
+import com.badlogic.gdx.maps.MapLayers;
+import com.deco2800.potatoes.managers.*;
+
 /**
  * Entity for the playable character.
  *
@@ -111,6 +124,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		newPos.setY(newPosY);
 		int maxX = GameManager.get().getWorld().getWidth();
 		int maxY = GameManager.get().getWorld().getLength();
+		int id =((TiledMapTileLayer) GameManager.get().getWorld().getMap().getLayers().get(0)).getCell((int)newPos.getY(),(int)newPos.getX()).getTile().getId();
+		System.out.println(id);
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
@@ -126,7 +141,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 			}
 		}
-		if(newPos.getX()<0||newPos.getY()<0||newPos.getY()>maxY ||newPos.getX()>maxX){
+		if(newPos.getX()<0||newPos.getY()<0||newPos.getY()>maxY-.2 ||newPos.getX()>maxX-.2){
+			collided = true;
+		}
+		if (id == 2){
 			collided = true;
 		}
 
