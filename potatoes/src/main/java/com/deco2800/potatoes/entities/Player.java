@@ -109,7 +109,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		Box3D newPos = getBox3D();
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
-
+		int maxX = GameManager.get().getWorld().getWidth();
+		int maxY = GameManager.get().getWorld().getLength();
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
@@ -124,6 +125,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 				collided = true;
 
 			}
+		}
+		if(newPos.getX()<0||newPos.getY()<0||newPos.getY()>maxY ||newPos.getX()>maxX){
+			collided = true;
 		}
 
 		if (!collided) {
