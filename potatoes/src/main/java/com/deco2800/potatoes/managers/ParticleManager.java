@@ -6,7 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.Particle;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
-import com.deco2800.potatoes.renderering.particles.ParticleType;
+import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,7 +36,8 @@ public class ParticleManager extends Manager {
         //ParticleEmitter e = new ParticleEmitter(0, 0,
         //        new ParticleType(10000, 3.0f * 1000.0f,5.0f, 1, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
 
-        ParticleType type = new ParticleType(215215, 1.0f * 1000.f, 100.0f, 1024, Color.GOLD, 3, 3);
+        ParticleType type = new BasicParticleType(215215,
+                1.0f * 1000.f, 100.0f, 1024, Color.GOLD, 3, 3);
         type.speed = 0.1f;
         //type.alphaCeil = 0.5f;
         type.speedVarianceMin = 1.0f;

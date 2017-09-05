@@ -4,12 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class ParticleEmitter {
     // Emitter parameters
@@ -17,9 +15,6 @@ public class ParticleEmitter {
 
     // Particle types (defines the settings of the particles we create)
     private List<ParticleType> particleTypes;
-
-    // Random gen
-    private Random random = new Random();
 
     // Is this emitter should produce particles
     private boolean active;
@@ -68,86 +63,19 @@ public class ParticleEmitter {
      * @param particlePool the pool of particles to use (TODO expandable)
      */
     public void onTick(double deltaTime, List<Particle> particlePool) {
+        // Tick particles
         for (ParticleType particleType : particleTypes) {
-
-            Iterator<Particle> iter = particleType.particles.iterator();
-            while (iter.hasNext()) {
-                Particle p = iter.next();
-                // Tick particles
-                p.x += p.vector.x * deltaTime;
-                p.y += p.vector.y * deltaTime;
-                p.lifeTime -= deltaTime;
-                p.rotation += particleType.rotationSpeed - (particleType.rotationSpeed  * 2.0f) * (p.hashCode() % 2);
-
-                // Delete expired
-                if (p.lifeTime <= 0.0f) {
-                    p.alive = false;
-                    iter.remove();
-                }
-            }
+            particleType.onTick(deltaTime, particlePool, originX, originY, active);
         }
 
-        // Create new if active
-        if (active) {
-            for (ParticleType particleType : particleTypes) {
-                particleType.currentCycleTime += deltaTime;
-                while (particleType.currentCycleTime >= particleType.cycleDelta) {
-                    particleType.currentCycleTime -= particleType.cycleDelta;
-                    // How many produced this cycle
-                    int count = 0;
-                    while (particleType.particles.size() < particleType.number) {
-                        if (count == particleType.rate) {
-                            break;
-                        }
-                        Particle newP = null;
-
-                        // Find particle
-                        for (Particle p : particlePool) {
-                            if (!p.alive) {
-                                newP = p;
-                                break;
-                            }
-                        }
-
-                        // Add it
-                        if (newP == null) {
-                            throw new IllegalStateException("Ayyyyyy too many particles");
-                        } else {
-                            newP.alive = true;
-                            newP.x = originX;
-                            newP.y = originY;
-
-                            float min = particleType.speedVarianceMin;
-                            float max = particleType.speedVarianceMax;
-                            float factor = (random.nextFloat() * (max - min) + min) * particleType.speed;
-                            float direction = random.nextFloat() * 360;
-
-                            // Gen normalized vec and scale it by factor
-                            newP.vector = new Vector2(
-                                    (float) Math.sin(Math.toRadians(direction)),
-                                    (float) Math.cos(Math.toRadians(direction))).nor().scl(factor);
-
-                            newP.lifeTime = particleType.lifeTime;
-                            newP.rotation = random.nextFloat();
-
-                            particleType.particles.add(newP);
-                            count++;
-                            hasParticles = true;
-                        }
-                    }
-                }
+        // Check if any particles exist
+        hasParticles = false;
+        for (ParticleType particleType : particleTypes) {
+            if (particleType.particles.size() != 0) {
+                hasParticles = true;
+                break;
             }
-        }
-        else {
-            // Check if any particles exist
-            hasParticles = false;
-            for (ParticleType particleType : particleTypes) {
-                if (particleType.particles.size() != 0) {
-                    hasParticles = true;
-                    break;
-                }
 
-            }
         }
 
     }
@@ -159,28 +87,10 @@ public class ParticleEmitter {
     public void draw(SpriteBatch batch) {
         Color prev = batch.getColor();
         for (ParticleType particleType : particleTypes) {
-            for (Particle p : particleType.particles) {
-                Color col = batch.getColor();
-                float alpha = 1.0f;
-
-                float fadeOutThreshold = (particleType.lifeTime) * particleType.fadeOutPercent;
-                if (p.lifeTime < fadeOutThreshold) {
-                    alpha = p.lifeTime / fadeOutThreshold;
-                }
-
-                if (alpha > particleType.alphaCeil) { alpha = particleType.alphaCeil; }
-
-                batch.setColor(col.r, col.g, col.b, alpha);
-                batch.draw(particleType.texture, p.x, p.y, 0, 0,
-                        particleType.texture.getWidth(), particleType.texture.getHeight(),
-                        1.0f, 1.0f, p.rotation,
-                        0, 0, particleType.texture.getWidth(), particleType.texture.getHeight(),
-                        false, false);
-            }
-
-
+            particleType.draw(batch);
             batch.setColor(prev);
         }
+
     }
 
     public List<ParticleType> getParticleTypes() {
