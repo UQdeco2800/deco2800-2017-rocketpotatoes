@@ -54,12 +54,6 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
             return;
         }
 
-        /*Currently BallisticProjectile assumes Enemies are the ones being attacked which results in
-        * the enemies that are shooting being the ones being damaged (suicidal),
-        * solutions:
-        *   -create new EnemyMelee attack extending from Projectile (hacky to use melee as projectile?)
-        *   -create new EnemyMelee attack (may be duplicating work from Projectile)
-        *   */
         GameManager.get().getWorld().addEntity(new MeleeAttack(target1.get().getClass(),
                 enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, 10));
 

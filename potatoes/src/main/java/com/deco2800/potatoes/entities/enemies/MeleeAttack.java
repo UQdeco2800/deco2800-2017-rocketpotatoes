@@ -22,9 +22,9 @@ public class MeleeAttack extends Projectile {
 
     private int rotateAngle = 0;
 
-    private float range = 1.5f;
+    private float range = 3f;
 
-    private final float speed = 1.4f;
+    private final float speed = 1f;
 
     private float changeX;
     private float changeY;
@@ -120,15 +120,6 @@ public class MeleeAttack extends Projectile {
 
         range -= speed;
 
-        rocketEffectTimer++;
-        if (rocketEffectTimer % 4 == 0) {
-            setTexture(rocketSpriteArray[rocketCurrentSpriteIndexCount]);
-            if (rocketCurrentSpriteIndexCount == rocketSpriteArray.length - 1)
-                rocketCurrentSpriteIndexCount = 0;
-            else
-                rocketCurrentSpriteIndexCount++;
-        }
-
         rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
         Box3D newPos = getBox3D();
@@ -139,18 +130,16 @@ public class MeleeAttack extends Projectile {
         // Check surroundings
         for (AbstractEntity entity : entities.values()) {
             if (targetClass.isInstance(entity)) {
-                if (newPos.overlaps(entity.getBox3D())) {
-                    ((MortalEntity) entity).damage(DAMAGE);
-                    //ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
-                    //GameManager.get().getWorld().addEntity(expEffect);
+                ((MortalEntity) entity).damage(DAMAGE);
+                //ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
+                //GameManager.get().getWorld().addEntity(expEffect);
 
-                    SwipeEffect swipe = new SwipeEffect(goalX - (effect_width / 2), goalY - (effect_height / 2), 0,
-                            effect_width, effect_height, 0, effect_width, effect_height);
-                    GameManager.get().getWorld().addEntity(swipe);
+                SwipeEffect swipe = new SwipeEffect(goalX - (effect_width / 2), goalY - (effect_height / 2) + 1, 0,
+                        effect_width, effect_height, 0, effect_width, effect_height);
+                GameManager.get().getWorld().addEntity(swipe);
 
 
-                    GameManager.get().getWorld().removeEntity(this);
-                    }
+                GameManager.get().getWorld().removeEntity(this);
                 }
 
         }
