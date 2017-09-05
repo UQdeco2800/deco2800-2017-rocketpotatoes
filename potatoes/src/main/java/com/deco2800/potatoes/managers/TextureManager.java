@@ -104,7 +104,8 @@ public class TextureManager extends Manager {
         }
         //damage tree:ice
         saveTexture("ice_basic_tree","resources/trees/iceBasicTree.png");
-
+        //damage tree:acorn
+        saveTexture("acorn_tree","resources/trees/tree-acorn.png");
         // Enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
         saveTexture("swipe2", "resources/enemies/swipe2.png");
