@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -9,8 +10,10 @@ import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.observers.TouchDownObserver;
@@ -44,6 +47,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	public void handleMouseClick(float x, float y, int button) {
 		Vector2 coords = Render3D.worldPosToTile(x, y);
 
+		
 		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
@@ -71,6 +75,10 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 					newTree = new Tower(realX, realY, 0);
 					break;
 			}
+			
+			GuiManager guiManager = GameManager.get().getManager(GuiManager.class);
+			guiManager.addGui(new TreeShopGui(guiManager.getStage(),x,y));
+			
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);
 			} else {
