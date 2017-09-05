@@ -7,6 +7,9 @@ public class IceTree extends Damage {
 
     public IceTree(){
 
+        this.damageTreeType = "IceTree";
+        this.texture = TEXTURE;
+
     }
 
 
