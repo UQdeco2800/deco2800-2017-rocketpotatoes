@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.entities.trees;
 
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,82 +11,82 @@ import java.util.Map;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceTree.class);
-    private static final transient String TEXTURE = "lightning_tree";
-    private static final transient  Map<String, List<String>> LOADEDTEXTURE=Texture(TEXTURE);
-
-
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DamageTree.class);
+    public static transient String TEXTURE ;
+    private static Damage damageTreeType;
     /**
      * Static field to store information about upgrades
      */
-    public static final List<UpgradeStats> STATS = initStats();
+
 
     /**
      * Default constructor for serialization
      */
     public DamageTree() {
+
     }
     /**
      * Base Constructor
      */
-    public DamageTree(float posX, float posY, float posZ, String texture, float maxHealth,float demage) {
-        super(posX, posY, posZ, 1f, 1f, 1f, texture);
+
+    public DamageTree(float posX, float posY, float posZ) {
+
+        super(posX, posY, posZ, 1f, 1f, 1f, null);
+
+        damageTreeType=new LightningTree();
+
+
+        this.resetStats();
+
     }
 
-    /**
-     * Returns the list of upgrades for the tree
-     */
-    private static List<String> damageTreeAnimation(String Type){
-        List<String> result=new LinkedList<>();
-        switch (Type){
-            case "lightning_tree":
-                for(int i=1;i<10;i++) result.add("lightning_tree"+i);
-                break;
-            case "lightning_being_damaged":
-                for(int i=1;i<10;i++) result.add("lightning_being_damaged"+i);
-                break;
-            case "lightning_damaged":
-                for(int i=1;i<9;i++) result.add("lightning_damaged"+i);
-                break;
-            case "lightning_damaged_being_damaged":
-                for(int i=1;i<10;i++) result.add("lightning_damaged_being_damaged"+i);
-                break;
-            case "lightning_dead":
-                for(int i=1;i<8;i++) result.add("lightning_dead"+i);
-                break;
-            default:
-                for(int i=1;i<10;i++) result.add("lightning_tree"+i);
-                break;
+    public DamageTree(float posX, float posY, float posZ, Damage texture) {
 
+        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        if(null==texture){
+            damageTreeType=new LightningTree();
+        }else{
+            damageTreeType=texture;
         }
-        return result;
+
+
+        this.resetStats();
+
     }
 
 
-    private static Map<String,List<String>> Texture(String treeType){
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
-        result.put(treeType,damageTreeAnimation(treeType));
-        return result;
-    };
+    public DamageTree(float posX, float posY, float posZ, String texture, float maxHealth,float demage) {
+
+        super(posX, posY, posZ, 1f, 1f, 1f, texture);
+        TEXTURE=texture;
+    }
+
+
+
+
 
 
     @Override
     public List<UpgradeStats> getAllUpgradeStats() {
-        return STATS;
+
+        if(damageTreeType instanceof IceTree)
+            return generateTree("ice_basic_tree");
+        else if(damageTreeType instanceof AcornTree)
+            return generateTree("acorn_tree");
+        return generateTree("lightning_tree1");
     }
 
     /**
      * Static method to create the list of upgrades
      */
-    private static List<UpgradeStats> initStats() {
+    private static List<UpgradeStats> generateTree(String texture) {
         List<UpgradeStats> result = new LinkedList<>();
         List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
         List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
-
 		/* UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade Time, events, events, texture) */
-        result.add(new UpgradeStats(10, 1000, 8f, 5000,100, normalEvents, constructionEvents, TEXTURE));
-        result.add(new UpgradeStats(20, 600, 8f, 2000,100,normalEvents, constructionEvents, TEXTURE));
-        result.add(new UpgradeStats(30, 100, 8f, 2000,100, normalEvents, constructionEvents, TEXTURE));
+        result.add(new UpgradeStats(10, 1000, 8f, 5000,100, normalEvents, constructionEvents, texture));
+        result.add(new UpgradeStats(20, 600, 8f, 2000,100,normalEvents, constructionEvents, texture));
+        result.add(new UpgradeStats(30, 100, 8f, 2000,100, normalEvents, constructionEvents, texture));
 
         for (UpgradeStats upgradeStats : result) {
             upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));
@@ -95,11 +94,5 @@ public class DamageTree extends AbstractTree implements Tickable {
 
         return result;
     }
-    @Override
-    public String getTexture(){
-        //TODO: condition need to apply diff texture and diff status
-        return LOADEDTEXTURE.get(TEXTURE).get((int)Math.round((Math.random()+0.1)*9));
 
-
-    }
 }

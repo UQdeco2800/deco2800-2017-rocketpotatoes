@@ -19,6 +19,7 @@ import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -238,6 +239,7 @@ public class GameScreen implements Screen {
             }
             addResourceTrees();
             initialiseResources();
+            addDamageTree();
             
         }
         
@@ -247,7 +249,11 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
     }
-    
+    private void addDamageTree(){
+        GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
+        GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
+    }
     private void addResourceTrees() {
     		// Seed Trees
         GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
