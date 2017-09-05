@@ -22,7 +22,7 @@ public class DamageTree extends AbstractTree implements Tickable {
      * Default constructor for serialization
      */
     public DamageTree() {
-
+        //Default constructor
     }
     /**
      * Base Constructor

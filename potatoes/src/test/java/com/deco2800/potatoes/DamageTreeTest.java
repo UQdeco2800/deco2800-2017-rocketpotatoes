@@ -19,7 +19,8 @@ public class DamageTreeTest {
 
 
     DamageTree defaultDamageTree;
-    DamageTree customDamageTree;
+    DamageTree iceTreeDamageTree;
+    DamageTree acornTreeDamageTree;
     DamageTree nullTypeDamageTree;
 
 
@@ -34,7 +35,8 @@ public class DamageTreeTest {
     public void setup() {
 
         defaultDamageTree = new DamageTree(0, 0, 0);
-        customDamageTree = new DamageTree(1, 0, 0, new IceTree());
+        iceTreeDamageTree = new DamageTree(1, 0, 0, new IceTree());
+        acornTreeDamageTree = new DamageTree(1, 0, 0, new AcornTree());
         nullTypeDamageTree = new DamageTree(2, 0, 0,null);
 
     }
@@ -42,7 +44,8 @@ public class DamageTreeTest {
     /* Test initialising the damage tree */
     @Test
     public void initTest() {
-        assertTrue(customDamageTree.getDamageTreeType() instanceof IceTree);
+        assertTrue(iceTreeDamageTree.getDamageTreeType() instanceof IceTree);
+        assertTrue(acornTreeDamageTree.getDamageTreeType() instanceof AcornTree);
         assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTree);
         assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTree);
 
