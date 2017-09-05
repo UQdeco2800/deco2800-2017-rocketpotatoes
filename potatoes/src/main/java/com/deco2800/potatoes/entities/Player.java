@@ -54,6 +54,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private Inventory inventory;
 
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 4);
+	// an integer to check if key down has been pressed before key up
+	private int checkKeyDown = 0;
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -190,6 +192,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		default:
 			break;
 		}
+		checkKeyDown++;
 	}
 
 	private Vector2 getCursorCoords() {
@@ -247,6 +250,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 * @param keycode
 	 */
 	public void handleKeyUp(int keycode) {
+		// checks if key down is pressed first
+		if (checkKeyDown <= 0) {
+			return;
+		}
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
@@ -267,6 +274,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		default:
 			break;
 		}
+		checkKeyDown--;
 	}
 
 	@Override
