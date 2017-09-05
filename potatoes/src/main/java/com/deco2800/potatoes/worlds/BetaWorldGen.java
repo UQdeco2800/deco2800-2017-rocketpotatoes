@@ -41,15 +41,8 @@ public class BetaWorldGen extends AbstractWorld {
 		cells[0].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("grass"))));
 		cells[1].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("ground_1"))));
 		cells[2].setTile(new StaticTiledMapTile(new TextureRegion(textureManager.getTexture("w1"))));
-		// Random tile choice
-		float[][] randomTiles = new float[25][25];
-		for (int x = 0; x < randomTiles.length; x++) {
-			for (int y = 0; y < randomTiles[x].length; y++) {
-				randomTiles[x][y] = 0.5f;
-			}
-		}
-		// random array for tile choice should be 1/2 size and smoothed instead
-		RandomWorldGeneration.diamondSquareAlgorithm(randomTiles, 25, 0.5f, 0.9f);
+		// Random tile generation
+		float[][] randomTiles = RandomWorldGeneration.smoothDiamondSquareAlgorithm(25, 0.3f, 2);
 		for(int i = 0; i < 25; i++) {
 			for(int j = 0; j < 25; j++) {
 				layer.setCell(i, j, cells[Math.round(randomTiles[i][j] * 2)]);
