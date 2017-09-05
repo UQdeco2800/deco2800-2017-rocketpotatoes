@@ -231,7 +231,7 @@ public class GameScreen implements Screen {
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
 
-            GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+            GameManager.get().getWorld().addEntity(new GoalPotate(8, 20, 0));
 
             for(int i=0 ; i<3 ; i++) {
                 GameManager.get().getWorld().addEntity(
