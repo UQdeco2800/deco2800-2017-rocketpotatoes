@@ -11,9 +11,8 @@ import java.util.Map;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(DamageTree.class);
     public static transient String TEXTURE ;
-    private static Damage damageTreeType;
+    private Damage damageTreeType;
     /**
      * Static field to store information about upgrades
      */
@@ -41,7 +40,6 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
     public DamageTree(float posX, float posY, float posZ, Damage texture) {
-
         super(posX, posY, posZ, 1f, 1f, 1f, null);
         if(null==texture){
             damageTreeType=new LightningTree();
@@ -55,10 +53,8 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
 
-    public DamageTree(float posX, float posY, float posZ, String texture, float maxHealth,float demage) {
-
-        super(posX, posY, posZ, 1f, 1f, 1f, texture);
-        TEXTURE=texture;
+    public DamageTree(float posX, float posY, float posZ, Damage texture, float maxHealth,float demage) {
+        super(posX, posY, posZ, 1f, 1f, 1f, null);
     }
 
 
@@ -94,5 +90,14 @@ public class DamageTree extends AbstractTree implements Tickable {
 
         return result;
     }
+
+    /**
+     * test purpose only
+     * @return Damage
+     */
+    public Damage getDamageTreeType(){
+        return damageTreeType;
+    }
+
 
 }
