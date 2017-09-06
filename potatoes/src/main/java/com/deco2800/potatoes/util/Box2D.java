@@ -22,39 +22,59 @@ public class Box2D implements CollisionMask{
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Box2D) {
-            Box2D otherBox = <Box2D> other;
-            // this x smaller
-            if (this.x + this.xLength < otherBox.x ) {
+            Box2D otherBox = (Box2D) other;
+            // this x is too small -> non-collision
+            if (this.x + (this.xLength * 0.5) < otherBox.x - (otherBox.xLength * 0.5)) {
                 return false;
             }
 
-            // this x larger
-            if (this.x > other.x + other.xLength) {
+            // this x is too large -> non-collision
+            if (this.x - (this.xLength * 0.5) > otherBox.x + (otherBox.xLength * 0.5)) {
                 return false;
             }
 
-            // this y smaller
-            if (this.y + this.yLength < other.y) {
+            // this y is too small -> non-collision
+            if (this.y + (this.yLength * 0.5) < otherBox.y - (otherBox.yLength * 0.5)) {
                 return false;
             }
 
-            // this y larger
-            if (this.y > other.y + other.yLength) {
+            // this y is too large -> non-collision
+            if (this.y - (this.yLength * 0.5) > otherBox.y + (otherBox.yLength * 0.5)) {
                 return false;
             }
         } else if (other instanceof Circle2D) {
+            Circle2D otherCircle = (Circle2D) other;
+            //TODO not quite sure how yet
 
         } else if (other instanceof Point2D) {
+            Point2D otherPoint = (Point2D) other;
+            // Check x non collision
+            if ( Math.abs(this.x - otherPoint.getX()) < (this.xLength * 0.5)) {
+                return false;
+            }
 
+            // Check y non collision
+            if ( Math.abs(this.y - otherPoint.getY()) < (this.yLength * 0.5)) {
+                return false;
+            }
         }
 
-
-
-        return false;
+        return true;
     }
 
     @Override
     public float distance(CollisionMask other) {
+        if (other instanceof Box2D) {
+            Box2D otherBox = (Box2D) other;
+            //TODO
+        } else if (other instanceof Circle2D) {
+            Circle2D otherCircle = (Circle2D) other;
+            //TODO
+        } else if (other instanceof Point2D) {
+            Point2D otherPoint = (Point2D) other;
+            //TODO
+        }
+
         return 0;
     }
 
@@ -62,4 +82,42 @@ public class Box2D implements CollisionMask{
     public float distance(float x1, float y1, float x2, float y2) {
         return 0;
     }
+
+    @Override
+    public float getX() {
+        return this.x;
+    }
+
+    @Override
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    @Override
+    public float getY() {
+        return this.y;
+    }
+
+    @Override
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getXLength() {
+        return this.xLength;
+    }
+
+    public void setXLength(float xLength) {
+        this.xLength = xLength;
+    }
+
+    public float getYLength() {
+        return this.yLength;
+    }
+
+    public void setYLength(float yLength) {
+        this.yLength = yLength;
+    }
+
+    //TODO equals
 }

@@ -2,7 +2,7 @@ package com.deco2800.potatoes.util;
 
 import java.util.Objects;
 
-public class Point2D {
+public class Point2D implements CollisionMask{
     
     private float x, y;
 
@@ -24,7 +24,42 @@ public class Point2D {
         this.y = y;
     }
 
-	/**
+    @Override
+    public boolean overlaps(CollisionMask other) {
+        if (other instanceof Box2D) {
+            Box2D otherBox = (Box2D) other;
+            return otherBox.overlaps(this);
+        } else if (other instanceof Circle2D) {
+            Circle2D otherCircle = (Circle2D) other;
+            return otherCircle.overlaps(this);
+        } else if (other instanceof Point2D) {
+            Point2D otherPoint = (Point2D) other;
+            return this.equals(otherPoint);
+        }
+        return false;
+    }
+
+    @Override
+    public float distance(CollisionMask other) {
+        if (other instanceof Box2D) {
+            Box2D otherBox = (Box2D) other;
+            return otherBox.distance(this);
+        } else if (other instanceof Circle2D) {
+            Circle2D otherCircle = (Circle2D) other;
+            return otherCircle.distance(this);
+        } else if (other instanceof Point2D) {
+            Point2D otherPoint = (Point2D) other;
+            //TODO point to point dist
+        }
+        return 0;
+    }
+
+    @Override
+    public float distance(float x1, float y1, float x2, float y2) {
+        return 0;
+    }
+
+    /**
 	 * Returns the x coordinate.
 	 * 
 	 * @return Returns the x coordinate.
