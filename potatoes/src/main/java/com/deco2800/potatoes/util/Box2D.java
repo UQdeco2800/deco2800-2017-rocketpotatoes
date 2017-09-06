@@ -6,11 +6,12 @@ public class Box2D implements CollisionMask{
     private float xLength, yLength;
 
     /**
+     * Create a new Box2D
      *
-     * @param x centrepoint
-     * @param y
-     * @param xLength width
-     * @param yLength height
+     * @param x centrepoint x
+     * @param y centrepoint y
+     * @param xLength width along x axis
+     * @param yLength height along y axis
      */
     public Box2D(float x, float y, float xLength, float yLength) {
         this.x = x;
@@ -28,7 +29,7 @@ public class Box2D implements CollisionMask{
             float distX = Math.abs(otherBox.getX() - this.x);
             float distY = Math.abs(otherBox.getY() - this.y);
 
-            // Check dist's are lagre enough that no collision could occur
+            // Check dist's are large enough that no collision could occur
             if (distX > (this.xLength + otherBox.getXLength())/2) { return false; }
             if (distY > (this.yLength + otherBox.getYLength())/2) { return false; }
 
@@ -78,47 +79,121 @@ public class Box2D implements CollisionMask{
 
     @Override
     public float distance(CollisionMask other) {
+
         if (other instanceof Box2D) {
             Box2D otherBox = (Box2D) other;
 
-            // Calc centre to centre dist
-            float distX = Math.abs(otherBox.getX() - this.x);
-            float distY = Math.abs(otherBox.getY() - this.y);
-            float distSquare = distX * distX + distY * distY;
+            // Calc dist between sides on each dimension
+            float distX = Math.abs(otherBox.getX() - this.x) - (this.xLength + otherBox.getXLength())/2;
+            float distY = Math.abs(otherBox.getX() - this.x) - (this.yLength + otherBox.getYLength())/2;
 
-            //TODO clip portion of line covered by rects
-
-            return (float) Math.sqrt((double) distSquare);
-
+            if ((distX >= 0) && (distY >= 0)) {
+                // Boxes are diagonal to each other, calc corner point to point dist
+                return (float) Math.sqrt(distX * distX + distY * distY);
+            } else if (distX >= 0) {
+                // Boxes overlap on x co-ord but not y
+                return distX;
+            } else if (distY >= 0) {
+                // Boxes overlap on y co-ord but not x
+                return distY;
+            } else {
+                // Boxes overlap, return rough negative val
+                // TODO this val might be used in physics
+                return Math.max(distX, distY);
+            }
 
         } else if (other instanceof Circle2D) {
             Circle2D circle = (Circle2D) other;
 
-            float distX = Math.abs(circle.getX() - this.x);
-            float distY = Math.abs(circle.getY() - this.y);
-            float distSquare = distX * distX + distY * distY;
+            // Calc dist between sides on each dimension
+            float distX = Math.abs(circle.getX() - this.x) - (this.xLength + circle.getRadius())/2;
+            float distY = Math.abs(circle.getX() - this.x) - (this.yLength + circle.getRadius())/2;
 
-
-            //TODO clip portion of line covered by rect
-
-            return (float) Math.sqrt((double) distSquare - circle.getRadius());
+            if ((distX >= 0) && (distY >= 0)) {
+                // Box & circle are diagonal to each other, calc corner point to point dist
+                distX += circle.getRadius()/2;
+                distY += circle.getRadius()/2;
+                return (float) Math.sqrt(distX * distX + distY * distY);
+            } else if (distX >= 0) {
+                // Box & circle overlap on x co-ord but not y
+                return distX;
+            } else if (distY >= 0) {
+                // Box & circle overlap on y co-ord but not x
+                return distY;
+            } else {
+                // Box & circle overlap, return rough negative val
+                // TODO this val might be used in physics
+                return Math.max(distX, distY);
+            }
 
         } else if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
 
-            float distX = Math.abs(point.getX() - this.x);
-            float distY = Math.abs(point.getY() - this.y);
+            // Calc dist between sides on each dimension
+            float distX = Math.abs(point.getX() - this.x) - this.xLength/2;
+            float distY = Math.abs(point.getX() - this.x) - this.yLength/2;
 
-            //TODO clip portion of line covered by rect
-
-            return (float) Math.sqrt((double) distX * distX + distY * distY);
+            if ((distX >= 0) && (distY >= 0)) {
+                // Box & point are diagonal to each other, calc corner point to point dist
+                return (float) Math.sqrt(distX * distX + distY * distY);
+            } else if (distX >= 0) {
+                // Box & point overlap on x co-ord but not y
+                return distX;
+            } else if (distY >= 0) {
+                // Box & point overlap on y co-ord but not x
+                return distY;
+            } else {
+                // Box & point overlap, return rough negative val
+                // TODO this val might be used in physics
+                return Math.max(distX, distY);
+            }
         }
 
         return 0;
     }
 
+    /* //Centre to centre distance, clipped by the mask
+    // made some bad assumptions, isn't minimum edge-to-edge distance
+    public float distanceCentreClipped(CollisionMask other) {
+        // Calc centre to centre dist
+        float distX = Math.abs(other.getX() - this.x);
+        float distY = Math.abs(other.getY() - this.y);
+        float dist = (float) Math.sqrt((double) distX * distX + distY * distY);
+
+        // distMin will be the initial % of the line unobstructed by this Box2D
+        // e.g. the line might be first unobstructed by this Box2D 30% along
+        float distMin = Math.min((distX - this.x/2)/distX,
+                (distY - this.y/2)/distY);
+
+        if (other instanceof Box2D) {
+            Box2D otherBox = (Box2D) other;
+
+            // distMax will be the final % of the line unobstructed by otherBox
+            // and then become obstructed again 70% along, by otherBox
+            float distMax = Math.max((distX - otherBox.getXLength()/2)/distX,
+                                    (distY - otherBox.getYLength()/2)/distY);
+
+            //scale based off of distMin & distMax
+            return (dist * (distMax - distMin));
+
+        } else if (other instanceof Circle2D) {
+            Circle2D circle = (Circle2D) other;
+
+            //scale based off of distMin & subtract the radius of the circle
+            return (dist * (1 - distMin) - circle.getRadius());
+
+        } else if (other instanceof Point2D) {
+
+            //scale based off of distMin
+            return (dist * (1 - distMin));
+        }
+    }
+    */
+
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
+        //TODO
+
         return 0;
     }
 
