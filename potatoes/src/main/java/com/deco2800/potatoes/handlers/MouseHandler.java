@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
 import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.TreeShop;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.TreeShopGui;
@@ -78,6 +79,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			
 			GuiManager guiManager = GameManager.get().getManager(GuiManager.class);
 			guiManager.addGui(new TreeShopGui(guiManager.getStage(),x,y));
+			//GameManager.get().getWorld().addEntity(new TreeShop(realX,realY));
 			
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);

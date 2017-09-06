@@ -84,6 +84,7 @@ public class TextureManager extends Manager {
         saveTexture("options_btn", "resources/menu/options_btn.png");
         saveTexture("exit_btn", "resources/menu/exit_btn.png");
         saveTexture("pause_menu_bg", "resources/menu/pause_menu_bg.png");
+        saveTexture("tree_shop", "resources/menu/tree_menu.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {

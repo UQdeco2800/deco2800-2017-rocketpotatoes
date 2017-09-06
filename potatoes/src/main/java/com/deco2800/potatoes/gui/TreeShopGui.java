@@ -9,13 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.renderering.Renderable;
 
-public class TreeShopGui extends Gui {
+public class TreeShopGui extends Gui{
 	private Skin uiSkin;
 	
 	public TreeShopGui(Stage stage, float x, float y){
-		x += 220;
-		y += 440;
+		//x += 220;
+		//y += 440;
+		
+		
+		
 		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 		Button testTree = new TextButton("test",uiSkin);
 		testTree.setPosition(x, y);
