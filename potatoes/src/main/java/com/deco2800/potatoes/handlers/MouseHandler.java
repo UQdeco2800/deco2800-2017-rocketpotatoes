@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
 import com.deco2800.potatoes.entities.FoodResource;
+import com.deco2800.potatoes.entities.ScreenEntity;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.TreeShop;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
@@ -16,6 +17,7 @@ import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
@@ -78,15 +80,16 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			}
 			
 			
-			//GuiManager guiManager = GameManager.get().getManager(GuiManager.class);
-			//guiManager.addGui(new TreeShopGui(guiManager.getStage(),x, y));
-			GameManager.get().getWorld().addEntity(new TreeShop(realX,realY));
+			//TreeShop treeShop = GameManager.get().getManager(PlayerManager.class).getPlayer().getTreeShop();
+			//GameManager.get().getWorld().addEntity(new TreeShop(realX,realY));
+			GameManager.get().getManager(PlayerManager.class).getPlayer().openTreeShop(realX,realY);
 			
-			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+			
+			/*if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);
 			} else {
 				multiplayerManager.broadcastBuildOrder(newTree);
-			}
+			}*/
 		}
 
 	}

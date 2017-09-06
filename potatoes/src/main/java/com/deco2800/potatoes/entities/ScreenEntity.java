@@ -5,7 +5,7 @@ package com.deco2800.potatoes.entities;
  * with the rest of the world. These can not collide with anything and are not
  * ticked like AbstractEntities.
  */
-public abstract class ScreenEntity extends AbstractEntity {
+public abstract class ScreenEntity extends AbstractEntity implements Clickable {
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -25,8 +25,9 @@ public abstract class ScreenEntity extends AbstractEntity {
 			boolean centered, String texture) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, centered, texture);
 		this.setStaticCollideable(false);
+		
 	}
-
+	
 	@Override
 	public boolean collidesWith(AbstractEntity entity) {
 		return false;
