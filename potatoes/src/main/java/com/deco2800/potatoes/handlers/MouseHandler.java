@@ -54,6 +54,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
+			return;
 		} else {
 			AbstractWorld world = GameManager.get().getWorld();
 			if (world instanceof InitialWorld) {
@@ -83,7 +84,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			//TreeShop treeShop = GameManager.get().getManager(PlayerManager.class).getPlayer().getTreeShop();
 			//GameManager.get().getWorld().addEntity(new TreeShop(realX,realY));
 			GameManager.get().getManager(PlayerManager.class).getPlayer().openTreeShop(realX,realY);
-			
 			
 			/*if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);

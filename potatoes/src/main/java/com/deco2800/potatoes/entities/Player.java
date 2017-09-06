@@ -104,6 +104,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		return this.treeShop;
 	}
 	
+	public void removeTreeShop() {
+		GameManager.get().getWorld().removeEntity(this.treeShop);
+		this.treeShop = null;
+		System.out.println("removed");
+	}
+	
 	public void openTreeShop(float x, float y) {
 		
 		if (this.treeShop == null) {
