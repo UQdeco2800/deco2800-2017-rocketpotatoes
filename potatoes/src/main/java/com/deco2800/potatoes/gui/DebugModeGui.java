@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
 import com.deco2800.potatoes.renderering.Render3D;
@@ -171,7 +172,16 @@ public class DebugModeGui extends Gui {
 
                 if (state == States.DEBUGON) {
                     if (keycode == Input.Keys.F1) {
-                        GameManager.get().getWorld().addEntity(new Tower((int)coords2.x,(int)coords2.y,0));
+                        Tower tower = new Tower((int)coords2.x,(int)coords2.y,0);
+                        tower.setProgress(0);
+                        GameManager.get().getWorld().addEntity(tower);
+
+                    }
+
+                    if (keycode == Input.Keys.F5) {
+                        ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
+                        rscTree.setProgress(0);
+                        GameManager.get().getWorld().addEntity(rscTree);
 
                     }
 
