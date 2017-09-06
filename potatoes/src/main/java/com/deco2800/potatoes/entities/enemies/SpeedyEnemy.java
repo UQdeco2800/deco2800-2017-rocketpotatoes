@@ -45,20 +45,18 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
         //resetStats();
     }
 
-    private void steal() {
+
+  /*  public void onTick(long i) {
         double interactRange = 3f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 
         for (AbstractEntity entitiy : entities) {
-            if (entitiy instanceof ResourceTree && entitiy.distance(this)  <= interactRange) {
-                ((ResourceTree) entitiy).gather(-10);
+            if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+                ((ResourceTree) entitiy).gather(-2);
             }
         }
 
     }
-
-
-
 
     /*
     public void gather(int amount) {
@@ -141,7 +139,9 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	// }
 	// }
 	// }
-
+  /**   public void onTick(long i){
+        harvestResources();
+    }**/
     @Override
     public String toString() {
         return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
@@ -152,6 +152,18 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
         return STATS;
     }
 
+/**    private void harvestResources() {
+        double interactRange = 3f; // TODO: Could this be a class variable?
+        Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+        for (AbstractEntity entitiy : entities) {
+            if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+                if (((ResourceTree) entitiy).getGatherCount() > 0) {
+                    ((ResourceTree) entitiy).gather(-1);
+                }
+            }
+        }
+    }
+**/
     private static BasicStats initStats() {
         List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
         BasicStats result = new BasicStats(HEALTH, speed, 2f, 500, normalEvents, TEXTURE);
@@ -163,4 +175,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
 	}
+
+
 }
