@@ -128,7 +128,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 		BasicStats result = new BasicStats(HEALTH, speed, 8f, 500, normalEvents, TEXTURE_LEFT);
-		//result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed()));
+		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed(), GoalPotate.class));
 		return result;
 	}
 

@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -15,6 +16,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 
     private float range = 1.5f;
+    private Class target;
 
     /**
      * Default constructor for serialization
@@ -27,10 +29,12 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
      *
      * @param attackSpeed
      *            the delay between shots
+     *
      */
-    public MeleeAttackEvent(int attackSpeed) {
+    public MeleeAttackEvent(int attackSpeed, Class target) {
         setDoReset(true);
         setResetAmount(attackSpeed);
+        this.target = target;
         reset();
     }
 
@@ -42,7 +46,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
      * */
     @Override
 	public void action(EnemyEntity enemy) {
-        Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(Player.class, enemy.getPosX(),
+        Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(target, enemy.getPosX(),
                 enemy.getPosY());
 
         // no target exists or target is out of range
@@ -50,12 +54,6 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
             return;
         }
 
-        /*Currently BallisticProjectile assumes Enemies are the ones being attacked which results in
-        * the enemies that are shooting being the ones being damaged (suicidal),
-        * solutions:
-        *   -create new EnemyMelee attack extending from Projectile (hacky to use melee as projectile?)
-        *   -create new EnemyMelee attack (may be duplicating work from Projectile)
-        *   */
         GameManager.get().getWorld().addEntity(new MeleeAttack(target1.get().getClass(),
                 enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, 10));
 
@@ -75,7 +73,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
      * */
     @Override
     public TimeEvent<EnemyEntity> copy() {
-        return new MeleeAttackEvent(getResetAmount());
+        return new MeleeAttackEvent(getResetAmount(), this.target);
     }
 
     /**

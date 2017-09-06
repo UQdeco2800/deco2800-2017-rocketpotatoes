@@ -8,8 +8,8 @@ import java.util.function.Supplier;
  */
 public class StateAnimation implements Animation {
 
-	private final transient int maxValue;
-	private final transient int minValue;
+	private final transient float maxValue;
+	private final transient float minValue;
 	private final transient Animation[] frames;
 	private final transient Supplier<Float> valueFunction;
 
@@ -38,7 +38,7 @@ public class StateAnimation implements Animation {
 	 *            The function whose value this animation depends on. Note that a
 	 *            Supplier<Integer> will also work
 	 */
-	public StateAnimation(int maxValue, int minValue, Animation[] frames, Supplier<Float> valueFunction) {
+	public StateAnimation(float maxValue, float minValue, Animation[] frames, Supplier<Float> valueFunction) {
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 		this.frames = frames;

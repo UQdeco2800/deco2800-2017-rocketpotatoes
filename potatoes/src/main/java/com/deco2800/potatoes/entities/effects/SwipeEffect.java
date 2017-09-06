@@ -25,9 +25,8 @@ public class SwipeEffect extends Effect {
     }
 
     /**
-     * Creates a new Explosion Projectile on impact (AOE Effect). Explosion
-     * Projectiles does not change direction, it should be stationary and shown at
-     * the location ballistic projectile hit.
+     * Creates a new swipe effect on impact. Swipe effect does not change direction,
+     * it should be stationary and shown at the location ballistic projectile hit.
      *
      * @param posX
      *            x start position

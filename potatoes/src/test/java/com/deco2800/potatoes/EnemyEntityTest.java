@@ -50,7 +50,7 @@ public class EnemyEntityTest {
 		public BasicStats getBasicStats() {
 			List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 			BasicStats result = new BasicStats(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
-			result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+			result.getNormalEventsReference().add(new MeleeAttackEvent(500, Player.class));
 			return result;
 		}
 	}
