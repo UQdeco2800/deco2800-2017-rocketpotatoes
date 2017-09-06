@@ -13,8 +13,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.Enemies.Squirrel;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -54,6 +54,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private Inventory inventory;
 
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 4);
+	// an integer to check if key down has been pressed before key up
+	private int checkKeyDown = 0;
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -201,6 +203,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		default:
 			break;
 		}
+		checkKeyDown++;
 	}
 
 	private Vector2 getCursorCoords() {
@@ -271,6 +274,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 * @param keycode
 	 */
 	public void handleKeyUp(int keycode) {
+		// checks if key down is pressed first
+		if (checkKeyDown <= 0) {
+			return;
+		}
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
@@ -291,6 +298,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		default:
 			break;
 		}
+		checkKeyDown--;
 	}
 
 	@Override

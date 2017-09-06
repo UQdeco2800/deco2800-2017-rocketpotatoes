@@ -138,82 +138,76 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				TextureManager reg = GameManager.get()
-					.getManager(TextureManager.class);
-
 				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
-				Texture barTexture = reg.getTexture((progressBar.getTexture()));
-
-				// sets colour palette
-				batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
-
-				// draws the progress bar
-				Texture entityTexture = reg.getTexture(entity.getTexture());
-				float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
-
-				float barRatio = ((HasProgress) entity).getProgressRatio();
-				float maxBarWidth = tileWidth * entity.getXRenderLength()
-					* progressBar.getWidthScale();
-				float barWidth = maxBarWidth * barRatio;
-				float barBackgroundWidth = maxBarWidth * (1 - barRatio);
-
-				// x co-ordinate,
-				// finds the overlap length of the bar and moves it half as much left
-				float barX = isoPosition.x - (tileWidth * entity.getXRenderLength()
-						* (progressBar.getWidthScale() - 1) / 2);
-				// y co-ordinate
-				// If height is specified, use it, otherwise estimate the right height
-				float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
-				float endX = barX + barWidth;
-				// We haven't implemented rounded corners, but when we do:
-				// float greyBarX = endX + endWidth;
-
-				//draw half of bar that represents current health
-				batch.draw(barTexture,
-						// x, y
-						barX, barY,
-						// width, height
-						barWidth, maxBarWidth / 8,
-						// srcX, srcY
-						0, 0,
-						// srcWidth, srcHeight
-						(int) (barTexture.getWidth() * barRatio), barTexture.getHeight(),
-						// flipX, flipY
-						false, false);
-
-				//draw shadow half of bar that represents health lost
-				batch.setColor(0.5f, 0.5f, 0.5f, 1f);
-				batch.draw(barTexture,
-						// x, y
-						endX, barY,
-						// width, height
-						barBackgroundWidth, maxBarWidth / 8,
-						// srcX, srcY
-						(int) (barTexture.getWidth() * barRatio), 0,
-						// srcWidth, srcHeight
-						(int) (barTexture.getWidth() * (1 - barRatio)), barTexture.getHeight(),
-						// flipX, flipY
-						false, false);
-
-				// reset the batch colour
-				batch.setColor(Color.WHITE);
-
-				/* display font (used for debugging)
-				 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
-				 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
-				 * tileWidth / 2 - 10, isoPosition.y + 60);
-				 */
+				// Allow entities to return null if they don't want to display their progress bar
+				if (progressBar != null) {
+					TextureManager reg = GameManager.get()
+						.getManager(TextureManager.class);
+	
+					Texture barTexture = reg.getTexture((progressBar.getTexture()));
+	
+					// sets colour palette
+					batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
+	
+					// draws the progress bar
+					Texture entityTexture = reg.getTexture(entity.getTexture());
+					float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
+	
+					float barRatio = ((HasProgress) entity).getProgressRatio();
+					float maxBarWidth = tileWidth * entity.getXRenderLength()
+						* progressBar.getWidthScale();
+					float barWidth = maxBarWidth * barRatio;
+					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
+	
+					// x co-ordinate,
+					// finds the overlap length of the bar and moves it half as much left
+					float barX = isoPosition.x - (tileWidth * entity.getXRenderLength()
+							* (progressBar.getWidthScale() - 1) / 2);
+					// y co-ordinate
+					// If height is specified, use it, otherwise estimate the right height
+					float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
+					float endX = barX + barWidth;
+					// We haven't implemented rounded corners, but when we do:
+					// float greyBarX = endX + endWidth;
+	
+					//draw half of bar that represents current health
+					batch.draw(barTexture,
+							// x, y
+							barX, barY,
+							// width, height
+							barWidth, maxBarWidth / 8,
+							// srcX, srcY
+							0, 0,
+							// srcWidth, srcHeight
+							(int) (barTexture.getWidth() * barRatio), barTexture.getHeight(),
+							// flipX, flipY
+							false, false);
+	
+					//draw shadow half of bar that represents health lost
+					batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+					batch.draw(barTexture,
+							// x, y
+							endX, barY,
+							// width, height
+							barBackgroundWidth, maxBarWidth / 8,
+							// srcX, srcY
+							(int) (barTexture.getWidth() * barRatio), 0,
+							// srcWidth, srcHeight
+							(int) (barTexture.getWidth() * (1 - barRatio)), barTexture.getHeight(),
+							// flipX, flipY
+							false, false);
+	
+					// reset the batch colour
+					batch.setColor(Color.WHITE);
+	
+					/* display font (used for debugging)
+					 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
+					 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
+					 * tileWidth / 2 - 10, isoPosition.y + 60);
+					 */
 				}
-
-			/*
-			 * Construction percentage displayed in yellow
-			 */
-			if (entity instanceof AbstractTree && ((AbstractTree) entity).getConstructionLeft() > 0) {
-				font.setColor(Color.YELLOW);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d%%", 100 - ((AbstractTree) entity).getConstructionLeft()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
 			}
+
 
 			/*
 			 * Display resource collected for Resource Tree

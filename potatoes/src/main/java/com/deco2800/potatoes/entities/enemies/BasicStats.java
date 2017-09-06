@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities.Enemies;
+package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.entities.TimeEvent;
 

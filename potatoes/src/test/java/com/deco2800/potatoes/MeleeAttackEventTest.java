@@ -1,8 +1,8 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.enemies.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
 
 import com.deco2800.potatoes.worlds.AbstractWorld;
@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MeleeAttackEventTest {
-    MeleeAttackEvent testEvent = new MeleeAttackEvent(20);
+    MeleeAttackEvent testEvent = new MeleeAttackEvent(20, Player.class);
     TankEnemy testMeleeEnemy = new TankEnemy(15, 15, 0);
 
     @Test
@@ -20,7 +20,7 @@ public class MeleeAttackEventTest {
 
     @Test
     public void emptyTest() {
-        MeleeAttackEvent emptyEvent = new MeleeAttackEvent(100);
+        MeleeAttackEvent emptyEvent = new MeleeAttackEvent(100, Player.class);
     }
 
     @Test

@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.deco2800.potatoes.entities.Enemies.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.enemies.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.TimeEvent;
@@ -16,9 +16,9 @@ import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
+import com.deco2800.potatoes.entities.enemies.BasicStats;
 
 
 public class EnemyEntityTest {
@@ -50,7 +50,7 @@ public class EnemyEntityTest {
 		public BasicStats getBasicStats() {
 			List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 			BasicStats result = new BasicStats(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
-			result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+			result.getNormalEventsReference().add(new MeleeAttackEvent(500, Player.class));
 			return result;
 		}
 	}

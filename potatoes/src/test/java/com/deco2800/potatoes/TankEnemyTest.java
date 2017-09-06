@@ -2,7 +2,7 @@ package com.deco2800.potatoes;
 
 import org.junit.*;
 
-import com.deco2800.potatoes.entities.Enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 
 public class TankEnemyTest {
 	TankEnemy testTank;

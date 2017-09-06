@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities.Enemies;
+package com.deco2800.potatoes.entities.enemies;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -114,22 +114,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 	}
 
-/*
-
-		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
-
-		if(this.distance(playerManager.getPlayer()) < speed) {
-			this.setPosX(goalX);
-			this.setPosY(goalY);
-			return;
-		}
-/*
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-*/
 
 	@Override
 	public String toString() {
@@ -144,6 +128,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 		BasicStats result = new BasicStats(HEALTH, speed, 8f, 500, normalEvents, TEXTURE_LEFT);
+		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed(), GoalPotate.class));
 		return result;
 	}
 

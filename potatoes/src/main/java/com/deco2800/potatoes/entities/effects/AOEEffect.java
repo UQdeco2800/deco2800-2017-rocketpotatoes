@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
 import java.util.Collection;

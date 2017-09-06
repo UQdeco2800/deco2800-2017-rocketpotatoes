@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.trees;
 
 import java.util.List;
+import java.util.Arrays;
 
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
@@ -8,9 +9,13 @@ import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.health.ProgressBar;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -18,7 +23,7 @@ import com.deco2800.potatoes.managers.GameManager;
  * construction and construction events which are triggered when the tree is
  * being constructed
  */
-public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress, Animated {
+public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress, HasProgressBar, Animated {
 
 	// Maybe move this out
 	private static class ConstructionEvent extends TimeEvent<AbstractTree> {
@@ -46,6 +51,9 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 	private transient Animation animation;
+
+	private static final List<Color> COLOURS = Arrays.asList(Color.YELLOW);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 60, 1);
 
 	/**
 	 * Default constructor for serialization
@@ -78,7 +86,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
-			GameManager.get().getManager(EventManager.class).unregisterAll(tree);;
+			GameManager.get().getManager(EventManager.class).unregisterAll(tree);
+			;
 		}
 		return result;
 	}
@@ -170,12 +179,12 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void setAnimation(Animation animation) {
 		this.animation = animation;
 	}
-	
+
 	@Override
 	public Animation getAnimation() {
 		return animation;
 	}
-	
+
 	/**
 	 * Returns a list of the stats for each upgrade level in order <br>
 	 * This is called often, so it is recommend you don't create a new object every
@@ -192,7 +201,12 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 */
 	@Override
 	public int getProgress() {
-		return constructionLeft;
+		if (constructionLeft > 0) {
+			return 100 - constructionLeft;
+		} else {
+			return (int) this.getHealth();
+
+		}
 	}
 
 	/**
@@ -212,23 +226,35 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 */
 	@Override
 	public boolean showProgress() {
+		if (getProgressRatio() > 0) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public float getProgressRatio() {
-		return constructionLeft / 100f;
+		if (constructionLeft > 0) {
+			return 1 - constructionLeft / 100f;
+		} else {
+			return this.getHealth() / this.getMaxHealth();
+		}
 	}
 
 	@Override
 	public int getMaxProgress() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public void setMaxProgress(int p) {
-		
 
 	}
+
+	@Override
+	public ProgressBarEntity getProgressBar() {
+		return constructionLeft > 0 ? PROGRESS_BAR : null;
+	}
+
 }

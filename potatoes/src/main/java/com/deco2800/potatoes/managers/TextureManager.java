@@ -104,8 +104,15 @@ public class TextureManager extends Manager {
         }
         //damage tree:ice
         saveTexture("ice_basic_tree","resources/trees/iceBasicTree.png");
-
-
+        //damage tree:acorn
+        saveTexture("acorn_tree","resources/trees/tree-acorn.png");
+        // Enemies
+        saveTexture("swipe1", "resources/enemies/swipe1.png");
+        saveTexture("swipe2", "resources/enemies/swipe2.png");
+        saveTexture("swipe3", "resources/enemies/swipe3.png");
+        saveTexture("swipe4", "resources/enemies/swipe4.png");
+        saveTexture("swipe5", "resources/enemies/swipe5.png");
+        saveTexture("empty", "resources/enemies/empty.png");
 
     }
 
