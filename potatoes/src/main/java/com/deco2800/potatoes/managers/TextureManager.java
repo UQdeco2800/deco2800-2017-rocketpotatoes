@@ -113,6 +113,11 @@ public class TextureManager extends Manager {
         saveTexture("swipe4", "resources/enemies/swipe4.png");
         saveTexture("swipe5", "resources/enemies/swipe5.png");
         saveTexture("empty", "resources/enemies/empty.png");
+        
+       //Portals 
+        saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
+        saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
+        saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
 
     }
 

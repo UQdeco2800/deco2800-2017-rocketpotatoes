@@ -19,6 +19,8 @@ import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
@@ -239,6 +241,7 @@ public class GameScreen implements Screen {
             }
             addResourceTrees();
             initialiseResources();
+            initialisePortal();
             addDamageTree();
             
         }
@@ -277,6 +280,12 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+    }
+    
+    private void initialisePortal() {
+		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
+		GameManager.get().getWorld().addEntity(new AbstractPortal(17, 20, 0, "desert_portal"));
+		
     }
 
     private void tickGame(long timeDelta) {
