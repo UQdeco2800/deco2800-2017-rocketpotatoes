@@ -128,7 +128,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
 		this.centered = centered;
-
+		
 		this.texture = texture;
 
 		this.position = new Box3D(posX + getCenterOffset(xLength), posY + getCenterOffset(yLength), posZ, xLength,

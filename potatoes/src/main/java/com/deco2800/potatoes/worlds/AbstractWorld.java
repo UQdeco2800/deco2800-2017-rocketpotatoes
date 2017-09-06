@@ -100,6 +100,7 @@ public abstract class AbstractWorld {
 
     }
 
+    
     public void removeEntity(int id) {
         entities.remove(id);
 
@@ -123,8 +124,6 @@ public abstract class AbstractWorld {
                 return;
             }
         }
-
-
     }
 
     public void setWidth(int width) {
