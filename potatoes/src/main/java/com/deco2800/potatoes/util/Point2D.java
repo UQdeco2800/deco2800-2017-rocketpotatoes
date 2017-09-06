@@ -79,11 +79,11 @@ public class Point2D {
             return true;
         }
 
-        if (!(o instanceof Point)) {
+        if (!(o instanceof Point2D)) {
             return false;
         }
 
-        Point other = (Point) o;
+        Point2D other = (Point2D) o;
 
         return hashCode() ==  other.hashCode() &&
             compareFloat(getX(), other.getX()) &&

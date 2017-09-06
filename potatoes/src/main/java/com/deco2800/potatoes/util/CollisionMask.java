@@ -42,4 +42,35 @@ public interface CollisionMask {
      *          as seen above.
      */
     float distance(float x1, float y1, float x2, float y2);
+
+	/**
+	 * Returns the x coordinate at the centre of the mask.
+	 * 
+	 * @return Returns the x coordinate.
+	 */
+    float getX();
+
+    /**
+     * Sets the x coordiante at the centre of the mask.
+     * 
+     * @param x
+     *             The new x coordinate.
+     */
+    public void setX(float x);
+
+	/**
+	 * Returns the y coordinate at the centre of the mask.
+	 * 
+	 * @return Returns the y coordinate.
+	 */
+    public float getY();
+
+
+	/**
+	 * Sets the y coordinate at the centre of the mask.
+	 * 
+	 * @param y
+	 *            The new y coordinate.
+	 */
+    public void setY(float y);
 }
