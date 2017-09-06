@@ -27,11 +27,11 @@ public class Point2D implements CollisionMask{
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Box2D) {
-            Box2D otherBox = (Box2D) other;
-            return otherBox.overlaps(this);
+            Box2D box = (Box2D) other;
+            return box.overlaps(this);
         } else if (other instanceof Circle2D) {
-            Circle2D otherCircle = (Circle2D) other;
-            return otherCircle.overlaps(this);
+            Circle2D circle = (Circle2D) other;
+            return circle.overlaps(this);
         } else if (other instanceof Point2D) {
             Point2D otherPoint = (Point2D) other;
             return this.equals(otherPoint);
@@ -42,14 +42,19 @@ public class Point2D implements CollisionMask{
     @Override
     public float distance(CollisionMask other) {
         if (other instanceof Box2D) {
-            Box2D otherBox = (Box2D) other;
-            return otherBox.distance(this);
+            Box2D box = (Box2D) other;
+            return box.distance(this);
         } else if (other instanceof Circle2D) {
-            Circle2D otherCircle = (Circle2D) other;
-            return otherCircle.distance(this);
+            Circle2D circle = (Circle2D) other;
+            return circle.distance(this);
         } else if (other instanceof Point2D) {
-            Point2D otherPoint = (Point2D) other;
-            //TODO point to point dist
+            Point2D point = (Point2D) other;
+
+            float distX = Math.abs(point.getX() - this.x);
+            float distY = Math.abs(point.getY() - this.y);
+
+            // use pythagorean theorem
+            return (float) Math.sqrt((double) distX * distX + distY * distY );
         }
         return 0;
     }

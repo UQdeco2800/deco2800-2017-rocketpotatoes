@@ -23,31 +23,45 @@ public class Box2D implements CollisionMask{
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Box2D) {
             Box2D otherBox = (Box2D) other;
-            // this x is too small -> non-collision
-            if (this.x + (this.xLength * 0.5) < otherBox.x - (otherBox.xLength * 0.5)) {
-                return false;
-            }
 
-            // this x is too large -> non-collision
-            if (this.x - (this.xLength * 0.5) > otherBox.x + (otherBox.xLength * 0.5)) {
-                return false;
-            }
+            // Calc centre to centre dist
+            float distX = Math.abs(otherBox.getX() - this.x);
+            float distY = Math.abs(otherBox.getY() - this.y);
 
-            // this y is too small -> non-collision
-            if (this.y + (this.yLength * 0.5) < otherBox.y - (otherBox.yLength * 0.5)) {
-                return false;
-            }
+            // Check dist's are lagre enough that no collision could occur
+            if (distX > (this.xLength + otherBox.getXLength())/2) { return false; }
+            if (distY > (this.yLength + otherBox.getYLength())/2) { return false; }
 
-            // this y is too large -> non-collision
-            if (this.y - (this.yLength * 0.5) > otherBox.y + (otherBox.yLength * 0.5)) {
-                return false;
-            }
+            return true;
+
         } else if (other instanceof Circle2D) {
-            Circle2D otherCircle = (Circle2D) other;
-            //TODO not quite sure how yet
+            Circle2D circle = (Circle2D) other;
+            // We will consider the circle to be a point
+            // and the rectangle to be a rounded rectangle
+            // (adding the radius to the outside of the rectangle)
+
+            // Collapse down the dimensions, so we're considering one corner of the rectangle
+            float distX = Math.abs(circle.getX() - this.x);
+            float distY = Math.abs(circle.getY() - this.y);
+
+            // Point is outside collision
+            if (distX > (this.xLength/2 + circle.getRadius())) { return false; }
+            if (distY > (this.yLength/2 + circle.getRadius())) { return false; }
+
+            // Point is inside collision
+            if (distX <= (this.xLength/2)) { return true; }
+            if (distY <= (this.yLength/2)) { return true; }
+
+            // May intersect corner scenario, calc oblique distance square
+            float cornerX = distX - (this.xLength / 2);
+            float cornerY = distY - (this.yLength / 2);
+            float cornerDistSquare = cornerX * cornerX + cornerY * cornerY;
+
+            return cornerDistSquare <= (circle.getRadius() * circle.getRadius());
 
         } else if (other instanceof Point2D) {
             Point2D otherPoint = (Point2D) other;
+
             // Check x non collision
             if ( Math.abs(this.x - otherPoint.getX()) < (this.xLength * 0.5)) {
                 return false;
@@ -66,13 +80,38 @@ public class Box2D implements CollisionMask{
     public float distance(CollisionMask other) {
         if (other instanceof Box2D) {
             Box2D otherBox = (Box2D) other;
-            //TODO
+
+            // Calc centre to centre dist
+            float distX = Math.abs(otherBox.getX() - this.x);
+            float distY = Math.abs(otherBox.getY() - this.y);
+            float distSquare = distX * distX + distY * distY;
+
+            //TODO clip portion of line covered by rects
+
+            return (float) Math.sqrt((double) distSquare);
+
+
         } else if (other instanceof Circle2D) {
-            Circle2D otherCircle = (Circle2D) other;
-            //TODO
+            Circle2D circle = (Circle2D) other;
+
+            float distX = Math.abs(circle.getX() - this.x);
+            float distY = Math.abs(circle.getY() - this.y);
+            float distSquare = distX * distX + distY * distY;
+
+
+            //TODO clip portion of line covered by rect
+
+            return (float) Math.sqrt((double) distSquare - circle.getRadius());
+
         } else if (other instanceof Point2D) {
-            Point2D otherPoint = (Point2D) other;
-            //TODO
+            Point2D point = (Point2D) other;
+
+            float distX = Math.abs(point.getX() - this.x);
+            float distY = Math.abs(point.getY() - this.y);
+
+            //TODO clip portion of line covered by rect
+
+            return (float) Math.sqrt((double) distX * distX + distY * distY);
         }
 
         return 0;
@@ -120,4 +159,6 @@ public class Box2D implements CollisionMask{
     }
 
     //TODO equals
+
+    //TODO to String
 }
