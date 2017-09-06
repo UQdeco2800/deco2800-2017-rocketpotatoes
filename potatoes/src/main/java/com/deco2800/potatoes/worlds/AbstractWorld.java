@@ -50,7 +50,7 @@ public abstract class AbstractWorld {
      * @param entity
      */
     public void addEntity(AbstractEntity entity) {
-        MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+        MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
         if (m.isMultiplayer()) {
             if (m.isMaster()) {
                 // HashMap because I want entities to have unique ids that aren't necessarily sequential
@@ -90,7 +90,7 @@ public abstract class AbstractWorld {
      * @param id
      */
     public void addEntity(AbstractEntity entity, int id) {
-        MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+        MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
         if (m.isMultiplayer()) {
             entities.put(id, entity);
         }
@@ -104,7 +104,7 @@ public abstract class AbstractWorld {
         entities.remove(id);
 
         // Tell the other clients if we're master and in multiplayer.
-        MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+        MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
         if (m.isMultiplayer() && m.isMaster()) {
             m.broadcastEntityDestroy(id);
         }
@@ -116,7 +116,7 @@ public abstract class AbstractWorld {
                 entities.remove(e.getKey());
 
                 // Tell the other clients if we're master and in multiplayer.
-                MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+                MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
                 if (m.isMultiplayer() && m.isMaster()) {
                     m.broadcastEntityDestroy(e.getKey());
                 }

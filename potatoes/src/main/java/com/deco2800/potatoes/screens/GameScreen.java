@@ -15,11 +15,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.Enemies.SpeedyEnemy;
-import com.deco2800.potatoes.entities.Enemies.Squirrel;
-import com.deco2800.potatoes.entities.Enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
+import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
+import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
 import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.gui.PauseMenuGui;
@@ -109,38 +112,39 @@ public class GameScreen implements Screen {
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
-        textureManager = (TextureManager)GameManager.get().getManager(TextureManager.class);
+        textureManager = GameManager.get().getManager(TextureManager.class);
 
         /**
          *	Setup managers etc.
          */
 
 		/* Create a sound manager for the whole game */
-        soundManager = (SoundManager) GameManager.get().getManager(SoundManager.class);
+        soundManager = GameManager.get().getManager(SoundManager.class);
 
 		/* Create a mouse handler for the game */
         mouseHandler = new MouseHandler();
 
 		/* Create a multiplayer manager for the game */
-        multiplayerManager = (MultiplayerManager)GameManager.get().getManager(MultiplayerManager.class);
+        multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 
 		/* Create a player manager. */
-        playerManager = (PlayerManager)GameManager.get().getManager(PlayerManager.class);
+        playerManager = GameManager.get().getManager(PlayerManager.class);
 
 		/* Setup camera */
-        cameraManager = (CameraManager)GameManager.get().getManager(CameraManager.class);
+        cameraManager = GameManager.get().getManager(CameraManager.class);
         cameraManager.setCamera(new OrthographicCamera(1920, 1080));
 
         /**
          * GuiManager, which contains all our Gui specific properties/logic. Creates our stage etc.
          */
 
-        guiManager = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        guiManager = GameManager.get().getManager(GuiManager.class);
         guiManager.setStage(new Stage(new ScreenViewport()));
 
         // Deselect all gui elements if we click anywhere in the game world
         guiManager.getStage().getRoot().addCaptureListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            @Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (!(event.getTarget() instanceof TextField)) {
                     guiManager.getStage().setKeyboardFocus(null);
                 }
@@ -153,6 +157,9 @@ public class GameScreen implements Screen {
 
         // Make our PauseMenuGui
         guiManager.addGui(new PauseMenuGui(guiManager.getStage(), this));
+
+        // Make our DebugMenuGui
+        guiManager.addGui(new DebugModeGui(guiManager.getStage(), this));
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
@@ -180,7 +187,7 @@ public class GameScreen implements Screen {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(guiManager.getStage()); // Add the UI as a processor
 
-        inputManager = (InputManager) GameManager.get().getManager(InputManager.class);
+        inputManager = GameManager.get().getManager(InputManager.class);
         inputManager.addKeyDownListener(new CameraHandler());
         inputManager.addKeyDownListener(new PauseHandler());
         inputManager.addScrollListener(new ScrollTester());
@@ -207,7 +214,7 @@ public class GameScreen implements Screen {
             guiManager.getGui(ChatGui.class).hide();
         }
 
-        ((EventManager) GameManager.get().getManager(EventManager.class)).unregisterAll();
+        GameManager.get().getManager(EventManager.class).unregisterAll();
         
         Random random = new Random();
 
@@ -232,21 +239,21 @@ public class GameScreen implements Screen {
             }
             addResourceTrees();
             initialiseResources();
+            addDamageTree();
             
         }
         
         if (!multiplayerManager.isMultiplayer()) {
-			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
-		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
-		   TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
-		 	*/
-
             // Make our player
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
     }
-    
+    private void addDamageTree(){
+        GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
+        GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
+    }
     private void addResourceTrees() {
     		// Seed Trees
         GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
@@ -306,7 +313,7 @@ public class GameScreen implements Screen {
 
         // Tick Events
         if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-            ((EventManager) GameManager.get().getManager(EventManager.class)).tickAll(timeDelta);
+            GameManager.get().getManager(EventManager.class).tickAll(timeDelta);
         }
 
         // Broadcast updates if we're master TODO only when needed.
@@ -498,6 +505,7 @@ public class GameScreen implements Screen {
     }
 
     public void exitToMenu() {
+        GameManager.get().clearManagers();
         game.setScreen(new MainMenuScreen(game));
         dispose();
     }

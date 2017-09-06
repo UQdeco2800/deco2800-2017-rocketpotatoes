@@ -86,7 +86,7 @@ public class InventoryGui extends Gui {
 
 		inventoryTable.defaults().width(50);
 
-		seedImage = new Image((Drawable) new TextureRegionDrawable(
+		seedImage = new Image(new TextureRegionDrawable(
 				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/seed.png")))));
 		seedImage.setOrigin(50, 50);
 		inventoryTable.add(seedImage).size(30, 30).pad(2);
@@ -94,7 +94,7 @@ public class InventoryGui extends Gui {
 
 		/* next row */
 		inventoryTable.row();
-		foodImage = new Image((Drawable) new TextureRegionDrawable(
+		foodImage = new Image(new TextureRegionDrawable(
 				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/food.png")))));
 		foodImage.setOrigin(50, 50);
 		inventoryTable.add(foodImage).size(25, 25).pad(2);

@@ -1,7 +1,8 @@
 package com.deco2800.potatoes;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.ProgressBarEntity;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,26 +17,9 @@ public class ProgressBarEntityTest {
 
 	ProgressBarEntity progressBarEntity;
 
-	private class TestableProgressBarEntity extends ProgressBarEntity {
-		public TestableProgressBarEntity() {
-		};
-
-		public TestableProgressBarEntity(String texture, int height, int widthScale) {
-			super(texture, height, widthScale);
-		};
-
-		public TestableProgressBarEntity(List<Color> colours, int height, int widthScale) {
-			super(colours, height, widthScale);
-		};
-
-		public TestableProgressBarEntity(String texture, List<Color> colours, int height, int widthScale) {
-			super(texture, colours, height, widthScale);
-		};
-	}
-
 	@Before
 	public void setUp() throws Exception {
-		progressBarEntity = new TestableProgressBarEntity("progress_bar", colours, 50, 1);
+		progressBarEntity = new ProgressBarEntity("progress_bar", colours, 50, 1);
 	}
 
 	// Common to all initialisation test
@@ -49,14 +33,14 @@ public class ProgressBarEntityTest {
 
 	@Test
 	public void initTest() {
-		progressBarEntity = new TestableProgressBarEntity("progress_bar", colours, 50, 1);
+		progressBarEntity = new ProgressBarEntity("progress_bar", colours, 50, 1);
 		initTestCommon();
 	}
 
 	@Test
 	public void initTestEmpty() {
 		try {
-			progressBarEntity = new TestableProgressBarEntity();
+			progressBarEntity = new ProgressBarEntity();
 		} catch (Exception E) {
 			fail("No AbstractEntity serializable constructor");
 		}
@@ -74,16 +58,16 @@ public class ProgressBarEntityTest {
 
 		// test 1 colour
 		colours = Arrays.asList(Color.RED);
-		progressBarEntity = new TestableProgressBarEntity(colours, 50, 1);
+		progressBarEntity = new ProgressBarEntity(colours);
 		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.RED);
 		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.RED);
 		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.RED);
 
-		// test 3 colours
-		progressBarEntity = new TestableProgressBarEntity("progress_bar", 50, 1);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.GREEN);
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.valueOf("fff134"));
-		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.RED);
+		// test progress bar with image
+		progressBarEntity = new ProgressBarEntity("progress_bar", 50);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.WHITE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.WHITE);
+		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.WHITE);
 
 	}
 

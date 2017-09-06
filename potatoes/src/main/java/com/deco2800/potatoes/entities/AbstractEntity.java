@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.util.Box3D;
 
@@ -9,7 +11,7 @@ import com.deco2800.potatoes.util.Box3D;
  * AbstractEntities are rendered by Render2D and Render3D An item that does not
  * need to be rendered should not be a WorldEntity
  */
-public abstract class AbstractEntity implements Renderable, Comparable<AbstractEntity> {
+public abstract class AbstractEntity extends Render3D implements Renderable, Comparable<AbstractEntity> {
 
 	protected transient GameManager gameManager = GameManager.get();
 
@@ -139,6 +141,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * 
 	 * @return The X coordinate.
 	 */
+	@Override
 	public float getPosX() {
 		// Using Y offset seems wrong but passes test and leggy was using Y offset here
 		return position.getX() - getCenterOffsetY();
@@ -149,6 +152,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * 
 	 * @return The Y coordinate.
 	 */
+	@Override
 	public float getPosY() {
 		return position.getY() - getCenterOffsetY();
 	}
@@ -158,6 +162,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * 
 	 * @return The Z coordinate.
 	 */
+	@Override
 	public float getPosZ() {
 		return position.getZ();
 	}
@@ -237,6 +242,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * 
 	 * @return texture string
 	 */
+	@Override
 	public String getTexture() {
 		return texture;
 	}
@@ -287,7 +293,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		if (Float.compare(isoY, otherIsoY) == 0) {
 			return Float.compare(otherIsoX, isoX);
 		}
-		if (o instanceof ExplosionProjectile) {
+		if (o instanceof Effect) {
 			return 2;
 		}
 		return Float.compare(otherIsoY, isoY);

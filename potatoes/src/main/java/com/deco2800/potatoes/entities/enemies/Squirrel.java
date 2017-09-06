@@ -1,10 +1,11 @@
-package com.deco2800.potatoes.entities.Enemies;
+package com.deco2800.potatoes.entities.enemies;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.*;
-
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -26,7 +27,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Path path = null;
 	private Box3D target = null;
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", 40, 1);
+	private static final ProgressBarEntity progressBar = new ProgressBarEntity();
 	
 	public Squirrel() {
 		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
@@ -52,8 +53,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-		PlayerManager playerManager = (PlayerManager) GameManager.get().getManager(PlayerManager.class);
-		PathManager pathManager = (PathManager) GameManager.get().getManager(PathManager.class);
+		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
         // check paths
 
@@ -113,22 +114,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 	}
 
-/*
-
-		float goalX = playerManager.getPlayer().getPosX() + random.nextFloat() * 6 - 3;
-		float goalY = playerManager.getPlayer().getPosY() + random.nextFloat() * 6 - 3;
-
-		if(this.distance(playerManager.getPlayer()) < speed) {
-			this.setPosX(goalX);
-			this.setPosY(goalY);
-			return;
-		}
-/*
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-*/
 
 	@Override
 	public String toString() {
@@ -143,6 +128,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
 		BasicStats result = new BasicStats(HEALTH, speed, 8f, 500, normalEvents, TEXTURE_LEFT);
+		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed(), GoalPotate.class));
 		return result;
 	}
 

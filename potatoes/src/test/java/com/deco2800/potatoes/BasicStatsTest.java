@@ -1,7 +1,7 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.BasicStats;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import org.junit.Before;
 import org.junit.Test;

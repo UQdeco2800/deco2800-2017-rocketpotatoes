@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.worlds.AbstractWorld;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +55,12 @@ public class GameManager implements TickableManager {
 	 * @param type The class type (ie SoundManager.class)
 	 * @return A Manager component of the requested type
 	 */
-	public Manager getManager(Class<?> type) {
+	@SuppressWarnings("unchecked")
+	public <M extends Manager> M getManager(Class<M> type) {
 		/* Check if the manager exists */
 		for (Manager m : managers) {
 			if (m.getClass() == type) {
-				return m;
+				return (M) m;
 			}
 		}
 
@@ -75,7 +75,7 @@ public class GameManager implements TickableManager {
 		/* And then return it */
 		for (Manager m : managers) {
 			if (m.getClass() == type) {
-				return m;
+				return (M) m;
 			}
 		}
 		LOGGER.warn("GameManager.get returned null! It shouldn't have!");
@@ -111,4 +111,10 @@ public class GameManager implements TickableManager {
 		}
 	}
 
+	/**
+	 * Deletes all existing managers. Used to reset the game
+	 */
+	public void clearManagers() {
+		managers.clear();
+	}
 }
