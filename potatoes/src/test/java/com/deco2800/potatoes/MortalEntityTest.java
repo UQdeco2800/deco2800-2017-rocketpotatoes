@@ -197,7 +197,29 @@ public class MortalEntityTest {
 		assertEquals(0f, mortalEntity.getHealth(), 0f);
 		assertTrue("Health should be set to 100f", mortalEntity.setHealth(100f));
 		assertEquals(1f, mortalEntity.getHealth(), 100f);
-
+	}
+	
+	@Test 
+	public void getProgressTest() {
+		assertEquals(100, mortalEntity.getProgress());
+		assertFalse("Health should be set to 23.4f", mortalEntity.setHealth(23.4f));
+		assertEquals("Progress should equal 23 and be an integer", 23, mortalEntity.getProgress());
+	}
+	
+	@Test 
+	public void getProgressRatio() {
+		assertEquals("Progress ratio should be maximum", 1, mortalEntity.getProgressRatio(), 0f);
+		assertFalse("Health should be set to 50f", mortalEntity.setHealth(50f));
+		assertEquals("Progress ratio should be 0.5", 0.5f, mortalEntity.getProgressRatio(), 0f);
+		assertFalse("Health should be set to 0f", mortalEntity.setHealth(0f));
+		assertEquals("Progress ratio should be 0", 0f, mortalEntity.getProgressRatio(), 0f);
+	}
+	
+	@Test 
+	public void getMaxProgressTest() {
+		assertEquals("max progress should be 100f", 100f, mortalEntity.getMaxProgress(), 0f);
+		assertEquals("max health should be 120f", 120f, mortalEntity.addMaxHealth(20f), 0f);
+		assertEquals("max progress should be 120f", 120f, mortalEntity.getMaxProgress(), 0f);
 	}
 
 }

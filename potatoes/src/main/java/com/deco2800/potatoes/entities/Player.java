@@ -276,7 +276,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 */
 	public void handleKeyUp(int keycode) {
 		// checks if key down is pressed first
-		if (checkKeyDown <= 0) { return; }
+		if (checkKeyDown <= 0) {
+			return;
+		}
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
