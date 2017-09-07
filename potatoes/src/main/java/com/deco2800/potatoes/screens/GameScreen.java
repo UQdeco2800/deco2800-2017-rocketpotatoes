@@ -15,9 +15,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
-import com.deco2800.potatoes.entities.enemies.Squirrel;
-import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -229,6 +227,11 @@ public class GameScreen implements Screen {
             for (int i = 0; i < 3; i++) {
                 GameManager.get().getWorld().addEntity(
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+            }
+
+            for (int i = 0; i < 2; ++i) {
+                GameManager.get().getWorld().addEntity(new Moose(
+                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
 
             GameManager.get().getWorld().addEntity(new GoalPotate(8, 20, 0));

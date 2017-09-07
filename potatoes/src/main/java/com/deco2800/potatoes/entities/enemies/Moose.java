@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -12,43 +9,57 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
+public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
-	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient String TEXTURE_RIGHT = "squirrel_right";
+	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
+	private static final transient String TEXTURE_RIGHT = "pronograde";
 	private static final transient float HEALTH = 100f;
-	private static final transient float ATTACK_RANGE = 8f;
-	private static final transient int ATTACK_SPEED = 500;
+	private static final transient float ATTACK_RANGE = 0.5f;
+	private static final transient int ATTACK_SPEED = 1000;
 	private static final BasicStats STATS = initStats();
 
-	private static float speed = 0.12f;
+	private static float speed = 0.06f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
 
+
+	private int ticksSinceRandom = 0;
+	private static final int MAX_WAIT = 200;
+
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity();
-	
-	public Squirrel() {
+
+	public Moose() {
 		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
 	}
 
-	public Squirrel(float posX, float posY, float posZ) {
+	public Moose(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
 	}
-	
 
+    /**
+     * Change the target for the moose to a random location
+     */
+    private void randomTarget() {
+        float x = (float) Math.random() * GameManager.get().getWorld().getLength();
+        float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
+        target = new Box3D(x, y, 0, 1f, 1f, 1f);
+    }
 
 	/**
-	 * Squirrel follows it's path.
+	 * Moose follows it's path.
 	 * Requests a new path whenever it collides with a staticCollideable entity
 	 * moves directly towards the player once it reaches the end of it's path
 	 * @param i
@@ -57,27 +68,31 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	public void onTick(long i) {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-
+        boolean changeLocation = false;
+		if (++ticksSinceRandom == MAX_WAIT || target == null) {
+		    ticksSinceRandom = 0;
+		    changeLocation = true;
+		    randomTarget();
+        }
         // check paths
 
 		//check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
 				//collided with wall
-                path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-				target = path.pop();
+                randomTarget();
 				break;
 			}
 		}
 
         // check that we actually have a path
         if (path == null || path.isEmpty()) {
-            path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+            path = pathManager.generatePath(this.getBox3D(), target);
         }
 
 
 		//check if close enough to target
-		if (target != null && target.overlaps(this.getBox3D())) {
+		if (target != null && playerManager.getPlayer().getBox3D().overlaps(this.getBox3D())) {
 			target = null;
 		}
 

@@ -29,8 +29,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient String TEXTURE_LEFT = "tankBear";
 	private static final transient String TEXTURE_RIGHT = "tankBear";
 	private static final transient float HEALTH = 400f;
-	private static final transient float attackRange = 0.5f;
-	private static final transient int attackSpeed = 1000;
+	private static final transient float ATTACK_RANGE = 0.5f;
+	private static final transient int ATTACK_SPEED = 1000;
 
 	private static float speed = 0.02f;
 	private static Class<?> goal = Tower.class;
@@ -73,7 +73,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	private static BasicStats initStats() {
 		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(HEALTH, speed, attackRange, attackSpeed, normalEvents, TEXTURE);
+		BasicStats result = new BasicStats(HEALTH, speed, ATTACK_RANGE, ATTACK_SPEED, normalEvents, TEXTURE);
 		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed(), Player.class));
 		return result;
 	}
