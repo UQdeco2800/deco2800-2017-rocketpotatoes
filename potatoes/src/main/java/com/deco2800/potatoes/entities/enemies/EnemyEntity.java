@@ -300,11 +300,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
 	public boolean showProgress() {
 		return true;
 	}
@@ -377,8 +372,5 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public int getMaxProgress() {
 		return (int) getMaxHealth();
 	}
-
-	@Override
-	public void setMaxProgress(int p) { return; }
 
 }

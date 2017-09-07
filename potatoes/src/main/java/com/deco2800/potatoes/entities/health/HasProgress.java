@@ -11,12 +11,6 @@ public interface HasProgress {
 	int getProgress();
 
 	/**
-	 * Sets the progress to the given value.
-	 * @param p
-	 */
-	void setProgress(int p);
-
-	/**
 	 * Returns the current progress ratio
 	 * @return
 	 */
@@ -27,12 +21,6 @@ public interface HasProgress {
 	 * @return
 	 */
 	int getMaxProgress();
-
-	/**
-	 * Sets the maximum progress to the given value.
-	 * @param p
-	 */
-	void setMaxProgress(int p);
 
 	/**
 	 * Should i show the progress
