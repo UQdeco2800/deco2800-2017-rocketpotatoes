@@ -105,32 +105,44 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		float newPosX = this.getPosX();
 		float newPosY = this.getPosY();
 
-		newPosX += speedx;
-		newPosY += speedy;
+		if(!outOfBounds()) {
 
-		Box3D newPos = getBox3D();
-		newPos.setX(newPosX);
-		newPos.setY(newPosY);
+			newPosX += speedx;
+			newPosY += speedy;
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)&&!(entity instanceof Effect)
-					&& newPos.overlaps(entity.getBox3D())) {
-				LOGGER.info(this + " colliding with " + entity);
-				collided = true;
+			Box3D newPos = getBox3D();
+			newPos.setX(newPosX);
+			newPos.setY(newPosY);
 
+			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+			boolean collided = false;
+			for (AbstractEntity entity : entities.values()) {
+				if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+						&& newPos.overlaps(entity.getBox3D())) {
+					LOGGER.info(this + " colliding with " + entity);
+					collided = true;
+
+				}
+
+				if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+					collided = true;
+
+				}
 			}
 
-			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
-				collided = true;
-
+			if (!collided) {
+				this.setPosX(newPosX);
+				this.setPosY(newPosY);
 			}
 		}
+		else{
 
-		if (!collided) {
-			this.setPosX(newPosX);
-			this.setPosY(newPosY);
+			newPosX+=speedx;
+			newPosY+=speedy;
+			if(newPosX >0 && newPosX < GameManager.get().getWorld().getWidth() && newPosY > 0 && newPosY < GameManager.get().getWorld().getLength()){
+				this.setPosX(newPosX);
+				this.setPosY(newPosY);
+			}
 		}
 	}
 
@@ -245,15 +257,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	}
 
 	/**
+	 * Checks to see whether the player moving out of the map
+	 */
+	private boolean outOfBounds(){
+		int width = GameManager.get().getWorld().getWidth();
+		int height = GameManager.get().getWorld().getLength();
+		if(this.getPosX()>width || this.getPosX()<0 || this.getPosY()>height || this.getPosY()<0 ) {
+			return true;
+		}
+		return false;
+
+	}
+
+	/**
 	 * Handle movement when wasd keys are released
 	 *
 	 * @param keycode
 	 */
 	public void handleKeyUp(int keycode) {
 		// checks if key down is pressed first
-		if (checkKeyDown <= 0) {
-			return;
-		}
+		if (checkKeyDown <= 0) { return; }
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;

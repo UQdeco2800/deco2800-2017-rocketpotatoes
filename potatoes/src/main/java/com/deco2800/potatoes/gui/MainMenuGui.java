@@ -1,11 +1,16 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +25,13 @@ public class MainMenuGui extends Gui {
 
     // Root table for this entire element
     private Table root;
-    private VerticalGroup primaryButtons;
-    private TextButton startButton;
-    private TextButton optionsButton;
-    private TextButton quitButton;
+    private HorizontalGroup primaryButtons;
+    private Drawable startDrawable;
+    private Drawable optionsDrawable;
+    private Drawable exitDrawable;
+    private ImageButton startButton;
+    private ImageButton optionsButton;
+    private ImageButton exitButton;
 
     private VerticalGroup startButtonGroup;
     private TextButton singleplayerButton;
@@ -56,6 +64,8 @@ public class MainMenuGui extends Gui {
     private CheckBox optionsColourblindCheckbox;
     private TextButton optionsBackButton;
 
+    private Dialog failedMultiplayerConnection;
+
     // State indicator
     private enum States {
         PRIMARY,
@@ -75,14 +85,18 @@ public class MainMenuGui extends Gui {
 
         uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         // State 1
-        startButton = new TextButton("Start Game", uiSkin);
-        optionsButton = new TextButton("Options", uiSkin);
-        quitButton = new TextButton("Quit", uiSkin);
+        // Make drawables from textures
+        startDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("startMainMenu")));
+        optionsDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("optionsMainMenu")));
+        exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exitMainMenu")));
+        startButton = new ImageButton(startDrawable);
+        optionsButton = new ImageButton(optionsDrawable);
+        exitButton = new ImageButton(exitDrawable);
 
-        primaryButtons = new VerticalGroup();
+        primaryButtons = new HorizontalGroup();
         primaryButtons.addActor(startButton);
         primaryButtons.addActor(optionsButton);
-        primaryButtons.addActor(quitButton);
+        primaryButtons.addActor(exitButton);
 
         // Start state
         singleplayerButton = new TextButton("Singleplayer Game", uiSkin);
@@ -148,6 +162,9 @@ public class MainMenuGui extends Gui {
         optionsEffectsVolumeSlider.setValue(mainMenuScreen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(mainMenuScreen.getMusicVolume());
 
+        // Dialog
+        failedMultiplayerConnection = new Dialog("Failed to connect to host.", uiSkin);
+
         setupListeners();
 
         root = new Table(uiSkin);
@@ -177,7 +194,7 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        quitButton.addListener(new ChangeListener() {
+        exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
@@ -252,6 +269,10 @@ public class MainMenuGui extends Gui {
                 mainMenuScreen.menuBlipSound();
                 mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
                         multiplayerClientIpAddConnection.getText(),1337, false);
+                //Todo handle failed connection
+                //if (failedConnection) {
+                    // show Dialog
+                //}
             }
         });
 
