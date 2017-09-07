@@ -10,6 +10,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
 import com.deco2800.potatoes.renderering.Render3D;
@@ -18,8 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
-
+import java.security.Key;
 import java.util.Set;
 
 import static com.badlogic.gdx.utils.Align.left;
@@ -64,7 +67,7 @@ public class DebugModeGui extends Gui {
 
         // actors initialisation
         debugOn = new Label("Debug Options",uiSkin);
-        resetButton = new TextButton("Reset", uiSkin);
+        resetButton = new TextButton("Reset Map", uiSkin);
         addResourcesButton = new TextButton("+10/+10 Resources", uiSkin);
         //spawnButton = new TextButton("Spawn", uiSkin);
         immortalButton = new TextButton("Immortality", uiSkin);
@@ -79,7 +82,7 @@ public class DebugModeGui extends Gui {
         debugButtonGroup = new VerticalGroup();
         debugButtonGroup.addActor(debugOn);
         debugButtonGroup.addActor(immortalButton);
-        //debugButtonGroup.addActor(resetButton);
+        debugButtonGroup.addActor(resetButton);
         debugButtonGroup.addActor(addResourcesButton);
         //debugButtonGroup.addActor(spawnButton);
         debugButtonGroup.addActor(spawnCommands);
@@ -143,13 +146,20 @@ public class DebugModeGui extends Gui {
         });
 
         /* Listener for the reset button */
-        /*resetButton.addListener(new ChangeListener() {
+        resetButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                GameManager.get().setWorld(new InitialWorld());
-                GameManager.get().getWorld().addEntity(((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer());
+                Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
+                System.out.println("Map: " + entitiesMap.values().toString());
+
+                //Deletes all entities except player
+                for (AbstractEntity ent: entitiesMap.values()){
+                    if (!(ent instanceof Player)){
+                        GameManager.get().getWorld().removeEntity(ent);
+                    }
+                }
             }
-        });*/
+        });
 
         GameManager.get().getManager(InputManager.class).addKeyDownListener(new KeyDownObserver() {
             @Override
@@ -163,7 +173,16 @@ public class DebugModeGui extends Gui {
 
                 if (state == States.DEBUGON) {
                     if (keycode == Input.Keys.F1) {
-                        GameManager.get().getWorld().addEntity(new Tower((int)coords2.x,(int)coords2.y,0));
+                        Tower tower = new Tower((int)coords2.x,(int)coords2.y,0);
+                        tower.setProgress(0);
+                        GameManager.get().getWorld().addEntity(tower);
+
+                    }
+
+                    if (keycode == Input.Keys.F5) {
+                        ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
+                        rscTree.setProgress(0);
+                        GameManager.get().getWorld().addEntity(rscTree);
 
                     }
 

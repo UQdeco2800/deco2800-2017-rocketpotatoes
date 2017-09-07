@@ -234,7 +234,8 @@ public class GameScreen implements Screen {
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
 
-            GameManager.get().getWorld().addEntity(new GoalPotate(8, 20, 0));
+            GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+
 
             for(int i=0 ; i<3 ; i++) {
                 GameManager.get().getWorld().addEntity(
@@ -247,6 +248,11 @@ public class GameScreen implements Screen {
         }
         
         if (!multiplayerManager.isMultiplayer()) {
+            /* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
+           TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
+           TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
+             */
+        	
             // Make our player
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
