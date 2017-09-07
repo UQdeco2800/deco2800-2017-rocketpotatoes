@@ -37,8 +37,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private Path path = null;
 	private Box3D target = null;
 
-	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 
 	
 	/**
@@ -98,12 +98,12 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	}
 
 	/**
-	 * Get the health progressBar of this Tank Enemy
-	 * @return the health progressBar of this Tank Enemy
+	 * Get the health PROGRESS_BAR of this Tank Enemy
+	 * @return the health PROGRESS_BAR of this Tank Enemy
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 

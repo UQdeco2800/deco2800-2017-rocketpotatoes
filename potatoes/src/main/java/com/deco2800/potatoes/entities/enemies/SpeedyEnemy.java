@@ -23,8 +23,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
     private static final transient float HEALTH = 80f;
 
-	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+	private static final List<Color> COLOURS = Arrays.asList(Color.RED, Color.ORANGE);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
     private static final BasicStats STATS = initStats();
 
     private static float speed = 0.08f;
@@ -173,7 +173,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 

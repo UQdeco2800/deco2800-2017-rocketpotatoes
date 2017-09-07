@@ -33,7 +33,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private int ticksSinceRandom = 0;
 	private static final int MAX_WAIT = 200;
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity();
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	public Moose() {
 		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
@@ -139,7 +139,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 	private static BasicStats initStats() {
