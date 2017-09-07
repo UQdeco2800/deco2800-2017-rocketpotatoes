@@ -27,7 +27,7 @@ public class RespawnEvent extends TimeEvent<Player> {
 		// sets the location of the player to respawn
 		param.setPosition(5, 10, 0);
 		// sets players health to maximum health
-		param.setProgress(param.getMaxHealth());
+		param.setHealth(param.getMaxHealth());
 		// readd player to world
 		GameManager.get().getWorld().addEntity(param);
 	}

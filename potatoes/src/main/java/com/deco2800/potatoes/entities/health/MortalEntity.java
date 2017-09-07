@@ -223,7 +223,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean setProgress(float amount) {
+	public boolean setHealth(float amount) {
 		if (maxHealth <= amount) {
 			health = maxHealth;
 		} else {
