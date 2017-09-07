@@ -294,16 +294,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * */
 	public abstract BasicStats getBasicStats();
 
-	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
-
 	/**
 	 * Get the goal of the enemy
 	 * @return this enemy's goal
@@ -361,16 +351,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return progressBar;
-	}
-
-	@Override
-	public float getProgressRatio() {
-		return (getHealth() / getMaxHealth());
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
 	}
 
 }

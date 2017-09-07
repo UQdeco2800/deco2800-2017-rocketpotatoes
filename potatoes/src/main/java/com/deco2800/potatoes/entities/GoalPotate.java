@@ -39,25 +39,4 @@ public class GoalPotate extends MortalEntity implements HasProgressBar {
 		return "The goal potate";
 	}
 
-	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public float getProgressRatio() {
-		return getHealth() / getMaxHealth();
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
-
-
 }

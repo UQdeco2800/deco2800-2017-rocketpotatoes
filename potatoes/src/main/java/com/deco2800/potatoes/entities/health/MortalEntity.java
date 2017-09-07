@@ -14,7 +14,7 @@ import com.deco2800.potatoes.managers.GameManager;
  * @author michaelruigrok
  *
  */
-public class MortalEntity extends AbstractEntity implements Mortal {
+public class MortalEntity extends AbstractEntity implements Mortal, HasProgress {
 
 	protected float health;
 	protected float maxHealth;
@@ -293,4 +293,25 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 		this.damageScaling /= scale;
 		return this.damageScaling;
 	}
+
+	@Override
+	public int getProgress() {
+		return (int) getHealth();
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return getHealth() / getMaxHealth();
+	}
+
+	@Override
+	public int getMaxProgress() {
+		return (int) getMaxHealth();
+	}
+
+	@Override
+	public boolean showProgress() {
+		return true;
+	}
+
 }
