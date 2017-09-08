@@ -6,6 +6,10 @@ import java.util.*;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
+import com.deco2800.potatoes.managers.PathManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +26,21 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static final transient String TEXTURE = "speedyRaccoon";
     private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
     private static final transient float HEALTH = 80f;
-
-	private static final List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+    private static final transient float attackRange = 0.5f;
+    private static final transient int attackSpeed = 2000;
     private static final BasicStats STATS = initStats();
 
     private static float speed = 0.08f;
     private static Class<?> goal = ResourceTree.class;
+    private Path path = null;
+    private Box3D target = null;
+
+    private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
+    private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+
 
     public SpeedyEnemy() {
-        super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        //super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
         //this.speed = speed;
         //this.goal = goal;
         //resetStats();
@@ -44,7 +53,102 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
         //this.goal = goal;
         //resetStats();
     }
+    private static BasicStats initStats() {
+        List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
+        BasicStats result = new BasicStats(HEALTH, speed, attackRange, attackSpeed, normalEvents, TEXTURE);
+        //result.getNormalEventsReference().add(new MeleeAttackEvent(500));
+        return result;
+    }
 
+    @Override
+    public BasicStats getBasicStats() {
+        return STATS;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
+    }
+
+    @Override
+    public ProgressBarEntity getProgressBar() {
+        return progressBar;
+    }
+
+    private void harvestResources() {
+        double interactRange = 3f;
+        Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+        for (AbstractEntity entitiy : entities) {
+            if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+                if (((ResourceTree) entitiy).getGatherCount() > 0) {
+                    ((ResourceTree) entitiy).gather(-1);
+                }
+            }
+        }
+    }
+
+    public void onTick(long i) {
+        harvestResources();
+        PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+        PathManager pathManager = GameManager.get().getManager(PathManager.class);
+
+        // check paths
+
+        //check collision
+        for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
+            if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
+                //collided with wall
+                path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+                target = path.pop();
+                break;
+            }
+        }
+
+        // check that we actually have a path
+        if (path == null || path.isEmpty()) {
+            path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+        }
+
+
+        //check if close enough to target
+        if (target != null && target.overlaps(this.getBox3D())) {
+            target = null;
+        }
+
+        //check if the path has another node
+        if (target == null && !path.isEmpty()) {
+            target = path.pop();
+        }
+
+        float targetX;
+        float targetY;
+
+
+        if (target == null) {
+            target = playerManager.getPlayer().getBox3D();
+        }
+
+        targetX = target.getX();
+        targetY = target.getY();
+
+        float deltaX = getPosX() - targetX;
+        float deltaY = getPosY() - targetY;
+
+        float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+
+        //flip sprite
+        if (deltaX + deltaY >= 0) {
+            this.setTexture(TEXTURE);
+        } else {
+            this.setTexture(TEXTURE_RIGHT);
+        }
+
+        float changeX = (float)(speed * Math.cos(angle));
+        float changeY = (float)(speed * Math.sin(angle));
+
+        this.setPosX(getPosX() + changeX);
+        this.setPosY(getPosY() + changeY);
+    }
 
   /*  public void onTick(long i) {
         double interactRange = 3f;
@@ -142,39 +246,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
   /**   public void onTick(long i){
         harvestResources();
     }**/
-    @Override
-    public String toString() {
-        return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
-    }
 
-    @Override
-    public BasicStats getBasicStats() {
-        return STATS;
-    }
 
-/**    private void harvestResources() {
-        double interactRange = 3f; // TODO: Could this be a class variable?
-        Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-        for (AbstractEntity entitiy : entities) {
-            if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-                if (((ResourceTree) entitiy).getGatherCount() > 0) {
-                    ((ResourceTree) entitiy).gather(-1);
-                }
-            }
-        }
-    }
-**/
-    private static BasicStats initStats() {
-        List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-        BasicStats result = new BasicStats(HEALTH, speed, 2f, 500, normalEvents, TEXTURE);
-        //result.getNormalEventsReference().add(new MeleeAttackEvent(500));
-        return result;
-    }
 
-	@Override
-	public ProgressBarEntity getProgressBar() {
-		return progressBar;
-	}
+
+
+
+
+
 
 
 }
