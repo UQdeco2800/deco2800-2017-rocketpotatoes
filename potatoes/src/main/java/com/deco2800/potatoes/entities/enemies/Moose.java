@@ -24,7 +24,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final BasicStats STATS = initStats();
 
-	private static float speed = 0.06f;
+	private static float speed = 0.04f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
@@ -36,14 +36,14 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity();
 
 	public Moose() {
-		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(0, 0, 0, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
 	}
 
 	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;

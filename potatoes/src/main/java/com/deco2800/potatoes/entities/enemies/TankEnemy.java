@@ -32,7 +32,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 
-	private static float speed = 0.02f;
+	private static float speed = 0.01f;
 	private static Class<?> goal = Tower.class;
 	private Path path = null;
 	private Box3D target = null;
