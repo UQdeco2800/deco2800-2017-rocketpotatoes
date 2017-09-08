@@ -214,7 +214,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 *
 	 * @param p
 	 */
-	@Override
 	public void setProgress(int p) {
 		constructionLeft = p;
 	}
@@ -245,11 +244,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public int getMaxProgress() {
 		// TODO Auto-generated method stub
 		return 1;
-	}
-
-	@Override
-	public void setMaxProgress(int p) {
-
 	}
 
 	@Override

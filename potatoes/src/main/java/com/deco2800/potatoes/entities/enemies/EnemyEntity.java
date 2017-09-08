@@ -33,8 +33,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private float speed;
 	private Class<?> goal;
 
-	private static final List<Color> colours = Arrays.asList(Color.RED);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 0, 1);
+	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 
 	/**
 	 * Default constructor for serialization
@@ -294,21 +294,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * */
 	public abstract BasicStats getBasicStats();
 
-	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
-
 	/**
 	 * Get the goal of the enemy
 	 * @return this enemy's goal
@@ -365,20 +350,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
-
-	@Override
-	public float getProgressRatio() {
-		return (getHealth() / getMaxHealth());
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
-	}
-
-	@Override
-	public void setMaxProgress(int p) { return; }
 
 }
