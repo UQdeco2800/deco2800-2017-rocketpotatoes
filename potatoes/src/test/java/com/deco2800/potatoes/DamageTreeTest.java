@@ -1,7 +1,10 @@
 package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.IceTree;
+import com.deco2800.potatoes.entities.trees.LightningTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.Inventory;
 import org.junit.Before;
