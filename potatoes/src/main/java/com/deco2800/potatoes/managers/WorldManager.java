@@ -1,14 +1,17 @@
 package com.deco2800.potatoes.managers;
 
 import java.util.List;
+import java.util.HashMap;
 
 import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.*;
 
 /**
  * Manager for worlds. Stores and generates all the worlds.
  */
 public class WorldManager extends Manager {
 	private List<AbstractWorld> worlds;
+	private HashMap<String, AbstractWorld> worldHash;
 
 	public WorldManager() {
 
@@ -29,6 +32,23 @@ public class WorldManager extends Manager {
 			// Generate the world here
 			return null;
 		}
+	}
+	public AbstractWorld getWorldHash(String name) {
+		if (worldHash.get(name)!= null) {
+			return worldHash.get(name);
+		} else {
+			worldHash.put(name, new InitialWorld());
+			// Generate the world here
+			return worldHash.get(name);
+		}
+	}
+
+	public void deleteWorld(String name){
+		worldHash.remove(name);
+	}
+
+	public void clearWorlds(){
+		worldHash.clear();
 	}
 
 	/**
