@@ -80,13 +80,13 @@ public class DamageTree extends AbstractTree implements Tickable {
         List<TreeStatistics> result = new LinkedList<>();
 		/* UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade Time, events, events, texture) */
         result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-				.setBuildCost(1).setTexture(TEXTURE).addEvent(new TreeProjectileShootEvent(3000))
+				.setBuildCost(1).setTexture(texture).addEvent(new TreeProjectileShootEvent(3000))
 				.createTreeStatistics());
 		result.add(new StatisticsBuilder<AbstractTree>().setHealth(20).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setTexture(TEXTURE).addEvent(new TreeProjectileShootEvent(2500))
+				.setBuildCost(1).setTexture(texture).addEvent(new TreeProjectileShootEvent(2500))
 				.createTreeStatistics());
 		result.add(new StatisticsBuilder<AbstractTree>().setHealth(30).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setTexture(TEXTURE).addEvent(new TreeProjectileShootEvent(1500))
+				.setBuildCost(1).setTexture(texture).addEvent(new TreeProjectileShootEvent(1500))
 				.createTreeStatistics());
 
         return result;

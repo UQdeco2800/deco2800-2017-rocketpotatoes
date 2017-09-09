@@ -32,11 +32,8 @@ public class BasicStatistics<T extends Tickable> {
 		progressBar = builder.getProgressBar();
 	}
 
-	public void addEvent(TimeEvent<T> event) {
-		events.add(event);
-	}
-
 	public void registerEvents(T tickable) {
+		unregisterEvents(tickable);
 		for (TimeEvent<T> timeEvent : events) {
 			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
 		}
@@ -51,13 +48,6 @@ public class BasicStatistics<T extends Tickable> {
 	 */
 	public float getHealth() {
 		return health;
-	}
-
-	/**
-	 * @return the events
-	 */
-	public List<TimeEvent<T>> getEvents() {
-		return events;
 	}
 
 	/**

@@ -158,7 +158,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		registerNewEvents(getBasicStats().getEvents());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}

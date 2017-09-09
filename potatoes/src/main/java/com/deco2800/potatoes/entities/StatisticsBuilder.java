@@ -27,6 +27,7 @@ public class StatisticsBuilder<T extends Tickable> {
 
 	public StatisticsBuilder() {
 		events = new ArrayList<>();
+		buildEvents = new ArrayList<>();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -34,7 +35,7 @@ public class StatisticsBuilder<T extends Tickable> {
 		// Checking here
 		return new TreeStatistics((StatisticsBuilder<AbstractTree>) this);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public EnemyStatistics createEnemyStatistics() {
 		// Checking here
@@ -81,15 +82,6 @@ public class StatisticsBuilder<T extends Tickable> {
 	 */
 	public List<TimeEvent<T>> getEvents() {
 		return events;
-	}
-
-	/**
-	 * @param events
-	 *            the events to set
-	 */
-	public StatisticsBuilder<T> setEvents(List<TimeEvent<T>> events) {
-		this.events = events;
-		return this;
 	}
 
 	/**
@@ -164,15 +156,6 @@ public class StatisticsBuilder<T extends Tickable> {
 	}
 
 	/**
-	 * @param buildEvents
-	 *            the buildEvents to set
-	 */
-	public StatisticsBuilder<T> setBuildEvents(List<TimeEvent<T>> buildEvents) {
-		this.buildEvents = buildEvents;
-		return this;
-	}
-
-	/**
 	 * @return the attackSpeed
 	 */
 	public float getSpeed() {
@@ -212,7 +195,8 @@ public class StatisticsBuilder<T extends Tickable> {
 	}
 
 	/**
-	 * @param attackSpeed the attackSpeed to set
+	 * @param attackSpeed
+	 *            the attackSpeed to set
 	 */
 	public StatisticsBuilder<T> setAttackSpeed(int attackSpeed) {
 		this.attackSpeed = attackSpeed;
@@ -227,7 +211,8 @@ public class StatisticsBuilder<T extends Tickable> {
 	}
 
 	/**
-	 * @param attackRange the attackRange to set
+	 * @param attackRange
+	 *            the attackRange to set
 	 */
 	public StatisticsBuilder<T> setAttackRange(float attackRange) {
 		this.attackRange = attackRange;

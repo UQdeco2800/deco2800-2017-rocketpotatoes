@@ -31,6 +31,7 @@ public class TreeStatistics extends BasicStatistics<AbstractTree> {
 	}
 
 	public void registerBuildEvents(AbstractTree tickable) {
+		unregisterEvents(tickable);
 		for (TimeEvent<AbstractTree> timeEvent : buildEvents) {
 			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
 		}
@@ -61,13 +62,6 @@ public class TreeStatistics extends BasicStatistics<AbstractTree> {
 	 */
 	public int getBuildTime() {
 		return buildTime;
-	}
-
-	/**
-	 * @return the buildEvents
-	 */
-	public List<TimeEvent<AbstractTree>> getBuildEvents() {
-		return buildEvents;
 	}
 
 	/**
