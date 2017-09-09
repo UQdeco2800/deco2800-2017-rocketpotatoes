@@ -21,16 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.*;
-import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.trees.AcornTree;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
-
-
 import com.deco2800.potatoes.worlds.InitialWorld;
 
 import java.io.IOException;
@@ -202,55 +192,7 @@ public class DebugModeGui extends Gui {
                         GameManager.get().getWorld().addEntity(rscTree);
 
                     }
-
-                    if (keycode == Input.Keys.F8) {
-                        WorldManager test = new WorldManager();
-                        PlayerManager playerManager;
-                        MultiplayerManager multiplayerManager;
-                        //test.setWorld(2);
-                        GameManager.get().setWorld(new InitialWorld());
-
-                        multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
-
-		/* Create a player manager. */
-                        playerManager = GameManager.get().getManager(PlayerManager.class);
-                        GameManager.get().getManager(EventManager.class).unregisterAll();
-
-                        Random random = new Random();
-
-                        MultiplayerManager m = multiplayerManager;
-                        if (m.isMaster() || !m.isMultiplayer()) {
-                            for (int i = 0; i < 5; i++) {
-                                GameManager.get().getWorld().addEntity(new Squirrel(
-                                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-                            }
-                            GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-
-                            for (int i = 0; i < 3; i++) {
-                                GameManager.get().getWorld().addEntity(
-                                        new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-                            }
-
-                            for (int i = 0; i < 2; ++i) {
-                                GameManager.get().getWorld().addEntity(new Moose(
-                                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-                            }
-
-                            GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-
-
-                            for(int i=0 ; i<3 ; i++) {
-                                GameManager.get().getWorld().addEntity(
-                                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
-                            }
-
-                        }
-                        GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-
-
-        /* Draw highlight on current tile we have selected */
-
-                    }
+                    
 
                     if (keycode == Input.Keys.F2) {
                         GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y,0));
