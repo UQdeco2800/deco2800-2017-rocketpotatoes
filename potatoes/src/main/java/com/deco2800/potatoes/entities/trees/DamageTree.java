@@ -3,10 +3,7 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.deco2800.potatoes.entities.AcornTree;
 import com.deco2800.potatoes.entities.Damage;
-import com.deco2800.potatoes.entities.IceTree;
-import com.deco2800.potatoes.entities.LightningTree;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 
