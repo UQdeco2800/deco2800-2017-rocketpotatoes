@@ -284,7 +284,6 @@ public class GameScreen implements Screen {
     
     private void initialisePortal() {
 		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
-		GameManager.get().getWorld().addEntity(new AbstractPortal(17, 20, 0, "desert_portal"));
 		
     }
 

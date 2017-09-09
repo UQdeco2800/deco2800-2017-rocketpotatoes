@@ -13,8 +13,12 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.InitialWorld2;
 
 /**
  * A class for creating the base portal. This class differs from AbstracPortals
@@ -33,6 +37,14 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 */
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
 	/*
+	 *  Create a player manager.
+	 */
+    private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+	/* 
+	 * create a test world 
+	 */
+    private InitialWorld2 testWorld = new InitialWorld2();
+    /*
 	 * The radius of which a collision can be detected
 	 */
 	private final float change = (float) 0.2;
@@ -56,6 +68,9 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 */
 	public BasePortal(float posX, float posY, float posZ, float maxHealth) {
 		super(posX, posY, posZ, 3, 3, 3, TEXTURE, maxHealth);
+		//add some entities to the test world
+		testWorld.addEntity(new DamageTree(16, 11, 0));
+		testWorld.addEntity(new AbstractPortal(1, 2, 0, "iceland_portal"));
 	}
 
 	@Override
@@ -63,6 +78,7 @@ public class BasePortal extends MortalEntity implements Tickable {
 		float xPos = getPosX();
 		float yPos = getPosY();
 		boolean collided = false;
+		AbstractEntity player = null;
 
 		Box3D newPos = getBox3D();
 		newPos.setX(xPos);
@@ -73,6 +89,8 @@ public class BasePortal extends MortalEntity implements Tickable {
 		for (AbstractEntity entity : entities.values()) {
 			if (entity instanceof Player) {
 				// Player detected
+				player = entity;
+				
 				for (int i = 0; i < 8; i++) {
 					newPos.setX(xPos + positions[i][0]);
 					newPos.setY(yPos + positions[i][1]);
@@ -89,6 +107,13 @@ public class BasePortal extends MortalEntity implements Tickable {
 		if (collided) {
 			try {
 				LOGGER.info("Entered portal");
+				//remove player from old world
+				GameManager.get().getWorld().removeEntity(player);
+				//change to new world
+				GameManager.get().setMainWorld(GameManager.get().getWorld());
+				GameManager.get().setWorld(testWorld);
+				//add player to new world
+	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 				// Bring up portal interface
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal");
