@@ -1,6 +1,10 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -8,9 +12,6 @@ import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A generic player instance for the game
@@ -22,7 +23,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-	private static final BasicStats STATS = initStats();
+	private static final EnemyStatistics STATS = initStats();
 
 	private static float speed = 0.06f;
 	private static Class<?> goal = Player.class;
@@ -142,15 +143,15 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return PROGRESS_BAR;
 	}
 
-	private static BasicStats initStats() {
-		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(HEALTH, speed, ATTACK_RANGE, ATTACK_SPEED, normalEvents, TEXTURE_LEFT);
-		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed(), GoalPotate.class));
+	private static EnemyStatistics initStats() {
+		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
+				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class)).createEnemyStatistics();
 		return result;
 	}
 
 	@Override
-	public BasicStats getBasicStats() {
+	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
 

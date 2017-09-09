@@ -20,13 +20,13 @@ import static org.junit.Assert.*;
 public class UpgradeStatsTest {
 	List<TimeEvent<AbstractTree>> normalEvents;
 	List<TimeEvent<AbstractTree>> constructionEvents;
-	UpgradeStats test;
+	TreeStatistics test;
 
 	@Before
 	public void setup() {
 		normalEvents = new LinkedList<>();
 		constructionEvents = new LinkedList<>();
-		test = new UpgradeStats(10, 1000, 8f, 5000, 1, normalEvents, constructionEvents, "real_tree");
+		test = new TreeStatistics(10, 1000, 8f, 5000, 1, normalEvents, constructionEvents, "real_tree");
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class UpgradeStatsTest {
 
 	@Test
 	public void emptyTest() {
-		new UpgradeStats();
+		new TreeStatistics();
 	}
 
 	@Test(expected = NoSuchElementException.class)

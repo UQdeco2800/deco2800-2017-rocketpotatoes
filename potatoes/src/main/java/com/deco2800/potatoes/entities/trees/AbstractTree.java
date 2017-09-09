@@ -1,21 +1,18 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
-import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -24,29 +21,6 @@ import com.badlogic.gdx.graphics.Color;
  * being constructed
  */
 public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress, HasProgressBar, Animated {
-
-	// Maybe move this out
-	private static class ConstructionEvent extends TimeEvent<AbstractTree> {
-		public ConstructionEvent(int constructionTime) {
-			setDoReset(true);
-			setResetAmount(constructionTime / 100);
-			reset();
-		}
-
-		@Override
-		public void action(AbstractTree param) {
-			param.decrementConstructionLeft();
-			if (param.getConstructionLeft() <= 0) {
-				// Changes to the normal events since construction is over
-				param.setRegisteredEvents(false);
-			}
-		}
-
-		@Override
-		public TimeEvent<AbstractTree> copy() {
-			return null;
-		}
-	}
 
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
@@ -98,25 +72,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * @param construction
 	 *            whether to set the events to construction events or not
 	 */
-	private void setRegisteredEvents(boolean construction) {
+	void setRegisteredEvents(boolean construction) {
 		if (construction) {
-			List<TimeEvent<AbstractTree>> constructionEvents = getUpgradeStats().getConstructionEventsCopy();
-			constructionEvents.add(new ConstructionEvent(getUpgradeStats().getConstructionTime()));
-			registerNewEvents(constructionEvents);
+			getUpgradeStats().registerBuildEvents(this);
 		} else {
-			registerNewEvents(getUpgradeStats().getNormalEventsCopy());
-		}
-	}
-
-	/**
-	 * Registers the list of events given with the event manager and unregisters all
-	 * other events for this object
-	 */
-	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
-		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-		eventManager.unregisterAll(this);
-		for (TimeEvent<AbstractTree> timeEvent : events) {
-			eventManager.registerEvent(this, timeEvent);
+			getUpgradeStats().registerEvents(this);
 		}
 	}
 
@@ -161,17 +121,16 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * and restarts tree construction
 	 */
 	public void resetStats() {
-		this.addMaxHealth(getUpgradeStats().getHp() - this.getMaxHealth());
+		this.addMaxHealth(getUpgradeStats().getHealth() - this.getMaxHealth());
 		this.heal(getMaxHealth());
-		setTexture(getUpgradeStats().getTexture());
-		setAnimation(new SingleFrameAnimation(getUpgradeStats().getTexture()));
+		setAnimation(getUpgradeStats().getAnimation().apply(this));
 		setRegisteredEvents(true);
 	}
 
 	/**
 	 * Returns the upgrade stats for the current level of the tree
 	 */
-	public UpgradeStats getUpgradeStats() {
+	public TreeStatistics getUpgradeStats() {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
@@ -192,7 +151,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * 
 	 * @return a list of all the upgrade stats for this tree
 	 */
-	public abstract List<UpgradeStats> getAllUpgradeStats();
+	public abstract List<TreeStatistics> getAllUpgradeStats();
 
 	/**
 	 * Returns the current progress

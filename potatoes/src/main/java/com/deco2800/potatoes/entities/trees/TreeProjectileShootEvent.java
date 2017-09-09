@@ -2,10 +2,10 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.Optional;
 
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -13,7 +13,7 @@ import com.deco2800.potatoes.util.WorldUtil;
  * Represents a projectile shot from a tree, may be generalised to all entities
  * later
  */
-public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
+public class TreeProjectileShootEvent extends TimeEvent<ProjectileTree> {
 
     /**
      * Default constructor for serialization
@@ -33,13 +33,13 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 
 
     @Override
-    public void action(AbstractTree tree) {
+    public void action(ProjectileTree tree) {
         Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, tree.getPosX(),
                 tree.getPosY());
-        if (target1.isPresent() && (tree.distance(target1.get()) <= tree.getUpgradeStats().getRange())) {
+        if (target1.isPresent() && (tree.distance(target1.get()) <= tree.getUpgradeStats().getAttackRange())) {
 
             GameManager.get().getWorld().addEntity(new BallisticProjectile(target1.get().getClass(),tree.getPosX()+0.5f, tree.getPosY()+0.5f, tree.getPosZ(),
-                    target1.get().getPosX(), target1.get().getPosY(),target1.get().getPosZ(), tree.getUpgradeStats().getRange(), 10, 10));
+                    target1.get().getPosX(), target1.get().getPosY(),target1.get().getPosZ(), tree.getUpgradeStats().getAttackRange(), 10, 10));
 //					GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),tree.getPosX(), tree.getPosY(), tree.getPosZ(),
 //				 target1.get().getPosX(), target1.get().getPosY(),target1.get().getPosZ(), tree.getUpgradeStats().getRange(),50,"chilli"));
         }
@@ -48,7 +48,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
     }
 
     @Override
-    public TimeEvent<AbstractTree> copy() {
+    public TimeEvent<ProjectileTree> copy() {
         return new TreeProjectileShootEvent(getResetAmount());
     }
 

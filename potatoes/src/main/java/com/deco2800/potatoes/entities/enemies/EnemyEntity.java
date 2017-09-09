@@ -41,7 +41,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	public EnemyEntity() {
 		// empty for serialization
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 	}
 
 
@@ -76,7 +76,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -115,7 +115,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -158,7 +158,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		registerNewEvents(getBasicStats().getEvents());
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -292,7 +292,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
-	public abstract BasicStats getBasicStats();
+	public abstract EnemyStatistics getBasicStats();
 
 	/**
 	 * Get the goal of the enemy

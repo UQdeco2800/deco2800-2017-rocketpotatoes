@@ -1,13 +1,14 @@
 package com.deco2800.potatoes.entities.trees;
 
-import com.deco2800.potatoes.entities.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import com.deco2800.potatoes.entities.AcornTree;
+import com.deco2800.potatoes.entities.Damage;
+import com.deco2800.potatoes.entities.IceTree;
+import com.deco2800.potatoes.entities.LightningTree;
+import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.Tickable;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
@@ -63,7 +64,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
 
     @Override
-    public List<UpgradeStats> getAllUpgradeStats() {
+    public List<TreeStatistics> getAllUpgradeStats() {
 
         if(damageTreeType instanceof IceTree)
             return generateTree("ice_basic_tree");
@@ -75,18 +76,18 @@ public class DamageTree extends AbstractTree implements Tickable {
     /**
      * Static method to create the list of upgrades
      */
-    private static List<UpgradeStats> generateTree(String texture) {
-        List<UpgradeStats> result = new LinkedList<>();
-        List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
-        List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
+    private static List<TreeStatistics> generateTree(String texture) {
+        List<TreeStatistics> result = new LinkedList<>();
 		/* UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade Time, events, events, texture) */
-        result.add(new UpgradeStats(10, 1000, 8f, 5000,100, normalEvents, constructionEvents, texture));
-        result.add(new UpgradeStats(20, 600, 8f, 2000,100,normalEvents, constructionEvents, texture));
-        result.add(new UpgradeStats(30, 100, 8f, 2000,100, normalEvents, constructionEvents, texture));
-
-        for (UpgradeStats upgradeStats : result) {
-            upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));
-        }
+        result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
+				.setBuildCost(1).setTexture(TEXTURE).addEvent(new TreeProjectileShootEvent(3000))
+				.createTreeStatistics());
+		result.add(new StatisticsBuilder<AbstractTree>().setHealth(20).setAttackRange(8f).setBuildTime(2000)
+				.setBuildCost(1).setTexture(TEXTURE).addEvent(new TreeProjectileShootEvent(2500))
+				.createTreeStatistics());
+		result.add(new StatisticsBuilder<AbstractTree>().setHealth(30).setAttackRange(8f).setBuildTime(2000)
+				.setBuildCost(1).setTexture(TEXTURE).addEvent(new TreeProjectileShootEvent(1500))
+				.createTreeStatistics());
 
         return result;
     }

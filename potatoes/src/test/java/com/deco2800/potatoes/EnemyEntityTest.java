@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.enemies.BasicStats;
+import com.deco2800.potatoes.entities.enemies.EnemyStatistics;
 
 
 public class EnemyEntityTest {
@@ -47,9 +47,9 @@ public class EnemyEntityTest {
 		}
 
 		@Override
-		public BasicStats getBasicStats() {
+		public EnemyStatistics getBasicStats() {
 			List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-			BasicStats result = new BasicStats(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
+			EnemyStatistics result = new EnemyStatistics(200f, 0.4f, .4f, 500, normalEvents,"tankBear");
 			result.getNormalEventsReference().add(new MeleeAttackEvent(500, Player.class));
 			return result;
 		}

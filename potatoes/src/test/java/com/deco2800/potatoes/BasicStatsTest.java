@@ -1,6 +1,6 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.enemies.BasicStats;
+import com.deco2800.potatoes.entities.enemies.EnemyStatistics;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import org.junit.Before;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 /*Borrows largely from UpgradeStatsTest.java testing by tree team*/
 public class BasicStatsTest {
     List<TimeEvent<EnemyEntity>> normalEvents;
-    BasicStats testStats;
+    EnemyStatistics testStats;
 
     @Before
     public void setup() {
@@ -25,7 +25,7 @@ public class BasicStatsTest {
         int attackSpeed = 500;
         float health = 100f;
         float range = 0;
-        testStats = new BasicStats(200, 500, 4f, 500, normalEvents, "squirrel");
+        testStats = new EnemyStatistics(200, 500, 4f, 500, normalEvents, "squirrel");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class BasicStatsTest {
 
     @Test
     public void emptyTest() {
-        BasicStats test = new BasicStats();
+        EnemyStatistics test = new EnemyStatistics();
     }
 
     @Test
