@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.util;
+package com.deco2800.potatoes.collisions;
 
 public class Box2D implements CollisionMask{
     private float x, y;

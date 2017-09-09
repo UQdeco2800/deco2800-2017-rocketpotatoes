@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.util;
+package com.deco2800.potatoes.collisions;
 
 import java.util.Objects;
 
@@ -26,28 +26,16 @@ public class Point2D implements CollisionMask{
 
     @Override
     public boolean overlaps(CollisionMask other) {
-        if (other instanceof Box2D) {
-            Box2D box = (Box2D) other;
-            return box.overlaps(this);
-        } else if (other instanceof Circle2D) {
-            Circle2D circle = (Circle2D) other;
-            return circle.overlaps(this);
-        } else if (other instanceof Point2D) {
-            Point2D otherPoint = (Point2D) other;
-            return this.equals(otherPoint);
+        if (other instanceof Point2D) {
+            return this.equals(other);
+        } else {
+            return other.overlaps(this);
         }
-        return false;
     }
 
     @Override
     public float distance(CollisionMask other) {
-        if (other instanceof Box2D) {
-            Box2D box = (Box2D) other;
-            return box.distance(this);
-        } else if (other instanceof Circle2D) {
-            Circle2D circle = (Circle2D) other;
-            return circle.distance(this);
-        } else if (other instanceof Point2D) {
+        if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
 
             float distX = Math.abs(point.getX() - this.x);
@@ -55,50 +43,60 @@ public class Point2D implements CollisionMask{
 
             // use pythagorean theorem
             return (float) Math.sqrt((double) distX * distX + distY * distY );
+        } else {
+            return other.distance(this);
         }
-        return 0;
     }
 
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
-        //TODO
-        return 0;
+        // don't sqrt anything you don't have to
+        float segmentLength = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+        if (segmentLength == 0.0) {
+            return distance(new Point2D(x1, y1));
+        }
+
+        // how far along the line segment is the closest point to us?
+        float unclamped = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / segmentLength;
+        float clamped = (float) Math.max(0.0, Math.min(1.0, (double) unclamped));
+
+        return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
     }
 
     /**
-	 * Returns the x coordinate.
-	 * 
-	 * @return Returns the x coordinate.
-	 */
+     * Returns the x coordinate.
+     * 
+     * @return Returns the x coordinate.
+     */
     public float getX() {
         return x;
     }
 
-	/**
-	 * Sets the x coordinate.
-	 * 
-	 * @param x
-	 *            The new x coordinate.
-	 */
+    /**
+     * Sets the x coordinate.
+     * 
+     * @param x
+     *            The new x coordinate.
+     */
     public void setX(float x) {
         this.x = x;
     }
 
-	/**
-	 * Returns the y coordinate.
-	 * 
-	 * @return Returns the y coordinate.
-	 */
+    /**
+     * Returns the y coordinate.
+     * 
+     * @return Returns the y coordinate.
+     */
     public float getY() {
         return y;
     }
 
-	/**
-	 * Sets the y coordinate.
-	 * 
-	 * @param y
-	 *            The new y coordinate.
-	 */
+    /**
+     * Sets the y coordinate.
+     * 
+     * @param y
+     *            The new y coordinate.
+     */
     public void setY(float y) {
         this.y = y;
     }
@@ -108,9 +106,9 @@ public class Point2D implements CollisionMask{
         return Objects.hash(x, y);
     }
 
-	private boolean compareFloat(float a, float b) {
-		float delta = 0.00001f;
-		return Math.abs(a-b) < delta;
+    private boolean compareFloat(float a, float b) {
+        float delta = 0.00001f;
+        return Math.abs(a-b) < delta;
 
     }
 

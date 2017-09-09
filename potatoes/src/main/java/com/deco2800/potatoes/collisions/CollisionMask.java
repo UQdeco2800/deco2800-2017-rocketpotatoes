@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.util;
+package com.deco2800.potatoes.collisions;
 
 public interface CollisionMask {
 
