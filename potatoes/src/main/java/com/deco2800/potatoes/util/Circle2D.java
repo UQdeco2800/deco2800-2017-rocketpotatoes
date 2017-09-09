@@ -97,7 +97,35 @@ public class Circle2D implements CollisionMask {
     }
 
 
-    //TODO equals
+    @Override
+    public int hashCode() {
+        // Start with a non-zero constant prime
+        int result = 17;
 
-    //TODO to string
+        // Include a hash for each field.
+        result = 31 * result + Float.floatToIntBits(this.x);
+        result = 31 * result + Float.floatToIntBits(this.y);
+        result = 31 * result + Float.floatToIntBits(this.radius);
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+
+        if (!(o instanceof Circle2D)) { return false; }
+
+        Circle2D that = (Circle2D) o;
+
+        return hashCode() == that.hashCode() &&
+                this.x      == that.getX() &&
+                this.y      == that.getY() &&
+                this.radius == that.getRadius();
+    }
+
+    @Override
+    public String toString() {
+        return this.x + ", " + this.y + ", " + this.radius;
+    }
 }

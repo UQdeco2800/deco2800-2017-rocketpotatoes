@@ -105,34 +105,31 @@ public class Point2D implements CollisionMask{
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
-    }
+        // Start with a non-zero constant prime
+        int result = 17;
 
-	private boolean compareFloat(float a, float b) {
-		float delta = 0.00001f;
-		return Math.abs(a-b) < delta;
+        // Include a hash for each field.
+        result = 31 * result + Float.floatToIntBits(this.x);
+        result = 31 * result + Float.floatToIntBits(this.y);
 
+        return result;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
+        if (this == o) { return true; }
 
-        if (!(o instanceof Point2D)) {
-            return false;
-        }
+        if (!(o instanceof Point2D)) { return false; }
 
-        Point2D other = (Point2D) o;
+        Point2D that = (Point2D) o;
 
-        return hashCode() ==  other.hashCode() &&
-            compareFloat(getX(), other.getX()) &&
-            compareFloat(getY(), other.getY());
+        return hashCode() == that.hashCode() &&
+                this.x == that.getX() &&
+                this.y == that.getY();
     }
 
     @Override
     public String toString() {
-        return "Point {" + getX() + ", " + getY() + "}";
+        return this.x + ", " + this.y;
     }
 }

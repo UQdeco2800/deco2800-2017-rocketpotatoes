@@ -1,8 +1,10 @@
 package com.deco2800.potatoes.util;
 
-public class Box2D implements CollisionMask{
-    private float x, y;
+import java.util.Objects;
 
+public class Box2D implements CollisionMask{
+
+    private float x, y;
     private float xLength, yLength;
 
     /**
@@ -105,21 +107,23 @@ public class Box2D implements CollisionMask{
         } else if (other instanceof Circle2D) {
             Circle2D circle = (Circle2D) other;
 
-            // Calc dist between sides on each dimension
-            float distX = Math.abs(circle.getX() - this.x) - (this.xLength + circle.getRadius())/2;
-            float distY = Math.abs(circle.getX() - this.x) - (this.yLength + circle.getRadius())/2;
+            // Calc dist between sides on each dimension, considering the circle as a point
+            float distPointX = Math.abs(circle.getX() - this.x) - this.xLength/2;
+            float distPointY = Math.abs(circle.getY() - this.y) - this.yLength/2;
 
-            if ((distX >= 0) && (distY >= 0)) {
-                // Box & circle are diagonal to each other, calc corner point to point dist
-                distX += circle.getRadius()/2;
-                distY += circle.getRadius()/2;
-                return (float) Math.sqrt(distX * distX + distY * distY);
-            } else if (distX >= 0) {
+            // Calc dist between sides on each dimension
+            float distX = distPointX - circle.getRadius();
+            float distY = distPointY - circle.getRadius();
+
+            if ((distX >= 0) && (distPointY < 0)) {
                 // Box & circle overlap on x co-ord but not y
                 return distX;
-            } else if (distY >= 0) {
+            } else if ((distY >= 0) && (distPointX < 0)) {
                 // Box & circle overlap on y co-ord but not x
                 return distY;
+            } else if ((distX >= 0) && (distY >= 0)) {
+                // Box & circle are diagonal to each other, calc corner point to point dist
+                return (float) Math.sqrt(distPointX * distPointX + distPointY * distPointY) - circle.getRadius();
             } else {
                 // Box & circle overlap, return rough negative val
                 // TODO this val might be used in physics
@@ -233,7 +237,39 @@ public class Box2D implements CollisionMask{
         this.yLength = yLength;
     }
 
-    //TODO equals
 
-    //TODO to String
+    @Override
+    public int hashCode() {
+        // Start with a non-zero constant prime
+        int result = 17;
+
+        // Include a hash for each field.
+        result = 31 * result + Float.floatToIntBits(this.x);
+        result = 31 * result + Float.floatToIntBits(this.y);
+        result = 31 * result + Float.floatToIntBits(this.xLength);
+        result = 31 * result + Float.floatToIntBits(this.yLength);
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+
+        if (!(o instanceof Box2D)) { return false; }
+
+        Box2D that = (Box2D) o;
+
+        return hashCode() == that.hashCode() &&
+                this.x         == that.getX() &&
+                this.y         == that.getY() &&
+                this.xLength   == that.getXLength() &&
+                this.yLength   == that.getYLength();
+    }
+
+    @Override
+    public String toString() {
+        return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength ;
+    }
+
 }
