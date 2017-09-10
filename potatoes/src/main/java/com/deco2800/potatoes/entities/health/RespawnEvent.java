@@ -36,9 +36,9 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			param.setPosition(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0);
 		}
 		
-		// sets players health to maximum health
+		// sets MortalEntity's health to maximum health
 		param.setProgress(param.getMaxHealth());
-		// readd player to world
+		// readd MortalEntity to world
 		GameManager.get().getWorld().addEntity(param);
 	}
 	
