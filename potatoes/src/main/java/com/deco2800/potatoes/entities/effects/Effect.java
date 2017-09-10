@@ -7,7 +7,6 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
-import com.deco2800.potatoes.util.Box3D;
 
 public abstract class Effect extends AbstractEntity implements Tickable {
 
@@ -28,28 +27,9 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 	@Override
 	public void onTick(long time) {
-		Box3D newPos = getBox3D();
-		newPos.setX(this.getPosX());
-		newPos.setY(this.getPosY());
 
-//		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-//		// Check surroundings
-//		for (AbstractEntity entity : entities.values()) {
-//
-//			if (newPos.overlaps(entity.getBox3D())) {
-//				System.out.println(entity.toString());
-//				try {
-//					((MortalEntity) entity).damage(DAMAGE);
-//				} catch (Exception e) {
-//
-//				}
-//
-//				break;
-//			}
-//
-//		}
 	}
-	
+
 	public float rotation(float xPos, float yPos, float fxPos, float fyPos) {
 		Vector2 startPos = worldToScreenCoordinates(xPos, yPos);
 		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos);
@@ -58,7 +38,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 90;
 		return rotation;
 	}
-	
+
 	public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,
 			float fyPos) {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
@@ -95,6 +75,5 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	}
 
 	public abstract float getDamage();
-
 
 }

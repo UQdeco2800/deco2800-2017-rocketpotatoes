@@ -159,6 +159,12 @@ public class MeleeAttack extends Projectile {
     private static void removeProjectileLater(int ticks, Projectile projectile) {
 
     }
+
+	@Override
+	public void animate() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 
