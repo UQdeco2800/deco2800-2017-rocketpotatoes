@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 
 
@@ -14,7 +15,7 @@ import com.deco2800.potatoes.managers.GameManager;
  * @author michaelruigrok
  *
  */
-public class MortalEntity extends AbstractEntity implements Mortal {
+public class MortalEntity extends AbstractEntity implements Mortal,Tickable {
 
 	protected float health;
 	protected float maxHealth;
@@ -292,5 +293,11 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	public float removeDamageScaling(float scale) {
 		this.damageScaling /= scale;
 		return this.damageScaling;
+	}
+
+	@Override
+	public void onTick(long time) {
+		// TODO Auto-generated method stub
+		
 	}
 }
