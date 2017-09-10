@@ -22,6 +22,8 @@ public class GameManager implements TickableManager {
 	private List<Manager> managers = new ArrayList<>();
 
 	private AbstractWorld gameWorld;
+	
+	private AbstractWorld mainWorld;
 
 	/**
 	 * Returns an instance of the GM
@@ -96,6 +98,24 @@ public class GameManager implements TickableManager {
 	 */
 	public AbstractWorld getWorld() {
 		return gameWorld;
+	}
+	
+	/**
+	 * Sets the main/home game world
+	 * @param world
+	 * 				The world to set to the main/home world
+	 */
+	public void setMainWorld(AbstractWorld world) {
+		this.mainWorld = world;
+	}
+
+	/**
+	 * Gets the main/home game world
+	 * @return mainWorld
+	 * 				The main/home world
+	 */
+	public AbstractWorld getMainWorld() {
+		return mainWorld;
 	}
 
 	/**

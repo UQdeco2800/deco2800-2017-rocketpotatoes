@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -198,6 +199,11 @@ public class DebugModeGui extends Gui {
                     if (keycode == Input.Keys.F4) {
                         SeedResource seedResource = new SeedResource();
                         GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y,0,seedResource));
+
+                    }
+
+                    if (keycode == Input.Keys.F5) { //TODO: make this appear on GUI
+                        GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y,0));
 
                     }
                 }

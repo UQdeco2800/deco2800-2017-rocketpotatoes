@@ -6,6 +6,8 @@ package com.deco2800.potatoes;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.deco2800.potatoes.entities.effects.AOEEffect;
+import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import org.junit.Test;
 
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
@@ -17,11 +19,11 @@ import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 public class ProjectileTest {
     private BallisticProjectile bProj;
     private HomingProjectile hProj;
-//    private ExplosionProjectile eProj;
+    private AOEEffect eProj;
 
     private BallisticProjectile bProj2;
     private HomingProjectile hProj2;
-//    private ExplosionProjectile eProj2;
+    private AOEEffect eProj2;
 
     private static final int posX = 0;
     private static final float posY = 0;
@@ -51,7 +53,7 @@ public class ProjectileTest {
     public void testHomingProjectileRotation() {
         hProj = new HomingProjectile();
         assertTrue(hProj.rotateAngle() == 0);
-        hProj2 = new HomingProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE);
+        hProj2 = new HomingProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE,"default");
         float fPosX2 = 0;
         float fPosY2 = 0;
         float angle = (int) ((((Math.atan2(fPosX2, fPosY2) + (float) (Math.PI)) * 180 / Math.PI) + 45 + 90));
@@ -76,7 +78,7 @@ public class ProjectileTest {
         hProj = new HomingProjectile();
         assertNotNull(hProj.getDamage());
         assertTrue(hProj.getDamage() == 1);
-        hProj2 = new HomingProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE);
+        hProj2 =  new HomingProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE,"default");
         assertNotNull(hProj2.getDamage());
         assertTrue(hProj2.getDamage() == DAMAGE);
     }
@@ -91,14 +93,13 @@ public class ProjectileTest {
     }
 
     @Test
-    public void testExplosionProjectileDamage() {
-//        eProj = new ExplosionProjectile();
-//        eProj2 = new ExplosionProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ,
-//                0, 0, 10);
-//        assertNotNull(eProj.getDamage());
-//        assertNotNull(eProj2.getDamage());
-//        assertTrue(eProj2.getDamage() == 10);
-//        assertTrue(eProj.getDamage() == 1);
+    public void testAOEExplosionDamage() {
+        eProj = new AOEEffect();
+        eProj2 = new AOEEffect(posX, posY, posZ, fPosX, fPosY, fPosZ, 1f,1f, 10);
+        assertNotNull(eProj.getDamage());
+        assertNotNull(eProj2.getDamage());
+        assertTrue(eProj2.getDamage() == 10);
+        assertTrue(eProj.getDamage() == 1);
 
     }
 

@@ -54,7 +54,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private Inventory inventory;
 	private TreeShop treeShop;
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 4);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 	// an integer to check if key down has been pressed before key up
 	private int checkKeyDown = 0;
 
@@ -334,38 +334,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	}
 
 	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
-	public float getProgressRatio() {
-		return getHealth() / getMaxHealth();
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
-	}
-
-	@Override
-	public void setMaxProgress(int p) {
-		return;
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
-
-	@Override
 	public ProgressBar getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 	@Override

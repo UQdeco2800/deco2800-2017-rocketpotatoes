@@ -3,7 +3,7 @@ package com.deco2800.potatoes;
 import com.deco2800.potatoes.entities.*;
 import org.junit.Test;
 
-public class GaolPotateTest {
+public class GoalPotateTest {
 	@Test
 	public void initTests(){
 		GoalPotate test = new GoalPotate();
