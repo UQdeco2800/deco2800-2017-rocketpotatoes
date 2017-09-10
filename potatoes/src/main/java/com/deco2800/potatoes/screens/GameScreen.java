@@ -214,33 +214,18 @@ public class GameScreen implements Screen {
 
         GameManager.get().getManager(EventManager.class).unregisterAll();
         
-        Random random = new Random();
+        //Random random = new Random();
 
         MultiplayerManager m = multiplayerManager;
         if (m.isMaster() || !m.isMultiplayer()) {
-            for (int i = 0; i < 5; i++) {
-                GameManager.get().getWorld().addEntity(new Squirrel(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-
-            for (int i = 0; i < 3; i++) {
-                GameManager.get().getWorld().addEntity(
-                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-            }
-
-            for (int i = 0; i < 2; ++i) {
-                GameManager.get().getWorld().addEntity(new Moose(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
-
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-
-            for(int i=0 ; i<3 ; i++) {
-                GameManager.get().getWorld().addEntity(
-                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
-            }
+            addSquirrel();
+            addTankEnemy();
+            addMoose();
+            addSpeedyEnemy();
+            
             addResourceTrees();
             initialiseResources();
             addDamageTree();
@@ -258,6 +243,36 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
     }
+    
+    //For random position of enemies 
+    Random random = new Random();
+    
+    private void addSquirrel() {
+    	for (int i = 0; i < 5; i++) {
+            GameManager.get().getWorld().addEntity(new Squirrel(
+                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+        }
+    }
+    private void addTankEnemy() {
+    	 for (int i = 0; i < 3; i++) {
+             GameManager.get().getWorld().addEntity(
+             		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+         }	
+    }
+    private void addMoose() {
+    	for (int i = 0; i < 2; ++i) {
+            GameManager.get().getWorld().addEntity(new Moose(
+                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+        }
+    }
+    private void addSpeedyEnemy() {
+    	for(int i=0 ; i<3 ; i++) {
+            GameManager.get().getWorld().addEntity(
+                    new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+        }
+    }
+    
+    
     private void addDamageTree(){
         GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
         GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
