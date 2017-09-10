@@ -1,26 +1,24 @@
 package com.deco2800.potatoes.worlds;
 
-import java.util.Arrays;
 import java.util.Random;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.*;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.Selectable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Renderable;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.*;
-import com.badlogic.gdx.maps.MapLayer.*;
-import com.badlogic.gdx.maps.MapLayers;
-import com.deco2800.potatoes.managers.*;
 /**
  * Initial world using preset world file.
  *
  * @author leggy
  *
  */
-public class BetaWorldGen extends AbstractWorld {
+public class BetaWorldGen extends World {
 
 	/**
 	 * Constructor for InitialWorld

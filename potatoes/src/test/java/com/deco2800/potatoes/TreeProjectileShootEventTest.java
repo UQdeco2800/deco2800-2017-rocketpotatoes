@@ -3,7 +3,7 @@ package com.deco2800.potatoes;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
 
 public class TreeProjectileShootEventTest {
@@ -31,7 +31,7 @@ public class TreeProjectileShootEventTest {
         GameManager.get().getWorld().addEntity(new Squirrel(9, 9, 0));
         testEvent.action(testTree);
     }
-    private class TestWorld extends AbstractWorld {
+    private class TestWorld extends World {
 
     }
 

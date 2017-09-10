@@ -12,7 +12,7 @@ import com.deco2800.potatoes.renderering.Renderable;
  * @author leggy
  *
  */
-public class InitialWorld extends AbstractWorld {
+public class InitialWorld extends World {
 
 	/**
 	 * Constructor for InitialWorld

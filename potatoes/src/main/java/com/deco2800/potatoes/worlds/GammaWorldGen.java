@@ -20,7 +20,7 @@ import com.deco2800.potatoes.managers.*;
  * @author leggy
  *
  */
-public class GammaWorldGen extends AbstractWorld {
+public class GammaWorldGen extends World {
 
 	/**
 	 * Constructor for InitialWorld

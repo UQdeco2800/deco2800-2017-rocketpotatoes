@@ -2,7 +2,7 @@ package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.util.WorldUtil;
 
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class WorldUtilTest {
 		assertEquals(t1, WorldUtil.closestEntityToPosition(0f, 0f, 2f).get());
 	}
 	
-	private class TestWorld extends AbstractWorld {
+	private class TestWorld extends World {
 		
 	}
 }

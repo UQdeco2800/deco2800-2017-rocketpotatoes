@@ -6,6 +6,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -19,8 +20,10 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  * It provides storage for the WorldEntities and other universal world level
  * items.
  */
-public abstract class AbstractWorld {
-
+public class World {
+	private static final int TILE_WIDTH = 55;
+	private static final int TILE_HEIGHT = 32;
+	
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
@@ -47,6 +50,25 @@ public abstract class AbstractWorld {
 	 */
 	public TiledMap getMap() {
 		return this.map;
+	}
+	
+	/**
+	 * Create a new map based on the terrain grid supplied
+	 * @param terrain
+	 */
+	public void setTerrain(Cell[][] cells) {
+		width = cells.length;
+		length = cells[0].length;
+		map = new TiledMap();
+		map.getProperties().put("tilewidth", TILE_WIDTH);
+		map.getProperties().put("tileheight", TILE_HEIGHT);
+		TiledMapTileLayer layer = new TiledMapTileLayer(width, length, TILE_WIDTH, TILE_HEIGHT);
+		for (int x = 0; x < cells.length; x++) {
+			for (int y = 0; y < cells[x].length; y++) {
+				layer.setCell(x, y, cells[x][y]);
+			}
+		}
+		map.getLayers().add(layer);
 	}
 
 	/**

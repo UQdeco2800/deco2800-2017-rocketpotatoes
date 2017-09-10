@@ -170,8 +170,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
         setupInputHandling();
 
-        /* Create an example world for the engine */
-        GameManager.get().setWorld(new BetaWorldGen());
+        // Sets the world to the initial world, world 0
+        GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
