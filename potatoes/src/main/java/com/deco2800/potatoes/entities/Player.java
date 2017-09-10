@@ -9,17 +9,18 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.Enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.Enemies.Squirrel;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.EventManager;
@@ -29,19 +30,6 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
-
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.*;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.renderering.Renderable;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.*;
-import com.badlogic.gdx.maps.MapLayer.*;
-import com.badlogic.gdx.maps.MapLayers;
-import com.deco2800.potatoes.managers.*;
 
 /**
  * Entity for the playable character.
@@ -66,7 +54,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	private Inventory inventory;
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 4);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+	// an integer to check if key down has been pressed before key up
+	private int checkKeyDown = 0;
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -116,41 +106,50 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		float newPosX = this.getPosX();
 		float newPosY = this.getPosY();
 
-		newPosX += speedx;
-		newPosY += speedy;
+		if(!outOfBounds()) {
 
-		Box3D newPos = getBox3D();
-		newPos.setX(newPosX);
-		newPos.setY(newPosY);
-		int maxX = GameManager.get().getWorld().getWidth();
-		int maxY = GameManager.get().getWorld().getLength();
-		int id =((TiledMapTileLayer) GameManager.get().getWorld().getMap().getLayers().get(0)).getCell((int)newPos.getY(),(int)newPos.getX()).getTile().getId();
-		System.out.println(id);
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)&&!(entity instanceof Effect)
-					&& newPos.overlaps(entity.getBox3D())) {
-				LOGGER.info(this + " colliding with " + entity);
-				collided = true;
+			newPosX += speedx;
+			newPosY += speedy;
 
+			Box3D newPos = getBox3D();
+			newPos.setX(newPosX);
+			newPos.setY(newPosY);
+
+			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+			boolean collided = false;
+			for (AbstractEntity entity : entities.values()) {
+				if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+						&& newPos.overlaps(entity.getBox3D())) {
+					LOGGER.info(this + " colliding with " + entity);
+					collided = true;
+
+				}
+
+				if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+					collided = true;
+
+				}
 			}
-
-			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+			// Lazy checking for water collision
+			int id = ((TiledMapTileLayer) GameManager.get().getWorld().getMap().getLayers().get(0))
+					.getCell((int) newPos.getY(), (int) newPos.getX()).getTile().getId();
+			if (id == 2) {
 				collided = true;
-
+			}
+			if (!collided) {
+				this.setPosX(newPosX);
+				this.setPosY(newPosY);
 			}
 		}
-		if(newPos.getX()<0||newPos.getY()<0||newPos.getY()>maxY-.2 ||newPos.getX()>maxX-.2){
-			collided = true;
-		}
-		if (id == 2){
-			collided = true;
-		}
+		else{
 
-		if (!collided) {
-			this.setPosX(newPosX);
-			this.setPosY(newPosY);
+			newPosX+=speedx;
+			newPosY+=speedy;
+			if (newPosX > 0 && newPosX < GameManager.get().getWorld().getWidth() - 0.2 && newPosY > 0
+					&& newPosY < GameManager.get().getWorld().getLength() - 0.2) {
+				this.setPosX(newPosX);
+				this.setPosY(newPosY);
+			}
 		}
 	}
 
@@ -212,6 +211,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		default:
 			break;
 		}
+		checkKeyDown++;
 	}
 
 	private Vector2 getCursorCoords() {
@@ -264,11 +264,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	}
 
 	/**
+	 * Checks to see whether the player moving out of the map
+	 */
+	private boolean outOfBounds(){
+		int width = GameManager.get().getWorld().getWidth();
+		int height = GameManager.get().getWorld().getLength();
+		if (this.getPosX() > width - 0.2 || this.getPosX() < 0 || this.getPosY() > height - 0.2 || this.getPosY() < 0) {
+			return true;
+		}
+		return false;
+
+	}
+
+	/**
 	 * Handle movement when wasd keys are released
 	 *
 	 * @param keycode
 	 */
 	public void handleKeyUp(int keycode) {
+		// checks if key down is pressed first
+		if (checkKeyDown <= 0) { return; }
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
@@ -289,6 +304,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		default:
 			break;
 		}
+		checkKeyDown--;
 	}
 
 	@Override
@@ -297,38 +313,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	}
 
 	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
-	public float getProgressRatio() {
-		return getHealth() / getMaxHealth();
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
-	}
-
-	@Override
-	public void setMaxProgress(int p) {
-		return;
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
-
-	@Override
 	public ProgressBar getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 	@Override

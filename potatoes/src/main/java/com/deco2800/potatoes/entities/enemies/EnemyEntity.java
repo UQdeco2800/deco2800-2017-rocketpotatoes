@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities.Enemies;
+package com.deco2800.potatoes.entities.enemies;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.Enemies.BasicStats;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
@@ -34,15 +33,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private float speed;
 	private Class<?> goal;
 
-	private static final List<Color> colours = Arrays.asList(Color.RED);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 0, 1);
+	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
 		// empty for serialization
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 	}
 
 
@@ -77,7 +76,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -116,7 +115,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -159,7 +158,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -293,22 +292,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
-	public abstract BasicStats getBasicStats();
-
-	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
+	public abstract EnemyStatistics getBasicStats();
 
 	/**
 	 * Get the goal of the enemy
@@ -366,20 +350,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
-
-	@Override
-	public float getProgressRatio() {
-		return (getHealth() / getMaxHealth());
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
-	}
-
-	@Override
-	public void setMaxProgress(int p) { return; }
 
 }

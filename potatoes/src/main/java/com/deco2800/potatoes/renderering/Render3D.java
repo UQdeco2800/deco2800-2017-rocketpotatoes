@@ -138,16 +138,16 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
+				ProgressBar PROGRESS_BAR = ((HasProgressBar) entity).getProgressBar();
 				// Allow entities to return null if they don't want to display their progress bar
-				if (progressBar != null) {
+				if (PROGRESS_BAR != null) {
 					TextureManager reg = GameManager.get()
 						.getManager(TextureManager.class);
 	
-					Texture barTexture = reg.getTexture((progressBar.getTexture()));
+					Texture barTexture = reg.getTexture((PROGRESS_BAR.getTexture()));
 	
 					// sets colour palette
-					batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
+					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) entity).getProgressRatio()));
 	
 					// draws the progress bar
 					Texture entityTexture = reg.getTexture(entity.getTexture());
@@ -155,14 +155,14 @@ public class Render3D implements Renderer {
 	
 					float barRatio = ((HasProgress) entity).getProgressRatio();
 					float maxBarWidth = tileWidth * entity.getXRenderLength()
-						* progressBar.getWidthScale();
+						* PROGRESS_BAR.getWidthScale();
 					float barWidth = maxBarWidth * barRatio;
 					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
 	
 					// x co-ordinate,
 					// finds the overlap length of the bar and moves it half as much left
 					float barX = isoPosition.x - (tileWidth * entity.getXRenderLength()
-							* (progressBar.getWidthScale() - 1) / 2);
+							* (PROGRESS_BAR.getWidthScale() - 1) / 2);
 					// y co-ordinate
 					// If height is specified, use it, otherwise estimate the right height
 					float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());

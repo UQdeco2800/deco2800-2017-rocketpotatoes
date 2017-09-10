@@ -15,10 +15,11 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.Enemies.SpeedyEnemy;
-import com.deco2800.potatoes.entities.Enemies.Squirrel;
-import com.deco2800.potatoes.entities.Enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.trees.AcornTree;
+import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -230,7 +231,13 @@ public class GameScreen implements Screen {
                 		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
             }
 
+            for (int i = 0; i < 2; ++i) {
+                GameManager.get().getWorld().addEntity(new Moose(
+                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+            }
+
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+
 
             for(int i=0 ; i<3 ; i++) {
                 GameManager.get().getWorld().addEntity(
@@ -238,21 +245,26 @@ public class GameScreen implements Screen {
             }
             addResourceTrees();
             initialiseResources();
+            addDamageTree();
             
         }
         
         if (!multiplayerManager.isMultiplayer()) {
-			/* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
-		   TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
-		   TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
-		 	*/
-
+            /* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
+           TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
+           TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
+             */
+        	
             // Make our player
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
     }
-    
+    private void addDamageTree(){
+        GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
+        GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
+    }
     private void addResourceTrees() {
     		// Seed Trees
         GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
