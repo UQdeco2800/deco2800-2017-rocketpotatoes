@@ -25,6 +25,7 @@ public class GameManager implements TickableManager {
 
 	/**
 	 * Returns an instance of the GM
+	 * Returns an instance of the GM
 	 * @return GameManager
 	 */
 	public static GameManager get() {

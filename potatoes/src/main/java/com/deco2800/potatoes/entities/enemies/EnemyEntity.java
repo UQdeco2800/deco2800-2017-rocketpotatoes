@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -255,8 +256,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		 */
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
+		boolean collidedTankEffect = false;
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof Effect) && !(entity instanceof ResourceEntity) &&
+			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
 					newPos.overlaps(entity.getBox3D()) ) {
 
 				if(entity instanceof Tower) {
@@ -267,15 +269,24 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
 				}
+				if (entity instanceof Effect) {
+					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
+						collidedTankEffect = true;
+					}
+					continue;
+				}
 				collided = true;
 			}
+		}
+
+		if (!collidedTankEffect && this instanceof TankEnemy) {
+			GameManager.get().getWorld().addEntity(new StompedGroundEffect(getPosX(), getPosY(), 0, true));
 		}
 
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
 		}
-
 	}
 
 	/**
