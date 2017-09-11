@@ -4,17 +4,17 @@ public class Damage implements Comparable<Resource> {
 
 
     /*
-     * A string representation of the resource
+     * A string representation of the damage tree
      */
 
     protected String damageTreeType;
     /*
-     * The resource image texture
+     * The damage tree image texture
      */
     protected String texture;
 
     /**
-     * The default instantiation of a resource. This should be overrode by children
+     * The default instantiation of a damage tree. This should be overrode by children
      * classes but can be used for testing purposes.
      */
     public Damage() {
@@ -23,7 +23,7 @@ public class Damage implements Comparable<Resource> {
     }
 
     /**
-     * Returns the name of the resource.
+     * Returns the name of the damage tree.
      *
      * @return resourceType
      * 				The string representation of the resource.
@@ -33,7 +33,7 @@ public class Damage implements Comparable<Resource> {
     }
 
     /**
-     * Returns the texture of the resource.
+     * Returns the texture of the damage tree.
      *
      * @return texture
      * 				The texture location.
@@ -67,9 +67,9 @@ public class Damage implements Comparable<Resource> {
     }
 
     /**
-     * Returns the string representation of the resource.
+     * Returns the string representation of the damage tree.
      *
-     * @return string The string representation of the resource.
+     * @return string The string representation of the damage tree.
      */
     @Override
     public String toString() {
