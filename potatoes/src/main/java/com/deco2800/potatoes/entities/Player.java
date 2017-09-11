@@ -106,51 +106,38 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		float newPosX = this.getPosX();
 		float newPosY = this.getPosY();
 
-		if(!outOfBounds()) {
+		newPosX += speedx;
+		newPosY += speedy;
 
-			newPosX += speedx;
-			newPosY += speedy;
+		Box3D newPos = getBox3D();
+		newPos.setX(newPosX);
+		newPos.setY(newPosY);
 
-			Box3D newPos = getBox3D();
-			newPos.setX(newPosX);
-			newPos.setY(newPosY);
-
-			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-			boolean collided = false;
-			for (AbstractEntity entity : entities.values()) {
-				if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-						&& newPos.overlaps(entity.getBox3D())) {
-					LOGGER.info(this + " colliding with " + entity);
-					collided = true;
-
-				}
-
-				if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
-					collided = true;
-
-				}
-			}
-			// Lazy checking for water collision
-			int id = ((TiledMapTileLayer) GameManager.get().getWorld().getMap().getLayers().get(0))
-					.getCell((int) newPos.getY(), (int) newPos.getX()).getTile().getId();
-			if (id == 2) {
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		boolean collided = false;
+		for (AbstractEntity entity : entities.values()) {
+			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+					&& newPos.overlaps(entity.getBox3D())) {
+				LOGGER.info(this + " colliding with " + entity);
 				collided = true;
-			}
-			if (!collided) {
-				this.setPosX(newPosX);
-				this.setPosY(newPosY);
-			}
-		}
-		else{
 
-			newPosX+=speedx;
-			newPosY+=speedy;
-			if (newPosX > 0 && newPosX < GameManager.get().getWorld().getWidth() - 0.2 && newPosY > 0
-					&& newPosY < GameManager.get().getWorld().getLength() - 0.2) {
-				this.setPosX(newPosX);
-				this.setPosY(newPosY);
+			}
+
+			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+				collided = true;
+
 			}
 		}
+		// Lazy checking for water collision
+		float height = GameManager.get().getWorld().getHeight((int)newPosY,(int)newPosX);
+		if (height <= 0.3) {
+			collided = true;
+		}
+		if (!collided) {
+			this.setPosX(Math.max((float)Math.min(newPosX,GameManager.get().getWorld().getWidth() - 0.2),0));
+			this.setPosY(Math.max((float)Math.min(newPosY,GameManager.get().getWorld().getLength() - 0.2),0));
+		}
+
 	}
 
 	/**

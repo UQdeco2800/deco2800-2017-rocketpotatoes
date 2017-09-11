@@ -23,6 +23,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 public class World {
 	private static final int TILE_WIDTH = 55;
 	private static final int TILE_HEIGHT = 32;
+	private float[][] height;
 	
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
@@ -190,4 +191,8 @@ public class World {
 	public int getLength() {
 		return length;
 	}
+
+	public void setHeight(float[][] height) {this.height=height;}
+
+	public float getHeight(int x,int y) {return height[x][y];}
 }

@@ -110,6 +110,7 @@ public class WorldManager extends Manager {
 			}
 		}
 		world.setTerrain(terrainCells);
+		world.setHeight(height);
 		return world;
 	}
 }
