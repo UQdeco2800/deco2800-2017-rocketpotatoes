@@ -266,6 +266,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
+					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+
 				}
 				collided = true;
 			}

@@ -51,6 +51,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	
 	private int respawnTime = 5000; // milliseconds
 
+	private boolean damaged;
+
 	private Inventory inventory;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
@@ -143,6 +145,29 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 				this.setPosX(newPosX);
 				this.setPosY(newPosY);
 			}
+		}
+
+		if (this.damaged) {
+
+			if (this.direction == 0) {
+				this.setTexture("flash_red_left");
+
+			} else {
+				this.setTexture("flash_red_right");
+
+			}
+
+			this.setDamaged(false);
+
+		} else {
+			if (this.direction == 0) {
+
+				this.setTexture("spacman_blue_2");
+			} else {
+
+				this.setTexture("spacman_blue");
+			}
+
 		}
 	}
 
@@ -267,6 +292,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		}
 		return false;
 
+	}
+
+	public boolean isDamaged(){
+		return this.damaged;
+	}
+
+	public void setDamaged(boolean b){
+		this.damaged = b;
 	}
 
 	/**

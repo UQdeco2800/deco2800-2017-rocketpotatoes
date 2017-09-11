@@ -1,11 +1,13 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.effects.SwipeEffect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Map;
@@ -137,6 +139,12 @@ public class MeleeAttack extends Projectile {
                 SwipeEffect swipe = new SwipeEffect(goalX - (effect_width / 2), goalY - (effect_height / 2) + 1, 0,
                         effect_width, effect_height, 0, effect_width, effect_height);
                 GameManager.get().getWorld().addEntity(swipe);
+
+                if(entity instanceof Player){
+                    GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+                }
+
+
 
 
                 GameManager.get().getWorld().removeEntity(this);
