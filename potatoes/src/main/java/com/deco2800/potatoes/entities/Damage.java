@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities;
 
-public class Damage implements Comparable<Resource> {
+public class Damage implements Comparable<Damage> {
 
 
     /*
@@ -45,10 +45,10 @@ public class Damage implements Comparable<Resource> {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof Resource)) {
+        if (!(object instanceof Damage)) {
             return false;
         }
-        Resource other = (Resource) object; // the corridor to compare
+        Damage other = (Damage) object; // the corridor to compare
         return other.getTypeName().equals(damageTreeType);
     }
 
@@ -62,7 +62,7 @@ public class Damage implements Comparable<Resource> {
     }
 
     @Override
-    public int compareTo(Resource other) {
+    public int compareTo(Damage other) {
         return damageTreeType.compareTo(other.getTypeName());
     }
 

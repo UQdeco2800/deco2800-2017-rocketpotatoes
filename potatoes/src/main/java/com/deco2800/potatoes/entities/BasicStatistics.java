@@ -3,7 +3,9 @@ package com.deco2800.potatoes.entities;
 import java.util.List;
 import java.util.function.Function;
 
+import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
+import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -36,6 +38,9 @@ public class BasicStatistics<T extends Tickable> {
 		unregisterEvents(tickable);
 		for (TimeEvent<T> timeEvent : events) {
 			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
+		}
+		if (tickable instanceof Animated) {
+			AnimationFactory.registerTimeAnimations(((Animated)tickable).getAnimation(), tickable);
 		}
 	}
 

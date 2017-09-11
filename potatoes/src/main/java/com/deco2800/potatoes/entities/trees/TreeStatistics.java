@@ -7,6 +7,8 @@ import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.animation.Animated;
+import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -36,6 +38,9 @@ public class TreeStatistics extends BasicStatistics<AbstractTree> {
 			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
 		}
 		GameManager.get().getManager(EventManager.class).registerEvent(tickable, new ConstructionEvent(buildTime));
+		if (tickable instanceof Animated) {
+			AnimationFactory.registerTimeAnimations(((Animated) tickable).getAnimation(), tickable);
+		}
 	}
 
 	/**

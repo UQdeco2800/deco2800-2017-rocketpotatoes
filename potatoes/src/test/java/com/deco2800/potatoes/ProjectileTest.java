@@ -66,11 +66,11 @@ public class ProjectileTest {
         bProj = new BallisticProjectile();
         assertNotNull(bProj.getDamage());
         assertTrue(bProj.getDamage() == 1);
-        //assertTrue(bProj.getAOEDamage() == 1);
+        assertTrue(bProj.getAOEDamage() == 1);
         bProj2 = new BallisticProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE, aoeDAMAGE);
         assertNotNull(bProj2.getDamage());
         assertTrue(bProj2.getDamage() == DAMAGE);
-        //assertTrue(bProj2.getAOEDamage() == aoeDAMAGE);
+        assertTrue(bProj2.getAOEDamage() == aoeDAMAGE);
     }
 
     @Test
