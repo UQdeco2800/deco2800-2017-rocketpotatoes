@@ -3,6 +3,8 @@ package com.deco2800.potatoes.entities.animation;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 
+import java.util.Random;
+
 /**
  * An traditional animation where the frame changes over time <br>
  * Feel free to modify this class in any way. This could be changed to
@@ -11,7 +13,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
 public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 
 	private final transient Animation[] frames;
-
+	private static Random generator = new Random();
 	/**
 	 * Construction for serialization
 	 */
@@ -49,7 +51,9 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 
 	@Override
 	public Animation getAnimation() {
-		return frames[Math.round((frames.length - 1) * (1 - (float) getProgress() / getResetAmount()))];
+		return frames[(int)generator.nextInt(frames.length)];
+		//dosen't work
+//		return frames[Math.round((frames.length - 1) * (1 - (float) getProgress() / getResetAmount()))];
 	}
 
 }
