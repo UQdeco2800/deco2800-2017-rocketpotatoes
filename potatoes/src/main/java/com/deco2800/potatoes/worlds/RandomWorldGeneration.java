@@ -1,48 +1,35 @@
 package com.deco2800.potatoes.worlds;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
+/**
+ * Utility class for randomly generating worlds. Will probably be moved
+ * somewhere at some point.
+ */
 public class RandomWorldGeneration {
 
-	private float[][] heightMap;
-	// List of properties used to choose between different tiles
-	private float[][][] tilePropertyMaps;
-
-	public RandomWorldGeneration(int width, int length) {
-		heightMap = new float[width][length];
-		tilePropertyMaps = new float[width][length][3];
-	}
-
-	/********************************
-	 * FOR TESTING
-	 ********************************
-	 * Outputs and image from the algorithm output, try not to add the heightmap
-	 * file to git
-	 */
-	public static void main(String[] args) throws IOException {
-		final int SIZE = 25;
-		BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_RGB);
-		float[][] heightmap = smoothDiamondSquareAlgorithm(SIZE, 0.4f, 2);
-		for (int i = 0; i < heightmap.length; i++) {
-			for (int j = 0; j < heightmap[i].length; j++) {
-				Color color = new Color(heightmap[i][j], heightmap[i][j], heightmap[i][j]);
-				image.setRGB(i, j, color.getRGB());
-			}
-		}
-		ImageIO.write(image, "png", new File("random_image.png"));
+	private RandomWorldGeneration() {
+		// Never should be called
 	}
 
 	private static final int[][] DIAMOND_SAMPLES = { { 0, -1 }, { -1, 0 }, { 0, 1 }, { 1, 0 } };
 	private static final int[][] SQUARE_SAMPLES = { { 1, 1 }, { -1, 1 }, { 1, -1 }, { -1, -1 } };
 
 	/**
-	 * Diamond square algorithm for generating noise Definitely has a bug at the
-	 * moment
+	 * Diamond square algorithm for generating smoothish grid noise. The input grid
+	 * should be somewhat randomly seeded to remove grid patterns from the output.
+	 * The roughScale parameter is what predominately changes the noise of the
+	 * output grid.
+	 * 
+	 * @param result
+	 *            The grid to apply the noise to, and the return value
+	 * @param gridSize
+	 *            The size of the grid
+	 * @param roughness
+	 *            The initial roughness value. Higher values make more variance near
+	 *            the edges.
+	 * @param roughScale
+	 *            The amount the roughness reduces every iteration. Higher values
+	 *            result in more variance in the grid.
+	 * @return same as the result parameter
 	 */
 	public static float[][] diamondSquareAlgorithm(float[][] result, int gridSize, float roughness, float roughScale) {
 		int size = gridSize / 2;
@@ -50,17 +37,18 @@ public class RandomWorldGeneration {
 		while (size > 0) {
 			for (int x = size; x < result.length; x += size) {
 				for (int y = size; y < result[0].length; y += size) {
+					// Confusingly named diamond step
 					sampleStep(result, SQUARE_SAMPLES, x, y, size, (float) (rough * (Math.random())));
 				}
 			}
-			boolean offset = true;
 			for (int x = 0; x < result.length - size; x += size) {
 				for (int y = 0; y < result[0].length - size; y += size) {
+					// Square step
 					sampleStep(result, DIAMOND_SAMPLES, x + size, y, size, (float) (rough * (Math.random() * 2 - 1)));
 					sampleStep(result, DIAMOND_SAMPLES, x, y + size, size, (float) (rough * (Math.random() * 2 - 1)));
 				}
-				offset = !offset;
 			}
+			// Reduce variance and size
 			size = size / 2;
 			rough *= roughScale;
 		}
@@ -76,60 +64,90 @@ public class RandomWorldGeneration {
 		return result;
 	}
 
-	public static float[][] smoothDiamondSquareAlgorithm(int size, float roughness,
-			int iterations) {
+	/**
+	 * Generates a square grid with the specified size and applies the diamond
+	 * square algorithm to generate a noisy grid. The diamond square algorithm is
+	 * applied iterations times, resulting in a smoother grid every time. The
+	 * roughness also controls the smoothness, but is much more variable and should
+	 * be changed instead of iterations where possible.
+	 * 
+	 * @param size
+	 *            The size of the grid to create
+	 * @param roughness
+	 *            The roughness for diamond square
+	 * @param iterations
+	 *            The number of times to run diamond square, to smooth. INCREASING
+	 *            THIS IS VERY SLOW
+	 * @return The random heightmap
+	 */
+	public static float[][] smoothDiamondSquareAlgorithm(int size, float roughness, int iterations) {
 		float[][] result = new float[size][size];
+		// Seed to 0.5
 		for (int x = 0; x < result.length; x++) {
 			for (int y = 0; y < result[x].length; y++) {
 				result[x][y] = 0.5f;
 			}
 		}
+		// Normalize and diamond square repeatedly, with the output the seed for the
+		// next iteration
 		for (int i = 0; i < iterations; i++) {
 			normalize(diamondSquareAlgorithm(result, size, roughness, roughness));
 		}
+		// For some reason the result sometimes isn't normalized
 		normalize(result);
 		return result;
 	}
 
+	/**
+	 * Takes an array of floats with varying values and scales them all to be
+	 * between 0 and 1, inclusive
+	 * 
+	 * @param array
+	 *            The array to normalize. Modified by the process.
+	 * @return The same array as the input, now with all values between 0 and 1
+	 */
 	public static float[][] normalize(float[][] array) {
 		float min = Float.MAX_VALUE;
 		float max = Float.MIN_VALUE;
+		// Find the maximum and minimum of the array
 		for (int x = 0; x < array.length; x++) {
 			for (int y = 0; y < array[x].length; y++) {
 				min = Math.min(min, array[x][y]);
 				max = Math.max(max, array[x][y]);
 			}
 		}
+		// Apply the normalization formula to every element
 		for (int x = 0; x < array.length; x++) {
 			for (int y = 0; y < array[x].length; y++) {
 				array[x][y] = (array[x][y] - min) / (max - min);
-				if (array[x][y] > 1 || array[x][y] < 0) {
-					System.out.println(min + ":" + max);
-				}
 			}
 		}
 		return array;
 	}
 
-	private static void sampleStep(float[][] array, int[][] sampleType, float x, float y, float size, float random) {
+	private static void sampleStep(float[][] array, int[][] sampleType, int x, int y, int size, float random) {
 		float sum = 0;
 		int count = 0;
 		for (int[] is : sampleType) {
-			int sampleX = (int) (Math.floor(x) + is[0] * Math.floor(size));
-			int sampleY = (int) (Math.floor(y) + is[1] * Math.floor(size));
+			// Sample using the given pattern
+			int sampleX = (int) x + is[0] * size;
+			int sampleY = (int) y + is[1] * size;
+			// We're adding something so increase count for average
 			count++;
 			sum += get(array, sampleX, sampleY);
 		}
-		array[(int) Math.floor(x)][(int) Math.floor(y)] = random + sum / count;
+		// Store the average in the array
+		array[x][y] = random + sum / count;
 	}
 
+	/**
+	 * Gets the value for the array at x and y, where x and y wrap around if they
+	 * are bigger or smaller than the array.
+	 */
 	private static float get(float[][] array, int x, int y) {
-		int adjustedX = x < 0 ? x += array.length : x >= array.length ? x -= array.length : x;
-		int adjustedY = y < 0 ? y += array[0].length : y >= array[0].length ? y -= array[0].length : y;
+		// Wraps around the edges
+		int adjustedX = x < 0 ? x + array.length : x >= array.length ? x - array.length : x;
+		int adjustedY = y < 0 ? y + array[0].length : y >= array[0].length ? y - array[0].length : y;
 		return array[adjustedX][adjustedY];
-	}
-
-	private static boolean isValidCoords(float[][] array, int x, int y) {
-		return x >= 0 && y >= 0 && x < array.length && y < array[0].length;
 	}
 }

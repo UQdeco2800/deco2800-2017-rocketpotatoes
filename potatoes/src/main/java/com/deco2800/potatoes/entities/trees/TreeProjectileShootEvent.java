@@ -49,5 +49,4 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 	public TimeEvent<AbstractTree> copy() {
 		return new TreeProjectileShootEvent(getResetAmount());
 	}
-
 }

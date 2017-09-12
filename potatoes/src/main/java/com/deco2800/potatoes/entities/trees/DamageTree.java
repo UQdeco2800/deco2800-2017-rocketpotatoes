@@ -99,15 +99,15 @@ public class DamageTree extends AbstractTree implements Tickable {
 		 * UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade
 		 * Time, events, events, texture)
 		 */
-		result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-				.setBuildCost(1).setAnimation(animation).addEvent(new TreeProjectileShootEvent(3000))
-				.createTreeStatistics());
-		result.add(new StatisticsBuilder<AbstractTree>().setHealth(20).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setAnimation(animation).addEvent(new TreeProjectileShootEvent(2500))
-				.createTreeStatistics());
-		result.add(new StatisticsBuilder<AbstractTree>().setHealth(30).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setAnimation(animation).addEvent(new TreeProjectileShootEvent(1500))
-				.createTreeStatistics());
+		if (texture.equals("lightning_tree1")) {
+			result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
+					.setBuildCost(1).setAnimation(animation).addEvent(new LightningShootEvent(250))
+					.createTreeStatistics());
+		} else {
+			result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
+					.setBuildCost(1).setAnimation(animation).addEvent(new TreeProjectileShootEvent(3000))
+					.createTreeStatistics());
+		}
 
 		return result;
 	}
