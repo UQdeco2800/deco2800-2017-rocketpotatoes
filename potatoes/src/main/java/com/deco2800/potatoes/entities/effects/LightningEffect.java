@@ -29,7 +29,7 @@ public class LightningEffect extends Effect {
 
 	public LightningEffect(float xPos, float yPos, float fxPos, float fyPos) {
 		super(fyPos, fxPos, 0, 5f, 5f, 0, 1f, 1f, "lightning");
-		DAMAGE = 1;
+		DAMAGE = 0.1f;
 
 		// TODO: figure out why inverses
 		this.xPos = yPos;
