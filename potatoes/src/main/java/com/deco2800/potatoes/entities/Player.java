@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -27,6 +26,7 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -105,16 +105,18 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	@Override
 	public void onTick(long arg0) {
-		float newPosX = this.getPosX();
-		float newPosY = this.getPosY();
-
-		newPosX += speedx;
-		newPosY += speedy;
+		float newPosX = this.getPosX() + speedx;
+		float newPosY = this.getPosY() + speedy;
 
 		Box3D newPos = getBox3D();
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
+		float speedScale = GameManager.get().getManager(WorldManager.class)
+				.getTerrain(Math.round(newPosX), Math.round(newPosY)).getMoveScale();
+		newPosX -= speedx * (1 - speedScale);
+		newPosY -= speedy * (1 - speedScale);
+		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
@@ -129,11 +131,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 				collided = true;
 
 			}
-		}
-		// Lazy checking for water collision
-		float height = GameManager.get().getWorld().getHeight((int)newPosY,(int)newPosX);
-		if (height <= 0.3) {
-			collided = true;
 		}
 		if (!collided) {
 			this.setPosX(Math.max((float)Math.min(newPosX,GameManager.get().getWorld().getWidth() - 0.2),0));
