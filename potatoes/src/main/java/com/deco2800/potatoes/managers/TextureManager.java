@@ -34,7 +34,9 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-
+    	
+    		saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
+        saveTexture("player_right", "resources/player/caveman/caveman_idle_right.png");
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("w1", "resources/placeholderassets/w1.png");

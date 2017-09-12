@@ -42,8 +42,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	private final static transient float HEALTH = 200f;
-	private static final transient String TEXTURE_RIGHT = "spacman_blue";
-	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
+	private static final transient String TEXTURE_RIGHT = "player_right";
+	private static final transient String TEXTURE_LEFT = "player_left";
 
 	private float movementSpeed;
 	private float speedx;
@@ -78,7 +78,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
@@ -88,8 +88,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		startingResources.add(new SeedResource());
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
-
-		// this.setTexture("spacman_blue");
 	}
 
 	public Inventory getInventory() {
@@ -156,10 +154,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		} else {
 			if (this.direction == 0) {
 
-				this.setTexture("spacman_blue_2");
+				this.setTexture("player_left");
 			} else {
 
-				this.setTexture("spacman_blue");
+				this.setTexture("player_right");
 			}
 
 		}
