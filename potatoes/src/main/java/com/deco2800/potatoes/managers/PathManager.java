@@ -3,7 +3,7 @@ package com.deco2800.potatoes.managers;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 
 import java.util.*;
 
@@ -49,7 +49,7 @@ public class PathManager extends Manager {
         nodes.clear();
         edges.clear();
 
-        AbstractWorld world = GameManager.get().getWorld();
+        World world = GameManager.get().getWorld();
 
         nodes.add(player);
 
@@ -124,7 +124,7 @@ public class PathManager extends Manager {
      * @param player coordinates of the player
      */
     public void onTick(Box3D player) {
-        // AbstractWorld world = GameManager.get().getWorld();
+        // World world = GameManager.get().getWorld();
 
         // //if player hasn't moved since last tick, can skip this
         // if (!player.equals(lastPlayerPosition)) {

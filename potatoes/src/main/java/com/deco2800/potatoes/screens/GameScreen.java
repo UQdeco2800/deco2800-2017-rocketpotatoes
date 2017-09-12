@@ -35,7 +35,7 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -172,8 +172,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
         setupInputHandling();
 
-        /* Create an example world for the engine */
-        GameManager.get().setWorld(new InitialWorld());
+        // Sets the world to the initial world, world 0
+        GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -410,7 +410,7 @@ public class GameScreen implements Screen {
         float tileX = (int)(Math.floor(tileCoords.x));
         float tileY = (int)(Math.floor(tileCoords.y));
 
-        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY);
+        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
         batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
 
         batch.end();

@@ -13,7 +13,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Renderable;
 
 /**
- * A utility class for the AbstractWorld instances
+ * A utility class for the World instances
  * Created by timhadwen on 23/7/17.
  */
 public class WorldUtil {
