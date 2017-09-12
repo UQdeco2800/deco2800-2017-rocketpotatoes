@@ -43,13 +43,15 @@ public class StompedGroundEffect extends Effect {
 
     @Override
     public void onTick(long time) {
-        timer++;
-        if (timer % 150 == 0) {
-            if (currentTextureIndexCount < 3) {
-                setTexture(currentTextureArray[currentTextureIndexCount]);
-                currentTextureIndexCount++;
-            } else {
-                GameManager.get().getWorld().removeEntity(this);
+        if (isTemporary) {
+            timer++;
+            if (timer % 150 == 0) {
+                if (currentTextureIndexCount < 3) {
+                    setTexture(currentTextureArray[currentTextureIndexCount]);
+                    currentTextureIndexCount++;
+                } else {
+                    GameManager.get().getWorld().removeEntity(this);
+                }
             }
         }
     }

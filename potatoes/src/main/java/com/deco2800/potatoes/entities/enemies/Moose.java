@@ -154,5 +154,4 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	public BasicStats getBasicStats() {
 		return STATS;
 	}
-
     }
