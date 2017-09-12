@@ -12,6 +12,7 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld2;
 
@@ -96,7 +97,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//change to new world
-				GameManager.get().setWorld(GameManager.get().getMainWorld());
+				GameManager.get().getManager(WorldManager.class).setWorld(0);
 				//add player to new world
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 				

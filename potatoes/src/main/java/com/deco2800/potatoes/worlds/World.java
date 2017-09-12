@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -36,6 +37,8 @@ public class World {
 	protected TiledMap map;
 	private int width;
 	private int length;
+	// Store event manager for this world's events
+	private EventManager eventManager;
 
 	/**
 	 * Returns a list of entities in this world
@@ -229,5 +232,19 @@ public class World {
 	 */
 	public float getHeight(int x, int y) {
 		return height[x][y];
+	}
+
+	/**
+	 * @return the eventManager
+	 */
+	public EventManager getEventManager() {
+		return eventManager;
+	}
+
+	/**
+	 * @param eventManager the eventManager to set
+	 */
+	public void setEventManager(EventManager eventManager) {
+		this.eventManager = eventManager;
 	}
 }
