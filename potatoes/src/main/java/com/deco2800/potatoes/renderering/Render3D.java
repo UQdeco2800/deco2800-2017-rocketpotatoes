@@ -41,7 +41,7 @@ public class Render3D implements Renderer {
 
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
-	 * AbstractWorld contains some entities and a Map to read tiles from
+	 * World contains some entities and a Map to read tiles from
 	 *
 	 * @param batch
 	 *            Batch to render onto

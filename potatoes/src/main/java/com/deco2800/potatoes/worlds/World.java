@@ -17,7 +17,7 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 /**
- * AbstractWorld is the Game AbstractWorld
+ * World is the Game World
  *
  * It provides storage for the WorldEntities and other universal world level
  * items.

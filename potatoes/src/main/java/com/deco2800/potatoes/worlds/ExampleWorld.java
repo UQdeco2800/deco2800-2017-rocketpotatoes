@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * AbstractWorld is the Game AbstractWorld
+ * World is the Game World
  *
  * It provides storage for the WorldEntities and other universal world level items.
  * @author timhadwen
@@ -20,7 +20,7 @@ public class ExampleWorld extends World {
     private List<AbstractEntity> entities = new ArrayList<AbstractEntity>();
 
     /**
-     * Constructor for AbstractWorld.
+     * Constructor for World.
      *
      * Initialize the map etc here
      */

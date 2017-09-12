@@ -12,12 +12,12 @@ import com.deco2800.potatoes.renderering.Renderable;
  * @author leggy
  *
  */
-public class InitialWorld extends World {
+public class InitialWorld2 extends World {
 
 	/**
 	 * Constructor for InitialWorld
 	 */
-	public InitialWorld() {
+	public InitialWorld2() {
 		/* Load up the map for this world */
 		this.map = new TmxMapLoader().load("resources/placeholderassets/placeholder.tmx");
 

@@ -124,7 +124,7 @@ public class PathManager extends Manager {
      * @param player coordinates of the player
      */
     public void onTick(Box3D player) {
-        // AbstractWorld world = GameManager.get().getWorld();
+        // World world = GameManager.get().getWorld();
 
         // //if player hasn't moved since last tick, can skip this
         // if (!player.equals(lastPlayerPosition)) {
