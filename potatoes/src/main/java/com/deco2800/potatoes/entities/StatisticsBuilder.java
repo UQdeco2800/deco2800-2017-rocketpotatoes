@@ -52,10 +52,20 @@ public class StatisticsBuilder<T extends Tickable> {
 		events.add((TimeEvent<T>) event);
 		return this;
 	}
+	
+	public StatisticsBuilder<T> addAllEvents(List<TimeEvent<? extends T>> events) {
+		events.forEach(this::addEvent);
+		return this;
+	}
 
 	@SuppressWarnings("unchecked")
 	public StatisticsBuilder<T> addBuildEvent(TimeEvent<? extends T> event) {
 		buildEvents.add((TimeEvent<T>) event);
+		return this;
+	}
+	
+	public StatisticsBuilder<T> addAllBuildEvents(List<TimeEvent<? extends T>> events) {
+		events.forEach(this::addBuildEvent);
 		return this;
 	}
 

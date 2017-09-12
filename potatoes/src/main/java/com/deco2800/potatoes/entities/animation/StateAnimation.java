@@ -14,7 +14,7 @@ public class StateAnimation implements Animation {
 
 	private final transient float maxValue;
 	private final transient float minValue;
-	private final transient Animation[] frames;
+	final transient Animation[] frames;
 	private final transient Supplier<Float> valueFunction;
 
 	/**
@@ -67,6 +67,11 @@ public class StateAnimation implements Animation {
 			LOGGER.error("valueFunction: {}, minValue: {}, maxValue: {}", valueFunction.get(), minValue, maxValue);
 		}
 		return frames[Math.round((frames.length - 1) * (1 - (valueFunction.get() - minValue) / maxValue))];
+	}
+
+	@Override
+	public Animation[] getFrames() {
+		return frames;
 	}
 
 }

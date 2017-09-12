@@ -25,6 +25,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 	private transient Animation animation;
+	private boolean dying;
+	private boolean beingDamaged;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 60, 1);
@@ -61,7 +63,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
 			GameManager.get().getManager(EventManager.class).unregisterAll(tree);
-			;
 		}
 		return result;
 	}
@@ -145,6 +146,51 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	}
 
 	/**
+	 * @return the dying
+	 */
+	public boolean isDying() {
+		return dying;
+	}
+
+	/**
+	 * Sets if this tree is currently dying. If this is set to false, the tree dies
+	 * @param dying whether this tree is dying
+	 */
+	public void setDying(boolean dying) {
+		this.dying = dying;
+		if (!dying) {
+			// Animation is finished, so die
+			super.deathHandler();
+		}
+	}
+
+	/**
+	 * @return the beingDamaged
+	 */
+	public boolean isBeingDamaged() {
+		return beingDamaged;
+	}
+
+	/**
+	 * @param beingDamaged the beingDamaged to set
+	 */
+	public void setBeingDamaged(boolean beingDamaged) {
+		this.beingDamaged = beingDamaged;
+	}
+	
+	@Override
+	public boolean damage(float amount) {
+		beingDamaged = true;
+		return super.damage(amount);
+	}
+	
+	@Override
+	public void deathHandler() {
+		dying = true;
+		// Don't kill the entity just yet
+	}
+	
+	/**
 	 * Returns a list of the stats for each upgrade level in order <br>
 	 * This is called often, so it is recommend you don't create a new object every
 	 * time
@@ -209,5 +255,4 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public ProgressBarEntity getProgressBar() {
 		return constructionLeft > 0 ? PROGRESS_BAR : null;
 	}
-
 }

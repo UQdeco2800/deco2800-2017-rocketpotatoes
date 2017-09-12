@@ -31,4 +31,8 @@ public class SingleFrameAnimation implements Animation {
 		return this;
 	}
 
+	@Override
+	public Animation[] getFrames() {
+		return new Animation[] {this};
+	}
 }
