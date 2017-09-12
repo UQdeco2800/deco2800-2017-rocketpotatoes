@@ -1,12 +1,12 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.trees;
 
 import java.util.function.Supplier;
 
+import com.deco2800.potatoes.entities.Damage;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.animation.StateAnimation;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 

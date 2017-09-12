@@ -17,8 +17,7 @@ import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.worlds.AbstractWorld;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.World;
 
 import java.util.Optional;
 
@@ -48,9 +47,9 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
 		} else {
-			AbstractWorld world = GameManager.get().getWorld();
-			if (world instanceof InitialWorld) {
-				((InitialWorld) (world)).deSelectAll();
+			World world = GameManager.get().getWorld();
+			if (world instanceof World) {
+				world.deSelectAll();
 			}
 		}
 		int realX = (int) Math.floor(coords.x);

@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,9 @@ public class GameManager implements TickableManager {
 
 	private List<Manager> managers = new ArrayList<>();
 
-	private AbstractWorld gameWorld;
+	private World gameWorld;
+	
+	private World mainWorld;
 
 	/**
 	 * Returns an instance of the GM
@@ -87,7 +89,7 @@ public class GameManager implements TickableManager {
 	 * Sets the current game world
 	 * @param world
 	 */
-	public void setWorld(AbstractWorld world) {
+	public void setWorld(World world) {
 		this.gameWorld = world;
 	}
 
@@ -95,8 +97,26 @@ public class GameManager implements TickableManager {
 	 * Gets the current game world
 	 * @return
 	 */
-	public AbstractWorld getWorld() {
+	public World getWorld() {
 		return gameWorld;
+	}
+	
+	/**
+	 * Sets the main/home game world
+	 * @param world
+	 * 				The world to set to the main/home world
+	 */
+	public void setMainWorld(World world) {
+		this.mainWorld = world;
+	}
+
+	/**
+	 * Gets the main/home game world
+	 * @return mainWorld
+	 * 				The main/home world
+	 */
+	public World getMainWorld() {
+		return mainWorld;
 	}
 
 	/**

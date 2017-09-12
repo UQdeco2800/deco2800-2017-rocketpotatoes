@@ -37,16 +37,18 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	
 	private int respawnTime = 15000; // milliseconds
 
-	private static final List<Color> colours = Arrays.asList(Color.RED);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 0, 1);
 	private static final SoundManager enemySoundManager = new SoundManager();
+
+	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
+
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
 		// empty for serialization
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 	}
 
 
@@ -81,7 +83,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -120,7 +122,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -163,7 +165,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+		getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -268,6 +270,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
+					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+
 				}
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
 					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
@@ -307,22 +311,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
-	public abstract BasicStats getBasicStats();
-
-	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
+	public abstract EnemyStatistics getBasicStats();
 
 	/**
 	 * Get the goal of the enemy
@@ -380,8 +369,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
+
 
 	@Override
 	public float getProgressRatio() {
@@ -393,8 +383,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return (int) getMaxHealth();
 	}
 
-	@Override
-	public void setMaxProgress(int p) { return; }
+	//BROKEN BUILD!!
+	//@Override
+	//public void setMaxProgress(int p) { return; }
 	
 	@Override
 	public void deathHandler() {

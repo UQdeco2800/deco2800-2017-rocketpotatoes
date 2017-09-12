@@ -17,7 +17,11 @@ import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
+import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -31,7 +35,7 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -168,8 +172,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
         setupInputHandling();
 
-        /* Create an example world for the engine */
-        GameManager.get().setWorld(new InitialWorld());
+        // Sets the world to the initial world, world 0
+        GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -228,6 +232,7 @@ public class GameScreen implements Screen {
             
             addResourceTrees();
             initialiseResources();
+            initialisePortal();
             addDamageTree();
             
         }
@@ -301,6 +306,11 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+    }
+    
+    private void initialisePortal() {
+		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
+		
     }
 
     private void tickGame(long timeDelta) {
@@ -400,7 +410,7 @@ public class GameScreen implements Screen {
         float tileX = (int)(Math.floor(tileCoords.x));
         float tileY = (int)(Math.floor(tileCoords.y));
 
-        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY);
+        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
         batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
 
         batch.end();
