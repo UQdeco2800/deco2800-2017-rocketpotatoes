@@ -107,13 +107,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	public void onTick(long arg0) {
 		float newPosX = this.getPosX() + speedx;
 		float newPosY = this.getPosY() + speedy;
+		float length = GameManager.get().getWorld().getLength();
+		float width = GameManager.get().getWorld().getWidth();
 
 		Box3D newPos = getBox3D();
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
 		float speedScale = GameManager.get().getManager(WorldManager.class)
-				.getTerrain(Math.round(newPosX), Math.round(newPosY)).getMoveScale();
+				.getTerrain(Math.round((float)Math.min(newPosX,width-1)), Math.round((float)Math.min(newPosY,length-1)))
+				.getMoveScale();
 		newPosX -= speedx * (1 - speedScale);
 		newPosY -= speedy * (1 - speedScale);
 		
@@ -133,8 +136,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			}
 		}
 		if (!collided) {
-			this.setPosX(Math.max((float)Math.min(newPosX,GameManager.get().getWorld().getWidth() - 0.2),0));
-			this.setPosY(Math.max((float)Math.min(newPosY,GameManager.get().getWorld().getLength() - 0.2),0));
+			this.setPosX(Math.max((float)Math.min(newPosX,width),0));
+			this.setPosY(Math.max((float)Math.min(newPosY,length),0));
 		}
 
 
