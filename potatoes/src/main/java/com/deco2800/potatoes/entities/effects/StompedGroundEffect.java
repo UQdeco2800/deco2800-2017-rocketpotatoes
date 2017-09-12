@@ -37,7 +37,7 @@ public class StompedGroundEffect extends Effect {
      *          boolean for whether this effect is temporary or permanent
      */
     public StompedGroundEffect(float posX, float posY, float posZ, boolean isTemporary) {
-        super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE);
+        super(posX, posY, posZ, 1f, 1f, 1f, 1.2f, 1.2f, TEXTURE);
         this.isTemporary = isTemporary;
     }
 

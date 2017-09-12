@@ -6,6 +6,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 

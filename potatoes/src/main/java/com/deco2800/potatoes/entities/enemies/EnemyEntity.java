@@ -39,6 +39,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final List<Color> colours = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity("progress_bar", colours, 0, 1);
+	private static final SoundManager enemySoundManager = new SoundManager();
 
 	/**
 	 * Default constructor for serialization
@@ -281,6 +282,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		if (!collidedTankEffect && this instanceof TankEnemy) {
 			GameManager.get().getWorld().addEntity(new StompedGroundEffect(getPosX(), getPosY(), 0, true));
+			enemySoundManager.playSound("tankEnemyFootstep.wav");
 		}
 
 		if (!collided) {
