@@ -9,8 +9,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.worlds.RandomWorldGeneration;
 import com.deco2800.potatoes.worlds.World;
-import com.deco2800.potatoes.worlds.terrain.BaseTerrain;
+import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
+import com.deco2800.potatoes.worlds.terrain.TerrainType;
 
 /**
  * Manager for worlds. Stores and generates all the worlds.
@@ -46,16 +47,23 @@ public class WorldManager extends Manager {
 			return worlds.get(key);
 		} else {
 			// Generate the world here
-			worlds.put(key, generateWorld(new BaseTerrain(null, new Terrain("grass", 1, true),
-					new Terrain("ground_1", 1, false), new Terrain("w1", 0, false))));
+			worlds.put(key, generateWorld(new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
+					new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)))));
 			return worlds.get(key);
 		}
 	}
 
+	/**
+	 * Deletes the world associated with the given key. It will be regenerated if
+	 * access is attempted
+	 */
 	public void deleteWorld(int key) {
 		worlds.remove(key);
 	}
 
+	/**
+	 * Deletes all worlds
+	 */
 	public void clearWorlds() {
 		worlds.clear();
 	}
@@ -90,22 +98,13 @@ public class WorldManager extends Manager {
 		return cells.get(texture);
 	}
 
-	private World generateWorld(BaseTerrain baseTerrain) {
+	private World generateWorld(WorldType worldType) {
 		World world = new World();
-		float[][] height = getRandomGrid();
-		float[][] grass = getRandomGrid();
-		terrain = new Terrain[WORLD_SIZE][WORLD_SIZE];
 		Cell[][] terrainCells = new Cell[WORLD_SIZE][WORLD_SIZE];
+		float[][] height = getRandomGrid();
+		terrain = worldType.generateWorld(WORLD_SIZE, height);
 		for (int x = 0; x < WORLD_SIZE; x++) {
 			for (int y = 0; y < WORLD_SIZE; y++) {
-				// TODO move this elsewhere and make these values not hard coded
-				if (height[x][y] < 0.3) {
-					terrain[x][y] = baseTerrain.getWater();
-				} else if (height[x][y] < 0.35) {
-					terrain[x][y] = baseTerrain.getRock();
-				} else {
-					terrain[x][y] = grass[x][y] < 0.5 ? baseTerrain.getGrass() : baseTerrain.getRock();
-				}
 				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
 			}
 		}

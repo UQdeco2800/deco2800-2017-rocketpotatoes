@@ -9,9 +9,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 /**
@@ -175,24 +177,57 @@ public class World {
 				new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture(tile.getTexture()))));
 		((TiledMapTileLayer) map.getLayers().get(0)).setCell(x, y, cell);
 	}
+	
+	/**
+	 * Deselects all entities.
+	 */
+	public void deSelectAll() {
+		for (Renderable r : this.getEntities().values()) {
+			if (r instanceof Selectable) {
+				((Selectable) r).deselect();
+			}
+		}
+	}
 
+	/**
+	 * Sets the width (x size) of this world. Note this does not change the map.
+	 */
 	public void setWidth(int width) {
 		this.width = width;
 	}
 
+	/**
+	 * Sets the length (y size) of this world. Note this does not change the map.
+	 */
 	public void setLength(int length) {
 		this.length = length;
 	}
 
+	/**
+	 * Returns the x size of the world
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * Returns the x size of the world
+	 */
 	public int getLength() {
 		return length;
 	}
 
-	public void setHeight(float[][] height) {this.height=height;}
+	/**
+	 * Sets the height grid to the given grid
+	 */
+	public void setHeight(float[][] height) {
+		this.height = height;
+	}
 
-	public float getHeight(int x,int y) {return height[x][y];}
+	/**
+	 * Returns the height of the specified location taken from the height grid
+	 */
+	public float getHeight(int x, int y) {
+		return height[x][y];
+	}
 }

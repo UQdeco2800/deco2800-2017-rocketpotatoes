@@ -2,7 +2,7 @@ package com.deco2800.potatoes.worlds.terrain;
 
 import java.util.List;
 
-public class BaseTerrain {
+public class TerrainType {
 	// Slopes need to be sorted out
 	private final List<Terrain> slopes;
 	private final Terrain grass;
@@ -15,7 +15,7 @@ public class BaseTerrain {
 	 * @param rock
 	 * @param water
 	 */
-	public BaseTerrain(List<Terrain> slopes, Terrain grass, Terrain rock, Terrain water) {
+	public TerrainType(List<Terrain> slopes, Terrain grass, Terrain rock, Terrain water) {
 		this.slopes = slopes;
 		this.grass = grass;
 		this.rock = rock;
