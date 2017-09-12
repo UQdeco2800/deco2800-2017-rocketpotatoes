@@ -59,11 +59,18 @@ public class StompedGroundEffect extends Effect {
         if (isTemporary) {
             timer++;
             if (!resourceStomped) {
-                Optional<AbstractEntity> closestResource =
-                        WorldUtil.getClosestEntityOfClass(ResourceEntity.class, getPosX(), getPosY());
-                if (closestResource.isPresent() && effectPosition.overlaps(closestResource.get().getBox3D())) {
-                    GameManager.get().getWorld().removeEntity(closestResource.get());
-                    soundManager.playSound("seedResourceDestroyed.wav");
+                Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+                for (AbstractEntity entity : entities.values()) {
+                    if (!this.equals(entity) && entity instanceof ResourceEntity  &&
+                            effectPosition.overlaps(entity.getBox3D()) ) {
+                        String resourceType = ((ResourceEntity) entity).getType().getTypeName();
+                        GameManager.get().getWorld().removeEntity(entity);
+                        if (resourceType.equals("seed")) {
+                            soundManager.playSound("seedResourceDestroyed.wav");
+                        } else if (resourceType.equals("food")) {
+                            soundManager.playSound("foodResourceDestroyed.wav");
+                        }
+                    }
                 }
                 resourceStomped = true;
             }
