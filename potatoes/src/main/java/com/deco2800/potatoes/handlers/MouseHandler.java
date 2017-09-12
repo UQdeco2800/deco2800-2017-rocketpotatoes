@@ -83,7 +83,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			
 			//TreeShop treeShop = GameManager.get().getManager(PlayerManager.class).getPlayer().getTreeShop();
 			//GameManager.get().getWorld().addEntity(new TreeShop(realX,realY));
-			GameManager.get().getManager(PlayerManager.class).getPlayer().openTreeShop(realX,realY);
+			//GameManager.get().getManager(PlayerManager.class).getPlayer().openTreeShop(realX,realY);
 			
 			/*if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);
