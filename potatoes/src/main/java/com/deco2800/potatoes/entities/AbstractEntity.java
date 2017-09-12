@@ -322,6 +322,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	public int hashCode() {
 		int result = position != null ? position.hashCode() : 0;
 		result = 31 * result + (texture != null ? texture.hashCode() : 0);
+		result = 31 * result + this.getClass().hashCode();
 		return result;
 	}
 

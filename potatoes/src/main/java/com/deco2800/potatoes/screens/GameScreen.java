@@ -27,6 +27,8 @@ import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
+import com.deco2800.potatoes.entities.trees.LightningTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -107,7 +109,7 @@ public class GameScreen implements Screen {
 		}
 
 		initializeGame();
-		
+
 	}
 
 	/**
@@ -261,7 +263,6 @@ public class GameScreen implements Screen {
 			initialisePortal();
 			addDamageTree();
 
-			
 		}
 
 		if (!multiplayerManager.isMultiplayer()) {
@@ -277,7 +278,7 @@ public class GameScreen implements Screen {
 			playerManager.setPlayer(new Player(5, 10, 0));
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		}
-		
+
 	}
 
 	// For random position of enemies
@@ -419,10 +420,12 @@ public class GameScreen implements Screen {
 		// Gdx.gl.glClearColor(0, 0, 0, 1);
 		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		HashMap<Color, AbstractTree> items = new HashMap<Color, AbstractTree>();
-		items.put(Color.BLUE, new DamageTree());
-		items.put(Color.RED, new DamageTree());
+		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
+		items.put(new ProjectileTree(), Color.RED);
+		items.put(new ResourceTree(), Color.BLUE);
+		items.put(new DamageTree(), Color.YELLOW);
 		createMenu(items, 600, 400, 200);
+		System.out.println(items.size());
 
 		///////////////////////// TEST///////////////////////
 	}
@@ -521,33 +524,49 @@ public class GameScreen implements Screen {
 			renderGame(batch);
 		}
 
-
-
 		renderGUI(batch);
 
 		batch.dispose();
 	}
 
-	public void createMenu(HashMap<Color, AbstractTree> items, int x, int y, int radius) {
+	/**
+	 * Creates menu based on input parameters.
+	 * 
+	 * @param items
+	 *            A HashMap with each AbstractEntity as the key and the
+	 *            corresponding color as value
+	 * @param x
+	 *            Center x point
+	 * @param y
+	 *            Center y point
+	 * @param radius
+	 *            Radius of circle
+	 */
+	public void createMenu(HashMap<AbstractEntity, Color> items, int x, int y, int radius) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);
-
+		
+		
+		float a = 0.7f;
 		int numSegments = items.entrySet().size();
-		shapeRenderer.setColor(Color.BROWN);
-		shapeRenderer.circle(x, y, radius);
-		shapeRenderer.setColor(Color.BLUE);
-		shapeRenderer.arc(x, y, radius-20, 0, 90);
+		System.out.println(numSegments);
+		shapeRenderer.setColor(new Color(0,0,0,0.9f));
+		shapeRenderer.circle(x, y, radius, 200);
+	
 		int segment = 0;
-		for (int i=0; i<2; i++) {
-			shapeRenderer.setColor(Color.WHITE);
-			int startAngle = (segment)/(numSegments)*360;
-			int endAngle = (segment+1)/(numSegments)*360;
-			System.out.println(startAngle + " to "+endAngle);
-			shapeRenderer.arc(x, y, radius-20, startAngle, endAngle);
+		int degrees = 360 / numSegments;
+		for (Map.Entry<AbstractEntity, Color> entry : items.entrySet()) {
+			Color c = entry.getValue();
+			shapeRenderer.setColor(new Color(c.r, c.g, c.b, a));
+			int startAngle = 360 * (segment) / (numSegments);
+			shapeRenderer.arc(x, y, (int) (radius * 0.9), startAngle, degrees);
+			segment++;
 		}
 
-
 		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	/**
