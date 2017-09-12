@@ -1,40 +1,12 @@
 package com.deco2800.potatoes.worlds;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
+/**
+ * Utility class for randomly generating worlds. Will probably be moved somewhere at some point.
+ */
 public class RandomWorldGeneration {
-
-	private float[][] heightMap;
-	// List of properties used to choose between different tiles
-	private float[][][] tilePropertyMaps;
-
-	public RandomWorldGeneration(int width, int length) {
-		heightMap = new float[width][length];
-		tilePropertyMaps = new float[width][length][3];
-	}
-
-	/********************************
-	 * FOR TESTING
-	 ********************************
-	 * Outputs and image from the algorithm output, try not to add the heightmap
-	 * file to git
-	 */
-	public static void main(String[] args) throws IOException {
-		final int SIZE = 25;
-		BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_RGB);
-		float[][] heightmap = smoothDiamondSquareAlgorithm(SIZE, 0.4f, 2);
-		for (int i = 0; i < heightmap.length; i++) {
-			for (int j = 0; j < heightmap[i].length; j++) {
-				Color color = new Color(heightmap[i][j], heightmap[i][j], heightmap[i][j]);
-				image.setRGB(i, j, color.getRGB());
-			}
-		}
-		ImageIO.write(image, "png", new File("random_image.png"));
+	
+	private RandomWorldGeneration() {
+		// Never should be called
 	}
 
 	private static final int[][] DIAMOND_SAMPLES = { { 0, -1 }, { -1, 0 }, { 0, 1 }, { 1, 0 } };
@@ -103,20 +75,17 @@ public class RandomWorldGeneration {
 		for (int x = 0; x < array.length; x++) {
 			for (int y = 0; y < array[x].length; y++) {
 				array[x][y] = (array[x][y] - min) / (max - min);
-				if (array[x][y] > 1 || array[x][y] < 0) {
-					System.out.println(min + ":" + max);
-				}
 			}
 		}
 		return array;
 	}
 
-	private static void sampleStep(float[][] array, int[][] sampleType, float x, float y, float size, float random) {
+	private static void sampleStep(float[][] array, int[][] sampleType, float x, float y, int size, float random) {
 		float sum = 0;
 		int count = 0;
 		for (int[] is : sampleType) {
-			int sampleX = (int) (Math.floor(x) + is[0] * Math.floor(size));
-			int sampleY = (int) (Math.floor(y) + is[1] * Math.floor(size));
+			int sampleX = (int) (Math.floor(x) + is[0] * size);
+			int sampleY = (int) (Math.floor(y) + is[1] * size);
 			count++;
 			sum += get(array, sampleX, sampleY);
 		}
@@ -124,12 +93,9 @@ public class RandomWorldGeneration {
 	}
 
 	private static float get(float[][] array, int x, int y) {
-		int adjustedX = x < 0 ? x += array.length : x >= array.length ? x -= array.length : x;
-		int adjustedY = y < 0 ? y += array[0].length : y >= array[0].length ? y -= array[0].length : y;
+		// Wraps around
+		int adjustedX = x < 0 ? x + array.length : x >= array.length ? x - array.length : x;
+		int adjustedY = y < 0 ? y + array[0].length : y >= array[0].length ? y - array[0].length : y;
 		return array[adjustedX][adjustedY];
-	}
-
-	private static boolean isValidCoords(float[][] array, int x, int y) {
-		return x >= 0 && y >= 0 && x < array.length && y < array[0].length;
 	}
 }
