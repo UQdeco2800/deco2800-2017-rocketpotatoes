@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
@@ -138,6 +139,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
+			GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
 			try {
 				GameManager.get().getWorld().removeEntity(this);
 				player.getInventory().updateQuantity(this.resourceType, this.getQuantity());
