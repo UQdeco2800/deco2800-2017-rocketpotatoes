@@ -81,8 +81,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return progressBar;
 	}
 
+	/**
+	 * raccoon steals resources from resourceTrees
+	 */
 	public void harvestResources() {
-		double interactRange = 3f;
+		double interactRange = 1f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
 			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
@@ -94,9 +97,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 	public void onTick(long i) {
+		//raccoon steals resources from resourceTrees
 		harvestResources();
-		//PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+
+		//fond closest goal to the enemy
 		Optional<AbstractEntity> tgt = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+		//if no ResourceTree in the world, set goal to player 
 		if (!tgt.isPresent()) {
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			AbstractEntity tgtGet = playerManager.getPlayer();
@@ -157,6 +163,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			this.setPosX(getPosX() + changeX);
 			this.setPosY(getPosY() + changeY);
 		} else {
+			//otherwise, set resourceTrees and move towards them
+			
 			AbstractEntity tgtGet = tgt.get();
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
