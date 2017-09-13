@@ -41,7 +41,7 @@ public class Render3D implements Renderer {
 
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
-	 * AbstractWorld contains some entities and a Map to read tiles from
+	 * World contains some entities and a Map to read tiles from
 	 *
 	 * @param batch
 	 *            Batch to render onto
@@ -101,7 +101,7 @@ public class Render3D implements Renderer {
 				tex = reg.getTexture(entity.getTexture());
 			}
 
-			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
+			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			// We want to keep the aspect ratio of the image so...
 			float aspect = (float) (tex.getWidth()) / (float) (tileWidth);
@@ -135,7 +135,7 @@ public class Render3D implements Renderer {
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
+			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
 				ProgressBar PROGRESS_BAR = ((HasProgressBar) entity).getProgressBar();
@@ -282,23 +282,27 @@ public class Render3D implements Renderer {
 	 *            y coord in the world
 	 * @return a Vector2 with the screen coordinates
 	 */
-	public static Vector2 worldToScreenCoordinates(float x, float y) {
+	public static Vector2 worldToScreenCoordinates(float x, float y, float z) {
 		int worldLength = GameManager.get().getWorld().getLength();
 		int worldWidth = GameManager.get().getWorld().getWidth();
 
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
-		float baseX = tileWidth * (worldWidth / 2.0f - 0.5f); // bad
-		float baseY = -tileHeight / 2 * worldLength + tileHeight / 2f; // good
+		// X and Y offset for our isometric world (centered)
+		float baseX = tileWidth * (worldWidth - 1) / 2f;
+		float baseY = -tileHeight * (worldLength - 1) / 2f; // screen y is inverted
 
 		float cartX = x;
-		float cartY = (worldWidth - 1) - y;
+		float cartY = (worldWidth - 1) - y; // screen y is from the bottom corner
 
-		float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
-		float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
-
-		return new Vector2(isoX, isoY);
+		float isoX = baseX + (cartX - cartY) / 2.0f * tileWidth;
+		float isoY = baseY + (cartX + cartY) / 2.0f * tileHeight;
+		
+		// scaled to length of tile side
+		float zScale = new Vector2(tileWidth, tileHeight).scl(0.5f).len();
+		
+		return new Vector2(isoX, isoY + z * zScale);
 	}
 
 	/**
@@ -308,8 +312,8 @@ public class Render3D implements Renderer {
 	 *            Vector2 with the world coords
 	 * @return a Vector2 with the screen coordinates
 	 */
-	public static Vector2 worldToScreenCoordinates(Vector2 p) {
-		return worldToScreenCoordinates(p.x, p.y);
+	public static Vector2 worldToScreenCoordinates(Vector3 p) {
+		return worldToScreenCoordinates(p.x, p.y, p.z);
 	}
 
 	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {

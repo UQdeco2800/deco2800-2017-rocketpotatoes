@@ -2,15 +2,19 @@ package com.deco2800.potatoes.entities.animation;
 
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An animation where the frame is dependent on some value. <br>
  * Feel free to modify this class in any way
  */
 public class StateAnimation implements Animation {
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(StateAnimation.class);
 
 	private final transient float maxValue;
 	private final transient float minValue;
-	private final transient Animation[] frames;
+	final transient Animation[] frames;
 	private final transient Supplier<Float> valueFunction;
 
 	/**
@@ -58,7 +62,16 @@ public class StateAnimation implements Animation {
 
 	@Override
 	public Animation getAnimation() {
+		if ((1 - (valueFunction.get() - minValue) / maxValue) > 1) {
+			LOGGER.error("Value wasn't between min and max");
+			LOGGER.error("valueFunction: {}, minValue: {}, maxValue: {}", valueFunction.get(), minValue, maxValue);
+		}
 		return frames[Math.round((frames.length - 1) * (1 - (valueFunction.get() - minValue) / maxValue))];
+	}
+
+	@Override
+	public Animation[] getFrames() {
+		return frames;
 	}
 
 }

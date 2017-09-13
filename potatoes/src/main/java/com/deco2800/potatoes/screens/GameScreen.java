@@ -15,15 +15,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.*;
+import com.deco2800.potatoes.entities.enemies.Moose;
+import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
+import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.gui.DebugModeGui;
-import com.deco2800.potatoes.gui.GameMenuGui;
-import com.deco2800.potatoes.gui.InventoryGui;
-import com.deco2800.potatoes.gui.PauseMenuGui;
+import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -31,7 +30,6 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.InitialWorld;
 
 import java.io.IOException;
 import java.util.Map;
@@ -168,8 +166,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
         setupInputHandling();
 
-        /* Create an example world for the engine */
-        GameManager.get().setWorld(new InitialWorld());
+        // Sets the world to the initial world, world 0
+        GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -214,35 +212,21 @@ public class GameScreen implements Screen {
 
         GameManager.get().getManager(EventManager.class).unregisterAll();
         
-        Random random = new Random();
+        //Random random = new Random();
 
         MultiplayerManager m = multiplayerManager;
         if (m.isMaster() || !m.isMultiplayer()) {
-            for (int i = 0; i < 5; i++) {
-                GameManager.get().getWorld().addEntity(new Squirrel(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-
-            for (int i = 0; i < 3; i++) {
-                GameManager.get().getWorld().addEntity(
-                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-            }
-
-            for (int i = 0; i < 2; ++i) {
-                GameManager.get().getWorld().addEntity(new Moose(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
-
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-
-            for(int i=0 ; i<3 ; i++) {
-                GameManager.get().getWorld().addEntity(
-                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
-            }
+            addSquirrel();
+            addTankEnemy();
+            addMoose();
+            addSpeedyEnemy();
+            
             addResourceTrees();
             initialiseResources();
+            initialisePortal();
             addDamageTree();
             
         }
@@ -257,11 +241,44 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+
+        GameManager.get().getManager(ParticleManager.class);
     }
+    
+    //For random position of enemies 
+    Random random = new Random();
+    
+    private void addSquirrel() {
+    	for (int i = 0; i < 5; i++) {
+            GameManager.get().getWorld().addEntity(new Squirrel(
+                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+        }
+    }
+    private void addTankEnemy() {
+    	 for (int i = 0; i < 3; i++) {
+             GameManager.get().getWorld().addEntity(
+             		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+         }	
+    }
+    private void addMoose() {
+    	for (int i = 0; i < 2; ++i) {
+            GameManager.get().getWorld().addEntity(new Moose(
+                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+        }
+    }
+    private void addSpeedyEnemy() {
+    	for(int i=0 ; i<3 ; i++) {
+            GameManager.get().getWorld().addEntity(
+                    new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+        }
+    }
+    
+    
     private void addDamageTree(){
         GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
         GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
         GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0,new FireTree()));
     }
     private void addResourceTrees() {
     		// Seed Trees
@@ -286,6 +303,11 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+    }
+    
+    private void initialisePortal() {
+		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
+		
     }
 
     private void tickGame(long timeDelta) {
@@ -351,8 +373,10 @@ public class GameScreen implements Screen {
 		window.add(peonButton);
 		*/
 
-        // Tick CameraManager, maybe want to make managers tickable??
+        // Tick CameraManager, maybe want to make managers tickable??a
         cameraManager.centerOnTarget(timeDelta);
+
+        GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
     }
 
     private void renderGUI(SpriteBatch batch) {
@@ -385,7 +409,7 @@ public class GameScreen implements Screen {
         float tileX = (int)(Math.floor(tileCoords.x));
         float tileY = (int)(Math.floor(tileCoords.y));
 
-        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY);
+        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
         batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
 
         batch.end();
@@ -394,6 +418,8 @@ public class GameScreen implements Screen {
         renderer.render(batch);
 
         // TODO: add render for projectile's separately
+
+        GameManager.get().getManager(ParticleManager.class).draw(batch);
     }
 
     /**
