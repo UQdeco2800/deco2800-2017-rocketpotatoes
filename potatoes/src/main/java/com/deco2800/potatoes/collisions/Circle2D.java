@@ -36,10 +36,7 @@ public class Circle2D implements CollisionMask {
             // use pythagorean theorem
             float dist = (float) Math.sqrt((double) distX * distX + distY * distY );
 
-            // subtract radius
-            dist -= - this.radius;
-
-            return dist;
+            return dist - radius;
         } else if (other instanceof Circle2D) {
             Circle2D otherCircle = (Circle2D) other;
 

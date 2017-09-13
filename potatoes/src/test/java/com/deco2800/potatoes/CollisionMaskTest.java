@@ -84,6 +84,9 @@ public class CollisionMaskTest {
         //self distance = 0
         assertTrue(point3.distance(point3) == 0);
         assertTrue(point1.distance(point1) == 0);
+        // self colisions
+        assertTrue(point1.overlaps(point1));
+        assertTrue(point3.overlaps(point3));
 
         //linear
         assertTrue(point1.distance(point2) == 3.5);
@@ -93,5 +96,30 @@ public class CollisionMaskTest {
         assertTrue(compareFloat(point1.distance(point4), (float) Math.sqrt(50)));
         assertTrue(compareFloat(point3.distance(point4), (float) Math.sqrt(29)));
 
+    }
+
+    @Test
+    public void distanceCircleToPoint() {
+        Point2D point1 = new Point2D(0f, 0f);
+        Point2D point2 = new Point2D(5f, 5f);
+
+        Circle2D circle1 = new Circle2D(2.5f, 2.5f, 10f);
+        Circle2D circle2 = new Circle2D(2.5f, 2.5f, 3f);
+
+        // reflexive
+        assertTrue(point1.distance(circle1) == circle1.distance(point1));
+        assertTrue(point1.distance(circle2) == circle2.distance(point1));
+        assertTrue(point2.distance(circle1) == circle1.distance(point2));
+        assertTrue(point2.distance(circle2) == circle2.distance(point2));
+
+        // collision check
+        assertTrue(point1.distance(circle1) < 0);
+        assertTrue(point1.overlaps(circle1));
+        assertTrue(point2.distance(circle1) < 0);
+        assertTrue(point2.overlaps(circle1));
+
+        // actual distance
+        assertTrue(compareFloat(point1.distance(circle2), (float) Math.sqrt(2.5 * 2.5 + 2.5 * 2.5) - 3));
+        assertTrue(compareFloat(point2.distance(circle2), (float) Math.sqrt(2.5 * 2.5 + 2.5 * 2.5) - 3));
     }
 }
