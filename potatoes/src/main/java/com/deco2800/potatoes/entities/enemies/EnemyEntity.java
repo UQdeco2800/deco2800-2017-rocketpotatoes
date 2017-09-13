@@ -178,9 +178,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void onTick(long i) {
 		float goalX;
 		float goalY;
-		if (goal == Player.class) {
+		//if goal is player or null, set enemy's goal to player and move enemy to player 
+		if (goal == Player.class || goal == null) {
+			goal = Player.class;
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			SoundManager soundManager = GameManager.get().getManager(SoundManager.class);
 
 			// The X and Y position of the player without random floats generated
 			goalX = playerManager.getPlayer().getPosX() ;
@@ -226,8 +227,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 //				setPosY(getPosY() + changeY);
 //			}
 		} else {
-			// set the target of tankEnemy to the closest goal
+			// set the target of Enemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+			
 			// get the position of the target
 			goalX = target.get().getPosX(); 
 			goalY = target.get().getPosY(); 
@@ -387,10 +389,13 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	//@Override
 	//public void setMaxProgress(int p) { return; }
 	
+	/**
+	 * remove the enemy if it is dead, and respawn after seconds 
+	 */
 	@Override
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
-		// destroy the player
+		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
 		// get the event manager
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
