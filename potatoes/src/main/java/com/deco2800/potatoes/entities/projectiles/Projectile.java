@@ -65,8 +65,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 			float targetPosZ, float range, float damage, float xRenderLength, float yRenderLength, Effect endEffect) {
 		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, xRenderLength, yRenderLength, true, TEXTURE);
 
-		System.out.println(WorldUtil.rotation(0, 0, 1, 1));
-		
 		for (int t = 0; t < textureArrayLength; t++) {
 			textureArray[t] = projectileType + Integer.toString(t + 1);
 		}
