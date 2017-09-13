@@ -1,4 +1,4 @@
-package com.deco2800.potatoes;
+package com.deco2800.potatoes.entities.tree;
 
 import org.junit.*;
 import static org.junit.Assert.*;
