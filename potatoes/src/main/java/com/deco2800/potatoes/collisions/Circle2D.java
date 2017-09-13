@@ -14,24 +14,32 @@ public class Circle2D implements CollisionMask {
 
     @Override
     public boolean overlaps(CollisionMask other) {
-        if (other instanceof Box2D) {
-            Box2D box = (Box2D) other;
-            return box.overlaps(this);
+        if (other instanceof Point2D) {
+            Point2D point = (Point2D) other;
+            return (distance(point) < 0);
         } else if (other instanceof Circle2D) {
             Circle2D otherCircle = (Circle2D) other;
             return (distance(otherCircle) < 0);
-        } else if (other instanceof Point2D) {
-            Point2D point = (Point2D) other;
-            return (distance(point) < 0);
+        } else {
+            return other.overlaps(this);
         }
-        return false;
     }
 
     @Override
     public float distance(CollisionMask other) {
-        if (other instanceof Box2D) {
-            Box2D box = (Box2D) other;
-            return box.distance(this);
+        if (other instanceof Point2D) {
+            Point2D point = (Point2D) other;
+
+            float distX = Math.abs(point.getX() - this.x);
+            float distY = Math.abs(point.getY() - this.y);
+
+            // use pythagorean theorem
+            float dist = (float) Math.sqrt((double) distX * distX + distY * distY );
+
+            // subtract radius
+            dist -= - this.radius;
+
+            return dist;
         } else if (other instanceof Circle2D) {
             Circle2D otherCircle = (Circle2D) other;
 
@@ -45,27 +53,15 @@ public class Circle2D implements CollisionMask {
             dist -= otherCircle.getRadius() + this.radius;
 
             return dist;
-        } else if (other instanceof Point2D) {
-            Point2D point = (Point2D) other;
-
-            float distX = Math.abs(point.getX() - this.x);
-            float distY = Math.abs(point.getY() - this.y);
-
-            // use pythagorean theorem
-            float dist = (float) Math.sqrt((double) distX * distX + distY * distY );
-
-            // subtract radius
-            dist -= - this.radius;
-
-            return dist;
+        } else {
+            return other.distance(this);
         }
-        return 0;
     }
 
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
-        //TODO
-        return 0;
+        Point2D centre = new Point2D(x, y);
+        return centre.distance(x1, y1, x2, y2) - radius;
     }
 
     @Override
