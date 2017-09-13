@@ -247,6 +247,8 @@ public class GameScreen implements Screen {
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
+
+        GameManager.get().getManager(ParticleManager.class);
     }
     
     //For random position of enemies 
@@ -376,8 +378,10 @@ public class GameScreen implements Screen {
 		window.add(peonButton);
 		*/
 
-        // Tick CameraManager, maybe want to make managers tickable??
+        // Tick CameraManager, maybe want to make managers tickable??a
         cameraManager.centerOnTarget(timeDelta);
+
+        GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
     }
 
     private void renderGUI(SpriteBatch batch) {
@@ -419,6 +423,8 @@ public class GameScreen implements Screen {
         renderer.render(batch);
 
         // TODO: add render for projectile's separately
+
+        GameManager.get().getManager(ParticleManager.class).draw(batch);
     }
 
     /**

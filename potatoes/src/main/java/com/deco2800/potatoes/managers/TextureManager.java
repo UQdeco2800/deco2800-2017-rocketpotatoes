@@ -78,6 +78,9 @@ public class TextureManager extends Manager {
         }
         saveTexture("lightning", "resources/projectiles/lightning.png");
 
+        // Particles
+        saveTexture("snowflake", "resources/particles/snowflake.png");
+
         // GUI
         saveTexture("screen_background", "resources/menu/background.png");
         saveTexture("start_btn", "resources/menu/start_btn.png");
