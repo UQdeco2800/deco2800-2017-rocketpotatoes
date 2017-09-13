@@ -191,7 +191,7 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		// Add test TreeShop Gui
-		//guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -426,7 +426,7 @@ public class GameScreen implements Screen {
 		items.put(new ProjectileTree(), Color.RED);
 		items.put(new ResourceTree(), Color.BLUE);
 		items.put(new DamageTree(), Color.YELLOW);
-		//createMenu(items, 600, 400, 200);
+		createMenu(items, 600, 400, 200);
 		System.out.println(items.size());
 
 		///////////////////////// TEST///////////////////////
@@ -552,10 +552,10 @@ public class GameScreen implements Screen {
 		shapeRenderer.begin(ShapeType.Filled);
 		
 		
-		float a = 0.7f;
+		float a = 0.5f;
 		int numSegments = items.entrySet().size();
-		System.out.println(numSegments);
-		shapeRenderer.setColor(new Color(0,0,0,0.9f));
+		//System.out.println(numSegments);
+		shapeRenderer.setColor(new Color(0,0,0,0.7f));
 		shapeRenderer.circle(x, y, radius, 200);
 	
 		int segment = 0;
@@ -564,7 +564,7 @@ public class GameScreen implements Screen {
 			Color c = entry.getValue();
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, a));
 			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(x, y, (int) (radius * 0.9), startAngle, degrees);
+			shapeRenderer.arc(x, y, (int) (radius), startAngle, degrees);
 			segment++;
 		}
 
