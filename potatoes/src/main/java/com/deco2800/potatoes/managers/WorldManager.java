@@ -93,7 +93,7 @@ public class WorldManager extends Manager {
 	private Cell getCell(String texture) {
 		if (!cells.containsKey(texture)) {
 			cells.put(texture, new Cell().setTile(new StaticTiledMapTile(
-					new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture(texture)))));
+					GameManager.get().getManager(TextureManager.class).getTextureRegion(texture))));
 		}
 		return cells.get(texture);
 	}

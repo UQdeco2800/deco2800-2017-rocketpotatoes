@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public class TextureManager extends Manager {
     /**
      * A HashMap of all textures with string keys
      */
-    private Map<String, Texture> textureMap = new HashMap<String, Texture>();
+    private Map<String, TextureRegion> textureMap = new HashMap<String, TextureRegion>();
 
     /**
      * Constructor
@@ -135,13 +137,41 @@ public class TextureManager extends Manager {
      * @return Texture for given id
      */
     public Texture getTexture(String id) {
-        if (textureMap.containsKey(id)) {
-            return textureMap.get(id);
-        } else {
-            return textureMap.get("spacman_ded");
-        }
-
+    	return getTextureRegion(id).getTexture();
     }
+    
+	/**
+	 * Gets a texture region object for a given string id
+	 *
+	 * @param id
+	 *            Texture identifier
+	 * @return TextureRegion for given id
+	 */
+	public TextureRegion getTextureRegion(String id) {
+		if (textureMap.containsKey(id)) {
+			return textureMap.get(id);
+		} else {
+			return textureMap.get("spacman_ded");
+		}
+	}
+    
+	/**
+	 * Saves a flipped version of the Texture associated with toFlip and saves it in
+	 * flippedId
+	 * 
+	 * @param toFlip
+	 *            The id of the texture to create a flipped version of
+	 * @param flippedId
+	 * @param x
+	 *            Whether to flip in the x direction
+	 * @param y
+	 *            Whether to flip in the y direction
+	 */
+	public void saveFlippedTexture(String toFlip, String flippedId, boolean x, boolean y) {
+		LOGGER.info("Saving flipped texture" + flippedId + " from " + toFlip);
+		textureMap.put(flippedId, new TextureRegion(textureMap.get(toFlip)));
+		textureMap.get(flippedId).flip(x, y);
+	}
 
     /**
      * Saves a texture with a given id
@@ -152,7 +182,7 @@ public class TextureManager extends Manager {
     public void saveTexture(String id, String filename) {
         LOGGER.info("Saving texture" + id + " with Filename " + filename);
         if (!textureMap.containsKey(id)) {
-            textureMap.put(id, new Texture(filename));
+            textureMap.put(id, new TextureRegion(new Texture(filename)));
         }
     }
 }
