@@ -1,13 +1,31 @@
 package com.deco2800.potatoes.managers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.gui.Gui;
+import com.deco2800.potatoes.gui.InteractiveShape;
 
 public class GuiManager extends Manager {
     private List<Gui> gui;
+    private List<InteractiveShape> shapeZones;	// used to detect collision on shapes
     private Stage stage;
 
     /**
@@ -73,4 +91,79 @@ public class GuiManager extends Manager {
             }
         }
     }
+    
+    /**
+	 * Creates menu based on input parameters.
+	 * 
+	 * @param items
+	 *            A HashMap with each AbstractEntity as the key and the
+	 *            corresponding color as value
+	 * @param x
+	 *            Center x point
+	 * @param y
+	 *            Center y point
+	 * @param radius
+	 *            Radius of circle
+	 */
+	public void createTreeMenu(HashMap<AbstractEntity, Color> items, int x, int y, int radius) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Filled);
+		
+		
+		float a = 0.5f;
+		int numSegments = items.entrySet().size();
+		//System.out.println(numSegments);
+		shapeRenderer.setColor(new Color(0,0,0,0.7f));
+		shapeRenderer.circle(x, y, radius);
+		Circle circle = new Circle(x,y,radius);
+		InteractiveShape treeShopZone = new InteractiveShape() {
+
+			@Override
+			public boolean isDetected(float x, float y) {
+				return circle.contains(x, y);
+			};
+			
+			@Override
+			public void render() {				
+			}
+
+			@Override
+			public void onClick() {
+				System.out.println("Click worked!");
+				
+			}
+		};
+		
+		shapeZones.add(treeShopZone);
+	
+		int segment = 0;
+		int degrees = 360 / numSegments;
+		for (Map.Entry<AbstractEntity, Color> entry : items.entrySet()) {
+			Color c = entry.getValue();
+			shapeRenderer.setColor(new Color(c.r, c.g, c.b, a));
+			int startAngle = 360 * (segment) / (numSegments);
+			shapeRenderer.arc(x, y, (int) (radius*0.9), startAngle, degrees);
+			
+			segment++;
+	
+		}
+		
+		
+		
+		shapeRenderer.end();
+		
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	public void checkShapes(float x, float y) {
+		for (InteractiveShape shape: shapeZones) {
+			if (shape.isDetected(x, y)) {
+				shape.onClick();
+			}
+		}
+	}
+	
+	
 }

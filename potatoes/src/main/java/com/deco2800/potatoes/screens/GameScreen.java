@@ -5,12 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,13 +18,10 @@ import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.LightningTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
@@ -43,7 +37,7 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.*;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -197,9 +191,9 @@ public class GameScreen implements Screen {
 		setupInputHandling();
 
 		/* Create an example world for the engine */
-		//GameManager.get().setWorld(new InitialWorld());
-        // Sets the world to the initial world, world 0
-        GameManager.get().getManager(WorldManager.class).setWorld(0);
+		// GameManager.get().setWorld(new InitialWorld());
+		// Sets the world to the initial world, world 0
+		GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -417,19 +411,7 @@ public class GameScreen implements Screen {
 		// Render GUI elements
 		guiManager.getStage().act();
 		guiManager.getStage().draw();
-		//////////////////////// TEST/////////////////////
-
-		// Gdx.gl.glClearColor(0, 0, 0, 1);
-		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
-		items.put(new ProjectileTree(), Color.RED);
-		items.put(new ResourceTree(), Color.BLUE);
-		items.put(new DamageTree(), Color.YELLOW);
-		createMenu(items, 600, 400, 200);
-		System.out.println(items.size());
-
-		///////////////////////// TEST///////////////////////
+		
 	}
 
 	private void renderGameGUI(SpriteBatch batch) {
@@ -458,9 +440,8 @@ public class GameScreen implements Screen {
 		float tileX = (int) (Math.floor(tileCoords.x));
 		float tileY = (int) (Math.floor(tileCoords.y));
 
-		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY,0);
+		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
 		batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-
 
 		batch.end();
 
@@ -468,6 +449,15 @@ public class GameScreen implements Screen {
 		renderer.render(batch);
 
 		// TODO: add render for projectile's separately
+		
+		// Render menu
+		
+		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
+		items.put(new ProjectileTree(), Color.RED);
+		items.put(new ResourceTree(), Color.BLUE);
+		items.put(new DamageTree(), Color.YELLOW);
+		GameManager.get().getManager(GuiManager.class).createTreeMenu(items, 600, 400, 200);
+		System.out.println(items.size());
 	}
 
 	/**
@@ -532,45 +522,6 @@ public class GameScreen implements Screen {
 		batch.dispose();
 	}
 
-	/**
-	 * Creates menu based on input parameters.
-	 * 
-	 * @param items
-	 *            A HashMap with each AbstractEntity as the key and the
-	 *            corresponding color as value
-	 * @param x
-	 *            Center x point
-	 * @param y
-	 *            Center y point
-	 * @param radius
-	 *            Radius of circle
-	 */
-	public void createMenu(HashMap<AbstractEntity, Color> items, int x, int y, int radius) {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
-		shapeRenderer.begin(ShapeType.Filled);
-		
-		
-		float a = 0.5f;
-		int numSegments = items.entrySet().size();
-		//System.out.println(numSegments);
-		shapeRenderer.setColor(new Color(0,0,0,0.7f));
-		shapeRenderer.circle(x, y, radius, 200);
-	
-		int segment = 0;
-		int degrees = 360 / numSegments;
-		for (Map.Entry<AbstractEntity, Color> entry : items.entrySet()) {
-			Color c = entry.getValue();
-			shapeRenderer.setColor(new Color(c.r, c.g, c.b, a));
-			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(x, y, (int) (radius), startAngle, degrees);
-			segment++;
-		}
-
-		shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-	}
 
 	/**
 	 * Resizes the viewport
