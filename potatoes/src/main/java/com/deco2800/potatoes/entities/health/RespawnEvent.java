@@ -48,10 +48,13 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 		// sets players health to maximum health
 		param.setHealth(param.getMaxHealth());
 		// read player to world
-		if (playerRespawn) {
-			// play respawn sound effect if player is respawning
-			SoundManager soundManager = new SoundManager();
-			soundManager.playSound("respawnEvent.wav");
+		try {
+			if (playerRespawn) {
+				// play respawn sound effect if player is respawning
+				SoundManager soundManager = new SoundManager();
+				soundManager.playSound("respawnEvent.wav");
+			}
+		} catch (NullPointerException e) {
 		}
 
 		GameManager.get().getWorld().addEntity(param);

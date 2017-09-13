@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
+import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +106,9 @@ public class BasePortal extends MortalEntity implements Tickable {
 		if (collided) {
 			try {
 				LOGGER.info("Entered portal");
+				//play warping sound effect
+				SoundManager soundManager = new SoundManager();
+				soundManager.playSound("warpSound.wav");
 				//remove player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//change to new world
