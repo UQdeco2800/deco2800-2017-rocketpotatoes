@@ -42,7 +42,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 
-
 	/**
 	 * Default constructor for serialization
 	 */
@@ -50,7 +49,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		// empty for serialization
 		getBasicStats().registerEvents(this);
 	}
-
 
 	/**
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
@@ -192,40 +190,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				this.setPosY(goalY);
 				return;
 			}
-//
-//			float deltaX = getPosX() - goalX;
-//			float deltaY = getPosY() - goalY;
-//
-//			float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-//
-//			float changeX = (float)(speed * Math.cos(angle));
-//			float changeY = (float)(speed * Math.sin(angle));
-//
-//			Box3D newPos = getBox3D();
-//
-//			newPos.setX(getPosX() + changeX);
-//			newPos.setY(getPosY() + changeY);
-//
-//			/*
-//			 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
-//			 *     -> Enemies of the same type, projectiles, resources.
-//			 */
-//			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-//			boolean collided = false;
-//			for (AbstractEntity entity : entities.values()) {
-//				if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
-//						newPos.overlaps(entity.getBox3D()) ) {
-//					if(entity instanceof Player) {
-//						//soundManager.playSound("ree1.wav");
-//					}
-//					collided = true;
-//				}
-//			}
-//
-//			if (!collided) {
-//				setPosX(getPosX() + changeX);
-//				setPosY(getPosY() + changeY);
-//			}
 		} else {
 			// set the target of Enemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
@@ -257,8 +221,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			
 			
 		}
-		
-		
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
@@ -391,7 +353,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESS_BAR;
 	}
-
 
 	@Override
 	public float getProgressRatio() {

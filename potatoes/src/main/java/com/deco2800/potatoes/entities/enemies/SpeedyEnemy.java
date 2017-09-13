@@ -43,12 +43,10 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
 
+	/**
+	 * Empty constructor for serialization
+	 */
 	public SpeedyEnemy() {
-		// super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed,
-		// goal);
-		// this.speed = speed;
-		// this.goal = goal;
-		// resetStats();
 	}
 
 	public SpeedyEnemy(float posX, float posY, float posZ) {
@@ -235,8 +233,4 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	// }
 	// }
 	// }
-	/**
-	 * public void onTick(long i){ harvestResources(); }
-	 **/
-
 }

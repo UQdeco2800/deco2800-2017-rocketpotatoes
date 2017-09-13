@@ -48,11 +48,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public TankEnemy() {
-
-		// super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		// this.speed = getBasicStats().getSpeed();
-		// this.goal = goal;
-		// resetStats();
 	}
 
 	/**
