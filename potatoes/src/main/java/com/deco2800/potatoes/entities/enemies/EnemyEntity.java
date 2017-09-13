@@ -197,7 +197,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 				AbstractEntity getTarget = playerManager.getPlayer();
 				// get the position of the target
-				goalX = getTarget.getPosX(); 
+				goalX = getTarget.getPosX();
 				goalY = getTarget.getPosY(); 
 				
 				if(this.distance(getTarget) < speed) {
@@ -219,8 +219,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				}
 			}
 			
-			
 		}
+		
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
