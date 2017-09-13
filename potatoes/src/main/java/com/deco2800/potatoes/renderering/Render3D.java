@@ -119,7 +119,7 @@ public class Render3D implements Renderer {
 					tileWidth * entity.getXRenderLength(),
 					(tex.getHeight() / aspect) * entity.getYRenderLength(),
 					// scaleX, scaleY, rotation
-					1, 1, 0 - entity.rotateAngle(),
+					1, 1, 0 - entity.rotationAngle(),
 					// srcX, srcY
 					0, 0,
 					// srcWidth, srcHeight

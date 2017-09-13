@@ -27,7 +27,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 
 	private String texture = "error_box";
 
-	public int rotateAngle() {
+	public float rotationAngle() {
 		return 0;
 	}
 
