@@ -16,6 +16,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 import com.deco2800.potatoes.worlds.InitialWorld2;
@@ -68,9 +69,6 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 */
 	public BasePortal(float posX, float posY, float posZ, float maxHealth) {
 		super(posX, posY, posZ, 3, 3, 3, TEXTURE, maxHealth);
-		//add some entities to the test world
-		testWorld.addEntity(new DamageTree(16, 11, 0));
-		testWorld.addEntity(new AbstractPortal(1, 2, 0, "iceland_portal"));
 	}
 
 	@Override
@@ -110,10 +108,12 @@ public class BasePortal extends MortalEntity implements Tickable {
 				//remove player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//change to new world
-				GameManager.get().setMainWorld(GameManager.get().getWorld());
-				GameManager.get().setWorld(testWorld);
+				GameManager.get().getManager(WorldManager.class).setWorld(1);
 				//add player to new world
 	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+	            //add some entities to the test world (adds every time, kinda bad)
+	            GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
+	            GameManager.get().getWorld().addEntity(new AbstractPortal(1, 2, 0, "iceland_portal"));
 				// Bring up portal interface
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal");

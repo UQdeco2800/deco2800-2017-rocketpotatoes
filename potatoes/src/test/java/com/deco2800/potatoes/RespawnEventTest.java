@@ -3,7 +3,7 @@ package com.deco2800.potatoes;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
 
 public class RespawnEventTest {
@@ -23,7 +23,7 @@ public class RespawnEventTest {
 		testEvent.action(player);
 	}
 
-	private class TestWorld extends AbstractWorld {
+	private class TestWorld extends World {
 		
 	}
 

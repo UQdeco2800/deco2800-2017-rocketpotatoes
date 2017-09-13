@@ -31,7 +31,7 @@ public class CameraManager extends Manager{
 	public void centerOnTarget(float deltaTime) {
 		if (camera != null) {
 			if (hasTarget()) {
-				Vector2 isoPosition = Render3D.worldToScreenCoordinates(target.getPosX(), target.getPosY());
+				Vector2 isoPosition = Render3D.worldToScreenCoordinates(target.getPosX(), target.getPosY(), target.getPosZ());
 
 				float lerp = 0.1f;
 

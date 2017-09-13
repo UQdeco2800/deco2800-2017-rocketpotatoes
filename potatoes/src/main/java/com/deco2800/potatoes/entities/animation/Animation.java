@@ -13,4 +13,9 @@ public interface Animation {
 	 * Returns the animation this animation is running(?) may not need to be public
 	 */
 	public Animation getAnimation();
+	
+	/**
+	 * Returns all the frames for this animation
+	 */
+	Animation[] getFrames();
 }

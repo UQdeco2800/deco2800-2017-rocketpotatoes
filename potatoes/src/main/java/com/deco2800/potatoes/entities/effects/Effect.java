@@ -51,8 +51,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	}
 	
 	public float rotation(float xPos, float yPos, float fxPos, float fyPos) {
-		Vector2 startPos = worldToScreenCoordinates(xPos, yPos);
-		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos);
+		Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
+		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
 		float l = endPos.x - startPos.x;
 		float h = endPos.y - startPos.y;
 		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 90;
@@ -70,8 +70,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		float lWidth = tex.getWidth();
 		float lHeight = tex.getHeight();
 
-		Vector2 startPos = worldToScreenCoordinates(xPos, yPos);
-		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos);
+		Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
+		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
 
 		float l = endPos.x - startPos.x;
 		float h = endPos.y - startPos.y;

@@ -37,6 +37,7 @@ public class TextureManager extends Manager {
 
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
+        saveTexture("w1", "resources/placeholderassets/w1.png");
         saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
         saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
@@ -122,6 +123,9 @@ public class TextureManager extends Manager {
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
+
+        saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
+        saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
 
     }
 
