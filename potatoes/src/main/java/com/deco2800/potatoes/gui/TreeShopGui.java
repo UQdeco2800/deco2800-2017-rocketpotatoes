@@ -37,6 +37,7 @@ import com.deco2800.potatoes.renderering.Renderable;
 public class TreeShopGui extends Gui {
 	private Circle shopShape;
 	private int selectedSegment;
+	private HashMap<? extends AbstractEntity, Color> items;
 	
 	public TreeShopGui(Stage stage){
 		// Render menu
@@ -65,16 +66,19 @@ public class TreeShopGui extends Gui {
 	 * @param radius
 	 *            Radius of circle
 	 */
-	private void createTreeMenu(HashMap<AbstractEntity, Color> items, int x, int y, int radius) {
+	private void createTreeMenu(HashMap<? extends AbstractEntity, Color> items, int x, int y, int radius) {
+
+		this.items = items;
+		
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);
 		
-		float a = 0.5f;
+		float a = 0.4f;
 		float selectedSegmentAlpha = 0.7f;
 		int numSegments = items.entrySet().size();
-		shapeRenderer.setColor(new Color(0,0,0,0.7f));
+		shapeRenderer.setColor(new Color(0,0,0,0.6f));
 		shapeRenderer.circle(x, y, radius);
 		Circle circle = new Circle(x,y,radius);
 		
@@ -82,17 +86,22 @@ public class TreeShopGui extends Gui {
 	
 		int segment = 0;
 		int degrees = 360 / numSegments;
-		for (Map.Entry<AbstractEntity, Color> entry : items.entrySet()) {
+		// Draws each subsection of radial menu individually
+		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
 			Color c = entry.getValue();
+			// Show which segment is highlighted by adjusting opacity
 			float alpha = (segment==selectedSegment) ? selectedSegmentAlpha: a;
+			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
 			int startAngle = 360 * (segment) / (numSegments);
 			shapeRenderer.arc(x, y, (int) (radius*0.9), startAngle, degrees);
 			
+			// Add entity texture image
+			//System.out.println(entry.getKey().getTexture());
+			
 			segment++;
 	
 		}
-		
 		
 		
 		shapeRenderer.end();

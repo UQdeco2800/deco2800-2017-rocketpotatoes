@@ -77,8 +77,9 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				break;
 			}
 
-			GameManager.get().getManager(GuiManager.class).getTreeShop().calculateSegment(originX, originY);
 		}
+		TreeShopGui treeShop = (TreeShopGui) GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShop.calculateSegment(originX, originY);
 
 	}
 
@@ -118,5 +119,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 
 	@Override
 	public void notifyMouseMoved(int screenX, int screenY) {
+		
 	}
 }

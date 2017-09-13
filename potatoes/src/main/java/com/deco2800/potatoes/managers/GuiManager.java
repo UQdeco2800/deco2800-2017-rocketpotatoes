@@ -10,14 +10,12 @@ import com.deco2800.potatoes.gui.TreeShopGui;
 public class GuiManager extends Manager {
     private List<Gui> gui;
     private Stage stage;
-    private TreeShopGui treeShopGui;
 
     /**
      * Initialize the basic GuiManager. Just creates the internal gui storage
      */
     public GuiManager() {
         gui = new ArrayList<>();
-        treeShopGui = new TreeShopGui(stage);
     }
 
     /**
@@ -77,10 +75,4 @@ public class GuiManager extends Manager {
         }
     }
     
-    public TreeShopGui getTreeShop() {
-    	return treeShopGui;
-    }
-  
-	
-	
 }
