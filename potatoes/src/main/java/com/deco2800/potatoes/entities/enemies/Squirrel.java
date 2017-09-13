@@ -131,7 +131,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static EnemyStatistics initStats() {
 		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class)).createEnemyStatistics();
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class)).createEnemyStatistics();
 		return result;
 	}
 
