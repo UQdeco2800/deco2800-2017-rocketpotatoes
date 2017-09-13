@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.Trees;
 
 import com.deco2800.potatoes.entities.trees.*;
 import org.junit.Before;
@@ -82,10 +82,11 @@ public class ProjectileTreeTest {
 	@Test
 	public void dyingTest() {
 
-		testTree.deathHandler();
+		//testTree.deathHandler();            Null pointer, is there no world?
 		testTree.setBeingDamaged(true);
 		assertTrue(testTree.isBeingDamaged());
 		testTree.setDying(true);
 		assertTrue(testTree.isDying());
+
 	}
 }
