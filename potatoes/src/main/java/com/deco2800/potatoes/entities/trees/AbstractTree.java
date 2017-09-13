@@ -1,21 +1,18 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
-import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -25,32 +22,11 @@ import com.badlogic.gdx.graphics.Color;
  */
 public abstract class AbstractTree extends MortalEntity implements Tickable, HasProgress, HasProgressBar, Animated {
 
-	// Maybe move this out
-	private static class ConstructionEvent extends TimeEvent<AbstractTree> {
-		public ConstructionEvent(int constructionTime) {
-			setDoReset(true);
-			setResetAmount(constructionTime / 100);
-			reset();
-		}
-
-		@Override
-		public void action(AbstractTree param) {
-			param.decrementConstructionLeft();
-			if (param.getConstructionLeft() <= 0) {
-				// Changes to the normal events since construction is over
-				param.setRegisteredEvents(false);
-			}
-		}
-
-		@Override
-		public TimeEvent<AbstractTree> copy() {
-			return null;
-		}
-	}
-
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 	private transient Animation animation;
+	private boolean dying;
+	private boolean beingDamaged;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 60, 1);
@@ -87,7 +63,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
 			GameManager.get().getManager(EventManager.class).unregisterAll(tree);
-			;
 		}
 		return result;
 	}
@@ -98,25 +73,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * @param construction
 	 *            whether to set the events to construction events or not
 	 */
-	private void setRegisteredEvents(boolean construction) {
+	void setRegisteredEvents(boolean construction) {
 		if (construction) {
-			List<TimeEvent<AbstractTree>> constructionEvents = getUpgradeStats().getConstructionEventsCopy();
-			constructionEvents.add(new ConstructionEvent(getUpgradeStats().getConstructionTime()));
-			registerNewEvents(constructionEvents);
+			getUpgradeStats().registerBuildEvents(this);
 		} else {
-			registerNewEvents(getUpgradeStats().getNormalEventsCopy());
-		}
-	}
-
-	/**
-	 * Registers the list of events given with the event manager and unregisters all
-	 * other events for this object
-	 */
-	private void registerNewEvents(List<TimeEvent<AbstractTree>> events) {
-		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-		eventManager.unregisterAll(this);
-		for (TimeEvent<AbstractTree> timeEvent : events) {
-			eventManager.registerEvent(this, timeEvent);
+			getUpgradeStats().registerEvents(this);
 		}
 	}
 
@@ -161,17 +122,16 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * and restarts tree construction
 	 */
 	public void resetStats() {
-		this.addMaxHealth(getUpgradeStats().getHp() - this.getMaxHealth());
+		this.addMaxHealth(getUpgradeStats().getHealth() - this.getMaxHealth());
 		this.heal(getMaxHealth());
-		setTexture(getUpgradeStats().getTexture());
-		setAnimation(new SingleFrameAnimation(getUpgradeStats().getTexture()));
+		setAnimation(getUpgradeStats().getAnimation().apply(this));
 		setRegisteredEvents(true);
 	}
 
 	/**
 	 * Returns the upgrade stats for the current level of the tree
 	 */
-	public UpgradeStats getUpgradeStats() {
+	public TreeStatistics getUpgradeStats() {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
@@ -186,13 +146,58 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	}
 
 	/**
+	 * @return the dying
+	 */
+	public boolean isDying() {
+		return dying;
+	}
+
+	/**
+	 * Sets if this tree is currently dying. If this is set to false, the tree dies
+	 * @param dying whether this tree is dying
+	 */
+	public void setDying(boolean dying) {
+		this.dying = dying;
+		if (!dying) {
+			// Animation is finished, so die
+			super.deathHandler();
+		}
+	}
+
+	/**
+	 * @return the beingDamaged
+	 */
+	public boolean isBeingDamaged() {
+		return beingDamaged;
+	}
+
+	/**
+	 * @param beingDamaged the beingDamaged to set
+	 */
+	public void setBeingDamaged(boolean beingDamaged) {
+		this.beingDamaged = beingDamaged;
+	}
+	
+	@Override
+	public boolean damage(float amount) {
+		beingDamaged = true;
+		return super.damage(amount);
+	}
+	
+	@Override
+	public void deathHandler() {
+		dying = true;
+		// Don't kill the entity just yet
+	}
+	
+	/**
 	 * Returns a list of the stats for each upgrade level in order <br>
 	 * This is called often, so it is recommend you don't create a new object every
 	 * time
 	 * 
 	 * @return a list of all the upgrade stats for this tree
 	 */
-	public abstract List<UpgradeStats> getAllUpgradeStats();
+	public abstract List<TreeStatistics> getAllUpgradeStats();
 
 	/**
 	 * Returns the current progress
@@ -214,7 +219,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 *
 	 * @param p
 	 */
-	@Override
 	public void setProgress(int p) {
 		constructionLeft = p;
 	}
@@ -248,13 +252,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	}
 
 	@Override
-	public void setMaxProgress(int p) {
-
-	}
-
-	@Override
 	public ProgressBarEntity getProgressBar() {
 		return constructionLeft > 0 ? PROGRESS_BAR : null;
 	}
-
 }

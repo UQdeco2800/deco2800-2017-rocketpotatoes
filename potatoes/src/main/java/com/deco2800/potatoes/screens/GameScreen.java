@@ -15,11 +15,13 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
-import com.deco2800.potatoes.entities.enemies.Squirrel;
-import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
+import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -33,7 +35,7 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -170,8 +172,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
         setupInputHandling();
 
-        /* Create an example world for the engine */
-        GameManager.get().setWorld(new InitialWorld());
+        // Sets the world to the initial world, world 0
+        GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -216,39 +218,66 @@ public class GameScreen implements Screen {
 
         GameManager.get().getManager(EventManager.class).unregisterAll();
         
-        Random random = new Random();
+        //Random random = new Random();
 
         MultiplayerManager m = multiplayerManager;
         if (m.isMaster() || !m.isMultiplayer()) {
-            for (int i = 0; i < 5; i++) {
-                GameManager.get().getWorld().addEntity(new Squirrel(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
-
-            for (int i = 0; i < 3; i++) {
-                GameManager.get().getWorld().addEntity(
-                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-            }
-
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-            for(int i=0 ; i<3 ; i++) {
-                GameManager.get().getWorld().addEntity(
-                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
-            }
+            addSquirrel();
+            addTankEnemy();
+            addMoose();
+            addSpeedyEnemy();
+            
             addResourceTrees();
             initialiseResources();
+            initialisePortal();
             addDamageTree();
             
         }
         
         if (!multiplayerManager.isMultiplayer()) {
+            /* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
+           TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
+           TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
+             */
+        	
             // Make our player
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
     }
+    
+    //For random position of enemies 
+    Random random = new Random();
+    
+    private void addSquirrel() {
+    	for (int i = 0; i < 5; i++) {
+            GameManager.get().getWorld().addEntity(new Squirrel(
+                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+        }
+    }
+    private void addTankEnemy() {
+    	 for (int i = 0; i < 3; i++) {
+             GameManager.get().getWorld().addEntity(
+             		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+         }	
+    }
+    private void addMoose() {
+    	for (int i = 0; i < 2; ++i) {
+            GameManager.get().getWorld().addEntity(new Moose(
+                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+        }
+    }
+    private void addSpeedyEnemy() {
+    	for(int i=0 ; i<3 ; i++) {
+            GameManager.get().getWorld().addEntity(
+                    new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+        }
+    }
+    
+    
     private void addDamageTree(){
         GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
         GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
@@ -277,6 +306,11 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+    }
+    
+    private void initialisePortal() {
+		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
+		
     }
 
     private void tickGame(long timeDelta) {
@@ -376,7 +410,7 @@ public class GameScreen implements Screen {
         float tileX = (int)(Math.floor(tileCoords.x));
         float tileY = (int)(Math.floor(tileCoords.y));
 
-        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY);
+        Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
         batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
 
         batch.end();

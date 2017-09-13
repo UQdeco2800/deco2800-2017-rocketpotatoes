@@ -1,4 +1,4 @@
-package com.deco2800.potatoes;
+package com.deco2800.potatoes.entities;
 
 import com.deco2800.potatoes.entities.trees.*;
 import org.junit.Before;
@@ -72,10 +72,20 @@ public class ProjectileTreeTest {
 		assertTrue(30f == testTree.getHealth());
 		assertNotNull("getUpgradeStats() returns null", testTree.getUpgradeStats());
 	}
+
 	@Test
 	public void progressTest2() {
 		testTree.getProgressRatio();
-		testTree.setMaxProgress(1);
 		testTree.getMaxProgress();
+		testTree.getProgressBar();
+	}
+	@Test
+	public void dyingTest() {
+
+		testTree.deathHandler();
+		testTree.setBeingDamaged(true);
+		assertTrue(testTree.isBeingDamaged());
+		testTree.setDying(true);
+		assertTrue(testTree.isDying());
 	}
 }

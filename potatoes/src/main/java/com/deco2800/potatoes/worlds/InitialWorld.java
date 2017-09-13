@@ -12,7 +12,7 @@ import com.deco2800.potatoes.renderering.Renderable;
  * @author leggy
  *
  */
-public class InitialWorld extends AbstractWorld {
+public class InitialWorld extends World {
 
 	/**
 	 * Constructor for InitialWorld
@@ -48,5 +48,11 @@ public class InitialWorld extends AbstractWorld {
 				((Selectable) r).deselect();
 			}
 		}
+	}
+	
+	// Hacky fix
+	@Override
+	public float getHeight(int x, int y) {
+		return 0.5f;
 	}
 }

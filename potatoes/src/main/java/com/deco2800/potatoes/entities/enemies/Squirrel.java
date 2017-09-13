@@ -1,9 +1,10 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -20,14 +21,16 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel_right";
 	private static final transient float HEALTH = 100f;
-	private static final BasicStats STATS = initStats();
+	private static final transient float ATTACK_RANGE = 8f;
+	private static final transient int ATTACK_SPEED = 500;
+	private static final EnemyStatistics STATS = initStats();
 
-	private static float speed = 0.04f;
+	private static float speed = 0.12f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity();
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 	
 	public Squirrel() {
 		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
@@ -122,18 +125,18 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
-	private static BasicStats initStats() {
-		List<TimeEvent<EnemyEntity>> normalEvents = new LinkedList<>();
-		BasicStats result = new BasicStats(HEALTH, speed, 8f, 500, normalEvents, TEXTURE_LEFT);
-		result.getNormalEventsReference().add(new MeleeAttackEvent(result.getAttackSpeed(), GoalPotate.class));
+	private static EnemyStatistics initStats() {
+		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
+				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class)).createEnemyStatistics();
 		return result;
 	}
 
 	@Override
-	public BasicStats getBasicStats() {
+	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
 

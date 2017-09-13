@@ -7,8 +7,8 @@
      */
     public abstract class GameTime implements Tickable {
         private int CurrentTime = 0;
-        private int max = 24;
         private int CurrentDay = 0;
+        private boolean DayTime = true;
 
         /**
          * Default constructor
@@ -42,13 +42,22 @@
                 this.SetCurrentTime((int) (this.getCurrentTime() + 0.01));
             }
 
+        /**
+         *  Transition into night time
+         */
+            public void NightTime(int CurrentTime, boolean DayTime){
+            while(CurrentTime >= 12){
+                DayTime = false;
+            }
+        }
 
         /**
          * Rolling over into next day
          */
            public void nextDay(int CurrentTime, int CurrentDay){
-                if(CurrentTime == max){
+                if(CurrentTime == 24){
                     CurrentDay += 1;
+                    CurrentTime = 0;
                 }
            }
 
