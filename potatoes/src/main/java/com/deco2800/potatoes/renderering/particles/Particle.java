@@ -7,5 +7,5 @@ public class Particle {
     public float lifeTime;
     public float x, y;
     public float rotation;
-    public Vector2 vector;
+    public Vector2 vector = new Vector2();
 }

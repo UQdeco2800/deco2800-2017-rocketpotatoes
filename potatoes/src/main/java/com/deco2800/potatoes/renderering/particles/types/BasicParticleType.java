@@ -120,7 +120,7 @@ public class BasicParticleType extends ParticleType {
                         float direction = random.nextFloat() * (upperAngleBound - lowerAngleBound);
 
                         // Gen normalized vec and scale it by factor
-                        newP.vector = new Vector2(
+                        newP.vector.set(
                                 (float) Math.sin(Math.toRadians(direction)),
                                 (float) Math.cos(Math.toRadians(direction))).nor().scl(factor);
 

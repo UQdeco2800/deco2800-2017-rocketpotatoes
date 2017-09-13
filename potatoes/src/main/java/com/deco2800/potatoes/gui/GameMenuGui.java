@@ -82,6 +82,8 @@ public class GameMenuGui extends Gui {
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen
 
+        window.setMovable(true);
+
         // Finally add our Gui window to the stage
         stage.addActor(window);
     }

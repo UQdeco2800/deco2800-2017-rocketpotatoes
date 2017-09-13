@@ -15,12 +15,12 @@ public abstract class ParticleType {
     public float cycleDelta;
     public float currentCycleTime;
     public float rotationSpeed = 1.0f;
-    public float alphaCeil = 0.8f;
+    public float alphaCeil = 1.0f;
     public float fadeOutPercent = 1.0f;
     public float speed = 1.0f;
 
     // Random angle spread
-    public float lowerAngleBound = 300.0f;
+    public float lowerAngleBound = 0.0f;
     public float upperAngleBound = 360.0f;
 
     // Random spread of speed (if this are the same the speed is constant)

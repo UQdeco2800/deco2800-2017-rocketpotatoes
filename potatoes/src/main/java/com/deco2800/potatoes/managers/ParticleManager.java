@@ -32,18 +32,6 @@ public class ParticleManager extends Manager {
         for (int i = 0; i < 1000000; ++i) {
             particlePool.add(new Particle());
         }
-
-        //ParticleEmitter e = new ParticleEmitter(0, 0,
-        //        new ParticleType(10000, 3.0f * 1000.0f,5.0f, 1, GameManager.get().getManager(TextureManager.class).getTexture("snowflake")));
-
-        ParticleType type = new BasicParticleType(215215,
-                1.0f * 1000.f, 100.0f, 32, Color.GOLD, 3, 3);
-        type.speed = 0.1f;
-        //type.alphaCeil = 0.5f;
-        type.speedVarianceMin = 1.0f;
-        ParticleEmitter e = new ParticleEmitter(0, 0, type);
-
-        addParticleEmitter(e);
     }
 
     public void addParticleEmitter(ParticleEmitter e) {
@@ -91,7 +79,6 @@ public class ParticleManager extends Manager {
         while (emitterIterator.hasNext()) {
             ParticleEmitter e = emitterIterator.next();
 
-            // If we ma
             if (e == emitter) {
                 e.stop();
                 toDestroyEmitters.add(e);
