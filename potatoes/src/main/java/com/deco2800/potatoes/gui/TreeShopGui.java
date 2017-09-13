@@ -1,5 +1,8 @@
 package com.deco2800.potatoes.gui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,52 +23,114 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 
 
 
 public class TreeShopGui extends Gui {
-	private Skin uiSkin;
-	private Vector2 tileCoords;
-	private ShapeRenderer shapeRenderer;
-	private SpriteBatch batch;
-	private OrthographicCamera camera;
-	private Sprite sprite;
+	private Circle shopShape;
+	private int selectedSegment;
 	
 	public TreeShopGui(Stage stage){
-		// world coords
+		// Render menu
 		
-		//Vector2 tileCoords = Render3D.worldPosToTile(x, y);
-		//Vector2 screenCoords = Render3D.worldToScreenCoordinates(tileCoords.x, tileCoords.y);
-		
-		uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
-		Image treeMenu = new Image(new TextureRegionDrawable(
-				new TextureRegion(new Texture(Gdx.files.internal("resources/menu/tree_menu.png")))));
-		/*treeMenu.setPosition(x, y);
-		system.out.println("screen x: "+screenCoords.x);
-		System.out.println("tile x: " + tileCoords.x);
-		System.out.println("world x: " +x);
-	    treeMenu.scaleBy(0.3f);
-	    treeMenu.setScaleX(0.3f);
-	    treeMenu.setScaleY(0.3f);*/
-		
-		stage.addActor(treeMenu);
-		
-		
-		
-		
-		// Add listener
-		// Move listener
-		// Click listener
-		
-		// Create seperate subsections
-		
-
 
 	}
+	
+	public void render() {
+		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
+		items.put(new ProjectileTree(), Color.RED);
+		items.put(new ResourceTree(), Color.BLUE);
+		items.put(new DamageTree(), Color.YELLOW);
+		createTreeMenu(items, 600, 400, 200);
+	}
 
+	/**
+	 * Creates menu based on input parameters.
+	 * 
+	 * @param items
+	 *            A HashMap with each AbstractEntity as the key and the
+	 *            corresponding color as value
+	 * @param x
+	 *            Center x point
+	 * @param y
+	 *            Center y point
+	 * @param radius
+	 *            Radius of circle
+	 */
+	private void createTreeMenu(HashMap<AbstractEntity, Color> items, int x, int y, int radius) {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Filled);
+		
+		float a = 0.5f;
+		float selectedSegmentAlpha = 0.7f;
+		int numSegments = items.entrySet().size();
+		shapeRenderer.setColor(new Color(0,0,0,0.7f));
+		shapeRenderer.circle(x, y, radius);
+		Circle circle = new Circle(x,y,radius);
+		
+		shopShape = circle;
+	
+		int segment = 0;
+		int degrees = 360 / numSegments;
+		for (Map.Entry<AbstractEntity, Color> entry : items.entrySet()) {
+			Color c = entry.getValue();
+			float alpha = (segment==selectedSegment) ? selectedSegmentAlpha: a;
+			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
+			int startAngle = 360 * (segment) / (numSegments);
+			shapeRenderer.arc(x, y, (int) (radius*0.9), startAngle, degrees);
+			
+			segment++;
+	
+		}
+		
+		
+		
+		shapeRenderer.end();
+		
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
 
+	
+	/**
+	 * Determines which segment of a circle the mouse is in. This starts counting
+	 * from right hand side counter clockwise.
+	 * 
+	 * @param mx
+	 *            mouse point x
+	 * @param my
+	 *            mouse point y
+	 * @return integer corresponding to the segment number the mouse is within or -1
+	 *         if mouse was not within bounds.
+	 */
+	public void calculateSegment(float mx, float my) {
+		int n = 3;
+		float x = shopShape.x;
+		float y = shopShape.y;
+		float r = shopShape.radius;
+		double mouseAngle = Math.atan((my - y) / (mx - x));
+		mouseAngle = mouseAngle*180/Math.PI;
+		
+		// Calculate actual angle with each quadrant
+		if (my-y<0) mouseAngle += (mx-x<0) ? 180 : 360;
+		else if (mx-x<0) mouseAngle+=180;
+		mouseAngle = 360-mouseAngle; // make it anti clockwise
+		
+		double segmentAngle = 360 / n;
+		int segment = (int) (mouseAngle/segmentAngle);
+		this.selectedSegment = segment;
+
+	}
+	
 	
 	private void createSubMenus() {
 		

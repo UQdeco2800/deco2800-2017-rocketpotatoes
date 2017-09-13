@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -49,7 +49,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	public void handleMouseClick(float x, float y, int button) {
 		Vector2 coords = Render3D.worldPosToTile(x, y);
 
-		
 		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
@@ -63,35 +62,27 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		int realX = (int) Math.floor(coords.x);
 		int realY = (int) Math.floor(coords.y);
 		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
-			MultiplayerManager multiplayerManager = GameManager.get()
-					.getManager(MultiplayerManager.class);
+			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 			AbstractTree newTree;
 			// Select random tree, and either make it in singleplayer or broadcast it in mp
 			switch ((int) (Math.random() * 3 + 1)) {
-				case 1:
-					newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
-					break;
-				case 2:
-					newTree = new ResourceTree(realX, realY, 0);
-					break;
-				default:
-					newTree = new Tower(realX, realY, 0);
-					break;
+			case 1:
+				newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
+				break;
+			case 2:
+				newTree = new ResourceTree(realX, realY, 0);
+				break;
+			default:
+				newTree = new Tower(realX, realY, 0);
+				break;
 			}
-			
-			GameManager.get().getManager(GuiManager.class).checkShapes(x,y);
-			//TreeShop treeShop = GameManager.get().getManager(PlayerManager.class).getPlayer().getTreeShop();
-			//GameManager.get().getWorld().addEntity(new TreeShop(realX,realY));
-			//GameManager.get().getManager(PlayerManager.class).getPlayer().openTreeShop(realX,realY);
-			
-			/*if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				AbstractTree.constructTree(newTree);
-			} else {
-				multiplayerManager.broadcastBuildOrder(newTree);
-			}*/
+
+			GameManager.get().getManager(GuiManager.class).getTreeShop().calculateSegment(originX, originY);
 		}
 
 	}
+
+	
 
 	@Override
 	public void notifyTouchDown(int screenX, int screenY, int pointer, int button) {

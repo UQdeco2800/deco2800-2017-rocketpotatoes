@@ -24,6 +24,7 @@ import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.gui.ButtonExample;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.GameMenuGui;
@@ -185,7 +186,7 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		// Add test TreeShop Gui
-		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+		guiManager.addGui(guiManager.getTreeShop());
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -450,14 +451,8 @@ public class GameScreen implements Screen {
 
 		// TODO: add render for projectile's separately
 		
-		// Render menu
+		GameManager.get().getManager(GuiManager.class).getTreeShop().render();
 		
-		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
-		items.put(new ProjectileTree(), Color.RED);
-		items.put(new ResourceTree(), Color.BLUE);
-		items.put(new DamageTree(), Color.YELLOW);
-		GameManager.get().getManager(GuiManager.class).createTreeMenu(items, 600, 400, 200);
-		System.out.println(items.size());
 	}
 
 	/**
