@@ -26,7 +26,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
+	private static final transient String TEXTURE_RIGHT = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
