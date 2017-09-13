@@ -163,6 +163,9 @@ public class GameScreen implements Screen {
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
+        //Make our game over window
+        guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+
 		/* Setup inputs */
         setupInputHandling();
 
@@ -187,6 +190,9 @@ public class GameScreen implements Screen {
         inputManager.addKeyDownListener(new CameraHandler());
         inputManager.addKeyDownListener(new PauseHandler());
         inputManager.addScrollListener(new ScrollTester());
+
+        //testing Game over screen
+        inputManager.addKeyDownListener(new GameOverHandler());
 
         MouseHandler mouseHandler = new MouseHandler();
         inputManager.addTouchDownListener(mouseHandler);
@@ -580,6 +586,15 @@ public class GameScreen implements Screen {
                 // ToDo
                 // Show the Pause Menu
                 ((PauseMenuGui) guiManager.getGui(PauseMenuGui.class)).show();
+            }
+        }
+    }
+
+    private class GameOverHandler implements KeyDownObserver{
+        @Override
+        public void notifyKeyDown(int keycode){
+            if(keycode == Input.Keys.G){
+                guiManager.getGui(GameOverGui.class).show();
             }
         }
     }
