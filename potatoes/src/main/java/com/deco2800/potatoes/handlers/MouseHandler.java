@@ -20,6 +20,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.worlds.World;
 
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Really crappy mouse handler for the game
@@ -27,11 +28,14 @@ import java.util.Optional;
 public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, MouseMovedObserver {
 	private int originX;
 	private int originY;
+	private Random random = new Random();
+
 
 	/**
 	 * Constructor for the mouse handler
 	 */
 	public MouseHandler() {
+		// empty because serialization
 	}
 
 	/**
@@ -59,7 +63,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 					.getManager(MultiplayerManager.class);
 			AbstractTree newTree;
 			// Select random tree, and either make it in singleplayer or broadcast it in mp
-			switch ((int) (Math.random() * 3 + 1)) {
+			switch (random.nextInt(3) + 1) {
 				case 1:
 					newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
 					break;

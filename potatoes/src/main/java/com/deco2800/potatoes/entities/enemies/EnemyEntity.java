@@ -30,7 +30,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private transient Random random = new Random();
 	private float speed;
 	private Class<?> goal;
 	
@@ -361,7 +360,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	@Override
 	public float getProgressRatio() {
-		return (getHealth() / getMaxHealth());
+		return getHealth() / getMaxHealth();
 	}
 
 	@Override

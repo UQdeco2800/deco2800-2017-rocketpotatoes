@@ -89,7 +89,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
 
-		// this.setTexture("spacman_blue");
 	}
 
 	public Inventory getInventory() {
@@ -263,11 +262,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					didHarvest = true;
-					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange 
+					&& ((ResourceTree) entitiy).getGatherCount() > 0) {
+				didHarvest = true;
+				((ResourceTree) entitiy).transferResources(this.inventory);
 			}
 		}
 		if (didHarvest) {
