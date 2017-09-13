@@ -173,7 +173,7 @@ public class GameScreen implements Screen {
         setupInputHandling();
 
         // Sets the world to the initial world, world 0
-        GameManager.get().getManager(WorldManager.class).setWorld(0);
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 
 		/* Move camera to center */
         cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;

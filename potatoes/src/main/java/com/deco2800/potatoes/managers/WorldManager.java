@@ -19,7 +19,7 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 public class WorldManager extends Manager {
 	private static final int WORLD_SIZE = 25;
 
-	private HashMap<Integer, World> worlds;
+	private Map<WorldType, World> worlds;
 	private Map<String, Cell> cells;
 	private float[][][] randomGrids;
 	private Terrain[][] terrain;
@@ -42,13 +42,12 @@ public class WorldManager extends Manager {
 	 *            the number of the world to get
 	 * @return the world
 	 */
-	public World getWorld(int key) {
+	public World getWorld(WorldType key) {
 		if (worlds.containsKey(key)) {
 			return worlds.get(key);
 		} else {
 			// Generate the world here
-			worlds.put(key, generateWorld(new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
-					new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)))));
+			worlds.put(key, generateWorld(key));
 			return worlds.get(key);
 		}
 	}
@@ -72,10 +71,10 @@ public class WorldManager extends Manager {
 	 * Sets the world to the world with the given index. If it does not exist, it
 	 * will be created.
 	 */
-	public void setWorld(int index) {
+	public void setWorld(WorldType key) {
 		// GameManager.setWorld will probably need to be updated. Some managers need to
 		// be reloaded, etc.
-		GameManager.get().setWorld(getWorld(index));
+		GameManager.get().setWorld(getWorld(key));
 	}
 
 	/**

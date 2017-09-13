@@ -15,6 +15,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld2;
+import com.deco2800.potatoes.worlds.WorldType;
 
 /**
  * A class that can create portals which are not the base portal. Because these
@@ -97,7 +98,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//change to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(0);
+				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 				//add player to new world
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 				

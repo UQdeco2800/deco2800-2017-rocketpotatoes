@@ -20,6 +20,7 @@ import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.InitialWorld;
 import com.deco2800.potatoes.worlds.InitialWorld2;
+import com.deco2800.potatoes.worlds.WorldType;
 
 /**
  * A class for creating the base portal. This class differs from AbstracPortals
@@ -108,7 +109,7 @@ public class BasePortal extends MortalEntity implements Tickable {
 				//remove player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//change to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(1);
+				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.VOLCANO_WORLD);
 				//add player to new world
 	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 	            //add some entities to the test world (adds every time, kinda bad)

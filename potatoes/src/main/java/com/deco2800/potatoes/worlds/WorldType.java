@@ -9,6 +9,17 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
  * Represents a type of world with a set of terrain types and world generation.
  */
 public class WorldType {
+	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
+			new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)));
+	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 0.5f, true),
+			new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)));
+	public static final WorldType ICE_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
+			new Terrain("ground_1", 1, false), new Terrain("w1", 2f, false)));
+	public static final WorldType VOLCANO_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
+			new Terrain("ground_1", 0.5f, false), new Terrain("w1", 0, false)));
+	public static final WorldType OCEAN_WORLD = new WorldType(new TerrainType(null, new Terrain("w1", 1, true),
+			new Terrain("ground_1", 1, false), new Terrain("grass", 0, false)));
+
 	private final TerrainType terrain;
 
 	/**
@@ -44,5 +55,30 @@ public class WorldType {
 			}
 		}
 		return terrain;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((terrain == null) ? 0 : terrain.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WorldType other = (WorldType) obj;
+		if (terrain == null) {
+			if (other.terrain != null)
+				return false;
+		} else if (!terrain.equals(other.terrain))
+			return false;
+		return true;
 	}
 }
