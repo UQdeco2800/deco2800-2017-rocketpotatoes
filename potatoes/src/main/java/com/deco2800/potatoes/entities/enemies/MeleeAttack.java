@@ -93,7 +93,7 @@ public class MeleeAttack extends Projectile {
     }
 
     @Override
-    public int rotateAngle() {
+    public float rotateAngle() {
         return rotateAngle;
     }
 

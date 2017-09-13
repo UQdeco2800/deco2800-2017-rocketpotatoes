@@ -12,7 +12,7 @@ import com.deco2800.potatoes.util.Box3D;
 public class LightningEffect extends Effect {
 
 	private float lifetime = 1f;
-	private float segmentStep = 2f;
+	private float segmentStep = 1f;
 	private int segments;
 
 	float xPos;
