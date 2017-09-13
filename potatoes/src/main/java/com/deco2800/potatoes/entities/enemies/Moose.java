@@ -37,11 +37,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
+	/**
+	 * Empty constructor for serialization
+	 */
 	public Moose() {
-		super(0, 0, 0, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
-		this.path = null;
 	}
 
 	public Moose(float posX, float posY, float posZ) {
@@ -133,7 +132,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 	}
 
-
 	@Override
 	public String toString() {
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
@@ -155,4 +153,4 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
-    }
+}

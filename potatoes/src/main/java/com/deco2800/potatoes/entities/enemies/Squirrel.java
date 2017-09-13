@@ -31,12 +31,11 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Box3D target = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
-	
+
+	/**
+	 * Empty constructor for serialization
+	 */
 	public Squirrel() {
-		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
-		this.path = null;
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {
@@ -45,8 +44,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		this.goal = goal;
 		this.path = null;
 	}
-	
-
 
 	/**
 	 * Squirrel follows it's path.
@@ -139,5 +136,4 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
-
-    }
+}
