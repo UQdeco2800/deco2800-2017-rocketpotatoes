@@ -108,8 +108,8 @@ public class WorldManager extends Manager {
 				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
 			}
 		}
-		world.setTerrain(terrainCells);
-		world.setHeight(height);
+		world.setCells(terrainCells);
+		world.setTerrain(terrain);
 		return world;
 	}
 

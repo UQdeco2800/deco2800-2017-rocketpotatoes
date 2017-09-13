@@ -114,7 +114,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		float speedScale = GameManager.get().getManager(WorldManager.class)
+		float speedScale = GameManager.get().getWorld()
 				.getTerrain(Math.round((float)Math.min(newPosX,width-1)), Math.round((float)Math.min(newPosY,length-1)))
 				.getMoveScale();
 		newPosX -= speedx * (1 - speedScale);

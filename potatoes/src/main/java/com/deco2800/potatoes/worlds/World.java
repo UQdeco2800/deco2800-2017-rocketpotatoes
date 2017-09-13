@@ -26,7 +26,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 public class World {
 	private static final int TILE_WIDTH = 55;
 	private static final int TILE_HEIGHT = 32;
-	private float[][] height;
+	private Terrain[][] terrain;
 	
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
@@ -60,9 +60,9 @@ public class World {
 	
 	/**
 	 * Create a new map based on the terrain grid supplied
-	 * @param terrain
+	 * @param cells
 	 */
-	public void setTerrain(Cell[][] cells) {
+	public void setCells(Cell[][] cells) {
 		width = cells.length;
 		length = cells[0].length;
 		map = new TiledMap();
@@ -221,17 +221,17 @@ public class World {
 	}
 
 	/**
-	 * Sets the height grid to the given grid
+	 * Sets the terrain grid to the given grid
 	 */
-	public void setHeight(float[][] height) {
-		this.height = height;
+	public void setTerrain(Terrain[][] terrain) {
+		this.terrain = terrain;
 	}
 
 	/**
-	 * Returns the height of the specified location taken from the height grid
+	 * Returns the terrain of the specified location taken from the height grid
 	 */
-	public float getHeight(int x, int y) {
-		return height[x][y];
+	public Terrain getTerrain(int x, int y) {
+		return terrain[y][x];
 	}
 
 	/**

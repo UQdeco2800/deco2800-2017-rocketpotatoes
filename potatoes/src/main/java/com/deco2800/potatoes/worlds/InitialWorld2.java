@@ -49,10 +49,4 @@ public class InitialWorld2 extends World {
 			}
 		}
 	}
-	
-	// Hacky fix
-	@Override
-	public float getHeight(int x, int y) {
-		return 0.5f;
-	}
 }
