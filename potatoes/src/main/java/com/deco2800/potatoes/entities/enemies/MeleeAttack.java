@@ -42,6 +42,9 @@ public class MeleeAttack extends Projectile {
     private final static float effect_width = 1f;
     private final static float effect_height = 1f;
 
+    /**
+     * Empty constructor for serialization
+     */
     public MeleeAttack() {
         // empty for serialization
         DAMAGE = 1;

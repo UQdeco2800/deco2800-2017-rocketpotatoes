@@ -63,6 +63,7 @@ public class GameScreen implements Screen {
 
     private long lastGameTick = 0;
     private boolean playing = true;
+    private double tickrate = 10;
 
     /**
      * Start's a multiplayer game
@@ -159,7 +160,7 @@ public class GameScreen implements Screen {
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
-        
+
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
@@ -217,7 +218,7 @@ public class GameScreen implements Screen {
         }
 
         GameManager.get().getManager(EventManager.class).unregisterAll();
-        
+
         //Random random = new Random();
 
         MultiplayerManager m = multiplayerManager;
@@ -229,20 +230,20 @@ public class GameScreen implements Screen {
             addTankEnemy();
             addMoose();
             addSpeedyEnemy();
-            
+
             addResourceTrees();
             initialiseResources();
             initialisePortal();
             addDamageTree();
-            
+
         }
-        
+
         if (!multiplayerManager.isMultiplayer()) {
             /* TODO bug! currently reseting the game while having a key held down will then notify the new player with the keyUp
            TODO event, which will result it in moving without pressing a key. This is something a bit difficult to fix as
            TODO so I'm just going to leave it for now since fixing it is a bit of a hassle
              */
-        	
+
             // Make our player
             playerManager.setPlayer(new Player(5, 10, 0));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
@@ -250,10 +251,10 @@ public class GameScreen implements Screen {
 
         GameManager.get().getManager(ParticleManager.class);
     }
-    
-    //For random position of enemies 
+
+    //For random position of enemies
     Random random = new Random();
-    
+
     private void addSquirrel() {
     	for (int i = 0; i < 5; i++) {
             GameManager.get().getWorld().addEntity(new Squirrel(
@@ -264,7 +265,7 @@ public class GameScreen implements Screen {
     	 for (int i = 0; i < 3; i++) {
              GameManager.get().getWorld().addEntity(
              		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-         }	
+         }
     }
     private void addMoose() {
     	for (int i = 0; i < 2; ++i) {
@@ -278,8 +279,8 @@ public class GameScreen implements Screen {
                     new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
         }
     }
-    
-    
+
+
     private void addDamageTree(){
         GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
         GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
@@ -294,26 +295,26 @@ public class GameScreen implements Screen {
         GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
         GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
     }
-    
+
     private void initialiseResources() {
 
         SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
-		
+
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-		
+
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
     }
-    
+
     private void initialisePortal() {
 		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
-		
+
     }
 
     private void tickGame(long timeDelta) {
@@ -433,7 +434,7 @@ public class GameScreen implements Screen {
      * Must update all displayed elements using a Renderer
      */
     @Override
-    public void render(float delta) {
+    public void render(float delta ) {
         /**
          * We only tick/render the game if we're actually playing. Lets us seperate main menu and such from the game
          * TODO We may lose/gain a tick or part of a tick when we pause/unpause?
@@ -445,7 +446,7 @@ public class GameScreen implements Screen {
             // Stop the first tick lasting years
             if (lastGameTick != 0) {
                 long timeDelta = TimeUtils.millis() - lastGameTick;
-                if (timeDelta > 10) {
+                if (timeDelta > tickrate) {
 
                     // Tick game, a bit a weird place to have it though.
                     tickGame(timeDelta);
@@ -646,6 +647,14 @@ public class GameScreen implements Screen {
      */
     public void menuBlipSound(){
         soundManager.playSound("menu_blip.wav");
+    }
+
+    public double getTickrate(){
+        return this.tickrate;
+    }
+
+    public void setTickrate(double tickrate){
+        this.tickrate=tickrate;
     }
 
 }

@@ -10,6 +10,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
@@ -36,11 +37,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
+	/**
+	 * Empty constructor for serialization
+	 */
 	public Moose() {
-		super(0, 0, 0, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
-		this.path = null;
 	}
 
 	public Moose(float posX, float posY, float posZ) {
@@ -132,7 +132,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 	}
 
-
 	@Override
 	public String toString() {
 		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
@@ -154,5 +153,4 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
-
-    }
+}

@@ -17,7 +17,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
     private Class target;
 
     /**
-     * Default constructor for serialization
+     * Default empty constructor for serialization
      */
     public MeleeAttackEvent() {
 		// empty for serialization
