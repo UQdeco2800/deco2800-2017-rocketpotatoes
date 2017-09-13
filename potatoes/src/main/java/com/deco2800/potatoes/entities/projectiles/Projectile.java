@@ -1,8 +1,13 @@
 package com.deco2800.potatoes.entities.projectiles;
 
+import java.util.Map;
+
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
 
@@ -29,6 +34,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 	protected final float speed = 0.2f;
 
+	protected Effect endEffect;
 
 	public Projectile() {
 		// empty for serialization
@@ -36,7 +42,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 	// not used
 	public Projectile(float posX, float posY, float posZ, String texture) {
-		super(posX, posY, posZ, 1f, 2f, 0.4f, 0.4f, 0.4f, true,texture);
+		super(posX, posY, posZ, 1f, 2f, 0.4f, 0.4f, 0.4f, true, texture);
 	}
 
 	// not used
@@ -46,19 +52,20 @@ public class Projectile extends AbstractEntity implements Tickable {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, texture);
 	}
 
+	// not used
 	public Projectile(float posX, float posY, float posZ, float xRenderLength, float yRenderLength, String texture) {
 		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, xRenderLength, yRenderLength, true, texture);
 	}
 
-
 	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,
-			float targetPosZ, float range, float damage, float xRenderLength, float yRenderLength) {
+			float targetPosZ, float range, float damage, float xRenderLength, float yRenderLength, Effect endEffect) {
 		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, xRenderLength, yRenderLength, true, TEXTURE);
 
 		for (int t = 0; t < textureArrayLength; t++) {
 			textureArray[t] = projectileType + Integer.toString(t + 1);
 		}
 
+		this.endEffect = endEffect;
 		this.damage = damage;
 		setTargetPosition(targetPosX, targetPosY, targetPosZ);
 		// this.aoeDAMAGE = aoeDAMAGE;
@@ -96,7 +103,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 		if (range <= 0 || maxRange) {
 			GameManager.get().getWorld().removeEntity(this);
-		}else {
+		} else {
 			range -= speed;
 		}
 
@@ -152,6 +159,25 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 	@Override
 	public void onTick(long time) {
+		animate();
+		updatePosition();
 
+		Box3D newPos = getBox3D();
+		newPos.setX(this.getPosX());
+		newPos.setY(this.getPosY());
+
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+
+		for (AbstractEntity entity : entities.values()) {
+			if (targetClass.isInstance(entity)) {
+				if (newPos.overlaps(entity.getBox3D())) {
+					((MortalEntity) entity).damage(range);
+					GameManager.get().getWorld().addEntity(endEffect);
+					maxRange = true;
+					updatePosition();
+				}
+
+			}
+		}
 	}
 }

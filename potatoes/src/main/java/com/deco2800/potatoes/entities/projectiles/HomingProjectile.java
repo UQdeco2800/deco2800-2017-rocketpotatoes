@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.effects.ExplosionEffect;
+import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
@@ -39,8 +39,8 @@ public class HomingProjectile extends Projectile {
 	 *            Projectile damage
 	 */
 	public HomingProjectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX,
-			float targetPosY, float targetPosZ, float range, float damage, String projectileType) {
-		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, 1.4f, 1.4f);
+			float targetPosY, float targetPosZ, float range, float damage, String projectileType, Effect endEffect) {
+		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, 1.4f, 1.4f, endEffect);
 	}
 
 	@Override
@@ -50,27 +50,7 @@ public class HomingProjectile extends Projectile {
 			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(),
 					targetEntity.get().getPosZ());
 		
-		animate();
-		updatePosition();
-
-		Box3D newPos = getBox3D();
-		newPos.setX(this.getPosX());
-		newPos.setY(this.getPosY());
-
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-
-		for (AbstractEntity entity : entities.values()) {
-			if (targetClass.isInstance(entity)) {
-				if (newPos.overlaps(entity.getBox3D())) {
-					((MortalEntity) entity).damage(range);
-					ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
-					GameManager.get().getWorld().addEntity(expEffect);
-					maxRange=true;
-					updatePosition();
-				}
-
-			}
-		}
+		super.onTick(time);
 		
 	}
 }
