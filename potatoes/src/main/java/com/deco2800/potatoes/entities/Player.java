@@ -342,6 +342,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		LOGGER.info(this + " is dead.");
 		// destroy the player
 		GameManager.get().getWorld().removeEntity(this);
+		// play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+		SoundManager soundManager = new SoundManager();
+		soundManager.playSound("wilhelmScream.wav");
 		// get the event manager
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event

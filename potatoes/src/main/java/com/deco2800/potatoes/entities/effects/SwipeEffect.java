@@ -10,9 +10,10 @@ public class SwipeEffect extends Effect {
     private String[] currentSpriteIndex = { "swipe2", "swipe3", "swipe4", "swipe5" };
     private int effectsTimer = 0;
 
+    /**
+     * Empty constructor for serialization
+     */
     public SwipeEffect() {
-        // empty for serialization
-
     }
 
     /**
