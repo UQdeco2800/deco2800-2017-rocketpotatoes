@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 
 
@@ -14,7 +15,7 @@ import com.deco2800.potatoes.managers.GameManager;
  * @author michaelruigrok
  *
  */
-public class MortalEntity extends AbstractEntity implements Mortal {
+public class MortalEntity extends AbstractEntity implements Mortal, HasProgress, Tickable {
 
 	protected float health;
 	protected float maxHealth;
@@ -161,6 +162,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param offset - the amount the entity's max health is to be altered by
 	 * @return current value of damage offset
 	 */
+	@Override
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
 		if (maxHealth <= 0 ) { maxHealth = 1; }
@@ -222,13 +224,14 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean setProgress(float amount) {
+	public boolean setHealth(float amount) {
 		if (maxHealth <= amount) {
 			health = maxHealth;
 		} else {
 			health = amount;
 		}
-		return health == maxHealth;
+		float epsilon = 0.00000001f;
+		return Math.abs(health - maxHealth) < epsilon;
 	}
 
 	
@@ -264,6 +267,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param offset - the amount of health damage is to be offset by
 	 * @return current value of damage offset
 	 */
+	@Override
 	public float addDamageOffset(float offset) {
 		this.damageOffset += offset;
 		return this.damageOffset;
@@ -289,5 +293,30 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	public float removeDamageScaling(float scale) {
 		this.damageScaling /= scale;
 		return this.damageScaling;
+	}
+
+	@Override
+	public int getProgress() {
+		return (int) getHealth();
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return getHealth() / getMaxHealth();
+	}
+
+	@Override
+	public int getMaxProgress() {
+		return (int) getMaxHealth();
+	}
+
+	@Override
+	public boolean showProgress() {
+		return true;
+	}
+
+	public void onTick(long time) {
+		// TODO Auto-generated method stub
+		
 	}
 }

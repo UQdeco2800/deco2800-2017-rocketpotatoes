@@ -17,8 +17,7 @@ import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.worlds.AbstractWorld;
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.World;
 
 import java.util.Optional;
 
@@ -48,15 +47,15 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
 		} else {
-			AbstractWorld world = GameManager.get().getWorld();
-			if (world instanceof InitialWorld) {
-				((InitialWorld) (world)).deSelectAll();
+			World world = GameManager.get().getWorld();
+			if (world instanceof World) {
+				world.deSelectAll();
 			}
 		}
 		int realX = (int) Math.floor(coords.x);
 		int realY = (int) Math.floor(coords.y);
 		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
-			MultiplayerManager multiplayerManager = (MultiplayerManager) GameManager.get()
+			MultiplayerManager multiplayerManager = GameManager.get()
 					.getManager(MultiplayerManager.class);
 			AbstractTree newTree;
 			// Select random tree, and either make it in singleplayer or broadcast it in mp
@@ -109,7 +108,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	}
 
 	private CameraManager getCameraManager() {
-		return (CameraManager) GameManager.get().getManager(CameraManager.class);
+		return GameManager.get().getManager(CameraManager.class);
 	}
 
 	@Override

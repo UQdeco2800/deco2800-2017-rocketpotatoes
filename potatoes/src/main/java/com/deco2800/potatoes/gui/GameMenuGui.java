@@ -43,7 +43,7 @@ public class GameMenuGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 //Sound added just to alert a change in game state
                 screen.menuBlipSound();
-                ((DebugModeGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(DebugModeGui.class)).show();
+                ((DebugModeGui) GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class)).show();
 
             }
         });
@@ -53,7 +53,7 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
-                ((PauseMenuGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(PauseMenuGui.class)).show();
+                ((PauseMenuGui) GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class)).show();
 
             }
         });

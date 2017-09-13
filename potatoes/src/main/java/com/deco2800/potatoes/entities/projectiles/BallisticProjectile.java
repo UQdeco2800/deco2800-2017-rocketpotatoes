@@ -1,10 +1,8 @@
 package com.deco2800.potatoes.entities.projectiles;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.AOEEffect;
@@ -60,6 +58,31 @@ public class BallisticProjectile extends Projectile {
 		maxRange = false;
 	}
 
+	public BallisticProjectile(Class<?> targetClass, float posX, float posY, float posZ,
+							   float targetPosX, float targetPosY, float targetPosZ, float RANGE, float DAMAGE, float aoeDAMAGE) {
+		super(posX, posY, posZ, 1.4f, 1.4f, TEXTURE);
+		this.DAMAGE = DAMAGE;
+//		this.mainTarget = target;
+		this.goalX = targetPosX;
+		this.goalY = targetPosY;
+		this.goalZ = targetPosZ;
+		this.aoeDAMAGE = aoeDAMAGE;
+		this.RANGE = RANGE;
+		this.targetClass = targetClass;
+
+		float deltaX = getPosX() - goalX;
+		float deltaY = getPosY() - goalY;
+
+		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+
+		changeX = (float) (speed * Math.cos(angle));
+		changeY = (float) (speed * Math.sin(angle));
+		// TODO: add changeZ
+
+		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+
+	}
+
 	/**
 	 * Creates a new Ballistic Projectile. Ballistic Projectiles do not change
 	 * direction once fired. The initial direction is based on the direction to the
@@ -80,32 +103,38 @@ public class BallisticProjectile extends Projectile {
 	 * @param aoeDAMAGE
 	 *            AOE damage
 	 */
-	public BallisticProjectile(Class<?> targetClass, float posX, float posY, float posZ,
-			Optional<AbstractEntity> target, float RANGE, float DAMAGE, float aoeDAMAGE) {
-		super(posX, posY, posZ, 1, 2, TEXTURE);
-		this.DAMAGE = DAMAGE;
-		this.mainTarget = target;
-		this.goalX = target.get().getPosX();
-		this.goalY = target.get().getPosY();
-		this.goalZ = target.get().getPosZ();
-		this.aoeDAMAGE = aoeDAMAGE;
-		this.RANGE = RANGE;
-		this.targetClass = targetClass;
-
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
-
-		changeX = (float) (speed * Math.cos(angle));
-		changeY = (float) (speed * Math.sin(angle));
-		// TODO: add changeZ
-
-		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
-
-	}
+//	public BallisticProjectile(Class<?> targetClass, float posX, float posY, float posZ,
+//			Optional<AbstractEntity> target, float RANGE, float DAMAGE, float aoeDAMAGE) {
+//		super(posX, posY, posZ, 1, 2, TEXTURE);
+//		this.DAMAGE = DAMAGE;
+//		this.mainTarget = target;
+//		this.goalX = target.get().getPosX();
+//		this.goalY = target.get().getPosY();
+//		this.goalZ = target.get().getPosZ();
+//		this.aoeDAMAGE = aoeDAMAGE;
+//		this.RANGE = RANGE;
+//		this.targetClass = targetClass;
+//
+//		float deltaX = getPosX() - goalX;
+//		float deltaY = getPosY() - goalY;
+//
+//		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+//
+//		changeX = (float) (speed * Math.cos(angle));
+//		changeY = (float) (speed * Math.sin(angle));
+//		// TODO: add changeZ
+//
+//		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+//
+//	}
 
 	/**
+	 *
+	 * ****************************************************************************
+	 * ****************************************************************************
+	 * DO NOT USE THIS CONSTRUCTOR METHOD, USED FOR TESTING ONLY.
+	 * ****************************************************************************
+	 * ****************************************************************************
 	 * Creates a new Ballistic Projectile. Ballistic Projectiles do not change
 	 * direction once fired. The initial direction is based on the direction to the
 	 * closest entity
@@ -153,6 +182,7 @@ public class BallisticProjectile extends Projectile {
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 	}
 
+	@Override
 	public int rotateAngle() {
 		return rotateAngle;
 	}

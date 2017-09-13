@@ -204,7 +204,7 @@ public class MultiplayerManager extends Manager {
      * Updates the client's player position.
      */
     public void broadcastPlayerUpdatePosition() {
-        Player p = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer();
+        Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
         if (client != null) {
             client.broadcastPlayerUpdatePosition(p);
         }

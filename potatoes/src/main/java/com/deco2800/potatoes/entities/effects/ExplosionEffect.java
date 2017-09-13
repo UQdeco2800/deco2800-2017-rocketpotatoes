@@ -2,8 +2,6 @@ package com.deco2800.potatoes.entities.effects;
 
 import com.deco2800.potatoes.managers.GameManager;
 
-import java.util.Collection;
-
 public class ExplosionEffect extends Effect {
 
 	private final static transient String TEXTURE = "exp1";

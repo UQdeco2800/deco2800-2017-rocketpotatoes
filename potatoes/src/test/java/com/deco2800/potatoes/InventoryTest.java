@@ -3,8 +3,6 @@ package com.deco2800.potatoes;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
-import java.util.TreeMap;
-
 import org.junit.*;
 
 import com.deco2800.potatoes.entities.FoodResource;
@@ -12,7 +10,6 @@ import com.deco2800.potatoes.entities.Resource;
 import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
-import com.deco2800.potatoes.exceptions.InvalidInventoryException;
 
 /**
  * Tests for the inventory class

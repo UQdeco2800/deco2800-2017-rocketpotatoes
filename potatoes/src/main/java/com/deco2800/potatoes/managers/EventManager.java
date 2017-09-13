@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.managers;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 

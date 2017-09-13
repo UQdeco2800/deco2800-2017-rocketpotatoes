@@ -137,7 +137,7 @@ public class ClientMessageProcessor {
         if (client.getID() == m.id) {
             System.out.println("[CLIENT]: IT'S ME!");
             // Give the player manager me
-            ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).setPlayer(p);
+            GameManager.get().getManager(PlayerManager.class).setPlayer(p);
 
         } else {
             client.sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
@@ -247,8 +247,10 @@ public class ClientMessageProcessor {
      */
     private static void entityUpdateProgressMessage(NetworkClient client, Network.HostEntityUpdateProgressMessage m) {
 
-        // TODO verification?
-        ((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
+		LOGGER.error("Trying to use setProgress to update the progress. This is no longer currently"
+				+ " part of the HasProgress interface and needs to be fixed.");
+		// TODO verification?
+        //((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
 
     }
 
@@ -262,7 +264,7 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
-        GuiManager g = (GuiManager) GameManager.get().getManager(GuiManager.class);
+        GuiManager g = GameManager.get().getManager(GuiManager.class);
         ChatGui c = ((ChatGui) g.getGui(ChatGui.class));
         if (c != null) {
             c.addMessage(

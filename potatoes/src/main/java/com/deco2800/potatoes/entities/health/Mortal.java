@@ -41,7 +41,7 @@ public interface Mortal {
 	 * @param amount - the float that health will be set as
 	 * @return if health is now maxed out
 	 */
-	boolean setProgress(float amount);
+	boolean setHealth(float amount);
 	
 	
 	/**

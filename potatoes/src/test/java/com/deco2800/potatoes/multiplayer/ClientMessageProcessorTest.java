@@ -57,7 +57,7 @@ public class ClientMessageProcessorTest {
         ClientMessageProcessor.processMessage(nc, m);
         assertEquals("me", nc.getClients().get(2));
         assertNotEquals(null,
-                ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer());
+                GameManager.get().getManager(PlayerManager.class).getPlayer());
     }
 
     @Test

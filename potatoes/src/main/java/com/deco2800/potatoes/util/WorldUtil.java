@@ -13,7 +13,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Renderable;
 
 /**
- * A utility class for the AbstractWorld instances
+ * A utility class for the World instances
  * Created by timhadwen on 23/7/17.
  */
 public class WorldUtil {
@@ -32,7 +32,7 @@ public class WorldUtil {
 		AbstractEntity ret = null;
 		double distance = Double.MAX_VALUE;
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			double tmp_distance = Math.sqrt(Math.pow((e.getPosX() - x), 2) + Math.pow((e.getPosY() - y), 2));
+			double tmp_distance = distance(x, y, e.getPosX(), e.getPosY());
 
 			if (tmp_distance < distance) {
 				// Closer than current closest
@@ -65,7 +65,7 @@ public class WorldUtil {
 		AbstractEntity closest = null;
 		float dist = Float.MAX_VALUE;
 		for (AbstractEntity e : entities) {
-			float tmp_distance = (float)(Math.sqrt(Math.pow((e.getPosX() - x), 2) + Math.pow((e.getPosY() - y), 2)));
+			float tmp_distance = distance(x, y, e.getPosX(), e.getPosY());
 			if (closest == null || dist > tmp_distance) {
 				dist = tmp_distance;
 				closest = e;
@@ -87,5 +87,12 @@ public class WorldUtil {
 			}
 		}
 		return Optional.empty();
+	}
+	
+	/**
+	 * Returns the distance between the point (x1,y1) and (x2,y2)
+	 */
+	public static float distance(float x1, float y1, float x2, float y2) {
+		return (float)(Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)));
 	}
 }
