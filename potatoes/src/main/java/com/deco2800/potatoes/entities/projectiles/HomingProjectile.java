@@ -40,17 +40,20 @@ public class HomingProjectile extends Projectile {
 	 */
 	public HomingProjectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX,
 			float targetPosY, float targetPosZ, float range, float damage, String projectileType, Effect endEffect) {
-		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, 1.4f, 1.4f, endEffect);
+		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, xRenderLength,
+				yRenderLength, endEffect);
 	}
 
 	@Override
 	public void onTick(long time) {
 		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, this.goalX, this.goalY);
-		if (targetEntity != null)
-			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(),
-					targetEntity.get().getPosZ());
-		
+		if (targetEntity != null) {
+			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
+		} else {
+			GameManager.get().getWorld().removeEntity(this);
+		}
+
 		super.onTick(time);
-		
+
 	}
 }

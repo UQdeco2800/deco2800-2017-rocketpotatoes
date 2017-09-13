@@ -26,6 +26,9 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected float changeY;
 	protected float changeZ;
 
+	protected static float xRenderLength = 1.4f;
+	protected static float yRenderLength = 1.4f;
+
 	protected Class<?> targetClass;
 
 	protected boolean maxRange;
@@ -112,7 +115,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	}
 
 	@Override
-	public float rotateAngle() {
+	public float rotationAngle() {
 		return rotationAngle;
 	}
 

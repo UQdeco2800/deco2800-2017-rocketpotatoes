@@ -42,7 +42,7 @@ public class BallisticProjectile extends Projectile {
 
 	public BallisticProjectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX,
 			float targetPosY, float targetPosZ, float range, float damage, float aoeDAMAGE, Effect endEffect) {
-		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, 1.4f, 1.4f, endEffect);
+		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, xRenderLength, yRenderLength, endEffect);
 
 	}
 
