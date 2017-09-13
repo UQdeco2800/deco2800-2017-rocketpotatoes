@@ -26,6 +26,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final EnemyStatistics STATS = initStats();
 
+	private static final float moose_size = 1.5f;
+
 	private static float speed = 0.04f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
@@ -44,10 +46,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	}
 
 	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
+		this.damageScaling = 0.8f; // 20% Damage reduction for Moose
 	}
 
     /**
@@ -134,7 +137,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	@Override
 	public String toString() {
-		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
+		return String.format("Moose at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
 	@Override
