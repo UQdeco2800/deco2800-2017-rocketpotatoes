@@ -191,15 +191,15 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
 		// Add test TreeShop Gui
-		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+		//guiManager.addGui(new TreeShopGui(guiManager.getStage()));
 
 		/* Setup inputs */
 		setupInputHandling();
 
 		/* Create an example world for the engine */
-		GameManager.get().setWorld(new InitialWorld());
+		//GameManager.get().setWorld(new InitialWorld());
         // Sets the world to the initial world, world 0
-        //GameManager.get().getManager(WorldManager.class).setWorld(0);
+        GameManager.get().getManager(WorldManager.class).setWorld(0);
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -426,7 +426,7 @@ public class GameScreen implements Screen {
 		items.put(new ProjectileTree(), Color.RED);
 		items.put(new ResourceTree(), Color.BLUE);
 		items.put(new DamageTree(), Color.YELLOW);
-		createMenu(items, 600, 400, 200);
+		//createMenu(items, 600, 400, 200);
 		System.out.println(items.size());
 
 		///////////////////////// TEST///////////////////////
