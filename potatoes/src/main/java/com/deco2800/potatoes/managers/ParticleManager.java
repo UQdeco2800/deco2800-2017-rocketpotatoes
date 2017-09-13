@@ -47,7 +47,7 @@ public class ParticleManager extends Manager {
             float x = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
             float y = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 
-            Vector2 p = Render3D.worldToScreenCoordinates(x, y);
+            Vector2 p = Render3D.worldToScreenCoordinates(x, y, 0);
             emitter.setOrigin(p.x, p.y);
             emitter.onTick(deltaTime, particlePool);
         }
