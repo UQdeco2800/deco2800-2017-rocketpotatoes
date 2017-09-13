@@ -18,7 +18,7 @@ import com.deco2800.potatoes.util.WorldUtil;
  */
 public class StompedGroundEffect extends Effect {
     //TODO Texture is a placeholder. Need to design proper artwork for stomped ground.
-    private final static transient String TEXTURE = "DamagedGroundTemp1";
+    private static final transient String TEXTURE = "DamagedGroundTemp1";
 
     private boolean isTemporary;
     private boolean resourceStomped = false;
@@ -33,6 +33,7 @@ public class StompedGroundEffect extends Effect {
      * Empty constructor. Used for serialisation purposes
      */
     public StompedGroundEffect() {
+        // empty for serialization
     }
 
     /**
@@ -65,9 +66,9 @@ public class StompedGroundEffect extends Effect {
                             effectPosition.overlaps(entity.getBox3D()) ) {
                         String resourceType = ((ResourceEntity) entity).getType().getTypeName();
                         GameManager.get().getWorld().removeEntity(entity);
-                        if (resourceType.equals("seed")) {
+                        if ("seed".equals(resourceType)) {
                             soundManager.playSound("seedResourceDestroyed.wav");
-                        } else if (resourceType.equals("food")) {
+                        } else if ("food".equals(resourceType)) {
                             soundManager.playSound("foodResourceDestroyed.wav");
                         }
                     }

@@ -32,11 +32,11 @@ public class WorldUtil {
 		AbstractEntity ret = null;
 		double distance = Double.MAX_VALUE;
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			double tmp_distance = distance(x, y, e.getPosX(), e.getPosY());
+			double tempDistance = distance(x, y, e.getPosX(), e.getPosY());
 
-			if (tmp_distance < distance) {
+			if (tempDistance < distance) {
 				// Closer than current closest
-				distance = tmp_distance;
+				distance = tempDistance;
 				ret = (AbstractEntity) e;
 			}
 		}
@@ -65,9 +65,9 @@ public class WorldUtil {
 		AbstractEntity closest = null;
 		float dist = Float.MAX_VALUE;
 		for (AbstractEntity e : entities) {
-			float tmp_distance = distance(x, y, e.getPosX(), e.getPosY());
-			if (closest == null || dist > tmp_distance) {
-				dist = tmp_distance;
+			float tempDistance = distance(x, y, e.getPosX(), e.getPosY());
+			if (closest == null || dist > tempDistance) {
+				dist = tempDistance;
 				closest = e;
 			}
 		}
@@ -93,6 +93,6 @@ public class WorldUtil {
 	 * Returns the distance between the point (x1,y1) and (x2,y2)
 	 */
 	public static float distance(float x1, float y1, float x2, float y2) {
-		return (float)(Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)));
+		return (float) (Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
 	}
 }

@@ -33,8 +33,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 	private static final EnemyStatistics STATS = initStats();
 
 	private static float speed = 0.08f;
@@ -42,13 +40,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private Path path = null;
 	private Box3D target = null;
 
-	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
+	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
 	/**
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
+        // empty for serialization
 	}
 
 	public SpeedyEnemy(float posX, float posY, float posZ) {
@@ -78,7 +77,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESSBAR;
 	}
 
 	/**

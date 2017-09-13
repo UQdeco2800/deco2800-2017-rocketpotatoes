@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class AOEEffect extends Effect {
 
-    private final static transient String TEXTURE = "aoe1";
+    private static final transient String TEXTURE = "aoe1";
     private float DAMAGE = 1;
     private int currentSpriteIndexCount = 1;
     //    private String[] currentSpriteIndex = {"exp1","exp2","exp3","aoe1", "aoe2", "aoe3"};

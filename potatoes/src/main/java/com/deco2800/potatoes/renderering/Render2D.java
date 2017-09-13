@@ -23,7 +23,7 @@ public class Render2D implements Renderer {
      * A multiplier to convert from 3D worlds into 2D worlds.
      * (x,y) position * COORDINATEMULTIPLIER = Screen position
      */
-    private int COORDINATEMULTIPLIER = 64;
+    private final int COORDINATEMULTIPLIER = 64;
 
     /**
      * Simply renders things onto the viewport in 2D

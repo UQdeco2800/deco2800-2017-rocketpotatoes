@@ -14,7 +14,6 @@ import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -62,7 +61,6 @@ public class Render3D implements Renderer {
 			@Override
 			public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
 				int val = abstractEntity.compareTo(t1);
-				// System.out.println(abstractEntity+" "+t1);
 				if (abstractEntity instanceof Effect) {
 					val = -1;
 				}
@@ -85,8 +83,6 @@ public class Render3D implements Renderer {
 		}
 
 		batch.begin();
-
-		// drawTextureBetween("lightning",0, 0, 1, 1);
 
 		/* Render each entity (backwards) in order to retain objects at the front */
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
@@ -138,16 +134,16 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				ProgressBar PROGRESS_BAR = ((HasProgressBar) entity).getProgressBar();
+				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
 				// Allow entities to return null if they don't want to display their progress bar
-				if (PROGRESS_BAR != null) {
+				if (progressBar != null) {
 					TextureManager reg = GameManager.get()
 						.getManager(TextureManager.class);
 	
-					Texture barTexture = reg.getTexture((PROGRESS_BAR.getTexture()));
+					Texture barTexture = reg.getTexture(progressBar.getTexture());
 	
 					// sets colour palette
-					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) entity).getProgressRatio()));
+					batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
 	
 					// draws the progress bar
 					Texture entityTexture = reg.getTexture(entity.getTexture());
@@ -155,14 +151,14 @@ public class Render3D implements Renderer {
 	
 					float barRatio = ((HasProgress) entity).getProgressRatio();
 					float maxBarWidth = tileWidth * entity.getXRenderLength()
-						* PROGRESS_BAR.getWidthScale();
+						* progressBar.getWidthScale();
 					float barWidth = maxBarWidth * barRatio;
 					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
 	
 					// x co-ordinate,
 					// finds the overlap length of the bar and moves it half as much left
 					float barX = isoPosition.x - (tileWidth * entity.getXRenderLength()
-							* (PROGRESS_BAR.getWidthScale() - 1) / 2);
+							* (progressBar.getWidthScale() - 1) / 2);
 					// y co-ordinate
 					// If height is specified, use it, otherwise estimate the right height
 					float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
@@ -257,9 +253,6 @@ public class Render3D implements Renderer {
 		batch.end();
 
 	}
-
-	private void renderProgress(SpriteBatch batch, AbstractEntity entity) {
-	}
 	
 	/**
 	 * Returns the correct tile renderer for the given rendering engine
@@ -322,7 +315,8 @@ public class Render3D implements Renderer {
 	}
 
 	public static Vector2 worldPosToTile(float x, float y) {
-		float projX = 0, projY = 0;
+		float projX;
+		float projY;
 
 		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");

@@ -11,7 +11,7 @@ import com.deco2800.potatoes.util.Box3D;
 
 public class BallisticProjectile extends Projectile {
 
-	private final static transient String TEXTURE = "rocket1";
+	private static final transient String TEXTURE = "rocket1";
 	private static float DAMAGE = 10;
 	private static float aoeDAMAGE = 1;
 	private static float RANGE;
@@ -31,8 +31,8 @@ public class BallisticProjectile extends Projectile {
 	 * @param AOE_height
 	 *            Height of AOE sprite
 	 */
-	private final static float AOE_width = 5f;
-	private final static float AOE_height = 2f;
+	private static final float AOE_width = 5f;
+	private static final float AOE_height = 2f;
 
 	private float goalX;
 	private float goalY;

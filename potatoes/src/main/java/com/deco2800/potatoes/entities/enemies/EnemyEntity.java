@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
