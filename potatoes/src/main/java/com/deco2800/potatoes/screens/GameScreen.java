@@ -595,6 +595,7 @@ public class GameScreen implements Screen {
         public void notifyKeyDown(int keycode){
             if(keycode == Input.Keys.G){
                 guiManager.getGui(GameOverGui.class).show();
+                GameManager.get().getWorld().removeEntity(GameManager.get().getManager(PlayerManager.class).getPlayer());
             }
         }
     }
