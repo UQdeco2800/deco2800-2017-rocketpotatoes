@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -27,6 +26,7 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -105,16 +105,21 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	@Override
 	public void onTick(long arg0) {
-		float newPosX = this.getPosX();
-		float newPosY = this.getPosY();
-
-		newPosX += speedx;
-		newPosY += speedy;
+		float newPosX = this.getPosX() + speedx;
+		float newPosY = this.getPosY() + speedy;
+		float length = GameManager.get().getWorld().getLength();
+		float width = GameManager.get().getWorld().getWidth();
 
 		Box3D newPos = getBox3D();
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
+		float speedScale = GameManager.get().getManager(WorldManager.class)
+				.getTerrain(Math.round((float)Math.min(newPosX,width-1)), Math.round((float)Math.min(newPosY,length-1)))
+				.getMoveScale();
+		newPosX -= speedx * (1 - speedScale);
+		newPosY -= speedy * (1 - speedScale);
+		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
@@ -130,14 +135,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 			}
 		}
-		// Lazy checking for water collision
-		float height = GameManager.get().getWorld().getHeight((int)newPosY,(int)newPosX);
-		if (height <= 0.3) {
-			collided = true;
-		}
 		if (!collided) {
-			this.setPosX(Math.max((float)Math.min(newPosX,GameManager.get().getWorld().getWidth() - 0.2),0));
-			this.setPosY(Math.max((float)Math.min(newPosY,GameManager.get().getWorld().getLength() - 0.2),0));
+			this.setPosX(Math.max((float)Math.min(newPosX,width),0));
+			this.setPosY(Math.max((float)Math.min(newPosY,length),0));
 		}
 
 
@@ -342,6 +342,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		LOGGER.info(this + " is dead.");
 		// destroy the player
 		GameManager.get().getWorld().removeEntity(this);
+		// play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+		SoundManager soundManager = new SoundManager();
+		soundManager.playSound("wilhelmScream.wav");
 		// get the event manager
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event

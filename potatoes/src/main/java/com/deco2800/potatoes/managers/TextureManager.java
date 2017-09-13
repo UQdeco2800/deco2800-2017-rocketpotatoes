@@ -78,6 +78,9 @@ public class TextureManager extends Manager {
         }
         saveTexture("lightning", "resources/projectiles/lightning.png");
 
+        // Particles
+        saveTexture("snowflake", "resources/particles/snowflake.png");
+
         // GUI
         saveTexture("screen_background", "resources/menu/background.png");
         saveTexture("start_btn", "resources/menu/start_btn.png");
@@ -98,13 +101,12 @@ public class TextureManager extends Manager {
             saveTexture("lightning_tree" + i, "resources/trees/lightning" + i + ".png");
             saveTexture("lightning_being_damaged" + i, "resources/trees/lightningBeingDamaged" + i + ".png");
             saveTexture("lightning_damaged" + i, "resources/trees/lightningDamaged" + i + ".png");
-
-            if (i < 9) {
+            if (i < 5)
+                saveTexture("fire_tree"+i,"resources/trees/fire" + i + ".png");
+            if (i < 9)
                 saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
-            }
-            if (i < 8) {
+            if (i < 8)
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
-            }
         }
         //damage tree:ice
         saveTexture("ice_basic_tree", "resources/trees/iceBasicTree.png");
