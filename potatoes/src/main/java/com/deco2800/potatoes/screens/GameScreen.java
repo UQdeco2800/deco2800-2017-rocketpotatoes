@@ -16,20 +16,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.*;
+import com.deco2800.potatoes.entities.enemies.Moose;
+import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
+import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.AcornTree;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.gui.DebugModeGui;
-import com.deco2800.potatoes.gui.GameMenuGui;
-import com.deco2800.potatoes.gui.InventoryGui;
-import com.deco2800.potatoes.gui.PauseMenuGui;
-import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -37,7 +31,6 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,6 +65,7 @@ public class GameScreen implements Screen {
 
 	private long lastGameTick = 0;
 	private boolean playing = true;
+	private double tickrate = 10;
 
 	/**
 	 * Start's a multiplayer game
@@ -181,11 +175,16 @@ public class GameScreen implements Screen {
 		// Make our chat window
 		guiManager.addGui(new ChatGui(guiManager.getStage()));
 
-		// Make our inventory window
-		guiManager.addGui(new InventoryGui(guiManager.getStage()));
-
 		// Add test TreeShop Gui
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+        // Make our chat window
+        guiManager.addGui(new ChatGui(guiManager.getStage()));
+
+        // Make our inventory window
+        guiManager.addGui(new InventoryGui(guiManager.getStage()));
+
+        //Make our game over window
+        guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -274,7 +273,7 @@ public class GameScreen implements Screen {
 			playerManager.setPlayer(new Player(5, 10, 0));
 			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 		}
-
+		GameManager.get().getManager(ParticleManager.class);
 	}
 
 	// For random position of enemies
@@ -308,11 +307,14 @@ public class GameScreen implements Screen {
 		}
 	}
 
+
 	private void addDamageTree() {
 		GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
 		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
+		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
 	}
+
 
 	private void addResourceTrees() {
 		// Seed Trees
@@ -341,6 +343,7 @@ public class GameScreen implements Screen {
 
 	private void initialisePortal() {
 		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
+
 
 	}
 
@@ -400,6 +403,9 @@ public class GameScreen implements Screen {
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
+
+		GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
+
 	}
 
 	private void renderGUI(SpriteBatch batch) {
@@ -411,7 +417,7 @@ public class GameScreen implements Screen {
 		// Render GUI elements
 		guiManager.getStage().act();
 		guiManager.getStage().draw();
-		
+
 	}
 
 	private void renderGameGUI(SpriteBatch batch) {
@@ -449,7 +455,7 @@ public class GameScreen implements Screen {
 		renderer.render(batch);
 
 		// TODO: add render for projectile's separately
-		
+		GameManager.get().getManager(ParticleManager.class).draw(batch);
 		((TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class)).render();
 		
 	}
@@ -515,7 +521,6 @@ public class GameScreen implements Screen {
 
 		batch.dispose();
 	}
-
 
 	/**
 	 * Resizes the viewport
@@ -616,6 +621,17 @@ public class GameScreen implements Screen {
 			}
 		}
 	}
+	
+	private class GameOverHandler implements KeyDownObserver {
+		@Override
+		public void notifyKeyDown(int keycode) {
+			if (keycode == Input.Keys.G) {
+				guiManager.getGui(GameOverGui.class).show();
+				GameManager.get().getWorld()
+						.removeEntity(GameManager.get().getManager(PlayerManager.class).getPlayer());
+			}
+		}
+	}
 
 	private class ScrollTester implements ScrollObserver {
 
@@ -667,6 +683,16 @@ public class GameScreen implements Screen {
 	 */
 	public void menuBlipSound() {
 		soundManager.playSound("menu_blip.wav");
+	}
+
+
+
+	public double getTickrate() {
+		return this.tickrate;
+	}
+
+	public void setTickrate(double tickrate) {
+		this.tickrate = tickrate;
 	}
 
 }

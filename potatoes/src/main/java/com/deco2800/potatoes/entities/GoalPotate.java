@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -15,7 +14,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
  */
 public class GoalPotate extends MortalEntity implements HasProgressBar {
 	
-	private final static transient String TEXTURE = "potate";
+	private static final transient String TEXTURE = "potate";
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 

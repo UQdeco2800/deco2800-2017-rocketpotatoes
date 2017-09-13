@@ -36,11 +36,11 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	/*
 	 *  The radius of which a collision can be detected
 	 */
-	private final float change = (float) 0.2;
+	private static final float change = (float) 0.2;
 	/*
 	 * The array of positions where a collision needs to be checked
 	 */
-	private final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
+	private static final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
 			{ -change, 0 }, { -change, -change }, { 0, -change }, { -change, -change } };
 
 	/**

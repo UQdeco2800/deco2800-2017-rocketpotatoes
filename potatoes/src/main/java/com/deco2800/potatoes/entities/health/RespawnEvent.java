@@ -6,6 +6,7 @@ import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.SoundManager;
 
 /**
  * 
@@ -27,18 +28,35 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 
 	@Override
 	public void action(MortalEntity param) {
+		boolean playerRespawn = false;
 		Random random = new Random();
 		if (param instanceof Player) {
 			// sets the location of the player to respawn
 			param.setPosition(5, 10, 0);
+			playerRespawn = true;
 		} else if (param instanceof EnemyEntity) {
 			// sets the location of the EnemyEntity to respawn
 			param.setPosition(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0);
 		}
-		
+
+		/*OURS*/
+		// sets MortalEntity's health to maximum health
+		//param.setProgress(param.getMaxHealth());
+		// read MortalEntity to world
+
+		/*MASTERS*/
 		// sets players health to maximum health
 		param.setHealth(param.getMaxHealth());
-		// readd player to world
+		// read player to world
+		try {
+			if (playerRespawn) {
+				// play respawn sound effect if player is respawning
+				SoundManager soundManager = new SoundManager();
+				soundManager.playSound("respawnEvent.wav");
+			}
+		} catch (NullPointerException e) {
+		}
+
 		GameManager.get().getWorld().addEntity(param);
 	}
 	

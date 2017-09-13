@@ -6,76 +6,88 @@
      *
      */
     public abstract class GameTime implements Tickable {
-        private int CurrentTime = 0;
-        private int CurrentDay = 0;
-        private boolean DayTime = true;
+        private int currentTime = 0;
+        private int currentDay = 0;
+        private boolean dayTime = true;
 
         /**
          * Default constructor
          */
-            public GameTime()    {
-            }
+            public GameTime() {}
 
         /**
          * @return the current in game time
          */
-            public int getCurrentTime() { return CurrentTime; }
+            public int getCurrentTime() { 
+            	return currentTime; 
+            }
 
         /**
          * Resets the Current Time.
-         * @param CurrentTime
+         * @param currentTime
          */
-            public void ResetCurrentTime(int CurrentTime) { this.CurrentTime = 0; }
+            public void resetCurrentTime() { 
+            	currentTime = 0; 
+            }
 
         /**
          * Sets the Current Game Time.
-         * @param CurrentTime
+         * @param currentTime
          */
-            public void SetCurrentTime(int CurrentTime) { this.CurrentTime = CurrentTime; }
+            public void setCurrentTime(int currentTime) { 
+            	this.currentTime = currentTime;
+            }
 
 
         /**
          * Increases the Current Game Time.
-         * @param Tick
+         * @param tick
          */
-            public void onTick(int Tick){
-                this.SetCurrentTime((int) (this.getCurrentTime() + 0.01));
+            public void onTick(int tick){
+            	// what is this..?
+                setCurrentTime((int) (this.getCurrentTime() + 0.01));
             }
 
         /**
          *  Transition into night time
          */
-            public void NightTime(int CurrentTime, boolean DayTime){
-            while(CurrentTime >= 12){
-                DayTime = false;
+            public void nightTime(){
+            while (currentTime >= 12){
+                dayTime = false;
             }
         }
 
         /**
          * Rolling over into next day
          */
-           public void nextDay(int CurrentTime, int CurrentDay){
-                if(CurrentTime == 24){
-                    CurrentDay += 1;
-                    CurrentTime = 0;
+           public void nextDay() {
+                if(currentTime == 24){
+                    currentDay += 1;
+                    currentTime = 0;
                 }
            }
 
         /**
          * @return the current In Game Day.
          */
-            public int getCurrentDay() { return CurrentDay; }
+            public int getCurrentDay() { 
+            	return currentDay; 
+            }
 
         /**
          * Resets the Current Day.
-         * @param CurrentDay
+         * @param currentDay
          */
-            public void ResetCurrentDay(int CurrentDay) { this.CurrentDay = 0; }
+            public void resetCurrentDay() { 
+            	currentDay = 0; 
+            }
 
         /**
          * Sets the Current Game Day.
-         * @param CurrentDay
+         * @param currentDay
          */
-            public void SetCurrentDay(int CurrentDay) { this.CurrentDay = CurrentDay; }
+            public void setCurrentDay(int currentDay) {
+            	this.currentDay = currentDay;
+            }
 
     }

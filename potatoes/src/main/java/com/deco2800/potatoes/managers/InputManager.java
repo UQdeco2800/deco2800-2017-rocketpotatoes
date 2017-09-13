@@ -9,7 +9,8 @@ import java.util.ArrayList;
  * Created by woody on 30-Jul-17.
  */
 public class InputManager extends Manager implements InputProcessor {
-	private int mouseX, mouseY;
+	private int mouseX;
+	private int mouseY;
 
 	private ArrayList<KeyDownObserver> keyDownListeners = new ArrayList<>();
 

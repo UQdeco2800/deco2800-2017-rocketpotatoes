@@ -90,7 +90,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
 
-		// this.setTexture("spacman_blue");
 	}
 
 	/**
@@ -291,11 +290,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					didHarvest = true;
-					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange 
+					&& ((ResourceTree) entitiy).getGatherCount() > 0) {
+				didHarvest = true;
+				((ResourceTree) entitiy).transferResources(this.inventory);
 			}
 		}
 		if (didHarvest) {
@@ -331,7 +329,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 */
 	public void handleKeyUp(int keycode) {
 		// checks if key down is pressed first
-		if (checkKeyDown <= 0) { return; }
+		if (checkKeyDown <= 0) {
+			return;
+		}
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
@@ -370,6 +370,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		LOGGER.info(this + " is dead.");
 		// destroy the player
 		GameManager.get().getWorld().removeEntity(this);
+		// play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+		SoundManager soundManager = new SoundManager();
+		soundManager.playSound("wilhelmScream.wav");
 		// get the event manager
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event
