@@ -82,7 +82,7 @@ public class TextureManager extends Manager {
         saveTexture("snowflake", "resources/particles/snowflake.png");
 
         // GUI
-        saveTexture("screen_background", "resources/menu/background.png");
+        saveTexture("screen_background", "resources/menu/MainMenuBackground.png");
         saveTexture("start_btn", "resources/menu/start_btn.png");
         saveTexture("resume_btn", "resources/menu/resume_btn.png");
         saveTexture("options_btn", "resources/menu/options_btn.png");
@@ -91,6 +91,10 @@ public class TextureManager extends Manager {
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
         saveTexture("optionsMainMenu", "resources/menu/optionsMainMenu.png");
         saveTexture("exitMainMenu", "resources/menu/exitMainMenu.png");
+        saveTexture("singleplayerMainMenu", "resources/menu/singleplayerMainMenu.png");
+        saveTexture("multiplayerMainMenu", "resources/menu/multiplayerMainMenu.png");
+        saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
+
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
