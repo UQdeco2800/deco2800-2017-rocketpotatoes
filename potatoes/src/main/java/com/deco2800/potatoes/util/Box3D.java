@@ -11,20 +11,14 @@ import java.util.Objects;
  */
 public class Box3D {
 
-	private float x;
-	private float y;
-	private float z;
+	private float x, y, z;
 
-	private float xLength;
-	private float yLength;
-	private float zLength;
-	
+	private float xLength, yLength, zLength;
+
 	/**
 	 * Default constructor for the purposes of serialization
 	 */
-	public Box3D() {
-        // empty for serialization
-	}
+	public Box3D() { }
 
 	/**
 	 * Constructs a new Box3D with the given corner point and dimensions.
@@ -198,7 +192,7 @@ public class Box3D {
 	}
 	
 	public float distance(float x, float y, float z) {
-		return (float) (Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) + Math.pow(z - this.z, 2)));
+		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
 	}
 
 	/**
@@ -226,7 +220,7 @@ public class Box3D {
 	 * @param x2 The x coord of point 2 of the line
 	 * @param y2 The y coord of point 2 of the line
 	 * @param z2 The z coord of point 2 of the line
-	 * @return
+	 * @return true iff the line intersects this box
 	 */
 	public boolean doesIntersectLine(float x1, float y1, float z1, float x2, float y2, float z2) {
 		float fMin = 0;
@@ -242,13 +236,9 @@ public class Box3D {
 			if (lineDist != 0) {
 				fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
 				fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
-				if (fMin > fMax) {
-					return false;
-				}
+				if (fMin > fMax) { return false; }
 
-			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { 
-				return false; 
-			}
+			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
 		}
 
 		return true;

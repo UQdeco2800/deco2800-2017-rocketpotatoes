@@ -96,9 +96,7 @@ public class PathManager extends Manager {
         float dist;
         for (Box3D node1 : this.nodes) {
             for (Box3D node2 : this.nodes) {
-                if (node1 == node2) { 
-                	break; 
-                }
+                if (node1 == node2) { break; }
                 doesCollide = false;
                 for (AbstractEntity entity : world.getEntities().values()) {
                     if (entity.isStaticCollideable() &&

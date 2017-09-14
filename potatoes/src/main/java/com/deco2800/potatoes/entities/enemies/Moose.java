@@ -10,7 +10,6 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
@@ -26,8 +25,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final EnemyStatistics STATS = initStats();
 
-	private static final float moose_size = 1.5f;
-
 	private static float speed = 0.04f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
@@ -39,19 +36,18 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
-	/**
-	 * Empty constructor for serialization
-	 */
 	public Moose() {
-        // empty for serialization
-	}
-
-	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(0, 0, 0, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
-		this.damageScaling = 0.8f; // 20% Damage reduction for Moose
+	}
+
+	public Moose(float posX, float posY, float posZ) {
+		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		this.speed = speed;
+		this.goal = goal;
+		this.path = null;
 	}
 
     /**
@@ -85,11 +81,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
 				//collided with wall
-				randomTarget();
-				//break;
-			} else if (entity instanceof EnemyEntity && entity.getBox3D().overlaps(this.getBox3D())) {
-				EnemyEntity enemy = (EnemyEntity) entity;
-				enemy.heal(4f);
+                randomTarget();
+				break;
 			}
 		}
 
@@ -101,9 +94,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 		//check if close enough to target
 		if (target != null && playerManager.getPlayer().getBox3D().overlaps(this.getBox3D())) {
-			target = playerManager.getPlayer().getBox3D();
-			playerManager.getPlayer().damage(0.4f);
-		} else {
 			target = null;
 		}
 
@@ -142,9 +132,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 	}
 
+
 	@Override
 	public String toString() {
-		return String.format("Moose at (%d, %d)", (int) getPosX(), (int) getPosY());
+		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
 	@Override
@@ -163,4 +154,5 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
-}
+
+    }

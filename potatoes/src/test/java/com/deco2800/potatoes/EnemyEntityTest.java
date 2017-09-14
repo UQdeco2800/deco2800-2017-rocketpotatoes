@@ -10,7 +10,6 @@ import org.junit.Test;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.Tower;
-import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.EnemyStatistics;
 import com.deco2800.potatoes.entities.enemies.MeleeAttackEvent;
@@ -118,9 +117,7 @@ public class EnemyEntityTest {
 
 	@Test
 	public void getShotTest() {
-		Projectile proj = new BallisticProjectile(enemyEntity.getClass(), 0, 0, 0, 0, 0, 0, 0, 10, 10,
-				new AOEEffect(0, 0, 0, 1));
-
+		Projectile proj = new BallisticProjectile();
 		enemyEntity.getShot(proj);
 		Assert.assertTrue("enemy failed to getShot()", enemyEntity.getHealth() < enemyEntity.getMaxHealth());
 	}

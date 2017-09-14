@@ -130,8 +130,8 @@ public class RandomWorldGeneration {
 		int count = 0;
 		for (int[] is : sampleType) {
 			// Sample using the given pattern
-			int sampleX = x + is[0] * size;
-			int sampleY = y + is[1] * size;
+			int sampleX = (int) x + is[0] * size;
+			int sampleY = (int) y + is[1] * size;
 			// We're adding something so increase count for average
 			count++;
 			sum += get(array, sampleX, sampleY);

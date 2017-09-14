@@ -8,7 +8,6 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.util.WorldUtil;
 
 public abstract class Effect extends AbstractEntity implements Tickable {
 
@@ -33,25 +32,33 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
-		// Map<Integer, AbstractEntity> entities =
-		// GameManager.get().getWorld().getEntities();
-		// // Check surroundings
-		// for (AbstractEntity entity : entities.values()) {
-		//
-		// if (newPos.overlaps(entity.getBox3D())) {
-		// System.out.println(entity.toString());
-		// try {
-		// ((MortalEntity) entity).damage(DAMAGE);
-		// } catch (Exception e) {
-		//
-		// }
-		//
-		// break;
-		// }
-		//
-		// }
+//		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+//		// Check surroundings
+//		for (AbstractEntity entity : entities.values()) {
+//
+//			if (newPos.overlaps(entity.getBox3D())) {
+//				System.out.println(entity.toString());
+//				try {
+//					((MortalEntity) entity).damage(DAMAGE);
+//				} catch (Exception e) {
+//
+//				}
+//
+//				break;
+//			}
+//
+//		}
 	}
-
+	
+	public float rotation(float xPos, float yPos, float fxPos, float fyPos) {
+		Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
+		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
+		float l = endPos.x - startPos.x;
+		float h = endPos.y - startPos.y;
+		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 90;
+		return rotation;
+	}
+	
 	public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,
 			float fyPos) {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
@@ -82,11 +89,12 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		int srcY = 0;
 		int srcWidth = tex.getWidth();
 		int srcHeight = tex.getHeight();
-		batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY,
-				WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45, srcX, srcY, srcWidth, srcHeight, false, false);
+		batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY, rotation(xPos, yPos, fxPos, fyPos),
+				srcX, srcY, srcWidth, srcHeight, false, false);
 
 	}
 
 	public abstract float getDamage();
+
 
 }

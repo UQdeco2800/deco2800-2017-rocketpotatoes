@@ -3,6 +3,8 @@ package com.deco2800.potatoes.entities.enemies;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -17,10 +19,9 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
     private Class target;
 
     /**
-     * Default empty constructor for serialization
+     * Default constructor for serialization
      */
     public MeleeAttackEvent() {
-		// empty for serialization
     }
 
     /**

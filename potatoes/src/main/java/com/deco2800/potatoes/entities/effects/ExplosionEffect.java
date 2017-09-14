@@ -4,7 +4,7 @@ import com.deco2800.potatoes.managers.GameManager;
 
 public class ExplosionEffect extends Effect {
 
-	private static final transient String TEXTURE = "exp1";
+	private final static transient String TEXTURE = "exp1";
 
 	private int currentSpriteIndexCount = 1;
 	private String[] currentSpriteIndex = { "exp1", "exp2", "exp3" };

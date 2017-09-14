@@ -97,85 +97,83 @@ public class Network {
 
     /* Message sent when a connection is initially made,
      * should be the first message between a client and host */
-    public static class ClientConnectionRegisterMessage {
+    static public class ClientConnectionRegisterMessage {
         public String name;
     }
 
-    public static class HostDisconnectMessage {
+    static public class HostDisconnectMessage {
         public String message;
     }
 
-    public static class HostPlayerDisconnectedMessage {
+    static public class HostPlayerDisconnectedMessage {
         public int id;
     }
 
     /* Message telling the client they are ready to play */
-    public static class HostPlayReadyMessage {
+    static public class HostPlayReadyMessage {
     }
 
     /* Message telling other clients of a new player */
-    public static class HostNewPlayerMessage {
+    static public class HostNewPlayerMessage {
         public String name;
         public int id;
     }
 
     /* Message telling new clients of an existing player, doesn't create the player entity when processing this */
-    public static class HostExistingPlayerMessage {
+    static public class HostExistingPlayerMessage {
         public String name;
         public int id;
     }
 
 
     /* Message confirming connection, gives the client their id */
-    public static class HostConnectionConfirmMessage {
+    static public class HostConnectionConfirmMessage {
         public int id;
     }
 
     /* Direct response to a HostEntityCreationMessage, this message is sent to all clients
      * to tell them of this entities existence and it's unique identifier.
      */
-    public static class HostEntityCreationMessage {
+    static public class HostEntityCreationMessage {
         public AbstractEntity entity;
         public int id;
     }
 
-    public static class HostEntityDestroyMessage {
+    static public class HostEntityDestroyMessage {
         public int id;
     }
 
     /* Message indicating our player moved
      * TODO support for z? Unused so far */
-    public static class ClientPlayerUpdatePositionMessage {
-        public float x;
-        public float y;
+    static public class ClientPlayerUpdatePositionMessage {
+        public float x, y;
     }
 
     /* Message indicating our player wants to build something
      * TODO support other types? AbstractTree?? */
-    public static class ClientBuildOrderMessage {
+    static public class ClientBuildOrderMessage {
         public AbstractTree tree;
     }
 
     /* Message from the host indicating a new position of an entity */
-    public static class HostEntityUpdatePositionMessage {
-        public float x;
-        public float y;
+    static public class HostEntityUpdatePositionMessage {
+        public float x, y;
         public int id;
     }
 
     /* Message from the host indicating an entity's progress has changed (using the HasProgress interface) */
-    public static class HostEntityUpdateProgressMessage {
+    static public class HostEntityUpdateProgressMessage {
         public int progress;
         public int id;
     }
 
     /* Simple chat message object */
-    public static class ClientChatMessage {
+    static public class ClientChatMessage {
         public String message;
     }
 
     /* Chat message object sent with sender ID */
-    public static class HostChatMessage {
+    static public class HostChatMessage {
         public String message;
         public int id;
     }

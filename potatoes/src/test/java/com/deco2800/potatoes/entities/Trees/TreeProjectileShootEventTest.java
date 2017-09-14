@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities.tree;
+package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.trees.*;

@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities.health;
+package com.deco2800.potatoes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;

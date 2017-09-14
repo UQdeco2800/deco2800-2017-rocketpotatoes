@@ -15,7 +15,6 @@ public abstract class TimeEvent<T> {
 	 * Default constructor for serialization
 	 */
 	public TimeEvent() {
-        // empty for serialization
 	}
 
 	/**

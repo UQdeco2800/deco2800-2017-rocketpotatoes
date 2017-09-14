@@ -33,10 +33,13 @@ public class MainMenuGui extends Gui {
     private ImageButton optionsButton;
     private ImageButton exitButton;
 
-    private VerticalGroup startButtonGroup;
-    private TextButton singleplayerButton;
-    private TextButton multiplayerButton;
-    private TextButton startBackButton;
+    private HorizontalGroup startButtonGroup;
+    private Drawable singleplayerDrawable;
+    private Drawable multiplayerDrawable;
+    private Drawable startBackDrawable;
+    private ImageButton singleplayerButton;
+    private ImageButton multiplayerButton;
+    private ImageButton startBackButton;
 
     private VerticalGroup startMultiplayerButtonGroup;
     private TextButton multiplayerClientButton;
@@ -99,11 +102,14 @@ public class MainMenuGui extends Gui {
         primaryButtons.addActor(exitButton);
 
         // Start state
-        singleplayerButton = new TextButton("Singleplayer Game", uiSkin);
-        multiplayerButton = new TextButton("Multiplayer Game", uiSkin);
-        startBackButton = new TextButton("Back", uiSkin);
+        singleplayerDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("singleplayerMainMenu")));
+        multiplayerDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("multiplayerMainMenu")));
+        startBackDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("backMainMenu")));
+        singleplayerButton = new ImageButton(singleplayerDrawable);
+        multiplayerButton = new ImageButton(multiplayerDrawable);
+        startBackButton = new ImageButton(startBackDrawable);
 
-        startButtonGroup = new VerticalGroup();
+        startButtonGroup = new HorizontalGroup();
         startButtonGroup.addActor(singleplayerButton);
         startButtonGroup.addActor(multiplayerButton);
         startButtonGroup.addActor(startBackButton);
@@ -369,7 +375,7 @@ public class MainMenuGui extends Gui {
         root.reset();
         root.center();
         root.setWidth(stage.getWidth());
-        root.setHeight(stage.getHeight());
+        root.setHeight(stage.getHeight()/2);
         root.setPosition(0, 0);
 
         switch (state) {

@@ -10,7 +10,7 @@ public class GoalPotateTest {
 		test = new GoalPotate(1,1,1);
 		GoalPotate test2 = new GoalPotate(3,3,0);
 		GoalPotate test3 = new GoalPotate(3,3,0);
-		test.rotationAngle();
+		test.rotateAngle();
 		test.setPosition(2,2,2);
 		test.setPosZ(3);
 		test.collidesWith(test2);
