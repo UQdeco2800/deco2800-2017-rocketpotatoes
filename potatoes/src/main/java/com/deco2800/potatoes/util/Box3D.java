@@ -11,14 +11,20 @@ import java.util.Objects;
  */
 public class Box3D {
 
-	private float x, y, z;
+	private float x;
+	private float y;
+	private float z;
 
-	private float xLength, yLength, zLength;
-
+	private float xLength;
+	private float yLength;
+	private float zLength;
+	
 	/**
 	 * Default constructor for the purposes of serialization
 	 */
-	public Box3D() { }
+	public Box3D() {
+        // empty for serialization
+	}
 
 	/**
 	 * Constructs a new Box3D with the given corner point and dimensions.
@@ -192,7 +198,7 @@ public class Box3D {
 	}
 	
 	public float distance(float x, float y, float z) {
-		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
+		return (float) (Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) + Math.pow(z - this.z, 2)));
 	}
 
 	/**
@@ -236,9 +242,13 @@ public class Box3D {
 			if (lineDist != 0) {
 				fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
 				fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
-				if (fMin > fMax) { return false; }
+				if (fMin > fMax) {
+					return false;
+				}
 
-			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
+			} else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { 
+				return false; 
+			}
 		}
 
 		return true;

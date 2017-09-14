@@ -10,6 +10,8 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -17,11 +19,12 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.screens.GameScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.HashMap;
 import java.util.Map;
 import com.deco2800.potatoes.worlds.InitialWorld;
+import java.lang.Math;
 
 import java.io.IOException;
 import java.util.Map;
@@ -29,7 +32,6 @@ import java.util.Random;
 
 
 
-import java.security.Key;
 import java.util.Set;
 
 import static com.badlogic.gdx.utils.Align.left;
@@ -46,16 +48,26 @@ public class DebugModeGui extends Gui {
     private VerticalGroup debugButtonGroup;
     private Label debugOn;
     private Label spawnCommands;
+    private Label speedtoggle;
+    private Label gamespeed;
     private Label f1;
     private Label f2;
     private Label f3;
     private Label f4;
+    private Label f5;
+    private Label f6;
+    private Label f7;
+    private Label f8;
+    private Label f9;
     private TextButton resetButton;
     private TextButton addResourcesButton;
     //private TextButton spawnButton;
     private TextButton immortalButton;
+    private TextButton entitiesIMTButton;
     private TextButton exitButton;
     private Table table;
+
+
 
     // State indicator
     private enum States {
@@ -74,21 +86,32 @@ public class DebugModeGui extends Gui {
 
         // actors initialisation
         debugOn = new Label("Debug Options",uiSkin);
+        speedtoggle = new Label("Slow down [F10]/Speed up[F11]",uiSkin);
+        gamespeed = new Label("Game Speed: 1.0x",uiSkin);
         resetButton = new TextButton("Reset Map", uiSkin);
         addResourcesButton = new TextButton("+10/+10 Resources", uiSkin);
         //spawnButton = new TextButton("Spawn", uiSkin);
         immortalButton = new TextButton("Immortality", uiSkin);
+        entitiesIMTButton = new TextButton("Other Existing Entities Immortal", uiSkin);
         spawnCommands = new Label("SPAWN COMMANDS",uiSkin);
         f1 = new Label("F1: DMG Tower",uiSkin);
         f2 = new Label("F2: Squirrel",uiSkin);
         f3 = new Label("F3: DMG Enemy",uiSkin);
         f4 = new Label("F4: RSC Seed",uiSkin);
+        f5 = new Label("F5: RSC Tree",uiSkin);
+        f6 = new Label("F6: Moose Enemy",uiSkin);
+        f7 = new Label("F7: RSCTarget Enemy",uiSkin);
+        f8 = new Label("F8: Tile Ground",uiSkin);
+        f9 = new Label("F9: Tile Water",uiSkin);
         exitButton = new TextButton("Exit Debug", uiSkin);
 
         // adding actors
         debugButtonGroup = new VerticalGroup();
         debugButtonGroup.addActor(debugOn);
+        debugButtonGroup.addActor(speedtoggle);
+        debugButtonGroup.addActor(gamespeed);
         debugButtonGroup.addActor(immortalButton);
+        debugButtonGroup.addActor(entitiesIMTButton);
         debugButtonGroup.addActor(resetButton);
         debugButtonGroup.addActor(addResourcesButton);
         //debugButtonGroup.addActor(spawnButton);
@@ -97,6 +120,11 @@ public class DebugModeGui extends Gui {
         debugButtonGroup.addActor(f2);
         debugButtonGroup.addActor(f3);
         debugButtonGroup.addActor(f4);
+        debugButtonGroup.addActor(f5);
+        debugButtonGroup.addActor(f6);
+        debugButtonGroup.addActor(f7);
+        debugButtonGroup.addActor(f8);
+        debugButtonGroup.addActor(f9);
         debugButtonGroup.addActor(exitButton);
         table.add(debugButtonGroup);
 
@@ -141,6 +169,19 @@ public class DebugModeGui extends Gui {
             }
         });
 
+        /* Listener for the other entities immortality button */
+        entitiesIMTButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
+                for (AbstractEntity ent: entitiesMap.values()){
+                    if ((ent instanceof MortalEntity)&!(ent instanceof Player)){
+                        ((MortalEntity) ent).addDamageScaling(0);
+                    }
+                }
+            }
+        });
+
         /* Listener for the add resources button */
         addResourcesButton.addListener(new ChangeListener() {
             @Override
@@ -178,7 +219,10 @@ public class DebugModeGui extends Gui {
                 Vector3 coords = Render3D.screenToWorldCoordiates(x,y,0);
                 Vector2 coords2 = Render3D.worldPosToTile(coords.x,coords.y);
 
+
+
                 if (state == States.DEBUGON) {
+
                     if (keycode == Input.Keys.F1) {
                         Tower tower = new Tower((int)coords2.x,(int)coords2.y,0);
                         tower.setProgress(0);
@@ -186,13 +230,6 @@ public class DebugModeGui extends Gui {
 
                     }
 
-                    if (keycode == Input.Keys.F5) {
-                        ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
-                        rscTree.setProgress(0);
-                        GameManager.get().getWorld().addEntity(rscTree);
-
-                    }
-                    
 
                     if (keycode == Input.Keys.F2) {
                         GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y,0));
@@ -210,10 +247,53 @@ public class DebugModeGui extends Gui {
 
                     }
 
-                    if (keycode == Input.Keys.F5) { //TODO: make this appear on GUI
-                        GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y,0));
+                    if (keycode == Input.Keys.F5) {
+                        ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
+                        rscTree.setProgress(0);
+                        GameManager.get().getWorld().addEntity(rscTree);
 
                     }
+
+                    if (keycode == Input.Keys.F6) {
+                        GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y,0));
+                    }
+
+                    if (keycode == Input.Keys.F7) {
+                        GameManager.get().getWorld().addEntity(new SpeedyEnemy(coords2.x, coords2.y,0));
+                    }
+
+                    if (keycode == Input.Keys.F8) {
+                        Terrain g = new Terrain("ground_1", 1, false);
+                        GameManager.get().getWorld().setTile((int)coords2.y, (int)coords2.x,g);
+                    }
+
+                    if (keycode == Input.Keys.F9) {
+                        Terrain w = new Terrain("w1", 0, false);
+                        GameManager.get().getWorld().setTile((int)coords2.y, (int)coords2.x,w);
+
+                    }
+
+                    if (keycode == Input.Keys.F10) {
+                        double newrate = screen.getTickrate();
+                        if (screen.getTickrate()<10*(2^4)) {
+                            newrate = screen.getTickrate() * 2;
+                        }
+
+                        screen.setTickrate(newrate);
+                        gamespeed.setText("Game Speed: "+ 10/newrate +"x");
+                    }
+
+                    if (keycode == Input.Keys.F11) {
+                        double newrate = screen.getTickrate();
+                        if (screen.getTickrate()>(10)) {
+                            newrate = screen.getTickrate()/2;
+                        }
+                        screen.setTickrate(newrate);
+                        gamespeed.setText("Game Speed: "+ 10/newrate +"x");
+
+                    }
+
+
                 }
             }
         });

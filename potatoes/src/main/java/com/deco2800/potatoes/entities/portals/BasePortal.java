@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
+import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 *            the maximum health for the base portal
 	 */
 	public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-		super(posX, posY, posZ, 3, 3, 3, TEXTURE, maxHealth);
+		super(posX, posY, posZ, 3, 2.3f, 3, TEXTURE, maxHealth);
 	}
 
 	@Override
@@ -105,6 +106,9 @@ public class BasePortal extends MortalEntity implements Tickable {
 		if (collided) {
 			try {
 				LOGGER.info("Entered portal");
+				//play warping sound effect
+				SoundManager soundManager = new SoundManager();
+				soundManager.playSound("warpSound.wav");
 				//remove player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//change to new world

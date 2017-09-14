@@ -36,6 +36,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * Empty constructor for serialization
 	 */
 	public Squirrel() {
+        // empty for serialization
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {

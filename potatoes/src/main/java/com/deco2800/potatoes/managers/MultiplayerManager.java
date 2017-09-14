@@ -84,8 +84,12 @@ public class MultiplayerManager extends Manager {
      * @throws IOException
      */
     public void createHost(int port) throws IllegalStateException, IllegalArgumentException, IOException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+        if (!isValidPort(port)) {
+        	throw new IllegalArgumentException("Invalid port: " + port); 
+        }
+        if (client != null) { 
+        	throw new IllegalStateException("Client already exists!"); 
+        }
 
         master = true;
         serverPort = port;
@@ -105,9 +109,15 @@ public class MultiplayerManager extends Manager {
      * @throws IllegalArgumentException
      */
     public void joinGame(String name, String IP, int port) throws IOException, IllegalArgumentException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (!isValidIP(IP)) { throw new IllegalArgumentException("Invalid IP: " + IP); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+        if (!isValidPort(port)) { 
+        	throw new IllegalArgumentException("Invalid port: " + port); 
+        }
+        if (!isValidIP(IP)) { 
+        	throw new IllegalArgumentException("Invalid IP: " + IP); 
+        }
+        if (client != null) { 
+        	throw new IllegalStateException("Client already exists!"); 
+        }
 
         // TODO move away from ALL tcp
         clientPort = port;

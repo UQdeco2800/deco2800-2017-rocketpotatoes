@@ -36,7 +36,7 @@ public class Inventory {
 	/*
 	 * invariant:
 	 * 
-	 * Inventory!=null && !inventory.containsValue(null) &&
+	 * Inventory!=null and !inventory.containsValue(null) and
 	 * 
 	 * for each resource in inventory.keySet(), inventory.get(resource) >= 0
 	 * 

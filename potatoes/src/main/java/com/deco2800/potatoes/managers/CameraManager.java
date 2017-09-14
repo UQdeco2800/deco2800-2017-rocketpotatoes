@@ -29,15 +29,13 @@ public class CameraManager extends Manager{
 	 * Moves the camera to center on the target, if the camera has no target this method does nothing
 	 */
 	public void centerOnTarget(float deltaTime) {
-		if (camera != null) {
-			if (hasTarget()) {
-				Vector2 isoPosition = Render3D.worldToScreenCoordinates(target.getPosX(), target.getPosY(), target.getPosZ());
+		if (camera != null && hasTarget()) {
+			Vector2 isoPosition = Render3D.worldToScreenCoordinates(target.getPosX(), target.getPosY(), target.getPosZ());
 
-				float lerp = 0.1f;
+			float lerp = 0.1f;
 
-				camera.position.x += (isoPosition.x - camera.position.x) * lerp;
-				camera.position.y += (isoPosition.y - camera.position.y) * lerp;
-			}
+			camera.position.x += (isoPosition.x - camera.position.x) * lerp;
+			camera.position.y += (isoPosition.y - camera.position.y) * lerp;
 		}
 	}
 

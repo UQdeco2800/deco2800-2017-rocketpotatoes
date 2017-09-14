@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
@@ -31,7 +30,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private transient Random random = new Random();
 	private float speed;
 	private Class<?> goal;
 	
@@ -359,7 +357,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	@Override
 	public float getProgressRatio() {
-		return (getHealth() / getMaxHealth());
+		return getHealth() / getMaxHealth();
 	}
 
 	@Override

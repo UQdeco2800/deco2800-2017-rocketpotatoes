@@ -41,7 +41,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private final static transient float HEALTH = 200f;
+	private static final transient float HEALTH = 200f;
 	private static final transient String TEXTURE_RIGHT = "spacman_blue";
 	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
@@ -89,7 +89,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
 
-		// this.setTexture("spacman_blue");
 	}
 
 	public Inventory getInventory() {
@@ -263,11 +262,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					didHarvest = true;
-					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange 
+					&& ((ResourceTree) entitiy).getGatherCount() > 0) {
+				didHarvest = true;
+				((ResourceTree) entitiy).transferResources(this.inventory);
 			}
 		}
 		if (didHarvest) {
@@ -303,7 +301,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 */
 	public void handleKeyUp(int keycode) {
 		// checks if key down is pressed first
-		if (checkKeyDown <= 0) { return; }
+		if (checkKeyDown <= 0) {
+			return;
+		}
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
