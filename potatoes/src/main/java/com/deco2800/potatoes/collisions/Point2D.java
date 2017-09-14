@@ -38,8 +38,8 @@ public class Point2D implements CollisionMask{
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
 
-            float distX = Math.abs(point.getX() - this.x);
-            float distY = Math.abs(point.getY() - this.y);
+            float distX = point.getX() - this.x;
+            float distY = point.getY() - this.y;
 
             // use pythagorean theorem
             return (float) Math.sqrt((double) distX * distX + distY * distY );
@@ -58,10 +58,13 @@ public class Point2D implements CollisionMask{
 
         // how far along the line segment is the closest point to us?
         float unclamped = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / segmentLength;
-        float clamped = (float) Math.max(0.0, Math.min(1.0, (double) unclamped));
+        float clamped = Math.max(0f, Math.min(1f, unclamped));
 
         return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
     }
+
+
+
 
     /**
      * Returns the x coordinate.

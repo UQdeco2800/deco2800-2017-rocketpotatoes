@@ -89,6 +89,8 @@ public class Circle2D implements CollisionMask {
         this.radius = radius;
     }
 
+    //TODO maybe: public boolean centredOnPoint(Point2D) {}
+    //used when following a path
 
     @Override
     public int hashCode() {
