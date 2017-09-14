@@ -83,6 +83,7 @@ public class TextureManager extends Manager {
 
         // GUI
         saveTexture("screen_background", "resources/menu/background.png");
+        saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
         saveTexture("start_btn", "resources/menu/start_btn.png");
         saveTexture("resume_btn", "resources/menu/resume_btn.png");
         saveTexture("options_btn", "resources/menu/options_btn.png");
