@@ -48,6 +48,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public TankEnemy() {
+        // empty for serialization
 	}
 
 	/**

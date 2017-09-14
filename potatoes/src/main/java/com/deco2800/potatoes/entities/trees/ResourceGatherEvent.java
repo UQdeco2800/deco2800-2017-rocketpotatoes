@@ -14,6 +14,7 @@ public class ResourceGatherEvent extends TimeEvent<ResourceTree> {
 	 * Default constructor for serialization
 	 */
 	public ResourceGatherEvent() {
+        // empty for serialization
 	}
 	
 	/**

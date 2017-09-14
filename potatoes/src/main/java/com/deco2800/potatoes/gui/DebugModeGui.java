@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.HashMap;
 import java.util.Map;
 import com.deco2800.potatoes.worlds.InitialWorld;
 import java.lang.Math;
@@ -33,7 +32,6 @@ import java.util.Random;
 
 
 
-import java.security.Key;
 import java.util.Set;
 
 import static com.badlogic.gdx.utils.Align.left;

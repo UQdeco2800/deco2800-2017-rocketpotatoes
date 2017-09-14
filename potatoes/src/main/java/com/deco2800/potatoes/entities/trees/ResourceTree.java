@@ -33,6 +33,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * Default constructor for serialization
 	 */
 	public ResourceTree() {
+        // empty for serialization
 	}
 
 	/**

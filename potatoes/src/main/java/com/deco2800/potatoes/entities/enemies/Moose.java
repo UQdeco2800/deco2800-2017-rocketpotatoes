@@ -41,10 +41,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
+        // empty for serialization
 	}
 
 	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(posX, posY, posZ, 1.5f, 1.f, 1f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
@@ -81,8 +82,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
 				//collided with wall
-                randomTarget();
-				break;
+				randomTarget();
+				//break;
+			} else if (entity instanceof EnemyEntity && entity.getBox3D().overlaps(this.getBox3D())) {
+				EnemyEntity enemy = (EnemyEntity) entity;
+				enemy.heal(4f);
 			}
 		}
 
@@ -94,6 +98,9 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 		//check if close enough to target
 		if (target != null && playerManager.getPlayer().getBox3D().overlaps(this.getBox3D())) {
+			target = playerManager.getPlayer().getBox3D();
+			playerManager.getPlayer().damage(0.4f);
+		} else {
 			target = null;
 		}
 
