@@ -125,4 +125,34 @@ public class EnemyEntityTest {
 		Assert.assertTrue("enemy failed to getShot()", enemyEntity.getHealth() < enemyEntity.getMaxHealth());
 	}
 
+
+	// registerNewEvent test shoudl already have events present
+	// and then check they are all gone when the method is called.
+
+	// getShot test would need to check the enemy health and then check the
+	// health decreases as expected after some effect (only test one)
+
+	// getter methods, just check you are getting what is expected:
+	// not null and right value
+
+	//For deatherHandler, check that the enemy has been removed from the world
+	// and that it has been set to respawn in the eventManager
+
+
+
+	private class SimpleEnemy extends EnemyEntity {
+
+		@Override
+		public EnemyStatistics getBasicStats() {
+			EnemyStatistics result = new StatisticsBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
+					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
+			return result;
+		}
+	}
+//
+//	@Test
+//	public void normalConstructor() {
+//		SimpleEnemy se = new SimpleEnemy(1f, 1f, 1f, 2f, 2f, 2f,
+//				new String("texture"), 10f, 12f, goal);
+//	}
 }
