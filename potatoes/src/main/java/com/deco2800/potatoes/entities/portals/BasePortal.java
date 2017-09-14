@@ -68,7 +68,7 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 *            the maximum health for the base portal
 	 */
 	public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-		super(posX, posY, posZ, 3, 3, 3, TEXTURE, maxHealth);
+		super(posX, posY, posZ, 3, 2.3f, 3, TEXTURE, maxHealth);
 	}
 
 	@Override

@@ -8,11 +8,12 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 public class LightningEffect extends Effect {
 
-	private float lifetime = 1f;
-	private float segmentStep = 2f;
+	private float lifetime = 0.4f;
+	private float segmentStep = 1f;
 	private int segments;
 
 	float xPos;
@@ -42,8 +43,8 @@ public class LightningEffect extends Effect {
 
 	public float[][] positions(float xPos, float yPos, float fxPos, float fyPos) {
 
-		float lengthX = (fxPos - xPos);
-		float lengthY = (fyPos - yPos);
+		float lengthX = fxPos - xPos;
+		float lengthY = fyPos - yPos;
 
 		float magnitude = (float) Math.sqrt(lengthX * lengthX + lengthY * lengthY);
 
@@ -56,15 +57,15 @@ public class LightningEffect extends Effect {
 		float segmentsDone = 0;
 
 		for (int i = 0; i < segments + 1; i++) {
-			float randx = ((float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2)
-					* distanceDeltaX);// add limit
-			float randy = ((float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2)
-					* distanceDeltaY);// add limit
+			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaX;// add
+																														// limit
+			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaY;// add
+																														// limit
 
 			float x = (float) (xPos + segmentsDone * lengthX
-					+ Math.abs(Math.sin(Math.toRadians(rotation(xPos, yPos, fxPos, fyPos)))) * randx);
+					+ Math.abs(Math.sin(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randx);
 			float y = (float) (yPos + segmentsDone * lengthY
-					+ Math.abs(Math.cos(Math.toRadians(rotation(xPos, yPos, fxPos, fyPos)))) * randy);
+					+ Math.abs(Math.cos(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randy);
 
 			if (i == 0) {
 				pos[i][0] = xPos;
@@ -79,12 +80,6 @@ public class LightningEffect extends Effect {
 			segmentsDone += segmentSize;
 		}
 
-		// Arrays.sort(pos, new Comparator<float[]>() {
-		// @Override
-		// public int compare(float[] o1, float[] o2) {
-		// return Float.compare(o2[1], o1[1]);
-		// }
-		// });
 		return pos;
 
 	}
