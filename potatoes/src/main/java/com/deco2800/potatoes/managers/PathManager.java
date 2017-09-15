@@ -2,8 +2,13 @@ package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.Line;
+import com.deco2800.potatoes.util.MinimumSpanningTree;
+import com.deco2800.potatoes.util.MinimumSpanningTree.Vertex;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.worlds.AbstractWorld;
+
+
 
 import java.util.*;
 
@@ -21,10 +26,13 @@ public class PathManager extends Manager {
      * expanded so that multiple different goals can be set.
      */
     private Map<Box3D, Box3D> spanningTree;
-    private Set<Box3D> nodes = new HashSet<>();
+    private MinimumSpanningTree treeMaker;
+    private ArrayList<Box3D> nodes = new ArrayList<>();
+    private ArrayList<Line> obstacle = new ArrayList<>();
     private Map<DoubleBox3D, Float> edges = new HashMap<>();
-    private Map<Box3D, Boolean> directNode = new HashMap<>(); //nodes which have a direct line of sight
     private Box3D lastPlayerPosition;
+    private int numberOfRandomNodes = 40;
+    private float largeWeight = 1000f;
 
 
     /**
@@ -32,7 +40,7 @@ public class PathManager extends Manager {
      */
     public PathManager() {
         spanningTree = new HashMap<>();
-        nodes = new HashSet<>();
+        nodes = new ArrayList<>();
         edges = new HashMap<>();
     }
 
@@ -53,28 +61,38 @@ public class PathManager extends Manager {
 
         nodes.add(player);
 
-        //add points in corners of map
-        nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0));//left
-        nodes.add(new Box3D(world.getWidth() - this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0)); //top
-        nodes.add(new Box3D(0 + this.nodeOffset, world.getLength() - this.nodeOffset, 0, 0, 0, 0)); //bottom
-        nodes.add(new Box3D(world.getWidth() - this.nodeOffset, world.getLength() - this.nodeOffset, 0, 0, 0, 0)); //right
-
-
-        //loop through entities, put nodes off of corners
+        // Loop through entities, make lines going through center to nodeOffset for
+        // top and bottom, left and right.
         for (AbstractEntity e : world.getEntities().values()) {
             if (e.isStaticCollideable()) {
-                nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() - this.nodeOffset, //left
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-                nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() - this.nodeOffset, //top
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-                nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //bottom
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-                nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //right
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
+                obstacle.add(
+                        new Line(
+                                (e.getPosX() - this.nodeOffset),
+                                 e.getPosY(),
+                                (e.getPosX() + this.nodeOffset),
+                                 e.getPosY()
+                        ));
+                obstacle.add(
+                        new Line(
+                                e.getPosX(),
+                                (e.getPosY() - this.nodeOffset),
+                                e.getPosX(),
+                                (e.getPosY() + this.nodeOffset)
+                        ));
             }
         }
 
         //potentially make random nodes here
+        for (int i = 0; i < numberOfRandomNodes; i++) {
+            nodes.add(new Box3D(
+                    (float) (Math.random() * world.getWidth()),      // x coordinate
+                    (float) (Math.random() * world.getLength()),     // y coordinate
+                    0,
+                    0.1f,
+                    0.1f,
+                    0
+            ));
+        }
 
         //loop through all nodes and all entities, removing any nodes that intersect with the entity
         Set<Box3D> removedNodes = new HashSet<>();
@@ -90,31 +108,12 @@ public class PathManager extends Manager {
             this.nodes.remove(node);
         }
 
-
-        //loop through every combination of 2 nodes & every entity check if the edge between the two nodes is valid
-        boolean doesCollide;
-        float dist;
-        for (Box3D node1 : this.nodes) {
-            for (Box3D node2 : this.nodes) {
-                if (node1 == node2) { break; }
-                doesCollide = false;
-                for (AbstractEntity entity : world.getEntities().values()) {
-                    if (entity.isStaticCollideable() &&
-                            entity.getBox3D().doesIntersectLine(node1.getX(),node1.getY(),0,node2.getX(), node2.getY(),0)) {
-                        doesCollide = true;
-                        break;
-                    }
-                }
-                if(!doesCollide) {
-                    dist = node1.distance(node2);
-                    this.edges.put(new DoubleBox3D(node1, node2), dist);
-                    this.edges.put(new DoubleBox3D(node2, node1), dist);
-                }
-            }
+        // create a new mini spanning tree
+        treeMaker = new MinimumSpanningTree(nodes.size());
+        // Add the nodes to the vertexList.
+        for (int i = 0; i < nodes.size(); i++) {
+            treeMaker.addVertex(nodes.get(i), i);
         }
-
-        // build the minimum spanning tree from the graph - and set the spanningTree variable.
-        optimiseGraph(lastPlayerPosition, nodes, edges);
     }
 
     /**
@@ -213,26 +212,36 @@ public class PathManager extends Manager {
      * @return The path object itself, which can then be followed.
      */
     public Path generatePath(Box3D start, Box3D goal) {
-        ArrayDeque<Box3D> nodes = new ArrayDeque<>();
+        ArrayDeque<Box3D> path = new ArrayDeque<>();
+        Vertex startVertex;
+        Vertex goalVertex;
+        Box3D next;
+
         if (spanningTree.size() == 0 || !goal.equals(lastPlayerPosition)) {
             initialise(goal);
         }
-        nodes.add(start);
-        if (spanningTree.size() == 0) {
-            nodes.add(goal);
-            return new Path(nodes);
+        // Find the closest Vertices to the start and goal points.
+        startVertex = treeMaker.findClosest(start);
+        goalVertex = treeMaker.findClosest(goal);
+        // build the minimum spanning tree from the graph - and set the spanningTree variable
+        spanningTree = treeMaker.createTree(goalVertex);
+        // Add the starting point to the path.
+        nodes.add(startVertex.getEntry());
+        // If the spanning tree has only two entries
+        // return a new path with the start and end point.
+        if (spanningTree.size() < 2) {
+            nodes.add(goalVertex.getEntry());
+            return new Path(path);
         }
-        Box3D closest = null;
-        for (Box3D other : spanningTree.keySet()) {
-            if (closest == null || closest.distance(start) > other.distance(start)) {
-                closest = other;
-            }
+        // Add extra path points as needed.
+        // Set next as the value returned from start as
+        // the key to spanningTree.
+        next = spanningTree.get(startVertex.getEntry());
+        while (!(next.equals(goalVertex.getEntry()))) {
+            path.add(next);
+            next = spanningTree.get(next);
         }
-        do {
-            nodes.add(closest);
-            closest = spanningTree.get(closest);
-        } while (closest != null);
-        return new Path(nodes);
+        return new Path(path);
     }
 
 

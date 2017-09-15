@@ -15,6 +15,8 @@ public class PathManagerTest {
     @Before
     public void setUp() throws Exception {
         InitialWorld mockWorld = mock(InitialWorld.class);
+        mockWorld.setLength(100);
+        mockWorld.setWidth(100);
         GameManager gm = GameManager.get();
         gm.setWorld(mockWorld);
     }
