@@ -81,7 +81,7 @@ public class EnemyWave implements Tickable {
 
     //Very sloppy at the moment -- currently spawn enemies every 1 second for 15 seconds
     public void onTick(long i){
-        System.err.println(getCurrentWaveTime());
+        //System.err.println(getCurrentWaveTime());
         setCurrentWaveTime(getCurrentWaveTime() + 1);
         if (getCurrentWaveTime()%100==0 && getCurrentWaveTime()<1500){
             spawnEnemyToRatio(enemyRatios);
