@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -29,15 +30,16 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient String TEXTURE_LEFT = "tankBear";
 	private static final transient String TEXTURE_RIGHT = "tankBear";
-	private static final transient float HEALTH = 400f;
+	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 
-	private static float speed = 0.01f;
-	private static Class<?> goal = Tower.class;
+	/* Define speed, goal and path variables */
+	private static float speed = 0.006f;
+	private static Class<?> goal = AbstractTree.class;
 	private Path path = null;
 	private Box3D target = null;
-
+	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 
@@ -76,7 +78,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static EnemyStatistics initStats() {
 		return new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class)).createEnemyStatistics();
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, AbstractTree.class)).createEnemyStatistics();
 	}
 
 	/**

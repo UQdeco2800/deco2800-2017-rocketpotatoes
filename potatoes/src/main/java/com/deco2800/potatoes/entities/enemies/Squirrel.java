@@ -29,8 +29,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	public Squirrel() {
-		super(0, 0, 0, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
-		this.path = null;
+		// empty for serialization
 	}
 
 	public Squirrel(float posX, float posY, float posZ) {
@@ -123,7 +122,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static EnemyStatistics initStats() {
 		return new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class)).createEnemyStatistics();
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class)).createEnemyStatistics();
 	}
 
 	@Override

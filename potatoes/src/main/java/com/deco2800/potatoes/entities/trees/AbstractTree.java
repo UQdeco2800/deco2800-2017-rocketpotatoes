@@ -188,6 +188,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void deathHandler() {
 		dying = true;
 		// Don't kill the entity just yet
+		
+		// destroy the tree
+		//for enemy attacking test
+		GameManager.get().getWorld().removeEntity(this);
 	}
 	
 	/**
