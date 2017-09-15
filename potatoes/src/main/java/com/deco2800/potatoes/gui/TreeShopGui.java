@@ -1,7 +1,13 @@
 package com.deco2800.potatoes.gui;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -45,23 +51,21 @@ public class TreeShopGui extends Gui {
 
 		this.items = items;
 		
-		//Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
 		
-		//ShapeRenderer shapeRenderer = new ShapeRenderer();
-		//shapeRenderer.begin(ShapeType.Filled);
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Filled);
 		
-		//float a = 0.4f;
-		//float selectedSegmentAlpha = 0.7f;
 		float a = 0f;
 		float selectedSegmentAlpha = 0f;
 		int numSegments = items.entrySet().size();
-		//shapeRenderer.setColor(new Color(0,0,0,selectedSegmentAlpha));
-		//shapeRenderer.circle(x, y, radius);
+		shapeRenderer.setColor(new Color(0,0,0,selectedSegmentAlpha));
+		shapeRenderer.circle(x, y, radius);
 		Circle circle = new Circle(x,y,radius);
 		
 		shopShape = circle;
 	
-		/*int segment = 0;
+		int segment = 0;
 		int degrees = 360 / numSegments;
 		// Draws each subsection of radial menu individually
 		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
@@ -81,9 +85,9 @@ public class TreeShopGui extends Gui {
 		}
 		
 		
-		shapeRenderer.end();*/
+		shapeRenderer.end();
 		
-		//Gdx.gl.glDisable(GL20.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	
