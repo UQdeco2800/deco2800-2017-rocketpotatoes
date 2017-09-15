@@ -67,6 +67,7 @@ public class GameScreen implements Screen {
     private CameraManager cameraManager;
     private TextureManager textureManager;
     private InputManager inputManager;
+    private WaveManager waveManager;
 
     private long lastGameTick = 0;
     private boolean playing = true;
@@ -132,6 +133,9 @@ public class GameScreen implements Screen {
 
 		/* Create a player manager. */
         playerManager = GameManager.get().getManager(PlayerManager.class);
+
+        /* Create an enemy wave manager */
+        waveManager = GameManager.get().getManager(WaveManager.class);
 
 		/* Setup camera */
         cameraManager = GameManager.get().getManager(CameraManager.class);
@@ -231,7 +235,8 @@ public class GameScreen implements Screen {
             //addTankEnemy();
             //addMoose();
             //addSpeedyEnemy();
-            new EnemyWave(2, 1, 1,1, 2);
+            //EnemyWave wave = new EnemyWave(2, 1, 1,1, 2);
+            waveManager.addWave(new EnemyWave(2,1,1,1,2));
 
 
             addResourceTrees();
@@ -387,6 +392,9 @@ public class GameScreen implements Screen {
         cameraManager.centerOnTarget(timeDelta);
 
         GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
+
+        GameManager.get().getManager(WaveManager.class).onTick(timeDelta);
+
     }
 
     private void renderGUI(SpriteBatch batch) {

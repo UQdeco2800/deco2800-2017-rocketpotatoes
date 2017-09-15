@@ -1,23 +1,26 @@
 package com.deco2800.potatoes.waves;
 
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.entities.GameTime;
 import java.util.*;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 
-public class EnemyWave {
+public class EnemyWave implements Tickable {
 
-    //The current elapsed time into the awave
+    //The current elapsed time into the wave
     private int elapsedTime;
     private float[] enemyRatios;
+    private int waveTime = 0;
 
     /**
-     * Create the enemy wave.
-     *
+     * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
+     * enemyRate parameter, the relative rates of spawning for each type will be 5/8, 1/8, 1/8, 1/8.
      *
      * @param squirrelRate
      * @param speedyRate
@@ -29,15 +32,15 @@ public class EnemyWave {
     public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, float waveTime) {
         //addSquirrel();
         //addSquirrel();
-        this.enemyRatios = getEnemyRatio(squirrelRate, speedyRate, tankRate, mooseRate);
-        spawnEnemyToRatio(enemyRatios);
+        this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
+        //spawnEnemyToRatio(enemyRatios);
 
     }
 
     /**
      * Spawn enemies at ratio given in enemy ratio
      * */
-    private float[] getEnemyRatio(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
+    private float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
         float total = squirrelRate + speedyRate + tankRate + mooseRate;
         // These are 'positional ratios'
         // Ratios are the spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
@@ -56,11 +59,11 @@ public class EnemyWave {
     amount of time until the game wave is over.
     */
     /**
-     * Spawn enemies according to the ratio defined in the constructor
+     * Spawn enemies according to the ratio described by the constructor args
      * */
-    private void spawnEnemyToRatio(float[] enemyRatios) {
+    public void spawnEnemyToRatio(float[] enemyRatios) {
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
+    //    for (int i = 0; i < 10; i++) {
             float randomFloat = random.nextFloat();
 
             if (randomFloat < enemyRatios[0]) {
@@ -73,9 +76,30 @@ public class EnemyWave {
                 addMoose();
             }
 
-        }
+     //   }
     }
 
+    //Very sloppy at the moment -- currently spawn enemies every 1 second for 15 seconds
+    public void onTick(long i){
+        System.err.println(getCurrentWaveTime());
+        setCurrentWaveTime(getCurrentWaveTime() + 1);
+        if (getCurrentWaveTime()%100==0 && getCurrentWaveTime()<1500){
+            spawnEnemyToRatio(enemyRatios);
+        }
+
+    }
+
+
+    /**
+     * @return the current in wave time
+     */
+    public int getCurrentWaveTime() { return waveTime; }
+
+    /**
+     * Sets the Current wave Time.
+     * @param CurrentTime
+     */
+    public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
 
 
     private void addSquirrel() {
