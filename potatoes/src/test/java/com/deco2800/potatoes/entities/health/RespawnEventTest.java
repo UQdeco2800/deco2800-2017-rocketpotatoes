@@ -1,4 +1,4 @@
-package com.deco2800.potatoes;
+package com.deco2800.potatoes.entities.health;
 
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
