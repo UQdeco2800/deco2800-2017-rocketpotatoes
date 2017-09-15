@@ -194,6 +194,9 @@ public class GameScreen implements Screen {
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
 
+        //Make our game over window
+        	guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+        
 		/* Setup inputs */
 		setupInputHandling();
 
@@ -224,6 +227,9 @@ public class GameScreen implements Screen {
 		inputManager.addKeyDownListener(new PauseHandler());
 		inputManager.addScrollListener(new ScrollTester());
 
+		//testing Game over screen
+		inputManager.addKeyDownListener(new GameOverHandler());
+		
 		MouseHandler mouseHandler = new MouseHandler();
 		inputManager.addTouchDownListener(mouseHandler);
 		inputManager.addTouchDraggedListener(mouseHandler);
@@ -490,7 +496,7 @@ public class GameScreen implements Screen {
 			// Stop the first tick lasting years
 			if (lastGameTick != 0) {
 				long timeDelta = TimeUtils.millis() - lastGameTick;
-				if (timeDelta > 10) {
+				if (timeDelta > tickrate) {
 
 					// Tick game, a bit a weird place to have it though.
 					tickGame(timeDelta);
@@ -696,8 +702,6 @@ public class GameScreen implements Screen {
 	public void menuBlipSound() {
 		soundManager.playSound("menu_blip.wav");
 	}
-
-
 
 	public double getTickrate() {
 		return this.tickrate;
