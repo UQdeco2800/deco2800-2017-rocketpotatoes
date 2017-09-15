@@ -50,7 +50,7 @@ public class TreeShopGui extends Gui {
 		items.put(new ProjectileTree(), Color.RED);
 		items.put(new ResourceTree(), Color.BLUE);
 		items.put(new DamageTree(), Color.YELLOW);
-		createTreeMenu(items, 600, 400, 200);
+		createTreeMenu(items, 200, 500, 50);
 	}
 
 	/**
@@ -77,8 +77,8 @@ public class TreeShopGui extends Gui {
 		
 		//float a = 0.4f;
 		//float selectedSegmentAlpha = 0.7f;
-		float a = 0.2f;
-		float selectedSegmentAlpha = 0.3f;
+		float a = 0f;
+		float selectedSegmentAlpha = 0f;
 		int numSegments = items.entrySet().size();
 		shapeRenderer.setColor(new Color(0,0,0,selectedSegmentAlpha));
 		shapeRenderer.circle(x, y, radius);
