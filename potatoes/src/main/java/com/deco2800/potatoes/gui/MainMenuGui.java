@@ -20,6 +20,8 @@ public class MainMenuGui extends Gui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainMenuGui.class);
 
+    private TextureManager textureManager;
+
     private Stage stage;
     private Skin uiSkin;
 
@@ -87,11 +89,13 @@ public class MainMenuGui extends Gui {
         this.mainMenuScreen = screen;
 
         uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
+        textureManager = GameManager.get().getManager(TextureManager.class);
+
         // State 1
         // Make drawables from textures
-        startDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("startMainMenu")));
-        optionsDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("optionsMainMenu")));
-        exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exitMainMenu")));
+        startDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("startMainMenu")));
+        optionsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsMainMenu")));
+        exitDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("exitMainMenu")));
         startButton = new ImageButton(startDrawable);
         optionsButton = new ImageButton(optionsDrawable);
         exitButton = new ImageButton(exitDrawable);
@@ -102,9 +106,9 @@ public class MainMenuGui extends Gui {
         primaryButtons.addActor(exitButton);
 
         // Start state
-        singleplayerDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("singleplayerMainMenu")));
-        multiplayerDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("multiplayerMainMenu")));
-        startBackDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("backMainMenu")));
+        singleplayerDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("singleplayerMainMenu")));
+        multiplayerDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("multiplayerMainMenu")));
+        startBackDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backMainMenu")));
         singleplayerButton = new ImageButton(singleplayerDrawable);
         multiplayerButton = new ImageButton(multiplayerDrawable);
         startBackButton = new ImageButton(startBackDrawable);
