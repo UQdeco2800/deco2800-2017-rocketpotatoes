@@ -14,7 +14,6 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.worlds.InitialWorld2;
 import com.deco2800.potatoes.worlds.WorldType;
 
 /**
@@ -36,11 +35,11 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	/*
 	 * The radius of which a collision can be detected
 	 */
-	private final float change = (float) 0.2;
+	private static final float change = (float) 0.2;
 	/*
 	 * The array of positions where a collision needs to be checked
 	 */
-	private final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
+	private  static final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
 			{ -change, 0 }, { -change, -change }, { 0, -change }, { -change, -change } };
 
 	/**

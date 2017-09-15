@@ -16,6 +16,7 @@ public class GoalPotateTest {
 		test.collidesWith(test2);
 		test3.collidesWith(test2);
 		test.getBox3D();
+		test.toString();
 	}
 }
 
