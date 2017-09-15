@@ -82,12 +82,6 @@ public class TextureManager extends Manager {
         saveTexture("snowflake", "resources/particles/snowflake.png");
 
         // GUI
-        saveTexture("screen_background", "resources/menu/background.png");
-        saveTexture("start_btn", "resources/menu/start_btn.png");
-        saveTexture("resume_btn", "resources/menu/resume_btn.png");
-        saveTexture("options_btn", "resources/menu/options_btn.png");
-        saveTexture("exit_btn", "resources/menu/exit_btn.png");
-        saveTexture("pause_menu_bg", "resources/menu/pause_menu_bg.png");
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
         saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
