@@ -32,7 +32,6 @@ public class PathManager extends Manager {
     private Map<DoubleBox3D, Float> edges = new HashMap<>();
     private Box3D lastPlayerPosition;
     private int numberOfRandomNodes = 40;
-    private float largeWeight = 1000f;
 
 
     /**
@@ -88,9 +87,9 @@ public class PathManager extends Manager {
                     (float) (Math.random() * world.getWidth()),      // x coordinate
                     (float) (Math.random() * world.getLength()),     // y coordinate
                     0,
-                    0.1f,
-                    0.1f,
-                    0
+                    1,
+                    1,
+                    1
             ));
         }
 
@@ -226,11 +225,11 @@ public class PathManager extends Manager {
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(goalVertex);
         // Add the starting point to the path.
-        nodes.add(startVertex.getEntry());
+        path.add(startVertex.getEntry());
         // If the spanning tree has only two entries
         // return a new path with the start and end point.
         if (spanningTree.size() < 2) {
-            nodes.add(goalVertex.getEntry());
+            path.add(goalVertex.getEntry());
             return new Path(path);
         }
         // Add extra path points as needed.

@@ -4,7 +4,10 @@ import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.Box3D;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
@@ -15,8 +18,8 @@ public class PathManagerTest {
     @Before
     public void setUp() throws Exception {
         InitialWorld mockWorld = mock(InitialWorld.class);
-        mockWorld.setLength(100);
-        mockWorld.setWidth(100);
+        when(mockWorld.getLength()).thenReturn(100);
+        when(mockWorld.getWidth()).thenReturn(100);
         GameManager gm = GameManager.get();
         gm.setWorld(mockWorld);
     }
@@ -29,7 +32,10 @@ public class PathManagerTest {
 
         Path p = m.generatePath(start, finish);
 
-        assertEquals(start, p.nextPoint());
-        assertEquals(finish, p.goal());
+        assertThat("Start is not the first point of path",
+                start.equals(p.nextPoint()), is(equalTo(true)));
+        assertThat("Finish is not the last point of path",
+                finish.equals(p.goal()), is(equalTo(true)));
+
     }
 }
