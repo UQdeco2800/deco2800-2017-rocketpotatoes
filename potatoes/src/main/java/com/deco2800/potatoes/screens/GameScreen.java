@@ -35,7 +35,8 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.worlds.*;
+
+import com.deco2800.potatoes.waves.EnemyWave;
 
 import java.io.IOException;
 import java.util.Map;
@@ -225,16 +226,20 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-            addSquirrel();
-            addTankEnemy();
-            addMoose();
-            addSpeedyEnemy();
-            
+
+            //addSquirrel();
+            //addTankEnemy();
+            //addMoose();
+            //addSpeedyEnemy();
+            new EnemyWave(2, 1, 1,1, 2);
+
+
             addResourceTrees();
             initialiseResources();
             initialisePortal();
             addDamageTree();
-            
+
+
         }
         
         if (!multiplayerManager.isMultiplayer()) {
@@ -278,8 +283,8 @@ public class GameScreen implements Screen {
                     new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
         }
     }
-    
-    
+
+
     private void addDamageTree(){
         GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
         GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
