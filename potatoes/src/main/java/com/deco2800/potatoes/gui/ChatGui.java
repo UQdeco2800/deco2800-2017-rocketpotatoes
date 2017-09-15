@@ -87,8 +87,6 @@ public class ChatGui extends Gui {
                         cState = chatStates.HIDDEN;
                         resetGui(stage);
                         break;
-                    default:
-                    	break;
                 }
             }
         });
@@ -113,8 +111,10 @@ public class ChatGui extends Gui {
         GameManager.get().getManager(InputManager.class).addKeyDownListener(new KeyDownObserver() {
             @Override
             public void notifyKeyDown(int keycode) {
-                if (!hidden && keycode == Input.Keys.ENTER) {
-                    stage.setKeyboardFocus(textField);
+                if (!hidden) {
+                    if (keycode == Input.Keys.ENTER) {
+                        stage.setKeyboardFocus(textField);
+                    }
                 }
             }
         });
@@ -187,8 +187,6 @@ public class ChatGui extends Gui {
                 table.left().bottom();
                 minButton.setText("Show Chat");
                 break;
-            default:
-            	break;
         }
     }
 
@@ -216,7 +214,7 @@ public class ChatGui extends Gui {
     }
 
     private void sendMessage() {
-        if (!"".equals(textField.getText())) {
+        if (!textField.getText().equals("")) {
             MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 
             if (m.isMultiplayer()) {

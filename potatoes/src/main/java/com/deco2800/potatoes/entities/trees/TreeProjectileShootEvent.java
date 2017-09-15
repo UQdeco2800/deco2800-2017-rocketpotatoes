@@ -39,10 +39,10 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 				tree.getPosY());
 		if (target1.isPresent() && (tree.distance(target1.get()) <= tree.getUpgradeStats().getAttackRange())) {
 			GameManager.get().getWorld()
-					.addEntity(new BallisticProjectile(target1.get().getClass(), tree.getPosX() + 0.5f,
-							tree.getPosY() + 0.5f, tree.getPosZ(), target1.get().getPosX(), target1.get().getPosY(),
-							target1.get().getPosZ(), tree.getUpgradeStats().getAttackRange(), 10, 10,
-							new AOEEffect(target1.get().getPosX(), target1.get().getPosY(), 0, 1)));
+			.addEntity(new BallisticProjectile(target1.get().getClass(), tree.getPosX() + 0.5f,
+					tree.getPosY() + 0.5f, tree.getPosZ(), target1.get().getPosX(), target1.get().getPosY(),
+					target1.get().getPosZ(), tree.getUpgradeStats().getAttackRange(), 10, 10,
+					new AOEEffect(target1.get().getPosX(), target1.get().getPosY(), 0, 1)));
 		}
 
 	}

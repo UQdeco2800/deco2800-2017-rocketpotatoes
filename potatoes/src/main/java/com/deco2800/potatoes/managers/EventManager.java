@@ -68,6 +68,7 @@ public class EventManager extends Manager {
 	public void tickAll(long deltaTime) {
 		List<EventPair> finishedEvents = new ArrayList<>();
 		// this line throws ConcurrentModificationException, not sure why
+		// for (EventPair eventPair : events) {
 		for (int i = 0; i < events.size(); i++) {
 			EventPair eventPair = events.get(i);
 			eventPair.event.decreaseProgress(deltaTime, eventPair.tickable);

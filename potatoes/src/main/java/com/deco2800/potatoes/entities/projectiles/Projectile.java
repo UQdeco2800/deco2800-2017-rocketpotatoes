@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 public class Projectile extends AbstractEntity implements Tickable {
 

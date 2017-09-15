@@ -305,7 +305,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 			return true;
 		}
 
-		if (!(o instanceof AbstractEntity)) {
+		if (o == null || !(o instanceof AbstractEntity)) {
 			return false;
 		}
 

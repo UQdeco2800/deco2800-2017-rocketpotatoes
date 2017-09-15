@@ -16,14 +16,22 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.Moose;
-import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
-import com.deco2800.potatoes.entities.enemies.Squirrel;
-import com.deco2800.potatoes.entities.enemies.TankEnemy;
+import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.gui.*;
+import com.deco2800.potatoes.entities.trees.AcornTree;
+import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.FireTree;
+import com.deco2800.potatoes.entities.trees.IceTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.gui.ChatGui;
+import com.deco2800.potatoes.gui.DebugModeGui;
+import com.deco2800.potatoes.gui.GameMenuGui;
+import com.deco2800.potatoes.gui.GameOverGui;
+import com.deco2800.potatoes.gui.InventoryGui;
+import com.deco2800.potatoes.gui.PauseMenuGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -31,6 +39,8 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
+
+import com.deco2800.potatoes.waves.EnemyWave;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -119,6 +129,7 @@ public class GameScreen implements Screen {
 	private void setupGame() {
 		this.game = game;
 
+
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
@@ -179,12 +190,9 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
-
+        
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
-
-        //Make our game over window
-        guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
 		/* Setup inputs */
 		setupInputHandling();
@@ -248,10 +256,11 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-			addSquirrel();
-			addTankEnemy();
-			addMoose();
-			addSpeedyEnemy();
+			//addSquirrel();
+            //addTankEnemy();
+            //addMoose();
+            //addSpeedyEnemy();
+            new EnemyWave(2, 1, 1,1, 2);
 
 			addResourceTrees();
 			initialiseResources();
@@ -327,18 +336,19 @@ public class GameScreen implements Screen {
 
 	private void initialiseResources() {
 
-		SeedResource seedResource = new SeedResource();
+		SeedResource seedResource = new SeedResource();   
 		FoodResource foodResource = new FoodResource();
-
+		
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-
+		
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+
 	}
 
 	private void initialisePortal() {
@@ -363,6 +373,7 @@ public class GameScreen implements Screen {
 				// Only tick elements if we're singleplayer or master
 				if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 					((Tickable) e).onTick(timeDelta);
+
 				}
 			}
 
@@ -453,6 +464,7 @@ public class GameScreen implements Screen {
 
 		// Render entities etc.
 		renderer.render(batch);
+
 
 		// TODO: add render for projectile's separately
 		GameManager.get().getManager(ParticleManager.class).draw(batch);

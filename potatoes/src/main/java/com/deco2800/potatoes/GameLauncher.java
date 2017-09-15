@@ -13,14 +13,6 @@ import org.apache.log4j.Logger;
  *
  */
 public class GameLauncher {
-	
-	/**
-	 * private constructor to hide the implicit public one.
-	 */
-	private GameLauncher () {
-		// private constructor to hide the implicit public one.
-	}
-	
 	/**
 	 * Main function for the game
 	 * 
