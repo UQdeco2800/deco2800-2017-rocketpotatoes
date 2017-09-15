@@ -14,6 +14,7 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
@@ -175,9 +176,8 @@ public class World {
 	 * @param tile
 	 */
 	public void setTile(int x, int y, Terrain tile) {
-		// This needs to be changed, cells should be generated and stored only once
-		TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell().setTile(new StaticTiledMapTile(
-				new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture(tile.getTexture()))));
+		terrain[x][y] = tile;
+		Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile.getTexture());
 		((TiledMapTileLayer) map.getLayers().get(0)).setCell(x, y, cell);
 	}
 	
@@ -223,26 +223,31 @@ public class World {
 	/**
 	 * Sets the terrain grid to the given grid
 	 */
-	public void setTerrain(Terrain[][] terrain) {
-		this.terrain = terrain;
+	public void setTerrain(Terrain[][] newTerrain) {
+		terrain = new Terrain[newTerrain.length][newTerrain[0].length];
+		for (int x = 0; x < newTerrain.length; x++) {
+			for (int y = 0; y < newTerrain[x].length; y++) {
+				setTile(x, y, newTerrain[x][y]);
+			}
+		}
 	}
 
 	/**
-	 * Returns the terrain of the specified location taken from the height grid
+	 * Returns the terrain of the specified location taken from the terrain grid
 	 */
 	public Terrain getTerrain(int x, int y) {
 		return terrain[y][x];
 	}
 
 	/**
-	 * @return the eventManager
+	 * @return the eventManager for this world
 	 */
 	public EventManager getEventManager() {
 		return eventManager;
 	}
 
 	/**
-	 * @param eventManager the eventManager to set
+	 * @param eventManager the eventManager to set for this world
 	 */
 	public void setEventManager(EventManager eventManager) {
 		this.eventManager = eventManager;

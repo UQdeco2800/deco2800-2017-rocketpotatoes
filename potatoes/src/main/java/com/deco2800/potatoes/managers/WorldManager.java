@@ -56,7 +56,7 @@ public class WorldManager extends Manager {
 	 * Deletes the world associated with the given key. It will be regenerated if
 	 * access is attempted
 	 */
-	public void deleteWorld(int key) {
+	public void deleteWorld(WorldType key) {
 		worlds.remove(key);
 	}
 
@@ -89,7 +89,7 @@ public class WorldManager extends Manager {
 	 * Returns the cell associated with a given texture. A new cell is created with
 	 * the given texture if one doesn't exist already
 	 */
-	private Cell getCell(String texture) {
+	public Cell getCell(String texture) {
 		if (!cells.containsKey(texture)) {
 			cells.put(texture, new Cell().setTile(new StaticTiledMapTile(
 					GameManager.get().getManager(TextureManager.class).getTextureRegion(texture))));
