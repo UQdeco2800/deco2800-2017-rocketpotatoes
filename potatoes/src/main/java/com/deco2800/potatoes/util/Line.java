@@ -46,6 +46,14 @@ public class Line {
 
     private Point endPointOne;
     private Point endPointTwo;
+    // Position flags for Box3D constructor.
+    public enum Position {
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
+    }
+
 
     /**
      * Constructor taking floats as positions of line endpoints.
@@ -60,6 +68,56 @@ public class Line {
         this.endPointTwo = new Point(x2, y2);
     }
 
+    public Line(Box3D box, Position p) {
+
+        switch (p) {
+
+            case TOP:
+                this.endPointOne = new Point(
+                        (box.getX() - box.getXLength()/2f),
+                        (box.getY() + box.getYLength()/2f)
+                );
+                this.endPointTwo = new Point(
+                        (box.getX() + box.getXLength()/2f),
+                        (box.getY() + box.getYLength()/2f)
+                );
+                break;
+
+            case BOTTOM:
+                this.endPointOne = new Point(
+                        (box.getX() - box.getXLength()/2f),
+                        (box.getY() - box.getYLength()/2f)
+                );
+                this.endPointTwo = new Point(
+                        (box.getX() + box.getXLength()/2f),
+                        (box.getY() - box.getYLength()/2f)
+                );
+                break;
+
+            case LEFT:
+                this.endPointOne = new Point(
+                        (box.getX() - box.getXLength()/2f),
+                        (box.getY() + box.getYLength()/2f)
+                );
+                this.endPointTwo = new Point(
+                        (box.getX() - box.getXLength()/2f),
+                        (box.getY() - box.getYLength()/2f)
+                );
+                break;
+
+            case RIGHT:
+                this.endPointOne = new Point(
+                        (box.getX() + box.getXLength()/2f),
+                        (box.getY() + box.getYLength()/2f)
+                );
+                this.endPointTwo = new Point(
+                        (box.getX() + box.getXLength()/2f),
+                        (box.getY() - box.getYLength()/2f)
+                );
+                break;
+        }
+    }
+
     public Point getEndPointOne() {
         return endPointOne;
     }
@@ -68,7 +126,10 @@ public class Line {
         return endPointTwo;
     }
 
-
+    /**
+     * Get the true length between the two endpoints of the line.
+     * @return The length of the line as a float.
+     */
     public float getDistance() {
         return (float) Math.sqrt(
                 Math.pow(abs(getEndPointOne().getX() - getEndPointTwo().getX()), 2) +
