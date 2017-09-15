@@ -56,8 +56,8 @@ public class TreeShopGui extends Gui {
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);
 		
-		float a = 3f;
-		float selectedSegmentAlpha = 6f;
+		float a = 0f;
+		float selectedSegmentAlpha = 0f;
 		int numSegments = items.entrySet().size();
 		shapeRenderer.setColor(new Color(0,0,0,selectedSegmentAlpha));
 		shapeRenderer.circle(x, y, radius);
