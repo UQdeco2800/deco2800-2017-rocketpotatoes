@@ -45,8 +45,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public TankEnemy() {
-		// super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		// this.speed = getBasicStats().getSpeed();
+		// super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, SPEED, goal);
+		// this.SPEED = getBasicStats().getSpeed();
 		// this.goal = goal;
 		// resetStats();
 	}
@@ -63,7 +63,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	public TankEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		// this.speed = getBasicStats().getSpeed();
+		// this.SPEED = getBasicStats().getSpeed();
 		// this.goal = goal;
 		// resetStats();
 	}
@@ -74,10 +74,9 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * @return basic statistics of this Tank Enemy
 	 */
 	private static EnemyStatistics initStats() {
-		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
+		return new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class)).createEnemyStatistics();
-		return result;
 	}
 
 	/**
@@ -173,8 +172,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 //			this.setTexture(TEXTURE_RIGHT);
 //		}
 //
-//		float changeX = (float)(speed * Math.cos(angle));
-//		float changeY = (float)(speed * Math.sin(angle));
+//		float changeX = (float)(SPEED * Math.cos(angle));
+//		float changeY = (float)(SPEED * Math.sin(angle));
 //
 //		this.setPosX(getPosX() + changeX);
 //		this.setPosY(getPosY() + changeY);

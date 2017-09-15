@@ -25,7 +25,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final EnemyStatistics STATS = initStats();
 
-	private static float speed = 0.04f;
+	private static final float SPEED = 0.04f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
@@ -37,16 +37,12 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	public Moose() {
-		super(0, 0, 0, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		super(0, 0, 0, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		this.path = null;
 	}
 
 	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		this.path = null;
 	}
 
@@ -69,10 +65,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	public void onTick(long i) {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-        boolean changeLocation = false;
 		if (++ticksSinceRandom == MAX_WAIT || target == null) {
 		    ticksSinceRandom = 0;
-		    changeLocation = true;
 		    randomTarget();
         }
         // check paths
@@ -125,8 +119,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 			this.setTexture(TEXTURE_RIGHT);
 		}
 
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
+		float changeX = (float)(SPEED * Math.cos(angle));
+		float changeY = (float)(SPEED * Math.sin(angle));
 
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
@@ -144,10 +138,9 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	}
 
 	private static EnemyStatistics initStats() {
-		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
+		return new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class)).createEnemyStatistics();
-		return result;
 	}
 
 	@Override

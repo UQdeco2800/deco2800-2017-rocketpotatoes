@@ -110,7 +110,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	public void removeTreeShop() {
 		GameManager.get().getWorld().removeEntity(this.treeShop);
 		this.treeShop = null;
-		System.out.println("removed");
+		LOGGER.info("removed");
 	}
 	
 	public void openTreeShop(float x, float y) {
@@ -143,7 +143,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		newPos.setY(newPosY);
 
 		float speedScale = GameManager.get().getManager(WorldManager.class)
-				.getTerrain(Math.round((float)Math.min(newPosX,width-1)), Math.round((float)Math.min(newPosY,length-1)))
+				.getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
 				.getMoveScale();
 		newPosX -= speedx * (1 - speedScale);
 		newPosY -= speedy * (1 - speedScale);
@@ -331,7 +331,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 */
 	public void handleKeyUp(int keycode) {
 		// checks if key down is pressed first
-		if (checkKeyDown <= 0) { return; }
+		if (checkKeyDown <= 0)
+			return;
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;

@@ -99,11 +99,11 @@ public class ResourceTreeTest {
 	/* Test toggling gather status */
 	@Test
 	public void gatherStatusTest() {
-		assertTrue(defaultResourceTree.gatherEnabled);
+		assertTrue(defaultResourceTree.isGatherEnabled());
 		defaultResourceTree.toggleGatherEnabled();
-		assertFalse(defaultResourceTree.gatherEnabled);
+		assertFalse(defaultResourceTree.isGatherEnabled());
 		defaultResourceTree.toggleGatherEnabled();
-		assertTrue(defaultResourceTree.gatherEnabled);
+		assertTrue(defaultResourceTree.isGatherEnabled());
 	}
 	
 	/* Test transferring resources to an inventory */

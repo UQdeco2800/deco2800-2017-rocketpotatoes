@@ -23,7 +23,7 @@ public abstract class ParticleType {
     public float lowerAngleBound = 0.0f;
     public float upperAngleBound = 360.0f;
 
-    // Random spread of speed (if this are the same the speed is constant)
+    // Random spread of SPEED (if this are the same the SPEED is constant)
     public float speedVarianceMin = 0.0f;
     public float speedVarianceMax = 1.0f;
 

@@ -5,7 +5,7 @@ import com.deco2800.potatoes.entities.effects.Effect;
 public class BallisticProjectile extends Projectile {
 
 	public BallisticProjectile() {
-
+		//Blank comment to please the lord Sonar
 	}
 
 	/**

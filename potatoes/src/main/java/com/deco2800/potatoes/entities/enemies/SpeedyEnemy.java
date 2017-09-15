@@ -31,8 +31,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 	private static final EnemyStatistics STATS = initStats();
 
 	private static float speed = 0.08f;
@@ -40,13 +38,13 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private Path path = null;
 	private Box3D target = null;
 
-	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 
 	public SpeedyEnemy() {
-		// super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed,
+		// super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, SPEED,
 		// goal);
-		// this.speed = speed;
+		// this.SPEED = SPEED;
 		// this.goal = goal;
 		// resetStats();
 	}
@@ -54,16 +52,15 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	public SpeedyEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
 		// this.steal
-		// this.speed = speed;
+		// this.SPEED = SPEED;
 		// this.goal = goal;
 		// resetStats();
 	}
 
 	private static EnemyStatistics initStats() {
-		EnemyStatistics result = new StatisticsBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
+		return new StatisticsBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE).createEnemyStatistics();
 		// result.addEvent(new MeleeAttackEvent(500));
-		return result;
 	}
 
 	@Override
@@ -78,17 +75,19 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 	private void harvestResources() {
 		double interactRange = 3f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					((ResourceTree) entitiy).gather(-1);
-				}
+		for (AbstractEntity entity : entities) {
+			if (!(entity instanceof ResourceTree) || entity.distance(this) > interactRange) {
+				continue;
+			}
+			ResourceTree tree = (ResourceTree)entity;
+			if (tree.getGatherCount() > 0) {
+				tree.gather(-1);
 			}
 		}
 	}
@@ -158,24 +157,24 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * public void onTick(long i) { double interactRange = 3f;
 	 * Collection<AbstractEntity> entities =
 	 * GameManager.get().getWorld().getEntities().values();
-	 * 
+	 *
 	 * for (AbstractEntity entitiy : entities) { if (entitiy instanceof ResourceTree
 	 * && entitiy.distance(this) <= interactRange) { ((ResourceTree)
 	 * entitiy).gather(-2); } }
-	 * 
+	 *
 	 * }
-	 * 
+	 *
 	 * /* public void gather(int amount) { int oldCount = gather.gatherCount;
 	 * this.gatherCount += amount;
-	 * 
+	 *
 	 * // Check that the new amount is bounded if (this.gatherCount >
 	 * this.gatherCapacity) { this.gatherCount = this.gatherCapacity; } else if
 	 * (this.gatherCount < 0) { this.gatherCount = 0; }
-	 * 
+	 *
 	 * if (this.gatherCount - oldCount != 0) { LOGGER.info("Added " +
 	 * (this.gatherCount - oldCount) + " to " + this); } }
-	 * 
-	 * 
+	 *
+	 *
 	 * // @Override // public void onTick(long i) { // // /** // set the target of
 	 * speedy enemy to the closest tree/tower // testing for enemy set target // it
 	 * might change the target of speedy enemy //
@@ -188,7 +187,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	// float goalY = target.get().getPosY();
 	//
 	//
-	// if(this.distance(target.get()) < speed) {
+	// if(this.distance(target.get()) < SPEED) {
 	// this.setPosX(goalX);
 	// this.setPosY(goalY);
 	// return;
@@ -201,8 +200,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	//
 	//
 	//
-	// float changeX = (float)(speed * Math.cos(angle));
-	// float changeY = (float)(speed * Math.sin(angle));
+	// float changeX = (float)(SPEED * Math.cos(angle));
+	// float changeY = (float)(SPEED * Math.sin(angle));
 	//
 	// Box3D newPos = getBox3D();
 	//

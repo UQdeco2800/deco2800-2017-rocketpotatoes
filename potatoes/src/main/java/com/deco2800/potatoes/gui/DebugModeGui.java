@@ -19,24 +19,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.HashMap;
 import java.util.Map;
-import com.deco2800.potatoes.worlds.InitialWorld;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Random;
-
-
-
-import java.security.Key;
 import java.util.Set;
 
 import static com.badlogic.gdx.utils.Align.left;
 
 public class DebugModeGui extends Gui {
     private static final Logger LOGGER = LoggerFactory.getLogger(DebugModeGui.class);
-
 
     private GameScreen screen;
     private Stage stage;
@@ -157,7 +147,7 @@ public class DebugModeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
-                System.out.println("Map: " + entitiesMap.values().toString());
+                LOGGER.info("Map: {}", entitiesMap.values().toString());
 
                 //Deletes all entities except player
                 for (AbstractEntity ent: entitiesMap.values()){
@@ -183,36 +173,29 @@ public class DebugModeGui extends Gui {
                         Tower tower = new Tower((int)coords2.x,(int)coords2.y,0);
                         tower.setProgress(0);
                         GameManager.get().getWorld().addEntity(tower);
-
                     }
 
                     if (keycode == Input.Keys.F5) {
                         ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
                         rscTree.setProgress(0);
                         GameManager.get().getWorld().addEntity(rscTree);
-
                     }
-                    
 
                     if (keycode == Input.Keys.F2) {
                         GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y,0));
-
                     }
 
                     if (keycode == Input.Keys.F3) {
                         GameManager.get().getWorld().addEntity(new TankEnemy(coords2.x, coords2.y,0));
-
                     }
 
                     if (keycode == Input.Keys.F4) {
                         SeedResource seedResource = new SeedResource();
                         GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y,0,seedResource));
-
                     }
 
                     if (keycode == Input.Keys.F5) { //TODO: make this appear on GUI
                         GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y,0));
-
                     }
                 }
             }
@@ -234,7 +217,7 @@ public class DebugModeGui extends Gui {
         /*((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().addDamageScaling(1f);
         float dmg = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().getDamageScaling();
         String dmgstr = String.valueOf(dmg);
-        LOGGER.info("DAMAGE SCLAING: "+dmgstr);*/
+        LOGGER.info("damage SCLAING: "+dmgstr);*/
         table.setVisible(false);
         state = States.DEBUGOFF;
     }

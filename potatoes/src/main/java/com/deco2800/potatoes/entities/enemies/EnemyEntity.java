@@ -30,7 +30,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private transient Random random = new Random();
 	private float speed;
 	private Class<?> goal;
 	
@@ -72,7 +71,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param maxHealth
 	 *            The initial maximum health of the enemy
 	 * @param speed
-	 * 			  The speed of the enemy
+	 * 			  The SPEED of the enemy
 	 * @param goal
 	 * 			  The attacking goal of the enemy
 	 */
@@ -111,7 +110,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param maxHealth
 	 *            The initial maximum health of the enemy
 	 * @param speed
-	 * 			  The speed of the enemy
+	 * 			  The SPEED of the enemy
 	 * @param goal
 	 * 			  The attacking goal of the enemy
 	 */
@@ -153,7 +152,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param maxHealth
 	 *            The initial maximum health of the enemy
 	 * @param speed
-	 * 			  The speed of the enemy
+	 * 			  The SPEED of the enemy
 	 * @param goal
 	 * 			  The attacking goal of the enemy         
 	 *   
@@ -176,7 +175,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		float goalY;
 		if (goal == Player.class) {
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			SoundManager soundManager = GameManager.get().getManager(SoundManager.class);
 
 			// The X and Y position of the player without random floats generated
 			goalX = playerManager.getPlayer().getPosX() ;
@@ -187,40 +185,44 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				this.setPosY(goalY);
 				return;
 			}
-//
-//			float deltaX = getPosX() - goalX;
-//			float deltaY = getPosY() - goalY;
-//
-//			float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-//
-//			float changeX = (float)(speed * Math.cos(angle));
-//			float changeY = (float)(speed * Math.sin(angle));
-//
-//			Box3D newPos = getBox3D();
-//
-//			newPos.setX(getPosX() + changeX);
-//			newPos.setY(getPosY() + changeY);
-//
-//			/*
-//			 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
-//			 *     -> Enemies of the same type, projectiles, resources.
-//			 */
-//			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-//			boolean collided = false;
-//			for (AbstractEntity entity : entities.values()) {
-//				if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
-//						newPos.overlaps(entity.getBox3D()) ) {
-//					if(entity instanceof Player) {
-//						//soundManager.playSound("ree1.wav");
-//					}
-//					collided = true;
-//				}
-//			}
-//
-//			if (!collided) {
-//				setPosX(getPosX() + changeX);
-//				setPosY(getPosY() + changeY);
-//			}
+
+			SoundManager soundManager = GameManager.get().getManager(SoundManager.class);
+			/*
+			float deltaX = getPosX() - goalX;
+			float deltaY = getPosY() - goalY;
+
+			float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+
+			float changeX = (float)(SPEED * Math.cos(angle));
+			float changeY = (float)(SPEED * Math.sin(angle));
+
+			Box3D newPos = getBox3D();
+
+			newPos.setX(getPosX() + changeX);
+			newPos.setY(getPosY() + changeY);
+
+			/*
+			 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
+			 *     -> Enemies of the same type, projectiles, resources.
+			 */
+			/*
+			Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+			boolean collided = false;
+			for (AbstractEntity entity : entities.values()) {
+				if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof ResourceEntity) &&
+						newPos.overlaps(entity.getBox3D()) ) {
+					if(entity instanceof Player) {
+						//soundManager.playSound("ree1.wav");
+					}
+					collided = true;
+				}
+			}
+
+			if (!collided) {
+				setPosX(getPosX() + changeX);
+				setPosY(getPosY() + changeY);
+			}
+			*/
 		} else {
 			// set the target of tankEnemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
@@ -258,10 +260,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof Effect) && !(entity instanceof ResourceEntity) &&
 					newPos.overlaps(entity.getBox3D()) ) {
-
-				if(entity instanceof Tower) {
-					//soundManager.playSound("ree1.wav");
-				}
 
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
@@ -316,16 +314,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 	
 	/**
-	 * Get the speed of this enemy
-	 * @return the speed of this enemy
+	 * Get the SPEED of this enemy
+	 * @return the SPEED of this enemy
 	 */
 	public float getSpeed() {
 		return this.speed;
 	}
 	
 	/**
-	 * Set this enemy's speed to given speed
-	 * @param s enemy's new speed
+	 * Set this enemy's SPEED to given SPEED
+	 * @param s enemy's new SPEED
 	 */
 	public void setSpeed(Float s) {
 		this.speed = s;

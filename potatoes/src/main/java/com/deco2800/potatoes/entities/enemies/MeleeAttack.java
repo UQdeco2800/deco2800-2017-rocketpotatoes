@@ -8,11 +8,8 @@ import com.deco2800.potatoes.entities.effects.SwipeEffect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
 public class MeleeAttack extends Projectile {
-
-   
-
-    private final static float effect_width = 1f;
-    private final static float effect_height = 1f;
+    private static final float effect_width = 1f;
+    private static final float effect_height = 1f;
 
     public MeleeAttack() {
         // empty for serialization
@@ -68,25 +65,3 @@ public class MeleeAttack extends Projectile {
 
     }
 }
-
-
-
-/*
-*         for (AbstractEntity entity : entities.values()) {
-            if (targetClass.isInstance(entity)) {
-                if (newPos.overlaps(entity.getBox3D())) {
-                    if (ticksWaited == 0) {
-                        ((MortalEntity) entity).damage(DAMAGE);
-                        ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
-                        GameManager.get().getWorld().addEntity(expEffect);
-                        ticksWaited++;
-                    } else if (ticksWaited < 3) {
-                        ticksWaited++;
-                    } else {
-                        GameManager.get().getWorld().removeEntity(this);
-                        ticksWaited = 0;
-                    }
-                }
-            }
-        }
-*/

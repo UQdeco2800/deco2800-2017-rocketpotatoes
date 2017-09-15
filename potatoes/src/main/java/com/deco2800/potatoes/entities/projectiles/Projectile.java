@@ -11,7 +11,7 @@ import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
 
-	protected final static transient String TEXTURE = "rocket1";
+	protected static final transient String TEXTURE = "rocket1";
 	protected String projectileType = "rocket";
 	protected int textureArrayLength = 3;
 	protected String[] textureArray;
@@ -34,7 +34,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected float range;
 	protected float damage;
 	protected float rotationAngle = 0;
-	protected final float speed = 0.2f;
+	protected static final float SPEED = 0.2f;
 
 	protected Effect startEffect;
 	protected Effect endEffect;
@@ -83,8 +83,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 		float deltaY = getPosY() - this.goalY;
 		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
 		rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
-		changeX = (float) (speed * Math.cos(angle));
-		changeY = (float) (speed * Math.sin(angle));
+		changeX = (float) (SPEED * Math.cos(angle));
+		changeY = (float) (SPEED * Math.sin(angle));
 
 		setPosX(getPosX() + changeX);
 		setPosY(getPosY() + changeY);
@@ -92,7 +92,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (range <= 0 || maxRange) {
 			GameManager.get().getWorld().removeEntity(this);
 		} else {
-			range -= speed;
+			range -= SPEED;
 		}
 	}
 
@@ -121,14 +121,14 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public void animate() {
 		projectileEffectTimer++;
 		if (projectileEffectTimer % 4 == 0) {
-			if (projectileType.equalsIgnoreCase("rocket")) {
+			if ("rocket".equalsIgnoreCase(projectileType)) {
 				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
 				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
 					projectileCurrentSpriteIndexCount = 0;
 				else {
 					projectileCurrentSpriteIndexCount++;
 				}
-			} else if (projectileType.equalsIgnoreCase("chilli")) {
+			} else if ("chilli".equalsIgnoreCase(projectileType)) {
 
 				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
 				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
@@ -152,15 +152,16 @@ public class Projectile extends AbstractEntity implements Tickable {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 
 		for (AbstractEntity entity : entities.values()) {
-			if (targetClass.isInstance(entity)) {
-				if (newPos.overlaps(entity.getBox3D())) {
-					((MortalEntity) entity).damage(range);
-					if (endEffect != null)
-						GameManager.get().getWorld().addEntity(endEffect);
-					maxRange = true;
-					updatePosition();
-					break;
-				}
+			if (!targetClass.isInstance(entity)) {
+				continue;
+			}
+			if (newPos.overlaps(entity.getBox3D())) {
+				((MortalEntity) entity).damage(range);
+				if (endEffect != null)
+					GameManager.get().getWorld().addEntity(endEffect);
+				maxRange = true;
+				updatePosition();
+				break;
 			}
 		}
 	}

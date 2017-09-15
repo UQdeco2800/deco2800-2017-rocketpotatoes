@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.gui;
 
-import org.w3c.dom.css.Rect;
-
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
@@ -19,7 +17,7 @@ public class InteractiveShape implements Shape2D{
 	 * Renders
 	 */
 	void render() {
-		
+		//Blank comment for Sonar
 	};
 	
 	/**

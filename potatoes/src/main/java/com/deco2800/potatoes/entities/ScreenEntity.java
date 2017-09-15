@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 /**
  * A special entity that acts like a gui but exists on a specific tile and moves
  * with the rest of the world. These can not collide with anything and are not

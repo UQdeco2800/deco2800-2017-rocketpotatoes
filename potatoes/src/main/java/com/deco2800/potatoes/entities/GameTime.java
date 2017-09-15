@@ -1,81 +1,96 @@
- package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities;
 
-    /**
-     *
-     *In game time system
-     *
-     */
-    public abstract class GameTime implements Tickable {
-        private int CurrentTime = 0;
-        private int CurrentDay = 0;
-        private boolean DayTime = true;
+/**
+ * In game time system
+ */
+public abstract class GameTime implements Tickable {
+	private int currentTime = 0;
+	private int currentDay = 0;
+	private boolean dayTime = true;
 
-        /**
-         * Default constructor
-         */
-            public GameTime()    {
-            }
+	/**
+	 * Default constructor
+	 */
+	public GameTime() {
+	}
 
-        /**
-         * @return the current in game time
-         */
-            public int getCurrentTime() { return CurrentTime; }
+	/**
+	 * @return the current in game time
+	 */
+	public int getCurrentTime() {
+		return currentTime;
+	}
 
-        /**
-         * Resets the Current Time.
-         * @param CurrentTime
-         */
-            public void ResetCurrentTime(int CurrentTime) { this.CurrentTime = 0; }
+	/**
+	 * Resets the Current Time.
+	 *
+	 * @param currentTime
+	 */
+	public void resetCurrentTime(int currentTime) {
+		this.currentTime = 0;
+	}
 
-        /**
-         * Sets the Current Game Time.
-         * @param CurrentTime
-         */
-            public void SetCurrentTime(int CurrentTime) { this.CurrentTime = CurrentTime; }
+	/**
+	 * Sets the Current Game Time.
+	 *
+	 * @param currentTime
+	 */
+	public void setCurrentTime(int currentTime) {
+		this.currentTime = currentTime;
+	}
 
 
-        /**
-         * Increases the Current Game Time.
-         * @param Tick
-         */
-            public void onTick(int Tick){
-                this.SetCurrentTime((int) (this.getCurrentTime() + 0.01));
-            }
+	/**
+	 * Increases the Current Game Time.
+	 *
+	 * @param Tick
+	 */
+	public void onTick(int Tick) {
+		this.setCurrentTime((int) (this.getCurrentTime() + 0.01));
+	}
 
-        /**
-         *  Transition into night time
-         */
-            public void NightTime(int CurrentTime, boolean DayTime){
-            while(CurrentTime >= 12){
-                DayTime = false;
-            }
-        }
+	/**
+	 * Transition into night time
+	 */
+	public void nightTime(int currentTime, boolean dayTime) {
+		while (currentTime >= 12) {
+			dayTime = false;
+		}
+	}
 
-        /**
-         * Rolling over into next day
-         */
-           public void nextDay(int CurrentTime, int CurrentDay){
-                if(CurrentTime == 24){
-                    CurrentDay += 1;
-                    CurrentTime = 0;
-                }
-           }
+	/**
+	 * Rolling over into next day
+	 */
+	public void nextDay(int currentTime, int currentDay) {
+		if (currentTime == 24) {
+			currentDay += 1;
+			currentTime = 0;
+		}
+	}
 
-        /**
-         * @return the current In Game Day.
-         */
-            public int getCurrentDay() { return CurrentDay; }
+	/**
+	 * @return the current In Game Day.
+	 */
+	public int getCurrentDay() {
+		return currentDay;
+	}
 
-        /**
-         * Resets the Current Day.
-         * @param CurrentDay
-         */
-            public void ResetCurrentDay(int CurrentDay) { this.CurrentDay = 0; }
+	/**
+	 * Resets the Current Day.
+	 *
+	 * @param currentDay
+	 */
+	public void resetCurrentDay(int currentDay) {
+		this.currentDay = 0;
+	}
 
-        /**
-         * Sets the Current Game Day.
-         * @param CurrentDay
-         */
-            public void SetCurrentDay(int CurrentDay) { this.CurrentDay = CurrentDay; }
+	/**
+	 * Sets the Current Game Day.
+	 *
+	 * @param currentDay
+	 */
+	public void setCurrentDay(int currentDay) {
+		this.currentDay = currentDay;
+	}
 
-    }
+}

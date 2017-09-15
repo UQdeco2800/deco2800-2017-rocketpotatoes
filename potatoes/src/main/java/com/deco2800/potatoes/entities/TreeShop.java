@@ -5,9 +5,12 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TreeShop extends ScreenEntity {
-	private final static String TEXTURE = "tree_shop";
+	private static final Logger LOGGER = LoggerFactory.getLogger(TreeShop.class);
+	private static final String TEXTURE = "tree_shop";
 	//private final static int offsetX = -3;
 	//private final static int offset_y = 1;
 	
@@ -16,7 +19,7 @@ public class TreeShop extends ScreenEntity {
 	}
 	
 	public void onClick() {
-		System.out.println("got the shop");
+		LOGGER.info("got the shop");
 		ResourceTree newTree = new ResourceTree(this.getPosX(),this.getPosY(),0);
 		//GameManager.get().getWorld().removeEntity(this);
 		MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
@@ -25,7 +28,7 @@ public class TreeShop extends ScreenEntity {
 		} else {
 			multiplayerManager.broadcastBuildOrder(newTree);
 		}
-		System.out.println("got here");
+		LOGGER.info("got here");
 		GameManager.get().getManager(PlayerManager.class).getPlayer().removeTreeShop();
 	}
 	
