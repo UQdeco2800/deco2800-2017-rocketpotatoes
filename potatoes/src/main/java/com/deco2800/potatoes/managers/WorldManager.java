@@ -7,6 +7,8 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
+import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.worlds.RandomWorldGeneration;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
@@ -49,6 +51,12 @@ public class WorldManager extends Manager {
 			// Generate the world here
 			worlds.put(key, generateWorld(new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
 					new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)))));
+			//add some entities to the worlds that aren't the main world
+			if (key > 0) {
+				worlds.get(key).addEntity(new DamageTree(16, 11, 0));
+				worlds.get(key).addEntity(new AbstractPortal(5, 5, 0, "iceland_portal"));
+			}
+			
 			return worlds.get(key);
 		}
 	}
