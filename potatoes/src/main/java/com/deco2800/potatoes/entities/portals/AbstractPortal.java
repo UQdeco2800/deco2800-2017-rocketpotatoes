@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
+import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
 
@@ -94,6 +96,9 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		if (collided) {
 			try {
 				LOGGER.info("Entered portal");
+				//play warping sound effect
+				SoundManager soundManager = new SoundManager();
+				soundManager.playSound("warpSound.wav");
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(player);
 				//CHANGE to new world

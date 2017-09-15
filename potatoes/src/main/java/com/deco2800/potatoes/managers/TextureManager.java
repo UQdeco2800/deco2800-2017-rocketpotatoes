@@ -84,6 +84,7 @@ public class TextureManager extends Manager {
         // GUI
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
+        saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
         saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
         saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
         saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
@@ -105,10 +106,10 @@ public class TextureManager extends Manager {
             saveTexture("lightning_tree" + i, "resources/trees/lightning" + i + ".png");
             saveTexture("lightning_being_damaged" + i, "resources/trees/lightningBeingDamaged" + i + ".png");
             saveTexture("lightning_damaged" + i, "resources/trees/lightningDamaged" + i + ".png");
-
-            if (i < 9) {
-                saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
-            }
+            if (i < 5)
+                saveTexture("fire_tree"+i,"resources/trees/fire" + i + ".png");
+            if (i < 9)
+            	saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
             if (i < 8) {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
             }
@@ -124,7 +125,9 @@ public class TextureManager extends Manager {
         saveTexture("swipe4", "resources/enemies/swipe4.png");
         saveTexture("swipe5", "resources/enemies/swipe5.png");
         saveTexture("empty", "resources/enemies/empty.png");
-        
+        saveTexture("DamagedGroundTemp1", "resources/enemies/DamagedGroundTemp1.png");
+        saveTexture("DamagedGroundTemp2", "resources/enemies/DamagedGroundTemp2.png");
+        saveTexture("DamagedGroundTemp3", "resources/enemies/DamagedGroundTemp3.png");
        //Portals 
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");

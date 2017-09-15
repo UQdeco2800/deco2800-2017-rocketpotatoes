@@ -1,6 +1,9 @@
 package com.deco2800.potatoes.entities.tree;
 
 import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.worlds.World;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +18,9 @@ public class ProjectileTreeTest {
 
 	@Before
 	public void setup() {
+		GameManager.get().setWorld(new TestWorld());
 		testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
+		GameManager.get().getWorld().addEntity(testTree);
 	}
 
 	@Test
@@ -87,5 +92,9 @@ public class ProjectileTreeTest {
 		assertTrue(testTree.isBeingDamaged());
 		testTree.setDying(true);
 		assertTrue(testTree.isDying());
+	}
+
+	private class TestWorld extends World {
+
 	}
 }
