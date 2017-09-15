@@ -20,18 +20,32 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 public class TreeShopGui extends Gui {
 	private Circle shopShape;
 	private int selectedSegment;
-	private HashMap<? extends AbstractEntity, Color> items;
+	private HashMap<AbstractEntity, Color> items;
+	private boolean mouseIn;
+	private boolean initiated;
+	private Stage stage;
+	private int shopX;
+	private int shopY;
+	
+	final private float UNSELECTED_ALPHA = 0.2f;
+	final private float SELECTED_ALPHA = 0.5f;
 	
 	public TreeShopGui(Stage stage){
 		// Render menu
-	}
-	
-	public void render() {
-		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
+		this.stage = stage;
+		shopX = 300;
+		shopY = 300;
+		initiated = false;
+		items  = new HashMap<AbstractEntity, Color>();
 		items.put(new ProjectileTree(), Color.RED);
 		items.put(new ResourceTree(), Color.BLUE);
 		items.put(new DamageTree(), Color.YELLOW);
-		createTreeMenu(items, 200, 500, 50);
+		
+	}
+	
+	public void render() {
+		createTreeMenu(shopX, shopY, 100);
+		
 	}
 
 	/**
@@ -47,21 +61,21 @@ public class TreeShopGui extends Gui {
 	 * @param radius
 	 *            Radius of circle
 	 */
-	private void createTreeMenu(HashMap<? extends AbstractEntity, Color> items, int x, int y, int radius) {
-
-		this.items = items;
+	private void createTreeMenu(int x, int y, int radius) {
 		
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);
 		
-		float a = 0f;
-		float selectedSegmentAlpha = 0f;
 		int numSegments = items.entrySet().size();
-		shapeRenderer.setColor(new Color(0,0,0,selectedSegmentAlpha));
-		shapeRenderer.circle(x, y, radius);
+		shapeRenderer.setColor(new Color(0,0,0,SELECTED_ALPHA));
+		if (mouseIn) shapeRenderer.setColor(new Color(0,0,0,0.7f));
+		if (!initiated) shapeRenderer.setColor(new Color(0,0,0,0f));
+
 		Circle circle = new Circle(x,y,radius);
+		float guiY = stage.getHeight()-y;
+		shapeRenderer.circle(x, guiY, radius);
 		
 		shopShape = circle;
 	
@@ -71,14 +85,14 @@ public class TreeShopGui extends Gui {
 		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
 			Color c = entry.getValue();
 			// Show which segment is highlighted by adjusting opacity
-			float alpha = (segment==selectedSegment) ? selectedSegmentAlpha: a;
+			float alpha = (segment==selectedSegment) ? SELECTED_ALPHA: UNSELECTED_ALPHA;
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
 			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(x, y, (int) (radius*0.9), startAngle, degrees);
+			shapeRenderer.arc(x, guiY, (int) (radius*0.9), startAngle, degrees);
 			
 			// Add entity texture image
-			//System.out.println(entry.getKey().getTexture());
+			
 			
 			segment++;
 	
@@ -102,7 +116,8 @@ public class TreeShopGui extends Gui {
 	 * @return integer corresponding to the segment number the mouse is within or -1
 	 *         if mouse was not within bounds.
 	 */
-	public void calculateSegment(float mx, float my) {
+	private void calculateSegment(float mx, float my) {
+		
 		int n = 3;
 		float x = shopShape.x;
 		float y = shopShape.y;
@@ -126,12 +141,32 @@ public class TreeShopGui extends Gui {
 		
 	}
 	
-	private void moveListener() {
+	public void checkMouseOver(int x, int y) {
+		mouseIn = shopShape.contains(x, y) ? true : false;
+		if (initiated)
+			calculateSegment(x,y);
+
+		System.out.println(initiated);
+	}
+
+	public void initShop(int x, int y) {
+		moveLocation(x,y);
+		if (initiated) {
+			buyTree();
+			initiated = false;
+		} else {
+			initiated = true;
+		}
+	}
+	
+	private void buyTree() {
 		
 	}
 	
-	private void clickListener() {
-		
+	private void moveLocation(int x, int y) {
+		shopX = x;
+		shopY = y;
 	}
+	
 	
 }
