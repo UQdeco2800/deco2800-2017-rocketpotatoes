@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.deco2800.potatoes.worlds.RandomWorldGeneration;
+import com.deco2800.potatoes.util.GridUtil;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-import com.deco2800.potatoes.worlds.terrain.TerrainType;
 
 /**
  * Manager for worlds. Stores and generates all the worlds.
@@ -30,7 +28,7 @@ public class WorldManager extends Manager {
 		terrain = new Terrain[WORLD_SIZE][WORLD_SIZE];
 		randomGrids = new float[20][][];
 		for (int i = 0; i < randomGrids.length; i++) {
-			randomGrids[i] = RandomWorldGeneration.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.4f, 2);
+			randomGrids[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.4f, 2);
 		}
 	}
 
