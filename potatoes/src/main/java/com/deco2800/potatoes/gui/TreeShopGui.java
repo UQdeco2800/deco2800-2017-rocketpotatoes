@@ -1,31 +1,60 @@
 package com.deco2800.potatoes.gui;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.FoodResource;
+import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 
 
 public class TreeShopGui extends Gui {
 	private Circle shopShape;
 	private int selectedSegment;
-	private HashMap<? extends AbstractEntity, Color> items;
+	private HashMap<AbstractEntity, Color> items;
+	private boolean mouseIn;
+	private boolean initiated;
+	private Stage stage;
+	private int shopX;
+	private int shopY;
+	private int treeX;
+	private int treeY;
+	
+	final private float UNSELECTED_ALPHA = 0.2f;
+	final private float SELECTED_ALPHA = 0.5f;
 	
 	public TreeShopGui(Stage stage){
 		// Render menu
-	}
-	
-	public void render() {
-		HashMap<AbstractEntity, Color> items = new HashMap<AbstractEntity, Color>();
+		this.stage = stage;
+		shopX = 300;
+		shopY = 300;
+		initiated = false;
+		items  = new HashMap<AbstractEntity, Color>();
 		items.put(new ProjectileTree(), Color.RED);
 		items.put(new ResourceTree(), Color.BLUE);
 		items.put(new DamageTree(), Color.YELLOW);
-		createTreeMenu(items, 200, 500, 50);
+		
+	}
+	
+	public void render() {
+		createTreeMenu(shopX, shopY, 100);
+		
 	}
 
 	/**
@@ -41,49 +70,48 @@ public class TreeShopGui extends Gui {
 	 * @param radius
 	 *            Radius of circle
 	 */
-	private void createTreeMenu(HashMap<? extends AbstractEntity, Color> items, int x, int y, int radius) {
-
-		this.items = items;
+	private void createTreeMenu(int x, int y, int radius) {
 		
-		//Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
 		
-		//ShapeRenderer shapeRenderer = new ShapeRenderer();
-		//shapeRenderer.begin(ShapeType.Filled);
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Filled);
 		
-		//float a = 0.4f;
-		//float selectedSegmentAlpha = 0.7f;
-		float a = 0f;
-		float selectedSegmentAlpha = 0f;
 		int numSegments = items.entrySet().size();
-		//shapeRenderer.setColor(new Color(0,0,0,selectedSegmentAlpha));
-		//shapeRenderer.circle(x, y, radius);
+		shapeRenderer.setColor(new Color(0,0,0,SELECTED_ALPHA));
+		if (mouseIn) shapeRenderer.setColor(new Color(0,0,0,0.7f));
+		if (!initiated) shapeRenderer.setColor(new Color(0,0,0,0f));
+
 		Circle circle = new Circle(x,y,radius);
+		float guiY = stage.getHeight()-y;
+		shapeRenderer.circle(x, guiY, radius);
 		
 		shopShape = circle;
 	
-		/*int segment = 0;
+		int segment = 0;
 		int degrees = 360 / numSegments;
 		// Draws each subsection of radial menu individually
 		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
 			Color c = entry.getValue();
 			// Show which segment is highlighted by adjusting opacity
-			float alpha = (segment==selectedSegment) ? selectedSegmentAlpha: a;
+			float alpha = (segment==selectedSegment) ? SELECTED_ALPHA: UNSELECTED_ALPHA;
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
+			if (!initiated) shapeRenderer.setColor(new Color(0,0,0,0f));
 			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(x, y, (int) (radius*0.9), startAngle, degrees);
+			shapeRenderer.arc(x, guiY, (int) (radius*0.9), startAngle, degrees);
 			
 			// Add entity texture image
-			//System.out.println(entry.getKey().getTexture());
+			
 			
 			segment++;
 	
 		}
 		
 		
-		shapeRenderer.end();*/
+		shapeRenderer.end();
 		
-		//Gdx.gl.glDisable(GL20.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	
@@ -98,7 +126,8 @@ public class TreeShopGui extends Gui {
 	 * @return integer corresponding to the segment number the mouse is within or -1
 	 *         if mouse was not within bounds.
 	 */
-	public void calculateSegment(float mx, float my) {
+	private void calculateSegment(float mx, float my) {
+		
 		int n = 3;
 		float x = shopShape.x;
 		float y = shopShape.y;
@@ -122,12 +151,63 @@ public class TreeShopGui extends Gui {
 		
 	}
 	
-	private void moveListener() {
-		
+	public void checkMouseOver(int x, int y) {
+		mouseIn = shopShape.contains(x, y) ? true : false;
+		if (initiated)
+			calculateSegment(x,y);
+
+	}
+
+	public void initShop(int x, int y) {
+		if (initiated) {
+			buyTree();
+			initiated = false;
+		} else {
+			initiated = true;
+		}
+		moveLocation(x,y);
 	}
 	
-	private void clickListener() {
-		
+	public void setTreeCoords(int x, int y) {
+		if (!initiated) {
+			treeX = x;
+			treeY = y;
+		}
 	}
+	
+	private void buyTree() {
+		
+		
+		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
+			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
+			AbstractTree newTree;
+			// Select random tree, and either make it in singleplayer or broadcast it in mp
+			switch (selectedSegment + 1) {
+
+			case 1:
+				newTree = new ResourceTree(treeX, treeY, 0, new FoodResource(), 8);
+				break;
+			case 2:
+				newTree = new ResourceTree(treeX, treeY, 0);
+				break;
+			default:
+				newTree = new Tower(treeX, treeY, 0);
+				break;
+			}
+			
+			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+				AbstractTree.constructTree(newTree);
+			} else {
+				multiplayerManager.broadcastBuildOrder(newTree);
+			}
+
+		}
+	}
+	
+	private void moveLocation(int x, int y) {
+		shopX = x;
+		shopY = y;
+	}
+	
 	
 }
