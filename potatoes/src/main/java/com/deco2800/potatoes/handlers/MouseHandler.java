@@ -59,31 +59,8 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		}
 		int realX = (int) Math.floor(coords.x);
 		int realY = (int) Math.floor(coords.y);
-		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
-			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
-			AbstractTree newTree;
-			// Select random tree, and either make it in singleplayer or broadcast it in mp
-			switch ((int) (Math.random() * 3 + 1)) {
-
-			case 1:
-				newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
-				break;
-			case 2:
-				newTree = new ResourceTree(realX, realY, 0);
-				break;
-			default:
-				newTree = new Tower(realX, realY, 0);
-				break;
-			}
-			
-			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				AbstractTree.constructTree(newTree);
-			} else {
-				multiplayerManager.broadcastBuildOrder(newTree);
-			}
-
-		}
-		
+		treeShop.setTreeCoords(realX,realY);
+		treeShop.initShop(originX,originY);
 
 	}
 
@@ -97,7 +74,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		Vector3 worldCoords = Render3D.screenToWorldCoordiates(screenX, screenY, 0);
 		handleMouseClick(worldCoords.x, worldCoords.y, button);
 		
-		treeShop.initShop(screenX,screenY);
 	}
 
 	@Override

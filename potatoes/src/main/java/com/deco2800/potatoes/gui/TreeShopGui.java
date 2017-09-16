@@ -11,9 +11,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.FoodResource;
+import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 
 
@@ -26,6 +33,8 @@ public class TreeShopGui extends Gui {
 	private Stage stage;
 	private int shopX;
 	private int shopY;
+	private int treeX;
+	private int treeY;
 	
 	final private float UNSELECTED_ALPHA = 0.2f;
 	final private float SELECTED_ALPHA = 0.5f;
@@ -88,6 +97,7 @@ public class TreeShopGui extends Gui {
 			float alpha = (segment==selectedSegment) ? SELECTED_ALPHA: UNSELECTED_ALPHA;
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
+			if (!initiated) shapeRenderer.setColor(new Color(0,0,0,0f));
 			int startAngle = 360 * (segment) / (numSegments);
 			shapeRenderer.arc(x, guiY, (int) (radius*0.9), startAngle, degrees);
 			
@@ -146,21 +156,52 @@ public class TreeShopGui extends Gui {
 		if (initiated)
 			calculateSegment(x,y);
 
-		System.out.println(initiated);
 	}
 
 	public void initShop(int x, int y) {
-		moveLocation(x,y);
 		if (initiated) {
 			buyTree();
 			initiated = false;
 		} else {
 			initiated = true;
 		}
+		moveLocation(x,y);
+	}
+	
+	public void setTreeCoords(int x, int y) {
+		if (!initiated) {
+			treeX = x;
+			treeY = y;
+		}
 	}
 	
 	private void buyTree() {
 		
+		
+		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
+			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
+			AbstractTree newTree;
+			// Select random tree, and either make it in singleplayer or broadcast it in mp
+			switch (selectedSegment + 1) {
+
+			case 1:
+				newTree = new ResourceTree(treeX, treeY, 0, new FoodResource(), 8);
+				break;
+			case 2:
+				newTree = new ResourceTree(treeX, treeY, 0);
+				break;
+			default:
+				newTree = new Tower(treeX, treeY, 0);
+				break;
+			}
+			
+			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
+				AbstractTree.constructTree(newTree);
+			} else {
+				multiplayerManager.broadcastBuildOrder(newTree);
+			}
+
+		}
 	}
 	
 	private void moveLocation(int x, int y) {
