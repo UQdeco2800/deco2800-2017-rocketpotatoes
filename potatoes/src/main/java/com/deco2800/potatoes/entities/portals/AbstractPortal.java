@@ -105,6 +105,8 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				GameManager.get().getManager(WorldManager.class).setWorld(0);
 				//add player to new world
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+				//set player to be next to the portal
+				playerManager.getPlayer().setPosition(18, 16, 0);
 				
 				// Bring up portal interface
 			} catch (Exception e) {

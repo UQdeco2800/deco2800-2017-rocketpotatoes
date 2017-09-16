@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
+
 import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,6 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.worlds.InitialWorld2;
 
 /**
  * A class for creating the base portal. This class differs from AbstracPortals
@@ -41,10 +41,6 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 *  Create a player manager.
 	 */
     private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-	/* 
-	 * create a test world 
-	 */
-    private InitialWorld2 testWorld = new InitialWorld2();
     /*
 	 * The radius of which a collision can be detected
 	 */
@@ -116,10 +112,9 @@ public class BasePortal extends MortalEntity implements Tickable {
 				GameManager.get().getManager(WorldManager.class).setWorld(1);
 				//add player to new world
 	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-	            //add some entities to the test world (adds every time, kinda bad)
-	            GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-	            GameManager.get().getWorld().addEntity(new AbstractPortal(1, 2, 0, "iceland_portal"));
-				// Bring up portal interface
+	            //set player to be next to the portal
+	            playerManager.getPlayer().setPosition(9, 4, 0);
+	            // Bring up portal interface
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal; " + e);
 			}
