@@ -32,6 +32,7 @@ import com.deco2800.potatoes.gui.GameOverGui;
 import com.deco2800.potatoes.gui.InventoryGui;
 import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -193,6 +194,9 @@ public class GameScreen implements Screen {
         
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
+        
+        // Add World Change Gui
+        guiManager.addGui(new WorldChangeGui(guiManager.getStage(), this));
 
         //Make our game over window
         	guiManager.addGui(new GameOverGui(guiManager.getStage(),this));

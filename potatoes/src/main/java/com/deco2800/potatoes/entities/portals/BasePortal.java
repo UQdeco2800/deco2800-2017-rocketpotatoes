@@ -16,7 +16,10 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.gui.DebugModeGui;
+import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
@@ -108,13 +111,9 @@ public class BasePortal extends MortalEntity implements Tickable {
 				soundManager.playSound("warpSound.wav");
 				//remove player from old world
 				GameManager.get().getWorld().removeEntity(player);
-				//CHANGE to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(1);
-				//add player to new world
-	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-	            //set player to be next to the portal
-	            playerManager.getPlayer().setPosition(9, 4, 0);
-	            // Bring up portal interface
+				
+                ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class)).show();
+	            
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal; " + e);
 			}
