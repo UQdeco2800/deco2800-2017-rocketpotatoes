@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.reflections.vfs.Vfs.Dir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +35,10 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * Entity for the playable character.
  *
- * @author leggy
+ * @author leggy, petercondoleon
  *
  */
-public class Player extends MortalEntity implements Tickable, HasProgressBar {
+public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
@@ -48,13 +49,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
-	private int direction; // facing left=0, right=1
 	
 	private int respawnTime = 5000; // milliseconds
 
 	private boolean damaged;
 
 	private Inventory inventory;
+	
+	// The player class must set and store its direction internally.
+	private Direction currentDirection;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 	// an integer to check if key down has been pressed before key up
@@ -82,23 +85,29 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
-		this.direction = 1;
+		this.currentDirection = Direction.SouthEast;
 
 		HashSet<Resource> startingResources = new HashSet<Resource>();
 		startingResources.add(new SeedResource());
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
 	}
-
+	
+	/**
+	 * Returns the current Direction of the player.
+	 * 
+	 */
+	@Override
+	public Direction getDirection() {
+		return currentDirection;
+	}
+	
+	/**
+	 * Returns the player inventory.
+	 * 
+	 */
 	public Inventory getInventory() {
 		return this.inventory;
-	}
-
-	/**
-	 * Returns the string representation of which way the player is facing.
-	 */
-	public String getPlayerDirection() {
-		return (direction == 0) ? "left" : "right";
 	}
 
 	@Override
@@ -141,7 +150,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 		if (this.damaged) {
 
-			if (this.direction == 0) {
+			if (this.getDirection() == Direction.SouthEast) {
 				this.setTexture("flash_red_left");
 
 			} else {
@@ -152,12 +161,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			this.setDamaged(false);
 
 		} else {
-			if (this.direction == 0) {
-
-				this.setTexture("player_left");
+			
+			if (this.getDirection() == Direction.SouthEast) {
+				this.setTexture(TEXTURE_RIGHT);
+			} else if (this.getDirection() == Direction.SouthWest) {
+				this.setTexture(TEXTURE_LEFT);
 			} else {
-
-				this.setTexture("player_right");
+				this.setTexture(TEXTURE_RIGHT);
 			}
 
 		}
@@ -181,15 +191,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			break;
 		case Input.Keys.A:
 			// changes the sprite so that the character is facing left
+			this.currentDirection = Direction.SouthWest;
 			this.setTexture(TEXTURE_LEFT);
-			direction = 0;
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
 			// changes the sprite so that the character is facing right
+			this.currentDirection = Direction.SouthEast;
 			this.setTexture(TEXTURE_RIGHT);
-			direction = 1;
 			speedx += movementSpeed;
 			speedy += movementSpeed;
 			break;
@@ -242,8 +252,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		float y = this.getPosY();
 		float z = this.getPosZ();
 
-		x = (direction == 0) ? x - 1 : x + 1;
-		y = (direction == 0) ? y - 2 : y + 2;
+		x = (currentDirection == Direction.SouthWest) ? x - 1 : x + 1;
+		y = (currentDirection == Direction.SouthWest) ? y - 2 : y + 2;
 
 		// only toss an item if there are items to toss
 		if (this.getInventory().updateQuantity(item, -1) == 1) {
@@ -345,6 +355,5 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
-
 
 }
