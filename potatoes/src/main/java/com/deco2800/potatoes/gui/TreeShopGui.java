@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.FoodResource;
+import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
@@ -45,11 +46,10 @@ public class TreeShopGui extends Gui {
 		shopX = 300;
 		shopY = 300;
 		initiated = false;
-		items  = new HashMap<AbstractEntity, Color>();
+		items = new HashMap<AbstractEntity, Color>();
 		items.put(new ProjectileTree(), Color.RED);
-		items.put(new ResourceTree(), Color.BLUE);
-		items.put(new DamageTree(), Color.YELLOW);
-		
+		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
+		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
 	}
 	
 	public void render() {

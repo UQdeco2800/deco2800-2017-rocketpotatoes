@@ -55,7 +55,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	private boolean damaged;
 
 	private Inventory inventory;
-	private TreeShop treeShop;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 	// an integer to check if key down has been pressed before key up
@@ -100,29 +99,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		return this.inventory;
 	}
 	
-	/**
-	 * Returns the treeShop entity that the user can afford.
-	 */
-	public TreeShop getTreeShop() {
-		return this.treeShop;
-	}
-	
-	public void removeTreeShop() {
-		GameManager.get().getWorld().removeEntity(this.treeShop);
-		this.treeShop = null;
-		LOGGER.info("removed");
-	}
-	
-	public void openTreeShop(float x, float y) {
-		
-		if (this.treeShop == null) {
-			this.treeShop = new TreeShop(x,y);
-		} else {
-			this.treeShop.setPosX(x);
-			this.treeShop.setPosY(y);
-		}
-		GameManager.get().getWorld().addEntity(this.treeShop);
-	}
 
 	/**
 	 * Returns the string representation of which way the player is facing.
