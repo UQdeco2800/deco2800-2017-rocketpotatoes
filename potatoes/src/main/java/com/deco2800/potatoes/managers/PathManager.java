@@ -46,7 +46,7 @@ public class PathManager extends Manager {
      * Populates the internal graph representation of the path manager, based on the initial world state.
      * Should be run after loading the map
      */
-    public void initialise(Box3D player) {
+    public void initialise() {
 
         nodes.clear();
         // Add place holder nodes at positions 0 and 1
@@ -96,16 +96,16 @@ public class PathManager extends Manager {
         Box3D next;
         // Create line between start and goal.
         Line line = new Line(start, goal);
+        // Check if the spanning tree has been initialise.
+        if (spanningTree.size() == 0) {
+            initialise();
+        }
         // Check if this line has a clear path.
         if(!treeMaker.checkLineClash(line, obstacles)) {
             // line is not obstructed.
             path.add(start);
             path.add(goal);
             return new Path(path);
-        }
-        // Check if the spanning tree has been initialise.
-        if (spanningTree.size() == 0) {
-            initialise(goal);
         }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(goal, start, obstacles);

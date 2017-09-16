@@ -64,7 +64,7 @@ public class MinimumSpanningTreeTest {
 
     @Test
     public void treeTest() {
-        tree.createTree(tree.getVertexList().get(0));
+
     }
 
 }
