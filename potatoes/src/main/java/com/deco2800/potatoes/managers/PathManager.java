@@ -27,22 +27,20 @@ public class PathManager extends Manager {
      */
     private Map<Box3D, Box3D> spanningTree;
     private MinimumSpanningTree treeMaker;
-    AbstractWorld world;
-    private ArrayList<Box3D> nodes = new ArrayList<>();
-    private ArrayList<Line> obstacles = new ArrayList<>();
-    private int numberOfRandomNodes = 200;
+    private AbstractWorld world;
+    private ArrayList<Box3D> nodes;
+    private ArrayList<Line> obstacles;
+    private static final int NUMBER_OF_RANDOM_NODES = 100;
+    private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
 
     /**
-     *
+     * Basic constructor.
      */
     public PathManager() {
         spanningTree = new HashMap<>();
         nodes = new ArrayList<>();
     }
-
-
-    private static float nodeOffset = (float) 0.5;
 
     /**
      * Populates the internal graph representation of the path manager, based on the initial world state.
@@ -51,13 +49,18 @@ public class PathManager extends Manager {
     public void initialise(Box3D player) {
 
         nodes.clear();
+        // Add place holder nodes at positions 0 and 1
+        // so that the player position and enemy position
+        // can be added later.
+        nodes.add(new Box3D(dummyBox));     // Position 0 => player position.
+        nodes.add(new Box3D(dummyBox));     // Position 1 => enemy position.
         world = GameManager.get().getWorld();
-        //
+        // Create obstacles from static entities.
         obstacles = createObstacleLines();
 
-        // Initalise random points on the map to make up vertices of
+        // Initialise random points on the map to add as vertices of
         // the graph.
-        for (int i = 0; i < numberOfRandomNodes; i++) {
+        for (int i = 0; i < NUMBER_OF_RANDOM_NODES; i++) {
             nodes.add(new Box3D(
                     (float) (Math.random() * world.getWidth()),      // x coordinate
                     (float) (Math.random() * world.getLength()),     // y coordinate
@@ -68,14 +71,15 @@ public class PathManager extends Manager {
             ));
         }
 
-
-        // create a new mini spanning tree
+        // Create a new minimum spanning tree
         treeMaker = new MinimumSpanningTree(nodes.size());
         // Add the nodes to the vertexList.
         for (int i = 0; i < nodes.size(); i++) {
             treeMaker.addVertex(nodes.get(i), i);
         }
-
+        // Calculate edge weights in graph matrix
+        // based on static enemies.
+        treeMaker.initGraphWeightMatrix(obstacles);
     }
 
     /**
@@ -87,32 +91,37 @@ public class PathManager extends Manager {
      * @return The path object itself, which can then be followed.
      */
     public Path generatePath(Box3D start, Box3D goal) {
-        ArrayDeque<Box3D> path = new ArrayDeque<>();
-        Vertex startVertex;
-        Vertex goalVertex;
-        Box3D next;
 
+        ArrayDeque<Box3D> path = new ArrayDeque<>();
+        Box3D next;
+        // Create line between start and goal.
+        Line line = new Line(start, goal);
+        // Check if this line has a clear path.
+        if(!treeMaker.checkLineClash(line, obstacles)) {
+            // line is not obstructed.
+            path.add(start);
+            path.add(goal);
+            return new Path(path);
+        }
+        // Check if the spanning tree has been initialise.
         if (spanningTree.size() == 0) {
             initialise(goal);
         }
-        // Find the closest Vertices to the start and goal points.
-        startVertex = treeMaker.findClosest(start);
-        goalVertex = treeMaker.findClosest(goal);
         // build the minimum spanning tree from the graph - and set the spanningTree variable
-        spanningTree = treeMaker.createTree(goalVertex);
+        spanningTree = treeMaker.createTree(goal, start, obstacles);
         // Add the starting point to the path.
-        path.add(startVertex.getEntry());
+        path.add(start);
         // If the spanning tree has only two entries
         // return a new path with the start and end point.
         if (spanningTree.size() < 2) {
-            path.add(goalVertex.getEntry());
+            path.add(goal);
             return new Path(path);
         }
         // Add extra path points as needed.
         // Set next as the value returned from start as
         // the key to spanningTree.
-        next = spanningTree.get(startVertex.getEntry());
-        while (!(next.equals(goalVertex.getEntry()))) {
+        next = spanningTree.get(start);
+        while (!(next.equals(goal))) {
             path.add(next);
             next = spanningTree.get(next);
         }
@@ -120,8 +129,8 @@ public class PathManager extends Manager {
     }
 
     /**
-     * Create line objects that represent the boarder of all {@code StaticCollidable}
-     * entities on the map.
+     * Create line objects that represent the boarder of all static collidable entities on the map.
+     *
      * @return List of {@code Line} objects that represent static entity boarders.
      */
     private ArrayList<Line> createObstacleLines() {

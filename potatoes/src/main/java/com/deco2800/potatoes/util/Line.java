@@ -68,6 +68,14 @@ public class Line {
         this.endPointTwo = new Point(x2, y2);
     }
 
+    /**
+     * Create a {@code Line} boardering one side of a {@code Box3D}.
+     * The argument given as p specifies which side the line will
+     * represent. The length of the line is equal to the value returned
+     * by {@code Box3D.getXLength} and {@code Box3D.getYLength}.
+     * @param box Box3D that the line will boarder.
+     * @param p enum type that represents top, bottom, left and right.
+     */
     public Line(Box3D box, Position p) {
 
         switch (p) {
@@ -116,6 +124,18 @@ public class Line {
                 );
                 break;
         }
+    }
+
+    /**
+     * Create a {@code Line} from the center of box1 to the
+     * center box2.
+     * @param box1
+     * @param box2
+     */
+    public Line(Box3D box1, Box3D box2) {
+
+        this.endPointOne = new Point(box1.getX(), box1.getY());
+        this.endPointTwo = new Point(box2.getX(), box2.getY());
     }
 
     public Point getEndPointOne() {

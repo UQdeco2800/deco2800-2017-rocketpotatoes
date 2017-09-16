@@ -44,6 +44,10 @@ public class MinimumSpanningTree {
             return entry;
         }
 
+        public void setEntry(Box3D entry) {
+            this.entry = entry;
+        }
+
         public int getAddress() {
             return address;
         }
@@ -91,38 +95,49 @@ public class MinimumSpanningTree {
         }
     }
 
-    //------------------ end of nested class ---------------------
+    //------------------ end of nested classes ---------------------
 
+    // Value to inflate edge weights.
+    private static final float LARGE_WEIGHT = 1000f;
+    // 2D matrix of edge weights
     private float [][] graph;
+    // Number of vertices
     private int size;
     private List<Vertex> vertexList;
     private Map<Integer, Vertex> cloud;
     private PriorityQueue<Vertex> outside;
-    private Map<Box3D, Box3D> tree;
-    private VertexPriority priority;
 
     public MinimumSpanningTree(int size) {
 
         this.size = size;
         this.graph = new float[size][size];
         this.vertexList = new ArrayList<>();
-        this.priority = new VertexPriority();
-        this.outside = new PriorityQueue<>(size, priority);
+        this.outside = new PriorityQueue<>(size, new VertexPriority());
         this.cloud = new HashMap<>();
 
     }
 
 
-    public void addVertex(Box3D entry, int address) {
-        vertexList.add(new Vertex(entry, address));
+    public void addVertex(Box3D entry, int address) throws IndexOutOfBoundsException {
+
+        // Check address is valid.
+        if (address < 0 || address > this.getSize()) {
+            throw new IndexOutOfBoundsException();
+        }
+        this.getVertexList().add(new Vertex(entry, address));
+    }
+
+    public void insertVertex(Box3D entry, int address) throws IndexOutOfBoundsException {
+
+        // Check address is valid.
+        if (address < 0 || address > this.getSize()) {
+            throw new IndexOutOfBoundsException();
+        }
+        this.getVertexList().get(address).setEntry(entry);
     }
 
     public int getSize() {
         return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
 
@@ -152,34 +167,106 @@ public class MinimumSpanningTree {
         }
     }
 
-    public Vertex findClosest(Box3D target) {
-        // Set up initial variables to check distance
-        // to vertexList[0].
-        Line line = new Line(
-                target.getX(),
-                target.getY(),
-                vertexList.get(0).getEntry().getX(),
-                vertexList.get(0).getEntry().getY()
-        );
-        float distance = line.getDistance();
-        Vertex closest = vertexList.get(0);
-        // Iterate through vertexList from position 1 and replace
-        // closest Vertex if applicable.
-        for (int i = 1; i < vertexList.size(); i++) {
-           line = new Line(
-                   target.getX(),
-                   target.getY(),
-                   vertexList.get(i).getEntry().getX(),
-                   vertexList.get(i).getEntry().getY()
-           );
-           // Set new closest if line->distance is < distance.
-           if (line.getDistance() < distance) {
-               distance = line.getDistance();
-               closest = vertexList.get(i);
-           }
+    /**
+     * Add the start and goal position to the weighted graph matrix so a complete minimum spanning tree can be made.
+     *
+     * @param goal The target position of the MST.
+     * @param start The position of entity calling the MST.
+     * @param obstacles List of Lines as boarder of static entities on the map.
+     */
+    public void addStartGoal(Box3D goal, Box3D start, ArrayList<Line> obstacles) {
+
+        // Line representing edge between vertices.
+        Line edge;
+        // Add start and goal vertices
+        insertVertex(goal, 0);
+        insertVertex(start, 1);
+
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < this.getSize(); j++) {
+                // Inflate weight for edges between vertices and themselves.
+                if (i == j) {
+                    this.putGraphEntry(LARGE_WEIGHT, i, j);
+                    continue;
+                }
+                // Create edge line between vertices.
+                edge = new Line(vertexList.get(i).getEntry(), vertexList.get(j).getEntry());
+                // Check for obstructed edges
+                if (this.checkLineClash(edge, obstacles)) {
+                    // Obstruction found
+                    this.putGraphEntry(LARGE_WEIGHT, i, j);
+                    // Reflect value
+                    this.putGraphEntry(LARGE_WEIGHT, j, i);
+                    continue;
+                }
+                // No obstructions
+                this.putGraphEntry(edge.getDistance(), i, j);
+                // Reflect value
+                this.putGraphEntry(edge.getDistance(), j, i);
+            }
         }
-        return closest;
     }
+    /**
+     * Populate the weighted adjacency matrix with the distance between vertices. If a line between each vertex pair
+     * is intersected by a line contained in list obstacles, then the edge weight is inflated to ensure that that edge
+     * will not be included in the minimum spanning tree.
+     *
+     * @param obstacles ArrayList of {@code Line} objects that represent the boarders of static collidable
+     */
+    public void initGraphWeightMatrix(ArrayList<Line> obstacles) {
+
+        // Line representing edge between vertices.
+        Line edge;
+        // Iterate through edge weight matrix graph and check for clashes.
+        // If no clashes occur, add edge weight as the distance between vertices.
+        // Start at position 2 as position 0 and 1 are placeholders for the start
+        // and goal locations that will be added later.
+        for (int i = 2; i < this.getSize(); i++) {
+            for (int j = 2; j < this.getSize(); j++) {
+                // Matrix is symmetric so skip over bottom half and reflect
+                // values latter.
+                if (j < i) {
+                    continue;
+                }
+                // Inflate weight for edges between vertices and themselves.
+                if (i == j) {
+                    this.putGraphEntry(LARGE_WEIGHT, i, j);
+                    continue;
+                }
+                // Create edge line between vertices.
+                edge = new Line(vertexList.get(i).getEntry(), vertexList.get(j).getEntry());
+                // Check for obstructed edges
+                if (this.checkLineClash(edge, obstacles)) {
+                    // Obstruction found
+                    this.putGraphEntry(LARGE_WEIGHT, i, j);
+                    continue;
+                }
+                // No obstructions
+                this.putGraphEntry(edge.getDistance(), i, j);
+            }
+        }
+    }
+
+    /**
+     * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
+     * @param edge Line object tested.
+     * @param obstacles Line objects in list
+     * @return true in edge intersects with any lines in obstacles; false otherwise.
+     */
+    public boolean checkLineClash(Line edge, ArrayList<Line> obstacles) {
+
+        // Iterate through obstacles and check if
+        // edge between vertices is obstructed.
+        for (Line line: obstacles) {
+            if(edge.doIntersect(line)) {
+                // Edge is obstructed.
+                return true;
+            }
+        }
+        // No obstruction.
+        return false;
+    }
+
 
     public void putGraphEntry(float entry, int row, int col) throws IndexOutOfBoundsException {
 
@@ -197,17 +284,18 @@ public class MinimumSpanningTree {
         return this.graph[row][col];
     }
 
-    public HashMap<Box3D, Box3D> createTree(Vertex start) {
+    public HashMap<Box3D, Box3D> createTree(Box3D goal, Box3D start, ArrayList<Line> obstacles) {
 
         HashMap<Box3D, Box3D> tree = new HashMap<>();
         Vertex temp;
-        // Add the starting vertex to the cloud to begin MST.
-        cloud.put(start.getAddress(), start);
+        this.addStartGoal(goal, start, obstacles);
+        // Add the goal vertex (index 0 of vertexList) to the cloud to begin MST.
+        cloud.put(0, this.getVertexList().get(0));
         updateLeastEdges();
         // Remove starting vertex from outside as it's the first
         // entry added to the cloud.
         initOutside();
-        outside.remove(start);
+        outside.remove(this.getVertexList().get(0));
 
         while (!outside.isEmpty()) {
             temp = outside.poll();
