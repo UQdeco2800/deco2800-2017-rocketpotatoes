@@ -54,7 +54,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         }
 
         GameManager.get().getWorld().addEntity(new MeleeAttack(target1.get().getClass(),
-                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, 10,null));
+                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, 10));
 
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/
