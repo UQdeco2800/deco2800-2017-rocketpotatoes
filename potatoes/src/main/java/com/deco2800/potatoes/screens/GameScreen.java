@@ -230,20 +230,13 @@ public class GameScreen implements Screen {
             GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
             GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-
-            //addSquirrel();
-            //addTankEnemy();
-            //addMoose();
-            //addSpeedyEnemy();
-            //EnemyWave wave = new EnemyWave(2, 1, 1,1, 2);
-            waveManager.addWave(new EnemyWave(2,1,1,1,2));
-
+            waveManager.addWave(new EnemyWave(2,0,0,0,600));
+            waveManager.addWave(new EnemyWave(0,0,0,2,600));
 
             addResourceTrees();
             initialiseResources();
             initialisePortal();
             addDamageTree();
-
 
         }
         

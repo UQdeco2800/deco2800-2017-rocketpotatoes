@@ -13,10 +13,21 @@ import static com.badlogic.gdx.math.MathUtils.random;
 
 public class EnemyWave implements Tickable {
 
-    //The current elapsed time into the wave
-    private int elapsedTime;
+
     private float[] enemyRatios;
+    //Length of wave in .001 of seconds
+    private int waveLength;
+    //The current time of the wave
     private int waveTime = 0;
+
+    /*Probably can merge (waiting w/ finished) or (waiting w/ paused)*/
+    public enum WaveState {
+        WAITING, ACTIVE, PAUSED, FINISHED
+    }
+
+    WaveState waveState = WaveState.WAITING;
+
+
 
     /**
      * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
@@ -27,12 +38,13 @@ public class EnemyWave implements Tickable {
      * @param tankRate
      * @param mooseRate
      * --can be changed to simply individual args for each enemy type - might actually be better
-     * @param waveTime the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
+     * @param waveLength the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
      * */
-    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, float waveTime) {
+    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength) {
         //addSquirrel();
         //addSquirrel();
         this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
+        this.waveLength = waveLength;
         //spawnEnemyToRatio(enemyRatios);
 
     }
@@ -52,12 +64,6 @@ public class EnemyWave implements Tickable {
         return enemyRatios;
     }
 
-
-    /*Right now just makes 10 enemies according to the rate, but want to incorporate game time
-    to this. So maybe in the future take away the for loop and just have it generate one enemy.
-    then we give this to the gametime counter (or onTick method) and run this method every x
-    amount of time until the game wave is over.
-    */
     /**
      * Spawn enemies according to the ratio described by the constructor args
      * */
@@ -79,24 +85,39 @@ public class EnemyWave implements Tickable {
      //   }
     }
 
-    //Very sloppy at the moment -- currently spawn enemies every 1 second for 15 seconds
     public void onTick(long i){
-        //System.err.println(getCurrentWaveTime());
-        setCurrentWaveTime(getCurrentWaveTime() + 1);
-        if (getCurrentWaveTime()%100==0 && getCurrentWaveTime()<1500){
-            spawnEnemyToRatio(enemyRatios);
-        }
+        //System.err.println(elapsedWaveTime());
 
+        switch (getWaveState()) {
+            case WAITING:
+                //wait?
+                break;
+            case PAUSED:
+                //wait?
+                break;
+            case ACTIVE:
+                setCurrentWaveTime(elapsedWaveTime() + 1);
+                if (elapsedWaveTime()>getWaveLength()) {
+                    setWaveState(WaveState.FINISHED);
+                } else if (elapsedWaveTime() % 100 == 0) {
+                    spawnEnemyToRatio(enemyRatios);
+                }
+                //Check to see if wave is paused for some reason
+                break;
+            case FINISHED:
+                //Handle finished state
+                break;
+        }
     }
 
 
     /**
-     * @return the current in wave time
+     * @return the time elapsed since wave started in 0.001 seconds
      */
-    public int getCurrentWaveTime() { return waveTime; }
+    public int elapsedWaveTime() { return waveTime; }
 
     /**
-     * Sets the Current wave Time.
+     * Sets the current wave Time.
      * @param CurrentTime
      */
     public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
@@ -122,6 +143,14 @@ public class EnemyWave implements Tickable {
         GameManager.get().getWorld().addEntity(new Moose(
                 10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
     }
+
+    public int getWaveLength() { return waveLength; }
+
+    public void setWaveLength(int waveLength) { this.waveLength = waveLength; }
+
+    public WaveState getWaveState() { return waveState; }
+
+    public void setWaveState(WaveState state) { this.waveState = state; }
 
     private void addMultipleSquirrels(int squirrelCount) {
             for (int i = 0; i < squirrelCount; i++) {
