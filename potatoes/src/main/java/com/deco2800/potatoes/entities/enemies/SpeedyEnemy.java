@@ -51,11 +51,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	public SpeedyEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-		// this.steal
-		// this.speed = speed;
-		// this.goal = goal;
+		 this.speed = speed;
+		 this.goal = goal;
+		 this.path = null;
 		// resetStats();
 	}
+
 
 	private static EnemyStatistics initStats() {
 		EnemyStatistics result = new StatisticsBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
@@ -79,7 +80,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return progressBar;
 	}
 
-	private void harvestResources() {
+	private void stealing() {
 		double interactRange = 3f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
@@ -92,7 +93,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 	public void onTick(long i) {
-		harvestResources();
+		stealing();
+
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
@@ -101,7 +103,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		// check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
-				// collided with wall
+				 //collided with wall
 				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
 				target = path.pop();
 				break;
@@ -151,7 +153,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
 	}
-
 	/*
 	 * public void onTick(long i) { double interactRange = 3f;
 	 * Collection<AbstractEntity> entities =
