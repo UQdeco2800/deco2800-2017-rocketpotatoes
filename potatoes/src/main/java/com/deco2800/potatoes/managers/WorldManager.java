@@ -14,6 +14,7 @@ import com.deco2800.potatoes.util.GridUtil;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
+import com.deco2800.potatoes.worlds.terrain.TerrainType;
 
 /**
  * Manager for worlds. Stores and generates all the worlds.
@@ -39,9 +40,8 @@ public class WorldManager extends Manager {
 	/**
 	 * Gets the given world where 0 is the main world. The world is generated if it
 	 * hasn't already been.
-	 * 
-	 * @param key
-	 *            the number of the world to get
+	 *
+	 * @param key the number of the world to get
 	 * @return the world
 	 */
 	public World getWorld(WorldType key) {
@@ -49,54 +49,44 @@ public class WorldManager extends Manager {
 			return worlds.get(key);
 		} else {
 			// Generate the world here
-<<<<<<< HEAD
 			worlds.put(key, generateWorld(new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
 					new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)))));
 			//add some entities to the worlds that aren't the main world
-			if (key > 0) {
-				addPortal(key);
-			}
-			
-=======
+			addPortal(key);
+
 			worlds.put(key, generateWorld(key));
->>>>>>> d1d3ac846eea224c27a18f89d245b3f45159c655
+
 			return worlds.get(key);
 		}
 	}
-	
+
 	/**
 	 * Adds a portal to a new world
-	 * 
-	 * @param key
-	 * 			The ID of the world to add the portal to
+	 *
+	 * @param key The ID of the world to add the portal to
 	 */
-	private void addPortal(int key) {
+	private void addPortal(WorldType key) {
 		// the location of the portal
 		int xLocation = 5;
 		int yLocation = 5;
 		int zLocation = 0;
-		
+
 		// add the portal with the appropriate texture
-		switch (key) {
-			case 1:
-				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
-						"desert_portal"));
-				break;
-			case 2:
-				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
-						"iceland_portal"));
-				break;
-			case 3:
-				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
-						"volcano_portal"));
-				break;
-			case 4:
-				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
-						"sea_portal"));
-				break;
-		
+		if (key == WorldType.ICE_WORLD) {
+			worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+					"desert_portal"));
+		} else if (key == WorldType.DESERT_WORLD) {
+			worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+					"iceland_portal"));
+		} else if (key == WorldType.VOLCANO_WORLD) {
+			worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+					"volcano_portal"));
+		} else if (key == WorldType.OCEAN_WORLD) {
+			worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+					"sea_portal"));
 		}
-		
+
+
 	}
 
 	/**

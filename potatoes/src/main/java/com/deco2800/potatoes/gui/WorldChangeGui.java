@@ -10,32 +10,33 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.deco2800.potatoes.worlds.WorldType;
 
 public class WorldChangeGui extends Gui {
-	// logger for error/warning/info messages
+    // logger for error/warning/info messages
     private static final Logger LOGGER = LoggerFactory.getLogger(WorldChangeGui.class);
 
     private GameScreen screen;
     private Stage stage;
     private Skin uiSkin;
     private VerticalGroup worldsButtonGroup;
-    
+
     // buttons
     private TextButton worldOneButton;
     private TextButton worldTwoButton;
     private TextButton worldThreeButton;
     private TextButton worldFourButton;
     private TextButton exitButton;
-    
+
     // table to hold buttons
     private Table table;
-    
+
     // create a player manager
     private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 
     /**
      * Creates an instance of the World Change Gui
-     * 
+     *
      * @param stage
      * @param screen
      */
@@ -61,10 +62,10 @@ public class WorldChangeGui extends Gui {
         worldsButtonGroup.addActor(worldFourButton);
         worldsButtonGroup.addActor(exitButton);
         table.add(worldsButtonGroup);
-        
+
         // create listeners for each button
         setupListeners();
-        
+
         // set position of the gui
         resetGui(stage);
         // set the gui to initially be hidden
@@ -75,7 +76,7 @@ public class WorldChangeGui extends Gui {
 
     /**
      * Sets the position of the gui.
-     * 
+     *
      * @param stage
      * 			The game screen
      */
@@ -97,9 +98,9 @@ public class WorldChangeGui extends Gui {
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	// hide the gui
+                // hide the gui
                 hide();
-                
+
                 // the current player
                 Player player = playerManager.getPlayer();
                 // straight offset, can be done better
@@ -107,78 +108,78 @@ public class WorldChangeGui extends Gui {
                 // add player back into the world
                 GameManager.get().getWorld().addEntity(player);
             }
-            
+
         });
 
         // Listener to change to world 4
         worldFourButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	//change to world 4
-            	changeWorld(4);
+                //change to world 4
+                changeWorld(WorldType.OCEAN_WORLD);
             }
-            
+
         });
 
-     // Listener to change to world 3
+        // Listener to change to world 3
         worldThreeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	//change to world 3
-            	changeWorld(3);
+                //change to world 3
+                changeWorld(WorldType.VOLCANO_WORLD);
             }
-            
+
         });
-        
-        
+
+
         // Listener to change to world 2
         worldTwoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	//change to world 2
-            	changeWorld(2);
+                //change to world 2
+                changeWorld(WorldType.DESERT_WORLD);
             }
-            
+
         });
 
         // Listener to change to world 1
         worldOneButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            	//change to world 1
-            	changeWorld(1);
+                //change to world 1
+                changeWorld(WorldType.ICE_WORLD);
             }
-            
+
         });
 
     }
-    
+
     /**
      * Teleports the player to a different world.
-     * 
+     *
      * @param world
      * 			The key of the world to change to
      */
-    private void changeWorld(int world) {
-    	// change to new world
-		GameManager.get().getManager(WorldManager.class).setWorld(world);
-		// add player to new world
+    private void changeWorld(WorldType world) {
+        // change to new world
+        GameManager.get().getManager(WorldManager.class).setWorld(world);
+        // add player to new world
         GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         // set player to be next to the portal
         playerManager.getPlayer().setPosition(9, 4, 0);
-        
+
         // hide the world change gui
         hide();
     }
 
     @Override
-	public void show() {
+    public void show() {
         table.setVisible(true);
         stage.addActor(table);
     }
 
     @Override
-	public void hide() {
+    public void hide() {
         table.setVisible(false);
     }
 }

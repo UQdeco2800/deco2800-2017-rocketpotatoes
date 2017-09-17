@@ -58,13 +58,10 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		super(posX, posY, posZ, 3, 3, 3, texture);
 	}
 
-
-	@Override
-	public void onTick(long time) {
+	public boolean preTick(long time, AbstractEntity player){
 		float xPos = getPosX();
 		float yPos = getPosY();
 		boolean collided = false;
-		AbstractEntity player = null;
 
 		Box3D newPos = getBox3D();
 		newPos.setX(xPos);
@@ -90,7 +87,12 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				}
 			}
 		}
-
+		return collided;
+	}
+	@Override
+	public void onTick(long time) {
+		AbstractEntity player = null;
+		boolean collided = this.preTick(time, player);
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
@@ -115,5 +117,6 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 
 		}
 	}
+
 
 }

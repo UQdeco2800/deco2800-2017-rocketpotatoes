@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.Tickable;
@@ -36,7 +37,7 @@ import com.deco2800.potatoes.worlds.WorldType;
  *
  * @author Jordan Holder, Katie Gray
  */
-public class BasePortal extends MortalEntity implements Tickable, HasProgressBar {
+public class BasePortal extends AbstractPortal implements Tickable {
 
     /*
      * Progress bar to display health of base portal
@@ -75,40 +76,13 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
      * @param maxHealth the maximum health for the base portal
      */
     public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-        super(posX, posY, posZ, 3, 2.3f, 3, TEXTURE, maxHealth);
+        super(posX, posY, posZ, TEXTURE);
     }
 
     @Override
     public void onTick(long time) {
-        float xPos = getPosX();
-        float yPos = getPosY();
-        boolean collided = false;
         AbstractEntity player = null;
-
-        Box3D newPos = getBox3D();
-        newPos.setX(xPos);
-        newPos.setY(yPos);
-
-        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-        // Check surroundings
-        for (AbstractEntity entity : entities.values()) {
-            if (!(entity instanceof Player)) {
-                continue;
-            }
-
-            // Player detected
-            player = entity;
-
-            for (int i = 0; i < 8; i++) {
-                newPos.setX(xPos + POSITIONS[i][0]);
-                newPos.setY(yPos + POSITIONS[i][1]);
-                // Player next to this resource
-                if (newPos.overlaps(entity.getBox3D())) {
-                    collided = true;
-                }
-            }
-        }
-
+        boolean collided = this.preTick(time, player);
         // remove from game world and add to inventory if a player has collided with
         // this resource
         if (collided) {
@@ -136,9 +110,19 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
         }
     }
 
-    @Override
+  //  @Override
     public ProgressBar getProgressBar() {
         return progressBar;
     }
+  //  @Overide
+    public boolean showProgress() {
+        return false;
+    }
+   // @Override
+    public int getMaxProgress() {
+        // TODO Auto-generated method stub
+        return 1;
+    }
+
 }
 
