@@ -99,7 +99,8 @@ public class TextureManager extends Manager {
         saveTexture("singleplayerMainMenu", "resources/menu/singleplayerMainMenu.png");
         saveTexture("multiplayerMainMenu", "resources/menu/multiplayerMainMenu.png");
         saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
-
+        saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
+        saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
