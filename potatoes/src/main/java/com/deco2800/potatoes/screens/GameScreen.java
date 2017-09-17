@@ -25,13 +25,7 @@ import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.gui.DebugModeGui;
-import com.deco2800.potatoes.gui.GameMenuGui;
-import com.deco2800.potatoes.gui.GameOverGui;
-import com.deco2800.potatoes.gui.InventoryGui;
-import com.deco2800.potatoes.gui.PauseMenuGui;
-import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -199,6 +193,8 @@ public class GameScreen implements Screen {
 
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+
+		guiManager.addGui(new WaveGUI(guiManager.getStage(), this));
         
 		/* Setup inputs */
 		setupInputHandling();
@@ -417,6 +413,26 @@ public class GameScreen implements Screen {
 		guiManager.getStage().draw();
 	}
 
+	//Is it bad to be setting the status label text on every tick? Seems unnecessary but is it that bad?
+	private void updateWaveGUI() {
+		// Update WaveGui time
+		int timeToWaveEnd;
+		int timeToNextWave;
+		Gui waveGUI = guiManager.getGui(WaveGUI.class);
+		if (waveGUI instanceof WaveGUI) {
+			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+			if (activeWave != null) {
+				timeToWaveEnd = activeWave.getTimeToEnd();
+				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to wave end:");
+				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+			} else {
+				timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
+				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave:");
+				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave/75);
+			}
+		}
+	}
+
 	private void renderGame(SpriteBatch batch) {
 
 		/* Render the tiles first */
@@ -510,6 +526,7 @@ public class GameScreen implements Screen {
 			renderGame(batch);
 		}
 
+		updateWaveGUI();
 		renderGUI(batch);
 
 		batch.dispose();

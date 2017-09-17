@@ -11,7 +11,7 @@ public class WaveManager extends Manager implements TickableManager {
     private ArrayList<EnemyWave> waves;
     private EnemyWave activeWave;
     private int waveIndex = 0;
-    private int timeBetweenWaves = 500;
+    private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
 
     public WaveManager() {
@@ -91,6 +91,8 @@ public class WaveManager extends Manager implements TickableManager {
      * @return waveIndex the most recently/currently active wave*/
     public int getWaveIndex() { return waveIndex; }
 
+
+    public int getTimeBeforeNextWave() { return timeBetweenWaves -  getElapsedTime(); }
 
     /**
      * Set a wave to its finished state - no more enemies.

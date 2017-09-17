@@ -21,6 +21,8 @@ public class EnemyWave implements Tickable {
     private int waveTime = 0;
     //Spawn rate (100 = 1 second)
     private int spawnRate = 75;
+    //Time counting down for gui
+    private int timeToEnd = 0;
 
     /*Probably can merge (waiting w/ finished) or (waiting w/ paused)*/
     public enum WaveState {
@@ -124,6 +126,7 @@ public class EnemyWave implements Tickable {
      */
     public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
 
+    public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
 
     private void addSquirrel() {
         GameManager.get().getWorld().addEntity(new Squirrel(
