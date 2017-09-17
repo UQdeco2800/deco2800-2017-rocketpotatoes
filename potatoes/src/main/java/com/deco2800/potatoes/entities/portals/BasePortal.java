@@ -40,11 +40,10 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
     /*
      * Progress bar to display health of base portal
      */
-   // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
+    // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
     private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
     private static final transient String TEXTURE = "volcano_portal";
-
 
 
     /*
@@ -58,28 +57,24 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
     /*
      * The radius of which a collision can be detected
 	 */
-	private static final float CHANGE = (float) 0.2;
-	/*
-	 * The array of calculatePositions where a collision needs to be checked
-	 */
-	private static final float[][] POSITIONS = { {CHANGE, 0 }, {CHANGE, CHANGE}, { 0, CHANGE}, { -CHANGE, CHANGE},
-			{ -CHANGE, 0 }, { -CHANGE, -CHANGE}, { 0, -CHANGE}, { -CHANGE, -CHANGE} };
+    private static final float CHANGE = (float) 0.2;
+    /*
+     * The array of calculatePositions where a collision needs to be checked
+     */
+    private static final float[][] POSITIONS = {{CHANGE, 0}, {CHANGE, CHANGE}, {0, CHANGE}, {-CHANGE, CHANGE},
+            {-CHANGE, 0}, {-CHANGE, -CHANGE}, {0, -CHANGE}, {-CHANGE, -CHANGE}};
 
-	/**
-	 * This instantiates an BasePortal given the appropriate parameters.
-	 * 
-	 * @param posX
-	 *            the x coordinate of the spite
-	 * @param posY
-	 *            the y coordinate of the sprite
-	 * @param posZ
-	 *            the z coordinate of the sprite
-	 * @param maxHealth
-	 *            the maximum health for the base portal
-	 */
-	public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-		super(posX, posY, posZ, 3, 2.3f, 3, TEXTURE, maxHealth);
-	}
+    /**
+     * This instantiates an BasePortal given the appropriate parameters.
+     *
+     * @param posX      the x coordinate of the spite
+     * @param posY      the y coordinate of the sprite
+     * @param posZ      the z coordinate of the sprite
+     * @param maxHealth the maximum health for the base portal
+     */
+    public BasePortal(float posX, float posY, float posZ, float maxHealth) {
+        super(posX, posY, posZ, 3, 2.3f, 3, TEXTURE, maxHealth);
+    }
 
     @Override
     public void onTick(long time) {
@@ -92,42 +87,45 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
         newPos.setX(xPos);
         newPos.setY(yPos);
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		// Check surroundings
-		for (AbstractEntity entity : entities.values()) {
-			if (!(entity instanceof Player)) {
-				continue;
-			}
+        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+        // Check surroundings
+        for (AbstractEntity entity : entities.values()) {
+            if (!(entity instanceof Player)) {
+                continue;
+            }
 
-			// Player detected
-			player = entity;
+            // Player detected
+            player = entity;
 
-			for (int i = 0; i < 8; i++) {
-				newPos.setX(xPos + POSITIONS[i][0]);
-				newPos.setY(yPos + POSITIONS[i][1]);
-				// Player next to this resource
-				if (newPos.overlaps(entity.getBox3D())) {
-					collided = true;
-				}
-			}
-		}
+            for (int i = 0; i < 8; i++) {
+                newPos.setX(xPos + POSITIONS[i][0]);
+                newPos.setY(yPos + POSITIONS[i][1]);
+                // Player next to this resource
+                if (newPos.overlaps(entity.getBox3D())) {
+                    collided = true;
+                }
+            }
+        }
 
-		// remove from game world and add to inventory if a player has collided with
-		// this resource
-		if (collided) {
-			try {
-				LOGGER.info("Entered portal");
-				//play warping sound effect
-				SoundManager soundManager = new SoundManager();
-				soundManager.playSound("warpSound.wav");
-				//remove player from old world
-				GameManager.get().getWorld().removeEntity(player);
-				
+        // remove from game world and add to inventory if a player has collided with
+        // this resource
+        if (collided) {
+            try {
+                LOGGER.info("Entered portal");
+                //play warping sound effect
+                SoundManager soundManager = new SoundManager();
+                soundManager.playSound("warpSound.wav");
+                //remove player from old world
+                GameManager.get().getWorld().removeEntity(player);
+
                 ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class)).show();
-	            
-			} catch (Exception e) {
-				LOGGER.warn("Issue entering portal; " + e);
-			}
+
+            } catch (Exception e) {
+                LOGGER.warn("Issue entering portal; " + e);
+            }
+
+        }
+    }
 
     @Override
     public ProgressBar getProgressBar() {
