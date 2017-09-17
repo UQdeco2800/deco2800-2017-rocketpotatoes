@@ -251,17 +251,12 @@ public class GameScreen implements Screen {
 
 		GameManager.get().getManager(EventManager.class).unregisterAll();
 
-		// Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-			//addSquirrel();
-            //addTankEnemy();
-            //addMoose();
-            //addSpeedyEnemy();
             new EnemyWave(2, 1, 1,1, 2);
 
 			addResourceTrees();
@@ -371,12 +366,9 @@ public class GameScreen implements Screen {
 
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			if (e instanceof Tickable) {
-				// Only tick elements if we're singleplayer or master
-				if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-					((Tickable) e).onTick(timeDelta);
+			if (e instanceof Tickable &&(!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
+				((Tickable) e).onTick(timeDelta);
 
-				}
 			}
 
 			/*
