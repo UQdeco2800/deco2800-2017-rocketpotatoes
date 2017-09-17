@@ -149,6 +149,15 @@ public class TextureManager extends Manager {
         saveTexture("SW", "resources/player/debug/SW.png");
         saveTexture("W", "resources/player/debug/W.png");
         saveTexture("NW", "resources/player/debug/NW.png");
+        
+        saveTexture("wizardN", "resources/player/wizard/wizard_N.png");
+        saveTexture("wizardNE", "resources/player/wizard/wizard_NE.png");
+        saveTexture("wizardE", "resources/player/wizard/wizard_E.png");
+        saveTexture("wizardSE", "resources/player/wizard/wizard_SE.png");
+        saveTexture("wizardS", "resources/player/wizard/wizard_S.png");
+        saveTexture("wizardSW", "resources/player/wizard/wizard_SW.png");
+        saveTexture("wizardW", "resources/player/wizard/wizard_W.png");
+        saveTexture("wizardNW", "resources/player/wizard/wizard_NW.png");
 
     }
 

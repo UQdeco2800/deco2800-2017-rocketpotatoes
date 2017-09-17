@@ -188,28 +188,28 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	private void updateSprites() {
 		switch (this.getDirection()) {
 		case North:
-			this.setTexture("N");
+			this.setTexture("wizardN");
 			break;
 		case NorthEast:
-			this.setTexture("NE");
+			this.setTexture("wizardNNE");
 			break;
 		case East:
-			this.setTexture("E");
+			this.setTexture("wizardNE");
 			break;
 		case SouthEast:
-			this.setTexture("SE");
+			this.setTexture("wizardNSE");
 			break;
 		case South:
-			this.setTexture("S");
+			this.setTexture("wizardNS");
 			break;
 		case SouthWest:
-			this.setTexture("SW");
+			this.setTexture("wizardNSW");
 			break;
 		case West:
-			this.setTexture("W");
+			this.setTexture("wizardNW");
 			break;
 		case NorthWest:
-			this.setTexture("NW");
+			this.setTexture("wizardNNW");
 			break;
 		default:
 			break;
