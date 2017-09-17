@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +27,6 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -271,7 +272,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		float speedScale = GameManager.get().getManager(WorldManager.class)
+		float speedScale = GameManager.get().getWorld()
 				.getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
 				.getMoveScale();
 		newPosX -= speedx * (1 - speedScale);
