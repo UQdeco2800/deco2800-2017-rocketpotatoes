@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,7 +17,6 @@ import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
@@ -44,9 +42,9 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
+import com.deco2800.potatoes.worlds.WorldType;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -203,10 +201,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
 		setupInputHandling();
 
-		/* Create an example world for the engine */
-		// GameManager.get().setWorld(new InitialWorld());
-		// Sets the world to the initial world, world 0
-		GameManager.get().getManager(WorldManager.class).setWorld(0);
+        // Sets the world to the initial world, forest world
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;

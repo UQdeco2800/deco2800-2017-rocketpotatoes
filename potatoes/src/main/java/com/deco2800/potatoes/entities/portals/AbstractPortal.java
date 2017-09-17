@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
-import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +14,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.worlds.WorldType;
 
 /**
  * A class that can create portals which are not the base portal. Because these
@@ -101,8 +101,8 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				soundManager.playSound("warpSound.wav");
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(player);
-				//CHANGE to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(0);
+				//change to new world
+				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 				//add player to new world
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 				

@@ -2,24 +2,22 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
-import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
-
 import com.deco2800.potatoes.entities.health.MortalEntity;
-
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.worlds.InitialWorld2;
+import com.deco2800.potatoes.worlds.WorldType;
 
 /**
  * A class for creating the base portal. This class differs from AbstracPortals
@@ -41,10 +39,6 @@ public class BasePortal extends MortalEntity implements Tickable {
 	 *  Create a player manager.
 	 */
     private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-	/* 
-	 * create a test world 
-	 */
-    private InitialWorld2 testWorld = new InitialWorld2();
     /*
 	 * The radius of which a collision can be detected
 	 */
@@ -112,8 +106,8 @@ public class BasePortal extends MortalEntity implements Tickable {
 				soundManager.playSound("warpSound.wav");
 				//remove player from old world
 				GameManager.get().getWorld().removeEntity(player);
-				//CHANGE to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(1);
+				//change to new world
+				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.VOLCANO_WORLD);
 				//add player to new world
 	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 	            //add some entities to the test world (adds every time, kinda bad)

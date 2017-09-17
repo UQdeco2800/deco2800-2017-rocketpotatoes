@@ -44,6 +44,11 @@ public class Projectile extends AbstractEntity implements Tickable {
 		// empty for serialization
 	}
 
+	// currently used in MeleeAttack, will probably need to change out later.
+	public Projectile(float posX, float posY, float posZ, float xRenderLength, float yRenderLength, String texture) {
+		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, xRenderLength, yRenderLength, true, texture);
+	}
+	
 	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,
 			float targetPosZ, float range, float damage, String projectileType, Effect startEffect, Effect endEffect) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
