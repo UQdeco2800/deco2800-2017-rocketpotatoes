@@ -15,7 +15,7 @@ import com.deco2800.potatoes.screens.GameScreen;
 /*
     Used GameMenuGUI as a template
 * */
-public class WaveGUI extends Gui implements Tickable {
+public class WaveGUI extends Gui {
     private GameScreen screen;
 
     // Buttons
@@ -53,7 +53,4 @@ public class WaveGUI extends Gui implements Tickable {
 
     public Label getWaveTimeLabel() { return waveTimeLabel; }
 
-    public void onTick(long i) {
-
-    }
 }
