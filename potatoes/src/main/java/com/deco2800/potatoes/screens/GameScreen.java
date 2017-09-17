@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,7 +17,6 @@ import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
@@ -35,9 +33,9 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
+import com.deco2800.potatoes.worlds.WorldType;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -199,10 +197,8 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
 		setupInputHandling();
 
-		/* Create an example world for the engine */
-		// GameManager.get().setWorld(new InitialWorld());
-		// Sets the world to the initial world, world 0
-		GameManager.get().getManager(WorldManager.class).setWorld(0);
+        // Sets the world to the initial world, forest world
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -254,7 +250,6 @@ public class GameScreen implements Screen {
 
 		GameManager.get().getManager(EventManager.class).unregisterAll();
 
-		// Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
@@ -267,9 +262,7 @@ public class GameScreen implements Screen {
 			//add enemy waves
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
-			//GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 0, 1,0, 750));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 0, 0,1, 750));
-
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
 
 			addResourceTrees();
 			initialiseResources();
@@ -345,12 +338,9 @@ public class GameScreen implements Screen {
 
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			if (e instanceof Tickable) {
-				// Only tick elements if we're singleplayer or master
-				if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-					((Tickable) e).onTick(timeDelta);
+			if (e instanceof Tickable &&(!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
+				((Tickable) e).onTick(timeDelta);
 
-				}
 			}
 
 			/*
@@ -413,7 +403,7 @@ public class GameScreen implements Screen {
 		guiManager.getStage().draw();
 	}
 
-	//Is it bad to be setting the status label text on every tick? Seems unnecessary but is it that bad?
+	//Is it bad to be setting the status label text on every tick? Might want to think this through
 	private void updateWaveGUI() {
 		// Update WaveGui time
 		int timeToWaveEnd;
