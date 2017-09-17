@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.entities;
 
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.Player.PlayerState;
+
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
@@ -13,10 +15,10 @@ public class PlayerTest {
 	public void setup() {
 		player = new Player();
 	}
-
+	
 	@Test
-	public void directionTest(){
-		player.getPlayerDirection();
+	public void directionTest() {
+		player.getDirection();
 	}
 
 	@Test
@@ -33,10 +35,11 @@ public class PlayerTest {
 		player.toString();
 		player.getProgressBar();
 	}
+	
 	@Test
-	public void damageTest(){
-		player.isDamaged();
-		player.setDamaged(true);
+	public void damageTest() {
+		player.addState(PlayerState.damaged);
+		player.hasState(PlayerState.damaged);
 	}
 
 }
