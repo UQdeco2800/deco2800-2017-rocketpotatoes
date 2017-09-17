@@ -52,7 +52,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     // currently used in Player, will probably need to change out later.
     public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
                       Effect endEffect, String Directions) {
-        super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
+        super(posX, posY, posZ, xLength+2f, yLength+2f, zLength, xRenderLength, yRenderLength, true, TEXTURE);
         textureArray = new String[textureArrayLength];
         if (projectileType != "" && projectileType != null)
             this.projectileType = projectileType;
@@ -76,11 +76,47 @@ public class Projectile extends AbstractEntity implements Tickable {
 
         updatePosition();
         if (Directions.equalsIgnoreCase("Left")) {
-            setTargetPosition(posX + -5, posY + -5, posZ);
+            setTargetPosition(posX  -5, posY  -5, posZ);
 
         } else if (Directions.equalsIgnoreCase("Right")) {
             setTargetPosition(posX + 5, posY + 5, posZ);
         }
+
+    }
+
+    // currently used in Player, will probably need to change out later.
+    public Projectile(float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
+                      Effect endEffect, String Directions) {
+        super(posX, posY, posZ, xLength+2f, yLength+2f, zLength, xRenderLength, yRenderLength, true, TEXTURE);
+        textureArray = new String[textureArrayLength];
+        if (projectileType != "" && projectileType != null)
+            this.projectileType = projectileType;
+
+        for (int t = 0; t < textureArrayLength; t++) {
+            textureArray[t] = this.projectileType + Integer.toString(t + 1);
+        }
+
+//        if (targetClass != null)
+//            this.targetClass = targetClass;
+//        else
+//            this.targetClass = MortalEntity.class;
+
+        this.range = damage;
+        this.damage = damage;
+        this.startEffect = startEffect;
+        this.endEffect = endEffect;
+
+        if (startEffect != null)
+            GameManager.get().getWorld().addEntity(startEffect);
+
+        updatePosition();
+        if (Directions.equalsIgnoreCase("Left")) {
+            setTargetPosition(posX  -5, posY  -5, posZ);
+
+        } else if (Directions.equalsIgnoreCase("Right")) {
+            setTargetPosition(posX + 5, posY + 5, posZ);
+        }
+
     }
 
     public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,

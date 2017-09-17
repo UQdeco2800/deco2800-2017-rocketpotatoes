@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.effects.AOEEffect;
+import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.managers.*;
@@ -250,14 +251,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
                 if (GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection().equalsIgnoreCase("left")) {
+
                     target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
                 } else if (GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection().equalsIgnoreCase("right")) {
                     target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
                 }
+                if (target1.isPresent()) {
+                    GameManager.get().getWorld()
+                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX, pPosY, pPosZ, 5f, 100, "rocket", null, new ExplosionEffect(target1.get().getPosX() - 2, target1.get().getPosY(), target1.get().getPosZ(), 0.4f, 0.4f, 0f,
+                                    2f, 2f), GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection()));
+                } else if (!target1.isPresent()) {
+                    //Disable shooting when no enemies is present until new fix is found.
+                }
 
-                GameManager.get().getWorld()
-                        .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX, pPosY, pPosZ, 10f, 100, "rocket", null, null, GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection()));
                 break;
             default:
                 break;
