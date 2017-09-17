@@ -38,7 +38,7 @@ public class GridUtil {
 		Set<Point> edges = new HashSet<>();
 		Set<Point> filled = new HashSet<>();
 		Object start = grid[startX][startY];
-		genericFloodFill(new Point(startX, startY), p -> grid[p.x][p.y].equals(start), edges, filled);
+		genericFloodFill(new Point(startX, startY), p -> gridCheck(p, grid, start), edges, filled);
 		return filled;
 	}
 
@@ -59,8 +59,12 @@ public class GridUtil {
 		Set<Point> edges = new HashSet<>();
 		Set<Point> filled = new HashSet<>();
 		Object start = grid[startX][startY];
-		genericFloodFill(new Point(startX, startY), p -> grid[p.x][p.y].equals(start), edges, filled);
+		genericFloodFill(new Point(startX, startY), p -> gridCheck(p, grid, start), edges, filled);
 		return edges;
+	}
+
+	private static boolean gridCheck(Point p, Object[][] grid, Object start) {
+		return p.x >= 0 && p.x < grid.length && p.y >= 0 && p.y < grid[p.x].length && grid[p.x][p.y].equals(start);
 	}
 
 	/**
@@ -100,20 +104,22 @@ public class GridUtil {
 			filled.add(new Point(p));
 			checkNorthSouth(func, edges, filled, q, new Point(p), NORTH);
 			checkNorthSouth(func, edges, filled, q, new Point(p), SOUTH);
-			p.move(direction.x, direction.y);
+			p.translate(direction.x, direction.y);
 		} while (func.apply(p));
 		// Once finished, p is at an edge
+		p.translate(-direction.x, -direction.y);
 		edges.add(new Point(p));
 	}
 
 	private static void checkNorthSouth(Function<Point, Boolean> func, Set<Point> edges, Set<Point> filled,
 			Queue<Point> q, Point p, Point direction) {
-		p.move(direction.x, direction.y);
-		if (filled.contains(p)) {
+		p.translate(direction.x, direction.y);
+		if (!filled.contains(p)) {
 			if (func.apply(p)) {
 				q.add(p);
 			} else {
 				// At an edge
+				p.translate(-direction.x, -direction.y);
 				edges.add(p);
 			}
 		}
