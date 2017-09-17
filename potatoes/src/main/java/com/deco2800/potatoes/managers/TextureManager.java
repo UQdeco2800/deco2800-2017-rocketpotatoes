@@ -35,7 +35,7 @@ public class TextureManager extends Manager {
      */
     public TextureManager() {
     	
-    		saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
+    	saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
         saveTexture("player_right", "resources/player/caveman/caveman_idle_right.png");
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
@@ -68,6 +68,7 @@ public class TextureManager extends Manager {
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
+        saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
 
