@@ -1,7 +1,12 @@
 package com.deco2800.potatoes.entities.portals;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
+import com.deco2800.potatoes.entities.health.ProgressBar;
 
 import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
@@ -27,25 +32,31 @@ import com.deco2800.potatoes.util.Box3D;
 /**
  * A class for creating the base portal. This class differs from AbstracPortals
  * because the base portal needs health.
- * 
- * @author Jordan Holder, Katie Gray
  *
+ * @author Jordan Holder, Katie Gray
  */
-public class BasePortal extends MortalEntity implements Tickable {
+public class BasePortal extends MortalEntity implements Tickable, HasProgressBar {
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity();
-	private static final transient String TEXTURE = "volcano_portal";
+    /*
+     * Progress bar to display health of base portal
+     */
+   // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
-	/*
-	 * Logger for all info/warning/error logs
-	 */
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
-	/*
-	 *  Create a player manager.
-	 */
+    private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
+    private static final transient String TEXTURE = "volcano_portal";
+
+
+
+    /*
+     * Logger for all info/warning/error logs
+     */
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
+    /*
+     *  Create a player manager.
+     */
     private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
     /*
-	 * The radius of which a collision can be detected
+     * The radius of which a collision can be detected
 	 */
 	private static final float CHANGE = (float) 0.2;
 	/*
@@ -70,16 +81,16 @@ public class BasePortal extends MortalEntity implements Tickable {
 		super(posX, posY, posZ, 3, 2.3f, 3, TEXTURE, maxHealth);
 	}
 
-	@Override
-	public void onTick(long time) {
-		float xPos = getPosX();
-		float yPos = getPosY();
-		boolean collided = false;
-		AbstractEntity player = null;
+    @Override
+    public void onTick(long time) {
+        float xPos = getPosX();
+        float yPos = getPosY();
+        boolean collided = false;
+        AbstractEntity player = null;
 
-		Box3D newPos = getBox3D();
-		newPos.setX(xPos);
-		newPos.setY(yPos);
+        Box3D newPos = getBox3D();
+        newPos.setX(xPos);
+        newPos.setY(yPos);
 
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		// Check surroundings
@@ -118,6 +129,8 @@ public class BasePortal extends MortalEntity implements Tickable {
 				LOGGER.warn("Issue entering portal; " + e);
 			}
 
-		}
-	}
+    @Override
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
 }
