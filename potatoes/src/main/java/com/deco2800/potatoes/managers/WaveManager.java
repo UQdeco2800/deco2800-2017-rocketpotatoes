@@ -38,15 +38,11 @@ public class WaveManager extends Manager implements TickableManager {
     public ArrayList<EnemyWave> getWaves() { return waves; }
 
     public void onTick(long i) {
-        //Tick the current wave (no concept of current wave yet)
         //activeWave.onTick(i);
-
-
         if ((getActiveWave()) != null) {
             //System.err.println(getWaves().get(getWaveIndex()).getWaveState());
             getActiveWave().onTick(i);
         } else if (getWaveIndex()+1 < getWaves().size()) {
-
             //there are still more waves
             countTime();
             //System.err.println("waiting time: " + getElapsedTime());
@@ -56,7 +52,6 @@ public class WaveManager extends Manager implements TickableManager {
                 activateWave(waves.get(getWaveIndex()));
                 resetTime();
             }
-
         }
     }
 

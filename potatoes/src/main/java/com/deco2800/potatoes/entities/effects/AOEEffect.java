@@ -8,8 +8,8 @@ import java.util.Collection;
 
 public class AOEEffect extends Effect {
 
-	private final static transient String TEXTURE = "aoe1";
-	private float DAMAGE = 1;
+	private static final transient String TEXTURE = "aoe1";
+	private float damage = 1;
 	private int currentSpriteIndexCount = 1;
 	// private String[] currentSpriteIndex = {"exp1","exp2","exp3","aoe1", "aoe2",
 	// "aoe3"};
@@ -17,12 +17,12 @@ public class AOEEffect extends Effect {
 	private int effectsTimer = 0;
 	private int dmgTimer = 0;
 
-	private static float AOE_width = 5f;
-	private static float AOE_height = 2f;
+	private static float aoeWidth = 5f;
+	private static float aoeHeight = 2f;
 
 	public AOEEffect() {
 		// empty for serialization
-		DAMAGE = 1;
+		damage = 1;
 	}
 
 	/**
@@ -36,24 +36,14 @@ public class AOEEffect extends Effect {
 	 *            y start position
 	 * @param posZ
 	 *            z start position
-	 * @param xLength
-	 *            target x position
-	 * @param yLength
-	 *            target y position
-	 * @param zLength
-	 *            target z position
-	 * @param xRenderLength
-	 *            Projectile x length
-	 * @param yRenderLength
-	 *            Projectile y length
-	 * @param DAMAGE
+	 * @param damage
 	 *            Projectile damage
 	 */
 
-	public AOEEffect(float posX, float posY, float posZ, float DAMAGE) {
-		super(posX - (AOE_width / 2), posY - (AOE_height / 2), 0, AOE_width + 3, AOE_height + 3, 0, AOE_width,
-				AOE_height, TEXTURE);
-		this.DAMAGE = DAMAGE;
+	public AOEEffect(float posX, float posY, float posZ, float damage) {
+		super(posX - (aoeWidth / 2), posY - (aoeHeight / 2), 0, aoeWidth + 3, aoeHeight + 3, 0, aoeWidth,
+				aoeHeight, TEXTURE);
+		this.damage = damage;
 	}
 
 	@Override
@@ -89,7 +79,7 @@ public class AOEEffect extends Effect {
 	 */
 	@Override
 	public float getDamage() {
-		return DAMAGE;
+		return damage;
 	}
 
 }

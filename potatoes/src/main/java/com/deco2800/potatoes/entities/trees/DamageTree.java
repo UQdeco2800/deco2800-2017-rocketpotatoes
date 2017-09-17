@@ -31,6 +31,14 @@ public class DamageTree extends AbstractTree implements Tickable {
             "lightning_tree8",
             "lightning_tree9",
     }));
+	
+	private static final List<TreeStatistics> FIRE_TREE_STATS=generateTree("fire_tree",x->AnimationFactory.createSimpleTimeAnimation(100,new String[]{
+			       "fire_tree1",
+			       "fire_tree2",
+			       "fire_tree3",
+			       "fire_tree4",
+			 
+			 }));
     private Damage damageTreeType;
     /**
      * Static field to store information about upgrades
@@ -87,6 +95,8 @@ public class DamageTree extends AbstractTree implements Tickable {
             return ICE_TREE_STATS;
         else if(damageTreeType instanceof AcornTree)
             return ACORN_TREE_STATS;
+        else if(damageTreeType instanceof FireTree)
+        	return FIRE_TREE_STATS;
         return LIGHTNING_TREE_STATS;
     }
 

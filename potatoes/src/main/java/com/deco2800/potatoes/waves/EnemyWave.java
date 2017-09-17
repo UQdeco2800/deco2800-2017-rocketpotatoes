@@ -19,6 +19,8 @@ public class EnemyWave implements Tickable {
     private int waveLength;
     //The current time of the wave
     private int waveTime = 0;
+    //Spawn rate (100 = 1 second)
+    private int spawnRate = 75;
 
     /*Probably can merge (waiting w/ finished) or (waiting w/ paused)*/
     public enum WaveState {
@@ -99,7 +101,7 @@ public class EnemyWave implements Tickable {
                 setCurrentWaveTime(elapsedWaveTime() + 1);
                 if (elapsedWaveTime()>getWaveLength()) {
                     setWaveState(WaveState.FINISHED);
-                } else if (elapsedWaveTime() % 100 == 0) {
+                } else if (elapsedWaveTime() % spawnRate == 0) {
                     spawnEnemyToRatio(enemyRatios);
                 }
                 //Check to see if wave is paused for some reason
@@ -125,23 +127,23 @@ public class EnemyWave implements Tickable {
 
     private void addSquirrel() {
         GameManager.get().getWorld().addEntity(new Squirrel(
-                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+                    24, 24, 0));
     }
 
     private void addTank() {
         GameManager.get().getWorld().addEntity(
-                new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+                new TankEnemy(24, 24, 0));
     }
 
     private void addSpeedy() {
         GameManager.get().getWorld().addEntity(
-                new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+                new SpeedyEnemy(24, 24, 0));
 
     }
 
     private void addMoose() {
         GameManager.get().getWorld().addEntity(new Moose(
-                10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+                24, 24, 0));
     }
 
     public int getWaveLength() { return waveLength; }

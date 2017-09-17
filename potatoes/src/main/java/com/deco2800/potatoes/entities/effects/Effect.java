@@ -12,7 +12,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 
 public abstract class Effect extends AbstractEntity implements Tickable {
 
-	protected float DAMAGE = 0;
+	protected float damage = 0;
 
 	public Effect() {
 
@@ -33,23 +33,25 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
-		// Map<Integer, AbstractEntity> entities =
-		// GameManager.get().getWorld().getEntities();
-		// // Check surroundings
-		// for (AbstractEntity entity : entities.values()) {
-		//
-		// if (newPos.overlaps(entity.getBox3D())) {
-		// System.out.println(entity.toString());
-		// try {
-		// ((MortalEntity) entity).damage(DAMAGE);
-		// } catch (Exception e) {
-		//
-		// }
-		//
-		// break;
-		// }
-		//
-		// }
+		/*
+		 Map<Integer, AbstractEntity> entities =
+		 GameManager.get().getWorld().getEntities();
+		 // Check surroundings
+		 for (AbstractEntity entity : entities.values()) {
+
+		 if (newPos.overlaps(entity.getBox3D())) {
+		 System.out.println(entity.toString());
+		 try {
+		 ((MortalEntity) entity).damage(damage);
+		 } catch (Exception e) {
+
+		 }
+
+		 break;
+		 }
+
+		 }
+		 */
 	}
 
 	public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,

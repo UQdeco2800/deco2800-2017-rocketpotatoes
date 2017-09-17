@@ -14,11 +14,6 @@ public class RocketPotatoes extends Game {
 	}
 
 	@Override
-	public void render() {
-		super.render();
-	}
-
-	@Override
 	public void dispose() {
 		System.exit(0);
 	}

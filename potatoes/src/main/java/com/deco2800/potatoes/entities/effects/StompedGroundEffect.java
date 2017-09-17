@@ -1,14 +1,12 @@
 package com.deco2800.potatoes.entities.effects;
 
 import java.util.Map;
-import java.util.Optional;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A StompedGroundEffect, essentially terrain that has been "damaged" by an entity in the game.
@@ -62,15 +60,17 @@ public class StompedGroundEffect extends Effect {
             if (!resourceStomped) {
                 Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
                 for (AbstractEntity entity : entities.values()) {
-                    if (!this.equals(entity) && entity instanceof ResourceEntity  &&
-                            effectPosition.overlaps(entity.getBox3D()) ) {
-                        String resourceType = ((ResourceEntity) entity).getType().getTypeName();
-                        GameManager.get().getWorld().removeEntity(entity);
-                        if ("seed".equals(resourceType)) {
-                            soundManager.playSound("seedResourceDestroyed.wav");
-                        } else if ("food".equals(resourceType)) {
-                            soundManager.playSound("foodResourceDestroyed.wav");
-                        }
+                    if (this.equals(entity) || !(entity instanceof ResourceEntity) ||
+                            !effectPosition.overlaps(entity.getBox3D())) {
+                        continue;
+                    }
+
+                    String resourceType = ((ResourceEntity) entity).getType().getTypeName();
+                    GameManager.get().getWorld().removeEntity(entity);
+                    if ("seed".equals(resourceType)) {
+                        soundManager.playSound("seedResourceDestroyed.wav");
+                    } else if ("food".equals(resourceType)) {
+                        soundManager.playSound("foodResourceDestroyed.wav");
                     }
                 }
                 resourceStomped = true;

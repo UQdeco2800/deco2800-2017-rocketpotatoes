@@ -22,59 +22,69 @@ public class Box2D implements CollisionMask{
         this.yLength = yLength;
     }
 
+    private boolean overlapsPoint(Point2D other) {
+        // Check x non collision
+        if ( Math.abs(this.x - other.getX()) < (this.xLength * 0.5)) {
+            return false;
+        }
+
+        // Check y non collision
+        if ( Math.abs(this.y - other.getY()) < (this.yLength * 0.5)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean overlapsCircle(Circle2D other) {
+        // We will consider the circle to be a point
+        // and the rectangle to be a rounded rectangle
+        // (adding the radius to the outside of the rectangle)
+
+        // Collapse down the dimensions, so we're considering one corner of the rectangle
+        float distX = Math.abs(other.getX() - this.x);
+        float distY = Math.abs(other.getY() - this.y);
+
+        // Point is outside collision
+        if (distX > (this.xLength/2 + other.getRadius()))
+            return false;
+        if (distY > (this.yLength/2 + other.getRadius()))
+            return false;
+
+        // Point is inside collision
+        if (distX <= (this.xLength/2))
+            return true;
+        if (distY <= (this.yLength/2))
+            return true;
+
+        // May intersect corner scenario, calc oblique distance square
+        float cornerX = distX - (this.xLength / 2);
+        float cornerY = distY - (this.yLength / 2);
+        float cornerDistSquare = cornerX * cornerX + cornerY * cornerY;
+
+        return cornerDistSquare <= (other.getRadius() * other.getRadius());
+    }
+
+    private boolean overlapsBox(Box2D other) {
+        // Calc centre to centre dist
+        float distX = Math.abs(other.getX() - this.x);
+        float distY = Math.abs(other.getY() - this.y);
+
+        // Check dist's are large enough that no collision could occur
+        if (distX > (this.xLength + other.getXLength())/2) { return false; }
+        if (distY > (this.yLength + other.getYLength())/2) { return false; }
+
+        return true;
+    }
+
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
-            Point2D otherPoint = (Point2D) other;
-
-            // Check x non collision
-            if ( Math.abs(this.x - otherPoint.getX()) < (this.xLength * 0.5)) {
-                return false;
-            }
-
-            // Check y non collision
-            if ( Math.abs(this.y - otherPoint.getY()) < (this.yLength * 0.5)) {
-                return false;
-            }
-
-            return true;
+            return overlapsPoint((Point2D)other);
         } else if (other instanceof Circle2D) {
-            Circle2D circle = (Circle2D) other;
-            // We will consider the circle to be a point
-            // and the rectangle to be a rounded rectangle
-            // (adding the radius to the outside of the rectangle)
-
-            // Collapse down the dimensions, so we're considering one corner of the rectangle
-            float distX = Math.abs(circle.getX() - this.x);
-            float distY = Math.abs(circle.getY() - this.y);
-
-            // Point is outside collision
-            if (distX > (this.xLength/2 + circle.getRadius())) { return false; }
-            if (distY > (this.yLength/2 + circle.getRadius())) { return false; }
-
-            // Point is inside collision
-            if (distX <= (this.xLength/2)) { return true; }
-            if (distY <= (this.yLength/2)) { return true; }
-
-            // May intersect corner scenario, calc oblique distance square
-            float cornerX = distX - (this.xLength / 2);
-            float cornerY = distY - (this.yLength / 2);
-            float cornerDistSquare = cornerX * cornerX + cornerY * cornerY;
-
-            return cornerDistSquare <= (circle.getRadius() * circle.getRadius());
+            return overlapsCircle((Circle2D)other);
         } else if (other instanceof Box2D) {
-            Box2D otherBox = (Box2D) other;
-
-            // Calc centre to centre dist
-            float distX = Math.abs(otherBox.getX() - this.x);
-            float distY = Math.abs(otherBox.getY() - this.y);
-
-            // Check dist's are large enough that no collision could occur
-            if (distX > (this.xLength + otherBox.getXLength())/2) { return false; }
-            if (distY > (this.yLength + otherBox.getYLength())/2) { return false; }
-
-            return true;
-
+            return overlapsBox((Box2D)other);
         } else {
             return other.overlaps(this);
         }
@@ -102,76 +112,74 @@ public class Box2D implements CollisionMask{
         return true;
     }
 
+    private float calculateDistance(float distX, float distY) {
+        if ((distX >= 0) && (distY >= 0)) {
+            // Box & point are diagonal to each other, calc corner point to point dist
+            return (float) Math.sqrt(distX * distX + distY * distY);
+        } else if (distX >= 0) {
+            // Box & point overlap on x co-ord but not y
+            return distX;
+        } else if (distY >= 0) {
+            // Box & point overlap on y co-ord but not x
+            return distY;
+        } else {
+            // Box & point overlap, return rough negative val
+            // TODO this val might be used in physics
+            return Math.max(distX, distY);
+        }
+    }
+
+    private float distanceToPoint(Point2D other) {
+        Point2D point = (Point2D) other;
+
+        // Calc dist between sides on each dimension
+        float distX = Math.abs(point.getX() - this.x) - this.xLength/2;
+        float distY = Math.abs(point.getX() - this.x) - this.yLength/2;
+
+        return calculateDistance(distX, distY);
+    }
+
+    private float distanceToCircle(Circle2D other) {
+        // Calc dist between sides on each dimension, considering the circle as a point
+        float distPointX = Math.abs(other.getX() - this.x) - this.xLength/2;
+        float distPointY = Math.abs(other.getY() - this.y) - this.yLength/2;
+
+        // Calc dist between sides on each dimension
+        float distX = distPointX - other.getRadius();
+        float distY = distPointY - other.getRadius();
+
+        if ((distX >= 0) && (distPointY < 0)) {
+            // Box & circle overlap on x co-ord but not y
+            return distX;
+        } else if ((distY >= 0) && (distPointX < 0)) {
+            // Box & circle overlap on y co-ord but not x
+            return distY;
+        } else if ((distX >= 0) && (distY >= 0)) {
+            // Box & circle are diagonal to each other, calc corner point to point dist
+            return (float) Math.sqrt(distPointX * distPointX + distPointY * distPointY) - other.getRadius();
+        } else {
+            // Box & circle overlap, return rough negative val
+            // TODO this val might be used in physics
+            return Math.max(distX, distY);
+        }
+    }
+
+    private float distanceToBox(Box2D other) {
+        // Calc dist between sides on each dimension
+        float distX = Math.abs(other.getX() - this.x) - (this.xLength + other.getXLength()) / 2;
+        float distY = Math.abs(other.getX() - this.x) - (this.yLength + other.getYLength()) / 2;
+
+        return calculateDistance(distX, distY);
+    }
+
     @Override
     public float distance(CollisionMask other) {
-
         if (other instanceof Point2D) {
-            Point2D point = (Point2D) other;
-
-            // Calc dist between sides on each dimension
-            float distX = Math.abs(point.getX() - this.x) - this.xLength/2;
-            float distY = Math.abs(point.getX() - this.x) - this.yLength/2;
-
-            if ((distX >= 0) && (distY >= 0)) {
-                // Box & point are diagonal to each other, calc corner point to point dist
-                return (float) Math.sqrt(distX * distX + distY * distY);
-            } else if (distX >= 0) {
-                // Box & point overlap on x co-ord but not y
-                return distX;
-            } else if (distY >= 0) {
-                // Box & point overlap on y co-ord but not x
-                return distY;
-            } else {
-                // Box & point overlap, return rough negative val
-                // TODO this val might be used in physics
-                return Math.max(distX, distY);
-            }
+            return distanceToPoint((Point2D)other);
         } else if (other instanceof Circle2D) {
-            Circle2D circle = (Circle2D) other;
-
-            // Calc dist between sides on each dimension, considering the circle as a point
-            float distPointX = Math.abs(circle.getX() - this.x) - this.xLength/2;
-            float distPointY = Math.abs(circle.getY() - this.y) - this.yLength/2;
-
-            // Calc dist between sides on each dimension
-            float distX = distPointX - circle.getRadius();
-            float distY = distPointY - circle.getRadius();
-
-            if ((distX >= 0) && (distPointY < 0)) {
-                // Box & circle overlap on x co-ord but not y
-                return distX;
-            } else if ((distY >= 0) && (distPointX < 0)) {
-                // Box & circle overlap on y co-ord but not x
-                return distY;
-            } else if ((distX >= 0) && (distY >= 0)) {
-                // Box & circle are diagonal to each other, calc corner point to point dist
-                return (float) Math.sqrt(distPointX * distPointX + distPointY * distPointY) - circle.getRadius();
-            } else {
-                // Box & circle overlap, return rough negative val
-                // TODO this val might be used in physics
-                return Math.max(distX, distY);
-            }
+            return distanceToCircle((Circle2D)other);
         } else if (other instanceof Box2D) {
-            Box2D otherBox = (Box2D) other;
-
-            // Calc dist between sides on each dimension
-            float distX = Math.abs(otherBox.getX() - this.x) - (this.xLength + otherBox.getXLength())/2;
-            float distY = Math.abs(otherBox.getX() - this.x) - (this.yLength + otherBox.getYLength())/2;
-
-            if ((distX >= 0) && (distY >= 0)) {
-                // Boxes are diagonal to each other, calc corner point to point dist
-                return (float) Math.sqrt(distX * distX + distY * distY);
-            } else if (distX >= 0) {
-                // Boxes overlap on x co-ord but not y
-                return distX;
-            } else if (distY >= 0) {
-                // Boxes overlap on y co-ord but not x
-                return distY;
-            } else {
-                // Boxes overlap, return rough negative val
-                // TODO this val might be used in physics
-                return Math.max(distX, distY);
-            }
+            return distanceToBox((Box2D)other);
         } else {
             return other.distance(this);
         }
@@ -280,10 +288,14 @@ public class Box2D implements CollisionMask{
 
         //closest point overlaps on one axis
         //e.g. point one is within the vertical bounds of the box & closer than point 2 on x axis
-        if ((distY1 <= 0) && ((this.x < x1 && x1 < x2) || (x2 < x1 && x1 < this.x))) { return distX1; }
-        if ((distY2 <= 0) && ((this.x < x2 && x2 < x1) || (x1 < x2 && x2 < this.x))) { return distX2; }
-        if ((distX1 <= 0) && ((this.y < y1 && y1 < y2) || (y2 < y1 && y1 < this.y))) { return distY1; }
-        if ((distX2 <= 0) && ((this.y < y1 && y1 < y2) || (y2 < y1 && y1 < this.y))) { return distY2; }
+        if ((distY1 <= 0) && ((this.x < x1 && x1 < x2) || (x2 < x1 && x1 < this.x)))
+            return distX1;
+        if ((distY2 <= 0) && ((this.x < x2 && x2 < x1) || (x1 < x2 && x2 < this.x)))
+            return distX2;
+        if ((distX1 <= 0) && ((this.y < y1 && y1 < y2) || (y2 < y1 && y1 < this.y)))
+            return distY1;
+        if ((distX2 <= 0) && ((this.y < y1 && y1 < y2) || (y2 < y1 && y1 < this.y)))
+            return distY2;
 
 
         //both points in one diagonal
@@ -374,17 +386,18 @@ public class Box2D implements CollisionMask{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) { return true; }
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-        if (!(o instanceof Box2D)) { return false; }
+        Box2D box2D = (Box2D) o;
 
-        Box2D that = (Box2D) o;
-
-        return hashCode() == that.hashCode() &&
-                this.x         == that.getX() &&
-                this.y         == that.getY() &&
-                this.xLength   == that.getXLength() &&
-                this.yLength   == that.getYLength();
+        if (Float.compare(box2D.x, x) != 0)
+            return false;
+        if (Float.compare(box2D.y, y) != 0)
+            return false;
+        return Float.compare(box2D.xLength, xLength) == 0 && Float.compare(box2D.yLength, yLength) == 0;
     }
 
     @Override

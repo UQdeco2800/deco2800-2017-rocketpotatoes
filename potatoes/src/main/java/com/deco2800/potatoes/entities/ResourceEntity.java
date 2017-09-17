@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
@@ -37,7 +38,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 */
 	private final float change = (float) 0.2;
 	/*
-	 * The array of positions where a collision needs to be checked
+	 * The array of calculatePositions where a collision needs to be checked
 	 */
 	private final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
 			{ -change, 0 }, { -change, -change }, { 0, -change }, { -change, -change } };
@@ -121,16 +122,17 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		// Check surroundings
 		for (AbstractEntity entity : entities.values()) {
-			if (entity instanceof Player) {
-				// Player detected
-				for (int i = 0; i < 8; i++) {
-					newPos.setX(xPos + positions[i][0]);
-					newPos.setY(yPos + positions[i][1]);
-					// Player next to this resource
-					if (newPos.overlaps(entity.getBox3D())) {
-						collided = true;
-						player = (Player) entity;
-					}
+			if (!(entity instanceof Player)) {
+				continue;
+			}
+			// Player detected
+			for (int i = 0; i < 8; i++) {
+				newPos.setX(xPos + positions[i][0]);
+				newPos.setY(yPos + positions[i][1]);
+				// Player next to this resource
+				if (newPos.overlaps(entity.getBox3D())) {
+					collided = true;
+					player = (Player) entity;
 				}
 			}
 		}
@@ -138,12 +140,13 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
+			GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
 			try {
 				GameManager.get().getWorld().removeEntity(this);
 				player.getInventory().updateQuantity(this.resourceType, this.getQuantity());
 				LOGGER.info("Collected resource: " + this.resourceType);
 			} catch (Exception e) {
-				LOGGER.warn("Issue colliding with resource");
+				LOGGER.warn("Issue colliding with resource; \n" + e);
 			}
 
 		}
