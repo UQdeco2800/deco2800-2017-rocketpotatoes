@@ -177,21 +177,24 @@ public class TextureManager extends Manager {
 	}
     
 	/**
-	 * Saves a flipped version of the Texture associated with toFlip and saves it in
-	 * flippedId
+	 * Creates multiple textures from the given texture by splitting it into a grid
+	 * the size of spriteNames and save each area with the corresponding string in
+	 * spriteNames
 	 * 
-	 * @param toFlip
-	 *            The id of the texture to create a flipped version of
-	 * @param flippedId
-	 * @param x
-	 *            Whether to flip in the x direction
-	 * @param y
-	 *            Whether to flip in the y direction
+	 * @param textureId
+	 *            The texture to create the sprite sheet from
+	 * @param spriteNames
+	 *            The names for all the sprite textures created
 	 */
-	public void saveFlippedTexture(String toFlip, String flippedId, boolean x, boolean y) {
-		LOGGER.info("Saving flipped texture" + flippedId + " from " + toFlip);
-		textureMap.put(flippedId, new TextureRegion(textureMap.get(toFlip)));
-		textureMap.get(flippedId).flip(x, y);
+	public void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
+		TextureRegion region = textureMap.get(textureId);
+		int height = region.getRegionHeight() / spriteNames.length;
+		for (int y = 0; y < spriteNames.length; y++) {
+			int width = region.getRegionWidth() / spriteNames[y].length;
+			for (int x = 0; x < spriteNames[y].length; x++) {
+				textureMap.put(spriteNames[y][x], new TextureRegion(region, x, y, width, height));
+			}
+		}
 	}
 
     /**
