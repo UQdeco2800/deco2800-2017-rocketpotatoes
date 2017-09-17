@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tower;
@@ -164,19 +166,23 @@ public class TreeShopGui extends Gui {
 			initiated = false;
 		} else {
 			initiated = true;
+			setTreeCoords(x,y);
 		}
 		moveLocation(x,y);
 	}
 	
 	public void setTreeCoords(int x, int y) {
-		if (!initiated) {
-			treeX = x;
-			treeY = y;
-		}
+		screenToTile( x, y);
+	}
+	
+	public void screenToTile(int x, int y) {
+		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		Vector2 tile = Render3D.worldPosToTile(world.x, world.y);
+		treeX = (int) Math.floor(tile.x);
+		treeY = (int) Math.floor(tile.y);
 	}
 	
 	private void buyTree() {
-		
 		
 		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
 			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);

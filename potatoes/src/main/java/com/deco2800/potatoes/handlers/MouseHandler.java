@@ -57,9 +57,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				world.deSelectAll();
 			}
 		}
-		int realX = (int) Math.floor(coords.x);
-		int realY = (int) Math.floor(coords.y);
-		treeShop.setTreeCoords(realX,realY);
+		
 		treeShop.initShop(originX,originY);
 
 	}
