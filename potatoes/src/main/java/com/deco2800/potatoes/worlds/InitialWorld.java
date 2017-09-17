@@ -26,16 +26,6 @@ public class InitialWorld extends World {
 		 */
 		this.setWidth(this.getMap().getProperties().get("width", Integer.class));
 		this.setLength(this.getMap().getProperties().get("height", Integer.class));
-
-		//this.addEntity(new Peon(7, 7, 0));
-		//this.addEntity(new Tower(8, 8, 0));
-
-		//this.addEntity(new GoalPotate(10, 10, 0));
-		
-		Random random = new Random();
-		for(int i = 0; i < 5; i++) {
-			//this.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-		}
 		
 	}
 
@@ -48,11 +38,5 @@ public class InitialWorld extends World {
 				((Selectable) r).deselect();
 			}
 		}
-	}
-	
-	// Hacky fix
-	@Override
-	public float getHeight(int x, int y) {
-		return 0.5f;
 	}
 }

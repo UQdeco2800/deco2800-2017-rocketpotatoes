@@ -24,7 +24,7 @@ public class EnemyWave implements Tickable {
     //Time counting down for gui
     private int timeToEnd = 0;
 
-    /*Probably can merge (waiting w/ finished) or (waiting w/ paused)*/
+    /*Probably can merge (waiting w/ finished) or (waiting w/ paused) not too sure*/
     public enum WaveState {
         WAITING, ACTIVE, PAUSED, FINISHED
     }
