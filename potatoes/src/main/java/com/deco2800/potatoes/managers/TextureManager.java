@@ -137,6 +137,15 @@ public class TextureManager extends Manager {
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
+        
+        saveTexture("N", "resources/player/debug/N.png");
+        saveTexture("NE", "resources/player/debug/NE.png");
+        saveTexture("E", "resources/player/debug/E.png");
+        saveTexture("SE", "resources/player/debug/SE.png");
+        saveTexture("S", "resources/player/debug/S.png");
+        saveTexture("SW", "resources/player/debug/SW.png");
+        saveTexture("W", "resources/player/debug/W.png");
+        saveTexture("NW", "resources/player/debug/NW.png");
 
     }
 

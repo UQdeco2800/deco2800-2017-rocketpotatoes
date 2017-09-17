@@ -33,7 +33,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * Entity for the playable character.
  *
- * @author leggy, petercondoleon
+ * @authors leggy, petercondoleon
  *
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
@@ -49,7 +49,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	private float speedy;
 	private int respawnTime = 5000; // milliseconds
 	private Inventory inventory;
-
+	
+	private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
 	private Direction currentDirection; // The direction the player faces
 	private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 	
@@ -80,7 +81,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	 */
 	public Player(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
-		movementSpeed = 0.075f;
+		this.movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
 		this.currentDirection = Direction.SouthEast;
@@ -131,8 +132,87 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	 */
 	@Override
 	public Direction getDirection() {
-		// TODO: Implementation
 		return currentDirection;
+	}
+	
+	/**
+	 * Sets the direction of the player based on a specified direction.
+	 * 
+	 * @param direction
+	 * 			The direction to the player to.
+	 */
+	private void setDirection(Direction direction) {
+		if (this.currentDirection != direction) {
+			this.currentDirection = direction;
+			LOGGER.info("Set player direction to " + direction);
+			updateSprites();
+		}
+	}
+	
+	/**
+	 * Updates the direction of the player based on change in position.
+	 */
+	private void updateDirection() {
+		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+			return;	// Not moving
+		}
+		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x)*(180/Math.PI);
+
+		if (angularDirection >= -180 & angularDirection < -157.5) {
+			this.setDirection(Direction.SouthWest);
+		} else if (angularDirection >= -157.5 & angularDirection < -112.5) {
+			this.setDirection(Direction.West);
+		} else if (angularDirection >= -112.5 & angularDirection < -67.5) {
+			this.setDirection(Direction.NorthWest);
+		} else if (angularDirection >= -67.5 & angularDirection < -22.5) {
+			this.setDirection(Direction.North);
+		} else if (angularDirection >= -22.5 & angularDirection < 22.5) {
+			this.setDirection(Direction.NorthEast);
+		} else if (angularDirection >= 22.5 & angularDirection < 67.5) {
+			this.setDirection(Direction.East);
+		} else if (angularDirection >= 67.5 & angularDirection < 112.5) {
+			this.setDirection(Direction.SouthEast);
+		} else if (angularDirection >= 112.5 & angularDirection < 157.5) {
+			this.setDirection(Direction.South);
+		} else if (angularDirection >= 157.5 & angularDirection <= 180) {
+			this.setDirection(Direction.SouthWest);
+		} 	
+		
+		oldPos = new Vector2(this.getPosX(), this.getPosY());
+	}
+	
+	/**
+	 * Updates the player sprite based on it's state and direction.
+	 */
+	private void updateSprites() {
+		switch (this.getDirection()) {
+		case North:
+			this.setTexture("N");
+			break;
+		case NorthEast:
+			this.setTexture("NE");
+			break;
+		case East:
+			this.setTexture("E");
+			break;
+		case SouthEast:
+			this.setTexture("SE");
+			break;
+		case South:
+			this.setTexture("S");
+			break;
+		case SouthWest:
+			this.setTexture("SW");
+			break;
+		case West:
+			this.setTexture("W");
+			break;
+		case NorthWest:
+			this.setTexture("NW");
+			break;
+		default:
+			break;
+		}
 	}
 	
 	/**
@@ -216,28 +296,29 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 
 
-		if (this.hasState(PlayerState.damaged)) {
-
-			if (this.getDirection() == Direction.SouthEast) {
-				this.setTexture("flash_red_left");
-
-			} else {
-				this.setTexture("flash_red_right");
-
-			}
-			
-			this.removeState(PlayerState.damaged);
-		} else {
-			
-			if (this.getDirection() == Direction.SouthEast) {
-				this.setTexture(TEXTURE_RIGHT);
-			} else if (this.getDirection() == Direction.SouthWest) {
-				this.setTexture(TEXTURE_LEFT);
-			} else {
-				this.setTexture(TEXTURE_RIGHT);
-			}
-
-		}
+//		if (this.hasState(PlayerState.damaged)) {
+//
+//			if (this.getDirection() == Direction.SouthEast) {
+//				this.setTexture("flash_red_left");
+//
+//			} else {
+//				this.setTexture("flash_red_right");
+//
+//			}
+//			
+//			this.removeState(PlayerState.damaged);
+//		} else {
+//			
+//			if (this.getDirection() == Direction.SouthEast) {
+//				this.setTexture(TEXTURE_RIGHT);
+//			} else if (this.getDirection() == Direction.SouthWest) {
+//				this.setTexture(TEXTURE_LEFT);
+//			} else {
+//				this.setTexture(TEXTURE_RIGHT);
+//			}
+//
+//		}
+		updateDirection();
 	}
 
 	/**
@@ -257,16 +338,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 			speedx -= movementSpeed;
 			break;
 		case Input.Keys.A:
-			// changes the sprite so that the character is facing left
-			this.currentDirection = Direction.SouthWest;
-			this.setTexture(TEXTURE_LEFT);
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
-			// changes the sprite so that the character is facing right
-			this.currentDirection = Direction.SouthEast;
-			this.setTexture(TEXTURE_RIGHT);
 			speedx += movementSpeed;
 			speedy += movementSpeed;
 			break;
@@ -417,5 +492,4 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
-
 }
