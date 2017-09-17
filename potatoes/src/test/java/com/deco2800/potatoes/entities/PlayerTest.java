@@ -5,7 +5,6 @@ import com.deco2800.potatoes.entities.Player.PlayerState;
 
 import org.junit.Test;
 import org.junit.Before;
-import static org.junit.Assert.assertEquals;
 import com.badlogic.gdx.Input;
 
 public class PlayerTest {
@@ -24,10 +23,13 @@ public class PlayerTest {
 	@Test
 	public void keysTest(){
 		player.handleKeyDown(Input.Keys.W);
+		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.S);
+		player.handleKeyUp(Input.Keys.S);
 		player.handleKeyDown(Input.Keys.A);
+		player.handleKeyUp(Input.Keys.A);
 		player.handleKeyDown(Input.Keys.D);
-		player.handleKeyDown(Input.Keys.Q);
+		player.handleKeyUp(Input.Keys.D);
 	}
 
 	@Test
@@ -41,5 +43,10 @@ public class PlayerTest {
 		player.addState(PlayerState.damaged);
 		player.hasState(PlayerState.damaged);
 	}
-
+	
+	@Test
+	public void checkKeyDownTest() {
+		player.handleKeyUp(Input.Keys.W);
+	}
+	
 }
