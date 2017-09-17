@@ -27,7 +27,6 @@ public class GameManager implements TickableManager {
 
 	/**
 	 * Returns an instance of the GM
-	 * Returns an instance of the GM
 	 * @return GameManager
 	 */
 	public static GameManager get() {
@@ -90,7 +89,15 @@ public class GameManager implements TickableManager {
 	 * @param world
 	 */
 	public void setWorld(World world) {
-		this.gameWorld = world;
+		// Hopefully stores the events, not sure though
+		if (gameWorld != null) {
+			gameWorld.setEventManager(getManager(EventManager.class));
+		}
+		gameWorld = world;
+		managers.remove(getManager(EventManager.class));
+		if (world.getEventManager() != null) {
+			managers.add(world.getEventManager());
+		}
 	}
 
 	/**

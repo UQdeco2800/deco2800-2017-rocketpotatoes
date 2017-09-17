@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
+import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.MainMenuGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -18,6 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+
+/*
+ * "Ascending the Vale" Kevin MacLeod (incompetech.com)
+ * Licensed under Creative Commons: By Attribution 3.0 License
+ * http://creativecommons.org/licenses/by/3.0/
+ */
 
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
@@ -35,6 +43,7 @@ public class MainMenuScreen implements Screen {
 
     private MainMenuGui mainMenuGui;
     private OrthographicCamera camera;
+    private SoundManager soundManager;
     private TextureManager textureManager;
 
 
@@ -46,9 +55,12 @@ public class MainMenuScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         // game screen background
 
+        soundManager = GameManager.get().getManager(SoundManager.class);
         textureManager = GameManager.get().getManager(TextureManager.class);
 
         stage = new Stage(new ScreenViewport());
+
+        soundManager.playMusic("Ascending the Vale.mp3");
 
         setupGui();
 
@@ -84,7 +96,7 @@ public class MainMenuScreen implements Screen {
         // Draw/update gui
         stage.act();
         stage.getBatch().begin();
-        stage.getBatch().draw(textureManager.getTexture("screen_background"), 0, 0, Gdx.graphics.getWidth(),
+        stage.getBatch().draw(textureManager.getTexture("backgroundMainMenu"), 0, 0, Gdx.graphics.getWidth(),
                 Gdx.graphics.getHeight());
 
 
@@ -158,6 +170,7 @@ public class MainMenuScreen implements Screen {
      * Start a singleplayer game.
      */
     public void startSinglePlayer() {
+        soundManager.stopMusic();
         game.setScreen(new GameScreen(game));
     }
 
@@ -170,6 +183,7 @@ public class MainMenuScreen implements Screen {
      */
     public void startMultiplayer(String name, String ip, int port, boolean isHost) {
         try {
+            soundManager.stopMusic();
             game.setScreen(new GameScreen(game, name, ip, port, isHost));
         }
         catch (Exception ex) {
@@ -199,7 +213,7 @@ public class MainMenuScreen implements Screen {
      * @param v
      */
     public void setEffectsVolume(float v){
-        GameManager.get().getManager(SoundManager.class).setEffectsVolume(v);
+        soundManager.setEffectsVolume(v);
     }
 
     /**
@@ -207,7 +221,7 @@ public class MainMenuScreen implements Screen {
      * @return float from 0 to 1.
      */
     public float getEffectsVolume(){
-        return GameManager.get().getManager(SoundManager.class).getEffectsVolume();
+        return soundManager.getEffectsVolume();
     }
 
     /**
@@ -215,7 +229,7 @@ public class MainMenuScreen implements Screen {
      * @param v
      */
     public void setMusicVolume(float v){
-        GameManager.get().getManager(SoundManager.class).setMusicVolume(v);
+        soundManager.setMusicVolume(v);
     }
 
     /**
@@ -223,14 +237,14 @@ public class MainMenuScreen implements Screen {
      * @return float from 0 to 1.
      */
     public float getMusicVolume(){
-        return GameManager.get().getManager(SoundManager.class).getMusicVolume();
+        return soundManager.getMusicVolume();
     }
 
     /**
      * Plays a blip sound.
      */
     public void menuBlipSound(){
-        GameManager.get().getManager(SoundManager.class).playSound("menu_blip.wav");
+        soundManager.playSound("menu_blip.wav");
     }
 
 }

@@ -1,15 +1,13 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -27,6 +25,7 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -34,37 +33,39 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * Entity for the playable character.
  *
- * @author leggy
+ * @author leggy, petercondoleon
  *
  */
-public class Player extends MortalEntity implements Tickable, HasProgressBar {
+public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
-
-	private final static transient float HEALTH = 200f;
-	private static final transient String TEXTURE_RIGHT = "spacman_blue";
-	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
-
+	private static final transient float HEALTH = 200f;
+	private static final transient String TEXTURE_RIGHT = "player_right";
+	private static final transient String TEXTURE_LEFT = "player_left";
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+	
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
-	private int direction; // facing left=0, right=1
-	
 	private int respawnTime = 5000; // milliseconds
-
-	private boolean damaged;
-
 	private Inventory inventory;
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-	// an integer to check if key down has been pressed before key up
-	private int checkKeyDown = 0;
+	private Direction currentDirection; // The direction the player faces
+	private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
+	
+	public enum PlayerState { idle, walk, attack, damaged };	// The states a player may take
+	private ArrayList<PlayerState> currentStates = new ArrayList<>();	// The current states of the player
+	
+	// The map containing all player textures
+	private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
+	
+	private TreeShop treeShop;
 
 	/**
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -78,43 +79,124 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
-		this.direction = 1;
+		this.currentDirection = Direction.SouthEast;
 
 		HashSet<Resource> startingResources = new HashSet<Resource>();
 		startingResources.add(new SeedResource());
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
-
-		// this.setTexture("spacman_blue");
 	}
-
+	
+	/**
+	 * Add a state to the player. For example, if the player
+	 * is walking, then add the 'walk' state to the player. 
+	 * 
+	 * @param state
+	 * 			The state to set.
+	 */
+	public void addState(PlayerState state) {
+		currentStates.add(state);
+	}
+	
+	/**
+	 * Returns true if the player currently is in the specified state.
+	 * 
+	 * @param state
+	 * 			A state the player may take.
+	 * 
+	 * @return true if the player has the current state and false 
+	 * 			otherwise.
+	 */
+	public boolean hasState(PlayerState state) {
+		return this.currentStates.contains(state) ? true : false;
+	}
+	
+	/**
+	 * Remove a state from the player. For example, if the player
+	 * stops walking, then remove the 'walk' state from the player. 
+	 * 
+	 * @param state
+	 * 			The state to remove.
+	 */
+	public void removeState(PlayerState state) {
+		currentStates.remove(state);
+	}
+	
+	/**
+	 * Returns the current Direction of the player.
+	 */
+	@Override
+	public Direction getDirection() {
+		// TODO: Implementation
+		return currentDirection;
+	}
+	
+	/**
+	 * Returns the player inventory.
+	 *
+	 * Returns the inventory specific to the player.
+	 */
 	public Inventory getInventory() {
 		return this.inventory;
 	}
-
-	/**
-	 * Returns the string representation of which way the player is facing.
+	
+	/*
+	 * Temporary method for use from other classes, please see new
+	 * implementation above.
 	 */
-	public String getPlayerDirection() {
-		return (direction == 0) ? "left" : "right";
+	public void setDamaged(boolean damaged) {
+		if (damaged) {
+			this.addState(PlayerState.damaged);
+		} else {
+			this.removeState(PlayerState.damaged);
+		}
+	}
+	
+	/**
+	 * Returns the treeShop entity that the user can afford.
+	 */
+	public TreeShop getTreeShop() {
+		return this.treeShop;
+	}
+	
+	public void removeTreeShop() {
+		GameManager.get().getWorld().removeEntity(this.treeShop);
+		this.treeShop = null;
+		LOGGER.info("removed");
+	}
+	
+	public void openTreeShop(float x, float y) {
+		
+		if (this.treeShop == null) {
+			this.treeShop = new TreeShop(x,y);
+		} else {
+			this.treeShop.setPosX(x);
+			this.treeShop.setPosY(y);
+		}
+		GameManager.get().getWorld().addEntity(this.treeShop);
 	}
 
 	@Override
 	public void onTick(long arg0) {
-		float newPosX = this.getPosX();
-		float newPosY = this.getPosY();
-
-		newPosX += speedx;
-		newPosY += speedy;
+		float newPosX = this.getPosX() + speedx;
+		float newPosY = this.getPosY() + speedy;
+		float length = GameManager.get().getWorld().getLength();
+		float width = GameManager.get().getWorld().getWidth();
 
 		Box3D newPos = getBox3D();
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
+		float speedScale = GameManager.get().getManager(WorldManager.class)
+				.getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
+				.getMoveScale();
+		newPosX -= speedx * (1 - speedScale);
+		newPosY -= speedy * (1 - speedScale);
+		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
@@ -122,44 +204,37 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 					&& newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				collided = true;
-
 			}
 
 			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
 				collided = true;
-
 			}
 		}
-		// Lazy checking for water collision
-		float height = GameManager.get().getWorld().getHeight((int)newPosY,(int)newPosX);
-		if (height <= 0.3) {
-			collided = true;
-		}
 		if (!collided) {
-			this.setPosX(Math.max((float)Math.min(newPosX,GameManager.get().getWorld().getWidth() - 0.2),0));
-			this.setPosY(Math.max((float)Math.min(newPosY,GameManager.get().getWorld().getLength() - 0.2),0));
+			this.setPosX(Math.max((float)Math.min(newPosX,width),0));
+			this.setPosY(Math.max((float)Math.min(newPosY,length),0));
 		}
 
 
-		if (this.damaged) {
+		if (this.hasState(PlayerState.damaged)) {
 
-			if (this.direction == 0) {
+			if (this.getDirection() == Direction.SouthEast) {
 				this.setTexture("flash_red_left");
 
 			} else {
 				this.setTexture("flash_red_right");
 
 			}
-
-			this.setDamaged(false);
-
+			
+			this.removeState(PlayerState.damaged);
 		} else {
-			if (this.direction == 0) {
-
-				this.setTexture("spacman_blue_2");
+			
+			if (this.getDirection() == Direction.SouthEast) {
+				this.setTexture(TEXTURE_RIGHT);
+			} else if (this.getDirection() == Direction.SouthWest) {
+				this.setTexture(TEXTURE_LEFT);
 			} else {
-
-				this.setTexture("spacman_blue");
+				this.setTexture(TEXTURE_RIGHT);
 			}
 
 		}
@@ -183,15 +258,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			break;
 		case Input.Keys.A:
 			// changes the sprite so that the character is facing left
+			this.currentDirection = Direction.SouthWest;
 			this.setTexture(TEXTURE_LEFT);
-			direction = 0;
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
 			// changes the sprite so that the character is facing right
+			this.currentDirection = Direction.SouthEast;
 			this.setTexture(TEXTURE_RIGHT);
-			direction = 1;
 			speedx += movementSpeed;
 			speedy += movementSpeed;
 			break;
@@ -244,8 +319,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		float y = this.getPosY();
 		float z = this.getPosZ();
 
-		x = (direction == 0) ? x - 1 : x + 1;
-		y = (direction == 0) ? y - 2 : y + 2;
+		x = (currentDirection == Direction.SouthWest) ? x - 1 : x + 1;
+		y = (currentDirection == Direction.SouthWest) ? y - 2 : y + 2;
 
 		// only toss an item if there are items to toss
 		if (this.getInventory().updateQuantity(item, -1) == 1) {
@@ -285,15 +360,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			return true;
 		}
 		return false;
-
-	}
-
-	public boolean isDamaged(){
-		return this.damaged;
-	}
-
-	public void setDamaged(boolean b){
-		this.damaged = b;
 	}
 
 	/**
@@ -303,7 +369,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 */
 	public void handleKeyUp(int keycode) {
 		// checks if key down is pressed first
-		if (checkKeyDown <= 0) { return; }
+		if (checkKeyDown <= 0)
+			return;
 		switch (keycode) {
 		case Input.Keys.W:
 			speedy += movementSpeed;
@@ -342,11 +409,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		LOGGER.info(this + " is dead.");
 		// destroy the player
 		GameManager.get().getWorld().removeEntity(this);
+		// play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+		SoundManager soundManager = new SoundManager();
+		soundManager.playSound("wilhelmScream.wav");
 		// get the event manager
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
-
 
 }

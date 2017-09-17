@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A class for speedy enemy
@@ -26,13 +28,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient String TEXTURE_RIGHT = "speedyRaccoonFaceRight";
+	private static final transient String TEXTURE_RIGHT = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.RED, Color.ORANGE);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 	private static final EnemyStatistics STATS = initStats();
 
 	private static float speed = 0.08f;
@@ -40,13 +40,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private Path path = null;
 	private Box3D target = null;
 
-	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
+	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
+	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
 	/**
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
+        // empty for serialization
 	}
 
 	public SpeedyEnemy(float posX, float posY, float posZ) {
@@ -77,11 +78,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return progressBar;
+		return PROGRESSBAR;
 	}
 
-	private void stealing() {
-		double interactRange = 3f;
+	/**
+	 * raccoon steals resources from resourceTrees
+	 */
+	public void harvestResources() {
+		double interactRange = 2f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
 			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
@@ -93,65 +97,132 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 	public void onTick(long i) {
-		stealing();
+		//raccoon steals resources from resourceTrees
+		harvestResources();
+		//found closest goal to the enemy
+		Optional<AbstractEntity> tgt = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+		//if no ResourceTree in the world, set goal to player 
+		if (!tgt.isPresent()) {
+			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			AbstractEntity tgtGet = playerManager.getPlayer();
+			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		PathManager pathManager = GameManager.get().getManager(PathManager.class);
+			// check paths
 
-		// check paths
-
-		// check collision
-		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
-				 //collided with wall
-				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-				target = path.pop();
-				break;
+			// check collision
+			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
+				if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
+					// collided with wall
+					path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+					target = path.pop();
+					break;
+				}
 			}
-		}
 
-		// check that we actually have a path
-		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-		}
+			// check that we actually have a path
+			if (path == null || path.isEmpty()) {
+				path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+			}
 
-		// check if close enough to target
-		if (target != null && target.overlaps(this.getBox3D())) {
-			target = null;
-		}
+			// check if close enough to target
+			if (target != null && target.overlaps(this.getBox3D())) {
+				target = null;
+			}
 
-		// check if the path has another node
-		if (target == null && !path.isEmpty()) {
-			target = path.pop();
-		}
+			// check if the path has another node
+			if (target == null && !path.isEmpty()) {
+				target = path.pop();
+			}
 
-		float targetX;
-		float targetY;
+			float targetX;
+			float targetY;
 
-		if (target == null) {
-			target = playerManager.getPlayer().getBox3D();
-		}
+			if (target == null) {
+				target = tgtGet.getBox3D();
+			}
 
-		targetX = target.getX();
-		targetY = target.getY();
+			targetX = target.getX();
+			targetY = target.getY();
 
-		float deltaX = getPosX() - targetX;
-		float deltaY = getPosY() - targetY;
+			float deltaX = getPosX() - targetX;
+			float deltaY = getPosY() - targetY;
 
-		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+			float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
 
-		// flip sprite
-		if (deltaX + deltaY >= 0) {
-			this.setTexture(TEXTURE);
+			// flip sprite
+			if (deltaX + deltaY >= 0) {
+				this.setTexture(TEXTURE);
+			} else {
+				this.setTexture(TEXTURE_RIGHT);
+			}
+
+			float changeX = (float) (speed * Math.cos(angle));
+			float changeY = (float) (speed * Math.sin(angle));
+
+			this.setPosX(getPosX() + changeX);
+			this.setPosY(getPosY() + changeY);
 		} else {
-			this.setTexture(TEXTURE_RIGHT);
+			//otherwise, set resourceTrees and move towards them
+			
+			AbstractEntity tgtGet = tgt.get();
+			PathManager pathManager = GameManager.get().getManager(PathManager.class);
+
+			// check paths
+
+			// check collision
+			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
+				if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
+					// collided with wall
+					path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+					target = path.pop();
+					break;
+				}
+			}
+
+			// check that we actually have a path
+			if (path == null || path.isEmpty()) {
+				path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+			}
+
+			// check if close enough to target
+			if (target != null && target.overlaps(this.getBox3D())) {
+				target = null;
+			}
+
+			// check if the path has another node
+			if (target == null && !path.isEmpty()) {
+				target = path.pop();
+			}
+
+			float targetX;
+			float targetY;
+
+			if (target == null) {
+				target = tgtGet.getBox3D();
+			}
+
+			targetX = target.getX();
+			targetY = target.getY();
+
+			float deltaX = getPosX() - targetX;
+			float deltaY = getPosY() - targetY;
+
+			float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+
+			// flip sprite
+			if (deltaX + deltaY >= 0) {
+				this.setTexture(TEXTURE);
+			} else {
+				this.setTexture(TEXTURE_RIGHT);
+			}
+
+			float changeX = (float) (speed * Math.cos(angle));
+			float changeY = (float) (speed * Math.sin(angle));
+
+			this.setPosX(getPosX() + changeX);
+			this.setPosY(getPosY() + changeY);
 		}
-
-		float changeX = (float) (speed * Math.cos(angle));
-		float changeY = (float) (speed * Math.sin(angle));
-
-		this.setPosX(getPosX() + changeX);
-		this.setPosY(getPosY() + changeY);
+		
 	}
 	/*
 	 * public void onTick(long i) { double interactRange = 3f;

@@ -10,7 +10,7 @@ import com.deco2800.potatoes.entities.trees.ProjectileTree;
  */
 public class Tower extends ProjectileTree {
 
-	private final static String TEXTURE = "tower";
+	private static final String TEXTURE = "tower";
 
 	/**
 	 * Default constructor for serialization
@@ -21,9 +21,7 @@ public class Tower extends ProjectileTree {
 
 	/**
 	 * Constructor for the base
-	 * 
-	 * @param world
-	 *            The world of the tower.
+	 *
 	 * @param posX
 	 *            The x-coordinate.
 	 * @param posY

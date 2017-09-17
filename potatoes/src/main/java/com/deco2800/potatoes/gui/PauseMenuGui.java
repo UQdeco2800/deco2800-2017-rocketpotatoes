@@ -23,6 +23,8 @@ public class PauseMenuGui extends Gui {
     private GameScreen screen;
     private Stage stage;
 
+    private TextureManager textureManager;
+
     // Buttons
     private Skin uiSkin;
     private Drawable resumeDrawable;
@@ -56,14 +58,16 @@ public class PauseMenuGui extends Gui {
         this.screen = screen;
         this.stage = stage;
 
+        textureManager = GameManager.get().getManager(TextureManager.class);
+
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
         // Make drawables from textures
-        resumeDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("resume_btn")));
-        optionsDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("options_btn")));
-        exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exit_btn")));
-        pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("pause_menu_bg")));
+        resumeDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("resumePauseMenu")));
+        optionsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsPauseMenu")));
+        exitDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("exitPauseMenu")));
+        pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backgroundPauseMenu")));
 
         // Pause State
         pauseMenuLabel = new Label("PAUSED", uiSkin);

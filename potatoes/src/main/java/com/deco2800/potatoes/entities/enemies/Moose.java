@@ -26,8 +26,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final EnemyStatistics STATS = initStats();
 
+	private static final float moose_size = 1.5f;
+
 	private static float speed = 0.04f;
-	private static Class<?> goal = Player.class;
+	private static Class<?> goal = GoalPotate.class;
 	private Path path = null;
 	private Box3D target = null;
 
@@ -41,13 +43,15 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
+        // empty for serialization
 	}
 
 	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, 1f, 1f, TEXTURE_LEFT, HEALTH, speed, goal);
+		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
+		this.damageScaling = 0.8f; // 20% Damage reduction for Moose
 	}
 
     /**
@@ -81,8 +85,12 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
 				//collided with wall
-                randomTarget();
-				break;
+				randomTarget();
+				//break;
+			} else if (entity instanceof EnemyEntity && entity.getBox3D().overlaps(this.getBox3D())) {
+				EnemyEntity enemy = (EnemyEntity) entity;
+				//heal enemy if within range
+				enemy.heal(0.1f);
 			}
 		}
 
@@ -94,6 +102,9 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 		//check if close enough to target
 		if (target != null && playerManager.getPlayer().getBox3D().overlaps(this.getBox3D())) {
+			target = playerManager.getPlayer().getBox3D();
+			playerManager.getPlayer().damage(0.4f);
+		} else {
 			target = null;
 		}
 
@@ -134,7 +145,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	@Override
 	public String toString() {
-		return String.format("Squirrel at (%d, %d)", (int) getPosX(), (int) getPosY());
+		return String.format("Moose at (%d, %d)", (int) getPosX(), (int) getPosY());
 	}
 
 	@Override

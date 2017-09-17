@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
@@ -31,11 +30,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private transient Random random = new Random();
 	private float speed;
 	private Class<?> goal;
 	
-	private int respawnTime = 15000; // milliseconds
+	//private int respawnTime = 15000; // milliseconds
 
 	private static final SoundManager enemySoundManager = new SoundManager();
 
@@ -176,9 +174,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void onTick(long i) {
 		float goalX;
 		float goalY;
-		//if goal is player or null, set enemy's goal to player and move enemy to player 
-		if (goal == Player.class || goal == null) {
-			goal = Player.class;
+		//if goal is player, use playerManager to eet position and move towards target 
+		if (goal == Player.class) {
+			//goal = Player.class;
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 
 			// The X and Y position of the player without random floats generated
@@ -194,15 +192,36 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			// set the target of Enemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 			
-			// get the position of the target
-			goalX = target.get().getPosX(); 
-			goalY = target.get().getPosY(); 
-			if(this.distance(target.get()) < speed) {
-				this.setPosX(goalX);
-				this.setPosY(goalY);
-				return;
+			//if target is not found in the world, set target to player 
+			if (!target.isPresent()) {
+				PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+				AbstractEntity getTarget = playerManager.getPlayer();
+				// get the position of the target
+				goalX = getTarget.getPosX();
+				goalY = getTarget.getPosY(); 
+				
+				if(this.distance(getTarget) < speed) {
+					this.setPosX(goalX);
+					this.setPosY(goalY);
+					return;
+				}
+				
+			} else {
+				//otehrwise, move to enemy's closest goal
+				AbstractEntity getTarget = target.get();
+				// get the position of the target
+				goalX = getTarget.getPosX(); 
+				goalY = getTarget.getPosY(); 
+				
+				if(this.distance(getTarget) < speed) {
+					this.setPosX(goalX);
+					this.setPosY(goalY);
+					return;
+				}
 			}
+			
 		}
+		
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
@@ -338,7 +357,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	@Override
 	public float getProgressRatio() {
-		return (getHealth() / getMaxHealth());
+		return getHealth() / getMaxHealth();
 	}
 
 	@Override
@@ -358,10 +377,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		LOGGER.info(this + " is dead.");
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
-		// get the event manager
-		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-		// add the respawn event
-		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+//		// get the event manager
+//		EventManager eventManager = GameManager.get().getManager(EventManager.class);
+//		// add the respawn event
+//		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
 
 }

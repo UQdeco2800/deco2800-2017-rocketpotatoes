@@ -34,7 +34,9 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-
+    	
+    	saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
+        saveTexture("player_right", "resources/player/caveman/caveman_idle_right.png");
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("w1", "resources/placeholderassets/w1.png");
@@ -66,6 +68,7 @@ public class TextureManager extends Manager {
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
+        saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
 
@@ -78,16 +81,24 @@ public class TextureManager extends Manager {
         }
         saveTexture("lightning", "resources/projectiles/lightning.png");
 
+        // Particles
+        saveTexture("snowflake", "resources/particles/snowflake.png");
+
         // GUI
-        saveTexture("screen_background", "resources/menu/background.png");
-        saveTexture("start_btn", "resources/menu/start_btn.png");
-        saveTexture("resume_btn", "resources/menu/resume_btn.png");
-        saveTexture("options_btn", "resources/menu/options_btn.png");
-        saveTexture("exit_btn", "resources/menu/exit_btn.png");
-        saveTexture("pause_menu_bg", "resources/menu/pause_menu_bg.png");
+        saveTexture("tree_shop", "resources/menu/tree_menu.png");
+        saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
+        saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
+        saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
+        saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
+        saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
+        saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
         saveTexture("optionsMainMenu", "resources/menu/optionsMainMenu.png");
         saveTexture("exitMainMenu", "resources/menu/exitMainMenu.png");
+        saveTexture("singleplayerMainMenu", "resources/menu/singleplayerMainMenu.png");
+        saveTexture("multiplayerMainMenu", "resources/menu/multiplayerMainMenu.png");
+        saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
+
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
@@ -98,10 +109,10 @@ public class TextureManager extends Manager {
             saveTexture("lightning_tree" + i, "resources/trees/lightning" + i + ".png");
             saveTexture("lightning_being_damaged" + i, "resources/trees/lightningBeingDamaged" + i + ".png");
             saveTexture("lightning_damaged" + i, "resources/trees/lightningDamaged" + i + ".png");
-
-            if (i < 9) {
-                saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
-            }
+            if (i < 5)
+                saveTexture("fire_tree"+i,"resources/trees/fire" + i + ".png");
+            if (i < 9)
+            	saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
             if (i < 8) {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
             }
@@ -120,7 +131,6 @@ public class TextureManager extends Manager {
         saveTexture("DamagedGroundTemp1", "resources/enemies/DamagedGroundTemp1.png");
         saveTexture("DamagedGroundTemp2", "resources/enemies/DamagedGroundTemp2.png");
         saveTexture("DamagedGroundTemp3", "resources/enemies/DamagedGroundTemp3.png");
-        
        //Portals 
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");

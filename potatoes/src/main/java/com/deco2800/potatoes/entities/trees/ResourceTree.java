@@ -25,7 +25,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	/* Resource Tree Attributes */
 	private int gatherCount; // Number of resources currently gathered
 	private Resource gatherType; // Type of resource gathered by the tree
-	public boolean gatherEnabled = true; // Gathers resources default
+	private boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
 	public static final int DEFAULT_GATHER_CAPACITY = 32; // Default gather capacity, must be > 0
 
@@ -33,6 +33,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * Default constructor for serialization
 	 */
 	public ResourceTree() {
+		//Blank comment for Sonar
 	}
 
 	/**
@@ -103,12 +104,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TreeStatistics> result = new LinkedList<>();
 		List<StatisticsBuilder<ResourceTree>> builders = new LinkedList<>();
 
+		String texture = "seed_resource_tree";
 		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
-				.setTexture("seed_resource_tree").addEvent(new ResourceGatherEvent(6000, 1)));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
-				.setTexture("seed_resource_tree").addEvent(new ResourceGatherEvent(5500, 1)));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
 		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(30).setBuildTime(1500).setBuildCost(1)
-				.setTexture("seed_resource_tree").addEvent(new ResourceGatherEvent(5000, 2)));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
 
 		for (StatisticsBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());
@@ -125,12 +127,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TreeStatistics> result = new LinkedList<>();
 		List<StatisticsBuilder<ResourceTree>> builders = new LinkedList<>();
 
+		String texture = "food_resource_tree";
 		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
-				.setTexture("food_resource_tree").addEvent(new ResourceGatherEvent(6000, 1)));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
-				.setTexture("food_resource_tree").addEvent(new ResourceGatherEvent(5500, 1)));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
 		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(15).setBuildTime(6500).setBuildCost(1)
-				.setTexture("food_resource_tree").addEvent(new ResourceGatherEvent(5000, 2)));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
 
 		for (StatisticsBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());
@@ -235,8 +238,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * Toggles the tree's ability to gather resources.
 	 */
 	public void toggleGatherEnabled() {
-		this.gatherEnabled = !this.gatherEnabled;
-		LOGGER.info(this + " has gathering enabled: " + this.gatherEnabled + ".");
+		this.setGatherEnabled(!this.isGatherEnabled());
+		LOGGER.info(this + " has gathering enabled: " + this.isGatherEnabled() + ".");
 	}
 
 	/**
@@ -247,5 +250,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	@Override
 	public String toString() {
 		return "Resource tree (" + this.gatherType + ": " + this.gatherCount + "/" + this.gatherCapacity + ")";
+	}
+
+	public boolean isGatherEnabled() {
+		return gatherEnabled;
+	}
+
+	public void setGatherEnabled(boolean gatherEnabled) {
+		this.gatherEnabled = gatherEnabled;
 	}
 }
