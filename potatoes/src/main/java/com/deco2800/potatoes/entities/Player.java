@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +27,6 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -158,23 +159,23 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x)*(180/Math.PI);
 
-		if (angularDirection >= -180 & angularDirection < -157.5) {
+		if (angularDirection >= -180 && angularDirection < -157.5) {
 			this.setDirection(Direction.SouthWest);
-		} else if (angularDirection >= -157.5 & angularDirection < -112.5) {
+		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
 			this.setDirection(Direction.West);
-		} else if (angularDirection >= -112.5 & angularDirection < -67.5) {
+		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
 			this.setDirection(Direction.NorthWest);
-		} else if (angularDirection >= -67.5 & angularDirection < -22.5) {
+		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
 			this.setDirection(Direction.North);
-		} else if (angularDirection >= -22.5 & angularDirection < 22.5) {
+		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
 			this.setDirection(Direction.NorthEast);
-		} else if (angularDirection >= 22.5 & angularDirection < 67.5) {
+		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
 			this.setDirection(Direction.East);
-		} else if (angularDirection >= 67.5 & angularDirection < 112.5) {
+		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
 			this.setDirection(Direction.SouthEast);
-		} else if (angularDirection >= 112.5 & angularDirection < 157.5) {
+		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
 			this.setDirection(Direction.South);
-		} else if (angularDirection >= 157.5 & angularDirection <= 180) {
+		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
 			this.setDirection(Direction.SouthWest);
 		} 	
 		
@@ -187,28 +188,28 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	private void updateSprites() {
 		switch (this.getDirection()) {
 		case North:
-			this.setTexture("N");
+			this.setTexture("wizardN");
 			break;
 		case NorthEast:
-			this.setTexture("NE");
+			this.setTexture("wizardNE");
 			break;
 		case East:
-			this.setTexture("E");
+			this.setTexture("wizardE");
 			break;
 		case SouthEast:
-			this.setTexture("SE");
+			this.setTexture("wizardSE");
 			break;
 		case South:
-			this.setTexture("S");
+			this.setTexture("wizardS");
 			break;
 		case SouthWest:
-			this.setTexture("SW");
+			this.setTexture("wizardSW");
 			break;
 		case West:
-			this.setTexture("W");
+			this.setTexture("wizardW");
 			break;
 		case NorthWest:
-			this.setTexture("NW");
+			this.setTexture("wizardNW");
 			break;
 		default:
 			break;
@@ -271,7 +272,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		float speedScale = GameManager.get().getManager(WorldManager.class)
+		float speedScale = GameManager.get().getWorld()
 				.getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
 				.getMoveScale();
 		newPosX -= speedx * (1 - speedScale);
@@ -413,11 +414,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange
+					&& ((ResourceTree) entitiy).getGatherCount() > 0) {
 					didHarvest = true;
 					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
+
 			}
 		}
 		if (didHarvest) {

@@ -63,6 +63,7 @@ public class EventManagerTest {
 		}
 		// Expand on this description
 		assertArrayEquals("Ticked events did not match expected", actionCounts, results);
+		eventManager.unregisterAll();
 	}
 
 	@Test
