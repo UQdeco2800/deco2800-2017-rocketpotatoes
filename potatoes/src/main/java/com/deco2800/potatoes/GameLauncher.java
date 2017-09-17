@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
  *
  */
 public class GameLauncher {
+	private GameLauncher() { }
+
 	/**
 	 * Main function for the game
 	 * 

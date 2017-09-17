@@ -20,5 +20,6 @@ public class SeedResource extends Resource {
 		this.resourceType = "seed";
 		this.texture = TEXTURE;
 	}
+	
 
 }

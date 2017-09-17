@@ -12,12 +12,19 @@ import com.badlogic.gdx.audio.Music;
  * Required to play sounds in the game engine.
  * @Author Tim Hadwen
  */
+
+/*
+ * "Ascending the Vale" Kevin MacLeod (incompetech.com)
+ * Licensed under Creative Commons: By Attribution 3.0 License
+ * http://creativecommons.org/licenses/by/3.0/
+ */
+
 public class SoundManager extends Manager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundManager.class);
 
-	private float effectsVolume = 1f;
-	private float musicVolume = 1f;
+	private float effectsVolume = 1.0f;
+	private float musicVolume = 0.25f;
 
 	private Music music;
 

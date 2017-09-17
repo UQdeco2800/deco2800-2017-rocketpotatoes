@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.portals;
 
 import java.util.Map;
 
+import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,11 +10,11 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.worlds.InitialWorld2;
 
 /**
  * A class that can create portals which are not the base portal. Because these
@@ -34,12 +35,12 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	/*
 	 * The radius of which a collision can be detected
 	 */
-	private final float change = (float) 0.2;
+	private static final float CHANGE = 0.2f;
 	/*
-	 * The array of positions where a collision needs to be checked
+	 * The array of calculatePositions where a collision needs to be checked
 	 */
-	private final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
-			{ -change, 0 }, { -change, -change }, { 0, -change }, { -change, -change } };
+	private static final float[][] POSITIONS = { {CHANGE, 0 }, {CHANGE, CHANGE}, { 0, CHANGE}, { -CHANGE, CHANGE},
+			{ -CHANGE, 0 }, { -CHANGE, -CHANGE}, { 0, -CHANGE}, { -CHANGE, -CHANGE} };
 
 	/**
 	 * This instantiates an AbstractPortal given the appropriate parameters.
@@ -72,18 +73,20 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		// Check surroundings
 		for (AbstractEntity entity : entities.values()) {
-			if (entity instanceof Player) {
-				// Player detected
-				player = entity;
-				
-				for (int i = 0; i < 8; i++) {
-					newPos.setX(xPos + positions[i][0]);
-					newPos.setY(yPos + positions[i][1]);
-					// Player next to this resource
-					if (newPos.overlaps(entity.getBox3D())) {
-						collided = true;
+			if (!(entity instanceof Player)) {
+				continue;
+			}
 
-					}
+			// Player detected
+			player = entity;
+
+			for (int i = 0; i < 8; i++) {
+				newPos.setX(xPos + POSITIONS[i][0]);
+				newPos.setY(yPos + POSITIONS[i][1]);
+				// Player next to this resource
+				if (newPos.overlaps(entity.getBox3D())) {
+					collided = true;
+
 				}
 			}
 		}
@@ -93,16 +96,19 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		if (collided) {
 			try {
 				LOGGER.info("Entered portal");
+				//play warping sound effect
+				SoundManager soundManager = new SoundManager();
+				soundManager.playSound("warpSound.wav");
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(player);
-				//change to new world
-				GameManager.get().setWorld(GameManager.get().getMainWorld());
+				//CHANGE to new world
+				GameManager.get().getManager(WorldManager.class).setWorld(0);
 				//add player to new world
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 				
 				// Bring up portal interface
 			} catch (Exception e) {
-				LOGGER.warn("Issue entering portal");
+				LOGGER.warn("Issue entering portal; " + e);
 			}
 
 		}

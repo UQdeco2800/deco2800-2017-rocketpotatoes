@@ -89,7 +89,15 @@ public class GameManager implements TickableManager {
 	 * @param world
 	 */
 	public void setWorld(World world) {
-		this.gameWorld = world;
+		// Hopefully stores the events, not sure though
+		if (gameWorld != null) {
+			gameWorld.setEventManager(getManager(EventManager.class));
+		}
+		gameWorld = world;
+		managers.remove(getManager(EventManager.class));
+		if (world.getEventManager() != null) {
+			managers.add(world.getEventManager());
+		}
 	}
 
 	/**

@@ -22,7 +22,7 @@ public class MeleeAttack extends Projectile {
     private float goalY;
     private float goalZ;
 
-    private int rotateAngle = 0;
+    private int rotationAngle = 0;
 
     private float range = 3f;
 
@@ -42,10 +42,13 @@ public class MeleeAttack extends Projectile {
     private final static float effect_width = 1f;
     private final static float effect_height = 1f;
 
+    /**
+     * Empty constructor for serialization
+     */
     public MeleeAttack() {
         // empty for serialization
         DAMAGE = 1;
-        rotateAngle = 0;
+        rotationAngle = 0;
         maxRange = false;
     }
 
@@ -86,12 +89,12 @@ public class MeleeAttack extends Projectile {
         changeX = (float) (speed * Math.cos(angle));
         changeY = (float) (speed * Math.sin(angle));
 
-        rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+        rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
     }
 
     @Override
-    public int rotateAngle() {
-        return rotateAngle;
+    public float rotationAngle() {
+        return rotationAngle;
     }
 
     @Override
@@ -122,7 +125,7 @@ public class MeleeAttack extends Projectile {
 
         range -= speed;
 
-        rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+        rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
         Box3D newPos = getBox3D();
         newPos.setX(this.getPosX());

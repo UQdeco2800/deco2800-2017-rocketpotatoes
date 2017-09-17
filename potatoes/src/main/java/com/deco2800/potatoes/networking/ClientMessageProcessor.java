@@ -225,7 +225,7 @@ public class ClientMessageProcessor {
     /**
      * Handles a entity update position
      *
-     * Updates the position of an existing entity via id. Also used to update player positions
+     * Updates the position of an existing entity via id. Also used to update player calculatePositions
      *
      * @param client the network client to process this event
      * @param m the message

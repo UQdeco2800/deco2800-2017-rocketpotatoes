@@ -4,7 +4,7 @@ import com.deco2800.potatoes.managers.GameManager;
 
 public class SwipeEffect extends Effect {
 
-    private final static transient String TEXTURE = "swipe1";
+    private static final transient String TEXTURE = "swipe1";
 
     private int currentSpriteIndexCount = 1;
     private String[] currentSpriteIndex = { "swipe2", "swipe3", "swipe4", "swipe5" };

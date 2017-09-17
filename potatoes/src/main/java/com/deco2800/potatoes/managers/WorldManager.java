@@ -112,4 +112,9 @@ public class WorldManager extends Manager {
 		world.setHeight(height);
 		return world;
 	}
+
+	public Terrain getTerrain(float x, float y) {
+		// x and y are flipped on map
+		return terrain[Math.round(y)][Math.round(x)];
+	}
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.managers.GameManager;
@@ -40,7 +41,8 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 			GameManager.get().getWorld()
 					.addEntity(new BallisticProjectile(target1.get().getClass(), tree.getPosX() + 0.5f,
 							tree.getPosY() + 0.5f, tree.getPosZ(), target1.get().getPosX(), target1.get().getPosY(),
-							target1.get().getPosZ(), tree.getUpgradeStats().getAttackRange(), 10, 10));
+							target1.get().getPosZ(), tree.getUpgradeStats().getAttackRange(), 10, "rocket", null,
+							new AOEEffect(target1.get().getPosX(), target1.get().getPosY(), 0, 1)));
 		}
 
 	}
@@ -49,5 +51,4 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 	public TimeEvent<AbstractTree> copy() {
 		return new TreeProjectileShootEvent(getResetAmount());
 	}
-
 }
