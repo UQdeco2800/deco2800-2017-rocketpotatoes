@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public class TextureManager extends Manager {
     /**
      * A HashMap of all textures with string keys
      */
-    private Map<String, Texture> textureMap = new HashMap<String, Texture>();
+    private Map<String, TextureRegion> textureMap = new HashMap<String, TextureRegion>();
 
     /**
      * Constructor
@@ -34,7 +36,9 @@ public class TextureManager extends Manager {
      * need to.
      */
     public TextureManager() {
-
+    	
+    		saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
+        saveTexture("player_right", "resources/player/caveman/caveman_idle_right.png");
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("w1", "resources/placeholderassets/w1.png");
@@ -95,7 +99,8 @@ public class TextureManager extends Manager {
         saveTexture("singleplayerMainMenu", "resources/menu/singleplayerMainMenu.png");
         saveTexture("multiplayerMainMenu", "resources/menu/multiplayerMainMenu.png");
         saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
-
+        saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
+        saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
@@ -137,6 +142,15 @@ public class TextureManager extends Manager {
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
+        
+        saveTexture("N", "resources/player/debug/N.png");
+        saveTexture("NE", "resources/player/debug/NE.png");
+        saveTexture("E", "resources/player/debug/E.png");
+        saveTexture("SE", "resources/player/debug/SE.png");
+        saveTexture("S", "resources/player/debug/S.png");
+        saveTexture("SW", "resources/player/debug/SW.png");
+        saveTexture("W", "resources/player/debug/W.png");
+        saveTexture("NW", "resources/player/debug/NW.png");
 
     }
 
@@ -147,13 +161,44 @@ public class TextureManager extends Manager {
      * @return Texture for given id
      */
     public Texture getTexture(String id) {
-        if (textureMap.containsKey(id)) {
-            return textureMap.get(id);
-        } else {
-            return textureMap.get("spacman_ded");
-        }
-
+    	return getTextureRegion(id).getTexture();
     }
+    
+	/**
+	 * Gets a texture region object for a given string id
+	 *
+	 * @param id
+	 *            Texture identifier
+	 * @return TextureRegion for given id
+	 */
+	public TextureRegion getTextureRegion(String id) {
+		if (textureMap.containsKey(id)) {
+			return textureMap.get(id);
+		} else {
+			return textureMap.get("spacman_ded");
+		}
+	}
+    
+	/**
+	 * Creates multiple textures from the given texture by splitting it into a grid
+	 * the size of spriteNames and save each area with the corresponding string in
+	 * spriteNames
+	 * 
+	 * @param textureId
+	 *            The texture to create the sprite sheet from
+	 * @param spriteNames
+	 *            The names for all the sprite textures created
+	 */
+	public void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
+		TextureRegion region = textureMap.get(textureId);
+		int height = region.getRegionHeight() / spriteNames.length;
+		for (int y = 0; y < spriteNames.length; y++) {
+			int width = region.getRegionWidth() / spriteNames[y].length;
+			for (int x = 0; x < spriteNames[y].length; x++) {
+				textureMap.put(spriteNames[y][x], new TextureRegion(region, x, y, width, height));
+			}
+		}
+	}
 
     /**
      * Saves a texture with a given id
@@ -164,7 +209,7 @@ public class TextureManager extends Manager {
     public void saveTexture(String id, String filename) {
         LOGGER.info("Saving texture" + id + " with Filename " + filename);
         if (!textureMap.containsKey(id)) {
-            textureMap.put(id, new Texture(filename));
+            textureMap.put(id, new TextureRegion(new Texture(filename)));
         }
     }
 }

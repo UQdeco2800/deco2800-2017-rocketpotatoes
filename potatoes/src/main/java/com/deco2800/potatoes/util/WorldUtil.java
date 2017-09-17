@@ -67,9 +67,9 @@ public class WorldUtil {
 		AbstractEntity closest = null;
 		float dist = Float.MAX_VALUE;
 		for (AbstractEntity e : entities) {
-			float tmp_distance = distance(x, y, e.getPosX(), e.getPosY());
-			if (closest == null || dist > tmp_distance) {
-				dist = tmp_distance;
+			float tmpDistance = distance(x, y, e.getPosX(), e.getPosY());
+			if (closest == null || dist > tmpDistance) {
+				dist = tmpDistance;
 				closest = e;
 			}
 		}
@@ -95,7 +95,7 @@ public class WorldUtil {
 	 * Returns the distance between the point (x1,y1) and (x2,y2)
 	 */
 	public static float distance(float x1, float y1, float x2, float y2) {
-		return (float)(Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)));
+		return (float)(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
 	}
 	
 	/**

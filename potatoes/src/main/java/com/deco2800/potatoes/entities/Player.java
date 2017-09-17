@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,7 +27,6 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -34,38 +34,40 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * Entity for the playable character.
  *
- * @author leggy
+ * @authors leggy, petercondoleon
  *
  */
-public class Player extends MortalEntity implements Tickable, HasProgressBar {
+public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
-
-	private final static transient float HEALTH = 200f;
-	private static final transient String TEXTURE_RIGHT = "spacman_blue";
-	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
-
+	private static final transient float HEALTH = 200f;
+	private static final transient String TEXTURE_RIGHT = "player_right";
+	private static final transient String TEXTURE_LEFT = "player_left";
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+	
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
-	private int direction; // facing left=0, right=1
-	
 	private int respawnTime = 5000; // milliseconds
-
-	private boolean damaged;
-
 	private Inventory inventory;
+	
+	private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
+	private Direction currentDirection; // The direction the player faces
+	private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
+	
+	public enum PlayerState { idle, walk, attack, damaged };	// The states a player may take
+	private ArrayList<PlayerState> currentStates = new ArrayList<>();	// The current states of the player
+	
+	// The map containing all player textures
+	private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
+	
 	private TreeShop treeShop;
-
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-	// an integer to check if key down has been pressed before key up
-	private int checkKeyDown = 0;
 
 	/**
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -79,25 +81,160 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 *            The z-coordinate.
 	 */
 	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
-		movementSpeed = 0.075f;
+		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
+		this.movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
-		this.direction = 1;
+		this.currentDirection = Direction.SouthEast;
 
 		HashSet<Resource> startingResources = new HashSet<Resource>();
 		startingResources.add(new SeedResource());
 		startingResources.add(new FoodResource());
 		this.inventory = new Inventory(startingResources);
-
-		// this.setTexture("spacman_blue");
 	}
-
+	
 	/**
+	 * Add a state to the player. For example, if the player
+	 * is walking, then add the 'walk' state to the player. 
+	 * 
+	 * @param state
+	 * 			The state to set.
+	 */
+	public void addState(PlayerState state) {
+		currentStates.add(state);
+	}
+	
+	/**
+	 * Returns true if the player currently is in the specified state.
+	 * 
+	 * @param state
+	 * 			A state the player may take.
+	 * 
+	 * @return true if the player has the current state and false 
+	 * 			otherwise.
+	 */
+	public boolean hasState(PlayerState state) {
+		return this.currentStates.contains(state) ? true : false;
+	}
+	
+	/**
+	 * Remove a state from the player. For example, if the player
+	 * stops walking, then remove the 'walk' state from the player. 
+	 * 
+	 * @param state
+	 * 			The state to remove.
+	 */
+	public void removeState(PlayerState state) {
+		currentStates.remove(state);
+	}
+	
+	/**
+	 * Returns the current Direction of the player.
+	 */
+	@Override
+	public Direction getDirection() {
+		return currentDirection;
+	}
+	
+	/**
+	 * Sets the direction of the player based on a specified direction.
+	 * 
+	 * @param direction
+	 * 			The direction to the player to.
+	 */
+	private void setDirection(Direction direction) {
+		if (this.currentDirection != direction) {
+			this.currentDirection = direction;
+			LOGGER.info("Set player direction to " + direction);
+			updateSprites();
+		}
+	}
+	
+	/**
+	 * Updates the direction of the player based on change in position.
+	 */
+	private void updateDirection() {
+		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+			return;	// Not moving
+		}
+		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x)*(180/Math.PI);
+
+		if (angularDirection >= -180 & angularDirection < -157.5) {
+			this.setDirection(Direction.SouthWest);
+		} else if (angularDirection >= -157.5 & angularDirection < -112.5) {
+			this.setDirection(Direction.West);
+		} else if (angularDirection >= -112.5 & angularDirection < -67.5) {
+			this.setDirection(Direction.NorthWest);
+		} else if (angularDirection >= -67.5 & angularDirection < -22.5) {
+			this.setDirection(Direction.North);
+		} else if (angularDirection >= -22.5 & angularDirection < 22.5) {
+			this.setDirection(Direction.NorthEast);
+		} else if (angularDirection >= 22.5 & angularDirection < 67.5) {
+			this.setDirection(Direction.East);
+		} else if (angularDirection >= 67.5 & angularDirection < 112.5) {
+			this.setDirection(Direction.SouthEast);
+		} else if (angularDirection >= 112.5 & angularDirection < 157.5) {
+			this.setDirection(Direction.South);
+		} else if (angularDirection >= 157.5 & angularDirection <= 180) {
+			this.setDirection(Direction.SouthWest);
+		} 	
+		
+		oldPos = new Vector2(this.getPosX(), this.getPosY());
+	}
+	
+	/**
+	 * Updates the player sprite based on it's state and direction.
+	 */
+	private void updateSprites() {
+		switch (this.getDirection()) {
+		case North:
+			this.setTexture("N");
+			break;
+		case NorthEast:
+			this.setTexture("NE");
+			break;
+		case East:
+			this.setTexture("E");
+			break;
+		case SouthEast:
+			this.setTexture("SE");
+			break;
+		case South:
+			this.setTexture("S");
+			break;
+		case SouthWest:
+			this.setTexture("SW");
+			break;
+		case West:
+			this.setTexture("W");
+			break;
+		case NorthWest:
+			this.setTexture("NW");
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/**
+	 * Returns the player inventory.
+	 *
 	 * Returns the inventory specific to the player.
 	 */
 	public Inventory getInventory() {
 		return this.inventory;
+	}
+	
+	/*
+	 * Temporary method for use from other classes, please see new
+	 * implementation above.
+	 */
+	public void setDamaged(boolean damaged) {
+		if (damaged) {
+			this.addState(PlayerState.damaged);
+		} else {
+			this.removeState(PlayerState.damaged);
+		}
 	}
 	
 	/**
@@ -124,13 +261,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		GameManager.get().getWorld().addEntity(this.treeShop);
 	}
 
-	/**
-	 * Returns the string representation of which way the player is facing.
-	 */
-	public String getPlayerDirection() {
-		return (direction == 0) ? "left" : "right";
-	}
-
 	@Override
 	public void onTick(long arg0) {
 		float newPosX = this.getPosX() + speedx;
@@ -142,7 +272,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		newPos.setX(newPosX);
 		newPos.setY(newPosY);
 
-		float speedScale = GameManager.get().getManager(WorldManager.class)
+		float speedScale = GameManager.get().getWorld()
 				.getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
 				.getMoveScale();
 		newPosX -= speedx * (1 - speedScale);
@@ -155,12 +285,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 					&& newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				collided = true;
-
 			}
 
 			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
 				collided = true;
-
 			}
 		}
 		if (!collided) {
@@ -169,28 +297,29 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		}
 
 
-		if (this.damaged) {
-
-			if (this.direction == 0) {
-				this.setTexture("flash_red_left");
-
-			} else {
-				this.setTexture("flash_red_right");
-
-			}
-
-			this.setDamaged(false);
-
-		} else {
-			if (this.direction == 0) {
-
-				this.setTexture("spacman_blue_2");
-			} else {
-
-				this.setTexture("spacman_blue");
-			}
-
-		}
+//		if (this.hasState(PlayerState.damaged)) {
+//
+//			if (this.getDirection() == Direction.SouthEast) {
+//				this.setTexture("flash_red_left");
+//
+//			} else {
+//				this.setTexture("flash_red_right");
+//
+//			}
+//			
+//			this.removeState(PlayerState.damaged);
+//		} else {
+//			
+//			if (this.getDirection() == Direction.SouthEast) {
+//				this.setTexture(TEXTURE_RIGHT);
+//			} else if (this.getDirection() == Direction.SouthWest) {
+//				this.setTexture(TEXTURE_LEFT);
+//			} else {
+//				this.setTexture(TEXTURE_RIGHT);
+//			}
+//
+//		}
+		updateDirection();
 	}
 
 	/**
@@ -210,16 +339,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			speedx -= movementSpeed;
 			break;
 		case Input.Keys.A:
-			// changes the sprite so that the character is facing left
-			this.setTexture(TEXTURE_LEFT);
-			direction = 0;
 			speedx -= movementSpeed;
 			speedy -= movementSpeed;
 			break;
 		case Input.Keys.D:
-			// changes the sprite so that the character is facing right
-			this.setTexture(TEXTURE_RIGHT);
-			direction = 1;
 			speedx += movementSpeed;
 			speedy += movementSpeed;
 			break;
@@ -272,8 +395,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		float y = this.getPosY();
 		float z = this.getPosZ();
 
-		x = (direction == 0) ? x - 1 : x + 1;
-		y = (direction == 0) ? y - 2 : y + 2;
+		x = (currentDirection == Direction.SouthWest) ? x - 1 : x + 1;
+		y = (currentDirection == Direction.SouthWest) ? y - 2 : y + 2;
 
 		// only toss an item if there are items to toss
 		if (this.getInventory().updateQuantity(item, -1) == 1) {
@@ -313,15 +436,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			return true;
 		}
 		return false;
-
-	}
-
-	public boolean isDamaged(){
-		return this.damaged;
-	}
-
-	public void setDamaged(boolean b){
-		this.damaged = b;
 	}
 
 	/**
@@ -379,6 +493,4 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
-
-
 }

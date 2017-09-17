@@ -106,7 +106,7 @@ public class LightningEffect extends Effect {
 				try {
 					((MortalEntity) entity).damage(damage);
 				} catch (Exception e) {
-					LOGGER.error(e.getMessage());
+					//LOGGER.error(e.getMessage());
 				}
 				break;
 			}

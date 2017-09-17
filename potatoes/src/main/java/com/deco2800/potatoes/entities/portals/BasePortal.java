@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.portals;
 
 import java.util.Arrays;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +17,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.Tickable;
-
 import com.deco2800.potatoes.entities.health.MortalEntity;
-
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -26,8 +25,10 @@ import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.worlds.WorldType;
 
 /**
  * A class for creating the base portal. This class differs from AbstracPortals
@@ -57,6 +58,7 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
     /*
      * The radius of which a collision can be detected
 	 */
+
     private static final float CHANGE = (float) 0.2;
     /*
      * The array of calculatePositions where a collision needs to be checked
@@ -117,7 +119,14 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
                 soundManager.playSound("warpSound.wav");
                 //remove player from old world
                 GameManager.get().getWorld().removeEntity(player);
-
+				//change to new world
+				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.VOLCANO_WORLD);
+				//add player to new world
+	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+	            //add some entities to the test world (adds every time, kinda bad)
+	            GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
+	            GameManager.get().getWorld().addEntity(new AbstractPortal(1, 2, 0, "iceland_portal"));
+				// Bring up portal interface
                 ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class)).show();
 
             } catch (Exception e) {
@@ -132,3 +141,4 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
         return progressBar;
     }
 }
+
