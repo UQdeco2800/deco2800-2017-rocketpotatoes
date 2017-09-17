@@ -20,7 +20,7 @@ public class EnemyStatistics extends BasicStatistics<EnemyEntity> {
 	}
 
 	/**
-	 * @return the speed
+	 * @return the SPEED
 	 */
 	public float getSpeed() {
 		return speed;

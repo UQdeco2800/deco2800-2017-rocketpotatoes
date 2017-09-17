@@ -14,6 +14,7 @@ public class ResourceGatherEvent extends TimeEvent<ResourceTree> {
 	 * Default constructor for serialization
 	 */
 	public ResourceGatherEvent() {
+		//Blank comment for Sonar
 	}
 	
 	/**
@@ -36,7 +37,7 @@ public class ResourceGatherEvent extends TimeEvent<ResourceTree> {
 	 */
 	@Override
 	public void action(ResourceTree tree) {
-		if (tree.gatherEnabled) {
+		if (tree.isGatherEnabled()) {
 			tree.gather(gatherAmount);
 		}
 	}

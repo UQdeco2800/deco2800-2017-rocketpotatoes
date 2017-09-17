@@ -11,7 +11,7 @@ import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 
 public class IceTree extends Damage {
-    private final static String TEXTURE = "ice_basic_tree";
+    private static final String TEXTURE = "ice_basic_tree";
 
     public IceTree(){
 

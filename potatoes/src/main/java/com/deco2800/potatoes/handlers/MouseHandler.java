@@ -9,8 +9,10 @@ import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.observers.TouchDownObserver;
@@ -27,11 +29,13 @@ import java.util.Optional;
 public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, MouseMovedObserver {
 	private int originX;
 	private int originY;
+	private TreeShopGui treeShop;
 
 	/**
 	 * Constructor for the mouse handler
 	 */
 	public MouseHandler() {
+		treeShop = (TreeShopGui) GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
 	}
 
 	/**
@@ -46,6 +50,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
 		if (closest.isPresent() && closest.get() instanceof Clickable) {
 			((Clickable) closest.get()).onClick();
+			return;
 		} else {
 			World world = GameManager.get().getWorld();
 			if (world instanceof World) {
@@ -54,30 +59,12 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		}
 		int realX = (int) Math.floor(coords.x);
 		int realY = (int) Math.floor(coords.y);
-		if (!WorldUtil.getEntityAtPosition(realX, realY).isPresent()) {
-			MultiplayerManager multiplayerManager = GameManager.get()
-					.getManager(MultiplayerManager.class);
-			AbstractTree newTree;
-			// Select random tree, and either make it in singleplayer or broadcast it in mp
-			switch ((int) (Math.random() * 3 + 1)) {
-				case 1:
-					newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
-					break;
-				case 2:
-					newTree = new ResourceTree(realX, realY, 0);
-					break;
-				default:
-					newTree = new Tower(realX, realY, 0);
-					break;
-			}
-			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-				AbstractTree.constructTree(newTree);
-			} else {
-				multiplayerManager.broadcastBuildOrder(newTree);
-			}
-		}
+		treeShop.setTreeCoords(realX,realY);
+		treeShop.initShop(originX,originY);
 
 	}
+
+	
 
 	@Override
 	public void notifyTouchDown(int screenX, int screenY, int pointer, int button) {
@@ -86,6 +73,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 
 		Vector3 worldCoords = Render3D.screenToWorldCoordiates(screenX, screenY, 0);
 		handleMouseClick(worldCoords.x, worldCoords.y, button);
+		
 	}
 
 	@Override
@@ -113,5 +101,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 
 	@Override
 	public void notifyMouseMoved(int screenX, int screenY) {
+		treeShop.checkMouseOver(screenX, screenY);
 	}
 }

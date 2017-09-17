@@ -8,11 +8,15 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LightningEffect extends Effect {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LightningEffect.class);
 
-	private float lifetime = 1f;
-	private float segmentStep = 2f;
+	private float lifetime = 0.4f;
+	private float segmentStep = 1f;
 	private int segments;
 
 	float xPos;
@@ -29,7 +33,7 @@ public class LightningEffect extends Effect {
 
 	public LightningEffect(float xPos, float yPos, float fxPos, float fyPos) {
 		super(fyPos, fxPos, 0, 5f, 5f, 0, 1f, 1f, "lightning");
-		DAMAGE = 0.1f;
+		damage = 0.1f;
 
 		// TODO: figure out why inverses
 		this.xPos = yPos;
@@ -37,18 +41,17 @@ public class LightningEffect extends Effect {
 		this.fxPos = fyPos;
 		this.fyPos = fxPos;
 
-		pos = positions(this.xPos, this.yPos, this.fxPos, this.fyPos);
+		pos = calculatePositions(this.xPos, this.yPos, this.fxPos, this.fyPos);
 	}
 
-	public float[][] positions(float xPos, float yPos, float fxPos, float fyPos) {
-
-		float lengthX = (fxPos - xPos);
-		float lengthY = (fyPos - yPos);
+	public float[][] calculatePositions(float xPos, float yPos, float fxPos, float fyPos) {
+		float lengthX = fxPos - xPos;
+		float lengthY = fyPos - yPos;
 
 		float magnitude = (float) Math.sqrt(lengthX * lengthX + lengthY * lengthY);
 
 		segments = (int) Math.ceil(magnitude / segmentStep);// 8
-		float[][] pos = new float[segments + 1][2];
+		float[][] positions = new float[segments + 1][2];
 
 		Random random = new Random();
 
@@ -56,42 +59,36 @@ public class LightningEffect extends Effect {
 		float segmentsDone = 0;
 
 		for (int i = 0; i < segments + 1; i++) {
-			float randx = ((float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2)
-					* distanceDeltaX);// add limit
-			float randy = ((float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2)
-					* distanceDeltaY);// add limit
+			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaX;// add
+																														// limit
+			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaY;// add
+																														// limit
 
 			float x = (float) (xPos + segmentsDone * lengthX
-					+ Math.abs(Math.sin(Math.toRadians(rotation(xPos, yPos, fxPos, fyPos)))) * randx);
+					+ Math.abs(Math.sin(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randx);
 			float y = (float) (yPos + segmentsDone * lengthY
-					+ Math.abs(Math.cos(Math.toRadians(rotation(xPos, yPos, fxPos, fyPos)))) * randy);
+					+ Math.abs(Math.cos(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randy);
 
 			if (i == 0) {
-				pos[i][0] = xPos;
-				pos[i][1] = yPos;
+				positions[i][0] = xPos;
+				positions[i][1] = yPos;
 			} else if (i == segments) {
-				pos[i][0] = fxPos;
-				pos[i][1] = fyPos;
+				positions[i][0] = fxPos;
+				positions[i][1] = fyPos;
 			} else {
-				pos[i][0] = x;
-				pos[i][1] = y;
+				positions[i][0] = x;
+				positions[i][1] = y;
 			}
 			segmentsDone += segmentSize;
 		}
 
-		// Arrays.sort(pos, new Comparator<float[]>() {
-		// @Override
-		// public int compare(float[] o1, float[] o2) {
-		// return Float.compare(o2[1], o1[1]);
-		// }
-		// });
-		return pos;
+		return positions;
 
 	}
 
 	public void drawEffect(SpriteBatch batch) {
 		if (!staticStrike) {
-			pos = positions(this.xPos, this.yPos, this.fxPos, this.fyPos);
+			pos = calculatePositions(this.xPos, this.yPos, this.fxPos, this.fyPos);
 		}
 		for (int x = 0; x < pos.length - 1; x++) {
 			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
@@ -107,9 +104,9 @@ public class LightningEffect extends Effect {
 		for (AbstractEntity entity : entities.values()) {
 			if (entity.distance(newPos.getX(), newPos.getY(), 0) <= radiusOfImpact) {
 				try {
-					((MortalEntity) entity).damage(DAMAGE);
+					((MortalEntity) entity).damage(damage);
 				} catch (Exception e) {
-
+					//LOGGER.error(e.getMessage());
 				}
 				break;
 			}
@@ -130,7 +127,7 @@ public class LightningEffect extends Effect {
 
 	@Override
 	public float getDamage() {
-		return DAMAGE;
+		return damage;
 	}
 
 }

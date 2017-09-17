@@ -8,8 +8,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 
 /**
@@ -94,5 +96,24 @@ public class WorldUtil {
 	 */
 	public static float distance(float x1, float y1, float x2, float y2) {
 		return (float)(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
+	}
+	
+	/**
+	 * Returns the angle (in degrees) between the point (x1,y1) and (x2,y2) Example:
+	 * rotation(0,0,1,1) = 45 deg
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return rotation in degrees
+	 */
+	public static float rotation(float x1, float y1, float x2, float y2) {
+		Vector2 startPos = Render3D.worldToScreenCoordinates(x1, y1, 0);
+		Vector2 endPos = Render3D.worldToScreenCoordinates(x2, y2, 0);
+		float l = endPos.x - startPos.x;
+		float h = endPos.y - startPos.y;
+		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 45;
+		return rotation;
 	}
 }

@@ -76,17 +76,13 @@ public class ChatGui extends Gui {
         minButton = new TextButton("Hide Chat", uiSkin);
         minButton.addListener(new ChangeListener(){
             @Override
-
             public void changed(ChangeEvent event, Actor actor){
-                switch (cState){
-                    case HIDDEN:
-                        cState = chatStates.CHAT;
-                        resetGui(stage);
-                        break;
-                    case CHAT:
-                        cState = chatStates.HIDDEN;
-                        resetGui(stage);
-                        break;
+                if (cState == chatStates.HIDDEN) {
+                    cState = chatStates.CHAT;
+                    resetGui(stage);
+                } else {
+                    cState = chatStates.HIDDEN;
+                    resetGui(stage);
                 }
             }
         });
@@ -158,35 +154,31 @@ public class ChatGui extends Gui {
         table.reset();
 
         // Hidden vs Chat states for reset
-        switch (cState){
-            case CHAT:
-                table.add(minButton).height(30.0f).padLeft(Align.left);
-                minButton.setText("Hide Chat");
-                table.row();
+        if (cState == chatStates.CHAT) {
+            table.add(minButton).height(30.0f).padLeft(Align.left);
+            minButton.setText("Hide Chat");
+            table.row();
 
-                // TODO refine these measurements
-                table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
-                table.row();
-                table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
-                table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
+            // TODO refine these measurements
+            table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
+            table.row();
+            table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
+            table.add(sendButton).width(30.0f).height(30.0f).pad(0).padLeft(-30.0f);
 
-                table.getColor().a = 0.3f;
-                table.setPosition(0, 0);
-                table.pack();
+            table.getColor().a = 0.3f;
+            table.setPosition(0, 0);
+            table.pack();
 
-                // Realign messages
-                for (Cell l : textList.getCells()) {
-                    l.width(stage.getWidth() * 0.4f - 10.0f);
-                }
-                // Automatically adjust alpha to counter the parent table
-                textList.getColor().a = 1.0f / table.getColor().a;
-                break;
-
-            case HIDDEN:
-                table.add(minButton).height(30.0f).align(Align.left);
-                table.left().bottom();
-                minButton.setText("Show Chat");
-                break;
+            // Realign messages
+            for (Cell l : textList.getCells()) {
+                l.width(stage.getWidth() * 0.4f - 10.0f);
+            }
+            // Automatically adjust alpha to counter the parent table
+            textList.getColor().a = 1.0f / table.getColor().a;
+        } else {
+            table.add(minButton).height(30.0f).align(Align.left);
+            table.left().bottom();
+            minButton.setText("Show Chat");
         }
     }
 
@@ -214,7 +206,7 @@ public class ChatGui extends Gui {
     }
 
     private void sendMessage() {
-        if (!textField.getText().equals("")) {
+        if (!"".equals(textField.getText())) {
             MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 
             if (m.isMultiplayer()) {

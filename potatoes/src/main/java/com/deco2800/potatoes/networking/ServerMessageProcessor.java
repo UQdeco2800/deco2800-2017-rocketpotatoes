@@ -110,7 +110,7 @@ public class ServerMessageProcessor {
      * Takes x, y coords from the message and updates the position of an entity.
      * Assumes it exists
      *
-     * Currently only used to update player positions (master uses a different method)
+     * Currently only used to update player calculatePositions (master uses a different method)
      *
      * @param server the server object to use
      * @param c the connection object that holds details about the sender

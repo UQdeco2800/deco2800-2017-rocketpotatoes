@@ -27,7 +27,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 
 	private String texture = "error_box";
 
-	public int rotateAngle() {
+	public float rotationAngle() {
 		return 0;
 	}
 
@@ -128,7 +128,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
 		this.centered = centered;
-
+		
 		this.texture = texture;
 
 		this.position = new Box3D(posX + getCenterOffset(xLength), posY + getCenterOffset(yLength), posZ, xLength,
@@ -305,7 +305,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 			return true;
 		}
 
-		if (!(o instanceof AbstractEntity)) {
+		if (o == null || !(o instanceof AbstractEntity)) {
 			return false;
 		}
 
@@ -322,6 +322,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	public int hashCode() {
 		int result = position != null ? position.hashCode() : 0;
 		result = 31 * result + (texture != null ? texture.hashCode() : 0);
+		result = 31 * result + this.getClass().hashCode();
 		return result;
 	}
 
