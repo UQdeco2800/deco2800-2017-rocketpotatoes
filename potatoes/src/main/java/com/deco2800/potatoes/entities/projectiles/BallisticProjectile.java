@@ -1,6 +1,10 @@
 package com.deco2800.potatoes.entities.projectiles;
 
+import com.badlogic.gdx.Game;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 
 public class BallisticProjectile extends Projectile {
 
@@ -19,18 +23,17 @@ public class BallisticProjectile extends Projectile {
 	 *            y start position
 	 * @param posZ
 	 *            z start position
-	 * @param fPosX
+	 * @param targetPosX
 	 *            target x position
-	 * @param fPosY
+	 * @param targetPosY
 	 *            target y position
-	 * @param fPosZ
+	 * @param targetPosZ
 	 *            target z position
-	 * @param RANGE
+	 * @param range
 	 *            Projectile range
-	 * @param DAMAGE
+	 * @param damage
 	 *            Projectile hit damage
-	 * @param aoeDAMAGE
-	 *            AOE damage
+	 *
 	 */
 
 	public BallisticProjectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX,
@@ -43,5 +46,7 @@ public class BallisticProjectile extends Projectile {
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);
+//		System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX());
+
 	}
 }

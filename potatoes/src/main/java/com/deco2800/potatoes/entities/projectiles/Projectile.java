@@ -11,163 +11,199 @@ import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
 
-	protected static final transient String TEXTURE = "rocket1";
-	protected String projectileType = "rocket";
-	protected int textureArrayLength = 3;
-	protected String[] textureArray;
+    protected static final transient String TEXTURE = "rocket1";
+    protected String projectileType = "rocket";
+    protected int textureArrayLength = 3;
+    protected String[] textureArray;
 
-	protected float goalX;
-	protected float goalY;
-	protected float goalZ;
-	protected float changeX;
-	protected float changeY;
-	protected float changeZ;
+    protected float goalX;
+    protected float goalY;
+    protected float goalZ;
+    protected float changeX;
+    protected float changeY;
+    protected float changeZ;
 
-	protected static float xRenderLength = 1.4f;
-	protected static float yRenderLength = 1.4f;
-	protected static float xLength = 0.4f;
-	protected static float yLength = 0.4f;
-	protected static float zLength = 0.4f;
+    protected static float xRenderLength = 1.4f;
+    protected static float yRenderLength = 1.4f;
+    protected static float xLength = 0.4f;
+    protected static float yLength = 0.4f;
+    protected static float zLength = 0.4f;
 
-	protected Class<?> targetClass;
-	protected boolean maxRange;
-	protected float range;
-	protected float damage;
-	protected float rotationAngle = 0;
-	protected static final float SPEED = 0.2f;
+    protected Class<?> targetClass;
+    protected boolean maxRange;
+    protected float range;
+    protected float damage;
+    protected float rotationAngle = 0;
+    protected static final float SPEED = 0.2f;
 
-	protected Effect startEffect;
-	protected Effect endEffect;
+    protected Effect startEffect;
+    protected Effect endEffect;
 
-	public Projectile() {
-		textureArray = new String[textureArrayLength];
-		// empty for serialization
-	}
+    public Projectile() {
+        textureArray = new String[textureArrayLength];
+        // empty for serialization
+    }
 
-	// currently used in MeleeAttack, will probably need to change out later.
-	public Projectile(float posX, float posY, float posZ, float xRenderLength, float yRenderLength, String texture) {
-		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, xRenderLength, yRenderLength, true, texture);
-	}
-	
-	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,
-			float targetPosZ, float range, float damage, String projectileType, Effect startEffect, Effect endEffect) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
-		textureArray = new String[textureArrayLength];
-		if (projectileType != "" && projectileType != null)
-			this.projectileType = projectileType;
+    // currently used in MeleeAttack, will probably need to change out later.
+    public Projectile(float posX, float posY, float posZ, float xRenderLength, float yRenderLength, String texture) {
+        super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, texture);
+    }
 
-		for (int t = 0; t < textureArrayLength; t++) {
-			textureArray[t] = this.projectileType + Integer.toString(t + 1);
-		}
+    // currently used in Player, will probably need to change out later.
+    public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
+                      Effect endEffect, String Directions) {
+        super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
+        textureArray = new String[textureArrayLength];
+        if (projectileType != "" && projectileType != null)
+            this.projectileType = projectileType;
 
-		if (targetClass != null)
-			this.targetClass = targetClass;
-		else
-			this.targetClass = MortalEntity.class;
+        for (int t = 0; t < textureArrayLength; t++) {
+            textureArray[t] = this.projectileType + Integer.toString(t + 1);
+        }
 
-		this.range = damage;
-		this.damage = damage;
-		this.startEffect = startEffect;
-		this.endEffect = endEffect;
+        if (targetClass != null)
+            this.targetClass = targetClass;
+        else
+            this.targetClass = MortalEntity.class;
 
-		if (startEffect != null)
-			GameManager.get().getWorld().addEntity(startEffect);
+        this.range = damage;
+        this.damage = damage;
+        this.startEffect = startEffect;
+        this.endEffect = endEffect;
 
-		updatePosition();
-		setTargetPosition(targetPosX, targetPosY, targetPosZ);
-	}
+        if (startEffect != null)
+            GameManager.get().getWorld().addEntity(startEffect);
 
-	public void setTargetPosition(float xPos, float yPos, float zPos) {
-		this.goalX = xPos;
-		this.goalY = yPos;
-		this.goalZ = zPos;
-	}
+        updatePosition();
+        if (Directions.equalsIgnoreCase("Left")) {
+            setTargetPosition(posX + -5, posY + -5, posZ);
 
-	public void updatePosition() {
-		float deltaX = getPosX() - this.goalX;
-		float deltaY = getPosY() - this.goalY;
-		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
-		rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
-		changeX = (float) (SPEED * Math.cos(angle));
-		changeY = (float) (SPEED * Math.sin(angle));
+        } else if (Directions.equalsIgnoreCase("Right")) {
+            setTargetPosition(posX + 5, posY + 5, posZ);
+        }
+    }
 
-		setPosX(getPosX() + changeX);
-		setPosY(getPosY() + changeY);
+    public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,
+                      float targetPosZ, float range, float damage, String projectileType, Effect startEffect, Effect endEffect) {
+        super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
+        textureArray = new String[textureArrayLength];
+        if (projectileType != "" && projectileType != null)
+            this.projectileType = projectileType;
 
-		if (range <= 0 || maxRange) {
-			GameManager.get().getWorld().removeEntity(this);
-		} else {
-			range -= SPEED;
-		}
-	}
+        for (int t = 0; t < textureArrayLength; t++) {
+            textureArray[t] = this.projectileType + Integer.toString(t + 1);
+        }
 
-	@Override
-	public float rotationAngle() {
-		return rotationAngle;
-	}
+        if (targetClass != null)
+            this.targetClass = targetClass;
+        else
+            this.targetClass = MortalEntity.class;
 
-	/**
-	 * Returns Range value
-	 */
-	public float getRange() {
-		return range;
-	}
+        this.range = damage;
+        this.damage = damage;
+        this.startEffect = startEffect;
+        this.endEffect = endEffect;
 
-	/**
-	 * Returns Damage value
-	 */
-	public float getDamage() {
-		return damage;
-	}
+        if (startEffect != null)
+            GameManager.get().getWorld().addEntity(startEffect);
 
-	private int projectileEffectTimer;
-	private int projectileCurrentSpriteIndexCount;
+        updatePosition();
+        setTargetPosition(targetPosX, targetPosY, targetPosZ);
+    }
 
-	public void animate() {
-		projectileEffectTimer++;
-		if (projectileEffectTimer % 4 == 0) {
-			if ("rocket".equalsIgnoreCase(projectileType)) {
-				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
-				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
-					projectileCurrentSpriteIndexCount = 0;
-				else {
-					projectileCurrentSpriteIndexCount++;
-				}
-			} else if ("chilli".equalsIgnoreCase(projectileType)) {
+    public void setTargetPosition(float xPos, float yPos, float zPos) {
+        this.goalX = xPos;
+        this.goalY = yPos;
+        this.goalZ = zPos;
+    }
 
-				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
-				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
-					projectileCurrentSpriteIndexCount = 0;
-				else {
-					projectileCurrentSpriteIndexCount++;
-				}
-			}
-		}
-	}
+    public void updatePosition() {
+        float deltaX = getPosX() - this.goalX;
+        float deltaY = getPosY() - this.goalY;
+        float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+        rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+        changeX = (float) (SPEED * Math.cos(angle));
+        changeY = (float) (SPEED * Math.sin(angle));
 
-	@Override
-	public void onTick(long time) {
-		animate();
-		updatePosition();
+        setPosX(getPosX() + changeX);
+        setPosY(getPosY() + changeY);
 
-		Box3D newPos = getBox3D();
-		newPos.setX(this.getPosX());
-		newPos.setY(this.getPosY());
+        if (range <= 0 || maxRange) {
+            GameManager.get().getWorld().removeEntity(this);
+        } else {
+            range -= SPEED;
+        }
+    }
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+    @Override
+    public float rotationAngle() {
+        return rotationAngle;
+    }
 
-		for (AbstractEntity entity : entities.values()) {
-			if (!targetClass.isInstance(entity)) {
-				continue;
-			}
-			if (newPos.overlaps(entity.getBox3D())) {
-				((MortalEntity) entity).damage(range);
-				if (endEffect != null)
-					GameManager.get().getWorld().addEntity(endEffect);
-				maxRange = true;
-				updatePosition();
-				break;
-			}
-		}
-	}
+    /**
+     * Returns Range value
+     */
+    public float getRange() {
+        return range;
+    }
+
+    /**
+     * Returns Damage value
+     */
+    public float getDamage() {
+        return damage;
+    }
+
+    private int projectileEffectTimer;
+    private int projectileCurrentSpriteIndexCount;
+
+    public void animate() {
+        projectileEffectTimer++;
+        if (projectileEffectTimer % 4 == 0) {
+            if ("rocket".equalsIgnoreCase(projectileType)) {
+                setTexture(textureArray[projectileCurrentSpriteIndexCount]);
+                if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
+                    projectileCurrentSpriteIndexCount = 0;
+                else {
+                    projectileCurrentSpriteIndexCount++;
+                }
+            } else if ("chilli".equalsIgnoreCase(projectileType)) {
+
+                setTexture(textureArray[projectileCurrentSpriteIndexCount]);
+                if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
+                    projectileCurrentSpriteIndexCount = 0;
+                else {
+                    projectileCurrentSpriteIndexCount++;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onTick(long time) {
+        animate();
+        updatePosition();
+
+        Box3D newPos = getBox3D();
+        newPos.setX(this.getPosX());
+        newPos.setY(this.getPosY());
+
+        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+
+        for (AbstractEntity entity : entities.values()) {
+
+            if (!targetClass.isInstance(entity)) {
+                continue;
+            }
+
+            if (newPos.overlaps(entity.getBox3D())) {
+                ((MortalEntity) entity).damage(range);
+                if (endEffect != null)
+                    GameManager.get().getWorld().addEntity(endEffect);
+                maxRange = true;
+                updatePosition();
+                break;
+            }
+        }
+    }
 }

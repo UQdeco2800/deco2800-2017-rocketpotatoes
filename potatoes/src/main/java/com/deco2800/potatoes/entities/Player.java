@@ -3,7 +3,12 @@ package com.deco2800.potatoes.entities;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 
+import com.deco2800.potatoes.entities.effects.AOEEffect;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
+import com.deco2800.potatoes.managers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,11 +27,6 @@ import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -35,350 +35,360 @@ import com.deco2800.potatoes.util.WorldUtil;
  * Entity for the playable character.
  *
  * @author leggy
- *
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-	private final static transient float HEALTH = 200f;
-	private static final transient String TEXTURE_RIGHT = "spacman_blue";
-	private static final transient String TEXTURE_LEFT = "spacman_blue_2";
+    private final static transient float HEALTH = 200f;
+    private static final transient String TEXTURE_RIGHT = "spacman_blue";
+    private static final transient String TEXTURE_LEFT = "spacman_blue_2";
 
-	private float movementSpeed;
-	private float speedx;
-	private float speedy;
-	private int direction; // facing left=0, right=1
-	
-	private int respawnTime = 5000; // milliseconds
+    private float movementSpeed;
+    private float speedx;
+    private float speedy;
+    private int direction; // facing left=0, right=1
 
-	private boolean damaged;
+    private int respawnTime = 5000; // milliseconds
 
-	private Inventory inventory;
-	private TreeShop treeShop;
+    private boolean damaged;
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-	// an integer to check if key down has been pressed before key up
-	private int checkKeyDown = 0;
+    private Inventory inventory;
+    private TreeShop treeShop;
 
-	/**
-	 * Default constructor for the purposes of serialization
-	 */
-	public Player() {
-		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
-	}
+    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+    // an integer to check if key down has been pressed before key up
+    private int checkKeyDown = 0;
 
-	/**
-	 * Creates a new Player instance.
-	 *
-	 * @param posX
-	 *            The x-coordinate.
-	 * @param posY
-	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
-	 */
-	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
-		movementSpeed = 0.075f;
-		this.speedx = 0.0f;
-		this.speedy = 0.0f;
-		this.direction = 1;
+    /**
+     * Default constructor for the purposes of serialization
+     */
+    public Player() {
+        super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+    }
 
-		HashSet<Resource> startingResources = new HashSet<Resource>();
-		startingResources.add(new SeedResource());
-		startingResources.add(new FoodResource());
-		this.inventory = new Inventory(startingResources);
+    /**
+     * Creates a new Player instance.
+     *
+     * @param posX The x-coordinate.
+     * @param posY The y-coordinate.
+     * @param posZ The z-coordinate.
+     */
+    public Player(float posX, float posY, float posZ) {
+        super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+        movementSpeed = 0.075f;
+        this.speedx = 0.0f;
+        this.speedy = 0.0f;
+        this.direction = 1;
 
-		// this.setTexture("spacman_blue");
-	}
+        HashSet<Resource> startingResources = new HashSet<Resource>();
+        startingResources.add(new SeedResource());
+        startingResources.add(new FoodResource());
+        this.inventory = new Inventory(startingResources);
 
-	/**
-	 * Returns the inventory specific to the player.
-	 */
-	public Inventory getInventory() {
-		return this.inventory;
-	}
-	
-	/**
-	 * Returns the treeShop entity that the user can afford.
-	 */
-	public TreeShop getTreeShop() {
-		return this.treeShop;
-	}
-	
-	public void removeTreeShop() {
-		GameManager.get().getWorld().removeEntity(this.treeShop);
-		this.treeShop = null;
-		LOGGER.info("removed");
-	}
-	
-	public void openTreeShop(float x, float y) {
-		
-		if (this.treeShop == null) {
-			this.treeShop = new TreeShop(x,y);
-		} else {
-			this.treeShop.setPosX(x);
-			this.treeShop.setPosY(y);
-		}
-		GameManager.get().getWorld().addEntity(this.treeShop);
-	}
+        // this.setTexture("spacman_blue");
+    }
 
-	/**
-	 * Returns the string representation of which way the player is facing.
-	 */
-	public String getPlayerDirection() {
-		return (direction == 0) ? "left" : "right";
-	}
+    /**
+     * Returns the inventory specific to the player.
+     */
+    public Inventory getInventory() {
+        return this.inventory;
+    }
 
-	@Override
-	public void onTick(long arg0) {
-		float newPosX = this.getPosX() + speedx;
-		float newPosY = this.getPosY() + speedy;
-		float length = GameManager.get().getWorld().getLength();
-		float width = GameManager.get().getWorld().getWidth();
+    /**
+     * Returns the treeShop entity that the user can afford.
+     */
+    public TreeShop getTreeShop() {
+        return this.treeShop;
+    }
 
-		Box3D newPos = getBox3D();
-		newPos.setX(newPosX);
-		newPos.setY(newPosY);
+    public void removeTreeShop() {
+        GameManager.get().getWorld().removeEntity(this.treeShop);
+        this.treeShop = null;
+        LOGGER.info("removed");
+    }
 
-		float speedScale = GameManager.get().getManager(WorldManager.class)
-				.getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
-				.getMoveScale();
-		newPosX -= speedx * (1 - speedScale);
-		newPosY -= speedy * (1 - speedScale);
-		
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-					&& newPos.overlaps(entity.getBox3D())) {
-				LOGGER.info(this + " colliding with " + entity);
-				collided = true;
+    public void openTreeShop(float x, float y) {
 
-			}
+        if (this.treeShop == null) {
+            this.treeShop = new TreeShop(x, y);
+        } else {
+            this.treeShop.setPosX(x);
+            this.treeShop.setPosY(y);
+        }
+        GameManager.get().getWorld().addEntity(this.treeShop);
+    }
 
-			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
-				collided = true;
+    /**
+     * Returns the string representation of which way the player is facing.
+     */
+    public String getPlayerDirection() {
+        return (direction == 0) ? "left" : "right";
+    }
 
-			}
-		}
-		if (!collided) {
-			this.setPosX(Math.max((float)Math.min(newPosX,width),0));
-			this.setPosY(Math.max((float)Math.min(newPosY,length),0));
-		}
+    @Override
+    public void onTick(long arg0) {
+        float newPosX = this.getPosX() + speedx;
+        float newPosY = this.getPosY() + speedy;
+        float length = GameManager.get().getWorld().getLength();
+        float width = GameManager.get().getWorld().getWidth();
+
+        Box3D newPos = getBox3D();
+        newPos.setX(newPosX);
+        newPos.setY(newPosY);
+
+        float speedScale = GameManager.get().getManager(WorldManager.class)
+                .getTerrain(Math.round(Math.min(newPosX, width - 1)), Math.round(Math.min(newPosY, length - 1)))
+                .getMoveScale();
+        newPosX -= speedx * (1 - speedScale);
+        newPosY -= speedy * (1 - speedScale);
+
+        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+        boolean collided = false;
+        for (AbstractEntity entity : entities.values()) {
+            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+                    && newPos.overlaps(entity.getBox3D())) {
+                LOGGER.info(this + " colliding with " + entity);
+                collided = true;
+
+            }
+
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+                collided = true;
+
+            }
+        }
+        if (!collided) {
+            this.setPosX(Math.max((float) Math.min(newPosX, width), 0));
+            this.setPosY(Math.max((float) Math.min(newPosY, length), 0));
+        }
 
 
-		if (this.damaged) {
+        if (this.damaged) {
 
-			if (this.direction == 0) {
-				this.setTexture("flash_red_left");
+            if (this.direction == 0) {
+                this.setTexture("flash_red_left");
 
-			} else {
-				this.setTexture("flash_red_right");
+            } else {
+                this.setTexture("flash_red_right");
 
-			}
+            }
 
-			this.setDamaged(false);
+            this.setDamaged(false);
 
-		} else {
-			if (this.direction == 0) {
+        } else {
+            if (this.direction == 0) {
 
-				this.setTexture("spacman_blue_2");
-			} else {
+                this.setTexture("spacman_blue_2");
+            } else {
 
-				this.setTexture("spacman_blue");
-			}
+                this.setTexture("spacman_blue");
+            }
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Handle movement when wasd keys are pressed down
-	 *
-	 * @param keycode
-	 */
-	public void handleKeyDown(int keycode) {
+    /**
+     * Handle movement when wasd keys are pressed down
+     *
+     * @param keycode
+     */
+    public void handleKeyDown(int keycode) {
 
-		switch (keycode) {
-		case Input.Keys.W:
-			speedy -= movementSpeed;
-			speedx += movementSpeed;
-			break;
-		case Input.Keys.S:
-			speedy += movementSpeed;
-			speedx -= movementSpeed;
-			break;
-		case Input.Keys.A:
-			// changes the sprite so that the character is facing left
-			this.setTexture(TEXTURE_LEFT);
-			direction = 0;
-			speedx -= movementSpeed;
-			speedy -= movementSpeed;
-			break;
-		case Input.Keys.D:
-			// changes the sprite so that the character is facing right
-			this.setTexture(TEXTURE_RIGHT);
-			direction = 1;
-			speedx += movementSpeed;
-			speedy += movementSpeed;
-			break;
-		case Input.Keys.T:
-			tossItem(new SeedResource());
-			break;
-		case Input.Keys.F:
-			tossItem(new FoodResource());
-			break;
-		case Input.Keys.E:
-			harvestResources();
-			break;
-		case Input.Keys.NUM_1:
-			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-				AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
-			}
-			break;
-		case Input.Keys.NUM_2:
-			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-				AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
-			}
-			break;
-		case Input.Keys.NUM_3:
-			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-				AbstractTree.constructTree(
-						new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
-			}
-			break;
-		default:
-			break;
-		}
-		checkKeyDown++;
-	}
+        switch (keycode) {
+            case Input.Keys.W:
+                speedy -= movementSpeed;
+                speedx += movementSpeed;
+                break;
+            case Input.Keys.S:
+                speedy += movementSpeed;
+                speedx -= movementSpeed;
+                break;
+            case Input.Keys.A:
+                // changes the sprite so that the character is facing left
+                this.setTexture(TEXTURE_LEFT);
+                direction = 0;
+                speedx -= movementSpeed;
+                speedy -= movementSpeed;
+                break;
+            case Input.Keys.D:
+                // changes the sprite so that the character is facing right
+                this.setTexture(TEXTURE_RIGHT);
+                direction = 1;
+                speedx += movementSpeed;
+                speedy += movementSpeed;
+                break;
+            case Input.Keys.T:
+                tossItem(new SeedResource());
+                break;
+            case Input.Keys.F:
+                tossItem(new FoodResource());
+                break;
+            case Input.Keys.E:
+                harvestResources();
+                break;
+            case Input.Keys.NUM_1:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+                }
+                break;
+            case Input.Keys.NUM_2:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+                }
+                break;
+            case Input.Keys.NUM_3:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+                }
+                break;
+            case Input.Keys.SPACE:
+                Optional<AbstractEntity> target1 = null;
+                float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+                float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+                float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+                if (GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection().equalsIgnoreCase("left")) {
+                    target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+                } else if (GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection().equalsIgnoreCase("right")) {
+                    target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
-	private Vector2 getCursorCoords() {
-		Vector3 worldCoords = Render3D.screenToWorldCoordiates(Gdx.input.getX(), Gdx.input.getY(), 0);
-		Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
-		return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
-	}
+                }
 
-	/**
-	 * Handles removing an item from an inventory and placing it on the map.
-	 * 
-	 * @param item
-	 *            The resource to be thrown.
-	 */
-	private void tossItem(Resource item) {
-		// tosses a item in front of player
-		float x = this.getPosX();
-		float y = this.getPosY();
-		float z = this.getPosZ();
+                GameManager.get().getWorld()
+                        .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX, pPosY, pPosZ, 10f, 100, "rocket", null, null, GameManager.get().getManager(PlayerManager.class).getPlayer().getPlayerDirection()));
+                break;
+            default:
+                break;
+        }
+        checkKeyDown++;
+    }
 
-		x = (direction == 0) ? x - 1 : x + 1;
-		y = (direction == 0) ? y - 2 : y + 2;
+    private Vector2 getCursorCoords() {
+        Vector3 worldCoords = Render3D.screenToWorldCoordiates(Gdx.input.getX(), Gdx.input.getY(), 0);
+        Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
+        return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
+    }
 
-		// only toss an item if there are items to toss
-		if (this.getInventory().updateQuantity(item, -1) == 1) {
-			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
-		}
+    /**
+     * Handles removing an item from an inventory and placing it on the map.
+     *
+     * @param item The resource to be thrown.
+     */
+    private void tossItem(Resource item) {
+        // tosses a item in front of player
+        float x = this.getPosX();
+        float y = this.getPosY();
+        float z = this.getPosZ();
 
-	}
+        x = (direction == 0) ? x - 1 : x + 1;
+        y = (direction == 0) ? y - 2 : y + 2;
 
-	/**
-	 * Handles harvesting resources from resource tree that are in range. Resources
-	 * are added to the player's inventory.
-	 */
-	private void harvestResources() {
-		double interactRange = 3f; // TODO: Could this be a class variable?
-		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-		boolean didHarvest = false;
-		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					didHarvest = true;
-					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
-			}
-		}
-		if (didHarvest) {
-			GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
-		}
-	}
+        // only toss an item if there are items to toss
+        if (this.getInventory().updateQuantity(item, -1) == 1) {
+            GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
+        }
 
-	/**
-	 * Checks to see whether the player moving out of the map
-	 */
-	private boolean outOfBounds(){
-		int width = GameManager.get().getWorld().getWidth();
-		int height = GameManager.get().getWorld().getLength();
-		if (this.getPosX() > width - 0.2 || this.getPosX() < 0 || this.getPosY() > height - 0.2 || this.getPosY() < 0) {
-			return true;
-		}
-		return false;
+    }
 
-	}
+    /**
+     * Handles harvesting resources from resource tree that are in range. Resources
+     * are added to the player's inventory.
+     */
+    private void harvestResources() {
+        double interactRange = 3f; // TODO: Could this be a class variable?
+        Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
+        boolean didHarvest = false;
+        for (AbstractEntity entitiy : entities) {
+            if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+                if (((ResourceTree) entitiy).getGatherCount() > 0) {
+                    didHarvest = true;
+                    ((ResourceTree) entitiy).transferResources(this.inventory);
+                }
+            }
+        }
+        if (didHarvest) {
+            GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
+        }
+    }
 
-	public boolean isDamaged(){
-		return this.damaged;
-	}
+    /**
+     * Checks to see whether the player moving out of the map
+     */
+    private boolean outOfBounds() {
+        int width = GameManager.get().getWorld().getWidth();
+        int height = GameManager.get().getWorld().getLength();
+        if (this.getPosX() > width - 0.2 || this.getPosX() < 0 || this.getPosY() > height - 0.2 || this.getPosY() < 0) {
+            return true;
+        }
+        return false;
 
-	public void setDamaged(boolean b){
-		this.damaged = b;
-	}
+    }
 
-	/**
-	 * Handle movement when wasd keys are released
-	 *
-	 * @param keycode
-	 */
-	public void handleKeyUp(int keycode) {
-		// checks if key down is pressed first
-		if (checkKeyDown <= 0)
-			return;
-		switch (keycode) {
-		case Input.Keys.W:
-			speedy += movementSpeed;
-			speedx -= movementSpeed;
-			break;
-		case Input.Keys.S:
-			speedy -= movementSpeed;
-			speedx += movementSpeed;
-			break;
-		case Input.Keys.A:
-			speedx += movementSpeed;
-			speedy += movementSpeed;
-			break;
-		case Input.Keys.D:
-			speedx -= movementSpeed;
-			speedy -= movementSpeed;
-			break;
-		default:
-			break;
-		}
-		checkKeyDown--;
-	}
+    public boolean isDamaged() {
+        return this.damaged;
+    }
 
-	@Override
-	public String toString() {
-		return "The player";
-	}
+    public void setDamaged(boolean b) {
+        this.damaged = b;
+    }
 
-	@Override
-	public ProgressBar getProgressBar() {
-		return PROGRESS_BAR;
-	}
+    /**
+     * Handle movement when wasd keys are released
+     *
+     * @param keycode
+     */
+    public void handleKeyUp(int keycode) {
+        // checks if key down is pressed first
+        if (checkKeyDown <= 0)
+            return;
+        switch (keycode) {
+            case Input.Keys.W:
+                speedy += movementSpeed;
+                speedx -= movementSpeed;
+                break;
+            case Input.Keys.S:
+                speedy -= movementSpeed;
+                speedx += movementSpeed;
+                break;
+            case Input.Keys.A:
+                speedx += movementSpeed;
+                speedy += movementSpeed;
+                break;
+            case Input.Keys.D:
+                speedx -= movementSpeed;
+                speedy -= movementSpeed;
+                break;
+            default:
+                break;
+        }
+        checkKeyDown--;
+    }
 
-	@Override
-	public void deathHandler() {
-		LOGGER.info(this + " is dead.");
-		// destroy the player
-		GameManager.get().getWorld().removeEntity(this);
-		// play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
-		SoundManager soundManager = new SoundManager();
-		soundManager.playSound("wilhelmScream.wav");
-		// get the event manager
-		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-		// add the respawn event
-		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
-	}
+    @Override
+    public String toString() {
+        return "The player";
+    }
+
+    @Override
+    public ProgressBar getProgressBar() {
+        return PROGRESS_BAR;
+    }
+
+    @Override
+    public void deathHandler() {
+        LOGGER.info(this + " is dead.");
+        // destroy the player
+        GameManager.get().getWorld().removeEntity(this);
+        // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+        SoundManager soundManager = new SoundManager();
+        soundManager.playSound("wilhelmScream.wav");
+        // get the event manager
+        EventManager eventManager = GameManager.get().getManager(EventManager.class);
+        // add the respawn event
+        eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+    }
 
 
 }

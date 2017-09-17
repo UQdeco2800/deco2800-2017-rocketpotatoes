@@ -19,25 +19,12 @@ public class PlayerProjectile extends Projectile {
 	 *            y start position
 	 * @param posZ
 	 *            z start position
-	 * @param fPosX
-	 *            target x position
-	 * @param fPosY
-	 *            target y position
-	 * @param fPosZ
-	 *            target z position
-	 * @param RANGE
-	 *            Projectile range
-	 * @param DAMAGE
-	 *            Projectile hit damage
-	 * @param aoeDAMAGE
-	 *            AOE damage
+
 	 */
 
-	public PlayerProjectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX,
-                            float targetPosY, float targetPosZ, float range, float damage, String projectileType, Effect startEffect,
-                            Effect endEffect) {
-		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, projectileType,
-				startEffect, endEffect);
+	public PlayerProjectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
+                            Effect endEffect, String Directions) {
+		super(targetClass,posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions);
 	}
 
 	@Override
