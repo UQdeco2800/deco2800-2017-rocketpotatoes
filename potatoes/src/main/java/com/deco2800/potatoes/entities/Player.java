@@ -159,23 +159,23 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x)*(180/Math.PI);
 
-		if (angularDirection >= -180 & angularDirection < -157.5) {
+		if (angularDirection >= -180 && angularDirection < -157.5) {
 			this.setDirection(Direction.SouthWest);
-		} else if (angularDirection >= -157.5 & angularDirection < -112.5) {
+		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
 			this.setDirection(Direction.West);
-		} else if (angularDirection >= -112.5 & angularDirection < -67.5) {
+		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
 			this.setDirection(Direction.NorthWest);
-		} else if (angularDirection >= -67.5 & angularDirection < -22.5) {
+		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
 			this.setDirection(Direction.North);
-		} else if (angularDirection >= -22.5 & angularDirection < 22.5) {
+		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
 			this.setDirection(Direction.NorthEast);
-		} else if (angularDirection >= 22.5 & angularDirection < 67.5) {
+		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
 			this.setDirection(Direction.East);
-		} else if (angularDirection >= 67.5 & angularDirection < 112.5) {
+		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
 			this.setDirection(Direction.SouthEast);
-		} else if (angularDirection >= 112.5 & angularDirection < 157.5) {
+		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
 			this.setDirection(Direction.South);
-		} else if (angularDirection >= 157.5 & angularDirection <= 180) {
+		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
 			this.setDirection(Direction.SouthWest);
 		} 	
 		
@@ -414,11 +414,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange
+					&& ((ResourceTree) entitiy).getGatherCount() > 0) {
 					didHarvest = true;
 					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
+
 			}
 		}
 		if (didHarvest) {

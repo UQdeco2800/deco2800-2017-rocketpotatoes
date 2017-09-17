@@ -9,16 +9,19 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
  * Represents a type of world with a set of terrain types and world generation.
  */
 public class WorldType {
-	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
-			new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)));
-	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 0.5f, true),
-			new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)));
-	public static final WorldType ICE_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
-			new Terrain("ground_1", 1, false), new Terrain("w1", 2f, false)));
-	public static final WorldType VOLCANO_WORLD = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
-			new Terrain("ground_1", 0.5f, false), new Terrain("w1", 0, false)));
-	public static final WorldType OCEAN_WORLD = new WorldType(new TerrainType(null, new Terrain("w1", 1, true),
-			new Terrain("ground_1", 1, false), new Terrain("grass", 0, false)));
+	private static final String ground = "ground_1";
+	private static final String water = "w1";
+	private static final String grass = "grass";
+	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(grass, 1, true),
+			new Terrain(ground, 1, false), new Terrain(water, 0, false)));
+	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain(grass, 0.5f, true),
+			new Terrain(ground, 1, false), new Terrain(water, 0, false)));
+	public static final WorldType ICE_WORLD = new WorldType(new TerrainType(null, new Terrain(grass, 1, true),
+			new Terrain(ground, 1, false), new Terrain(water, 2f, false)));
+	public static final WorldType VOLCANO_WORLD = new WorldType(new TerrainType(null, new Terrain(grass, 1, true),
+			new Terrain(ground, 0.5f, false), new Terrain(water, 0, false)));
+	public static final WorldType OCEAN_WORLD = new WorldType(new TerrainType(null, new Terrain(water, 1, true),
+			new Terrain(ground, 1, false), new Terrain(grass, 0, false)));
 
 	private final TerrainType terrain;
 
@@ -41,20 +44,20 @@ public class WorldType {
 	 * and world generation is based on the details of this world type
 	 */
 	public Terrain[][] generateWorld(int worldSize, float[][] height) {
-		Terrain[][] terrain = new Terrain[worldSize][worldSize];
+		Terrain[][] terrainSet = new Terrain[worldSize][worldSize];
 		float[][] grass = GameManager.get().getManager(WorldManager.class).getRandomGrid();
 		for (int x = 0; x < worldSize; x++) {
 			for (int y = 0; y < worldSize; y++) {
 				if (height[x][y] < 0.3) {
-					terrain[x][y] = getTerrain().getWater();
+					terrainSet[x][y] = getTerrain().getWater();
 				} else if (height[x][y] < 0.35) {
-					terrain[x][y] = getTerrain().getRock();
+					terrainSet[x][y] = getTerrain().getRock();
 				} else {
-					terrain[x][y] = grass[x][y] < 0.5 ? getTerrain().getGrass() : getTerrain().getRock();
+					terrainSet[x][y] = grass[x][y] < 0.5 ? getTerrain().getGrass() : getTerrain().getRock();
 				}
 			}
 		}
-		return terrain;
+		return terrainSet;
 	}
 
 	@Override
