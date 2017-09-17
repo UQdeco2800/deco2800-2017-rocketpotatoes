@@ -80,7 +80,7 @@ public class PathManagerTest {
 
     @Test
     public void leakTest() {
-        int rounds = 100;
+        int rounds = 1;
         for (int i = 0; i < rounds; i++) {
           obstacleCheck();
         }

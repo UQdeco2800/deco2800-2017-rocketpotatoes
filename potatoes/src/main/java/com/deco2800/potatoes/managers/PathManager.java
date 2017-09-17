@@ -29,7 +29,7 @@ public class PathManager extends Manager {
     private World world;
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
-    private ArrayDeque<Box3D> path;
+    private ArrayList<Box3D> path;
     private static final int NUMBER_OF_RANDOM_NODES = 5;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
@@ -40,7 +40,7 @@ public class PathManager extends Manager {
     public PathManager() {
         spanningTree = new HashMap<>();
         nodes = new ArrayList<>();
-        path = new ArrayDeque<>();
+        path = new ArrayList<>();
         world = GameManager.get().getWorld();
     }
 
@@ -101,16 +101,19 @@ public class PathManager extends Manager {
         Box3D next;
         // Create line between start and goal.
         Line line = new Line(start, goal);
-        // Check if the spanning tree has been initialise.
-        if (spanningTree.size() == 0) {
-            initialise();
+        if (obstacles == null) {
+            obstacles = createObstacleLines();
         }
         // Check if this line has a clear path.
-        if(!treeMaker.checkLineClash(line, obstacles)) {
+        if(!checkLineClash(line, obstacles)) {
             // line is not obstructed.
             path.add(start);
             path.add(goal);
             return new Path(path);
+        }
+        // Check if the spanning tree has been initialise.
+        if (spanningTree.size() == 0) {
+            initialise();
         }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(goal, start, obstacles);
@@ -156,6 +159,25 @@ public class PathManager extends Manager {
             }
         }
         return lineList;
+    }
+    /**
+     * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
+     * @param edge Line object tested.
+     * @param obstacles Line objects in list
+     * @return true in edge intersects with any lines in obstacles; false otherwise.
+     */
+    public boolean checkLineClash(Line edge, ArrayList<Line> obstacles) {
+
+        // Iterate through obstacles and check if
+        // edge between vertices is obstructed.
+        for (Line line: obstacles) {
+            if(edge.doIntersect(line)) {
+                // Edge is obstructed.
+                return true;
+            }
+        }
+        // No obstruction.
+        return false;
     }
 
 }

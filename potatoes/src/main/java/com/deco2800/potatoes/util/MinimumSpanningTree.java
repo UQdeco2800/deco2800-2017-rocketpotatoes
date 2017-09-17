@@ -198,7 +198,7 @@ public class MinimumSpanningTree {
                 // Create edge line between vertices.
                 edge = new Line(vertexList.get(i).getEntry(), vertexList.get(j).getEntry());
                 // Check for obstructed edges
-                if (this.checkLineClash(edge, obstacles)) {
+                if (checkLineClash(edge, obstacles)) {
                     // Obstruction found
                     this.putGraphEntry(LARGE_WEIGHT, i, j);
                     // Reflect value
