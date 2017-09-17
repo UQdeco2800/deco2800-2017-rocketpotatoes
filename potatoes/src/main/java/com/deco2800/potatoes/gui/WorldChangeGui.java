@@ -47,10 +47,10 @@ public class WorldChangeGui extends Gui {
         table = new Table(uiSkin);
 
         // actors initialisation
-        worldOneButton = new TextButton("World 1", uiSkin);
-        worldTwoButton = new TextButton("World 2", uiSkin);
-        worldThreeButton = new TextButton("World 3", uiSkin);
-        worldFourButton = new TextButton("World 4", uiSkin);
+        worldOneButton = new TextButton("Desert World", uiSkin);
+        worldTwoButton = new TextButton("Ice World", uiSkin);
+        worldThreeButton = new TextButton("Volcano World", uiSkin);
+        worldFourButton = new TextButton("Sea World", uiSkin);
         exitButton = new TextButton("Exit", uiSkin);
 
         // adding actors

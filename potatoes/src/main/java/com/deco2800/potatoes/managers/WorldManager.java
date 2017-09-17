@@ -53,12 +53,46 @@ public class WorldManager extends Manager {
 					new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)))));
 			//add some entities to the worlds that aren't the main world
 			if (key > 0) {
-				worlds.get(key).addEntity(new DamageTree(16, 11, 0));
-				worlds.get(key).addEntity(new AbstractPortal(5, 5, 0, "iceland_portal"));
+				addPortal(key);
 			}
 			
 			return worlds.get(key);
 		}
+	}
+	
+	/**
+	 * Adds a portal to a new world
+	 * 
+	 * @param key
+	 * 			The ID of the world to add the portal to
+	 */
+	private void addPortal(int key) {
+		// the location of the portal
+		int xLocation = 5;
+		int yLocation = 5;
+		int zLocation = 0;
+		
+		// add the portal with the appropriate texture
+		switch (key) {
+			case 1:
+				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+						"desert_portal"));
+				break;
+			case 2:
+				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+						"iceland_portal"));
+				break;
+			case 3:
+				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+						"volcano_portal"));
+				break;
+			case 4:
+				worlds.get(key).addEntity(new AbstractPortal(xLocation, yLocation, zLocation,
+						"sea_portal"));
+				break;
+		
+		}
+		
 	}
 
 	/**

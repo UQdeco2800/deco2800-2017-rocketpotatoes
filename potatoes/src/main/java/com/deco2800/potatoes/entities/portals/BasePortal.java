@@ -43,7 +43,7 @@ public class BasePortal extends MortalEntity implements Tickable, HasProgressBar
     // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
     private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
-    private static final transient String TEXTURE = "volcano_portal";
+    private static final transient String TEXTURE = "forest_portal";
 
 
     /*

@@ -132,6 +132,8 @@ public class TextureManager extends Manager {
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
+        saveTexture("forest_portal", "resources/portals/Forest_Portal.png");
+        saveTexture("sea_portal", "resources/portals/Sea_Portal.png");
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
