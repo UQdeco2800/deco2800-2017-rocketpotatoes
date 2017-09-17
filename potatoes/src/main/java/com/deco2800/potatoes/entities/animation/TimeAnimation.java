@@ -9,7 +9,6 @@ import com.deco2800.potatoes.entities.TimeEvent;
  * com.badlogic.gdx.graphics.g2d.Animation
  */
 public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
-
 	private final transient Animation[] frames;
 
 	/**
@@ -52,4 +51,8 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 		return frames[Math.round((frames.length - 1) * (1 - (float) getProgress() / getResetAmount()))];
 	}
 
+	@Override
+	public Animation[] getFrames() {
+		return frames;
+	}
 }

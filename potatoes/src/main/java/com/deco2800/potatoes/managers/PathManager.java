@@ -4,9 +4,8 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Line;
 import com.deco2800.potatoes.util.MinimumSpanningTree;
-import com.deco2800.potatoes.util.MinimumSpanningTree.Vertex;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 
 
 
@@ -27,7 +26,7 @@ public class PathManager extends Manager {
      */
     private Map<Box3D, Box3D> spanningTree;
     private MinimumSpanningTree treeMaker;
-    private AbstractWorld world;
+    private World world;
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
     private ArrayDeque<Box3D> path;
@@ -42,13 +41,16 @@ public class PathManager extends Manager {
         spanningTree = new HashMap<>();
         nodes = new ArrayList<>();
         path = new ArrayDeque<>();
+        world = GameManager.get().getWorld();
     }
 
     /**
      * Populates the internal graph representation of the path manager, based on the initial world state.
      * Should be run after loading the map
      */
+
     public void initialise() {
+
 
         nodes.clear();
         // Add place holder nodes at positions 0 and 1
@@ -56,7 +58,7 @@ public class PathManager extends Manager {
         // can be added later.
         nodes.add(new Box3D(dummyBox));     // Position 0 => player position.
         nodes.add(new Box3D(dummyBox));     // Position 1 => enemy position.
-        world = GameManager.get().getWorld();
+
         // Create obstacles from static entities.
         obstacles = createObstacleLines();
 
@@ -79,6 +81,7 @@ public class PathManager extends Manager {
         for (int i = 0; i < nodes.size(); i++) {
             treeMaker.addVertex(nodes.get(i), i);
         }
+
         // Calculate edge weights in graph matrix
         // based on static enemies.
         treeMaker.initGraphWeightMatrix(obstacles);

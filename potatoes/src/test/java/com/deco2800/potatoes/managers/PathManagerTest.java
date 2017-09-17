@@ -77,4 +77,12 @@ public class PathManagerTest {
         assertThat("Finish is not the last point of path",
                 finish.equals(p.goal()), is(equalTo(true)));
     }
+
+    @Test
+    public void leakTest() {
+        int rounds = 100;
+        for (int i = 0; i < rounds; i++) {
+          obstacleCheck();
+        }
+    }
 }

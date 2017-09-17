@@ -1,11 +1,13 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.effects.SwipeEffect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Map;
@@ -20,7 +22,7 @@ public class MeleeAttack extends Projectile {
     private float goalY;
     private float goalZ;
 
-    private int rotateAngle = 0;
+    private int rotationAngle = 0;
 
     private float range = 3f;
 
@@ -40,10 +42,13 @@ public class MeleeAttack extends Projectile {
     private final static float effect_width = 1f;
     private final static float effect_height = 1f;
 
+    /**
+     * Empty constructor for serialization
+     */
     public MeleeAttack() {
         // empty for serialization
         DAMAGE = 1;
-        rotateAngle = 0;
+        rotationAngle = 0;
         maxRange = false;
     }
 
@@ -84,12 +89,12 @@ public class MeleeAttack extends Projectile {
         changeX = (float) (speed * Math.cos(angle));
         changeY = (float) (speed * Math.sin(angle));
 
-        rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+        rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
     }
 
     @Override
-    public int rotateAngle() {
-        return rotateAngle;
+    public float rotationAngle() {
+        return rotationAngle;
     }
 
     @Override
@@ -120,7 +125,7 @@ public class MeleeAttack extends Projectile {
 
         range -= speed;
 
-        rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+        rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
         Box3D newPos = getBox3D();
         newPos.setX(this.getPosX());
@@ -137,6 +142,12 @@ public class MeleeAttack extends Projectile {
                 SwipeEffect swipe = new SwipeEffect(goalX - (effect_width / 2), goalY - (effect_height / 2) + 1, 0,
                         effect_width, effect_height, 0, effect_width, effect_height);
                 GameManager.get().getWorld().addEntity(swipe);
+
+                if(entity instanceof Player){
+                    GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+                }
+
+
 
 
                 GameManager.get().getWorld().removeEntity(this);

@@ -3,8 +3,6 @@ package com.deco2800.potatoes.entities.enemies;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -22,6 +20,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
      * Default constructor for serialization
      */
     public MeleeAttackEvent() {
+        //Blank comment for the great lord Sonar
     }
 
     /**
@@ -56,10 +55,6 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 
         GameManager.get().getWorld().addEntity(new MeleeAttack(target1.get().getClass(),
                 enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, 10));
-
-
-
-        //GameManager.get().getWorld().addEntity(new LightningEffect(0,0,0,10));
 
         /*If the enemy this attack event belongs to, stop firing
         * !DOES NOT REMOVE EVENT, JUST STOPS  REPEATING IT!*/

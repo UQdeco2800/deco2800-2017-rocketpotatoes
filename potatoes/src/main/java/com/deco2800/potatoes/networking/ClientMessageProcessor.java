@@ -225,7 +225,7 @@ public class ClientMessageProcessor {
     /**
      * Handles a entity update position
      *
-     * Updates the position of an existing entity via id. Also used to update player positions
+     * Updates the position of an existing entity via id. Also used to update player calculatePositions
      *
      * @param client the network client to process this event
      * @param m the message
@@ -247,8 +247,10 @@ public class ClientMessageProcessor {
      */
     private static void entityUpdateProgressMessage(NetworkClient client, Network.HostEntityUpdateProgressMessage m) {
 
-        // TODO verification?
-        ((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
+		LOGGER.error("Trying to use setProgress to update the progress. This is no longer currently"
+				+ " part of the HasProgress interface and needs to be fixed.");
+		// TODO verification?
+        //((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
 
     }
 

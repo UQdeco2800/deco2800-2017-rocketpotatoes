@@ -7,14 +7,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.gui.GameOverGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 
 
 /**
  * @author michaelruigrok
  *
  */
-public class MortalEntity extends AbstractEntity implements Mortal {
+public class MortalEntity extends AbstractEntity implements Mortal, HasProgress, Tickable {
 
 	protected float health;
 	protected float maxHealth;
@@ -223,7 +227,7 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean setProgress(float amount) {
+	public boolean setHealth(float amount) {
 		if (maxHealth <= amount) {
 			health = maxHealth;
 		} else {
@@ -257,6 +261,9 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
+		if (this instanceof GoalPotate){
+			GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
+		}
 	}
 
 	/**
@@ -292,5 +299,30 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	public float removeDamageScaling(float scale) {
 		this.damageScaling /= scale;
 		return this.damageScaling;
+	}
+
+	@Override
+	public int getProgress() {
+		return (int) getHealth();
+	}
+
+	@Override
+	public float getProgressRatio() {
+		return getHealth() / getMaxHealth();
+	}
+
+	@Override
+	public int getMaxProgress() {
+		return (int) getMaxHealth();
+	}
+
+	@Override
+	public boolean showProgress() {
+		return true;
+	}
+
+	public void onTick(long time) {
+		// TODO Auto-generated method stub
+		
 	}
 }

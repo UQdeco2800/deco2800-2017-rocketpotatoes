@@ -6,7 +6,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
  * 
  * @author Peter
  */
-public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
+public class ResourceGatherEvent extends TimeEvent<ResourceTree> {
 	
 	private int gatherAmount;	// The number of resources gathered per interval
 	
@@ -14,6 +14,7 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	 * Default constructor for serialization
 	 */
 	public ResourceGatherEvent() {
+		//Blank comment for Sonar
 	}
 	
 	/**
@@ -35,15 +36,14 @@ public class ResourceGatherEvent extends TimeEvent<AbstractTree> {
 	 * Action for incrementing resources in the resource tree. 
 	 */
 	@Override
-	public void action(AbstractTree tree) {
-		ResourceTree resourceTree = (ResourceTree) tree;
-		if (resourceTree.gatherEnabled) {
-			resourceTree.gather(gatherAmount);
+	public void action(ResourceTree tree) {
+		if (tree.isGatherEnabled()) {
+			tree.gather(gatherAmount);
 		}
 	}
 
 	@Override
-	public TimeEvent<AbstractTree> copy() {
+	public TimeEvent<ResourceTree> copy() {
 		return new ResourceGatherEvent(getResetAmount(), gatherAmount);
 	}
 

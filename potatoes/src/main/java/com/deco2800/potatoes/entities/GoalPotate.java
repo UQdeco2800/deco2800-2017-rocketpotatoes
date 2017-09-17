@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -15,9 +14,9 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
  */
 public class GoalPotate extends MortalEntity implements HasProgressBar {
 	
-	private final static transient String TEXTURE = "potate";
+	private static final transient String TEXTURE = "potate";
 
-	private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 2);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
 	public GoalPotate() {
 		// empty for serialization
@@ -31,43 +30,12 @@ public class GoalPotate extends MortalEntity implements HasProgressBar {
 
 	@Override
 	public ProgressBar getProgressBar() {
-		return progressBar;
+		return PROGRESS_BAR;
 	}
 
 	@Override
 	public String toString() {
 		return "The goal potate";
 	}
-
-	@Override
-	public int getProgress() {
-		return (int) getHealth();
-	}
-
-	@Override
-	public void setProgress(int p) {
-		return;
-	}
-
-	@Override
-	public float getProgressRatio() {
-		return getHealth() / getMaxHealth();
-	}
-
-	@Override
-	public int getMaxProgress() {
-		return (int) getMaxHealth();
-	}
-
-	@Override
-	public void setMaxProgress(int p) {
-		return;
-	}
-
-	@Override
-	public boolean showProgress() {
-		return true;
-	}
-
 
 }

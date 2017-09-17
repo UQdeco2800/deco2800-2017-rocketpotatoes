@@ -5,7 +5,7 @@ import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
 
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -38,7 +38,7 @@ public class MeleeAttackEventTest {
         testEvent.action(testMeleeEnemy);
     }
 
-    private class TestWorld extends AbstractWorld {
+    private class TestWorld extends World {
 
     }
 }

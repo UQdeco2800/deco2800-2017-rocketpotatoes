@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.util;
 
+import java.util.Objects;
+
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -246,5 +248,38 @@ public class Line {
         }
 
         return false; // Doesn't fall in any of the above cases
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(endPointOne.x, endPointOne.y, endPointTwo.x, endPointTwo.y);
+    }
+
+    private boolean compareFloat(float a, float b) {
+        float delta = 0.00001f;
+        return Math.abs(a-b) < delta;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Line)) {
+            return false;
+        }
+
+        Line that = (Line) o;
+
+        // since equality necessitates hash equality, this equals() method does
+        // effectivelly float == float. I haven't found a way around this that enforces
+        // transitivity, hashCode equality, and equality between very similar values.
+        return hashCode() == that.hashCode() &&
+                compareFloat(that.getEndPointOne().getX(), this.getEndPointOne().getX()) &&
+                compareFloat(that.getEndPointOne().getY(), this.getEndPointOne().getY()) &&
+                compareFloat(that.getEndPointTwo().getX(), this.getEndPointTwo().getX()) &&
+                compareFloat(that.getEndPointTwo().getY(), this.getEndPointTwo().getY());
+
     }
 }

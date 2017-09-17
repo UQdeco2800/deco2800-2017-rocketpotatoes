@@ -6,7 +6,10 @@ import static org.hamcrest.CoreMatchers.is;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertThat;
 
@@ -63,8 +66,13 @@ public class MinimumSpanningTreeTest {
     }
 
     @Test
-    public void treeTest() {
+    public void leakTest() {
 
+        int rounds = 100;
+
+        for (int i = 0; i < rounds; i++) {
+
+        }
     }
 
 }
