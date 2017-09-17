@@ -5,7 +5,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.deco2800.potatoes.entities.Resource;
+
+import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.gui.InventoryGui;
 

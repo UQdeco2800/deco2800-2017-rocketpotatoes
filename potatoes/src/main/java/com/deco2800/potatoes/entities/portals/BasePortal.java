@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.Tickable;
 
 import com.deco2800.potatoes.entities.health.MortalEntity;
 
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;

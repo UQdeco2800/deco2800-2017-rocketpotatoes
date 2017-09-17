@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.resources;
 
 import java.util.Map;
 
@@ -10,6 +10,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Player;
 
 /**
  * A ResourceEntity is a type of AbstractEntity that can be collected. These

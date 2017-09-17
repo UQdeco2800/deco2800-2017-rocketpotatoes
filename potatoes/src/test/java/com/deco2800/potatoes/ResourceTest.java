@@ -3,10 +3,10 @@ package com.deco2800.potatoes;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.deco2800.potatoes.entities.FoodResource;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.ResourceEntity;
-import com.deco2800.potatoes.entities.SeedResource;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 
 public class ResourceTest {
 
