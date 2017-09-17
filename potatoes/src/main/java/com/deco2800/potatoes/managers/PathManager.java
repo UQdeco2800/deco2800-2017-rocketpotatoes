@@ -30,7 +30,8 @@ public class PathManager extends Manager {
     private AbstractWorld world;
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
-    private static final int NUMBER_OF_RANDOM_NODES = 100;
+    private ArrayDeque<Box3D> path;
+    private static final int NUMBER_OF_RANDOM_NODES = 5;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
 
@@ -40,6 +41,7 @@ public class PathManager extends Manager {
     public PathManager() {
         spanningTree = new HashMap<>();
         nodes = new ArrayList<>();
+        path = new ArrayDeque<>();
     }
 
     /**
@@ -92,7 +94,7 @@ public class PathManager extends Manager {
      */
     public Path generatePath(Box3D start, Box3D goal) {
 
-        ArrayDeque<Box3D> path = new ArrayDeque<>();
+        path.clear();
         Box3D next;
         // Create line between start and goal.
         Line line = new Line(start, goal);
@@ -125,6 +127,7 @@ public class PathManager extends Manager {
             path.add(next);
             next = spanningTree.get(next);
         }
+        path.add(next);
         return new Path(path);
     }
 

@@ -149,14 +149,20 @@ public class MinimumSpanningTree {
     private void updateLeastEdges() {
 
         float temp;
+        int address;
         for (int i = 0; i < this.getSize(); i++) {
             temp = this.getGraphEntry(i, i);
+            address = i;
             for (int j = 0; j < this.getSize(); j++) {
                 if (cloud.containsKey(j)) {
-                   if (temp > getGraphEntry(i, j)) temp = getGraphEntry(i, j);
+                   if (temp > getGraphEntry(i, j)) {
+                       temp = getGraphEntry(i, j);
+                       address = j;
+                   }
                 }
             }
             this.vertexList.get(i).setLeastEdge(temp);
+            this.vertexList.get(i).setLeastEdgeAddress(address);
         }
     }
 
