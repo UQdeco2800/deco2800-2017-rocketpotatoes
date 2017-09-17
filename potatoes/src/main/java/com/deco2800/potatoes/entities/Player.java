@@ -1,16 +1,13 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-
-import org.reflections.vfs.Vfs.Dir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -41,33 +38,30 @@ import com.deco2800.potatoes.util.WorldUtil;
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
-
-	private final static transient float HEALTH = 200f;
+	private static final transient float HEALTH = 200f;
 	private static final transient String TEXTURE_RIGHT = "player_right";
 	private static final transient String TEXTURE_LEFT = "player_left";
-
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+	
 	private float movementSpeed;
 	private float speedx;
 	private float speedy;
-	
 	private int respawnTime = 5000; // milliseconds
-
-	private boolean damaged;
-
 	private Inventory inventory;
+	private Direction currentDirection; // The direction the player faces
+	private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 	
-	// The player class must set and store its direction internally.
-	private Direction currentDirection;
-
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-	// an integer to check if key down has been pressed before key up
-	private int checkKeyDown = 0;
+	public enum PlayerState { idle, walk, attack, damaged };	// The states a player may take
+	private ArrayList<PlayerState> currentStates = new ArrayList<>();	// The current states of the player
+	
+	// The map containing all player textures
+	private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
 
 	/**
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
 	}
 
 	/**
@@ -94,20 +88,66 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	}
 	
 	/**
-	 * Returns the current Direction of the player.
+	 * Add a state to the player. For example, if the player
+	 * is walking, then add the 'walk' state to the player. 
 	 * 
+	 * @param state
+	 * 			The state to set.
+	 */
+	public void addState(PlayerState state) {
+		currentStates.add(state);
+	}
+	
+	/**
+	 * Returns true if the player currently is in the specified state.
+	 * 
+	 * @param state
+	 * 			A state the player may take.
+	 * 
+	 * @return true if the player has the current state and false 
+	 * 			otherwise.
+	 */
+	public boolean hasState(PlayerState state) {
+		return this.currentStates.contains(state) ? true : false;
+	}
+	
+	/**
+	 * Remove a state from the player. For example, if the player
+	 * stops walking, then remove the 'walk' state from the player. 
+	 * 
+	 * @param state
+	 * 			The state to remove.
+	 */
+	public void removeState(PlayerState state) {
+		currentStates.remove(state);
+	}
+	
+	/**
+	 * Returns the current Direction of the player.
 	 */
 	@Override
 	public Direction getDirection() {
+		// TODO: Implementation
 		return currentDirection;
 	}
 	
 	/**
 	 * Returns the player inventory.
-	 * 
 	 */
 	public Inventory getInventory() {
 		return this.inventory;
+	}
+	
+	/*
+	 * Temporary method for use from other classes, please see new
+	 * implementation above.
+	 */
+	public void setDamaged(boolean damaged) {
+		if (damaged) {
+			this.addState(PlayerState.damaged);
+		} else {
+			this.removeState(PlayerState.damaged);
+		}
 	}
 
 	@Override
@@ -129,12 +169,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 					&& newPos.overlaps(entity.getBox3D())) {
 				LOGGER.info(this + " colliding with " + entity);
 				collided = true;
-
 			}
 
 			if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
 				collided = true;
-
 			}
 		}
 		// Lazy checking for water collision
@@ -148,7 +186,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 
 
-		if (this.damaged) {
+		if (this.hasState(PlayerState.damaged)) {
 
 			if (this.getDirection() == Direction.SouthEast) {
 				this.setTexture("flash_red_left");
@@ -157,9 +195,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 				this.setTexture("flash_red_right");
 
 			}
-
-			this.setDamaged(false);
-
+			
+			this.removeState(PlayerState.damaged);
 		} else {
 			
 			if (this.getDirection() == Direction.SouthEast) {
@@ -293,15 +330,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 			return true;
 		}
 		return false;
-
-	}
-
-	public boolean isDamaged(){
-		return this.damaged;
-	}
-
-	public void setDamaged(boolean b){
-		this.damaged = b;
 	}
 
 	/**
