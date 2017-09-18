@@ -174,40 +174,25 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void onTick(long i) {
 		float goalX;
 		float goalY;
-		//if goal is player, use playerManager to eet position and move towards target 
-		if (goal == Player.class) {
-			//goal = Player.class;
-			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-
-			// The X and Y position of the player without random floats generated
-			goalX = playerManager.getPlayer().getPosX() ;
-			goalY = playerManager.getPlayer().getPosY() ;
 		
-			if(this.distance(playerManager.getPlayer()) < speed) {
+		//set the target of Enemy to the closest goal
+		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+		
+		//if target is not found in the world, set target to player 
+		if (!target.isPresent()) {
+			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			AbstractEntity getTarget = playerManager.getPlayer();
+			// get the position of the target
+			goalX = getTarget.getPosX();
+			goalY = getTarget.getPosY(); 
+			
+			if(this.distance(getTarget) < speed) {
 				this.setPosX(goalX);
 				this.setPosY(goalY);
 				return;
 			}
 		} else {
-			// set the target of Enemy to the closest goal
-			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
-			
-			//if target is not found in the world, set target to player 
-			if (!target.isPresent()) {
-				PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-				AbstractEntity getTarget = playerManager.getPlayer();
-				// get the position of the target
-				goalX = getTarget.getPosX();
-				goalY = getTarget.getPosY(); 
-				
-				if(this.distance(getTarget) < speed) {
-					this.setPosX(goalX);
-					this.setPosY(goalY);
-					return;
-				}
-				
-			} else {
-				//otehrwise, move to enemy's closest goal
+				//otherwise, move to enemy's closest goal
 				AbstractEntity getTarget = target.get();
 				// get the position of the target
 				goalX = getTarget.getPosX(); 
@@ -218,9 +203,55 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 					this.setPosY(goalY);
 					return;
 				}
-			}
-			
 		}
+		
+//		//if goal is player, use playerManager to set position and move towards target 
+//		if (goal == Player.class) {
+//			//goal = Player.class;
+//			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+//
+//			// The X and Y position of the player without random floats generated
+//			goalX = playerManager.getPlayer().getPosX() ;
+//			goalY = playerManager.getPlayer().getPosY() ;
+//		
+//			if(this.distance(playerManager.getPlayer()) < speed) {
+//				this.setPosX(goalX);
+//				this.setPosY(goalY);
+//				return;
+//			}
+//		} else {
+//			// set the target of Enemy to the closest goal
+//			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+//			
+//			//if target is not found in the world, set target to player 
+//			if (!target.isPresent()) {
+//				PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+//				AbstractEntity getTarget = playerManager.getPlayer();
+//				// get the position of the target
+//				goalX = getTarget.getPosX();
+//				goalY = getTarget.getPosY(); 
+//				
+//				if(this.distance(getTarget) < speed) {
+//					this.setPosX(goalX);
+//					this.setPosY(goalY);
+//					return;
+//				}
+//				
+//			} else {
+//				//otehrwise, move to enemy's closest goal
+//				AbstractEntity getTarget = target.get();
+//				// get the position of the target
+//				goalX = getTarget.getPosX(); 
+//				goalY = getTarget.getPosY(); 
+//				
+//				if(this.distance(getTarget) < speed) {
+//					this.setPosX(goalX);
+//					this.setPosY(goalY);
+//					return;
+//				}
+//			}
+//			
+//		}
 		
 
 		float deltaX = getPosX() - goalX;
