@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.World;
 
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ public class PathManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        InitialWorld mockWorld = mock(InitialWorld.class);
+        World mockWorld = mock(World.class);
         when(mockWorld.getLength()).thenReturn(100);
         when(mockWorld.getWidth()).thenReturn(100);
         // Create generic entity to block paths.
