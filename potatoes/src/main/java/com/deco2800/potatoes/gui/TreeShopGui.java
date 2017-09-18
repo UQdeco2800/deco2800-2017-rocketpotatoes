@@ -216,7 +216,6 @@ public class TreeShopGui extends Gui implements SceneGui{
 	private Vector3 tileToScreen(float x, float y) {
 		Vector2 tile = Render3D.tileToWorldPos(x, y);
 		Vector3 screent =worldToGuiScreenCoordinates(tile.x, tile.y, 1);
-		System.out.println(stage.getHeight()+" height");
 		return new Vector3(screent.x, screent.y, screent.z);
 	}
 	
