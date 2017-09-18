@@ -267,7 +267,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		}
 
 		if (!collidedTankEffect && this instanceof TankEnemy) {
-			GameManager.get().getWorld().addEntity(new StompedGroundEffect(getPosX(), getPosY(), 0, true));
+			GameManager.get().getWorld().addEntity(new StompedGroundEffect(MortalEntity.class,getPosX(), getPosY(), 0, true, 1,1));
 			enemySoundManager.playSound("tankEnemyFootstep.wav");
 		}
 
