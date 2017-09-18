@@ -15,7 +15,11 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -48,6 +52,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private int treeY;
 	private TextureManager textureManager;
 	private WidgetGroup container;
+	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
 	final private float UNSELECTED_ALPHA = 0.2f;
 	final private float SELECTED_ALPHA = 0.5f;
@@ -59,7 +64,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopY = 300;
 		initiated = false;
 		items = new LinkedHashMap<AbstractEntity, Color>();
-		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(),2), Color.RED);
+		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
 		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
 		textureManager = GameManager.get().getManager(TextureManager.class);
@@ -70,7 +75,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	@Override
 	public void render() {
 		updateScreenPos();
-		createTreeMenu(shopX, shopY, 100);
+		createTreeMenu(shopX, shopY, 130);
 	}
 
 	private Vector3 worldToGuiScreenCoordinates(float x, float y, float z) {
@@ -118,8 +123,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 		container.clear();
 		if (initiated)
-			renderGui(x,y,radius);
-		
+			renderGui(x, y, radius);
+
 	}
 
 	private void renderGui(int x, int y, int radius) {
@@ -132,16 +137,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shapeRenderer.setColor(new Color(0, 0, 0, SELECTED_ALPHA));
 		if (mouseIn)
 			shapeRenderer.setColor(new Color(0, 0, 0, 0.7f));
-		if (!initiated)
-			shapeRenderer.setColor(new Color(0, 0, 0, 0f));
 
 		float guiY = stage.getHeight() - y;
 		shapeRenderer.circle(x, guiY, radius);
 
-
 		int segment = 0;
 		int degrees = 360 / numSegments;
 		int imgSize = 60;
+		int seedSize = 20;
 		String texture;
 		// Draws each subsection of radial menu individually
 		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
@@ -150,25 +153,43 @@ public class TreeShopGui extends Gui implements SceneGui {
 			float alpha = (segment == selectedSegment) ? SELECTED_ALPHA : UNSELECTED_ALPHA;
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
-			if (!initiated)
-				shapeRenderer.setColor(new Color(0, 0, 0, 0f));
 			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(x, guiY, (int) (radius * 0.9), startAngle, degrees);
+			shapeRenderer.arc(x, guiY, (int) (radius * 0.85), startAngle, degrees);
 
 			// Add entity texture image
 			texture = entry.getKey().getTexture();
 			Image treeImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(texture))));
+
+			float itemAngle = startAngle + degrees / 2;
+
+			Vector2 offset = calculateDisplacement(radius/2,itemAngle);
 			
-			float offsetX = (float) (radius/2 * Math.cos((startAngle + degrees / 2)*Math.PI/180));
-			float offsetY = (float) (radius/2 * Math.sin((startAngle + degrees / 2)*Math.PI/180));
-	
-			float itemX = x - imgSize / 2 + offsetX;
-			float itemY = guiY - imgSize / 2 + offsetY;
-			
+			float itemX = x - imgSize / 2 + offset.x;
+			float itemY = guiY - imgSize / 2 + offset.y;
+
 			treeImg.setPosition(itemX, itemY);
 			treeImg.setWidth(imgSize);
 			treeImg.setHeight(imgSize);
 			container.addActor(treeImg);
+
+			// Add cost			
+			Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
+			seedImg.setHeight(seedSize);
+			seedImg.setWidth(seedSize);
+			
+			offset = calculateDisplacement(radius*0.9f, itemAngle-2);
+			seedImg.setPosition(x - seedSize/2 + offset.x, guiY - seedSize/2 + offset.y);
+			seedImg.setRotation(itemAngle+90);
+			container.addActor(seedImg);
+			
+			Label costLbl = new Label("123", skin);
+			offset = calculateDisplacement(radius*0.9f, itemAngle+2);
+			costLbl.setPosition(x + offset.x, guiY + offset.y);
+			costLbl.setRotation(itemAngle);
+			WidgetGroup costContainer = new WidgetGroup();
+			costContainer.addActor(costLbl);
+			//costContainer.rotateBy(itemAngle);;
+			container.addActor(costContainer);
 			
 			segment++;
 
@@ -178,7 +199,24 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
-	
+
+	/**
+	 * Calculates the x and y offset required to place an object at distance r from
+	 * center with angle degrees from right horizontal.
+	 * 
+	 * @param d
+	 *            distance from center
+	 * @param degrees
+	 *            degrees from right horizontal line
+	 * @return
+	 */
+	private Vector2 calculateDisplacement( float d, float degrees) {
+		float offsetX = (float) (d * Math.cos(degrees * Math.PI / 180));
+		float offsetY = (float) (d * Math.sin(degrees * Math.PI / 180));
+		
+		return new Vector2(offsetX, offsetY);
+	}
+
 	/**
 	 * Determines which segment of a circle the mouse is in. This starts counting
 	 * from right hand side counter clockwise.
@@ -251,27 +289,22 @@ public class TreeShopGui extends Gui implements SceneGui {
 		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
 			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 			AbstractTree newTree;
-			
-			// Select random tree, and either make it in singleplayer or broadcast it in mp
-			/*switch (selectedSegment + 1) {
 
-			case 1:
-				newTree = new ResourceTree(treeX, treeY, 0, new FoodResource(), 8);
-				break;
-			case 2:
-				newTree = new ResourceTree(treeX, treeY, 0);
-				break;
-			default:
-				newTree = new Tower(treeX, treeY, 0);
-				break;
-			}*/
-			
-			newTree = ((AbstractTree)items.keySet().toArray()[selectedSegment]).clone();
+			// Select random tree, and either make it in singleplayer or broadcast it in mp
+			/*
+			 * switch (selectedSegment + 1) {
+			 * 
+			 * case 1: newTree = new ResourceTree(treeX, treeY, 0, new FoodResource(), 8);
+			 * break; case 2: newTree = new ResourceTree(treeX, treeY, 0); break; default:
+			 * newTree = new Tower(treeX, treeY, 0); break; }
+			 */
+
+			newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
 			newTree.setPosX(treeX);
 			newTree.setPosY(treeY);
 			newTree.setPosZ(0);
 			System.out.println(newTree.toString());
-			
+
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);
 			} else {
