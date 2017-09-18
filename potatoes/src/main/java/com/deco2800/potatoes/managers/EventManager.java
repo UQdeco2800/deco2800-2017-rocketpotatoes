@@ -12,7 +12,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
  * <br>
  * If you know a better way implement this, please change
  */
-public class EventManager extends Manager {
+public class EventManager extends Manager implements TickableManager, ForWorld {
 
 	private static class EventPair {
 		private final Tickable tickable;
@@ -65,7 +65,7 @@ public class EventManager extends Manager {
 	/**
 	 * Ticks all registered events. Completed events will be automatically unregistered
 	 */
-	public void tickAll(long deltaTime) {
+	private void tickAll(long deltaTime) {
 		List<EventPair> finishedEvents = new ArrayList<>();
 		for (int i = 0; i < events.size(); i++) {
 			EventPair eventPair = events.get(i);
@@ -79,7 +79,15 @@ public class EventManager extends Manager {
 		}
 	}
 
+	/**
+	 * Unregisters all events registerd with this manager
+	 */
 	public void unregisterAll() {
 		events = new ArrayList<>();
+	}
+
+	@Override
+	public void onTick(long i) {
+		tickAll(i);
 	}
 }

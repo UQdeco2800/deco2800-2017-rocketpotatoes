@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Object to manage the creation and allocation of paths for enemies to follow.
  */
-public class PathManager extends Manager {
+public class PathManager extends Manager implements ForWorld {
     /* The PathManager stores a minimum spanning tree, representing all the internode connections that can be used to
      * create paths. This is represented as a hashmap in memory, where the keys are nodes, and the values are the
      * parent nodes of the keys within the minimum spanning tree.

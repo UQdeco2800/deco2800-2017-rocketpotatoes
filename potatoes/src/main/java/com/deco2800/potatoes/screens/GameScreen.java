@@ -40,7 +40,6 @@ import com.deco2800.potatoes.worlds.WorldType;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Handles the creation of the world and rendering.
@@ -123,8 +122,6 @@ public class GameScreen implements Screen {
 	 * specific things just yet
 	 */
 	private void setupGame() {
-		this.game = game;
-
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
@@ -353,11 +350,6 @@ public class GameScreen implements Screen {
 
 		}
 
-		// Tick Events
-		if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-			GameManager.get().getManager(EventManager.class).tickAll(timeDelta);
-		}
-
 		// Broadcast updates if we're master TODO only when needed.
 		if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
 			for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
@@ -383,10 +375,8 @@ public class GameScreen implements Screen {
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
-
-		GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
-
-        GameManager.get().getManager(WaveManager.class).onTick(timeDelta);
+		// Ticks all tickable managers, currently events, waves, particles
+		GameManager.get().onTick(timeDelta);
     }
 
 	private void renderGUI(SpriteBatch batch) {

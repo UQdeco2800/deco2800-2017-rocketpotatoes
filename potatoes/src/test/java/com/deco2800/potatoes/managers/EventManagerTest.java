@@ -41,7 +41,7 @@ public class EventManagerTest {
 	public void testUnregisterEvent() {
 		eventManager.unregisterEvent(tickable1, events.get(0));
 		eventManager.unregisterEvent(tickable2, events.get(3));
-		eventManager.tickAll(1);
+		eventManager.onTick(1);
 		int[] results = { 0, 1, 1, 0, 1 };
 		int[] actionCounts = new int[5];
 		for (int i = 0; i < events.size(); i++) {
@@ -54,7 +54,7 @@ public class EventManagerTest {
 	@Test
 	public void testUnregisterAll() {
 		eventManager.unregisterAll(tickable1);
-		eventManager.tickAll(1);
+		eventManager.onTick(1);
 		int[] results = { 0, 0, 0, 1, 1 };
 		int[] actionCounts = new int[5];
 		for (int i = 0; i < events.size(); i++) {
@@ -68,7 +68,7 @@ public class EventManagerTest {
 
 	@Test
 	public void testTickAll() {
-		eventManager.tickAll(1);
+		eventManager.onTick(1);
 		int[] results = { 1, 1, 1, 1, 1 };
 		int[] actionCounts = new int[5];
 		for (int i = 0; i < events.size(); i++) {
