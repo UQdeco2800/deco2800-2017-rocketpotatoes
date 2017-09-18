@@ -20,12 +20,10 @@ public class WorldManager extends Manager {
 	private Map<WorldType, World> worlds;
 	private Map<String, Cell> cells;
 	private float[][][] randomGrids;
-	private Terrain[][] terrain;
 
 	public WorldManager() {
 		worlds = new HashMap<>();
 		cells = new HashMap<>();
-		terrain = new Terrain[WORLD_SIZE][WORLD_SIZE];
 		randomGrids = new float[20][][];
 		for (int i = 0; i < randomGrids.length; i++) {
 			randomGrids[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.4f, 2);
@@ -99,7 +97,7 @@ public class WorldManager extends Manager {
 		World world = new World();
 		Cell[][] terrainCells = new Cell[WORLD_SIZE][WORLD_SIZE];
 		float[][] height = getRandomGrid();
-		terrain = worldType.generateWorld(WORLD_SIZE, height);
+		Terrain[][] terrain = worldType.generateWorld(WORLD_SIZE, height);
 		for (int x = 0; x < WORLD_SIZE; x++) {
 			for (int y = 0; y < WORLD_SIZE; y++) {
 				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
@@ -108,10 +106,5 @@ public class WorldManager extends Manager {
 		world.setCells(terrainCells);
 		world.setTerrain(terrain);
 		return world;
-	}
-
-	public Terrain getTerrain(float x, float y) {
-		// x and y are flipped on map
-		return terrain[Math.round(y)][Math.round(x)];
 	}
 }

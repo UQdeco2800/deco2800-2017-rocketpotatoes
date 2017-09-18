@@ -8,7 +8,7 @@ public class TerrainType {
 	private final Terrain grass;
 	private final Terrain rock;
 	private final Terrain water;
-	
+
 	/**
 	 * @param slopes
 	 * @param grass
@@ -50,6 +50,10 @@ public class TerrainType {
 		return water;
 	}
 
+	/*
+	 * Auto generated, no need to manually test. Created from fields: slopes, grass,
+	 * rock, water
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -61,6 +65,10 @@ public class TerrainType {
 		return result;
 	}
 
+	/*
+	 * Auto generated, no need to manually test. Created from fields: slopes, grass,
+	 * rock, water
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
