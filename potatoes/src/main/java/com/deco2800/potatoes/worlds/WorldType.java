@@ -27,13 +27,14 @@ public class WorldType {
 
 	/**
 	 * @param terrain
+	 *            the terrain type
 	 */
 	public WorldType(TerrainType terrain) {
 		this.terrain = terrain;
 	}
 
 	/**
-	 * @return the terrain
+	 * @return the terrain type
 	 */
 	public TerrainType getTerrain() {
 		return terrain;
@@ -60,6 +61,9 @@ public class WorldType {
 		return terrainSet;
 	}
 
+	/*
+	 * Auto generated, no need to manually test. Created from fields: terrain
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -68,6 +72,9 @@ public class WorldType {
 		return result;
 	}
 
+	/*
+	 * Auto generated, no need to manually test. Created from fields: terrain
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
