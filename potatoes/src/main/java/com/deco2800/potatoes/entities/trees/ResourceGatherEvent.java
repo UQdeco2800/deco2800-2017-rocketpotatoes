@@ -4,7 +4,7 @@ import com.deco2800.potatoes.entities.TimeEvent;
 /**
  * An time event that increments the resource count of a resource tree.
  * 
- * @author Peter
+ * @author petercondoleon
  */
 public class ResourceGatherEvent extends TimeEvent<ResourceTree> {
 	
