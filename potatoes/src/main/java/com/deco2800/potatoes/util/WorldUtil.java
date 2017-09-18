@@ -113,7 +113,7 @@ public class WorldUtil {
 		Vector2 endPos = Render3D.worldToScreenCoordinates(x2, y2, 0);
 		float l = endPos.x - startPos.x;
 		float h = endPos.y - startPos.y;
-		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 45;
-		return rotation;
+		// float rotation removed due to direct return
+		return (float) (Math.atan2(l, h) * 180 / Math.PI) - 45;
 	}
 }
