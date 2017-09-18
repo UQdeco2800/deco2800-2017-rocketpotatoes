@@ -97,14 +97,14 @@ public class WorldChangeGui extends Gui {
         // Listener for the exit button.
         exitButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event, Actor actor) {            	
                 // hide the gui
                 hide();
 
                 // the current player
                 Player player = playerManager.getPlayer();
-                // straight offset, can be done better
-                player.setPosition(player.getPosX() - 3, player.getPosY() - 3, 0);
+                //set player to be next to the portal
+				playerManager.getPlayer().setPosition(18, 16, 0);
                 // add player back into the world
                 GameManager.get().getWorld().addEntity(player);
             }
