@@ -84,6 +84,14 @@ public class WaveManager extends Manager implements TickableManager {
         }
     }
 
+    public boolean areWavesCompleted() {
+        if ((getWaveIndex()+1) < getWaves().size()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Get the position of currently active or (if no current active waves) the last active
      * wave in wavelist
