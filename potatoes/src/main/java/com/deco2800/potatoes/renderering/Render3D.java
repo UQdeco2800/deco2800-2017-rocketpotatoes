@@ -272,7 +272,7 @@ public class Render3D implements Renderer {
 	public BatchTiledMapRenderer getTileRenderer(SpriteBatch batch) {
 		return new IsometricTiledMapRenderer(GameManager.get().getWorld().getMap(), 1, batch);
 	}
-
+	
 	/**
 	 * Transforms world coordinates to screen coordinates for rendering.
 	 *
@@ -320,7 +320,8 @@ public class Render3D implements Renderer {
 		return GameManager.get().getManager(CameraManager.class).getCamera()
 				.unproject(new Vector3(x, y, z));
 	}
-
+	
+	
 	public static Vector2 worldPosToTile(float x, float y) {
 		float projX = 0, projY = 0;
 
@@ -332,5 +333,19 @@ public class Render3D implements Renderer {
 		projX -= projY - projX;
 
 		return new Vector2(projX, projY);
+	}
+	
+	public static Vector2 tileToWorldPos(float x, float y) {
+		float projX = x, projY = y;
+		
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+		projX = (projY+projX)/2;
+		y = (projY - projX)*(-tileHeight)+(tileHeight/2f);
+		x = projX * tileWidth;
+		
+		return new Vector2(x,y);
+		
 	}
 }
