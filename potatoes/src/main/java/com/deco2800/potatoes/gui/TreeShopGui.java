@@ -9,22 +9,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 
-
-public class TreeShopGui extends Gui {
+public class TreeShopGui extends Gui implements SceneGui{
 	private Circle shopShape;
 	private int selectedSegment;
 	private HashMap<AbstractEntity, Color> items;
@@ -33,6 +36,8 @@ public class TreeShopGui extends Gui {
 	private Stage stage;
 	private int shopX;
 	private int shopY;
+	private int shopTileX;
+	private int shopTileY;
 	private int treeX;
 	private int treeY;
 	
@@ -45,16 +50,44 @@ public class TreeShopGui extends Gui {
 		shopX = 300;
 		shopY = 300;
 		initiated = false;
-		items  = new HashMap<AbstractEntity, Color>();
+		items = new HashMap<AbstractEntity, Color>();
 		items.put(new ProjectileTree(), Color.RED);
-		items.put(new ResourceTree(), Color.BLUE);
-		items.put(new DamageTree(), Color.YELLOW);
-		
+		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
+		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
 	}
 	
+	@Override
 	public void render() {
+		updateScreenPos();
 		createTreeMenu(shopX, shopY, 100);
+	}
+	
+
+	private Vector3 worldToGuiScreenCoordinates(float x, float y, float z) {
+		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
+				.project(new Vector3(x, y-stage.getHeight()+1, z));
+		screen.y = -screen.y;
+		return screen;
+	}
+	
+	/**
+	 * Updates screen position to match tile position.
+	 */
+	private void updateScreenPos() {
+		Vector3 screenPos = tileToScreen(shopTileX, shopTileY);
+		shopX = (int)screenPos.x;
+		shopY = (int)screenPos.y;
+	}
+	
+	/**
+	 * Updates tile position to match mouse position.
+	 */
+	private void updateTilePos(int x, int y) {
+		//Vector2 worldPos = Render3D.tileToWorldPos(x, y);
+		Vector2 tilePos = screenToTile(x, y);
 		
+		shopTileX = (int)tilePos.x;
+		shopTileY = (int)tilePos.y;
 	}
 
 	/**
@@ -163,20 +196,31 @@ public class TreeShopGui extends Gui {
 			buyTree();
 			initiated = false;
 		} else {
+			updateTilePos(x,y);
 			initiated = true;
+			setTreeCoords(x,y);
 		}
-		moveLocation(x,y);
 	}
 	
 	public void setTreeCoords(int x, int y) {
-		if (!initiated) {
-			treeX = x;
-			treeY = y;
-		}
+		Vector2 tile = screenToTile( x, y);
+		treeX = (int) Math.floor(tile.x);
+		treeY = (int) Math.floor(tile.y);
 	}
 	
+	private Vector2 screenToTile(float x, float y) {
+		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		return Render3D.worldPosToTile(world.x, world.y);
+	}
+	
+	private Vector3 tileToScreen(float x, float y) {
+		Vector2 tile = Render3D.tileToWorldPos(x, y);
+		Vector3 screent =worldToGuiScreenCoordinates(tile.x, tile.y, 1);
+		return new Vector3(screent.x, screent.y, screent.z);
+	}
+	
+	
 	private void buyTree() {
-		
 		
 		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
 			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
@@ -204,9 +248,10 @@ public class TreeShopGui extends Gui {
 		}
 	}
 	
-	private void moveLocation(int x, int y) {
-		shopX = x;
-		shopY = y;
+
+	@Override
+	public Vector2 getTileCoords() {
+		return screenToTile(shopX, shopY);
 	}
 	
 	

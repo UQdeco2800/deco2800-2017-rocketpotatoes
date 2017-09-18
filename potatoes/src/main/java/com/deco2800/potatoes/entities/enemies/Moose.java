@@ -29,7 +29,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final float moose_size = 1.5f;
 
 	private static float speed = 0.04f;
-	private static Class<?> goal = Player.class;
+	private static Class<?> goal = GoalPotate.class;
 	private Path path = null;
 	private Box3D target = null;
 
@@ -89,7 +89,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 				//break;
 			} else if (entity instanceof EnemyEntity && entity.getBox3D().overlaps(this.getBox3D())) {
 				EnemyEntity enemy = (EnemyEntity) entity;
-				enemy.heal(4f);
+				//heal enemy if within range
+				enemy.heal(0.1f);
 			}
 		}
 

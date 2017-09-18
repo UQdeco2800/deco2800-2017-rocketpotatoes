@@ -57,7 +57,7 @@ public class MainMenuScreen implements Screen {
 
         soundManager = GameManager.get().getManager(SoundManager.class);
         textureManager = GameManager.get().getManager(TextureManager.class);
-
+        textureManager.loadTextures();
         stage = new Stage(new ScreenViewport());
 
         soundManager.playMusic("Ascending the Vale.mp3");

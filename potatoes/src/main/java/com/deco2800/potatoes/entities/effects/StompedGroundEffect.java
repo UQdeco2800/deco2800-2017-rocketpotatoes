@@ -3,104 +3,111 @@ package com.deco2800.potatoes.entities.effects;
 import java.util.Map;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 
 /**
- * A StompedGroundEffect, essentially terrain that has been "damaged" by an entity in the game.
- * Originally created for the TankEnemy, as the bear moves he "stomps" the ground and damages it.
- * This effect can be either temporary or permanent.
- * When entities walk through this effect, they will be slowed down TODO Actually make them slow down.
+ * A StompedGroundEffect, essentially terrain that has been "damaged" by an
+ * entity in the game. Originally created for the TankEnemy, as the bear moves
+ * he "stomps" the ground and damages it. This effect can be either temporary or
+ * permanent. When entities walk through this effect, they will be slowed down
+ * TODO Actually make them slow down.
  */
 public class StompedGroundEffect extends Effect {
-    //TODO Texture is a placeholder. Need to design proper artwork for stomped ground.
-    private static final transient String TEXTURE = "DamagedGroundTemp1";
+	// TODO Texture is a placeholder. Need to design proper artwork for stomped
+	// ground.
+	private static final transient String TEXTURE = "DamagedGroundTemp";
 
-    private boolean isTemporary;
-    private boolean resourceStomped = false;
-    private Box3D effectPosition;
-    private int currentTextureIndexCount = 0;
-    private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
-    private int timer = 0;
+	private boolean isTemporary;
+	private boolean resourceStomped = false;
+	private Box3D effectPosition;
+	private int currentTextureIndexCount = 0;
+	private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
+	private int timer = 0;
 
-    private static final SoundManager soundManager = new SoundManager();
+	private static final SoundManager soundManager = new SoundManager();
 
-    /**
-     * Empty constructor. Used for serialisation purposes
-     */
-    public StompedGroundEffect() {
-        // empty for serialization
-    }
+	/**
+	 * Empty constructor. Used for serialisation purposes
+	 */
+	public StompedGroundEffect() {
+		// empty for serialization
+	}
 
-    /**
-     * Creates a new stomped ground effect.
-     * Effect is either temporary and will disappear, or is permanent and will affect game-play indefinitely.
-     *
-     * @param posX
-     *          x start position
-     * @param posY
-     *          y start position
-     * @param posZ
-     *          z start position
-     * @param isTemporary
-     *          boolean for whether this effect is temporary or permanent
-     */
-    public StompedGroundEffect(float posX, float posY, float posZ, boolean isTemporary) {
-        super(posX, posY, posZ, 1f, 1f, 1f, 1.2f, 1.2f, TEXTURE);
-        this.isTemporary = isTemporary;
-        effectPosition = getBox3D();
-    }
+	/**
+	 * Creates a new stomped ground effect. Effect is either temporary and will
+	 * disappear, or is permanent and will affect game-play indefinitely.
+	 *
+	 * @param posX
+	 *            x start position
+	 * @param posY
+	 *            y start position
+	 * @param posZ
+	 *            z start position
+	 * @param isTemporary
+	 *            boolean for whether this effect is temporary or permanent
+	 */
+	public StompedGroundEffect(Class<?> targetClass, float posX, float posY, float posZ, boolean isTemporary,
+			float damage, float range) {
+		super(targetClass, posX, posY, posZ, 1f, 1f, 1f, 1.2f, 1.2f, damage, range, TEXTURE);
+		this.isTemporary = isTemporary;
+		effectPosition = getBox3D();
 
-    @Override
-    public void onTick(long time) {
-        if (isTemporary) {
-            timer++;
-            if (!resourceStomped) {
-                Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-                for (AbstractEntity entity : entities.values()) {
-                    if (this.equals(entity) || !(entity instanceof ResourceEntity) ||
-                            !effectPosition.overlaps(entity.getBox3D())) {
-                        continue;
-                    }
+		animate = false;
+		textureArrayLength = 3;
+		setTextureArray(effectType, textureArrayLength);
+	}
 
-                    String resourceType = ((ResourceEntity) entity).getType().getTypeName();
-                    GameManager.get().getWorld().removeEntity(entity);
-                    if ("seed".equals(resourceType)) {
-                        soundManager.playSound("seedResourceDestroyed.wav");
-                    } else if ("food".equals(resourceType)) {
-                        soundManager.playSound("foodResourceDestroyed.wav");
-                    }
-                }
-                resourceStomped = true;
-            }
-            if (timer % 150 == 0) {
-                if (currentTextureIndexCount < 3) {
-                    setTexture(currentTextureArray[currentTextureIndexCount]);
-                    currentTextureIndexCount++;
-                } else {
-                    GameManager.get().getWorld().removeEntity(this);
-                }
-            }
-        }
-    }
+	@Override
+	public void onTick(long time) {
+		if (isTemporary) {
+			timer++;
+			if (!resourceStomped) {
+				Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+				for (AbstractEntity entity : entities.values()) {
+					if (this.equals(entity) || !(entity instanceof ResourceEntity)
+							|| !effectPosition.overlaps(entity.getBox3D())) {
+						continue;
+					}
 
-    /**
-     * Returns damage value, value is zero. This effect does not damage entities.
-     */
-    @Override
-    public float getDamage() {
-        return 0;
-    }
+					String resourceType = ((ResourceEntity) entity).getType().getTypeName();
+					GameManager.get().getWorld().removeEntity(entity);
+					if ("seed".equals(resourceType)) {
+						soundManager.playSound("seedResourceDestroyed.wav");
+					} else if ("food".equals(resourceType)) {
+						soundManager.playSound("foodResourceDestroyed.wav");
+					}
+				}
+				resourceStomped = true;
+			}
+			if (timer % 150 == 0) {
+				if (currentTextureIndexCount < 3) {
+					setTexture(currentTextureArray[currentTextureIndexCount]);
+					currentTextureIndexCount++;
+				} else {
+					GameManager.get().getWorld().removeEntity(this);
+				}
+			}
+		}
+	}
 
-    /**
-     * String representation of the damaged ground at its set position.
-     *
-     * @return String representation of the stomped ground
-     */
-    @Override
-    public String toString() {
-        return String.format("Stomped Ground at (%d, %d)", (int) getPosX(), (int) getPosY());
-    }
+	/**
+	 * Returns damage value, value is zero. This effect does not damage entities.
+	 */
+	@Override
+	public float getDamage() {
+		return 0;
+	}
+
+	/**
+	 * String representation of the damaged ground at its set position.
+	 *
+	 * @return String representation of the stomped ground
+	 */
+	@Override
+	public String toString() {
+		return String.format("Stomped Ground at (%d, %d)", (int) getPosX(), (int) getPosY());
+	}
 }

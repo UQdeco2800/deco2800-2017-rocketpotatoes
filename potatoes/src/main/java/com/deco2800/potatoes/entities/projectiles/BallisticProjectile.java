@@ -9,7 +9,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 public class BallisticProjectile extends Projectile {
 
 	public BallisticProjectile() {
-		//Blank comment to please the lord Sonar
+		// Blank comment to please the lord Sonar
 	}
 
 	/**

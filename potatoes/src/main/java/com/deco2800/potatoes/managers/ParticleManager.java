@@ -1,13 +1,8 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.Particle;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
-import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
-import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,11 +39,6 @@ public class ParticleManager extends Manager {
      */
     public void onTick(double deltaTime) {
         for (ParticleEmitter emitter : emitters) {
-            float x = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-            float y = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-
-            Vector2 p = Render3D.worldToScreenCoordinates(x, y, 0);
-            emitter.setOrigin(p.x, p.y);
             emitter.onTick(deltaTime, particlePool);
         }
 

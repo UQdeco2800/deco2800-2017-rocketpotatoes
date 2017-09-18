@@ -10,7 +10,7 @@ public class StateAnimationTest {
 	private StateAnimation animation;
 	private static final SingleFrameAnimation[] frames = { new SingleFrameAnimation("0"), new SingleFrameAnimation("1"),
 			new SingleFrameAnimation("2") };
-	private int index;
+	private float index;
 
 	@Before
 	public void setup() {
@@ -30,5 +30,13 @@ public class StateAnimationTest {
 		assertEquals("Minimum value was not last frame", "2", animation.getFrame());
 		index = frames.length - 1;
 		assertEquals("Middle value was not middle frame", "1", animation.getFrame());
+	}
+	
+	@Test
+	public void testBadGetFrame() {
+		index = -10;
+		assertEquals("Below minimum value was not last frame", "2", animation.getFrame());
+		index = 8 * (frames.length - 1);
+		assertEquals("Above maximum value was not first frame", "0", animation.getFrame());
 	}
 }
