@@ -325,4 +325,5 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		// TODO Auto-generated method stub
 		
 	}
+
 }

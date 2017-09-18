@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import com.deco2800.potatoes.gui.RespawnGui;
+import com.deco2800.potatoes.managers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.Gdx;
@@ -25,10 +27,6 @@ import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -454,5 +452,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+
+		GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
 	}
 }

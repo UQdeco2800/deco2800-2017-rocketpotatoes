@@ -193,6 +193,8 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
 		guiManager.addGui(new WaveGUI(guiManager.getStage(), this));
+
+		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
 		/* Setup inputs */
 		setupInputHandling();
@@ -416,6 +418,19 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	//TODO: better implementation?
+	private void updateRespawnGUI(){
+
+		Gui respawnGui = guiManager.getGui(RespawnGui.class);
+
+		if(playerManager.getPlayer().isDead()) {
+			int count = ((RespawnGui) respawnGui).returnCount();
+			int display =(int) Math.round(count/1000.0) + 1;
+			((RespawnGui) respawnGui).returnTimer().setText(Integer.toString(display));
+		}
+
+	}
+
 	private void renderGame(SpriteBatch batch) {
 
 		/* Render the tiles first */
@@ -510,6 +525,7 @@ public class GameScreen implements Screen {
 		}
 
 		updateWaveGUI();
+		updateRespawnGUI();
 		renderGUI(batch);
 
 		batch.dispose();

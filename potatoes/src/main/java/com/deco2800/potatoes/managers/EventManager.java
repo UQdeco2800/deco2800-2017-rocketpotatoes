@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.gui.Gui;
+import com.deco2800.potatoes.gui.RespawnGui;
 
 /**
  * Manager for all TimeEvents associated with tickable entities. <br>
@@ -70,6 +73,14 @@ public class EventManager extends Manager implements TickableManager, ForWorld {
 		for (int i = 0; i < events.size(); i++) {
 			EventPair eventPair = events.get(i);
 			eventPair.event.decreaseProgress(deltaTime, eventPair.tickable);
+
+			//Gets remaining time before player respawns
+			//TODO: better implementation?
+			if(eventPair.tickable instanceof Player){
+				Gui respawnGui =GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class);
+				((RespawnGui)respawnGui).setCount(eventPair.event.getProgress());
+
+			}
 			if (eventPair.event.isCompleted()) {
 				finishedEvents.add(eventPair);
 			}
