@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -33,7 +33,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private float speed;
 	private Class<?> goal;
 	
-	private int respawnTime = 15000; // milliseconds
+	//private int respawnTime = 15000; // milliseconds
 
 	private static final SoundManager enemySoundManager = new SoundManager();
 
@@ -377,10 +377,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		LOGGER.info(this + " is dead.");
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
-		// get the event manager
-		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-		// add the respawn event
-		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+//		// get the event manager
+//		EventManager eventManager = GameManager.get().getManager(EventManager.class);
+//		// add the respawn event
+//		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
 
 }

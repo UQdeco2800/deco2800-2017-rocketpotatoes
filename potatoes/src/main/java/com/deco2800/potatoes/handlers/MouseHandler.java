@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
-import com.deco2800.potatoes.entities.FoodResource;
 import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.TreeShopGui;
@@ -57,11 +57,11 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				world.deSelectAll();
 			}
 		}
-		int realX = (int) Math.floor(coords.x);
-		int realY = (int) Math.floor(coords.y);
-		treeShop.setTreeCoords(realX,realY);
+		
+		int worldLength = GameManager.get().getWorld().getLength();
+		int worldWidth = GameManager.get().getWorld().getWidth();
+		
 		treeShop.initShop(originX,originY);
-
 	}
 
 	

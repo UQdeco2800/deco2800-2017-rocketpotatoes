@@ -10,22 +10,10 @@ import org.slf4j.LoggerFactory;
  * Feel free to modify this class in any way
  */
 public class StateAnimation implements Animation {
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(StateAnimation.class);
-
 	private final transient float maxValue;
 	private final transient float minValue;
 	final transient Animation[] frames;
 	private final transient Supplier<Float> valueFunction;
-
-	/**
-	 * Construction for serialization
-	 */
-	public StateAnimation() {
-		maxValue = 0;
-		minValue = 0;
-		frames = new Animation[] {};
-		valueFunction = () -> 0f;
-	}
 
 	/**
 	 * Create a state animation with the given parameters.
@@ -62,11 +50,15 @@ public class StateAnimation implements Animation {
 
 	@Override
 	public Animation getAnimation() {
-		if ((1 - (valueFunction.get() - minValue) / maxValue) > 1) {
-			LOGGER.error("Value wasn't between min and max");
-			LOGGER.error("valueFunction: {}, minValue: {}, maxValue: {}", valueFunction.get(), minValue, maxValue);
+		float scaledValue = 1 - (valueFunction.get() - minValue) / maxValue;
+		if (scaledValue > 1) {
+			scaledValue = 1;
 		}
-		return frames[Math.round((frames.length - 1) * (1 - (valueFunction.get() - minValue) / maxValue))];
+		if (scaledValue < 0) {
+			scaledValue = 0;
+		}
+		return frames[Math.round((frames.length - 1) * scaledValue)];
+		
 	}
 
 	@Override

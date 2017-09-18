@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -89,15 +90,28 @@ public class GameManager implements TickableManager {
 	 * @param world
 	 */
 	public void setWorld(World world) {
-		// Hopefully stores the events, not sure though
+		// Stores managers on the world
 		if (gameWorld != null) {
-			gameWorld.setEventManager(getManager(EventManager.class));
+			for (Manager manager : managers) {
+				if (manager instanceof ForWorld) {
+					gameWorld.addManager(manager);
+				}
+			}
+			// Remove ForWorld managers from the manager list
+			Iterator<Manager> iter = managers.iterator();
+			while (iter.hasNext()) {
+				Manager manager = iter.next();
+				if (manager instanceof ForWorld) {
+					iter.remove();
+				}
+			}
+			// Add managers from the new world
+			for (Manager manager : world.getManagers()) {
+				managers.add(manager);
+			}
 		}
 		gameWorld = world;
-		managers.remove(getManager(EventManager.class));
-		if (world.getEventManager() != null) {
-			managers.add(world.getEventManager());
-		}
+		
 	}
 
 	/**
@@ -134,7 +148,7 @@ public class GameManager implements TickableManager {
 	public void onTick(long i) {
 		for (Manager m : managers) {
 			if (m instanceof TickableManager) {
-				((TickableManager) m).onTick(0);
+				((TickableManager) m).onTick(i);
 			}
 		}
 	}

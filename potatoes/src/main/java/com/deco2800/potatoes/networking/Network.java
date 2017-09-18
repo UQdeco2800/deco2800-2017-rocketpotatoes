@@ -1,9 +1,9 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.FoodResource;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.SeedResource;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
 import com.deco2800.potatoes.entities.trees.TreeStatistics;

@@ -19,6 +19,10 @@ import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.EventManager;
@@ -59,7 +63,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	// The map containing all player textures
 	private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
 	
-	private TreeShop treeShop;
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -219,29 +222,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 	}
 	
-	/**
-	 * Returns the treeShop entity that the user can afford.
-	 */
-	public TreeShop getTreeShop() {
-		return this.treeShop;
-	}
-	
-	public void removeTreeShop() {
-		GameManager.get().getWorld().removeEntity(this.treeShop);
-		this.treeShop = null;
-		LOGGER.info("removed");
-	}
-	
-	public void openTreeShop(float x, float y) {
-		
-		if (this.treeShop == null) {
-			this.treeShop = new TreeShop(x,y);
-		} else {
-			this.treeShop.setPosX(x);
-			this.treeShop.setPosY(y);
-		}
-		GameManager.get().getWorld().addEntity(this.treeShop);
-	}
 
 	@Override
 	public void onTick(long arg0) {

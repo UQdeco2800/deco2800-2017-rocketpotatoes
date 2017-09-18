@@ -52,6 +52,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		// check paths
 
+		/*
 		//check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
 			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
@@ -61,6 +62,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				break;
 			}
 		}
+		*/
 
 		// check that we actually have a path
 		if (path == null || path.isEmpty()) {

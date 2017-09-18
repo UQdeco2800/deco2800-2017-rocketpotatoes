@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.resources;
 
 /**
  * SeedResource is a subclass of Resource adds seeds. Seeds can be used to plant

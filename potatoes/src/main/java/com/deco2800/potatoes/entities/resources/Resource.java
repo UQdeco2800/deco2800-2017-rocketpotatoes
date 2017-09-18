@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.resources;
 
 /**
  * Resource is the type of item that users can have. Different resources with
