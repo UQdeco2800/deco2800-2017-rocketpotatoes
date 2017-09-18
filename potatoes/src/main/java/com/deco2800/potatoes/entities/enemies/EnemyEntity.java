@@ -21,8 +21,11 @@ import com.deco2800.potatoes.entities.projectiles.Projectile;
 
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.ParticleManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
+import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -406,8 +409,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	@Override
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
+
+		//add a blood splatter effect on enemy death(not working, still needs particle team finishing their code)
+//		BasicParticleType type = new BasicParticleType(1000, 1.0f * 1000.f, 100.0f, 1024, Color.RED, 1, 1);
+//		type.speed = 0.1f;
+//		type.alphaCeil = 0.5f;
+//		type.speedVarianceMin = 0.8f;
+//		ParticleEmitter e = new ParticleEmitter(this.getPosX(), this.getPosY(), type);
+//		GameManager.get().getManager(ParticleManager.class).addParticleEmitter(e);
+		
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
+		
+		
+
+		
 //		// get the event manager
 //		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 //		// add the respawn event
