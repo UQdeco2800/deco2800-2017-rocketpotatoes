@@ -14,7 +14,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -22,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.resources.FoodResource;
@@ -172,23 +176,34 @@ public class TreeShopGui extends Gui implements SceneGui {
 			treeImg.setHeight(imgSize);
 			container.addActor(treeImg);
 
-			// Add cost			
+			// Add cost
+			Table costContainer = new Table();
+			costContainer.setFillParent(true);
+
+			costContainer.defaults().width(20);
+			costContainer.padTop(10);
+			costContainer.padRight(10);
+			
 			Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
-			seedImg.setHeight(seedSize);
-			seedImg.setWidth(seedSize);
+			//seedImg.setHeight(seedSize);
+			//seedImg.setWidth(seedSize);
+			//seedImg.setScaling(Scaling.fit);
 			
-			offset = calculateDisplacement(radius*0.9f, itemAngle-2);
-			seedImg.setPosition(x - seedSize/2 + offset.x, guiY - seedSize/2 + offset.y);
-			seedImg.setRotation(itemAngle+90);
-			container.addActor(seedImg);
+			//offset = calculateDisplacement(radius*0.9f, itemAngle-2);
+			//seedImg.setPosition(x - seedSize/2 + offset.x, guiY - seedSize/2 + offset.y);
+			//seedImg.setRotation(itemAngle+90);
 			
-			Label costLbl = new Label("123", skin);
-			offset = calculateDisplacement(radius*0.9f, itemAngle+2);
-			costLbl.setPosition(x + offset.x, guiY + offset.y);
-			costLbl.setRotation(itemAngle);
-			WidgetGroup costContainer = new WidgetGroup();
-			costContainer.addActor(costLbl);
-			//costContainer.rotateBy(itemAngle);;
+			Label costLbl = new Label("1", skin);
+			//costLbl.setAlignment(Align.right);
+			
+			offset = calculateDisplacement(radius*0.86f, itemAngle+2);
+			costContainer.setPosition(x + offset.x, guiY + offset.y);
+			costContainer.setTransform(true);
+
+			costContainer.add(seedImg).size(seedSize, seedSize);
+			costContainer.add(costLbl).bottom().left();
+
+			costContainer.addAction(Actions.rotateBy(itemAngle+90));
 			container.addActor(costContainer);
 			
 			segment++;

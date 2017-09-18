@@ -15,7 +15,24 @@ public interface HasDirection {
 	 * South-East, South, South-West, West, North-West.
 	 */
 	public enum Direction { North, NorthEast, East, SouthEast, South, 
-		SouthWest, West, NorthWest };
+		SouthWest, West, NorthWest;
+		
+		
+		/**
+		 * Returns the initials representing a direction. For example,
+		 * a direction of 'NorthEast' will return 'NE'.
+		 */
+		public String toString() {
+			String initials = "";
+			for (int i = 0; i < this.name().length(); i++) {
+				char c = name().charAt(i);
+				if (Character.isUpperCase(c)) { 
+					initials += c;
+				}
+			}
+			return initials;
+		}
+	};
 	
 	
 	/**

@@ -1,11 +1,16 @@
 package com.deco2800.potatoes.entities.effects;
 
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -13,14 +18,47 @@ import com.deco2800.potatoes.util.WorldUtil;
 public abstract class Effect extends AbstractEntity implements Tickable {
 
 	protected float damage = 0;
+	protected float range = 0;
+	protected static transient String TEXTURE = "default";
+	protected String effectType = "default";
+	protected int textureArrayLength = 3;
+	protected String[] textureArray;
+	protected boolean textureLoop = false;
+	protected Class<?> targetClass;
+	protected float rotationAngle = 0;
+	protected boolean animate = true;
 
 	public Effect() {
 
 	}
 
-	public Effect(float posX, float posY, float posZ, float xLength, float yLength, float zLength, float xRenderLength,
-			float yRenderLength, String texture) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, texture);
+	public Effect(Class<?> targetClass, float posX, float posY, float posZ, float xLength, float yLength, float zLength,
+			float xRenderLength, float yRenderLength, float damage, float range, String effectType) {
+		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
+
+		if (targetClass != null)
+			this.targetClass = targetClass;
+		else
+			this.targetClass = MortalEntity.class;
+
+		this.damage = damage;
+		this.range = range;
+
+		setTextureArray(effectType, textureArrayLength);
+	}
+
+	protected void setTextureArray(String effectType, int numberOfSprites) {
+		textureArrayLength = numberOfSprites;
+		textureArray = new String[textureArrayLength];
+
+		if (effectType != "" && effectType != null) {
+			this.effectType = effectType;
+			setTexture(effectType + (textureArrayLength > 0 ? "1" : ""));
+		}
+
+		for (int t = 0; t < textureArrayLength; t++) {
+			textureArray[t] = this.effectType + Integer.toString(t + 1);
+		}
 	}
 
 	public void drawEffect(SpriteBatch batch) {
@@ -29,29 +67,54 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 	@Override
 	public void onTick(long time) {
+		animate();
+
 		Box3D newPos = getBox3D();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
-		/*
-		 Map<Integer, AbstractEntity> entities =
-		 GameManager.get().getWorld().getEntities();
-		 // Check surroundings
-		 for (AbstractEntity entity : entities.values()) {
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 
-		 if (newPos.overlaps(entity.getBox3D())) {
-		 System.out.println(entity.toString());
-		 try {
-		 ((MortalEntity) entity).damage(damage);
-		 } catch (Exception e) {
+		for (AbstractEntity entity : entities.values()) {
+			if (!targetClass.isInstance(entity)) {
+				continue;
+			}
+			if (newPos.overlaps(entity.getBox3D())) {
+				if (entity instanceof Player) {
+					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+				}
+				((MortalEntity) entity).damage(damage);
+			}
+		}
+	}
 
-		 }
+	protected int effectTimer;
+	protected int currentSpriteIndexCount;
 
-		 break;
-		 }
-
-		 }
-		 */
+	protected void animate() {
+		if (animate) {
+			effectTimer++;
+			if (textureLoop) {
+				if (effectTimer % 4 == 0) {
+					setTexture(textureArray[currentSpriteIndexCount]);
+					if (currentSpriteIndexCount == textureArrayLength - 1)
+						currentSpriteIndexCount = 0;
+					else {
+						currentSpriteIndexCount++;
+					}
+				}
+			}
+			if (!textureLoop) {
+				if (effectTimer % 4 == 0) {
+					setTexture(textureArray[currentSpriteIndexCount]);
+					if (currentSpriteIndexCount == textureArrayLength - 1)
+						GameManager.get().getWorld().removeEntity(this);
+					else {
+						currentSpriteIndexCount++;
+					}
+				}
+			}
+		}
 	}
 
 	public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,
@@ -89,6 +152,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 	}
 
-	public abstract float getDamage();
+	public float getDamage() {
+		return damage;
+	}
 
 }

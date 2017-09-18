@@ -148,14 +148,23 @@ public class TextureManager extends Manager {
         saveTexture("W", "resources/player/debug/W.png");
         saveTexture("NW", "resources/player/debug/NW.png");
         
-        saveTexture("wizardN", "resources/player/wizard/wizard_N.png");
-        saveTexture("wizardNE", "resources/player/wizard/wizard_NE.png");
-        saveTexture("wizardE", "resources/player/wizard/wizard_E.png");
-        saveTexture("wizardSE", "resources/player/wizard/wizard_SE.png");
-        saveTexture("wizardS", "resources/player/wizard/wizard_S.png");
-        saveTexture("wizardSW", "resources/player/wizard/wizard_SW.png");
-        saveTexture("wizardW", "resources/player/wizard/wizard_W.png");
-        saveTexture("wizardNW", "resources/player/wizard/wizard_NW.png");
+        saveTexture("wizard_N", "resources/player/wizard/wizard_N.png");
+        saveTexture("wizard_NE", "resources/player/wizard/wizard_NE.png");
+        saveTexture("wizard_E", "resources/player/wizard/wizard_E.png");
+        saveTexture("wizard_SE", "resources/player/wizard/wizard_SE.png");
+        saveTexture("wizard_S", "resources/player/wizard/wizard_S.png");
+        saveTexture("wizard_SW", "resources/player/wizard/wizard_SW.png");
+        saveTexture("wizard_W", "resources/player/wizard/wizard_W.png");
+        saveTexture("wizard_NW", "resources/player/wizard/wizard_NW.png");
+        
+        saveTexture("wizard_N_hurt", "resources/player/wizard/wizard_N_hurt.png");
+        saveTexture("wizard_NE_hurt", "resources/player/wizard/wizard_NE_hurt.png");
+        saveTexture("wizard_E_hurt", "resources/player/wizard/wizard_E_hurt.png");
+        saveTexture("wizard_SE_hurt", "resources/player/wizard/wizard_SE_hurt.png");
+        saveTexture("wizard_S_hurt", "resources/player/wizard/wizard_S_hurt.png");
+        saveTexture("wizard_SW_hurt", "resources/player/wizard/wizard_SW_hurt.png");
+        saveTexture("wizard_W_hurt", "resources/player/wizard/wizard_W_hurt.png");
+        saveTexture("wizard_NW_hurt", "resources/player/wizard/wizard_NW_hurt.png");
 
     }
 

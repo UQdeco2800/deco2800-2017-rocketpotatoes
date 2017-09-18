@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-
+import com.deco2800.potatoes.gui.RespawnGui;
+import com.deco2800.potatoes.managers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -27,10 +27,6 @@ import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -38,7 +34,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * Entity for the playable character.
  *
- * @authors leggy, petercondoleon
+ * @author leggy, petercondoleon
  *
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
@@ -59,7 +55,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	private Direction currentDirection; // The direction the player faces
 	private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 	
-	public enum PlayerState { idle, walk, attack, damaged };	// The states a player may take
+	public enum PlayerState { idle, walk, attack, damaged, death };	// The states a player may take
 	private ArrayList<PlayerState> currentStates = new ArrayList<>();	// The current states of the player
 	
 	// The map containing all player textures
@@ -188,35 +184,17 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	/**
 	 * Updates the player sprite based on it's state and direction.
 	 */
-	private void updateSprites() {
-		switch (this.getDirection()) {
-		case North:
-			this.setTexture("wizardN");
-			break;
-		case NorthEast:
-			this.setTexture("wizardNE");
-			break;
-		case East:
-			this.setTexture("wizardE");
-			break;
-		case SouthEast:
-			this.setTexture("wizardSE");
-			break;
-		case South:
-			this.setTexture("wizardS");
-			break;
-		case SouthWest:
-			this.setTexture("wizardSW");
-			break;
-		case West:
-			this.setTexture("wizardW");
-			break;
-		case NorthWest:
-			this.setTexture("wizardNW");
-			break;
-		default:
-			break;
+	public void updateSprites() {
+		String playerClass = "wizard";
+		String direction = "_" + this.getDirection().toString();
+		String state = "";
+		
+		// Determine the player state
+		if (this.hasState(PlayerState.damaged)) {
+			state = "_hurt";
 		}
+		
+		this.setTexture(playerClass + direction + state);
 	}
 	
 	/**
@@ -231,12 +209,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	/*
 	 * Temporary method for use from other classes, please see new
 	 * implementation above.
+	 * TODO: Re-implement method name and parameters
 	 */
-	public void setDamaged(boolean damaged) {
-		if (damaged) {
+	public void setDamaged(boolean isDamaged) {
+		if (!this.hasState(PlayerState.damaged)) {
 			this.addState(PlayerState.damaged);
-		} else {
-			this.removeState(PlayerState.damaged);
+			this.updateSprites();
+			EventManager eventManager = GameManager.get().getManager(EventManager.class);
+			eventManager.registerEvent(this, new PlayerDamagedEvent(200));
 		}
 	}
 	
@@ -472,5 +452,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+
+		GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
 	}
 }
