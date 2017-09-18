@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.entities;
 
 import com.deco2800.potatoes.entities.Player.PlayerState;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 
 /**
  * An event for handling the state in which a player is damaged.
