@@ -81,8 +81,7 @@ public class BasePortal extends AbstractPortal implements Tickable {
 
     @Override
     public void onTick(long time) {
-        AbstractEntity player = null;
-        boolean collided = this.preTick(time, player);
+        boolean collided = this.preTick(time);
         // remove from game world and add to inventory if a player has collided with
         // this resource
         if (collided) {
@@ -92,14 +91,7 @@ public class BasePortal extends AbstractPortal implements Tickable {
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
                 //remove player from old world
-                GameManager.get().getWorld().removeEntity(player);
-				//change to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.VOLCANO_WORLD);
-				//add player to new world
-	            GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-	            //add some entities to the test world (adds every time, kinda bad)
-	            GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-	            GameManager.get().getWorld().addEntity(new AbstractPortal(1, 2, 0, "iceland_portal"));
+                GameManager.get().getWorld().removeEntity(this.getPlayer());
 				// Bring up portal interface
                 ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class)).show();
 

@@ -41,6 +41,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	 */
 	private static final float[][] POSITIONS = { {CHANGE, 0 }, {CHANGE, CHANGE}, { 0, CHANGE}, { -CHANGE, CHANGE},
 			{ -CHANGE, 0 }, { -CHANGE, -CHANGE}, { 0, -CHANGE}, { -CHANGE, -CHANGE} };
+	private AbstractEntity player;
 
 	/**
 	 * This instantiates an AbstractPortal given the appropriate parameters.
@@ -58,7 +59,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		super(posX, posY, posZ, 3, 3, 3, texture);
 	}
 
-	public boolean preTick(long time, AbstractEntity player){
+	public boolean preTick(long time){
 		float xPos = getPosX();
 		float yPos = getPosY();
 		boolean collided = false;
@@ -89,10 +90,20 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		}
 		return collided;
 	}
+	
+	/**
+	 * Returns the player entity.
+	 * 
+	 * @return player
+	 * 			The entity associated with the plauer.
+	 */
+	public AbstractEntity getPlayer() {
+		return player;
+	}
+	
 	@Override
 	public void onTick(long time) {
-		AbstractEntity player = null;
-		boolean collided = this.preTick(time, player);
+		boolean collided = this.preTick(time);
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
@@ -102,7 +113,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				SoundManager soundManager = new SoundManager();
 				soundManager.playSound("warpSound.wav");
 				//remover player from old world
-				GameManager.get().getWorld().removeEntity(player);
+				GameManager.get().getWorld().removeEntity(getPlayer());
 				//change to new world
 				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 				//add player to new world

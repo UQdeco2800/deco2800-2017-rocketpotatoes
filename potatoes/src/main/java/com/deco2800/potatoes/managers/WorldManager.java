@@ -54,8 +54,6 @@ public class WorldManager extends Manager {
 			//add some entities to the worlds that aren't the main world
 			addPortal(key);
 
-			worlds.put(key, generateWorld(key));
-
 			return worlds.get(key);
 		}
 	}
