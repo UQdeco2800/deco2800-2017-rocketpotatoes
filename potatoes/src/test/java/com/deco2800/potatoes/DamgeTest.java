@@ -1,7 +1,7 @@
 package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.entities.Damage;
-import com.deco2800.potatoes.entities.Resource;
+import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.LightningTree;
 import org.junit.Before;

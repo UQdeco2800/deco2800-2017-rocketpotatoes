@@ -12,13 +12,6 @@ public class TimeAnimation extends TimeEvent<Tickable> implements Animation {
 	private final transient Animation[] frames;
 
 	/**
-	 * Construction for serialization
-	 */
-	public TimeAnimation() {
-		frames = new Animation[] {};
-	}
-
-	/**
 	 * Creates time animation where the frames are distributed between. Must be
 	 * registered with the event manager to function properly.
 	 * 

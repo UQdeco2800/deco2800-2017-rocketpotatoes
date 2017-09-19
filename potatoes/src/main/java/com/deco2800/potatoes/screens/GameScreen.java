@@ -18,19 +18,15 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.gui.DebugModeGui;
-import com.deco2800.potatoes.gui.GameMenuGui;
-import com.deco2800.potatoes.gui.GameOverGui;
-import com.deco2800.potatoes.gui.InventoryGui;
-import com.deco2800.potatoes.gui.PauseMenuGui;
-import com.deco2800.potatoes.gui.TreeShopGui;
-import com.deco2800.potatoes.gui.WorldChangeGui;
+import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -44,7 +40,6 @@ import com.deco2800.potatoes.worlds.WorldType;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Handles the creation of the world and rendering.
@@ -71,6 +66,7 @@ public class GameScreen implements Screen {
 	private CameraManager cameraManager;
 	private TextureManager textureManager;
 	private InputManager inputManager;
+	private WaveManager waveManager;
 
 	private long lastGameTick = 0;
 	private boolean playing = true;
@@ -126,9 +122,6 @@ public class GameScreen implements Screen {
 	 * specific things just yet
 	 */
 	private void setupGame() {
-		this.game = game;
-
-
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
@@ -149,6 +142,9 @@ public class GameScreen implements Screen {
 
 		/* Create a player manager. */
 		playerManager = GameManager.get().getManager(PlayerManager.class);
+
+        /* Create an enemy wave manager */
+        waveManager = GameManager.get().getManager(WaveManager.class);
 
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
@@ -197,7 +193,11 @@ public class GameScreen implements Screen {
         guiManager.addGui(new WorldChangeGui(guiManager.getStage(), this));
 
         //Make our game over window
-        	guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+
+		guiManager.addGui(new WaveGUI(guiManager.getStage(), this));
+
+		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
 		/* Setup inputs */
 		setupInputHandling();
@@ -255,27 +255,26 @@ public class GameScreen implements Screen {
 
 		GameManager.get().getManager(EventManager.class).unregisterAll();
 
-		// Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
 			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-			//addSquirrel();
-            //addTankEnemy();
-            //addMoose();
-            //addSpeedyEnemy();
-            new EnemyWave(2, 1, 1,1, 2);
+			//add an enemy gate to game world
+			GameManager.get().getWorld().addEntity(new EnemyGate(24,24,0));
+			
+			//add enemy waves
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
 
 			addResourceTrees();
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
 
-		}
-
-		if (!multiplayerManager.isMultiplayer()) {
+			if (!multiplayerManager.isMultiplayer()) {
 			/*
 			 * TODO bug! currently reseting the game while having a key held down will then
 			 * notify the new player with the keyUp TODO event, which will result it in
@@ -284,44 +283,13 @@ public class GameScreen implements Screen {
 			 * hassle
 			 */
 
-			// Make our player
-			playerManager.setPlayer(new Player(5, 10, 0));
-			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-		}
-		GameManager.get().getManager(ParticleManager.class);
-	}
-
-	// For random position of enemies
-	Random random = new Random();
-
-	private void addSquirrel() {
-		for (int i = 0; i < 5; i++) {
-			GameManager.get().getWorld()
-					.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+				// Make our player
+				playerManager.setPlayer(new Player(5, 10, 0));
+				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+			}
+			GameManager.get().getManager(ParticleManager.class);
 		}
 	}
-
-	private void addTankEnemy() {
-		for (int i = 0; i < 3; i++) {
-			GameManager.get().getWorld()
-					.addEntity(new TankEnemy(15 + random.nextFloat() * 10, 20 + random.nextFloat() * 10, 0));
-		}
-	}
-
-	private void addMoose() {
-		for (int i = 0; i < 2; ++i) {
-			GameManager.get().getWorld()
-					.addEntity(new Moose(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-		}
-	}
-
-	private void addSpeedyEnemy() {
-		for (int i = 0; i < 3; i++) {
-			GameManager.get().getWorld()
-					.addEntity(new SpeedyEnemy(24 + random.nextFloat() * 10, 20 + random.nextFloat() * 10, 0));
-		}
-	}
-
 
 	private void addDamageTree() {
 		GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
@@ -342,7 +310,7 @@ public class GameScreen implements Screen {
 
 	private void initialiseResources() {
 
-		SeedResource seedResource = new SeedResource();   
+		SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
 		
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
@@ -375,12 +343,9 @@ public class GameScreen implements Screen {
 
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			if (e instanceof Tickable) {
-				// Only tick elements if we're singleplayer or master
-				if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-					((Tickable) e).onTick(timeDelta);
+			if (e instanceof Tickable &&(!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
+				((Tickable) e).onTick(timeDelta);
 
-				}
 			}
 
 			/*
@@ -388,11 +353,6 @@ public class GameScreen implements Screen {
 			 * peonButton = ((Selectable) e).getButton(); somethingSelected = true; } }
 			 */
 
-		}
-
-		// Tick Events
-		if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-			GameManager.get().getManager(EventManager.class).tickAll(timeDelta);
 		}
 
 		// Broadcast updates if we're master TODO only when needed.
@@ -420,10 +380,9 @@ public class GameScreen implements Screen {
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
-
-		GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
-
-	}
+		// Ticks all tickable managers, currently events, waves, particles
+		GameManager.get().onTick(timeDelta);
+    }
 
 	private void renderGUI(SpriteBatch batch) {
 
@@ -440,6 +399,39 @@ public class GameScreen implements Screen {
 	private void renderGameGUI(SpriteBatch batch) {
 		guiManager.getStage().act();
 		guiManager.getStage().draw();
+	}
+
+	//Is it bad to be setting the status label text on every tick? Might want to think this through
+	private void updateWaveGUI() {
+		// Update WaveGui time
+		int timeToWaveEnd;
+		int timeToNextWave;
+		Gui waveGUI = guiManager.getGui(WaveGUI.class);
+		if (waveGUI instanceof WaveGUI) {
+			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+			if (activeWave != null) {
+				timeToWaveEnd = activeWave.getTimeToEnd();
+				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to wave end:");
+				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+			} else {
+				timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
+				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave:");
+				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave/75);
+			}
+		}
+	}
+
+	//TODO: better implementation?
+	private void updateRespawnGUI(){
+
+		Gui respawnGui = guiManager.getGui(RespawnGui.class);
+
+		if(playerManager.getPlayer().isDead()) {
+			int count = ((RespawnGui) respawnGui).returnCount();
+			int display =(int) Math.round(count/1000.0) + 1;
+			((RespawnGui) respawnGui).returnTimer().setText(Integer.toString(display));
+		}
+
 	}
 
 	private void renderGame(SpriteBatch batch) {
@@ -535,6 +527,8 @@ public class GameScreen implements Screen {
 			renderGame(batch);
 		}
 
+		updateWaveGUI();
+		updateRespawnGUI();
 		renderGUI(batch);
 
 		batch.dispose();

@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-
+import com.deco2800.potatoes.gui.RespawnGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.managers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -21,12 +22,12 @@ import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -34,7 +35,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * Entity for the playable character.
  *
- * @authors leggy, petercondoleon
+ * @author leggy, petercondoleon
  *
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
@@ -55,13 +56,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	private Direction currentDirection; // The direction the player faces
 	private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 	
-	public enum PlayerState { idle, walk, attack, damaged };	// The states a player may take
+	public enum PlayerState { idle, walk, attack, damaged, death };	// The states a player may take
 	private ArrayList<PlayerState> currentStates = new ArrayList<>();	// The current states of the player
+	private String playerType = "wizard"; // The type class of a player
 	
 	// The map containing all player textures
 	private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
 	
-	private TreeShop treeShop;
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -159,23 +160,23 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x)*(180/Math.PI);
 
-		if (angularDirection >= -180 & angularDirection < -157.5) {
+		if (angularDirection >= -180 && angularDirection < -157.5) {
 			this.setDirection(Direction.SouthWest);
-		} else if (angularDirection >= -157.5 & angularDirection < -112.5) {
+		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
 			this.setDirection(Direction.West);
-		} else if (angularDirection >= -112.5 & angularDirection < -67.5) {
+		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
 			this.setDirection(Direction.NorthWest);
-		} else if (angularDirection >= -67.5 & angularDirection < -22.5) {
+		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
 			this.setDirection(Direction.North);
-		} else if (angularDirection >= -22.5 & angularDirection < 22.5) {
+		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
 			this.setDirection(Direction.NorthEast);
-		} else if (angularDirection >= 22.5 & angularDirection < 67.5) {
+		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
 			this.setDirection(Direction.East);
-		} else if (angularDirection >= 67.5 & angularDirection < 112.5) {
+		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
 			this.setDirection(Direction.SouthEast);
-		} else if (angularDirection >= 112.5 & angularDirection < 157.5) {
+		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
 			this.setDirection(Direction.South);
-		} else if (angularDirection >= 157.5 & angularDirection <= 180) {
+		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
 			this.setDirection(Direction.SouthWest);
 		} 	
 		
@@ -185,35 +186,23 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	/**
 	 * Updates the player sprite based on it's state and direction.
 	 */
-	private void updateSprites() {
-		switch (this.getDirection()) {
-		case North:
-			this.setTexture("N");
-			break;
-		case NorthEast:
-			this.setTexture("NE");
-			break;
-		case East:
-			this.setTexture("E");
-			break;
-		case SouthEast:
-			this.setTexture("SE");
-			break;
-		case South:
-			this.setTexture("S");
-			break;
-		case SouthWest:
-			this.setTexture("SW");
-			break;
-		case West:
-			this.setTexture("W");
-			break;
-		case NorthWest:
-			this.setTexture("NW");
-			break;
-		default:
-			break;
+	public void updateSprites() {
+		String type = this.playerType;
+		String state = "_idle";
+		String direction = "_" + this.getDirection().toString();
+		String frame = "_1";
+		
+		
+		// Determine the player state
+		if (this.hasState(PlayerState.damaged)) {
+			state = "_damaged";
+			if (type.equals("caveman")) {
+				state = "_attack";
+				frame = "_3";
+			}
 		}
+		
+		this.setTexture(type + state + direction + frame);
 	}
 	
 	/**
@@ -228,38 +217,17 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	/*
 	 * Temporary method for use from other classes, please see new
 	 * implementation above.
+	 * TODO: Re-implement method name and parameters
 	 */
-	public void setDamaged(boolean damaged) {
-		if (damaged) {
+	public void setDamaged(boolean isDamaged) {
+		if (!this.hasState(PlayerState.damaged)) {
 			this.addState(PlayerState.damaged);
-		} else {
-			this.removeState(PlayerState.damaged);
+			this.updateSprites();
+			EventManager eventManager = GameManager.get().getManager(EventManager.class);
+			eventManager.registerEvent(this, new PlayerDamagedEvent(200));
 		}
 	}
 	
-	/**
-	 * Returns the treeShop entity that the user can afford.
-	 */
-	public TreeShop getTreeShop() {
-		return this.treeShop;
-	}
-	
-	public void removeTreeShop() {
-		GameManager.get().getWorld().removeEntity(this.treeShop);
-		this.treeShop = null;
-		LOGGER.info("removed");
-	}
-	
-	public void openTreeShop(float x, float y) {
-		
-		if (this.treeShop == null) {
-			this.treeShop = new TreeShop(x,y);
-		} else {
-			this.treeShop.setPosX(x);
-			this.treeShop.setPosY(y);
-		}
-		GameManager.get().getWorld().addEntity(this.treeShop);
-	}
 
 	@Override
 	public void onTick(long arg0) {
@@ -370,7 +338,25 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 				AbstractTree.constructTree(
 						new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
 			}
+		case Input.Keys.SPACE:
+			if (this.playerType.equals("wizard")) {
+				this.playerType = "caveman";
+				this.updateSprites();
+				break;
+			}
+			if (this.playerType.equals("caveman")) {
+				this.playerType = "archer";
+				this.updateSprites();
+				break;
+			}
+			if (this.playerType.equals("archer")) {
+				this.playerType = "wizard";
+				this.updateSprites();
+				break;
+			}
 			break;
+		case Input.Keys.ESCAPE:
+			((TreeShopGui)(GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class))).closeShop();
 		default:
 			break;
 		}
@@ -414,11 +400,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		boolean didHarvest = false;
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
+			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange
+					&& ((ResourceTree) entitiy).getGatherCount() > 0) {
 					didHarvest = true;
 					((ResourceTree) entitiy).transferResources(this.inventory);
-				}
+
 			}
 		}
 		if (didHarvest) {
@@ -492,5 +478,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 		// add the respawn event
 		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+
+		GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
 	}
 }

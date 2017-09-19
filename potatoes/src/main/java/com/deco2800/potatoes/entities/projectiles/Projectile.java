@@ -3,10 +3,12 @@ package com.deco2800.potatoes.entities.projectiles;
 import java.util.Map;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
@@ -15,6 +17,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected String projectileType = "rocket";
 	protected int textureArrayLength = 3;
 	protected String[] textureArray;
+	protected boolean textureLoop = true;
 
 	protected float goalX;
 	protected float goalY;
@@ -22,6 +25,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected float changeX;
 	protected float changeY;
 	protected float changeZ;
+	protected float deltaX, deltaY;
 
 	protected static float xRenderLength = 1.4f;
 	protected static float yRenderLength = 1.4f;
@@ -30,7 +34,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected static float zLength = 0.4f;
 
 	protected Class<?> targetClass;
-	protected boolean maxRange;
+	protected boolean rangeReached;
+	protected float maxRange;
 	protected float range;
 	protected float damage;
 	protected float rotationAngle = 0;
@@ -48,24 +53,19 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public Projectile(float posX, float posY, float posZ, float xRenderLength, float yRenderLength, String texture) {
 		super(posX, posY, posZ, 0.4f, 0.4f, 0.4f, xRenderLength, yRenderLength, true, texture);
 	}
-	
+
 	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,
 			float targetPosZ, float range, float damage, String projectileType, Effect startEffect, Effect endEffect) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, true, TEXTURE);
-		textureArray = new String[textureArrayLength];
-		if (projectileType != "" && projectileType != null)
-			this.projectileType = projectileType;
 
-		for (int t = 0; t < textureArrayLength; t++) {
-			textureArray[t] = this.projectileType + Integer.toString(t + 1);
-		}
+		setTextureArray(this.projectileType, 3);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
 
-		this.range = damage;
+		this.maxRange = this.range = range;
 		this.damage = damage;
 		this.startEffect = startEffect;
 		this.endEffect = endEffect;
@@ -73,8 +73,21 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
 
-		updatePosition();
 		setTargetPosition(targetPosX, targetPosY, targetPosZ);
+		updatePosition();
+		setPosition();
+	}
+
+	protected void setTextureArray(String projectileType, int numberOfSprites) {
+		textureArrayLength = numberOfSprites;
+		textureArray = new String[textureArrayLength];
+
+		if (projectileType != "" && projectileType != null)
+			this.projectileType = projectileType;
+
+		for (int t = 0; t < textureArrayLength; t++) {
+			textureArray[t] = this.projectileType + Integer.toString(t + 1);
+		}
 	}
 
 	public void setTargetPosition(float xPos, float yPos, float zPos) {
@@ -83,18 +96,26 @@ public class Projectile extends AbstractEntity implements Tickable {
 		this.goalZ = zPos;
 	}
 
-	public void updatePosition() {
-		float deltaX = getPosX() - this.goalX;
-		float deltaY = getPosY() - this.goalY;
+	/**
+	 * Used if heading changes
+	 */
+	protected void updatePosition() {
+		deltaX = getPosX() - this.goalX;
+		deltaY = getPosY() - this.goalY;
 		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
-		rotationAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+		rotationAngle = (float) ((angle * 180 / Math.PI) + 45 + 90);
 		changeX = (float) (SPEED * Math.cos(angle));
 		changeY = (float) (SPEED * Math.sin(angle));
-
+	}
+	
+	/**
+	 * every frame the position is set
+	 */
+	protected void setPosition() {
 		setPosX(getPosX() + changeX);
 		setPosY(getPosY() + changeY);
 
-		if (range <= 0 || maxRange) {
+		if (range < SPEED || rangeReached) {
 			GameManager.get().getWorld().removeEntity(this);
 		} else {
 			range -= SPEED;
@@ -110,7 +131,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 * Returns Range value
 	 */
 	public float getRange() {
-		return range;
+		return maxRange;
 	}
 
 	/**
@@ -120,21 +141,13 @@ public class Projectile extends AbstractEntity implements Tickable {
 		return damage;
 	}
 
-	private int projectileEffectTimer;
-	private int projectileCurrentSpriteIndexCount;
+	protected int projectileEffectTimer;
+	protected int projectileCurrentSpriteIndexCount;
 
-	public void animate() {
+	protected void animate() {
 		projectileEffectTimer++;
-		if (projectileEffectTimer % 4 == 0) {
-			if ("rocket".equalsIgnoreCase(projectileType)) {
-				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
-				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
-					projectileCurrentSpriteIndexCount = 0;
-				else {
-					projectileCurrentSpriteIndexCount++;
-				}
-			} else if ("chilli".equalsIgnoreCase(projectileType)) {
-
+		if (textureLoop) {
+			if (projectileEffectTimer % 4 == 0) {
 				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
 				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
 					projectileCurrentSpriteIndexCount = 0;
@@ -148,7 +161,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	@Override
 	public void onTick(long time) {
 		animate();
-		updatePosition();
+		setPosition();
 
 		Box3D newPos = getBox3D();
 		newPos.setX(this.getPosX());
@@ -161,12 +174,14 @@ public class Projectile extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getBox3D())) {
-				((MortalEntity) entity).damage(range);
+				if (entity instanceof Player) {
+					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+				}
+				((MortalEntity) entity).damage(damage);
 				if (endEffect != null)
 					GameManager.get().getWorld().addEntity(endEffect);
-				maxRange = true;
-				updatePosition();
-				break;
+				rangeReached = true;
+				setPosition();
 			}
 		}
 	}

@@ -7,11 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.entities.FoodResource;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.Inventory;
 
 /**
@@ -54,6 +54,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
 		this.resetStats();
+		this.setTexture("food_resource_tree");
 	}
 
 	/**
@@ -83,14 +84,23 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		}
 		this.resetStats();
 	}
+	
+	@Override
+	public ResourceTree clone() {
+		return new ResourceTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.gatherType, this.gatherCapacity);
+	}
 
 	@Override
 	public List<TreeStatistics> getAllUpgradeStats() {
 		if (this.gatherType instanceof SeedResource) {
+			// TODO hard coded currently but needs to be fixed
+			this.setTexture("seed_resource_tree");
 			return getSeedTreeStats();
 		} else if (this.gatherType instanceof FoodResource) {
+			this.setTexture("food_resource_tree");
 			return getFoodTreeStats();
 		} else {
+			this.setTexture("seed_resource_tree");
 			return getSeedTreeStats();
 		}
 	}
@@ -259,4 +269,5 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public void setGatherEnabled(boolean gatherEnabled) {
 		this.gatherEnabled = gatherEnabled;
 	}
+
 }

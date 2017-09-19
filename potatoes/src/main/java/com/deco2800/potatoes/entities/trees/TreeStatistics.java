@@ -3,12 +3,12 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.BasicStatistics;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.SeedResource;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
