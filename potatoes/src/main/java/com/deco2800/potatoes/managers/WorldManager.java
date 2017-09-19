@@ -96,8 +96,7 @@ public class WorldManager extends Manager {
 	private World generateWorld(WorldType worldType) {
 		World world = new World();
 		Cell[][] terrainCells = new Cell[WORLD_SIZE][WORLD_SIZE];
-		float[][] height = getRandomGrid();
-		Terrain[][] terrain = worldType.generateWorld(WORLD_SIZE, height);
+		Terrain[][] terrain = worldType.generateWorld(WORLD_SIZE);
 		for (int x = 0; x < WORLD_SIZE; x++) {
 			for (int y = 0; y < WORLD_SIZE; y++) {
 				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
