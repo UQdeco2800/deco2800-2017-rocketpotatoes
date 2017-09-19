@@ -57,7 +57,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     // currently used in Player, will probably need to change out later.
     public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
                       Effect endEffect, String Directions, float TargetPosX, float TargetPosY) {
-        super(posX, posY, posZ, xLength + 0.5f, yLength + 0.5f, zLength, xRenderLength, yRenderLength, true, TEXTURE);
+        super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true, TEXTURE);
         textureArray = new String[textureArrayLength];
         if (projectileType != "" && projectileType != null)
             this.projectileType = projectileType;
