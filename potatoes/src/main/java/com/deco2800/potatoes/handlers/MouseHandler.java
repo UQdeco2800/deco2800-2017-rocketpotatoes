@@ -58,9 +58,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			}
 		}
 		
-		int worldLength = GameManager.get().getWorld().getLength();
-		int worldWidth = GameManager.get().getWorld().getWidth();
-		
 		treeShop.initShop(originX,originY);
 	}
 

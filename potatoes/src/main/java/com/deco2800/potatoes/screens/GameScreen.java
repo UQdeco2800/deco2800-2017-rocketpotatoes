@@ -188,6 +188,9 @@ public class GameScreen implements Screen {
         
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
+        
+        // Add World Change Gui
+        guiManager.addGui(new WorldChangeGui(guiManager.getStage(), this));
 
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));

@@ -54,6 +54,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
 		this.resetStats();
+		this.setTexture("food_resource_tree");
 	}
 
 	/**
@@ -83,14 +84,23 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		}
 		this.resetStats();
 	}
+	
+	@Override
+	public ResourceTree clone() {
+		return new ResourceTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.gatherType, this.gatherCapacity);
+	}
 
 	@Override
 	public List<TreeStatistics> getAllUpgradeStats() {
 		if (this.gatherType instanceof SeedResource) {
+			// TODO hard coded currently but needs to be fixed
+			this.setTexture("seed_resource_tree");
 			return getSeedTreeStats();
 		} else if (this.gatherType instanceof FoodResource) {
+			this.setTexture("food_resource_tree");
 			return getFoodTreeStats();
 		} else {
+			this.setTexture("seed_resource_tree");
 			return getSeedTreeStats();
 		}
 	}
@@ -259,4 +269,5 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public void setGatherEnabled(boolean gatherEnabled) {
 		this.gatherEnabled = gatherEnabled;
 	}
+
 }
