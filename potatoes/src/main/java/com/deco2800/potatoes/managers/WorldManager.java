@@ -15,7 +15,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  * Manager for worlds. Stores and generates all the worlds.
  */
 public class WorldManager extends Manager {
-	private static final int WORLD_SIZE = 25;
+	private static final int WORLD_SIZE = 50;
 
 	private Map<WorldType, World> worlds;
 	private Map<String, Cell> cells;
@@ -26,7 +26,7 @@ public class WorldManager extends Manager {
 		cells = new HashMap<>();
 		randomGrids = new float[20][][];
 		for (int i = 0; i < randomGrids.length; i++) {
-			randomGrids[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.4f, 2);
+			randomGrids[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.42f, 2);
 		}
 	}
 
