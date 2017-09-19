@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deco2800.potatoes.renderering.particles.Particle;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+import com.deco2800.potatoes.renderering.particles.types.BuoyantParticleType;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ParticleManager extends Manager implements TickableManager {
         }
 
         addParticleEmitter(5000.0f, new ParticleEmitter(50, 50,
-                new BasicParticleType(100000, 1000.0f, 100.0f, 64, Color.RED, 5, 5)));
+                new BuoyantParticleType(100000, 1000.0f, 100.0f, 16, Color.RED, 5, 5)));
     }
 
     public void addParticleEmitter(float lifeTime, ParticleEmitter e) {
