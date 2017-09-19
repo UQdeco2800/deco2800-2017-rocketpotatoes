@@ -132,7 +132,7 @@ public class PathManager extends Manager implements ForWorld {
         while (!(next.equals(goal))) {
             path.add(next);
             // Hacky fix for infinite loop, doesn't completely fix the problem
-            if (next.equals(spanningTree.get(next))) {
+            if (path.contains(next)) {
             	break;
             }
             next = spanningTree.get(next);
