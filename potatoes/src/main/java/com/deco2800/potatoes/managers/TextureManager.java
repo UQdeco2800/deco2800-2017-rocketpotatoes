@@ -93,6 +93,7 @@ public class TextureManager extends Manager {
         saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
         saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
         saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
+        saveTexture("savePauseMenu", "resources/menu/savePauseMenu.png");
         saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
         saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
@@ -103,6 +104,7 @@ public class TextureManager extends Manager {
         saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
         saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
+        saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
