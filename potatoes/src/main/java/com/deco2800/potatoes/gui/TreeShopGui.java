@@ -61,6 +61,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private TextureManager textureManager;
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+	private Player player;
 
 	final private float UNSELECTED_ALPHA = 0.2f;
 	final private float SELECTED_ALPHA = 0.5f;
@@ -69,6 +70,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	public TreeShopGui(Stage stage) {
 		// Render menu
 		this.stage = stage;
+		player = new Player();
 		shopX = 300;
 		shopY = 300;
 		initiated = false;
@@ -212,6 +214,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 			float alpha = (segment == selectedSegment && mouseIn && !mouseInCancel) ? SELECTED_ALPHA : UNSELECTED_ALPHA;
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
+			// TODO make update with tree cost
+			if (player.getInventory().getQuantity(new SeedResource())<1)
+				shapeRenderer.setColor(new Color(200,200,200,0.8f));
 			int startAngle = 360 * (segment) / (numSegments);
 			shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
 
@@ -339,7 +344,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	}
 
 	public void initShop(int x, int y) {
-
+		player = GameManager.get().getManager(PlayerManager.class).getPlayer();
 		if (initiated && mouseIn) {
 			if (mouseInCancel)
 				closeShop();
@@ -383,21 +388,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
 			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 			AbstractTree newTree;
-
-			// Select random tree, and either make it in singleplayer or broadcast it in mp
-			/*
-			 * switch (selectedSegment + 1) {
-			 * 
-			 * case 1: newTree = new ResourceTree(treeX, treeY, 0, new FoodResource(), 8);
-			 * break; case 2: newTree = new ResourceTree(treeX, treeY, 0); break; default:
-			 * newTree = new Tower(treeX, treeY, 0); break; }
-			 */
-
+			
 			newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
 			newTree.setPosX(treeX);
 			newTree.setPosY(treeY);
 			newTree.setPosZ(0);
-			System.out.println(newTree.toString());
 
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);
