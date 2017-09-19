@@ -47,7 +47,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private Circle shopShape;
 	private Circle cancelShape;
 	private int selectedSegment;
-	private LinkedHashMap<AbstractEntity, Color> items;
+	private LinkedHashMap<AbstractTree, Color> items;
 	private boolean mouseIn; // Mouse inside shopMenu
 	private boolean mouseInCancel; // Mouse inside cancel circle
 	private boolean initiated;
@@ -74,10 +74,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopX = 300;
 		shopY = 300;
 		initiated = false;
-		items = new LinkedHashMap<AbstractEntity, Color>();
+		items = new LinkedHashMap<AbstractTree, Color>();
 		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
 		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
+		for (AbstractTree tree : items.keySet()) {
+			tree.setConstructionLeft(0);
+		}
 		textureManager = GameManager.get().getManager(TextureManager.class);
 		container = new WidgetGroup();
 		stage.addActor(container);
