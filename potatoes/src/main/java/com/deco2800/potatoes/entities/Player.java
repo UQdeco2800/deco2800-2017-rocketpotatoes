@@ -341,14 +341,17 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		case Input.Keys.SPACE:
 			if (this.playerType.equals("wizard")) {
 				this.playerType = "caveman";
+				this.updateSprites();
 				break;
 			}
 			if (this.playerType.equals("caveman")) {
 				this.playerType = "archer";
+				this.updateSprites();
 				break;
 			}
 			if (this.playerType.equals("archer")) {
 				this.playerType = "wizard";
+				this.updateSprites();
 				break;
 			}
 			break;
