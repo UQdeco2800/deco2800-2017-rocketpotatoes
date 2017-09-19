@@ -43,6 +43,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 
 public class TreeShopGui extends Gui implements SceneGui {
 	private Circle shopShape;
+	private Circle cancelShape;
 	private int selectedSegment;
 	private LinkedHashMap<AbstractEntity, Color> items;
 	private boolean mouseIn;
@@ -122,14 +123,26 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 *            Radius of circle
 	 */
 	private void createTreeMenu(int x, int y, int radius) {
-		Circle circle = new Circle(x, y, radius);
-		shopShape = circle;
+		shopShape = new Circle(x, y, radius);
+		cancelShape = new Circle(x, y, radius * 0.2f);
 
 		container.clear();
+
 		if (initiated)
 			renderGui(x, y, radius);
 
 	}
+
+	/**
+	 * Renders the shapes and gui elements of treeShop.
+	 * 
+	 * @param x
+	 *            x value of center of shop
+	 * @param y
+	 *            y value of center of shop
+	 * @param radius
+	 *            radius of shop
+	 */
 
 	private void renderGui(int x, int y, int radius) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -137,7 +150,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Filled);
 
-		int numSegments = items.entrySet().size();
 		shapeRenderer.setColor(new Color(0, 0, 0, SELECTED_ALPHA));
 		if (mouseIn)
 			shapeRenderer.setColor(new Color(0, 0, 0, 0.7f));
@@ -145,6 +157,20 @@ public class TreeShopGui extends Gui implements SceneGui {
 		float guiY = stage.getHeight() - y;
 		shapeRenderer.circle(x, guiY, radius);
 
+		renderSubMenus(shapeRenderer, x, guiY, radius);
+
+		shapeRenderer.end();
+
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	/**
+	 * Renders the gui sections that are specific to the different items in the menu.
+	 * 
+	 */
+	private void renderSubMenus(ShapeRenderer shapeRenderer, int guiX, float guiY, int radius) {
+
+		int numSegments = items.entrySet().size();
 		int segment = 0;
 		int degrees = 360 / numSegments;
 		int imgSize = 60;
@@ -158,7 +184,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
 			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(x, guiY, (int) (radius * 0.85), startAngle, degrees);
+			shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
 
 			// Add entity texture image
 			texture = entry.getKey().getTexture();
@@ -166,9 +192,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 			float itemAngle = startAngle + degrees / 2;
 
-			Vector2 offset = calculateDisplacement(radius/2,itemAngle);
-			
-			float itemX = x - imgSize / 2 + offset.x;
+			Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
+
+			float itemX = guiX - imgSize / 2 + offset.x;
 			float itemY = guiY - imgSize / 2 + offset.y;
 
 			treeImg.setPosition(itemX, itemY);
@@ -181,38 +207,33 @@ public class TreeShopGui extends Gui implements SceneGui {
 			costContainer.setFillParent(true);
 
 			costContainer.defaults().width(20);
-			costContainer.padTop(10);
-			costContainer.padRight(10);
-			
+			costContainer.pad(20f);
+
 			Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
-			//seedImg.setHeight(seedSize);
-			//seedImg.setWidth(seedSize);
-			//seedImg.setScaling(Scaling.fit);
-			
-			//offset = calculateDisplacement(radius*0.9f, itemAngle-2);
-			//seedImg.setPosition(x - seedSize/2 + offset.x, guiY - seedSize/2 + offset.y);
-			//seedImg.setRotation(itemAngle+90);
-			
+
 			Label costLbl = new Label("1", skin);
-			//costLbl.setAlignment(Align.right);
-			
-			offset = calculateDisplacement(radius*0.86f, itemAngle+2);
-			costContainer.setPosition(x + offset.x, guiY + offset.y);
+
+			offset = calculateDisplacement(radius * 0.86f, itemAngle + 2);
+			costContainer.setPosition(guiX + offset.x, guiY + offset.y);
 			costContainer.setTransform(true);
 
 			costContainer.add(seedImg).size(seedSize, seedSize);
 			costContainer.add(costLbl).bottom().left();
 
-			costContainer.addAction(Actions.rotateBy(itemAngle+90));
+			costContainer.addAction(Actions.rotateBy(itemAngle + 90));
 			container.addActor(costContainer);
-			
+
 			segment++;
 
 		}
 
-		shapeRenderer.end();
+	}
 
-		Gdx.gl.glDisable(GL20.GL_BLEND);
+	/**
+	 * Removes treeShop from screen without planting a tree.
+	 */
+	public void closeShop() {
+		initiated = false;
 	}
 
 	/**
@@ -225,10 +246,10 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 *            degrees from right horizontal line
 	 * @return
 	 */
-	private Vector2 calculateDisplacement( float d, float degrees) {
+	private Vector2 calculateDisplacement(float d, float degrees) {
 		float offsetX = (float) (d * Math.cos(degrees * Math.PI / 180));
 		float offsetY = (float) (d * Math.sin(degrees * Math.PI / 180));
-		
+
 		return new Vector2(offsetX, offsetY);
 	}
 
@@ -272,7 +293,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	}
 
 	public void initShop(int x, int y) {
-		if (initiated) {
+		if (initiated && shopShape.contains(x, y)) {
 			buyTree();
 			initiated = false;
 		} else {
@@ -282,7 +303,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 		}
 	}
 
-	public void setTreeCoords(int x, int y) {
+	private void setTreeCoords(int x, int y) {
 		Vector2 tile = screenToTile(x, y);
 		treeX = (int) Math.floor(tile.x);
 		treeY = (int) Math.floor(tile.y);
