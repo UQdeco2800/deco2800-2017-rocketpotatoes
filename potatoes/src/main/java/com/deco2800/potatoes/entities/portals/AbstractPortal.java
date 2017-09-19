@@ -41,6 +41,10 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	 */
 	private static final float[][] POSITIONS = { {CHANGE, 0 }, {CHANGE, CHANGE}, { 0, CHANGE}, { -CHANGE, CHANGE},
 			{ -CHANGE, 0 }, { -CHANGE, -CHANGE}, { 0, -CHANGE}, { -CHANGE, -CHANGE} };
+	
+	/*
+	 * The player entity.
+	 */
 	private AbstractEntity player;
 
 	/**
@@ -95,7 +99,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	 * Returns the player entity.
 	 * 
 	 * @return player
-	 * 			The entity associated with the plauer.
+	 * 			The entity associated with the player.
 	 */
 	public AbstractEntity getPlayer() {
 		return player;

@@ -12,6 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.deco2800.potatoes.worlds.WorldType;
 
+/**
+ * A GUI that is displayed when the player enters the base portal. Allows players to teleport to
+ * one of the 4 other worlds.
+ * 
+ * @author Jordan Holder
+ *
+ */
 public class WorldChangeGui extends Gui {
     // logger for error/warning/info messages
     private static final Logger LOGGER = LoggerFactory.getLogger(WorldChangeGui.class);
@@ -107,6 +114,8 @@ public class WorldChangeGui extends Gui {
 				playerManager.getPlayer().setPosition(18, 16, 0);
                 // add player back into the world
                 GameManager.get().getWorld().addEntity(player);
+                
+                LOGGER.info("Exited base portal");
             }
 
         });
@@ -117,8 +126,10 @@ public class WorldChangeGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 4
                 changeWorld(WorldType.OCEAN_WORLD);
+                
+                LOGGER.info("Teleported to world 4");
             }
-
+            
         });
 
         // Listener to change to world 3
@@ -127,6 +138,8 @@ public class WorldChangeGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 3
                 changeWorld(WorldType.VOLCANO_WORLD);
+                
+                LOGGER.info("Teleported to world 3");
             }
 
         });
@@ -138,6 +151,8 @@ public class WorldChangeGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 2
                 changeWorld(WorldType.DESERT_WORLD);
+                
+                LOGGER.info("Teleported to world 2");
             }
 
         });
@@ -148,6 +163,8 @@ public class WorldChangeGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 1
                 changeWorld(WorldType.ICE_WORLD);
+                
+                LOGGER.info("Teleported to world 1");
             }
 
         });
@@ -171,13 +188,19 @@ public class WorldChangeGui extends Gui {
         // hide the world change gui
         hide();
     }
-
+    
+    /**
+     * Shows the world change GUI.
+     */
     @Override
     public void show() {
         table.setVisible(true);
         stage.addActor(table);
     }
 
+    /**
+     * Hides the world change GUI.
+     */
     @Override
     public void hide() {
         table.setVisible(false);
