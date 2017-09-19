@@ -245,7 +245,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 */
 	private void calculateSegment(float mx, float my) {
 
-		int n = 3;
+		float n = 3;
 		float x = shopShape.x;
 		float y = shopShape.y;
 		double mouseAngle = Math.atan((my - y) / (mx - x));
@@ -258,7 +258,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 			mouseAngle += 180;
 		mouseAngle = 360 - mouseAngle; // make it anti clockwise
 
-		double segmentAngle = 360 / n;
+		double segmentAngle = 360f / n;
 		int segment = (int) (mouseAngle / segmentAngle);
 		this.selectedSegment = segment;
 
