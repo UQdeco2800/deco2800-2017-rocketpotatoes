@@ -44,6 +44,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
 		resetStats();
 	}
+	
+	public abstract AbstractTree clone();
 
 	@Override
 	public void onTick(long time) {
@@ -143,6 +145,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	@Override
 	public Animation getAnimation() {
 		return animation;
+	}
+	
+	@Override
+	public String getTexture() {
+		return getAnimation().getFrame();
 	}
 
 	/**

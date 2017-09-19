@@ -23,8 +23,7 @@ public class Inventory {
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
 
 	/*
-	 * A mapping of possible resource items to the number of items the player
-	 * holds
+	 * Gui Manager to call on for updating the resources
 	 */
 	private GuiManager guiManager;
 

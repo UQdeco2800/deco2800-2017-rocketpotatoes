@@ -2,6 +2,8 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.deco2800.potatoes.entities.HasDirection.Direction;
+import com.deco2800.potatoes.entities.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +36,6 @@ public class TextureManager extends Manager {
      * Loads all the textures.
      */
     public static void loadTextures() {
-    	saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
-        saveTexture("player_right", "resources/player/caveman/caveman_idle_right.png");
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("w1", "resources/placeholderassets/w1.png");
@@ -135,6 +135,8 @@ public class TextureManager extends Manager {
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
+        saveTexture("forest_portal", "resources/portals/Forest_Portal.png");
+        saveTexture("sea_portal", "resources/portals/Sea_Portal.png");
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
@@ -148,23 +150,31 @@ public class TextureManager extends Manager {
         saveTexture("W", "resources/player/debug/W.png");
         saveTexture("NW", "resources/player/debug/NW.png");
         
-        saveTexture("wizard_N", "resources/player/wizard/wizard_N.png");
-        saveTexture("wizard_NE", "resources/player/wizard/wizard_NE.png");
-        saveTexture("wizard_E", "resources/player/wizard/wizard_E.png");
-        saveTexture("wizard_SE", "resources/player/wizard/wizard_SE.png");
-        saveTexture("wizard_S", "resources/player/wizard/wizard_S.png");
-        saveTexture("wizard_SW", "resources/player/wizard/wizard_SW.png");
-        saveTexture("wizard_W", "resources/player/wizard/wizard_W.png");
-        saveTexture("wizard_NW", "resources/player/wizard/wizard_NW.png");
+        // Add all wizard sprites
+        for (Direction direction : Direction.values()) {
+        		String textureNameIdle = "wizard_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
+        		String textureNameHurt = "wizard_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameHurt, "resources/player/wizard/damaged/" + textureNameHurt + ".png");
+        }
         
-        saveTexture("wizard_N_hurt", "resources/player/wizard/wizard_N_hurt.png");
-        saveTexture("wizard_NE_hurt", "resources/player/wizard/wizard_NE_hurt.png");
-        saveTexture("wizard_E_hurt", "resources/player/wizard/wizard_E_hurt.png");
-        saveTexture("wizard_SE_hurt", "resources/player/wizard/wizard_SE_hurt.png");
-        saveTexture("wizard_S_hurt", "resources/player/wizard/wizard_S_hurt.png");
-        saveTexture("wizard_SW_hurt", "resources/player/wizard/wizard_SW_hurt.png");
-        saveTexture("wizard_W_hurt", "resources/player/wizard/wizard_W_hurt.png");
-        saveTexture("wizard_NW_hurt", "resources/player/wizard/wizard_NW_hurt.png");
+        // Add all caveman sprites
+        for (Direction direction : Direction.values()) {
+        		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
+        		
+        		for (int i=1; i<=3; i++) {
+        			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
+        		}
+        }
+        
+     // Add all caveman sprites
+        for (Direction direction : Direction.values()) {
+        		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
+        }
+        
 
     }
 

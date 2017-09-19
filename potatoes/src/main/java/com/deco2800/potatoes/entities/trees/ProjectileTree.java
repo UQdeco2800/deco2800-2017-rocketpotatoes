@@ -12,12 +12,18 @@ import com.deco2800.potatoes.entities.animation.AnimationFactory;
 public class ProjectileTree extends AbstractTree implements Tickable {
 	private static final transient String[] GROW_ANIMATION = createGrowList();
 	private static final transient List<TreeStatistics> STATS = initStats();
+	private int reloadTime;
+	private int range;
+	private float maxHealth;
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public ProjectileTree() {
 		// default method
+		reloadTime = 10;
+		range = 10;
+		maxHealth = 10;
 	}
 
 	private static String[] createGrowList() {
@@ -48,6 +54,14 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range,
 			float maxHealth) {
 		super(posX, posY, posZ, 1f, 1f, 1f, texture);
+		this.reloadTime = reloadTime;
+		this.maxHealth = maxHealth;
+		this.setTexture(texture);
+	}
+
+	public ProjectileTree clone() {
+		return new ProjectileTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.getTexture(), this.reloadTime,
+				this.range, this.maxHealth);
 	}
 
 	@Override
