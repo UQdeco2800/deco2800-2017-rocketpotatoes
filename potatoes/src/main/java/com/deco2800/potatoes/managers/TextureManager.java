@@ -179,18 +179,7 @@ public class TextureManager extends Manager {
         		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
         }
         
-<<<<<<< HEAD
 
-=======
-        saveTexture("wizard_N_hurt", "resources/player/wizard/wizard_N_hurt.png");
-        saveTexture("wizard_NE_hurt", "resources/player/wizard/wizard_NE_hurt.png");
-        saveTexture("wizard_E_hurt", "resources/player/wizard/wizard_E_hurt.png");
-        saveTexture("wizard_SE_hurt", "resources/player/wizard/wizard_SE_hurt.png");
-        saveTexture("wizard_S_hurt", "resources/player/wizard/wizard_S_hurt.png");
-        saveTexture("wizard_SW_hurt", "resources/player/wizard/wizard_SW_hurt.png");
-        saveTexture("wizard_W_hurt", "resources/player/wizard/wizard_W_hurt.png");
-        saveTexture("wizard_NW_hurt", "resources/player/wizard/wizard_NW_hurt.png");
->>>>>>> terrain-nicer
     }
 
     /**
