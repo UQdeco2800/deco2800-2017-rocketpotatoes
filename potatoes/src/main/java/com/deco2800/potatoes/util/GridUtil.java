@@ -126,6 +126,26 @@ public class GridUtil {
 	}
 
 	/**
+	 * Blends the 2 grid given together and returns the result. The grids must be
+	 * the same size.
+	 * 
+	 * @param g1
+	 * @param g2
+	 * @return
+	 */
+	public static float[][] blend(float[][] g1, float[][] g2) {
+		float[][] result = new float[g1.length][g1[0].length];
+		for (int x = 0; x < g1.length; x++) {
+			for (int y = 0; y < g1[x].length; y++) {
+				// Just multiplicative blending, not that great but good enough
+				result[x][y] = g1[x][y] * g2[x][y];
+			}
+		}
+		normalize(result);
+		return result;
+	}
+
+	/**
 	 * Takes an array of floats with varying values and scales them all to be
 	 * between 0 and 1, inclusive
 	 * 
@@ -235,6 +255,43 @@ public class GridUtil {
 		// For some reason the result sometimes isn't normalized
 		normalize(result);
 		return result;
+	}
+
+	/**
+	 * The edge parameter determines the edge of the grid. The grid will be less
+	 * noisy than without an edge, due to the way seeding works.
+	 * 
+	 * @see smoothDiamondSquareAlgorithm(size, roughness, iterations)
+	 */
+	public static float[][] smoothDiamondSquareAlgorithm(int size, float edge, float roughness, int iterations) {
+		float[][] result = new float[size][size];
+		// Seed to 0.5
+		for (int x = 0; x < result.length; x++) {
+			for (int y = 0; y < result[x].length; y++) {
+				result[x][y] = 0.5f;
+			}
+		}
+		// Normalize and diamond square repeatedly, with the output the seed for the
+		// next iteration
+		for (int i = 0; i < iterations; i++) {
+			setEdges(result, edge);
+			normalize(diamondSquareAlgorithm(result, size, roughness, roughness));
+		}
+		// For some reason the result sometimes isn't normalized
+		normalize(result);
+		setEdges(result, edge);
+		return result;
+	}
+	
+	private static void setEdges(float[][] grid, float edge) {
+		for (int x = 0; x < grid.length; x++) {
+			grid[x][0] = edge;
+			grid[x][grid.length - 1] = edge;
+		}
+		for (int y = 0; y < grid[0].length; y++) {
+			grid[0][y] = edge;
+			grid[grid.length - 1][y] = edge;
+		}
 	}
 
 	private static void sampleStep(float[][] array, int[][] sampleType, int x, int y, int size, float random) {

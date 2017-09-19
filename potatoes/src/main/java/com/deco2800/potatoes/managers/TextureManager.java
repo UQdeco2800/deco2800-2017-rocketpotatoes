@@ -70,6 +70,10 @@ public class TextureManager extends Manager {
         saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
+        saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
+        
+        saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
+        
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
@@ -213,13 +217,13 @@ public class TextureManager extends Manager {
 	 * @param spriteNames
 	 *            The names for all the sprite textures created
 	 */
-	public void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
+	public static void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
 		TextureRegion region = textureMap.get(textureId);
 		int height = region.getRegionHeight() / spriteNames.length;
 		for (int y = 0; y < spriteNames.length; y++) {
 			int width = region.getRegionWidth() / spriteNames[y].length;
 			for (int x = 0; x < spriteNames[y].length; x++) {
-				textureMap.put(spriteNames[y][x], new TextureRegion(region, x, y, width, height));
+				textureMap.put(spriteNames[y][x], new TextureRegion(region, x * width, y * height, width, height));
 			}
 		}
 	}
