@@ -64,14 +64,16 @@ public class WorldType {
 	 * and world generation is based on the details of this world type
 	 */
 	public Terrain[][] generateWorld(int worldSize) {
+		WorldManager wm = GameManager.get().getManager(WorldManager.class);
 		Terrain[][] terrainSet = new Terrain[worldSize][worldSize];
 		boolean validLand = false;
 		while (!validLand) {
-			float[][] height = GameManager.get().getManager(WorldManager.class).getRandomGrid();
-			float[][] grass = GameManager.get().getManager(WorldManager.class).getRandomGrid();
+			float[][] water = wm.getRandomGridEdge();
+			float[][] height = wm.getRandomGrid();
+			float[][] grass = wm.getRandomGrid();
 			for (int x = 0; x < worldSize; x++) {
 				for (int y = 0; y < worldSize; y++) {
-					terrainSet[x][y] = chooseTerrain(height, grass, x, y);
+					terrainSet[x][y] = chooseTerrain(water, height, grass, x, y);
 				}
 			}
 			validLand = checkValidLand(worldSize, terrainSet);
@@ -101,11 +103,11 @@ public class WorldType {
 				&& !terrainSet[p.x][p.y].getTexture().equals(WATER);
 	}
 
-	private Terrain chooseTerrain(float[][] height, float[][] grass, int x, int y) {
+	private Terrain chooseTerrain(float[][] water, float[][] height, float[][] grass, int x, int y) {
 		Terrain spot;
-		if (height[x][y] < 0.3) {
+		if (height[x][y] < 0.3 || water[x][y] < 0.4) {
 			spot = getTerrain().getWater();
-		} else if (height[x][y] < 0.35) {
+		} else if (height[x][y] < 0.35 || water[x][y] < 0.5) {
 			spot = getTerrain().getRock();
 		} else {
 			spot = grass[x][y] < 0.5 ? getTerrain().getGrass() : getTerrain().getRock();
