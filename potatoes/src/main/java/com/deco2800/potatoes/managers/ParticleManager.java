@@ -36,8 +36,8 @@ public class ParticleManager extends Manager implements TickableManager {
             particlePool.add(new Particle());
         }
 
-        addParticleEmitter(5000.0f, new ParticleEmitter(50, 50,
-                new BuoyantParticleType(100000, 1000.0f, 100.0f, 16, Color.RED, 5, 5)));
+        //addParticleEmitter(5000.0f, new ParticleEmitter(50, 50,
+        //new BuoyantParticleType(100000, 1000.0f, 100.0f, 16, Color.RED, 5, 5)));
     }
 
     public void addParticleEmitter(float lifeTime, ParticleEmitter e) {
