@@ -95,10 +95,28 @@ public class AbstractPortalTest{
 		testPlayer = (Player) testPortal.getPlayer();
 		
 		assertEquals(testPlayer, addedPlayer);
+
 	}
 	
 	private class TestWorld extends World {
 		
+	}
+
+	@Test
+	public void getWorldCollidedTest() {
+		testPortal.onTick(0);
+/*		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		Player testPlayer;
+		//player added to the world
+		Player addedPlayer = new Player(1, 1, 1);
+		GameManager.get().getWorld().addEntity(addedPlayer);
+
+		testPortal.onTick(0);
+
+		System.out.println(GameManager.get().getWorld().toString());
+
+		assertEquals(WorldType.FOREST_WORLD, GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD));
+*/
 	}
 
 }

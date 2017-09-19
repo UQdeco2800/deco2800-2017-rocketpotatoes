@@ -129,9 +129,6 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal; " + e);
 			}
-
 		}
 	}
-
-
 }
