@@ -23,14 +23,10 @@ public class PlayerProjectile extends Projectile {
 	 */
 
 	public PlayerProjectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
-                            Effect endEffect, String Directions) {
-		super(targetClass,posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions);
+                            Effect endEffect, String Directions, float TargetPosX, float TargetPosY) {
+		super(targetClass,posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions, TargetPosX, TargetPosY);
 	}
 
-	public PlayerProjectile(float posX, float posY, float posZ, float range, float damage, String projectileType, Effect startEffect,
-							Effect endEffect, String Directions) {
-		super(posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions);
-	}
 
 	@Override
 	public void onTick(long time) {

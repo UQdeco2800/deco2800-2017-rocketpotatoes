@@ -46,7 +46,7 @@ public class BallisticProjectile extends Projectile {
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);
-//		System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX());
+
 
 	}
 }
