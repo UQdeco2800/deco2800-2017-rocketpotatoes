@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.util;
 
 import java.util.ArrayDeque;
-
+import java.util.ArrayList;
 
 
 /**
@@ -9,14 +9,14 @@ import java.util.ArrayDeque;
  * holds the current angle the entity is traveling in.
  */
 public class Path {
-    private ArrayDeque<Box3D> nodes;
+    private ArrayList<Box3D> nodes;
     private float angle;
 
     /**
      * Creates a new path, with no nodes.
      */
     public Path() {
-        this.nodes = new ArrayDeque<Box3D>();
+        this.nodes = new ArrayList<Box3D>();
         this.angle = 0;
     }
 
@@ -24,7 +24,7 @@ public class Path {
      * Creates a new path, with given nodes.
      * @param nodes - List of calculatePositions in path to target.
      */
-    public Path(ArrayDeque<Box3D> nodes) {
+    public Path(ArrayList<Box3D> nodes) {
         this.nodes = nodes;
         this.angle = 0;
     }
@@ -33,7 +33,7 @@ public class Path {
      * Get the deque of nodes.
      * @return nodes as ArrayList of Box3d elements
      */
-    public ArrayDeque<Box3D> getNodes() {
+    public ArrayList<Box3D> getNodes() {
         return nodes;
     }
 
@@ -41,7 +41,7 @@ public class Path {
      * Set a new deque of nodes
      * @param nodes list of calculatePositions in path
      */
-    public void setNodes(ArrayDeque<Box3D> nodes) {
+    public void setNodes(ArrayList<Box3D> nodes) {
         this.nodes = nodes;
     }
 
@@ -74,11 +74,11 @@ public class Path {
         // Construct new Box3D from _currentPosition_
         Box3D newPos = new Box3D(currentPosition);
         // Check if the current position overlaps the first node in list
-        if (currentPosition.overlaps(nodes.getFirst())) {
+        if (currentPosition.overlaps(nodes.get(0))) {
             // Remove first node from list as it's been reached
-            nodes.removeFirst();
+            nodes.remove(0);
             // Set angle to angle between _currentPosition_ and next node
-            setAngle(currentPosition.angle(nodes.getFirst()));
+            setAngle(currentPosition.angle(nodes.get(0)));
             // Calculate new x and y calculatePositions
             float newX = (float) (speed * Math.cos(getAngle()));
             float newY = (float) (speed * Math.sin(getAngle()));
@@ -88,7 +88,7 @@ public class Path {
         }
         // Haven't reached the next node in list
         // Set angle to angle between _currentPosition_ and next node
-        setAngle(currentPosition.angle(nodes.getFirst()));
+        setAngle(currentPosition.angle(nodes.get(0)));
         // Calculate new x and y calculatePositions
         float newX = (float) (speed * Math.cos(getAngle()));
         float newY = (float) (speed * Math.sin(getAngle()));
@@ -103,7 +103,7 @@ public class Path {
      * @return A copied Box3D representation of the point.
      */
     public Box3D nextPoint() {
-        return new Box3D(nodes.getFirst());
+        return nodes.get(0);
     }
 
     /**
@@ -113,7 +113,7 @@ public class Path {
      * @return A copied Box3D representation of the point.
      */
     public Box3D goal() {
-        return new Box3D(nodes.getLast());
+        return new Box3D(nodes.get(nodes.size() - 1));
     }
 
     /**
@@ -137,6 +137,8 @@ public class Path {
      * @return A Box3D representation of the point.
      */
     public Box3D pop() {
-        return nodes.pop();
+        Box3D box = nodes.get(0);
+        nodes.remove(0);
+        return box;
     }
 }

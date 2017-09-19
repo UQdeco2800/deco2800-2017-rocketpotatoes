@@ -5,7 +5,9 @@ import java.util.Random;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.SoundManager;
 
 /**
@@ -36,6 +38,8 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 				// play respawn sound effect if player is respawning
 				SoundManager soundManager = new SoundManager();
 				soundManager.playSound("respawnEvent.wav");
+				//display respawn timer for player
+				GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).hide();
 			} catch (NullPointerException e) {
 
 			}

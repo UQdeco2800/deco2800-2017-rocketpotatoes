@@ -2,6 +2,8 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.deco2800.potatoes.entities.HasDirection.Direction;
+import com.deco2800.potatoes.entities.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +30,12 @@ public class TextureManager extends Manager {
     /**
      * A HashMap of all textures with string keys
      */
-    private Map<String, TextureRegion> textureMap = new HashMap<String, TextureRegion>();
+    private static Map<String, TextureRegion> textureMap = new HashMap<String, TextureRegion>();
 
     /**
-     * Constructor
-     * Currently loads up all the textures but probably shouldn't/doesn't
-     * need to.
+     * Loads all the textures.
      */
-    public TextureManager() {
-    	
-    	saveTexture("player_left", "resources/player/caveman/caveman_idle_left.png");
-        saveTexture("player_right", "resources/player/caveman/caveman_idle_right.png");
+    public static void loadTextures() {
         saveTexture("grass", "resources/placeholderassets/grass.png");
         saveTexture("grass2", "resources/placeholderassets/grass2.png");
         saveTexture("w1", "resources/placeholderassets/w1.png");
@@ -73,6 +70,10 @@ public class TextureManager extends Manager {
         saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
+        saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
+        
+        saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
+        
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
@@ -92,6 +93,7 @@ public class TextureManager extends Manager {
         saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
         saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
         saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
+        saveTexture("savePauseMenu", "resources/menu/savePauseMenu.png");
         saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
         saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
@@ -102,6 +104,7 @@ public class TextureManager extends Manager {
         saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
         saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
+        saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
@@ -138,6 +141,8 @@ public class TextureManager extends Manager {
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
+        saveTexture("forest_portal", "resources/portals/Forest_Portal.png");
+        saveTexture("sea_portal", "resources/portals/Sea_Portal.png");
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
@@ -151,14 +156,31 @@ public class TextureManager extends Manager {
         saveTexture("W", "resources/player/debug/W.png");
         saveTexture("NW", "resources/player/debug/NW.png");
         
-        saveTexture("wizardN", "resources/player/wizard/wizard_N.png");
-        saveTexture("wizardNE", "resources/player/wizard/wizard_NE.png");
-        saveTexture("wizardE", "resources/player/wizard/wizard_E.png");
-        saveTexture("wizardSE", "resources/player/wizard/wizard_SE.png");
-        saveTexture("wizardS", "resources/player/wizard/wizard_S.png");
-        saveTexture("wizardSW", "resources/player/wizard/wizard_SW.png");
-        saveTexture("wizardW", "resources/player/wizard/wizard_W.png");
-        saveTexture("wizardNW", "resources/player/wizard/wizard_NW.png");
+        // Add all wizard sprites
+        for (Direction direction : Direction.values()) {
+        		String textureNameIdle = "wizard_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
+        		String textureNameHurt = "wizard_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameHurt, "resources/player/wizard/damaged/" + textureNameHurt + ".png");
+        }
+        
+        // Add all caveman sprites
+        for (Direction direction : Direction.values()) {
+        		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
+        		
+        		for (int i=1; i<=3; i++) {
+        			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
+        		}
+        }
+        
+     // Add all caveman sprites
+        for (Direction direction : Direction.values()) {
+        		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
+        }
+        
 
     }
 
@@ -197,13 +219,13 @@ public class TextureManager extends Manager {
 	 * @param spriteNames
 	 *            The names for all the sprite textures created
 	 */
-	public void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
+	public static void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
 		TextureRegion region = textureMap.get(textureId);
 		int height = region.getRegionHeight() / spriteNames.length;
 		for (int y = 0; y < spriteNames.length; y++) {
 			int width = region.getRegionWidth() / spriteNames[y].length;
 			for (int x = 0; x < spriteNames[y].length; x++) {
-				textureMap.put(spriteNames[y][x], new TextureRegion(region, x, y, width, height));
+				textureMap.put(spriteNames[y][x], new TextureRegion(region, x * width, y * height, width, height));
 			}
 		}
 	}
@@ -214,7 +236,7 @@ public class TextureManager extends Manager {
      * @param id       Texture id
      * @param filename Filename within the assets folder
      */
-    public void saveTexture(String id, String filename) {
+    public static void saveTexture(String id, String filename) {
         LOGGER.info("Saving texture" + id + " with Filename " + filename);
         if (!textureMap.containsKey(id)) {
             textureMap.put(id, new TextureRegion(new Texture(filename)));

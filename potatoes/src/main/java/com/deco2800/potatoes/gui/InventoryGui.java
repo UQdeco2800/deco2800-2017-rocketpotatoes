@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -21,6 +23,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class InventoryGui extends Gui {
 
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+	/* Create Window with skin */
+    private Window window;
+    
+    //Scroll Pane
+    private ScrollPane scrollPane;
 
 	/* Objects to be used in the inventory gui */
 	private Table inventoryTable;
@@ -41,15 +49,23 @@ public class InventoryGui extends Gui {
 	 * @require stage is not null
 	 */
 	public InventoryGui(Stage stage) {
-
 		/* Set up the table for positioning Inventory Gui */
 		instantiateTable();
+		instantiateScrollPane();
 
 		/* position table in the top right */
-		inventoryTable.right().top();
+		//inventoryTable.right().top();
 
-		/* add in the table finally */
-		stage.addActor(inventoryTable);
+		/* set up window */
+		window = new Window("Inventory", skin);
+		window.add(scrollPane).width(100).height(80);
+		
+		window.setWidth(90);
+		window.setHeight(100);
+		window.setPosition(stage.getWidth(), stage.getHeight());
+
+		/* add in the window finally */
+		stage.addActor(window);
 
 	}
 
@@ -84,21 +100,36 @@ public class InventoryGui extends Gui {
 		inventoryTable = new Table();
 		inventoryTable.setFillParent(true);
 
-		inventoryTable.defaults().width(50);
+		inventoryTable.defaults().width(20);
+		inventoryTable.padTop(10);
+		inventoryTable.padRight(10);
+		
+		//buttons
 
 		seedImage = new Image(new TextureRegionDrawable(
 				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/seed.png")))));
 		seedImage.setOrigin(50, 50);
-		inventoryTable.add(seedImage).size(30, 30).pad(2);
-		inventoryTable.add(seedLabelAmount).pad(2);
+		inventoryTable.add(seedImage).size(45, 45);
+		inventoryTable.add(seedLabelAmount).bottom().left();
 
 		/* next row */
 		inventoryTable.row();
 		foodImage = new Image(new TextureRegionDrawable(
 				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/food.png")))));
 		foodImage.setOrigin(50, 50);
-		inventoryTable.add(foodImage).size(25, 25).pad(2);
-		inventoryTable.add(foodLabelAmount).pad(2);
+		inventoryTable.add(foodImage).size(40, 40);
+		inventoryTable.add(foodLabelAmount).bottom().left();
 	}
 
+	
+	private void instantiateScrollPane(){
+		scrollPane = new ScrollPane(inventoryTable, skin);
+		scrollPane.setForceScroll(false, true);
+		scrollPane.setScrollingDisabled(true, false);
+		scrollPane.setScrollBarPositions(false, true);
+		scrollPane.setFadeScrollBars(true);
+		scrollPane.pack();
+		
+	}
+	
 }

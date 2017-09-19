@@ -1,23 +1,20 @@
 package com.deco2800.potatoes.entities.effects;
 
-import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LightningEffect extends Effect {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LightningEffect.class);
 
 	private float lifetime = 0.4f;
 	private float segmentStep = 1f;
 	private int segments;
+
+	protected static transient String TEXTURE = "lightning";
 
 	float xPos;
 	float yPos;
@@ -27,13 +24,19 @@ public class LightningEffect extends Effect {
 	float distanceDeltaX = 1f;
 	float distanceDeltaY = 1f;
 
+	private float damage = 0.1f;
+
 	float[][] pos = null;
 
 	boolean staticStrike = true;
 
-	public LightningEffect(float xPos, float yPos, float fxPos, float fyPos) {
-		super(fyPos, fxPos, 0, 5f, 5f, 0, 1f, 1f, "lightning");
-		damage = 0.1f;
+	public LightningEffect(Class<?> targetClass, float xPos, float yPos, float fxPos, float fyPos, float damage,
+			float range) {
+		super(targetClass, fyPos, fxPos, 0, 5f, 5f, 0, 1f, 1f, damage, range, TEXTURE);
+
+		animate = false;
+		textureArrayLength = 0;
+		setTextureArray(effectType, textureArrayLength);
 
 		// TODO: figure out why inverses
 		this.xPos = yPos;
@@ -97,28 +100,34 @@ public class LightningEffect extends Effect {
 		Box3D newPos = getBox3D();
 		newPos.setX(fyPos);
 		newPos.setY(fxPos);
+		//
+		// Map<Integer, AbstractEntity> entities =
+		// GameManager.get().getWorld().getEntities();
+		//
+		// float radiusOfImpact = 0.5f;
+		// for (AbstractEntity entity : entities.values()) {
+		// if (entity.distance(newPos.getX(), newPos.getY(), 0) <= radiusOfImpact) {
+		// try {
+		// ((MortalEntity) entity).damage(damage);
+		// } catch (Exception e) {
+		// //LOGGER.error(e.getMessage());
+		// }
+		// break;
+		// }
+		// }
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-
-		float radiusOfImpact = 0.5f;
-		for (AbstractEntity entity : entities.values()) {
-			if (entity.distance(newPos.getX(), newPos.getY(), 0) <= radiusOfImpact) {
-				try {
-					((MortalEntity) entity).damage(damage);
-				} catch (Exception e) {
-					//LOGGER.error(e.getMessage());
-				}
-				break;
-			}
-		}
-
-		ExplosionEffect expEffect = new ExplosionEffect(newPos.getX(), newPos.getY(), 0, 5f, 5f, 0, 1f, 1f);
-		GameManager.get().getWorld().addEntity(expEffect);
+		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class,
+		// newPos.getX(), newPos.getY(), 0, damage,
+		// range);
+		
+//		ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class, 0, 0, 0, damage, range);
+//		GameManager.get().getWorld().addEntity(expEffect);
 
 	}
 
 	@Override
 	public void onTick(long time) {
+		super.onTick(time);
 		lifetime -= 0.05;
 		if (lifetime <= 0) {
 			GameManager.get().getWorld().removeEntity(this);

@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.gui;
 
-import com.deco2800.potatoes.renderering.Renderable;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Gui entities that act like Gui's but move along the screen like an abstract
@@ -9,6 +9,10 @@ import com.deco2800.potatoes.renderering.Renderable;
  * @author Dion
  *
  */
-public abstract class SceneGui extends Gui implements Renderable {
+public interface SceneGui {
+	
+	Vector2 getTileCoords();
+	
+	void render();
 	
 }

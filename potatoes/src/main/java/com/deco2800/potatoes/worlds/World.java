@@ -1,19 +1,18 @@
 package com.deco2800.potatoes.worlds;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.Manager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
-import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
@@ -25,8 +24,8 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  * items.
  */
 public class World {
-	private static final int TILE_WIDTH = 55;
-	private static final int TILE_HEIGHT = 32;
+	private static final int TILE_WIDTH = 53;
+	private static final int TILE_HEIGHT = 30;
 	private Terrain[][] terrain;
 	
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
@@ -38,8 +37,8 @@ public class World {
 	protected TiledMap map;
 	private int width;
 	private int length;
-	// Store event manager for this world's events
-	private EventManager eventManager;
+	// Store managers for this world
+	private Set<Manager> managers = new HashSet<>();
 
 	/**
 	 * Returns a list of entities in this world
@@ -238,16 +237,17 @@ public class World {
 	}
 
 	/**
-	 * @return the eventManager for this world
+	 * Stores the given manager in this world
+	 * @param m the manager to add
 	 */
-	public EventManager getEventManager() {
-		return eventManager;
+	public void addManager(Manager m) {
+		managers.add(m);
 	}
 
 	/**
-	 * @param eventManager the eventManager to set for this world
+	 * @return the managers for this world
 	 */
-	public void setEventManager(EventManager eventManager) {
-		this.eventManager = eventManager;
+	public Set<Manager> getManagers() {
+		return managers;
 	}
 }

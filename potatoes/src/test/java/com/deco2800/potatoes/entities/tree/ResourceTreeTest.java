@@ -3,9 +3,10 @@ package com.deco2800.potatoes.entities.tree;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.HashSet;
-import com.deco2800.potatoes.entities.FoodResource;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.SeedResource;
+
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.Inventory;
 

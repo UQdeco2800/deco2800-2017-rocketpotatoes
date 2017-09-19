@@ -6,7 +6,7 @@ import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
 import java.util.ArrayList;
 
-public class WaveManager extends Manager implements TickableManager {
+public class WaveManager extends Manager implements TickableManager, ForWorld {
 
     private ArrayList<EnemyWave> waves;
     private EnemyWave activeWave;

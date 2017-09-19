@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.ResourceEntity;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -41,6 +41,11 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	 */
 	private static final float[][] POSITIONS = { {CHANGE, 0 }, {CHANGE, CHANGE}, { 0, CHANGE}, { -CHANGE, CHANGE},
 			{ -CHANGE, 0 }, { -CHANGE, -CHANGE}, { 0, -CHANGE}, { -CHANGE, -CHANGE} };
+	
+	/*
+	 * The player entity.
+	 */
+	private AbstractEntity player;
 
 	/**
 	 * This instantiates an AbstractPortal given the appropriate parameters.
@@ -58,13 +63,10 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		super(posX, posY, posZ, 3, 3, 3, texture);
 	}
 
-
-	@Override
-	public void onTick(long time) {
+	public boolean preTick(long time){
 		float xPos = getPosX();
 		float yPos = getPosY();
 		boolean collided = false;
-		AbstractEntity player = null;
 
 		Box3D newPos = getBox3D();
 		newPos.setX(xPos);
@@ -90,7 +92,22 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				}
 			}
 		}
-
+		return collided;
+	}
+	
+	/**
+	 * Returns the player entity.
+	 * 
+	 * @return player
+	 * 			The entity associated with the player.
+	 */
+	public AbstractEntity getPlayer() {
+		return player;
+	}
+	
+	@Override
+	public void onTick(long time) {
+		boolean collided = this.preTick(time);
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
@@ -100,18 +117,18 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				SoundManager soundManager = new SoundManager();
 				soundManager.playSound("warpSound.wav");
 				//remover player from old world
-				GameManager.get().getWorld().removeEntity(player);
+				GameManager.get().getWorld().removeEntity(getPlayer());
 				//change to new world
 				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 				//add player to new world
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+				//set player to be next to the portal
+				playerManager.getPlayer().setPosition(18, 16, 0);
 				
 				// Bring up portal interface
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal; " + e);
 			}
-
 		}
 	}
-
 }
