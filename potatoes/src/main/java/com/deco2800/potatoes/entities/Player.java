@@ -58,6 +58,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	
 	public enum PlayerState { idle, walk, attack, damaged, death };	// The states a player may take
 	private ArrayList<PlayerState> currentStates = new ArrayList<>();	// The current states of the player
+	private String playerType = "wizard"; // The type class of a player
 	
 	// The map containing all player textures
 	private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
@@ -186,16 +187,22 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 	 * Updates the player sprite based on it's state and direction.
 	 */
 	public void updateSprites() {
-		String playerClass = "wizard";
+		String type = this.playerType;
+		String state = "_idle";
 		String direction = "_" + this.getDirection().toString();
-		String state = "";
+		String frame = "_1";
+		
 		
 		// Determine the player state
 		if (this.hasState(PlayerState.damaged)) {
-			state = "_hurt";
+			state = "_damaged";
+			if (type.equals("caveman")) {
+				state = "_attack";
+				frame = "_3";
+			}
 		}
 		
-		this.setTexture(playerClass + direction + state);
+		this.setTexture(type + state + direction + frame);
 	}
 	
 	/**
@@ -330,6 +337,22 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
 				AbstractTree.constructTree(
 						new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+			}
+		case Input.Keys.SPACE:
+			if (this.playerType.equals("wizard")) {
+				this.playerType = "caveman";
+				this.updateSprites();
+				break;
+			}
+			if (this.playerType.equals("caveman")) {
+				this.playerType = "archer";
+				this.updateSprites();
+				break;
+			}
+			if (this.playerType.equals("archer")) {
+				this.playerType = "wizard";
+				this.updateSprites();
+				break;
 			}
 			break;
 		case Input.Keys.ESCAPE:
