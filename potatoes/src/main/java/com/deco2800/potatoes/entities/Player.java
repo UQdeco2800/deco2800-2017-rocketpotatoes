@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import com.deco2800.potatoes.gui.RespawnGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -351,6 +352,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 				break;
 			}
 			break;
+		case Input.Keys.ESCAPE:
+			((TreeShopGui)(GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class))).closeShop();
 		default:
 			break;
 		}

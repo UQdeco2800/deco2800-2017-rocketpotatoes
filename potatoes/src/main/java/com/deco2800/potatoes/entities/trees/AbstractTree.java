@@ -44,6 +44,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
 		resetStats();
 	}
+	
+	public abstract AbstractTree clone();
 
 	@Override
 	public void onTick(long time) {

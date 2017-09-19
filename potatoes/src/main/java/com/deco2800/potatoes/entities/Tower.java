@@ -33,6 +33,10 @@ public class Tower extends ProjectileTree {
 		super(posX, posY, posZ, TEXTURE, 1000, 8f, 100f);
 		this.setStaticCollideable(true);
 	}
+	
+	public Tower clone() {
+		return new Tower(this.getPosX(), this.getPosY(), this.getPosZ());
+	}
 
 	@Override
 	public String toString() {
