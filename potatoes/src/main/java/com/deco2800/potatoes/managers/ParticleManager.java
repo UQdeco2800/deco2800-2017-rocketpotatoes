@@ -10,11 +10,17 @@ import java.util.List;
 
 public class ParticleManager extends Manager {
 
+    private class EmitterContainer {
+        public ParticleEmitter emitter;
+        public float maxLifeTime;
+        public float currentLifeTime;
+    }
+
     // Emitters currently active
-    List<ParticleEmitter> emitters;
+    List<EmitterContainer> emitters;
 
     // Emitters waiting to stop
-    List<ParticleEmitter> toDestroyEmitters;
+    List<EmitterContainer> toDestroyEmitters;
 
     List<Particle> particlePool;
 
@@ -29,8 +35,11 @@ public class ParticleManager extends Manager {
         }
     }
 
-    public void addParticleEmitter(ParticleEmitter e) {
-        emitters.add(e);
+    public void addParticleEmitter(float lifeTime, ParticleEmitter e) {
+        EmitterContainer con = new EmitterContainer();
+        con.maxLifeTime = lifeTime;
+        con.emitter = e;
+        emitters.add(con);
     }
 
     /**
@@ -38,11 +47,20 @@ public class ParticleManager extends Manager {
      * @param deltaTime tick delta
      */
     public void onTick(double deltaTime) {
-        for (ParticleEmitter emitter : emitters) {
-            emitter.onTick(deltaTime, particlePool);
-        }
+        Iterator<EmitterContainer> emitterIterator = emitters.iterator();
 
-        toDestroyEmitters.removeIf(emitter -> !emitter.hasParticles());
+        while (emitterIterator.hasNext()) {
+            EmitterContainer e = emitterIterator.next();
+
+            e.emitter.onTick(deltaTime, particlePool);
+            e.currentLifeTime += deltaTime;
+
+            if (e.currentLifeTime >= e.maxLifeTime) {
+                toDestroyEmitters.add(e);
+                emitterIterator.remove();
+            }
+        }
+        toDestroyEmitters.removeIf(emitter -> !emitter.emitter.hasParticles());
     }
 
     /**
@@ -52,8 +70,8 @@ public class ParticleManager extends Manager {
     public void draw(SpriteBatch batch) {
         // batch begin here so we batch all emitters together for efficiency!
         batch.begin();
-        for (ParticleEmitter emitter : emitters) {
-            emitter.draw(batch);
+        for (EmitterContainer emitter : emitters) {
+            emitter.emitter.draw(batch);
         }
         batch.end();
     }
@@ -64,13 +82,13 @@ public class ParticleManager extends Manager {
      * @param emitter the emitter to be removed
      */
     public void stopEmitter(ParticleEmitter emitter) {
-        Iterator<ParticleEmitter> emitterIterator = emitters.iterator();
+        Iterator<EmitterContainer> emitterIterator = emitters.iterator();
 
         while (emitterIterator.hasNext()) {
-            ParticleEmitter e = emitterIterator.next();
+            EmitterContainer e = emitterIterator.next();
 
-            if (e == emitter) {
-                e.stop();
+            if (e.emitter == emitter) {
+                e.emitter.stop();
                 toDestroyEmitters.add(e);
                 emitterIterator.remove();
                 return;
@@ -83,12 +101,11 @@ public class ParticleManager extends Manager {
      * @param emitter the emitter to be removed
      */
     public void forceStopEmitter(ParticleEmitter emitter) {
-        Iterator<ParticleEmitter> emitterIterator = emitters.iterator();
+        Iterator<EmitterContainer> emitterIterator = emitters.iterator();
 
         while (emitterIterator.hasNext()) {
-            ParticleEmitter e = emitterIterator.next();
+            ParticleEmitter e = emitterIterator.next().emitter;
 
-            // If we ma
             if (e == emitter) {
                 e.forceStop();
                 emitterIterator.remove();
