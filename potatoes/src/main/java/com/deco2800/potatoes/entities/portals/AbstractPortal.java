@@ -114,7 +114,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		//change to new world
 		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 		//add player to new world
-		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		GameManager.get().getWorld().addEntity(playerManager.getPlayer());		
 		//set player to be next to the portal
 		playerManager.getPlayer().setPosition(18, 16, 0);
 	}
@@ -128,8 +128,7 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 			try {
 				LOGGER.info("Entered portal");
 				//play warping sound effect
-				SoundManager soundManager = new SoundManager();
-				soundManager.playSound("warpSound.wav");
+				GameManager.get().getManager(SoundManager.class).playSound("warpSound.wav");
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(getPlayer());
 				changeWorld();

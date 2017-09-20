@@ -6,7 +6,10 @@ import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.screens.GameScreen;
 import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
 import org.junit.Before;
@@ -35,25 +38,10 @@ public class BasePortalTest{
 		assertTrue(testPortal.showProgress() == false);
 		assertTrue(testPortal.getMaxProgress() == 1);
 	}
-
-
+	
 	@Test
-	public void getWorldCollidedTest() {
-		/*
-		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		Player testPlayer;
-		//player added to the world
-		Player addedPlayer = new Player(1, 1, 1);
-		GameManager.get().getWorld().addEntity(addedPlayer);
-
-		testPortal.onTick(0);
-
-		System.out.println(GameManager.get().getWorld().toString());
-
-		assertEquals(WorldType.FOREST_WORLD, GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD));
-
-*/
-		testPortal.onTick(0);
+	public void textureTest() {
+		assertEquals("forest_portal", testPortal.getTexture());
 	}
 
 }

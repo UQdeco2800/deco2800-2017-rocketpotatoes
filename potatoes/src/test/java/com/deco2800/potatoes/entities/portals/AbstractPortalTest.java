@@ -6,8 +6,10 @@ import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.WorldUtil;
 //import com.deco2800.potatoes.worlds.InitialWorld;
@@ -30,8 +32,14 @@ public class AbstractPortalTest{
 	
 	@Before
 	public void setup() {
-		testPortal = new AbstractPortal(0, 0, 0, null);
+		SoundManager soundManager = new SoundManager();
+		PlayerManager playerManager = new PlayerManager();
+		
 		GameManager.get().setWorld(new TestWorld());
+		GameManager.get().addManager(soundManager);
+		GameManager.get().addManager(playerManager);
+		
+		testPortal = new AbstractPortal(0, 0, 0, null);
 	}
 	
 	@Test
@@ -99,25 +107,39 @@ public class AbstractPortalTest{
 
 	}
 	
-	private class TestWorld extends World {
-		
-	}
-
 	@Test
-	public void getWorldCollidedTest() {
+	public void changeWorldTest() {
+		Player testPlayer = new Player();
+		
+		GameManager.get().getManager(PlayerManager.class).setPlayer(testPlayer);
+		
+		testPortal.changeWorld();
+		
+		testPlayer = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		assert(18 == testPlayer.getPosX());
+		assert(16 == testPlayer.getPosY());
+	}
+	
+	@Test
+	public void onTickExceptionTest() {
 		testPortal.onTick(0);
-/*		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		Player testPlayer;
 		//player added to the world
 		Player addedPlayer = new Player(1, 1, 1);
+		
+		GameManager.get().getManager(PlayerManager.class).setPlayer(addedPlayer);
 		GameManager.get().getWorld().addEntity(addedPlayer);
 
 		testPortal.onTick(0);
-
-		System.out.println(GameManager.get().getWorld().toString());
-
-		assertEquals(WorldType.FOREST_WORLD, GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD));
-*/
+		
+		testPlayer = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		
+		assertEquals(addedPlayer, testPlayer);
+	}
+	
+	private class TestWorld extends World {
+		
 	}
 
 }
