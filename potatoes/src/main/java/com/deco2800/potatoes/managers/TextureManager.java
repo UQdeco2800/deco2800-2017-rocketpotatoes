@@ -59,7 +59,7 @@ public class TextureManager extends Manager {
         saveTexture("potate", "resources/placeholderassets/potate.png");
         saveTexture("projectile", "resources/placeholderassets/projectile.png");
         saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
-        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");
+        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");  //Moose placeholder
         saveTexture("progress_bar", "resources/placeholderassets/progress_bar.png");
         saveTexture("seed", "resources/placeholderassets/seed.png");
         saveTexture("food", "resources/placeholderassets/food.png");
