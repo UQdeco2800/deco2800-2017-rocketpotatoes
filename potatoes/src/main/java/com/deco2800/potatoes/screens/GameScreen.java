@@ -492,7 +492,6 @@ public class GameScreen implements Screen {
 		 * Tickrate = 100Hz
 		 */
 
-		System.out.println(tickrate);
 		if (playing) {
 			// Stop the first tick lasting years
 			if (lastGameTick != 0) {
