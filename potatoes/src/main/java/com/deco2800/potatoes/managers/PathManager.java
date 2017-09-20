@@ -125,6 +125,7 @@ public class PathManager extends Manager {
             path.add(next);
             next = spanningTree.get(next);
         }
+        path.add(next);
         return new Path(path);
     }
 

@@ -113,7 +113,7 @@ public class Path {
      * @return A copied Box3D representation of the point.
      */
     public Box3D goal() {
-        return new Box3D(nodes.getLast());
+        return nodes.getLast();
     }
 
     /**

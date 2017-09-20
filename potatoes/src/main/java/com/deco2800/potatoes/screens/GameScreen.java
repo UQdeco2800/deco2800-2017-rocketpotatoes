@@ -224,7 +224,7 @@ public class GameScreen implements Screen {
                 GameManager.get().getWorld().addEntity(new Squirrel(
                         10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
             }
-            GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+            //GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
 
             for (int i = 0; i < 3; i++) {
                 GameManager.get().getWorld().addEntity(
@@ -250,9 +250,9 @@ public class GameScreen implements Screen {
         }
     }
     private void addDamageTree(){
-        GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-        GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
-        GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
+        //GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
+        //GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
+        //GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
     }
     private void addResourceTrees() {
     		// Seed Trees
