@@ -24,8 +24,6 @@ public class LightningEffect extends Effect {
 	float distanceDeltaX = 1f;
 	float distanceDeltaY = 1f;
 
-	private float damage = 0.1f;
-
 	float[][] pos = null;
 
 	boolean staticStrike = true;
@@ -132,11 +130,6 @@ public class LightningEffect extends Effect {
 		if (lifetime <= 0) {
 			GameManager.get().getWorld().removeEntity(this);
 		}
-	}
-
-	@Override
-	public float getDamage() {
-		return damage;
 	}
 
 }
