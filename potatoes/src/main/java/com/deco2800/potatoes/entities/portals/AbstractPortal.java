@@ -9,7 +9,9 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
@@ -105,6 +107,18 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		return player;
 	}
 	
+	/**
+	 * Changes to a different world and adds the player to it.
+	 */
+	public void changeWorld() {
+		//change to new world
+		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+		//add player to new world
+		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+		//set player to be next to the portal
+		playerManager.getPlayer().setPosition(18, 16, 0);
+	}
+	
 	@Override
 	public void onTick(long time) {
 		boolean collided = this.preTick(time);
@@ -118,14 +132,8 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 				soundManager.playSound("warpSound.wav");
 				//remover player from old world
 				GameManager.get().getWorld().removeEntity(getPlayer());
-				//change to new world
-				GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-				//add player to new world
-				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-				//set player to be next to the portal
-				playerManager.getPlayer().setPosition(18, 16, 0);
+				changeWorld();
 				
-				// Bring up portal interface
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal; " + e);
 			}

@@ -66,28 +66,15 @@ public class BasePortal extends AbstractPortal implements Tickable {
     public BasePortal(float posX, float posY, float posZ, float maxHealth) {
         super(posX, posY, posZ, TEXTURE);
     }
-
+    
+    /**
+     * Brings up the world change GUI.
+     */
     @Override
-    public void onTick(long time) {
-        boolean collided = this.preTick(time);
-        // remove from game world and add to inventory if a player has collided with
-        // this resource
-        if (collided) {
-            try {
-                LOGGER.info("Entered portal");
-                //play warping sound effect
-                SoundManager soundManager = new SoundManager();
-                soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                GameManager.get().getWorld().removeEntity(this.getPlayer());
-				// Bring up portal interface
-                ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class)).show();
-
-            } catch (Exception e) {
-                LOGGER.warn("Issue entering portal; " + e);
-            }
-
-        }
+    public void changeWorld() {
+    	// Bring up portal interface
+        ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).
+        		getGui(WorldChangeGui.class)).show();
     }
 
   //  @Override
