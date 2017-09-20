@@ -35,7 +35,7 @@ public class LightningShootEvent extends TimeEvent<AbstractTree> {
 					.getUpgradeStats().getAttackRange() && targetCount <= 4) {
 				// Create a lightning effect from the tree to the target
 				GameManager.get().getWorld().addEntity(new LightningEffect(target.getClass(), param.getPosX(),
-						param.getPosY(), target.getPosX(), target.getPosY(), 1, 1));
+						param.getPosY(), target.getPosX(), target.getPosY(), 10, 1));
 				targetCount++;
 			}
 		}
