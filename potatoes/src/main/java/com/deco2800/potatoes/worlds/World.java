@@ -24,8 +24,8 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  * items.
  */
 public class World {
-	private static final int TILE_WIDTH = 55;
-	private static final int TILE_HEIGHT = 32;
+	private static final int TILE_WIDTH = 53;
+	private static final int TILE_HEIGHT = 30;
 	private Terrain[][] terrain;
 	
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();

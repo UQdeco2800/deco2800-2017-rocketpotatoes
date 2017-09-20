@@ -1,37 +1,32 @@
 package com.deco2800.potatoes.gui;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
@@ -44,7 +39,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private Circle shopShape;
 	private Circle cancelShape;
 	private int selectedSegment;
-	private LinkedHashMap<AbstractEntity, Color> items;
+	private LinkedHashMap<AbstractTree, Color> items;
 	private boolean mouseIn; // Mouse inside shopMenu
 	private boolean mouseInCancel; // Mouse inside cancel circle
 	private boolean initiated;
@@ -58,22 +53,30 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private TextureManager textureManager;
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+	private Player player;
 
 	final private float UNSELECTED_ALPHA = 0.2f;
 	final private float SELECTED_ALPHA = 0.5f;
-	final private int MAX_RANGE = 4;
+	final private int MAX_RANGE = 6;
 
 	public TreeShopGui(Stage stage) {
 		// Render menu
 		this.stage = stage;
+		player = new Player();
 		shopX = 300;
 		shopY = 300;
 		initiated = false;
-		items = new LinkedHashMap<AbstractEntity, Color>();
+		items = new LinkedHashMap<AbstractTree, Color>();
 		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
 		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
+<<<<<<< HEAD
 		items.put(new DamageTree(treeX, treeY, 0,new LightningTree()), Color.GREEN);
+=======
+		for (AbstractTree tree : items.keySet()) {
+			tree.setConstructionLeft(0);
+		}
+>>>>>>> master
 		textureManager = GameManager.get().getManager(TextureManager.class);
 		container = new WidgetGroup();
 		stage.addActor(container);
@@ -100,19 +103,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopX = (int) screenPos.x;
 		shopY = (int) screenPos.y;
 
-		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
-		Vector3 playerPos = tileToScreen(player.getPosX(), player.getPosY());
-		double distance = Math.sqrt(Math.pow(shopX - playerPos.x, 2.0) + Math.pow(shopY - playerPos.y, 2));
-		
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		float range = MAX_RANGE * tileWidth;
-		if (distance > range) {
-			double angle = calculateAngle(shopX-playerPos.x, shopY-playerPos.y);
-			angle = 360 - angle;
-			angle = Math.toRadians(angle);
-			shopX = (int) (range * Math.cos(angle) + playerPos.x);
-			shopY = (int) (range * Math.sin(angle) + playerPos.y);
-		}
 	}
 
 	/**
@@ -123,6 +113,21 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 		shopTileX = (int) tilePos.x;
 		shopTileY = (int) tilePos.y;
+
+		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
+
+		double distance = Math
+				.sqrt(Math.pow(shopTileX - player.getPosX(), 2.0) + Math.pow(shopTileY - player.getPosY(), 2));
+
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		float range = MAX_RANGE;
+		if (distance > range) {
+			double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY - player.getPosY());
+			angle = 360 - angle;
+			angle = Math.toRadians(angle);
+			shopTileX = (int) (range * Math.cos(angle) + player.getPosX());
+			shopTileY = (int) (range * Math.sin(angle) + player.getPosY());
+		}
 	}
 
 	/**
@@ -210,6 +215,10 @@ public class TreeShopGui extends Gui implements SceneGui {
 			float alpha = (segment == selectedSegment && mouseIn && !mouseInCancel) ? SELECTED_ALPHA : UNSELECTED_ALPHA;
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
+			// TODO make update with tree cost
+			// Checks to see if user can afford it
+			if (player.getInventory().getQuantity(new SeedResource()) < 1)
+				shapeRenderer.setColor(new Color(200, 200, 200, 0.6f));
 			int startAngle = 360 * (segment) / (numSegments);
 			shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
 
@@ -306,8 +315,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 	}
 
 	/**
-	 * Calculates the angle in degrees from the right horizontal anti-clockwise based on the
-	 * change in x and y.
+	 * Calculates the angle in degrees from the right horizontal anti-clockwise
+	 * based on the change in x and y.
 	 * 
 	 * @param x
 	 *            Change in x
@@ -337,7 +346,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	}
 
 	public void initShop(int x, int y) {
-
+		player = GameManager.get().getManager(PlayerManager.class).getPlayer();
 		if (initiated && mouseIn) {
 			if (mouseInCancel)
 				closeShop();
@@ -348,7 +357,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 		} else {
 			updateTilePos(x, y);
 			initiated = true;
-			setTreeCoords(x, y);
+			setTreeCoords();
 		}
 	}
 
@@ -357,12 +366,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * greater than max, sets to maximum range.
 	 * 
 	 */
-	private void setTreeCoords(int x, int y) {
-
-		Vector2 tile = screenToTile(x, y);
-		treeX = (int) Math.floor(tile.x);
-		treeY = (int) Math.floor(tile.y);
-
+	private void setTreeCoords() {
+		treeX = shopTileX;
+		treeY = shopTileY;
 	}
 
 	private Vector2 screenToTile(float x, float y) {
@@ -382,20 +388,10 @@ public class TreeShopGui extends Gui implements SceneGui {
 			MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 			AbstractTree newTree;
 
-			// Select random tree, and either make it in singleplayer or broadcast it in mp
-			/*
-			 * switch (selectedSegment + 1) {
-			 * 
-			 * case 1: newTree = new ResourceTree(treeX, treeY, 0, new FoodResource(), 8);
-			 * break; case 2: newTree = new ResourceTree(treeX, treeY, 0); break; default:
-			 * newTree = new Tower(treeX, treeY, 0); break; }
-			 */
-
 			newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
 			newTree.setPosX(treeX);
 			newTree.setPosY(treeY);
 			newTree.setPosZ(0);
-			System.out.println(newTree.toString());
 
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);

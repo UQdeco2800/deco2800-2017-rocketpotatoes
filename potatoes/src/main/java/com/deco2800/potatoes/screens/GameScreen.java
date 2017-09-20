@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Start's a multiplayer game
-	 * 
+	 *
 	 * @param game
 	 *            game instance
 	 * @param name
@@ -107,7 +107,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Start's a singleplayer game
-	 * 
+	 *
 	 * @param game
 	 *            game instance
 	 */
@@ -185,9 +185,12 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
-        
+
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
+        
+        // Add World Change Gui
+        guiManager.addGui(new WorldChangeGui(guiManager.getStage(), this));
 
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
@@ -226,7 +229,7 @@ public class GameScreen implements Screen {
 
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
-		
+
 		MouseHandler mouseHandler = new MouseHandler();
 		inputManager.addTouchDownListener(mouseHandler);
 		inputManager.addTouchDraggedListener(mouseHandler);
@@ -260,7 +263,7 @@ public class GameScreen implements Screen {
 
 			//add an enemy gate to game world
 			GameManager.get().getWorld().addEntity(new EnemyGate(24,24,0));
-			
+
 			//add enemy waves
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
@@ -309,12 +312,12 @@ public class GameScreen implements Screen {
 
 		SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
-		
+
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-		
+
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
@@ -403,17 +406,25 @@ public class GameScreen implements Screen {
 		// Update WaveGui time
 		int timeToWaveEnd;
 		int timeToNextWave;
+		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();
+		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();
 		Gui waveGUI = guiManager.getGui(WaveGUI.class);
 		if (waveGUI instanceof WaveGUI) {
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+			((WaveGUI) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to wave end:");
+				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
 				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
-				timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave:");
-				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave/75);
+				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
+					((WaveGUI) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WaveGUI) waveGUI).getWaveTimeLabel().setText("");
+				} else {
+					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
+					((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+				}
 			}
 		}
 	}
