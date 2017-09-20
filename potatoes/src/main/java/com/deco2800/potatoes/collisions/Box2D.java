@@ -1,11 +1,11 @@
 package com.deco2800.potatoes.collisions;
 
-import java.util.Objects;
-
 public class Box2D implements CollisionMask{
 
-    private float x, y;
-    private float xLength, yLength;
+    private float x;
+    private float y;
+    private float xLength;
+    private float yLength;
 
     /**
      * Create a new Box2D
@@ -71,8 +71,12 @@ public class Box2D implements CollisionMask{
         float distY = Math.abs(other.getY() - this.y);
 
         // Check dist's are large enough that no collision could occur
-        if (distX > (this.xLength + other.getXLength())/2) { return false; }
-        if (distY > (this.yLength + other.getYLength())/2) { return false; }
+        if (distX > (this.xLength + other.getXLength())/2) { 
+        	return false; 
+        }
+        if (distY > (this.yLength + other.getYLength())/2) {
+        	return false; 
+        }
 
         return true;
     }
@@ -104,9 +108,13 @@ public class Box2D implements CollisionMask{
             if (lineDist != 0) {
                 fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
                 fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
-                if (fMin > fMax) { return false; }
+                if (fMin > fMax) { 
+                	return false; 
+                }
 
-            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) { return false; }
+            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) {
+            	return false; 
+            }
         }
 
         return true;
@@ -241,7 +249,9 @@ public class Box2D implements CollisionMask{
     public float distance(float x1, float y1, float x2, float y2) {
 
         // check overlap //TODO should this be removed? expect that lines don't overlap?
-        if (this.overlaps(x1, y1, x2, y2)) { return -1; }
+        if (this.overlaps(x1, y1, x2, y2)) {
+        	return -1;
+        }
 
         float distX1 = Math.abs(x1 - this.x) - this.xLength/2;
         float distY1 = Math.abs(y1 - this.y) - this.yLength/2;

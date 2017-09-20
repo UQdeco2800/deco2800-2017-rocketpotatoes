@@ -38,23 +38,24 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 	@Override
 	public void action(MortalEntity param) {
 		Random random = new Random();
-		// the dimensions of the map
-		float length = GameManager.get().getWorld().getLength();
-		float width = GameManager.get().getWorld().getWidth();
-		// the new positions
-		float newPosX;
-		float newPosY;
 
 		if (param instanceof Player) {
-
+			// the dimensions of the map
+			float length = GameManager.get().getWorld().getLength();
+			float width = GameManager.get().getWorld().getWidth();
+			// the new positions
+			float newPosX;
+			float newPosY;
+			
 			do {
 				// randomly probes for a collision-less position on the map
 				newPosX = length * random.nextFloat();
 				newPosY = width * random.nextFloat();
-				// sets the location of the player to respawn
-				param.setPosition(newPosX, newPosY, 0);
-			} while (hasCollisions(param, (int) param.getPosX(), (int) param.getPosY()));
+			} while (hasCollisions(param, (int) newPosX, (int) newPosY));
 			
+			// sets the location of the player to respawn
+			param.setPosition(newPosX, newPosY, 0);
+
 			try {
 				// play respawn sound effect if player is respawning
 				GameManager.get().getManager(SoundManager.class).playSound("respawnEvent.wav");
