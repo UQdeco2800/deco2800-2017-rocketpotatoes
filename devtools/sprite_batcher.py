@@ -22,10 +22,13 @@ import ntpath
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
+INTERVALS = 8 # The number of angles around the model to render
+MODEL_FILE = '' # The Model file, used if running this through blender
+
 OBJECTS = bpy.data.objects # A list of all the objects in the scene
 SCENE = bpy.context.scene # the actual scene itself
 RENDER = SCENE.render # The data object associated with rendering
-INTERVALS = 8 # The number of angles around the model to render
+
 
 
 def get_distance(object1, object2):
@@ -39,18 +42,16 @@ def get_arg_index():
     return argv.index("--") if "--" in argv else None
 
 def get_arg(number):
-    if len(argv) - get_arg_index() > number:
-        return argv[get_arg_index() + number] 
+    arg_index = get_arg_index()
+    if arg_index and (len(argv) - arg_index) > number:
+        return argv[arg_index + number]
     else:
         return None
 
 def import_model():
     '''import the model specified in the cli, or use a pre-loaded model'''
 
-    model_file = get_arg(1)
-    # Get rid of the default cube, if it exists
-    if OBJECTS.get("Cube"):
-        OBJECTS.remove(OBJECTS.get("Cube"), do_unlink=True)
+    model_file = get_arg(1) or MODEL_FILE
 
     # import the given model file, if specified on the command line
     if OBJECTS.get("Model"):
@@ -59,17 +60,20 @@ def import_model():
     elif model_file:
         bpy.ops.import_scene.autodesk_3ds(filepath=model_file)
 
-        selected = bpy.context.selected_objects
-        if not len(selected):
-            raise Exception("The given file could not be imported")
-        # merge all the newly imported models into one supermodel
-        SCENE.objects.active = model = selected.pop()
-        bpy.ops.object.join()
+        # Get rid of the default cube, if it exists
+        if OBJECTS.get("Cube"):
+            OBJECTS.remove(OBJECTS.get("Cube"), do_unlink=True)
 
-    else:
-        # Back up: just use the default cube
-        bpy.ops.mesh.primitive_cube_add()
-        model = OBJECTS["Cube"]
+    # Use whatever models are selected in 3DView
+    # Imported files are automatically selected
+    selected = bpy.context.selected_objects
+    if not len(selected):
+        raise Exception("No model is selected in 3DView, or the file import" \
+                + " failed")
+
+    # merge all the newly imported models into one supermodel
+    SCENE.objects.active = model = selected.pop()
+    bpy.ops.object.join()
 
     model.name = "Model"
     model.select = True
@@ -98,7 +102,6 @@ def setup_camera(camera):
 
     # make sure the camera is orthographic for an isometric appearance
     camera.data.type = 'ORTHO'
-    #camera.data.ortho_scale = 1
 
     # make the lighting generically displayed across the whole system
     SCENE.world.light_settings.use_environment_light = True

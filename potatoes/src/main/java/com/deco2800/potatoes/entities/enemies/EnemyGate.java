@@ -21,7 +21,6 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 		// empty for serialization
 	}
 
-	/*lots of health so squirrels don't kill it so quickly*/
 	public EnemyGate(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE, 1000f);
 		this.setStaticCollideable(true);

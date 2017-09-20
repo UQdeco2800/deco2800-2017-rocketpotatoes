@@ -146,6 +146,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public Animation getAnimation() {
 		return animation;
 	}
+	
+	@Override
+	public String getTexture() {
+		return getAnimation().getFrame();
+	}
 
 	/**
 	 * @return the dying
