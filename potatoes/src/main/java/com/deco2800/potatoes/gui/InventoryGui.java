@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
 
 /**
  * Inventory GUI is to display the amount of resources hold by player and
@@ -103,12 +105,8 @@ public class InventoryGui extends Gui {
 		/* Each resource display */
 		for (String resource: inventoryMap.keySet()){
 			/* Image linking to display sprite */
-			StringBuilder imageString = new StringBuilder();
-			imageString.append("resources/placeholderassets/");
-			imageString.append(resource);
-			imageString.append(".png");
-			Image resourceImage = new Image(new TextureRegionDrawable(
-					new TextureRegion(new Texture(Gdx.files.internal(imageString.toString())))));
+			TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
+			Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(resource))));
 			
 			resourceImage.setOrigin(50, 50);
 			inventoryTable.add(resourceImage).size(30, 30);

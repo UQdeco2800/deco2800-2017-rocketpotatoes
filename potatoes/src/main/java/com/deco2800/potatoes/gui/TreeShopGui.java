@@ -27,7 +27,6 @@ import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -35,21 +34,28 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
+/**
+ * TreeShopGui is generated when the user clicks on a tile on the map. It can
+ * only be positioned on tiles where trees can be planted.
+ * 
+ * @author Dion Lao
+ *
+ */
 public class TreeShopGui extends Gui implements SceneGui {
 	private Circle shopShape;
 	private Circle cancelShape;
-	private int selectedSegment;
-	private LinkedHashMap<AbstractTree, Color> items;
 	private boolean mouseIn; // Mouse inside shopMenu
 	private boolean mouseInCancel; // Mouse inside cancel circle
 	private boolean initiated;
-	private Stage stage;
+	private int selectedSegment;
 	private int shopX;
 	private int shopY;
 	private int shopTileX;
 	private int shopTileY;
 	private int treeX;
 	private int treeY;
+	private LinkedHashMap<AbstractTree, Color> items;
+	private Stage stage;
 	private TextureManager textureManager;
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -59,6 +65,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	final private float SELECTED_ALPHA = 0.5f;
 	final private int MAX_RANGE = 6;
 
+	/**
+	 * Instantiates shop with but doesn't display it yet.
+	 */
 	public TreeShopGui(Stage stage) {
 		// Render menu
 		this.stage = stage;
@@ -70,6 +79,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
 		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
+
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
 		}
@@ -84,18 +94,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 		createTreeMenu(shopX, shopY, 110);
 	}
 
-	private Vector3 worldToGuiScreenCoordinates(float x, float y, float z) {
-		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
-				.project(new Vector3(x, y - stage.getHeight() + 1, z));
-		screen.y = -screen.y;
-		return screen;
-	}
-
 	/**
 	 * Updates screen position to match tile position.
 	 */
 	private void updateScreenPos() {
-		Vector3 screenPos = tileToScreen(shopTileX, shopTileY);
+		Vector3 screenPos = Render3D.tileToScreen(stage, shopTileX, shopTileY);
 		shopX = (int) screenPos.x;
 		shopY = (int) screenPos.y;
 
@@ -105,7 +108,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * Updates tile position to match mouse position.
 	 */
 	private void updateTilePos(int x, int y) {
-		Vector2 tilePos = screenToTile(x, y);
+		Vector2 tilePos = Render3D.screenToTile(x, y);
 
 		shopTileX = (int) tilePos.x;
 		shopTileY = (int) tilePos.y;
@@ -115,7 +118,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 		double distance = Math
 				.sqrt(Math.pow(shopTileX - player.getPosX(), 2.0) + Math.pow(shopTileY - player.getPosY(), 2));
 
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		float range = MAX_RANGE;
 		if (distance > range) {
 			double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY - player.getPosY());
@@ -180,15 +182,22 @@ public class TreeShopGui extends Gui implements SceneGui {
 		if (mouseInCancel)
 			shapeRenderer.setColor(new Color(10, 10, 10, 0.9f));
 		shapeRenderer.circle(x, guiY, cancelShape.radius);
-		Label cross = new Label("x", skin);
-		cross.setFontScale(1.5f);
-		cross.setPosition(x - cross.getWidth() / 2, guiY - cross.getHeight() / 2);
-		cross.setColor(new Color(255, 255, 255, 0.8f));
-		container.addActor(cross);
+		addCrossLbl(x, guiY);
 
 		shapeRenderer.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	/**
+	 * Renders the cross label for cancelling the treeShop.
+	 */
+	private void addCrossLbl(float guiX, float guiY) {
+		Label cross = new Label("x", skin);
+		cross.setFontScale(1.5f);
+		cross.setPosition(guiX - cross.getWidth() / 2, guiY - cross.getHeight() / 2);
+		cross.setColor(new Color(255, 255, 255, 0.8f));
+		container.addActor(cross);
 	}
 
 	/**
@@ -203,62 +212,86 @@ public class TreeShopGui extends Gui implements SceneGui {
 		int degrees = 360 / numSegments;
 		int imgSize = 60;
 		int seedSize = 20;
-		String texture;
+		String texture = "error_box";
 		// Draws each subsection of radial menu individually
 		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
 			Color c = entry.getValue();
 			// Show which segment is highlighted by adjusting opacity
+			int startAngle = 360 * (segment) / (numSegments);
 			float alpha = (segment == selectedSegment && mouseIn && !mouseInCancel) ? SELECTED_ALPHA : UNSELECTED_ALPHA;
+			float itemAngle = startAngle + degrees / 2;
+
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
-			// TODO make update with tree cost
-			// Checks to see if user can afford it
-			if (player.getInventory().getQuantity(new SeedResource()) < 1)
-				shapeRenderer.setColor(new Color(200, 200, 200, 0.6f));
-			int startAngle = 360 * (segment) / (numSegments);
-			shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
-
-			// Add entity texture image
-			texture = entry.getKey().getTexture();
-			Image treeImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(texture))));
-
-			float itemAngle = startAngle + degrees / 2;
+			renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees);
 
 			Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
 
+			// Render Items
 			float itemX = guiX - imgSize / 2 + offset.x;
 			float itemY = guiY - imgSize / 2 + offset.y;
-
-			treeImg.setPosition(itemX, itemY);
-			treeImg.setWidth(imgSize);
-			treeImg.setHeight(imgSize);
-			container.addActor(treeImg);
+			renderTreeImage(itemX, itemY, imgSize, texture, entry);
 
 			// Add cost
-			Table costContainer = new Table();
-			costContainer.setFillParent(true);
-
-			costContainer.defaults().width(20);
-			costContainer.pad(20f);
-
-			Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
-
-			Label costLbl = new Label("1", skin);
-
-			offset = calculateDisplacement(radius * 0.86f, itemAngle + 2);
-			costContainer.setPosition(guiX + offset.x, guiY + offset.y);
-			costContainer.setTransform(true);
-
-			costContainer.add(seedImg).size(seedSize, seedSize);
-			costContainer.add(costLbl).bottom().left();
-
-			costContainer.addAction(Actions.rotateBy(itemAngle + 90));
-			container.addActor(costContainer);
+			renderCostGui(offset, radius, itemAngle, guiX, guiY, seedSize);
 
 			segment++;
 
 		}
 
+	}
+
+	/**
+	 * Renders the semi circle areas and colours them accordingly.
+	 */
+	private void renderQuadrantArea(ShapeRenderer shapeRenderer, int startAngle, float guiX, float guiY, int radius,
+			int degrees) {
+		// TODO make update with tree cost
+		// Checks to see if user can afford it
+		if (player.getInventory().getQuantity(new SeedResource()) < 1)
+			shapeRenderer.setColor(new Color(200, 200, 200, 0.6f));
+		shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
+
+	}
+
+	/**
+	 * Renders the tree displayed that are available.
+	 */
+	private void renderTreeImage(float itemX, float itemY, int imgSize, String texture,
+			Map.Entry<? extends AbstractEntity, Color> entry) {
+		// Add entity texture image
+		texture = entry.getKey().getTexture();
+		Image treeImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(texture))));
+
+		treeImg.setPosition(itemX, itemY);
+		treeImg.setWidth(imgSize);
+		treeImg.setHeight(imgSize);
+		container.addActor(treeImg);
+	}
+
+	/**
+	 * Renders the resources and amount required to buy tree.
+	 */
+	private void renderCostGui(Vector2 offset, float radius, float itemAngle, float guiX, float guiY, int seedSize) {
+		Table costContainer = new Table();
+		costContainer.setFillParent(true);
+
+		costContainer.defaults().width(20);
+		costContainer.pad(20f);
+
+		Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
+
+		Label costLbl = new Label("1", skin);
+
+		offset = calculateDisplacement(radius * 0.86f, itemAngle + 2);
+		costContainer.setPosition(guiX + offset.x, guiY + offset.y);
+		costContainer.setTransform(true);
+
+		costContainer.add(seedImg).size(seedSize, seedSize);
+		costContainer.add(costLbl).bottom().left();
+
+		costContainer.addAction(Actions.rotateBy(itemAngle + 90));
+		container.addActor(costContainer);
 	}
 
 	/**
@@ -333,6 +366,16 @@ public class TreeShopGui extends Gui implements SceneGui {
 		return mouseAngle;
 	}
 
+	/**
+	 * Determines there the mouse is in relation to the treeShop sets the global
+	 * variables depending on what it is hovering over. Also calculates which
+	 * quadrant it is in.
+	 * 
+	 * @param x
+	 *            screen x value of mouse click
+	 * @param y
+	 *            screen y value of mouse click
+	 */
 	public void checkMouseOver(int x, int y) {
 		mouseIn = shopShape.contains(x, y) ? true : false;
 		mouseInCancel = cancelShape.contains(x, y) ? true : false;
@@ -341,6 +384,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	}
 
+	/**
+	 * Starts up or closes treeShop depending on where the user has clicked.
+	 * 
+	 * @param x
+	 *            screen x value of mouse click
+	 * @param y
+	 *            screen y value of mouse click
+	 */
 	public void initShop(int x, int y) {
 		player = GameManager.get().getManager(PlayerManager.class).getPlayer();
 		if (initiated && mouseIn) {
@@ -367,17 +418,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 		treeY = shopTileY;
 	}
 
-	private Vector2 screenToTile(float x, float y) {
-		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
-		return Render3D.worldPosToTile(world.x, world.y);
-	}
-
-	private Vector3 tileToScreen(float x, float y) {
-		Vector2 tile = Render3D.tileToWorldPos(x, y);
-		Vector3 screent = worldToGuiScreenCoordinates(tile.x, tile.y, 1);
-		return new Vector3(screent.x, screent.y, screent.z);
-	}
-
+	/**
+	 * Places a tree where the treeShop is positioned
+	 */
 	private void buyTree() {
 
 		if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
@@ -399,7 +442,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	@Override
 	public Vector2 getTileCoords() {
-		return screenToTile(shopX, shopY);
+		return Render3D.screenToTile(shopX, shopY);
 	}
 
 }
