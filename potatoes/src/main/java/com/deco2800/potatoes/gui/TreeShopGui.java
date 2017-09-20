@@ -70,6 +70,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
 		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
+
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
 		}
