@@ -1,15 +1,10 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.Particle;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
-import com.deco2800.potatoes.renderering.particles.types.BuoyantParticleType;
 import com.deco2800.potatoes.renderering.particles.types.ParticleType;
-import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +25,9 @@ public class ParticleManager extends Manager implements TickableManager {
 
     List<Particle> particlePool;
 
+    /**
+     * Initializes the particle manager.
+     */
     public ParticleManager() {
         emitters = new ArrayList<>();
 
@@ -49,6 +47,12 @@ public class ParticleManager extends Manager implements TickableManager {
 
     }
 
+    /**
+     * Adds a particle emitter to be ticked, drawn and destroyed appropriately.
+     * @param lifeTime how long this emitter lasts (if this value is zero this emitter will never expire unless
+     *                 deleted with removeEmitter(...)).
+     * @param e the emitter to be added.
+     */
     public void addParticleEmitter(float lifeTime, ParticleEmitter e) {
         EmitterContainer con = new EmitterContainer();
         con.maxLifeTime = lifeTime;
