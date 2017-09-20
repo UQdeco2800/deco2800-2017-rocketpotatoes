@@ -60,7 +60,7 @@ public class InventoryGui extends Gui {
 		
 		/* set up window */
 		window = new Window("Inventory", skin);
-		window.add(scrollPane).width(100).height(80);
+		window.add(scrollPane).width(80).height(100);
 		
 		/* size control and position window in the top right */
 		window.setWidth(90);
@@ -111,7 +111,7 @@ public class InventoryGui extends Gui {
 					new TextureRegion(new Texture(Gdx.files.internal(imageString.toString())))));
 			
 			resourceImage.setOrigin(50, 50);
-			inventoryTable.add(resourceImage).size(45, 45);
+			inventoryTable.add(resourceImage).size(30, 30);
 			inventoryTable.add(inventoryMap.get(resource)).bottom().left();
 			
 			inventoryTable.row();
