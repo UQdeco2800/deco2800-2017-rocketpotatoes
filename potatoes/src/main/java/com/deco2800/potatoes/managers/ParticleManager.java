@@ -2,10 +2,13 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.Particle;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
 import com.deco2800.potatoes.renderering.particles.types.BuoyantParticleType;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -36,8 +39,13 @@ public class ParticleManager extends Manager implements TickableManager {
             particlePool.add(new Particle());
         }
 
-        addParticleEmitter(5000.0f, new ParticleEmitter(50, 50,
-                new BuoyantParticleType(100000, 1000.0f, 100.0f, 16, Color.RED, 5, 5)));
+        ParticleType typeOne = new BasicParticleType(100000, 5000.0f, 100.0f, 128,
+                GameManager.get().getManager(TextureManager.class).getTexture("snowflake"));
+        typeOne.speed = 0.4f;
+
+        //addParticleEmitter(0.0f, new ParticleEmitter(50, 50, typeOne));
+
+        //addParticleEmitter(5000.0f, new ParticleEmitter(50, 50, typeOne, typeTwo));
     }
 
     public void addParticleEmitter(float lifeTime, ParticleEmitter e) {
@@ -58,8 +66,22 @@ public class ParticleManager extends Manager implements TickableManager {
         while (emitterIterator.hasNext()) {
             EmitterContainer e = emitterIterator.next();
 
+            /*
+            float x = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+            float y = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+
+            int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+            int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+            Vector2 p = Render3D.worldToScreenCoordinates(x, y, 0);
+            e.emitter.setOrigin(p.x + tileWidth / 2, p.y + tileHeight / 2);
+            */
+
             e.emitter.onTick(deltaTime, particlePool);
-            e.currentLifeTime += deltaTime;
+
+            if (e.maxLifeTime != 0.0f) {
+                e.currentLifeTime += deltaTime;
+            }
 
             // If exceeded max (don't do anything if lifetime is set to unlimited)
             if (e.toRemove || (e.currentLifeTime >= e.maxLifeTime && e.maxLifeTime != 0)) {
