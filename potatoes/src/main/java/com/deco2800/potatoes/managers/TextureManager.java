@@ -59,7 +59,7 @@ public class TextureManager extends Manager {
         saveTexture("potate", "resources/placeholderassets/potate.png");
         saveTexture("projectile", "resources/placeholderassets/projectile.png");
         saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
-        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");
+        saveTexture("pronograde", "resources/placeholderassets/pronograde.png");  //Moose placeholder
         saveTexture("progress_bar", "resources/placeholderassets/progress_bar.png");
         saveTexture("seed", "resources/placeholderassets/seed.png");
         saveTexture("food", "resources/placeholderassets/food.png");
@@ -70,6 +70,10 @@ public class TextureManager extends Manager {
         saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
+        saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
+        
+        saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
+        
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
@@ -89,6 +93,7 @@ public class TextureManager extends Manager {
         saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
         saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
         saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
+        saveTexture("savePauseMenu", "resources/menu/savePauseMenu.png");
         saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
         saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
@@ -99,6 +104,7 @@ public class TextureManager extends Manager {
         saveTexture("backMainMenu", "resources/menu/backMainMenu.png");
         saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
+        saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
@@ -135,6 +141,8 @@ public class TextureManager extends Manager {
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
+        saveTexture("forest_portal", "resources/portals/Forest_Portal.png");
+        saveTexture("sea_portal", "resources/portals/Sea_Portal.png");
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
@@ -211,13 +219,13 @@ public class TextureManager extends Manager {
 	 * @param spriteNames
 	 *            The names for all the sprite textures created
 	 */
-	public void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
+	public static void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
 		TextureRegion region = textureMap.get(textureId);
 		int height = region.getRegionHeight() / spriteNames.length;
 		for (int y = 0; y < spriteNames.length; y++) {
 			int width = region.getRegionWidth() / spriteNames[y].length;
 			for (int x = 0; x < spriteNames[y].length; x++) {
-				textureMap.put(spriteNames[y][x], new TextureRegion(region, x, y, width, height));
+				textureMap.put(spriteNames[y][x], new TextureRegion(region, x * width, y * height, width, height));
 			}
 		}
 	}

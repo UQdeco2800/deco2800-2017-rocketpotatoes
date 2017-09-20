@@ -47,7 +47,7 @@ public class WaveGUI extends Gui {
         stage.addActor(window);
 
     }
-
+    public Window getWaveGuiWindow() { return window; }
 
     public Label getWaveStatusLabel() { return waveStatusLabel; }
 

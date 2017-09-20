@@ -46,6 +46,7 @@ public class ParticleManager extends Manager implements TickableManager {
         //addParticleEmitter(0.0f, new ParticleEmitter(50, 50, typeOne));
 
         //addParticleEmitter(5000.0f, new ParticleEmitter(50, 50, typeOne, typeTwo));
+
     }
 
     public void addParticleEmitter(float lifeTime, ParticleEmitter e) {
