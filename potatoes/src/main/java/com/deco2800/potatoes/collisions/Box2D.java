@@ -20,6 +20,8 @@ public class Box2D implements CollisionMask{
         this.y = y;
         this.xLength = xLength;
         this.yLength = yLength;
+
+        //TODO check positive values
     }
 
     @Override
