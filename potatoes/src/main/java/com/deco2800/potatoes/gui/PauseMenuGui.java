@@ -29,12 +29,14 @@ public class PauseMenuGui extends Gui {
     private Skin uiSkin;
     private Drawable resumeDrawable;
     private Drawable optionsDrawable;
+    private Drawable saveDrawable;
     private Drawable exitDrawable;
     private Drawable pauseMenuDrawable;
     private VerticalGroup pauseButtonGroup;
     private Label pauseMenuLabel;
     private ImageButton resumeButton;
     private ImageButton optionsButton;
+    private ImageButton saveButton;
     private ImageButton exitButton;
     private Table table;
 
@@ -66,6 +68,7 @@ public class PauseMenuGui extends Gui {
         // Make drawables from textures
         resumeDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("resumePauseMenu")));
         optionsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsPauseMenu")));
+        saveDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("savePauseMenu")));
         exitDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("exitPauseMenu")));
         pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backgroundPauseMenu")));
 
@@ -73,13 +76,16 @@ public class PauseMenuGui extends Gui {
         pauseMenuLabel = new Label("PAUSED", uiSkin);
         resumeButton = new ImageButton(resumeDrawable);
         optionsButton = new ImageButton(optionsDrawable);
+        saveButton = new ImageButton(saveDrawable);
         exitButton = new ImageButton(exitDrawable);
 
         pauseButtonGroup = new VerticalGroup();
         // pauseButtonGroup.addActor(pauseMenuLabel);
         pauseButtonGroup.addActor(resumeButton);
         pauseButtonGroup.addActor(optionsButton);
+        pauseButtonGroup.addActor(saveButton);
         pauseButtonGroup.addActor(exitButton);
+        pauseButtonGroup.space(30);
 
         // Options State
         optionsMenuLabel = new Label("Options", uiSkin);
@@ -98,6 +104,7 @@ public class PauseMenuGui extends Gui {
         optionsButtonGroup.addActor(optionsBackButton);
         optionsEffectsVolumeSlider.setValue(screen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(screen.getMusicVolume());
+        optionsButtonGroup.space(20);
 
         setupListeners();
 
@@ -137,6 +144,14 @@ public class PauseMenuGui extends Gui {
             }
         });
 
+        /* Listener for the save button. */
+        saveButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //TODO
+            }
+        });
+
         /* Listener for the exit button. */
         exitButton.addListener(new ChangeListener() {
             @Override
@@ -161,6 +176,7 @@ public class PauseMenuGui extends Gui {
                 screen.setMusicVolume(optionsMusicVolumeSlider.getValue());
             }
         });
+
         optionsBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

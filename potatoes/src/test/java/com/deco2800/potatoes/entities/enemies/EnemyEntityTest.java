@@ -1,4 +1,4 @@
-package com.deco2800.potatoes;
+package com.deco2800.potatoes.entities.enemies;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

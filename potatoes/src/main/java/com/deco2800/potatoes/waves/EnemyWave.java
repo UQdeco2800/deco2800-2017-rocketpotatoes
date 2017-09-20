@@ -14,6 +14,10 @@ import static com.badlogic.gdx.math.MathUtils.random;
 public class EnemyWave implements Tickable {
 
 
+    /*
+        1. Could be useful for a wave to know when all of it's enemies are dead, e.g. when to say game over, or if we
+         want the waiting counter to start for the next wave to start only when the previous wave is finished*/
+
     private float[] enemyRatios;
     //Length of wave in .001 of seconds
     private int waveLength;
@@ -73,9 +77,7 @@ public class EnemyWave implements Tickable {
      * */
     public void spawnEnemyToRatio(float[] enemyRatios) {
         Random random = new Random();
-    //    for (int i = 0; i < 10; i++) {
             float randomFloat = random.nextFloat();
-
             if (randomFloat < enemyRatios[0]) {
                 addSquirrel();
             } else if (randomFloat < enemyRatios[1]) {
@@ -85,9 +87,10 @@ public class EnemyWave implements Tickable {
             } else if (randomFloat < enemyRatios[3]) {
                 addMoose();
             }
-
-     //   }
     }
+
+    /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
+    but is unlucky enough not to have spawned... then spawn it.*/
 
     public void onTick(long i){
         //System.err.println(elapsedWaveTime());

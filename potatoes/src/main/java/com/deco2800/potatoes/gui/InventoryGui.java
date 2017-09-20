@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.gui;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /**
@@ -32,14 +33,14 @@ public class InventoryGui extends Gui {
 
 	/* Objects to be used in the inventory gui */
 	private Table inventoryTable;
+	
+	/* Hashmap with the resource type as key and respective Label as value */
+	private HashMap<String, Label> inventoryMap = new HashMap<String, Label>();
 
-	private int seedAmount = 0;
-	private Image seedImage;
-	private Label seedLabelAmount = new Label(Integer.toString(seedAmount), skin);
-
-	private int foodAmount = 0;
-	private Image foodImage;
-	private Label foodLabelAmount = new Label(Integer.toString(foodAmount), skin);
+	/* Labels for each resource to display their amount */
+	private Label seedLabelAmount = new Label("0", skin);
+	private Label foodLabelAmount = new Label("0", skin);
+	
 
 	/**
 	 * Instantiates a table for the InventoryGui to be placed on the current
@@ -49,17 +50,19 @@ public class InventoryGui extends Gui {
 	 * @require stage is not null
 	 */
 	public InventoryGui(Stage stage) {
-		/* Set up the table for positioning Inventory Gui */
+		/* Put items in Map */
+		inventoryMap.put("seed", seedLabelAmount);
+		inventoryMap.put("food", foodLabelAmount);
+		
+		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
 		instantiateScrollPane();
-
-		/* position table in the top right */
-		//inventoryTable.right().top();
-
+		
 		/* set up window */
 		window = new Window("Inventory", skin);
-		window.add(scrollPane).width(100).height(80);
+		window.add(scrollPane).width(80).height(100);
 		
+		/* size control and position window in the top right */
 		window.setWidth(90);
 		window.setHeight(100);
 		window.setPosition(stage.getWidth(), stage.getHeight());
@@ -78,14 +81,8 @@ public class InventoryGui extends Gui {
 	 *            The amount of resource that was added to inventory
 	 */
 	public void increaseInventory(String resource, int amount) {
-
-		if (resource == "seed") {
-			seedLabelAmount.setText(Integer.toString(amount));
-		}
-
-		if (resource == "food") {
-			foodLabelAmount.setText(Integer.toString(amount));
-		}
+		Label resourceLabel = inventoryMap.get(resource);
+		resourceLabel.setText(Integer.toString(amount));
 	}
 
 	/**
@@ -101,27 +98,29 @@ public class InventoryGui extends Gui {
 		inventoryTable.setFillParent(true);
 
 		inventoryTable.defaults().width(20);
-		inventoryTable.padTop(10);
 		inventoryTable.padRight(10);
 		
-		//buttons
-
-		seedImage = new Image(new TextureRegionDrawable(
-				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/seed.png")))));
-		seedImage.setOrigin(50, 50);
-		inventoryTable.add(seedImage).size(45, 45);
-		inventoryTable.add(seedLabelAmount).bottom().left();
-
-		/* next row */
-		inventoryTable.row();
-		foodImage = new Image(new TextureRegionDrawable(
-				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/food.png")))));
-		foodImage.setOrigin(50, 50);
-		inventoryTable.add(foodImage).size(40, 40);
-		inventoryTable.add(foodLabelAmount).bottom().left();
+		/* Each resource display */
+		for (String resource: inventoryMap.keySet()){
+			/* Image linking to display sprite */
+			StringBuilder imageString = new StringBuilder();
+			imageString.append("resources/placeholderassets/");
+			imageString.append(resource);
+			imageString.append(".png");
+			Image resourceImage = new Image(new TextureRegionDrawable(
+					new TextureRegion(new Texture(Gdx.files.internal(imageString.toString())))));
+			
+			resourceImage.setOrigin(50, 50);
+			inventoryTable.add(resourceImage).size(30, 30);
+			inventoryTable.add(inventoryMap.get(resource)).bottom().left();
+			
+			inventoryTable.row();
+		}		
 	}
 
-	
+	/**
+	 * To be called by the constructor to upon first time to create Scroll Pane
+	 */
 	private void instantiateScrollPane(){
 		scrollPane = new ScrollPane(inventoryTable, skin);
 		scrollPane.setForceScroll(false, true);
