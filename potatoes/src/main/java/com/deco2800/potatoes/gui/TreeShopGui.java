@@ -70,13 +70,10 @@ public class TreeShopGui extends Gui implements SceneGui {
 		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
 		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
-<<<<<<< HEAD
-		items.put(new DamageTree(treeX, treeY, 0,new LightningTree()), Color.GREEN);
-=======
+
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
 		}
->>>>>>> master
 		textureManager = GameManager.get().getManager(TextureManager.class);
 		container = new WidgetGroup();
 		stage.addActor(container);
