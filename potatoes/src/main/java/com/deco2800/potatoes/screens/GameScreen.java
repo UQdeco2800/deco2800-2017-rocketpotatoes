@@ -19,8 +19,7 @@ import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
@@ -312,16 +311,49 @@ public class GameScreen implements Screen {
 
 		SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
+		WoodResource woodResource = new WoodResource();
+		TumbleweedResource tumbleweedResource = new TumbleweedResource();
+		CactusThornResource cactusThornResource = new CactusThornResource();
+		PricklyPearResource pricklyPearResource = new PricklyPearResource();
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		SnowBallResource snowBallResource = new SnowBallResource();
+		SealSkinResource sealSkinResource = new SealSkinResource();
+		IceCrystalResource iceCrystalResource = new IceCrystalResource();
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+		CoalResource coalResource = new CoalResource();
+		BonesResource bonesThornResource = new BonesResource();
+		ObsidianResource obsidianResource = new ObsidianResource();
+
+		FishMeatResource fishMeatResource = new FishMeatResource();
+		PearlResource pearlResource = new PearlResource();
+		TreasureResource treasureResource = new TreasureResource();
+
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(40, 40, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(40, 41, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(40, 42, 0, woodResource));
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(39, 40, 0, tumbleweedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(39, 41, 0, cactusThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(39, 42, 0, pricklyPearResource));
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(38, 40, 0, snowBallResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(38, 41, 0, sealSkinResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(38, 42, 0, iceCrystalResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(37, 40, 0, coalResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(37, 41, 0, bonesThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(37, 42, 0, obsidianResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(36, 40, 0, fishMeatResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(36, 41, 0, pearlResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(36, 42, 0, treasureResource));
+
+
+
 
 	}
 
