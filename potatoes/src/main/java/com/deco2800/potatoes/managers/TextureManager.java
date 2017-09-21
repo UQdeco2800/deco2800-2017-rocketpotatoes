@@ -152,7 +152,7 @@ public class TextureManager extends Manager {
         saveTexture("pricklyPear", "resources/resourceEntities/pricklyPear.png");
 
         saveTexture("snowBall", "resources/resourceEntities/snowBall.png");
-        saveTexture("sealSkin", "resources/resourceEntities/sealSkin.png");
+        saveTexture("sealSkin", "resources/resourceEntities/frozenMeat-sealSkin.png");
         saveTexture("iceCrystal", "resources/resourceEntities/iceCrystal.png");
 
         saveTexture("coal", "resources/resourceEntities/coal.png");
