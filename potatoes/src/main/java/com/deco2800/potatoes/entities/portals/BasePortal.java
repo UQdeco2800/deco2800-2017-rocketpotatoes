@@ -42,18 +42,17 @@ public class BasePortal extends AbstractPortal implements Tickable {
     /*
      * Progress bar to display health of base portal
      */
-    // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
-
     private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
-    private static final transient String TEXTURE = "forest_portal";
 
+    /*
+     * Texture representing the base portal
+     */
+    private static final transient String TEXTURE = "forest_portal";
 
     /*
      * Logger for all info/warning/error logs
      */
     private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
-
-
 
     /**
      * This instantiates an BasePortal given the appropriate parameters.

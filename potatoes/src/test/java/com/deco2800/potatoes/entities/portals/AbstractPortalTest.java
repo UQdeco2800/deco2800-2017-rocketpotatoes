@@ -48,9 +48,7 @@ public class AbstractPortalTest{
 		// player not colliding with portal
 		Player addedPlayer = new Player(10, 10, 0);
 		GameManager.get().getWorld().addEntity(addedPlayer);
-		
 		collided = testPortal.preTick(0);
-		
 		assertEquals(false, collided);
 	}
 	

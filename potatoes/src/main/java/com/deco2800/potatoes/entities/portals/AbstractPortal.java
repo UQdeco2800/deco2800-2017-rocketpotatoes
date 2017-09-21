@@ -125,13 +125,14 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
+			LOGGER.info("Entered portal");
+			//play warping sound effect
+			GameManager.get().getManager(SoundManager.class).playSound("warpSound.wav");
+			//remover player from old world
+			GameManager.get().getWorld().removeEntity(getPlayer());
+			changeWorld();
 			try {
-				LOGGER.info("Entered portal");
-				//play warping sound effect
-				GameManager.get().getManager(SoundManager.class).playSound("warpSound.wav");
-				//remover player from old world
-				GameManager.get().getWorld().removeEntity(getPlayer());
-				changeWorld();
+
 				
 			} catch (Exception e) {
 				LOGGER.warn("Issue entering portal; " + e);

@@ -9,8 +9,10 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.screens.GameScreen;
 import com.deco2800.potatoes.worlds.World;
+import junit.runner.BaseTestRunner;
 import org.junit.Test;
 import org.junit.Before;
 
@@ -18,7 +20,7 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 import com.badlogic.gdx.Input;
 
-public class BasePortalTest{
+public class BasePortalTest extends BaseTest{
 
 	BasePortal testPortal;
 
@@ -33,10 +35,20 @@ public class BasePortalTest{
 	}
 
 	@Test
-	public void ProgressBar() {
+	public void ProgressBarTest() {
 		assertTrue(testPortal.getProgressBar() instanceof ProgressBar);
 		assertTrue(testPortal.showProgress() == false);
 		assertTrue(testPortal.getMaxProgress() == 1);
+	}
+
+	@Test
+	public void ChangeWorldTest() {
+		Player testPlayer = new Player();
+		GameManager.get().getManager(PlayerManager.class).setPlayer(testPlayer);
+		testPortal.changeWorld();
+		testPlayer = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		assert(18 == testPlayer.getPosX());
+		assert(16 == testPlayer.getPosY());
 	}
 	
 	@Test
