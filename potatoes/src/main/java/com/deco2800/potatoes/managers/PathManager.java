@@ -30,7 +30,7 @@ public class PathManager extends Manager {
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
     private ArrayDeque<Box3D> path;
-    private static final int NUMBER_OF_RANDOM_NODES = 5;
+    private static final int NUMBER_OF_RANDOM_NODES = 50;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
 
@@ -128,6 +128,10 @@ public class PathManager extends Manager {
         next = spanningTree.get(start);
         while (!(next.equals(goal))) {
             path.add(next);
+            // Hacky fix for infinite loop, doesn't completely fix the problem
+            if (path.contains(next)) {
+                break;
+            }
             next = spanningTree.get(next);
         }
         path.add(next);

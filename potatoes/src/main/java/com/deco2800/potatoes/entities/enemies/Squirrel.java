@@ -50,19 +50,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-		// check paths
-
-		/*
-		//check collision
-		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
-				//collided with wall
-				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-				target = path.pop();
-				break;
-			}
-		}
-		*/
 
 		// check that we actually have a path
 		if (path == null || path.isEmpty()) {

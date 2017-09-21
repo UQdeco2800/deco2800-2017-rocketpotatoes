@@ -12,6 +12,8 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 
+import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.util.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +21,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -31,6 +29,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	private float speed;
+	private Path path;
+	private Box3D target = null;
 	private Class<?> goal;
 	
 	private int respawnTime = 15000; // milliseconds
@@ -178,16 +178,34 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (goal == Player.class) {
 			//goal = Player.class;
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-			// The X and Y position of the player without random floats generated
-			goalX = playerManager.getPlayer().getPosX() ;
-			goalY = playerManager.getPlayer().getPosY() ;
-		
-			if(this.distance(playerManager.getPlayer()) < speed) {
-				this.setPosX(goalX);
-				this.setPosY(goalY);
-				return;
+			// check that we actually have a path
+			if (path == null || path.isEmpty()) {
+				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
 			}
+
+
+			//check if close enough to target
+			if (target != null && target.overlaps(this.getBox3D())) {
+				target = null;
+			}
+
+			//check if the path has another node
+			if (target == null && !path.isEmpty()) {
+				target = path.pop();
+			}
+
+
+
+
+			if (target == null) {
+				target = playerManager.getPlayer().getBox3D();
+			}
+
+			goalX = target.getX();
+			goalY = target.getY();
+
 		} else {
 			// set the target of Enemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
