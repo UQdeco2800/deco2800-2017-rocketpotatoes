@@ -1,47 +1,32 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-
-import java.util.Optional;
-
-import com.deco2800.potatoes.entities.effects.AOEEffect;
-import com.deco2800.potatoes.entities.effects.ExplosionEffect;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
-
-import com.deco2800.potatoes.gui.RespawnGui;
-
-import com.deco2800.potatoes.gui.TreeShopGui;
-
-import com.deco2800.potatoes.managers.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
-import com.deco2800.potatoes.entities.health.HasProgressBar;
-import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBar;
-import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.health.RespawnEvent;
+import com.deco2800.potatoes.entities.health.*;
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.gui.RespawnGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Entity for the playable character.
@@ -348,6 +333,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+                }
+            case Input.Keys.NUM_4:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new IceTree()));
+                }
+            case Input.Keys.NUM_5:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new LightningTree()));
+                }
+            case Input.Keys.NUM_6:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new FireTree()));
+                }
+            case Input.Keys.NUM_7:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTree()));
                 }
             case Input.Keys.SPACE:
                 if (this.playerType.equals("wizard")) {

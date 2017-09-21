@@ -61,8 +61,6 @@ public class TextureManager extends Manager {
         saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
         saveTexture("pronograde", "resources/placeholderassets/pronograde.png");  //Moose placeholder
         saveTexture("progress_bar", "resources/placeholderassets/progress_bar.png");
-        saveTexture("seed", "resources/placeholderassets/seed.png");
-        saveTexture("food", "resources/placeholderassets/food.png");
         saveTexture("ring", "resources/placeholderassets/ring.png");
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
@@ -143,6 +141,29 @@ public class TextureManager extends Manager {
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");
         saveTexture("forest_portal", "resources/portals/Forest_Portal.png");
         saveTexture("sea_portal", "resources/portals/Sea_Portal.png");
+
+        //Resources
+        saveTexture("seed", "resources/resourceEntities/seed.png");
+        saveTexture("food", "resources/resourceEntities/food.png");
+        saveTexture("wood", "resources/resourceEntities/wood.png");
+
+        saveTexture("tumbleweed", "resources/resourceEntities/tumbleweed.png");
+        saveTexture("cactusThorn", "resources/resourceEntities/cactusThorn.png");
+        saveTexture("pricklyPear", "resources/resourceEntities/pricklyPear.png");
+
+        saveTexture("snowBall", "resources/resourceEntities/snowBall.png");
+        saveTexture("sealSkin", "resources/resourceEntities/frozenMeat-sealSkin.png");
+        saveTexture("iceCrystal", "resources/resourceEntities/iceCrystal.png");
+
+        saveTexture("coal", "resources/resourceEntities/coal.png");
+        saveTexture("bones", "resources/resourceEntities/bones.png");
+        saveTexture("obsidian", "resources/resourceEntities/obsidian.png");
+
+        saveTexture("fishMeat", "resources/resourceEntities/fishMeat.png");
+        saveTexture("pearl", "resources/resourceEntities/pearl.png");
+        saveTexture("treasure", "resources/resourceEntities/treasure.png");
+
+        //
 
         saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
         saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
