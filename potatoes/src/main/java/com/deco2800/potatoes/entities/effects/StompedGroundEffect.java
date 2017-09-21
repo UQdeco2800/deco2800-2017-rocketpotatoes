@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.effects;
 
 import java.util.Map;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -51,13 +52,11 @@ public class StompedGroundEffect extends Effect {
 	 */
 	public StompedGroundEffect(Class<?> targetClass, float posX, float posY, float posZ, boolean isTemporary,
 			float damage, float range) {
-		super(targetClass, posX, posY, posZ, 1f, 1f, 1f, 1.2f, 1.2f, damage, range, TEXTURE);
+		super(targetClass, new Vector3(posX, posY, posZ), 1f, 1f, 1f, 1.2f, 1.2f, damage, range, EffectType.DAMAGED_GROUND);
 		this.isTemporary = isTemporary;
 		effectPosition = getBox3D();
 
 		animate = false;
-		textureArrayLength = 3;
-		setTextureArray(effectType, textureArrayLength);
 	}
 
 	@Override

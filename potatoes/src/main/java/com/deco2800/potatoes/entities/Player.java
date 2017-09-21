@@ -32,6 +32,7 @@ import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
@@ -405,7 +406,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     }
 
                     GameManager.get().getWorld()
-                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, "rocket", null,
+                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
                                     new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f), playerDirections,targetPosX,targetPosY));
                 } else if (!target1.isPresent()) {
                     //Disable shooting when no enemies is present until new fix is found.
