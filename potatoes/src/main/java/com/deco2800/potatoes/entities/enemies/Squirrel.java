@@ -21,7 +21,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyStatistics STATS = initStats();
 
-	private static final float SPEED = 0.12f;
+	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
@@ -51,12 +51,16 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
 
+
 		// check that we actually have a path
 		if (path == null || path.isEmpty()) {
 			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
 		}
 
-
+		//check if last node in path matches player
+		if(!(path.goal().overlaps(playerManager.getPlayer().getBox3D()))) {
+			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+		}
 		//check if close enough to target
 		if (target != null && target.overlaps(this.getBox3D())) {
 			target = null;

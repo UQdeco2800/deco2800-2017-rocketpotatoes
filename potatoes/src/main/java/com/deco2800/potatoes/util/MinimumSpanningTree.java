@@ -309,6 +309,7 @@ public class MinimumSpanningTree {
             tree.put(temp.getEntry(), this.getVertexList().get(temp.getLeastEdgeAddress()).getEntry());
             updateLeastEdges();
         }
+        cloud.clear();
         return tree;
     }
 

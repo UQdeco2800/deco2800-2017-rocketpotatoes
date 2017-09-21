@@ -30,7 +30,7 @@ public class PathManager extends Manager {
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
     private ArrayDeque<Box3D> path;
-    private static final int NUMBER_OF_RANDOM_NODES = 50;
+    private static final int NUMBER_OF_RANDOM_NODES = 100;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
 
