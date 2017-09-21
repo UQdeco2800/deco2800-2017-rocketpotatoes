@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.portals;
 
+import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 import com.deco2800.potatoes.entities.Player;
@@ -12,7 +13,6 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.WorldUtil;
-//import com.deco2800.potatoes.worlds.InitialWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 
@@ -27,7 +27,7 @@ import com.badlogic.gdx.Input;
  * @author Jordan Holder
  *
  */
-public class AbstractPortalTest{
+public class AbstractPortalTest extends BaseTest{
 	AbstractPortal testPortal;
 	
 	@Before
