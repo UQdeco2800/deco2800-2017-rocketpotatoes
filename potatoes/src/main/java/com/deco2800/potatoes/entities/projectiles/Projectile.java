@@ -18,9 +18,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected static final float SPEED = 0.2f;
 
 	protected ProjectileType projectileType;
-	protected int textureArrayLength = 3;
-	protected String[] textureArray;
-	protected boolean textureLoop = true;
+	protected boolean loopAnimation = true;
+	protected boolean animate = true;
 
 	protected Vector3 targetPos = new Vector3();
 	protected Vector3 change = new Vector3();
@@ -48,17 +47,18 @@ public class Projectile extends AbstractEntity implements Tickable {
 				return "rocket";
 			}
 
-			public int numberOfTextures() {
-				return 3;
+			public String[] textures() {
+				return new String[] { "rocket1", "rocket2", "rocket3" };
 			}
+
 		},
 		CHILLI {
 			public String toString() {
 				return "chilli";
 			}
 
-			public int numberOfTextures() {
-				return 3;
+			public String[] textures() {
+				return new String[] { "chilli1", "chilli2", "chilli3" };
 			}
 		},
 		LEAVES {
@@ -66,8 +66,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 				return "leaves";
 			}
 
-			public int numberOfTextures() {
-				return 3;
+			public String[] textures() {
+				return new String[] { "leaves1", "leaves2", "leaves3" };
 			}
 		},
 		ACORN {
@@ -75,32 +75,36 @@ public class Projectile extends AbstractEntity implements Tickable {
 				return "acorn";
 			}
 
-			public int numberOfTextures() {
-				return 3;
+			public String[] textures() {
+				return new String[] { "acorn1" };
 			}
 		};
 
-		public int numberOfTextures() {
-			return 0;
+		public String[] textures() {
+			return new String[] { "default" };
 		}
 	}
 
 	public Projectile() {
-		textureArray = new String[textureArrayLength];
+		// nothing yet
 	}
 
 	// currently used in Player, will probably need to change out later.
 	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage,
 			ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
 			float TargetPosY) {
-		super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true, projectileType.toString());
-		
-		setTextureArray(projectileType, projectileType.numberOfTextures());
+		super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
+				projectileType.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
+
+		if (projectileType == null)
+			throw new RuntimeException("projectile type must not be null");
+		else
+			this.projectileType = projectileType;
 
 		this.range = damage;
 		this.damage = damage;
@@ -163,12 +167,15 @@ public class Projectile extends AbstractEntity implements Tickable {
 		super(startPos.x, startPos.y, startPos.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
 				projectileType.toString());
 
-		setTextureArray(projectileType, projectileType.numberOfTextures());
-
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
+
+		if (projectileType == null)
+			throw new RuntimeException("projectile type must not be null");
+		else
+			this.projectileType = projectileType;
 
 		this.maxRange = this.range = range;
 		this.damage = damage;
@@ -181,18 +188,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
 		updatePosition();
 		setPosition();
-	}
-
-	protected void setTextureArray(ProjectileType projectileType, int numberOfSprites) {
-		textureArrayLength = numberOfSprites;
-		textureArray = new String[textureArrayLength];
-
-		if (projectileType != null && !projectileType.toString().isEmpty())
-			this.projectileType = projectileType;
-
-		for (int t = 0; t < textureArrayLength; t++) {
-			textureArray[t] = this.projectileType + Integer.toString(t + 1);
-		}
 	}
 
 	public void setTargetPosition(float xPos, float yPos, float zPos) {
@@ -246,14 +241,16 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected int projectileCurrentSpriteIndexCount;
 
 	protected void animate() {
-		projectileEffectTimer++;
-		if (textureLoop) {
-			if (projectileEffectTimer % 4 == 0) {
-				setTexture(textureArray[projectileCurrentSpriteIndexCount]);
-				if (projectileCurrentSpriteIndexCount == textureArrayLength - 1)
-					projectileCurrentSpriteIndexCount = 0;
-				else {
-					projectileCurrentSpriteIndexCount++;
+		if (animate) {
+			projectileEffectTimer++;
+			if (loopAnimation) {
+				if (projectileEffectTimer % 4 == 0) {
+					setTexture(projectileType.textures()[projectileCurrentSpriteIndexCount]);
+					if (projectileCurrentSpriteIndexCount == projectileType.textures().length - 1)
+						projectileCurrentSpriteIndexCount = 0;
+					else {
+						projectileCurrentSpriteIndexCount++;
+					}
 				}
 			}
 		}

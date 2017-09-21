@@ -31,8 +31,8 @@ public class ExplosionEffect extends Effect {
 		// 0-12, 0+3
 //		super(targetClass, 0 - pos(posX, posY)[0], 0 + pos(posX, posY)[1], 0, effectWidth, effectHeight, 0, effectWidth,
 //				effectHeight, damage, range, effectType);
-		super(targetClass, new Vector3(posX - (effectWidth / 2), posY - (effectHeight / 2), 0), effectWidth + 3, effectHeight + 3, 0, effectWidth,
-				effectHeight, damage, range, EffectType.EXPLOSION);
+//////		super(targetClass, new Vector3(posX - (effectWidth / 2), posY - (effectHeight / 2), 0), effectWidth + 3, effectHeight + 3, 0, effectWidth,
+//////				effectHeight, damage, range, EffectType.EXPLOSION);
 		// super(targetClass, 0, 0, 0, 0, 0, 0, 0, 0, damage, range, effectType);
 
 		animate = true;
@@ -84,26 +84,26 @@ public class ExplosionEffect extends Effect {
 
 	@Override
 	public void onTick(long time) {
-		// super.onTick(time);
-
-		Box3D newPos = getBox3D();
-		newPos.setX(this.getPosX());
-		newPos.setY(this.getPosY());
-
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-
-		for (AbstractEntity entity : entities.values()) {
-			// if (!targetClass.isInstance(entity)) {
-			// continue;
-			// }
-			if (newPos.overlaps(entity.getBox3D())) {
-				System.out.println(entity);
-				if (entity instanceof Player) {
-					System.out.println("player col");
-				}
-				// ((MortalEntity) entity).damage(damage);
-			}
-		}
+//		// super.onTick(time);
+//
+//		Box3D newPos = getBox3D();
+//		newPos.setX(this.getPosX());
+//		newPos.setY(this.getPosY());
+//
+//		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+//
+//		for (AbstractEntity entity : entities.values()) {
+//			// if (!targetClass.isInstance(entity)) {
+//			// continue;
+//			// }
+//			if (newPos.overlaps(entity.getBox3D())) {
+//				//System.out.println(entity);
+//				if (entity instanceof Player) {
+//					System.out.println("player col");
+//				}
+//				// ((MortalEntity) entity).damage(damage);
+//			}
+//		}
 	}
 
 }

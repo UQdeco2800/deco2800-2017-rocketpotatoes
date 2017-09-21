@@ -377,7 +377,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
                 String playerDirections = GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection().toString().replaceAll("\\s","");
-                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
+//                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
 
 //                if (playerDirections.equalsIgnoreCase("w")) {
                     target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
@@ -412,7 +412,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
                     GameManager.get().getWorld()
                             .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-                                    new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f), playerDirections,targetPosX,targetPosY));
+                                    /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, playerDirections,targetPosX,targetPosY));
                 } else if (!target1.isPresent()) {
                     //Disable shooting when no enemies is present until new fix is found.
                 }
