@@ -108,14 +108,14 @@ public class PathManager extends Manager {
         // Check if this line has a clear path.
         if(!treeMaker.checkLineClash(line, obstacles)) {
             // line is not obstructed.
-            path.add(start);
+            //path.add(start);
             path.add(goal);
             return new Path(path);
         }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(goal, start, obstacles);
         // Add the starting point to the path.
-        path.add(start);
+        //path.add(start);
         // If the spanning tree has only two entries
         // return a new path with the start and end point.
         if (spanningTree.size() < 2) {
