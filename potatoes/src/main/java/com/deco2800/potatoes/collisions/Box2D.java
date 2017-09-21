@@ -104,6 +104,12 @@ public class Box2D implements CollisionMask{
         return true;
     }
 
+    /**
+     * returns 0 iff on the edge
+     * @param other
+     *              The other collision mask.
+     * @return
+     */
     @Override
     public float distance(CollisionMask other) {
 
@@ -112,21 +118,21 @@ public class Box2D implements CollisionMask{
 
             // Calc dist between sides on each dimension
             float distX = Math.abs(point.getX() - this.x) - this.xLength/2;
-            float distY = Math.abs(point.getX() - this.x) - this.yLength/2;
+            float distY = Math.abs(point.getY() - this.y) - this.yLength/2;
 
             if ((distX >= 0) && (distY >= 0)) {
                 // Box & point are diagonal to each other, calc corner point to point dist
                 return (float) Math.sqrt(distX * distX + distY * distY);
-            } else if (distX >= 0) {
-                // Box & point overlap on x co-ord but not y
-                return distX;
             } else if (distY >= 0) {
-                // Box & point overlap on y co-ord but not x
+                // Box & point overlap on x co-ord but not y
                 return distY;
+            } else if (distX >= 0) {
+                // Box & point overlap on y co-ord but not x
+                return distX;
             } else {
                 // Box & point overlap, return rough negative val
                 // TODO this val might be used in physics
-                return Math.max(distX, distY);
+                return Math.min(distX, distY);
             }
         } else if (other instanceof Circle2D) {
             Circle2D circle = (Circle2D) other;
@@ -151,7 +157,7 @@ public class Box2D implements CollisionMask{
             } else {
                 // Box & circle overlap, return rough negative val
                 // TODO this val might be used in physics
-                return Math.max(distX, distY);
+                return Math.min(distX, distY);
             }
         } else if (other instanceof Box2D) {
             Box2D otherBox = (Box2D) other;
@@ -220,6 +226,7 @@ public class Box2D implements CollisionMask{
     /**
      * Do not pass line with 0 length
      * Currently implements this.overlaps(x1, y1, x2, y2) to check for collision
+     * returns negative if touching(distance 0) or overlaping
      *
      * @param x1
      *              The starting X coordinate of the line being checked.
