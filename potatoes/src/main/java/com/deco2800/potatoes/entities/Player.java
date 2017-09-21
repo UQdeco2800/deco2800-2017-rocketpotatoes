@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.*;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
@@ -244,13 +245,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         boolean collided = false;
         for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) && !(entity instanceof Projectile) && !(entity instanceof Effect)
                     && newPos.overlaps(entity.getBox3D())) {
                 LOGGER.info(this + " colliding with " + entity);
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())&& !(entity instanceof Moose)) {
                 collided = true;
             }
         }
