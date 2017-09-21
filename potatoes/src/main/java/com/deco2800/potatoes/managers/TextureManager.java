@@ -63,6 +63,7 @@ public class TextureManager extends Manager {
         saveTexture("progress_bar", "resources/placeholderassets/progress_bar.png");
         saveTexture("ring", "resources/placeholderassets/ring.png");
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
+        saveTexture("highlight_tile_invalid", "resources/tiles/highlight_tile_invalid.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
         saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");

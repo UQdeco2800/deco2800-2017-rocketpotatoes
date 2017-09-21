@@ -70,6 +70,7 @@ public class GameScreen implements Screen {
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
+	private int maxShopRange;
 
 	/**
 	 * Start's a multiplayer game
@@ -90,7 +91,7 @@ public class GameScreen implements Screen {
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		this.game = game;
 		setupGame();
-
+		
 		// setup multiplayer
 		if (isHost) {
 			multiplayerManager.createHost(port);
@@ -101,7 +102,7 @@ public class GameScreen implements Screen {
 		}
 
 		initializeGame();
-
+		
 	}
 
 	/**
@@ -182,6 +183,8 @@ public class GameScreen implements Screen {
 
 		// Add test TreeShop Gui
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+		maxShopRange = ((TreeShopGui)guiManager.getGui(TreeShopGui.class)).getMaxRange();
+
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
 
@@ -496,8 +499,13 @@ public class GameScreen implements Screen {
 		float tileY = (int) (Math.floor(tileCoords.y));
 
 		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
-		batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-
+		
+		float distance = playerManager.distanceFromPlayer(tileX,tileY);
+		if (distance < maxShopRange)
+			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
+		else
+			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+		
 		batch.end();
 
 		// Render entities etc.

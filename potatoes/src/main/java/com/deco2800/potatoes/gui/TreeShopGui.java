@@ -42,19 +42,23 @@ import com.deco2800.potatoes.util.WorldUtil;
  *
  */
 public class TreeShopGui extends Gui implements SceneGui {
-	private Circle shopShape;
-	private Circle cancelShape;
+	private Circle shopShape; // Circle around whole shop
+	private Circle cancelShape; // Circle around cross in menu center
 	private boolean mouseIn; // Mouse inside shopMenu
 	private boolean mouseInCancel; // Mouse inside cancel circle
-	private boolean initiated;
-	private int selectedSegment;
-	private int shopX;
-	private int shopY;
-	private int shopTileX;
-	private int shopTileY;
-	private int treeX;
-	private int treeY;
+	private boolean initiated; // Menu should be visible and available
+	private int selectedSegment; // Segment of menu currently being rendered
+	private int shopX; // Screen x value of shop
+	private int shopY; // Screen y value of shop
+	private int shopTileX; // Tile x value of shop
+	private int shopTileY; // Tile y value of shop
+	private int treeX; // Tile x value where tree will be spawned
+	private int treeY; // Tile y value where tree will be spawned
+
+	// The trees that user can purchased. These will all be displayed in its own
+	// segment
 	private LinkedHashMap<AbstractTree, Color> items;
+	
 	private Stage stage;
 	private TextureManager textureManager;
 	private WidgetGroup container;
@@ -90,10 +94,18 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	@Override
 	public void render() {
+		float deltaX = shopTileX - player.getPosX();
+		float deltaY = shopTileY - player.getPosY();
+		if (Math.pow(deltaX, 2) + Math.pow(deltaY, 2) > Math.pow(MAX_RANGE, 2))
+			closeShop();
 		updateScreenPos();
 		createTreeMenu(shopX, shopY, 110);
 	}
 
+	public int getMaxRange() {
+		return MAX_RANGE;
+	}
+	
 	/**
 	 * Updates screen position to match tile position.
 	 */
@@ -120,11 +132,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 		float range = MAX_RANGE;
 		if (distance > range) {
-			double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY - player.getPosY());
+			closeShop();
+			
+			// If we want it to spawn at max range instead
+			/*double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY - player.getPosY());
 			angle = 360 - angle;
 			angle = Math.toRadians(angle);
 			shopTileX = (int) (range * Math.cos(angle) + player.getPosX());
-			shopTileY = (int) (range * Math.sin(angle) + player.getPosY());
+			shopTileY = (int) (range * Math.sin(angle) + player.getPosY());*/
 		}
 	}
 
