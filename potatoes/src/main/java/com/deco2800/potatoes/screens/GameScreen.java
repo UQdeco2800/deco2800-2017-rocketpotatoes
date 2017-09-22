@@ -272,7 +272,6 @@ public class GameScreen implements Screen {
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
 
-			addResourceTrees();
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
@@ -299,16 +298,6 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
-	}
-
-
-	private void addResourceTrees() {
-		// Seed Trees
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
 	}
 
 	private void initialiseResources() {
