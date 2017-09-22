@@ -334,27 +334,27 @@ public class GameScreen implements Screen {
 
 
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(40, 40, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(40, 41, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(40, 42, 0, woodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 20, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 16, 0, woodResource));
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(39, 40, 0, tumbleweedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(39, 41, 0, cactusThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(39, 42, 0, pricklyPearResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 20, 0, tumbleweedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 18, 0, cactusThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 16, 0, pricklyPearResource));
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(38, 40, 0, snowBallResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(38, 41, 0, sealSkinResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(38, 42, 0, iceCrystalResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(37, 40, 0, coalResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(37, 41, 0, bonesThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(37, 42, 0, obsidianResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 20, 0, snowBallResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 18, 0, sealSkinResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 16, 0, iceCrystalResource));
 
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(36, 40, 0, fishMeatResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(36, 41, 0, pearlResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(36, 42, 0, treasureResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 20, 0, coalResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 18, 0, bonesThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 16, 0, obsidianResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 20, 0, fishMeatResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 18, 0, pearlResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 16, 0, treasureResource));
 
 
 
