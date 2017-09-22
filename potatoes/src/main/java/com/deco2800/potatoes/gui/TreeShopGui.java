@@ -61,9 +61,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	
 	private Stage stage;
 	private TextureManager textureManager;
+	private PlayerManager playerManager;
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-	private Player player;
 
 	final private float UNSELECTED_ALPHA = 0.2f;
 	final private float SELECTED_ALPHA = 0.5f;
@@ -75,7 +75,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	public TreeShopGui(Stage stage) {
 		// Render menu
 		this.stage = stage;
-		player = new Player();
+		playerManager = GameManager.get().getManager(PlayerManager.class);
 		shopX = 300;
 		shopY = 300;
 		initiated = false;
@@ -94,9 +94,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	@Override
 	public void render() {
-		float deltaX = shopTileX - player.getPosX();
-		float deltaY = shopTileY - player.getPosY();
-		if (Math.pow(deltaX, 2) + Math.pow(deltaY, 2) > Math.pow(MAX_RANGE, 2))
+		float distance = playerManager.distanceFromPlayer(shopTileX, shopTileY);
+		if (distance > MAX_RANGE)
 			closeShop();
 		updateScreenPos();
 		createTreeMenu(shopX, shopY, 110);
@@ -125,11 +124,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopTileX = (int) tilePos.x;
 		shopTileY = (int) tilePos.y;
 
-		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
-
-		double distance = Math
-				.sqrt(Math.pow(shopTileX - player.getPosX(), 2.0) + Math.pow(shopTileY - player.getPosY(), 2));
-
+		double distance = playerManager.distanceFromPlayer(shopTileX, shopTileY);
+				
 		float range = MAX_RANGE;
 		if (distance > range) {
 			closeShop();
@@ -263,7 +259,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 			int degrees) {
 		// TODO make update with tree cost
 		// Checks to see if user can afford it
-		if (player.getInventory().getQuantity(new SeedResource()) < 1)
+		if (playerManager.getPlayer().getInventory().getQuantity(new SeedResource()) < 1)
 			shapeRenderer.setColor(new Color(200, 200, 200, 0.6f));
 		shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
 
@@ -408,7 +404,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 *            screen y value of mouse click
 	 */
 	public void initShop(int x, int y) {
-		player = GameManager.get().getManager(PlayerManager.class).getPlayer();
 		if (initiated && mouseIn) {
 			if (mouseInCancel)
 				closeShop();

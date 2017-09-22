@@ -36,6 +36,7 @@ import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
 import java.util.Map;
@@ -501,7 +502,10 @@ public class GameScreen implements Screen {
 		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
 		
 		float distance = playerManager.distanceFromPlayer(tileX,tileY);
-		if (distance < maxShopRange)
+		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
+		if (terrain.getTexture().equals("void")) {
+			// Do nothing
+		}else if (distance < maxShopRange && terrain.isPlantable())
 			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
 		else
 			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
