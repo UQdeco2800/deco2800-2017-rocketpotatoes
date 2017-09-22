@@ -11,10 +11,7 @@ import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.*;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
@@ -90,6 +87,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         HashSet<Resource> startingResources = new HashSet<Resource>();
         startingResources.add(new SeedResource());
         startingResources.add(new FoodResource());
+        startingResources.add(new TreasureResource());
         this.inventory = new Inventory(startingResources);
     }
 

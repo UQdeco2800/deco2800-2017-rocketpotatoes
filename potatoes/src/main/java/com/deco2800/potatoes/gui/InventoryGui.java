@@ -37,12 +37,7 @@ public class InventoryGui extends Gui {
 	private Table inventoryTable;
 	
 	/* Hashmap with the resource type as key and respective Label as value */
-	private HashMap<String, Label> inventoryMap = new HashMap<String, Label>();
-
-	/* Labels for each resource to display their amount */
-	private Label seedLabelAmount = new Label("0", skin);
-	private Label foodLabelAmount = new Label("0", skin);
-	
+	private HashMap<String, Label> inventoryMap = new HashMap<String, Label>();	
 
 	/**
 	 * Instantiates a table for the InventoryGui to be placed on the current
@@ -51,11 +46,7 @@ public class InventoryGui extends Gui {
 	 * 
 	 * @require stage is not null
 	 */
-	public InventoryGui(Stage stage) {
-		/* Put items in Map */
-		inventoryMap.put("seed", seedLabelAmount);
-		inventoryMap.put("food", foodLabelAmount);
-		
+	public InventoryGui(Stage stage) {		
 		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
 		instantiateScrollPane();
@@ -84,7 +75,16 @@ public class InventoryGui extends Gui {
 	 */
 	public void increaseInventory(String resource, int amount) {
 		Label resourceLabel = inventoryMap.get(resource);
-		resourceLabel.setText(Integer.toString(amount));
+		if (resourceLabel == null) {
+			
+			resourceLabel = new Label("0", skin);
+			resourceLabel.setText(Integer.toString(amount));
+			inventoryMap.put(resource, resourceLabel);
+			
+			updateTable(resource);
+		} else {
+			resourceLabel.setText(Integer.toString(amount));
+		}
 	}
 
 	/**
@@ -100,20 +100,26 @@ public class InventoryGui extends Gui {
 		inventoryTable.setFillParent(true);
 
 		inventoryTable.defaults().width(20);
-		inventoryTable.padRight(10);
+		inventoryTable.padRight(10);		
+	}
+	
+	/**
+	 * Adds a new resource to the inventory GUI.
+	 * 
+	 * @param resource
+	 * 			The name of the resource to be added.
+	 */
+	private void updateTable(String resource) {
 		
-		/* Each resource display */
-		for (String resource: inventoryMap.keySet()){
-			/* Image linking to display sprite */
-			TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
-			Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(resource))));
+		/* Image linking to display sprite */
+		TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
+		Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(resource))));
 			
-			resourceImage.setOrigin(50, 50);
-			inventoryTable.add(resourceImage).size(30, 30);
-			inventoryTable.add(inventoryMap.get(resource)).bottom().left();
+		resourceImage.setOrigin(50, 50);
+		inventoryTable.add(resourceImage).size(30, 30);
+		inventoryTable.add(inventoryMap.get(resource)).bottom().left();
 			
-			inventoryTable.row();
-		}		
+		inventoryTable.row();
 	}
 
 	/**
