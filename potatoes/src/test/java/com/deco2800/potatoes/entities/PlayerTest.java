@@ -41,7 +41,7 @@ public class PlayerTest {
 	
 	@Test
 	public void damageTest() {
-		player.addState(PlayerState.damaged);
+		player.setState(PlayerState.damaged);
 		player.hasState(PlayerState.damaged);
 	}
 	

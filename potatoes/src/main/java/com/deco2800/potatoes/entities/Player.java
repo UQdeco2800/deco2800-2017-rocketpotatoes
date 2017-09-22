@@ -23,19 +23,13 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.*;
 
 /**
  * Entity for the playable character.
- * <p>
- * <<<<<<< HEAD
- *
- * @author leggy
- * =======
+ * 
  * @author leggy, petercondoleon
- * <p>
- * >>>>>>> eeb52f35f2ea008596951d9200cc6237777177d4
+ * 
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
@@ -55,14 +49,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private Direction currentDirection; // The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 
-    public enum PlayerState {idle, walk, attack, damaged, death}
-
-    ;    // The states a player may take
-    private ArrayList<PlayerState> currentStates = new ArrayList<>();    // The current states of the player
-    private String playerType = "wizard"; // The type class of a player
-
-    // The map containing all player textures
-    private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
+    public enum PlayerState { idle, walk, attack, damaged, death };    // The states a player may take
+    private PlayerState currentState = PlayerState.idle;    // The current states of the player, set to idle by default
+    
+    private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap; // The map containing all player textures
 
 
     /**
@@ -100,33 +90,35 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     /**
      * Add a state to the player. For example, if the player
-     * is walking, then add the 'walk' state to the player.
+     * is walking, then set the 'walk' state to the player.
      *
-     * @param state The state to set.
+     * @param state 
+     * 			The state to set.
      */
-    public void addState(PlayerState state) {
-        currentStates.add(state);
+    public void setState(PlayerState state) {
+        this.currentState = state;
+        // TODO: Can only change state if in the base state. Prevents 
+        // the player from stopping its attack or damage while walking.
     }
 
     /**
-     * Returns true if the player currently is in the specified state.
+     * Returns true if the player is currently in the specified state.
      *
-     * @param state A state the player may take.
+     * @param state 
+     * 			A state the player may take.
+     * 
      * @return true if the player has the current state and false
-     * otherwise.
+     * 			otherwise.
      */
     public boolean hasState(PlayerState state) {
-        return this.currentStates.contains(state) ? true : false;
+    		return this.currentState.equals(state) ? true : false;
     }
 
     /**
-     * Remove a state from the player. For example, if the player
-     * stops walking, then remove the 'walk' state from the player.
-     *
-     * @param state The state to remove.
+     * Sets the player's state to the default state; that being idle.
      */
-    public void removeState(PlayerState state) {
-        currentStates.remove(state);
+    public void clearState() {
+    		this.currentState = PlayerState.idle;
     }
 
     /**
@@ -140,9 +132,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     /**
      * Sets the direction of the player based on a specified direction.
      *
-     * @param direction The direction to the player to.
+     * @param direction 
+     * 			The direction to set the player to.
      */
-    private void setDirection(Direction direction) {
+    public void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
             this.currentDirection = direction;
             LOGGER.info("Set player direction to " + direction);
@@ -186,7 +179,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Updates the player sprite based on it's state and direction.
      */
     public void updateSprites() {
-        String type = this.playerType;
+        String type = "wizard";
         String state = "_idle";
         String direction = "_" + this.getDirection().toString();
         String frame = "_1";
@@ -212,21 +205,24 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     public Inventory getInventory() {
         return this.inventory;
     }
-
-    /*
-     * Temporary method for use from other classes, please see new
-     * implementation above.
-     * TODO: Re-implement method name and parameters
+    
+    /**
+     * A method for damaging the player's health. Allows the damaged
+     * state to be enabled and respective animations to play.
+     * 
+     * @param amount
+     * 			The amount of damage to deal to the player.
      */
-    public void setDamaged(boolean isDamaged) {
-        if (!this.hasState(PlayerState.damaged)) {
-            this.addState(PlayerState.damaged);
-            this.updateSprites();
-            EventManager eventManager = GameManager.get().getManager(EventManager.class);
-            eventManager.registerEvent(this, new PlayerDamagedEvent(200));
-        }
+    @Override
+    public boolean damage(float amount) {
+    		if (!this.hasState(PlayerState.damaged)) {
+    			this.setState(PlayerState.damaged);
+                this.updateSprites();
+                EventManager eventManager = GameManager.get().getManager(EventManager.class);
+                eventManager.registerEvent(this, new PlayerDamagedEvent(200));
+    		}
+    		return super.damage(amount);
     }
-
 
     @Override
     public void onTick(long arg0) {
@@ -262,30 +258,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             this.setPosX(Math.max((float) Math.min(newPosX, width), 0));
             this.setPosY(Math.max((float) Math.min(newPosY, length), 0));
         }
-
-
-//		if (this.hasState(PlayerState.damaged)) {
-//
-//			if (this.getDirection() == Direction.SouthEast) {
-//				this.setTexture("flash_red_left");
-//
-//			} else {
-//				this.setTexture("flash_red_right");
-//
-//			}
-//			
-//			this.removeState(PlayerState.damaged);
-//		} else {
-//			
-//			if (this.getDirection() == Direction.SouthEast) {
-//				this.setTexture(TEXTURE_RIGHT);
-//			} else if (this.getDirection() == Direction.SouthWest) {
-//				this.setTexture(TEXTURE_LEFT);
-//			} else {
-//				this.setTexture(TEXTURE_RIGHT);
-//			}
-//
-//		}
 
         updateDirection();
     }
@@ -359,70 +331,50 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTree()));
                 }
             case Input.Keys.SPACE:
-                if (this.playerType.equals("wizard")) {
-                    this.playerType = "caveman";
-                    this.updateSprites();
-                    break;
-                }
-                if (this.playerType.equals("caveman")) {
-                    this.playerType = "archer";
-                    this.updateSprites();
-                    break;
-                }
-                if (this.playerType.equals("archer")) {
-                    this.playerType = "wizard";
-                    this.updateSprites();
-                    break;
-                }
-                break;
-            case Input.Keys.R:
-                Optional<AbstractEntity> target1 = null;
                 float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
                 float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-                String playerDirections = GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection().toString().replaceAll("\\s","");
-                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
-//                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
-
-//                if (playerDirections.equalsIgnoreCase("w")) {
-                    target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-
-
-//                }else{}
-                if (target1.isPresent()) {
-                    float targetPosX = target1.get().getPosX();
-                    float targetPosY = target1.get().getPosY();
-                    if (playerDirections.equalsIgnoreCase("s")) {
-                        pPosX += 1.2;
-                    }
-                    if(playerDirections.equalsIgnoreCase("e")){
-                        pPosY -= 1;
-                        pPosX += 1.5;
-                    }
-                    if(playerDirections.equalsIgnoreCase("ne")){
-                        pPosY -= 1;
-                        pPosX += 1.5;
-                    }
-                    if(playerDirections.equalsIgnoreCase("sw")){
-                        pPosY += 1;
-                        pPosX += 1;
-                    }
-//                    if(playerDirections.equalsIgnoreCase("nw")){
-//
-//                    }
-                    if(playerDirections.equalsIgnoreCase("se")){
-
-                        pPosX += 1;
-                    }
-
-                    GameManager.get().getWorld()
-                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-                                    /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, playerDirections,targetPosX,targetPosY));
-                } else if (!target1.isPresent()) {
+                
+                Optional<AbstractEntity> target = null;
+                target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+                    
+                if (target.isPresent()) {
+                		float targetPosX = target.get().getPosX();
+                		float targetPosY = target.get().getPosY();
+                    
+                		switch (this.getDirection()) {
+                		case North:
+                			break;
+                		case NorthEast:
+                			pPosY -= 1;
+                			pPosX += 1.5;
+                			break;
+                		case East:
+                			pPosY -= 1;
+                			pPosX += 1.5;
+                			break;
+                		case SouthEast:
+                			pPosX += 1;
+                			break;
+                		case South:
+                			pPosX += 1.2;
+                			break;
+                		case SouthWest:
+                			pPosY += 1;
+                			pPosX += 1;
+                			break;
+                		case West:
+                			break;
+                		case NorthWest:
+                			break;
+                		default:
+                			break;
+                		}
+                		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
+                                /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
+                } else if (!target.isPresent()) {
                     //Disable shooting when no enemies is present until new fix is found.
                 }
-
-
                 break;
             case Input.Keys.ESCAPE:
                 ((TreeShopGui) (GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class))).closeShop();
