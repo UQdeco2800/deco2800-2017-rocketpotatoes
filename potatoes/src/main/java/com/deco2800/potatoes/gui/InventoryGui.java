@@ -97,10 +97,10 @@ public class InventoryGui extends Gui {
 	 */
 	private void instantiateTable() {
 		inventoryTable = new Table();
-		inventoryTable.setFillParent(true);
-
 		inventoryTable.defaults().width(20);
-		inventoryTable.padRight(10);		
+		inventoryTable.padRight(10);
+		inventoryTable.padTop(10);
+		inventoryTable.padBottom(10);
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public class InventoryGui extends Gui {
 		scrollPane.setForceScroll(false, true);
 		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setScrollBarPositions(false, true);
-		scrollPane.setFadeScrollBars(true);
+		scrollPane.setFadeScrollBars(false);
 		scrollPane.pack();
 		
 	}
