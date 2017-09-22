@@ -7,11 +7,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.*;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+<<<<<<< HEAD
 import com.deco2800.potatoes.entities.resources.*;
+=======
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
+>>>>>>> ae60bd7a1cbddd3e036f890048793fce7c2fb5d9
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
@@ -246,13 +255,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         boolean collided = false;
         for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) && !(entity instanceof Projectile) && !(entity instanceof Effect)
                     && newPos.overlaps(entity.getBox3D())) {
                 LOGGER.info(this + " colliding with " + entity);
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())&& !(entity instanceof Moose)) {
                 collided = true;
             }
         }
@@ -380,6 +389,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
                 String playerDirections = GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection().toString().replaceAll("\\s","");
                 System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
+//                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
 
 //                if (playerDirections.equalsIgnoreCase("w")) {
                     target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
@@ -413,8 +423,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     }
 
                     GameManager.get().getWorld()
-                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, "rocket", null,
-                                    new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f), playerDirections,targetPosX,targetPosY));
+                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
+                                    /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, playerDirections,targetPosX,targetPosY));
                 } else if (!target1.isPresent()) {
                     //Disable shooting when no enemies is present until new fix is found.
                 }

@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
@@ -34,9 +35,8 @@ public class MeleeAttack extends Effect {
 	 *            Projectile damage
 	 */
 
-	public MeleeAttack(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX, float targetPosY,
-			float targetPosZ, float damage, float range) {
-		super(targetClass, posX, posY, posZ, 5f, 5f, 0, 1f, 1f, damage, range, "swipe");
+	public MeleeAttack(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
+		super(targetClass, startPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.SWIPE);
 	}
 
 	@Override

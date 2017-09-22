@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.effects.LightningEffect;
@@ -34,8 +35,10 @@ public class LightningShootEvent extends TimeEvent<AbstractTree> {
 			if (WorldUtil.distance(param.getPosX(), param.getPosY(), target.getPosX(), target.getPosY()) <= param
 					.getUpgradeStats().getAttackRange() && targetCount <= 4) {
 				// Create a lightning effect from the tree to the target
-				GameManager.get().getWorld().addEntity(new LightningEffect(target.getClass(), param.getPosX(),
-						param.getPosY(), target.getPosX(), target.getPosY(), 10, 1));
+				GameManager.get().getWorld()
+						.addEntity(new LightningEffect(target.getClass(),
+								new Vector3(param.getPosX(), param.getPosY(), param.getPosZ()),
+								new Vector3(target.getPosX(), target.getPosY(), target.getPosZ()), 10, 1));
 				targetCount++;
 			}
 		}

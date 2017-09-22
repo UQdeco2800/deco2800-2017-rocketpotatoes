@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
@@ -293,7 +294,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 		if (Float.compare(isoY, otherIsoY) == 0) {
 			return Float.compare(otherIsoX, isoX);
 		}
-		if (o instanceof Effect) {
+		if (o instanceof Effect || o instanceof Projectile) {
 			return 2;
 		}
 		return Float.compare(otherIsoY, isoY);
