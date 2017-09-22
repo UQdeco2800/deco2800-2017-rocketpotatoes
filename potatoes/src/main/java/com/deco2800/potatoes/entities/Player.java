@@ -92,25 +92,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Initialises the inventory with all the resources in the game.
      */
     private void addResources() {
-    	HashSet<Resource> startingResources = new HashSet<Resource>();
-    	
-    	startingResources.add(new BonesResource());
-    	startingResources.add(new CoalResource());
-    	startingResources.add(new CactusThornResource());
-    	startingResources.add(new FishMeatResource());
-        startingResources.add(new FoodResource());
-        startingResources.add(new IceCrystalResource());
-        startingResources.add(new ObsidianResource());
-        startingResources.add(new PearlResource());
-        startingResources.add(new PineconeResource());
-        startingResources.add(new PricklyPearResource());
-        startingResources.add(new SealSkinResource());
-        startingResources.add(new SeedResource());
-        startingResources.add(new SnowBallResource());
-        startingResources.add(new TreasureResource());
-        startingResources.add(new TumbleweedResource());
-        startingResources.add(new WoodResource());
-        
+    	HashSet<Resource> startingResources = new HashSet<Resource>();        
         this.inventory = new Inventory(startingResources);
     }
 
