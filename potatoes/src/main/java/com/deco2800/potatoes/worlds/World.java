@@ -233,7 +233,11 @@ public class World {
 	 * Returns the terrain of the specified location taken from the terrain grid
 	 */
 	public Terrain getTerrain(int x, int y) {
-		return terrain[y][x];
+		if (x > 0 && y > 0 && x < width && y < length)
+			return terrain[y][x];
+		else
+			// Makes sure terrain finding doesn't crash
+			return new Terrain("void", 0, false);
 	}
 
 	/**
