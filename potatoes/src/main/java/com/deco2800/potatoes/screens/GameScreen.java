@@ -19,8 +19,7 @@ import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
@@ -37,6 +36,7 @@ import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
 import java.util.Map;
@@ -71,6 +71,7 @@ public class GameScreen implements Screen {
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
+	private int maxShopRange;
 
 	/**
 	 * Start's a multiplayer game
@@ -91,7 +92,7 @@ public class GameScreen implements Screen {
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		this.game = game;
 		setupGame();
-
+		
 		// setup multiplayer
 		if (isHost) {
 			multiplayerManager.createHost(port);
@@ -102,7 +103,7 @@ public class GameScreen implements Screen {
 		}
 
 		initializeGame();
-
+		
 	}
 
 	/**
@@ -183,6 +184,8 @@ public class GameScreen implements Screen {
 
 		// Add test TreeShop Gui
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+		maxShopRange = ((TreeShopGui)guiManager.getGui(TreeShopGui.class)).getMaxRange();
+
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
 
@@ -312,16 +315,49 @@ public class GameScreen implements Screen {
 
 		SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
+		WoodResource woodResource = new WoodResource();
+		TumbleweedResource tumbleweedResource = new TumbleweedResource();
+		CactusThornResource cactusThornResource = new CactusThornResource();
+		PricklyPearResource pricklyPearResource = new PricklyPearResource();
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		SnowBallResource snowBallResource = new SnowBallResource();
+		SealSkinResource sealSkinResource = new SealSkinResource();
+		IceCrystalResource iceCrystalResource = new IceCrystalResource();
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+		CoalResource coalResource = new CoalResource();
+		BonesResource bonesThornResource = new BonesResource();
+		ObsidianResource obsidianResource = new ObsidianResource();
+
+		FishMeatResource fishMeatResource = new FishMeatResource();
+		PearlResource pearlResource = new PearlResource();
+		TreasureResource treasureResource = new TreasureResource();
+
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 20, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 16, 0, woodResource));
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 20, 0, tumbleweedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 18, 0, cactusThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 16, 0, pricklyPearResource));
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 20, 0, snowBallResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 18, 0, sealSkinResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 16, 0, iceCrystalResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 20, 0, coalResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 18, 0, bonesThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 16, 0, obsidianResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 20, 0, fishMeatResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 18, 0, pearlResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 16, 0, treasureResource));
+
+
+
 
 	}
 
@@ -464,8 +500,16 @@ public class GameScreen implements Screen {
 		float tileY = (int) (Math.floor(tileCoords.y));
 
 		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
-		batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-
+		
+		float distance = playerManager.distanceFromPlayer(tileX,tileY);
+		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
+		if (terrain.getTexture().equals("void")) {
+			// Do nothing
+		}else if (distance < maxShopRange && terrain.isPlantable())
+			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
+		else
+			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+		
 		batch.end();
 
 		// Render entities etc.

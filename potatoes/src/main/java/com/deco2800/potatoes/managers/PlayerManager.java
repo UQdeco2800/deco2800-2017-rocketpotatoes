@@ -52,4 +52,19 @@ public class PlayerManager extends Manager {
 		return this.player;
 	}
 
+	/**
+	 * Returns the distance from player in tile coordinates
+	 * 
+	 * @param tileX
+	 *            x coord in tiles
+	 * @param tileY
+	 *            y coord in tiles
+	 * @return distance from position to player
+	 */
+	public float distanceFromPlayer(float tileX, float tileY) {
+		float deltaX = player.getPosX() - tileX;
+		float deltaY = player.getPosY() - tileY;
+		return (float) Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+	}
+
 }

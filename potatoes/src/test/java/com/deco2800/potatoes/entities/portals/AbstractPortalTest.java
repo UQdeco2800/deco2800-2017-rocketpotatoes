@@ -42,8 +42,8 @@ public class AbstractPortalTest{
 		GameManager.get().getWorld().addEntity(addedPlayer);
 		
 		collided = testPortal.preTick(0);
-		
 		assertEquals(false, collided);
+		
 	}
 	
 	@Test

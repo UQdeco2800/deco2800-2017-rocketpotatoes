@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.enemies;
 
 import java.util.Optional;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
@@ -57,9 +58,9 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 		}
 
 		GameManager.get().getWorld()
-				.addEntity(new MeleeAttack(enemy.getClass(), enemy.getPosX() + 0.5f, enemy.getPosY() + 0.5f,
-						enemy.getPosZ(), target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ(), 1,
-						4));
+				.addEntity(new MeleeAttack(enemy.getClass(),
+						new Vector3(enemy.getPosX() + 0.5f, enemy.getPosY() + 0.5f, enemy.getPosZ()),
+						new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()), 1, 4));
 
 		/*
 		 * If the enemy this attack event belongs to, stop firing !DOES NOT REMOVE

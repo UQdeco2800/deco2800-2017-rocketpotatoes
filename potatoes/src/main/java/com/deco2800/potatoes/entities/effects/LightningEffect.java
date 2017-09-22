@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities.effects;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -14,37 +14,31 @@ public class LightningEffect extends Effect {
 	private float segmentStep = 1f;
 	private int segments;
 
-	protected static transient String TEXTURE = "lightning";
-
-	float xPos;
-	float yPos;
-	float fxPos;
-	float fyPos;
+	protected Vector3 startPos;
+	protected Vector3 targetPos;
 
 	float distanceDeltaX = 1f;
 	float distanceDeltaY = 1f;
-
-	private float damage = 0.1f;
 
 	float[][] pos = null;
 
 	boolean staticStrike = true;
 
-	public LightningEffect(Class<?> targetClass, float xPos, float yPos, float fxPos, float fyPos, float damage,
-			float range) {
-		super(targetClass, fyPos, fxPos, 0, 5f, 5f, 0, 1f, 1f, damage, range, TEXTURE);
+	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
+		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.LIGHTNING);
+
+		this.startPos = startPos;
+		this.targetPos = targetPos;
 
 		animate = false;
-		textureArrayLength = 0;
-		setTextureArray(effectType, textureArrayLength);
 
 		// TODO: figure out why inverses
-		this.xPos = yPos;
-		this.yPos = xPos;
-		this.fxPos = fyPos;
-		this.fyPos = fxPos;
+		// this.xPos = yPos;
+		// this.yPos = xPos;
+		// this.fxPos = fyPos;
+		// this.fyPos = fxPos;
 
-		pos = calculatePositions(this.xPos, this.yPos, this.fxPos, this.fyPos);
+		pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
 	}
 
 	public float[][] calculatePositions(float xPos, float yPos, float fxPos, float fyPos) {
@@ -91,15 +85,15 @@ public class LightningEffect extends Effect {
 
 	public void drawEffect(SpriteBatch batch) {
 		if (!staticStrike) {
-			pos = calculatePositions(this.xPos, this.yPos, this.fxPos, this.fyPos);
+			pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
 		}
 		for (int x = 0; x < pos.length - 1; x++) {
 			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
 		}
 
 		Box3D newPos = getBox3D();
-		newPos.setX(fyPos);
-		newPos.setY(fxPos);
+		newPos.setX(targetPos.x);
+		newPos.setY(targetPos.y);
 		//
 		// Map<Integer, AbstractEntity> entities =
 		// GameManager.get().getWorld().getEntities();
@@ -119,9 +113,10 @@ public class LightningEffect extends Effect {
 		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class,
 		// newPos.getX(), newPos.getY(), 0, damage,
 		// range);
-		
-//		ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class, 0, 0, 0, damage, range);
-//		GameManager.get().getWorld().addEntity(expEffect);
+
+		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class, 0, 0, 0,
+		// damage, range);
+		// GameManager.get().getWorld().addEntity(expEffect);
 
 	}
 
@@ -132,11 +127,6 @@ public class LightningEffect extends Effect {
 		if (lifetime <= 0) {
 			GameManager.get().getWorld().removeEntity(this);
 		}
-	}
-
-	@Override
-	public float getDamage() {
-		return damage;
 	}
 
 }

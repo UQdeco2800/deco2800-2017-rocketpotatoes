@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
@@ -12,6 +13,11 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 
+import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
+import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +25,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
+
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.ParticleManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
-import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -411,14 +417,18 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 
-		//add a blood splatter effect on enemy death(not working, still needs particle team finishing their code)
-//		BasicParticleType type = new BasicParticleType(1000, 1.0f * 1000.f, 100.0f, 1024, Color.RED, 1, 1);
-//		type.speed = 0.1f;
-//		type.alphaCeil = 0.5f;
-//		type.speedVarianceMin = 0.8f;
-//		ParticleEmitter e = new ParticleEmitter(this.getPosX(), this.getPosY(), type);
-//		GameManager.get().getManager(ParticleManager.class).addParticleEmitter(e);
-		
+		ParticleManager p = GameManager.get().getManager(ParticleManager.class);
+
+		ParticleType particle =  new BasicParticleType(100000, 500.0f,
+				0.0f, 1024, Color.RED, 5, 5);
+		particle.speed = 0.9f;
+
+		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+		p.addParticleEmitter(1.0f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
+				particle));
+
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
 		

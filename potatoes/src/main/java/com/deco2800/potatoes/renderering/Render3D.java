@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.animation.Animated;
@@ -31,7 +32,7 @@ import java.util.TreeMap;
 /**
  * A simple isometric renderer for DECO2800 games
  *
- * @Author Tim Hadwen
+ * @Author Tim Hadwen, Dion Lao
  */
 public class Render3D implements Renderer {
 
@@ -117,11 +118,9 @@ public class Render3D implements Renderer {
 					// x, y
 					isoPosition.x, isoPosition.y,
 					// originX, originY
-					(tileWidth * entity.getXRenderLength()) / 2,
-					(tileHeight * entity.getYRenderLength()) / 2,
+					(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
 					// width, height
-					tileWidth * entity.getXRenderLength(),
-					(tex.getHeight() / aspect) * entity.getYRenderLength(),
+					tileWidth * entity.getXRenderLength(), (tex.getHeight() / aspect) * entity.getYRenderLength(),
 					// scaleX, scaleY, rotation
 					1, 1, 0 - entity.rotationAngle(),
 					// srcX, srcY
@@ -139,38 +138,37 @@ public class Render3D implements Renderer {
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
 				ProgressBar PROGRESS_BAR = ((HasProgressBar) entity).getProgressBar();
-				// Allow entities to return null if they don't want to display their progress bar
+				// Allow entities to return null if they don't want to display their progress
+				// bar
 				if (PROGRESS_BAR != null) {
-					TextureManager reg = GameManager.get()
-						.getManager(TextureManager.class);
-	
+					TextureManager reg = GameManager.get().getManager(TextureManager.class);
+
 					Texture barTexture = reg.getTexture((PROGRESS_BAR.getTexture()));
-	
+
 					// sets colour palette
 					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) entity).getProgressRatio()));
-	
+
 					// draws the progress bar
 					Texture entityTexture = reg.getTexture(entity.getTexture());
 					float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
-	
+
 					float barRatio = ((HasProgress) entity).getProgressRatio();
-					float maxBarWidth = tileWidth * entity.getXRenderLength()
-						* PROGRESS_BAR.getWidthScale();
+					float maxBarWidth = tileWidth * entity.getXRenderLength() * PROGRESS_BAR.getWidthScale();
 					float barWidth = maxBarWidth * barRatio;
 					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
-	
+
 					// x co-ordinate,
 					// finds the overlap length of the bar and moves it half as much left
-					float barX = isoPosition.x - (tileWidth * entity.getXRenderLength()
-							* (PROGRESS_BAR.getWidthScale() - 1) / 2);
+					float barX = isoPosition.x
+							- (tileWidth * entity.getXRenderLength() * (PROGRESS_BAR.getWidthScale() - 1) / 2);
 					// y co-ordinate
 					// If height is specified, use it, otherwise estimate the right height
 					float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
 					float endX = barX + barWidth;
 					// We haven't implemented rounded corners, but when we do:
 					// float greyBarX = endX + endWidth;
-	
-					//draw half of bar that represents current health
+
+					// draw half of bar that represents current health
 					batch.draw(barTexture,
 							// x, y
 							barX, barY,
@@ -182,8 +180,8 @@ public class Render3D implements Renderer {
 							(int) (barTexture.getWidth() * barRatio), barTexture.getHeight(),
 							// flipX, flipY
 							false, false);
-	
-					//draw shadow half of bar that represents health lost
+
+					// draw shadow half of bar that represents health lost
 					batch.setColor(0.5f, 0.5f, 0.5f, 1f);
 					batch.draw(barTexture,
 							// x, y
@@ -196,18 +194,18 @@ public class Render3D implements Renderer {
 							(int) (barTexture.getWidth() * (1 - barRatio)), barTexture.getHeight(),
 							// flipX, flipY
 							false, false);
-	
+
 					// reset the batch colour
 					batch.setColor(Color.WHITE);
-	
-					/* display font (used for debugging)
-					 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
-					 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
-					 * tileWidth / 2 - 10, isoPosition.y + 60);
+
+					/*
+					 * display font (used for debugging) font.setColor(Color.RED);
+					 * font.getData().setScale(1.0f); font.draw(batch, String.format("%d",
+					 * ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth / 2 - 10,
+					 * isoPosition.y + 60);
 					 */
 				}
 			}
-
 
 			/*
 			 * Display resource collected for Resource Tree
@@ -230,9 +228,9 @@ public class Render3D implements Renderer {
 				font.draw(batch, String.format("%s", m.getClients().get(e.getValue())),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
 			}
-			
-			if(entity instanceof Effect) {
-				((Effect)entity).drawEffect(batch); 
+
+			if (entity instanceof Effect) {
+				((Effect) entity).drawEffect(batch);
 			}
 		}
 
@@ -260,7 +258,7 @@ public class Render3D implements Renderer {
 
 	private void renderProgress(SpriteBatch batch, AbstractEntity entity) {
 	}
-	
+
 	/**
 	 * Returns the correct tile renderer for the given rendering engine
 	 *
@@ -272,7 +270,58 @@ public class Render3D implements Renderer {
 	public BatchTiledMapRenderer getTileRenderer(SpriteBatch batch) {
 		return new IsometricTiledMapRenderer(GameManager.get().getWorld().getMap(), 1, batch);
 	}
-	
+
+	/**
+	 * Transforms screen(gui) coordinates to tile coordinates. Reverses tileToScreen.
+	 * 
+	 * @param x
+	 *            x coordinate in screen
+	 * @param y
+	 *            y coordinate in screen
+	 * @return a Vector2 with tile coordinates
+	 */
+	public static Vector2 screenToTile(float x, float y) {
+		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		return Render3D.worldPosToTile(world.x, world.y);
+	}
+
+	/**
+	 * Transforms tile coordinates to screen(gui) coordinates. Reverses screenToTile.
+	 * 
+	 * @param stage
+	 *            stage that the screen is on
+	 * @param x
+	 *            x coordinate for tile
+	 * @param y
+	 *            y coordinate for tile
+	 * @return a Vector3 for screen (gui) coordinates
+	 */
+	public static Vector3 tileToScreen(Stage stage, float x, float y) {
+		Vector2 tile = Render3D.tileToWorldPos(x, y);
+		Vector3 screent = worldToGuiScreenCoordinates(stage, tile.x, tile.y, 1);
+		return new Vector3(screent.x, screent.y, screent.z);
+	}
+
+	/**
+	 * Converts world coords to screen(gui) coordinates. Reverses ScreenToWorldCoordinates.
+	 * 
+	 * @param stage
+	 *            stage that the screen is on
+	 * @param x
+	 *            x coord in world
+	 * @param y
+	 *            y coord in world
+	 * @param z
+	 *            z coord in world
+	 * @return a Vector3 screen(gui) coordinate
+	 */
+	public static Vector3 worldToGuiScreenCoordinates(Stage stage, float x, float y, float z) {
+		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
+				.project(new Vector3(x, y - stage.getHeight() + 1, z));
+		screen.y = -screen.y;
+		return screen;
+	}
+
 	/**
 	 * Transforms world coordinates to screen coordinates for rendering.
 	 *
@@ -298,10 +347,10 @@ public class Render3D implements Renderer {
 
 		float isoX = baseX + (cartX - cartY) / 2.0f * tileWidth;
 		float isoY = baseY + (cartX + cartY) / 2.0f * tileHeight;
-		
+
 		// scaled to length of tile side
 		float zScale = new Vector2(tileWidth, tileHeight).scl(0.5f).len();
-		
+
 		return new Vector2(isoX, isoY + z * zScale);
 	}
 
@@ -317,11 +366,15 @@ public class Render3D implements Renderer {
 	}
 
 	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
-		return GameManager.get().getManager(CameraManager.class).getCamera()
-				.unproject(new Vector3(x, y, z));
+		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, z));
 	}
-	
-	
+
+	/**
+	 * Converts world to tile coordinates. Reverses tileToWorldPos.
+	 * @param x x coord in world
+	 * @param y y coord in world
+	 * @return a Vector2 for tile coordinates
+	 */
 	public static Vector2 worldPosToTile(float x, float y) {
 		float projX = 0, projY = 0;
 
@@ -334,18 +387,24 @@ public class Render3D implements Renderer {
 
 		return new Vector2(projX, projY);
 	}
-	
+
+	/**
+	 * Converts tile to world coordinates. Reverses worldPostoTile
+	 * @param x x coord in tile
+	 * @param y y coord in tile
+	 * @return a Vector2 of world coordinates
+	 */
 	public static Vector2 tileToWorldPos(float x, float y) {
 		float projX = x, projY = y;
-		
+
 		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
-		projX = (projY+projX)/2;
-		y = (projY - projX)*(-tileHeight)+(tileHeight/2f);
+		projX = (projY + projX) / 2;
+		y = (projY - projX) * (-tileHeight) + (tileHeight / 2f);
 		x = projX * tileWidth;
-		
-		return new Vector2(x,y);
-		
+
+		return new Vector2(x, y);
+
 	}
 }

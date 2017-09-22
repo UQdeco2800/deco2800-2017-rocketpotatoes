@@ -1,46 +1,30 @@
 package com.deco2800.potatoes.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-
-import java.util.Optional;
-
-import com.deco2800.potatoes.entities.effects.AOEEffect;
-import com.deco2800.potatoes.entities.effects.ExplosionEffect;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
-
-import com.deco2800.potatoes.gui.RespawnGui;
-
-import com.deco2800.potatoes.gui.TreeShopGui;
-
-import com.deco2800.potatoes.managers.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
-import com.deco2800.potatoes.entities.health.HasProgressBar;
-import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBar;
-import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.health.RespawnEvent;
+import com.deco2800.potatoes.entities.health.*;
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
+import com.deco2800.potatoes.entities.resources.*;
+import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.gui.RespawnGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Entity for the playable character.
@@ -101,10 +85,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.currentDirection = Direction.SouthEast;
-
-        HashSet<Resource> startingResources = new HashSet<Resource>();
-        startingResources.add(new SeedResource());
-        startingResources.add(new FoodResource());
+        
+        /* Initialise the inventory with the valid resources */
+        addResources();
+    }
+    
+    /**
+     * Initialises the inventory with all the resources in the game.
+     */
+    private void addResources() {
+    	HashSet<Resource> startingResources = new HashSet<Resource>();        
         this.inventory = new Inventory(startingResources);
     }
 
@@ -258,13 +248,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         boolean collided = false;
         for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
+            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) && !(entity instanceof Projectile) && !(entity instanceof Effect)
                     && newPos.overlaps(entity.getBox3D())) {
                 LOGGER.info(this + " colliding with " + entity);
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())&& !(entity instanceof Moose)) {
                 collided = true;
             }
         }
@@ -348,6 +338,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     AbstractTree.constructTree(
                             new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
                 }
+            case Input.Keys.NUM_4:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new IceTree()));
+                }
+            case Input.Keys.NUM_5:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new LightningTree()));
+                }
+            case Input.Keys.NUM_6:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new FireTree()));
+                }
+            case Input.Keys.NUM_7:
+                if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
+                    AbstractTree.constructTree(
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTree()));
+                }
             case Input.Keys.SPACE:
                 if (this.playerType.equals("wizard")) {
                     this.playerType = "caveman";
@@ -372,6 +382,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
                 String playerDirections = GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection().toString().replaceAll("\\s","");
                 System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
+//                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
 
 //                if (playerDirections.equalsIgnoreCase("w")) {
                     target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
@@ -405,8 +416,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     }
 
                     GameManager.get().getWorld()
-                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, "rocket", null,
-                                    new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f), playerDirections,targetPosX,targetPosY));
+                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
+                                    /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, playerDirections,targetPosX,targetPosY));
                 } else if (!target1.isPresent()) {
                     //Disable shooting when no enemies is present until new fix is found.
                 }

@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 
@@ -13,9 +14,9 @@ public class LazerEffect extends Effect {
 	float fxPos;
 	float fyPos;
 
-	public LazerEffect(Class<?> targetClass, float xPos, float yPos, float fxPos, float fyPos, float damage,
+	public LazerEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage,
 			float range) {
-		super(targetClass, fyPos, fxPos, 0, 5f, 5f, 0, 1f, 1f, damage, range, "lightning");
+		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.LAZER);
 
 		// TODO: figure out why inverses
 		this.xPos = yPos;

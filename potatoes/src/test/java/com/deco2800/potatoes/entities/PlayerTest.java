@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities;
 
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Player.PlayerState;
+import com.deco2800.potatoes.managers.PlayerManager;
 
 import org.junit.Test;
 import org.junit.Before;

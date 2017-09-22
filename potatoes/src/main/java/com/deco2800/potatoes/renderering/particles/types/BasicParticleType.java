@@ -131,6 +131,7 @@ public class BasicParticleType extends ParticleType {
                         count++;
                     }
                 }
+                if (this.cycleDelta == 0.0f) { break; }
             }
         }
     }
