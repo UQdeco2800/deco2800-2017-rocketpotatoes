@@ -126,6 +126,7 @@ public class TextureManager extends Manager {
         saveTexture("ice_basic_tree", "resources/trees/iceBasicTree.png");
         //damage tree:acorn
         saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
+
         // Enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
         saveTexture("swipe2", "resources/enemies/swipe2.png");
@@ -136,7 +137,18 @@ public class TextureManager extends Manager {
         saveTexture("DamagedGroundTemp1", "resources/enemies/DamagedGroundTemp1.png");
         saveTexture("DamagedGroundTemp2", "resources/enemies/DamagedGroundTemp2.png");
         saveTexture("DamagedGroundTemp3", "resources/enemies/DamagedGroundTemp3.png");
-       //Portals 
+        // Squirrel
+        saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
+        saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");
+        saveTexture("squirrel_NE", "resources/enemies/squirrel/squirrel_NE.png");
+        saveTexture("squirrel_NW", "resources/enemies/squirrel/squirrel_NW.png");
+        saveTexture("squirrel_S", "resources/enemies/squirrel/squirrel_S.png");
+        saveTexture("squirrel_SE", "resources/enemies/squirrel/squirrel_SE.png");
+        saveTexture("squirrel_SW", "resources/enemies/squirrel/squirrel_SW.png");
+        saveTexture("squirrel_W", "resources/enemies/squirrel/squirrel_W.png");
+
+
+        //Portals
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");

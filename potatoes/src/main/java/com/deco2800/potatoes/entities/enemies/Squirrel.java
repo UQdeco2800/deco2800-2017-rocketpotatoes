@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -12,7 +13,7 @@ import com.deco2800.potatoes.util.Path;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasDirection {
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel_right";
@@ -27,6 +28,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Box3D target = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
+
+	private Direction currentDirection; // The direction the enemy faces
+	private Vector2 oldPos = Vector2.Zero; // Used to determine the enemy's change in direction
+	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	public Squirrel() {
 		// empty for serialization
@@ -98,9 +103,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		//flip sprite
 		if (deltaX + deltaY >= 0) {
-			this.setTexture(TEXTURE_LEFT);
+			//this.setTexture(TEXTURE_LEFT);
 		} else {
-			this.setTexture(TEXTURE_RIGHT);
+			//this.setTexture(TEXTURE_RIGHT);
 		}
 
 		float changeX = (float) (SPEED * Math.cos(angle));
@@ -108,8 +113,60 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
+
+		updateDirection();
 	}
 
+	@Override
+	public Direction getDirection() { return currentDirection; }
+
+	private void setDirection(Direction direction) {
+		if (this.currentDirection != direction) {
+			this.currentDirection = direction;
+			updateSprites();
+		}
+	}
+
+	/**
+	 * Updates the direction of the player based on change in position.
+	 */
+	private void updateDirection() {
+		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+			return;    // Not moving
+		}
+		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);
+
+		if (angularDirection >= -180 && angularDirection < -157.5) {
+			this.setDirection(Direction.SouthWest);
+		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
+			this.setDirection(Direction.West);
+		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
+			this.setDirection(Direction.NorthWest);
+		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
+			this.setDirection(Direction.North);
+		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
+			this.setDirection(Direction.NorthEast);
+		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
+			this.setDirection(Direction.East);
+		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
+			this.setDirection(Direction.SouthEast);
+		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
+			this.setDirection(Direction.South);
+		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
+			this.setDirection(Direction.SouthWest);
+		}
+		oldPos = new Vector2(this.getPosX(), this.getPosY());
+	}
+
+	/**
+	 * Updates the player sprite based on it's state and direction.
+	 */
+	public void updateSprites() {
+		String type = "squirrel";
+		String direction = "_" + this.getDirection().toString();
+
+		this.setTexture(type + direction);
+	}
 
 	@Override
 	public String toString() {

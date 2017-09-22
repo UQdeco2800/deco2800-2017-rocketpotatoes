@@ -41,7 +41,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private float speed;
 	private Class<?> goal;
-	
+
 	//private int respawnTime = 15000; // milliseconds
 
 	private static final SoundManager enemySoundManager = new SoundManager();
@@ -380,7 +380,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
-	 * @param projectile, the projectile shot
+	 * @param effect, the projectile shot
 	 */
 	public void getShot(Effect effect) {
 		this.damage(effect.getDamage());
@@ -431,10 +431,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
-		
-		
 
-		
+
+
+
 //		// get the event manager
 //		EventManager eventManager = GameManager.get().getManager(EventManager.class);
 //		// add the respawn event
