@@ -35,7 +35,7 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
-public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
+public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
@@ -48,6 +48,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
+
+	private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
+	private Direction currentDirection; // The direction the player faces
+
 
 	/**
 	 * Default constructor for serialization
@@ -316,7 +320,63 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
 		}
+
+		updateDirection();
 	}
+
+	public Direction getEnemyDirection() {
+		return this.currentDirection;
+	}
+
+	private void setDirection(Direction direction) {
+		if (this.currentDirection != direction) {
+			this.currentDirection = direction;
+			updateSprites();
+		}
+	}
+
+	/**
+	 * Updates the direction of the player based on change in position.
+	 */
+	public void updateDirection() {
+		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+			return;    // Not moving
+		}
+		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);
+
+		if (angularDirection >= -180 && angularDirection < -157.5) {
+			this.setDirection(Direction.SouthWest);
+		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
+			this.setDirection(Direction.West);
+		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
+			this.setDirection(Direction.NorthWest);
+		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
+			this.setDirection(Direction.North);
+		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
+			this.setDirection(Direction.NorthEast);
+		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
+			this.setDirection(Direction.East);
+		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
+			this.setDirection(Direction.SouthEast);
+		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
+			this.setDirection(Direction.South);
+		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
+			this.setDirection(Direction.SouthWest);
+		}
+		oldPos = new Vector2(this.getPosX(), this.getPosY());
+	}
+
+	/**
+	 * Updates the player sprite based on it's state and direction.
+	 */
+	public void updateSprites() {
+		String type = getEnemyType();
+		String direction = "_" + getEnemyDirection().toString();
+
+		this.setTexture(type + direction);
+	}
+
+	public abstract String getEnemyType();
 
 	/**
 	 * Registers the list of events given with the event manager and unregisters all

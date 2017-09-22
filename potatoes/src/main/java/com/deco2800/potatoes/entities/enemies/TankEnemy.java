@@ -4,15 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.deco2800.potatoes.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.StatisticsBuilder;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -25,7 +21,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 /**
  * A stronger but slower enemy type, only attacks towers/trees
  */
-public class TankEnemy extends EnemyEntity implements Tickable {
+public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyStatistics STATS = initStats();
@@ -35,6 +31,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
+	private static final transient String enemyType = "bear";
 
 	/* Define speed, goal and path variables */
 	private static float speed = 0.006f;
@@ -44,6 +41,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
+
+	private Direction currentDirection; // The direction the enemy faces
 
 	/**
 	 * Empty constructor for serialization
@@ -92,6 +91,10 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
+
+	public Direction getDirection() { return currentDirection; }
+
+	public String getEnemyType() { return enemyType; }
 
 	/**
 	 * String representation of this Tank Enemy and its position

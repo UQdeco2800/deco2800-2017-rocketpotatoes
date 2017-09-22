@@ -21,6 +21,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasD
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyStatistics STATS = initStats();
+	private static final String enemyType = "squirrel";
 
 	private static final float SPEED = 0.12f;
 	private static Class<?> goal = Player.class;
@@ -114,13 +115,13 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasD
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
 
-		updateDirection();
+		super.updateDirection();
 	}
 
 	@Override
 	public Direction getDirection() { return currentDirection; }
 
-	private void setDirection(Direction direction) {
+	public void setDirection(Direction direction) {
 		if (this.currentDirection != direction) {
 			this.currentDirection = direction;
 			updateSprites();
@@ -130,7 +131,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasD
 	/**
 	 * Updates the direction of the player based on change in position.
 	 */
-	private void updateDirection() {
+/*	private void updateDirection() {
 		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
 			return;    // Not moving
 		}
@@ -157,15 +158,19 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasD
 		}
 		oldPos = new Vector2(this.getPosX(), this.getPosY());
 	}
-
+*/
 	/**
 	 * Updates the player sprite based on it's state and direction.
 	 */
-	public void updateSprites() {
+/*	public void updateSprites() {
 		String type = "squirrel";
-		String direction = "_" + this.getDirection().toString();
+		String direction = "_" + getDirection().toString();
 
 		this.setTexture(type + direction);
+	}
+*/
+	public String getEnemyType() {
+		return enemyType;
 	}
 
 	@Override
