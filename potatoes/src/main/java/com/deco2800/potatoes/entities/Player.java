@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -34,19 +33,19 @@ import java.util.*;
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+    
     private static final transient float HEALTH = 200f;
-    private static final transient String TEXTURE_RIGHT = "player_right";
-    private static final transient String TEXTURE_LEFT = "player_left";
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-
+    
+    private String playerType;	// The type of player
     private float movementSpeed;
     private float speedx;
     private float speedy;
     private int respawnTime = 5000; // milliseconds
     private Inventory inventory;
 
-    private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
-    private Direction currentDirection; // The direction the player faces
+    private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
+    private Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 
     public enum PlayerState { idle, walk, attack, damaged, death };    // The states a player may take
@@ -59,7 +58,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Default constructor for the purposes of serialization
      */
     public Player() {
-        super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
+        super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
     }
 
     /**
@@ -70,7 +69,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @param posZ The z-coordinate.
      */
     public Player(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, TEXTURE_RIGHT, HEALTH);
+        super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
         this.movementSpeed = 0.075f;
         this.speedx = 0.0f;
         this.speedy = 0.0f;
@@ -331,50 +330,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTree()));
                 }
             case Input.Keys.SPACE:
-                float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-                float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-                float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-                
-                Optional<AbstractEntity> target = null;
-                target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-                    
-                if (target.isPresent()) {
-                		float targetPosX = target.get().getPosX();
-                		float targetPosY = target.get().getPosY();
-                    
-                		switch (this.getDirection()) {
-                		case North:
-                			break;
-                		case NorthEast:
-                			pPosY -= 1;
-                			pPosX += 1.5;
-                			break;
-                		case East:
-                			pPosY -= 1;
-                			pPosX += 1.5;
-                			break;
-                		case SouthEast:
-                			pPosX += 1;
-                			break;
-                		case South:
-                			pPosX += 1.2;
-                			break;
-                		case SouthWest:
-                			pPosY += 1;
-                			pPosX += 1;
-                			break;
-                		case West:
-                			break;
-                		case NorthWest:
-                			break;
-                		default:
-                			break;
-                		}
-                		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-                                /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
-                } else if (!target.isPresent()) {
-                    //Disable shooting when no enemies is present until new fix is found.
-                }
+                attack();
                 break;
             case Input.Keys.ESCAPE:
                 ((TreeShopGui) (GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class))).closeShop();
@@ -389,7 +345,59 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
         return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
     }
-
+    
+    /**
+     * A method for making the player attack based on the direction it
+     * faces. Allows the attack state to be enabled and respective 
+     * animations to play.
+     */
+    private void attack() {
+    		float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+        
+        Optional<AbstractEntity> target = null;
+        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+            
+        if (target.isPresent()) {
+        		float targetPosX = target.get().getPosX();
+        		float targetPosY = target.get().getPosY();
+            
+        		switch (this.getDirection()) {
+        		case North:
+        			break;
+        		case NorthEast:
+        			pPosY -= 1;
+        			pPosX += 1.5;
+        			break;
+        		case East:
+        			pPosY -= 1;
+        			pPosX += 1.5;
+        			break;
+        		case SouthEast:
+        			pPosX += 1;
+        			break;
+        		case South:
+        			pPosX += 1.2;
+        			break;
+        		case SouthWest:
+        			pPosY += 1;
+        			pPosX += 1;
+        			break;
+        		case West:
+        			break;
+        		case NorthWest:
+        			break;
+        		default:
+        			break;
+        		}
+        		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
+                        /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
+        } else if (!target.isPresent()) {
+            //Disable shooting when no enemies is present until new fix is found.
+        }
+    }
+    
     /**
      * Handles removing an item from an inventory and placing it on the map.
      *
@@ -424,7 +432,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     && ((ResourceTree) entitiy).getGatherCount() > 0) {
                 didHarvest = true;
                 ((ResourceTree) entitiy).transferResources(this.inventory);
-
             }
         }
         if (didHarvest) {
@@ -478,7 +485,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     @Override
     public String toString() {
-        return "The player";
+        return "The " + playerType + " player";
     }
 
     @Override
