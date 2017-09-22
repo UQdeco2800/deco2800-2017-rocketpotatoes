@@ -12,15 +12,8 @@ import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.*;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-<<<<<<< HEAD
-import com.deco2800.potatoes.entities.resources.*;
-=======
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
->>>>>>> ae60bd7a1cbddd3e036f890048793fce7c2fb5d9
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
