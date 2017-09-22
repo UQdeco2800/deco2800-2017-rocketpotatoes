@@ -116,8 +116,8 @@ public class InventoryGui extends Gui {
 		Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(resource))));
 			
 		resourceImage.setOrigin(50, 50);
-		inventoryTable.add(resourceImage).size(30, 30);
-		inventoryTable.add(inventoryMap.get(resource)).bottom().left();
+		inventoryTable.add(resourceImage).size(30, 30).pad(2);
+		inventoryTable.add(inventoryMap.get(resource)).bottom().center().pad(2);
 			
 		inventoryTable.row();
 	}
