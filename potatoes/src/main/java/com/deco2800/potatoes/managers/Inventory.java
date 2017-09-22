@@ -171,13 +171,14 @@ public class Inventory {
 			LOGGER.warn("Sorry, not enough " + resource.toString());
 			result = 0;
 		} else {
-			inventoryMap.put(resource, currentAmount + amount);
-			guiManager = GameManager.get().getManager(GuiManager.class);
 			try {
+				inventoryMap.put(resource, currentAmount + amount);
+				guiManager = GameManager.get().getManager(GuiManager.class);
 				((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(resource.getTypeName(),
 						currentAmount + amount);
 			} catch (NullPointerException exception) {
 				// catch exception for tests when the gui isn't initialised
+				result = 0;
 			}
 		}
 
