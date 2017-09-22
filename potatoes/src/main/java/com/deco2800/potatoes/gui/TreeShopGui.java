@@ -47,6 +47,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private boolean mouseIn; // Mouse inside shopMenu
 	private boolean mouseInCancel; // Mouse inside cancel circle
 	private boolean initiated; // Menu should be visible and available
+	private boolean plantable; // Set to true if mouseover terrain can plant tree
 	private int selectedSegment; // Segment of menu currently being rendered
 	private int shopX; // Screen x value of shop
 	private int shopY; // Screen y value of shop
@@ -58,7 +59,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	// The trees that user can purchased. These will all be displayed in its own
 	// segment
 	private LinkedHashMap<AbstractTree, Color> items;
-	
+
 	private Stage stage;
 	private TextureManager textureManager;
 	private PlayerManager playerManager;
@@ -101,10 +102,27 @@ public class TreeShopGui extends Gui implements SceneGui {
 		createTreeMenu(shopX, shopY, 110);
 	}
 
+	/**
+	 * Returns maximum range of plantation area from player
+	 */
 	public int getMaxRange() {
 		return MAX_RANGE;
 	}
 	
+	/**
+	 * Returns whether current treeShop is plantable
+	 */
+	public boolean getPlantable() {
+		return plantable;
+	}
+	
+	/**
+	 * Sets plantable value
+	 */
+	public void setPlantable(boolean plantable) {
+		this.plantable = plantable;
+	}
+
 	/**
 	 * Updates screen position to match tile position.
 	 */
@@ -124,19 +142,18 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopTileX = (int) tilePos.x;
 		shopTileY = (int) tilePos.y;
 
-		double distance = playerManager.distanceFromPlayer(shopTileX, shopTileY);
-				
-		float range = MAX_RANGE;
-		if (distance > range) {
+		/*float range = MAX_RANGE;
+		if (!plantable) {
 			closeShop();
-			
+
 			// If we want it to spawn at max range instead
-			/*double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY - player.getPosY());
-			angle = 360 - angle;
-			angle = Math.toRadians(angle);
-			shopTileX = (int) (range * Math.cos(angle) + player.getPosX());
-			shopTileY = (int) (range * Math.sin(angle) + player.getPosY());*/
-		}
+			
+			 * double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY -
+			 * player.getPosY()); angle = 360 - angle; angle = Math.toRadians(angle);
+			 * shopTileX = (int) (range * Math.cos(angle) + player.getPosX()); shopTileY =
+			 * (int) (range * Math.sin(angle) + player.getPosY());
+			 
+		}*/
 	}
 
 	/**
@@ -411,7 +428,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 				buyTree();
 				initiated = false;
 			}
-		} else {
+		} else if (plantable) {
 			updateTilePos(x, y);
 			initiated = true;
 			setTreeCoords();

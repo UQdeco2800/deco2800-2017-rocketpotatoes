@@ -492,12 +492,15 @@ public class GameScreen implements Screen {
 		
 		float distance = playerManager.distanceFromPlayer(tileX,tileY);
 		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
+		TreeShopGui treeShopGui = (TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
 		if (terrain.getTexture().equals("void")) {
 			// Do nothing
-		}else if (distance < maxShopRange && terrain.isPlantable())
+		} else if (treeShopGui.getPlantable())
 			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-		else
+		else 
 			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+			
 		
 		batch.end();
 
