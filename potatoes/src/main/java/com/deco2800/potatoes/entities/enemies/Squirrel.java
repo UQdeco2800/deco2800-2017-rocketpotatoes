@@ -114,7 +114,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 
 		updateDirection();
-		System.err.println(this.toString());
 	}
 
 	/**

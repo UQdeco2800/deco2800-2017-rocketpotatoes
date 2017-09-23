@@ -137,6 +137,9 @@ public class TextureManager extends Manager {
         saveTexture("DamagedGroundTemp1", "resources/enemies/DamagedGroundTemp1.png");
         saveTexture("DamagedGroundTemp2", "resources/enemies/DamagedGroundTemp2.png");
         saveTexture("DamagedGroundTemp3", "resources/enemies/DamagedGroundTemp3.png");
+        saveTexture("TankFootstepTemp1", "resources/enemies/TankFootstepTemp1.png");
+        saveTexture("TankFootstepTemp2", "resources/enemies/TankFootstepTemp2.png");
+        saveTexture("TankFootstepTemp3", "resources/enemies/TankFootstepTemp3.png");
         //Squirrel
         saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
         saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");

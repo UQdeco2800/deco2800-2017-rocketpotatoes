@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
@@ -47,8 +48,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 
-	private Vector2 oldPos = Vector2.Zero; // Used to determine the enemy's change in direction
-	private Direction currentDirection; // The direction the enemy faces
+	private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
+	private Direction currentDirection; // The direction the player faces
+
+	private int timer = 0;
+
 
 	/**
 	 * Default constructor for serialization
@@ -171,7 +175,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		getBasicStats().registerEvents(this);		//MAY BE USELESS
+		getBasicStats().registerEvents(this); 	//MAY BE USELESS
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -184,7 +188,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void onTick(long i) {
 		float goalX;
 		float goalY;
-
+		
 		//set the target of Enemy to the closest goal
 		Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 		
@@ -235,6 +239,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		boolean collidedTankEffect = false;
+		timer++;
+		String stompedGroundTextureString = "";
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
@@ -252,6 +258,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
 					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
 						collidedTankEffect = true;
+						stompedGroundTextureString = entity.getTexture();
 					}
 					continue;
 				}
@@ -259,9 +266,20 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			}
 		}
 
-		if (!collidedTankEffect && this instanceof TankEnemy) {
-			GameManager.get().getWorld().addEntity(new StompedGroundEffect(MortalEntity.class,getPosX(), getPosY(), 0, true, 1,1));
-			enemySoundManager.playSound("tankEnemyFootstep.wav");
+		if (this instanceof TankEnemy) {
+			if (timer % 100 == 0 && !(collided)) {
+				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
+				GameManager.get().getWorld().addEntity(
+						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 0, 1, 1));
+			}
+			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
+					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
+				GameManager.get().getWorld().addEntity(
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+			} else if (!collidedTankEffect) {
+				GameManager.get().getWorld().addEntity(
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+			}
 		}
 
 		if (!collided) {
@@ -273,8 +291,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 *	@return the current Direction of the enemy
-	 * */
+	 * @return the current Direction of the enemy
+	 */
 	public Direction getEnemyDirection() {
 		return this.currentDirection;
 	}
@@ -282,8 +300,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	/**
 	 * Set the direction of the enemy based on a specified direction
 	 *
-	 * @param direction The direction to set the enemy to
-	 * */
+	 * @param direction the direction to set the enemy toward
+	 */
 	private void setDirection(Direction direction) {
 		if (this.currentDirection != direction) {
 			this.currentDirection = direction;
@@ -328,6 +346,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateSprites() {
 		String type = getEnemyType();
 		String direction = "_" + getEnemyDirection().toString();
+
 		this.setTexture(type + direction);
 	}
 
@@ -417,20 +436,20 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return PROGRESS_BAR;
 	}
 
-	/**
-	 * Get the enemy's current health to max health progress
+	/***
+	 * Get the enemy's current health to max health progres
 	 *
-	 * @return the ratio of current health to maximum health
-	 * */
+	 * @return the ratio of current to maximum health
+	 */
 	@Override
 	public float getProgressRatio() {
 		return getHealth() / getMaxHealth();
 	}
 
-	/***
+	/**
 	 * Get the maximum health of the enemy
 	 *
-	 * @return enemy's maximum health
+	 * @return the enemy's maximum health
 	 */
 	@Override
 	public int getMaxProgress() {
@@ -438,7 +457,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Remove the enemy if it is dead, and respawn after seconds
+	 * remove the enemy if it is dead
 	 */
 	@Override
 	public void deathHandler() {
@@ -459,4 +478,5 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
 	}
+
 }
