@@ -5,7 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.HasDirection.Direction;
+import com.deco2800.potatoes.entities.Player.PlayerState;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 import com.deco2800.potatoes.entities.animation.StateAnimation;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -24,6 +27,8 @@ import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
+
+import org.omg.CORBA.Current;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
@@ -96,6 +101,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         			this.currentState = state;
         			LOGGER.info("Set player state to " + state.name());
         			System.out.println(this.currentState);
+        			try {
+        				updateSprites();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
         		} else {
         			return false;
         		}
@@ -123,6 +133,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		this.currentState = PlayerState.idle;
     		// TODO: Handle Change to Idle
     		System.out.println(this.currentState);
+    		updateSprites();
+    }
+    
+    /**
+     * This method is called every time the player state changes.
+     */
+    public void stateChanged() {
+    	
     }
 
     /**
@@ -186,42 +204,81 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Updates the player sprite based on it's state and direction.
      */
     public void updateSprites() {
-        String type = this.playerType;
-        String state = "_walk";
-        String direction = "_" + this.getDirection().toString();
-        String frame = "_3";
-        
-        // Determine the player state
-        if (this.hasState(PlayerState.damaged)) {
-            state = "_damaged";
-            if (type.equals("caveman")) {
-                state = "_attack";
-                frame = "_3";
-            }
+        switch (this.currentState) {
+        case idle:
+    			this.setAnimation(cavemanIdleAnimations.get(this.getDirection()));
+    			break;
+        case walk:
+        		this.setAnimation(cavemanWalkAnimations.get(this.getDirection()));
+        		break;
+        case attack:
+    			break;
+        case damaged:
+    			break;
+        default:
+        		this.setAnimation(cavemanIdleAnimations.get(this.getDirection()));
+        		break;
         }
-        this.setTexture(playerType + state + direction + frame);
     }
     
-    private String[] frames = new String[] { 
-			"caveman_walk_E_1", 
-			"caveman_walk_E_2", 
-			"caveman_walk_E_3", 
-			"caveman_walk_E_4", 
-			"caveman_walk_E_5", 
-			"caveman_walk_E_6", 
-			"caveman_walk_E_7", 
-			"caveman_walk_E_8" 
-	};
-    private TimeAnimation walkSouthEast = AnimationFactory.createSimpleTimeAnimation(1000, frames);
+    /**
+     * Creates a map of player directions with player state animations. Uses
+     * a direction as a key to receive the respective animation.
+     * 
+     * @param playerType
+     * 			A string representing the type of player.
+     * @param state
+     * 			The state of the player.
+     * @param frameCount
+     * 			The number of frames in the animation.
+     * @param animationTime
+     * 			The time per animation cycle.
+     * @return
+     * 		A map of directions with animations for the specified state.
+     */
+    public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType, PlayerState state, int frameCount, int animationTime) {
+		Map<Direction, TimeAnimation> animations = new HashMap<>();
+		for (Direction direction : Direction.values()) {
+			String[] frames = new String[frameCount];
+			for (int i=1; i<=frameCount; i++) {
+				frames[i-1] = playerType + "_" + state.name() + "_" + direction.toString() + "_" + i;
+			}
+			animations.put(direction, AnimationFactory.createSimpleTimeAnimation(animationTime, frames));
+		}
+		return animations;
+    }
     
-    private void playWalkAnimation() {
-    		
-        AnimationFactory.registerTimeAnimations(walkSouthEast, this);
+    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 800);
+    private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.idle, 1, 1);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.attack, 5, 500);
+    
+    private TimeAnimation currentAnimation = cavemanIdleAnimations.get(Direction.SouthEast); 
+    
+    private void setAnimation(TimeAnimation animation) {
+    		stopCurrentAnimation();
+		this.currentAnimation = animation;
+		startCurrentAniamation();
+		LOGGER.info("Changed animation to " + this.getDirection().name());
+	}
+    
+    private void startCurrentAniamation() {
+    		GameManager.get().getManager(EventManager.class).registerEvent(this, currentAnimation);
+    }
+    
+    private void stopCurrentAnimation() {
+    		GameManager.get().getManager(EventManager.class).unregisterEvent(this, this.currentAnimation);
     }
     
     @Override
     public String getTexture() {
-        return walkSouthEast.getFrame();
+    		if (currentAnimation != null) {
+    			return currentAnimation.getFrame();
+    		} else {
+    			System.out.println("No frame");
+    			return "";
+    		}
+    			
+        
     }
     
     /**
@@ -368,7 +425,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 break;
             case Input.Keys.E:
                 harvestResources();
-                playWalkAnimation();
                 break;
             case Input.Keys.NUM_1:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
