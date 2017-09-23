@@ -1,7 +1,6 @@
 package com.deco2800.potatoes;
 
 import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,7 @@ import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.worlds.WorldType;
 
-public class Render3DTest {
+public class Render3DTest extends BaseTest {
 
 	Render3D renderer;
 	
