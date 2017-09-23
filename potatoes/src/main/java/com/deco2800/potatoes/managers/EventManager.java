@@ -29,6 +29,9 @@ public class EventManager extends Manager implements TickableManager, ForWorld {
 
 	private List<EventPair> events;
 
+	/**
+	 * Initializes this manager to have no events registered.
+	 */
 	public EventManager() {
 		events = new ArrayList<>();
 	}

@@ -13,6 +13,9 @@ public class EnemyStatistics extends BasicStatistics<EnemyEntity> {
 	private final float speed;
 	private final Class<?> goal;
 
+	/**
+	 * Creates this object from the properties stored in the given builder.
+	 */
 	public EnemyStatistics(StatisticsBuilder<EnemyEntity> builder) {
 		super(builder);
 		speed = builder.getSpeed();

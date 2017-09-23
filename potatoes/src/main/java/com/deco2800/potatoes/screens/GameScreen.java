@@ -26,7 +26,7 @@ import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -271,7 +271,7 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
 			//add an enemy gate to game world

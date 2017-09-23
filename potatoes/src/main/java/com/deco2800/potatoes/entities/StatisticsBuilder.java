@@ -12,6 +12,10 @@ import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.TreeStatistics;
 
+/**
+ * Class for storing information needed to create BasicStatistics or any of its
+ * subclasses
+ */
 public class StatisticsBuilder<T extends Tickable> {
 	private float health;
 	private List<TimeEvent<T>> events;
@@ -25,45 +29,70 @@ public class StatisticsBuilder<T extends Tickable> {
 	private int attackSpeed;
 	private float attackRange;
 
+	/**
+	 * Initializes this object to have all properties with their default values
+	 * (probably null) and all lists to be empty
+	 */
 	public StatisticsBuilder() {
 		events = new ArrayList<>();
 		buildEvents = new ArrayList<>();
 	}
 
+	/**
+	 * Returns a TreeStatistics object based on the properties stored in this object
+	 */
 	@SuppressWarnings("unchecked")
 	public TreeStatistics createTreeStatistics() {
 		// Checking here
 		return new TreeStatistics((StatisticsBuilder<AbstractTree>) this);
 	}
 
+	/**
+	 * Returns an EnemyStatistics object based on the properties stored in this object
+	 */
 	@SuppressWarnings("unchecked")
 	public EnemyStatistics createEnemyStatistics() {
 		// Checking here
 		return new EnemyStatistics((StatisticsBuilder<EnemyEntity>) this);
 	}
 
+	/**
+	 * @param texture the texture to set
+	 */
 	public StatisticsBuilder<T> setTexture(String texture) {
 		animation = x -> new SingleFrameAnimation(texture);
 		return this;
 	}
 
+	/**
+	 * Adds the given event to the list of events in this object
+	 */
 	@SuppressWarnings("unchecked")
 	public StatisticsBuilder<T> addEvent(TimeEvent<? extends T> event) {
 		events.add((TimeEvent<T>) event);
 		return this;
 	}
-	
+
+	/**
+	 * Add all events in the list of events given to the events in this object
+	 */
 	public StatisticsBuilder<T> addAllEvents(List<TimeEvent<? extends T>> events) {
 		events.forEach(this::addEvent);
 		return this;
 	}
 
+	/**
+	 * Adds the given event to the list of build events in this object
+	 */
 	@SuppressWarnings("unchecked")
 	public StatisticsBuilder<T> addBuildEvent(TimeEvent<? extends T> event) {
 		buildEvents.add((TimeEvent<T>) event);
 		return this;
 	}
-	
+
+	/**
+	 * Add all events in the list of events given to the build events in this object
+	 */
 	public StatisticsBuilder<T> addAllBuildEvents(List<TimeEvent<? extends T>> events) {
 		events.forEach(this::addBuildEvent);
 		return this;

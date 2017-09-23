@@ -24,6 +24,10 @@ public class WorldManager extends Manager {
 	private float[][][] randomGrids;
 	private float[][][] randomGridEdges;
 
+	/**
+	 * Initializes the world manager and generates random grids to use for
+	 * generating worlds.
+	 */
 	public WorldManager() {
 		worlds = new HashMap<>();
 		cells = new HashMap<>();

@@ -127,6 +127,9 @@ public class World {
 
 	}
 
+	/**
+	 * Removes the entity with the given id from this world.
+	 */
 	public void removeEntity(int id) {
 		entities.remove(id);
 
@@ -137,6 +140,10 @@ public class World {
 		}
 	}
 
+	/**
+	 * Removes the given entity from this world, if it is in the world. Otherwise,
+	 * nothing happens
+	 */
 	public void removeEntity(AbstractEntity entity) {
 		for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
 			if (e.getValue() == entity) {
