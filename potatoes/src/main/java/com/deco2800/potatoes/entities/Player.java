@@ -140,7 +140,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     /**
      * Sets the direction of the player based on a specified direction.
      *
-     * @param direction The direction to the player to.
+     * @param direction The direction to set the player to.
      */
     private void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
