@@ -24,6 +24,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float maxHealth;
 	protected float damageOffset = 0f;
 	protected float damageScaling = 1f;
+	protected boolean deathHandled = false;
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
@@ -216,8 +217,9 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 			heal(-damage);
 		}
 
-		if (isDead()) {
+		if (isDead() && !deathHandled) {
 			deathHandler();
+			deathHandled = true;
 			return true;
 		}
 		return false;
@@ -228,6 +230,9 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 */
 	@Override
 	public boolean setHealth(float amount) {
+		if (amount > 0) {
+			deathHandled = false;
+		}
 		if (maxHealth <= amount) {
 			health = maxHealth;
 		} else {

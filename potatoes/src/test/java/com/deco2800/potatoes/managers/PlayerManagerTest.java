@@ -20,5 +20,17 @@ public class PlayerManagerTest {
         m.handleKeyDown(Input.Keys.W);
         m.handleKeyUp(Input.Keys.W);
     }
+    
+	@Test
+	public void distanceTest() {
+		PlayerManager manager = new PlayerManager();
+		Player player = new Player();
+		player.setPosition(10, 15, 0);
+		manager.setPlayer(player);
+		
+		float distance = manager.distanceFromPlayer(5, 5);
+		
+		assertEquals(11.1803, distance, 0.0001);
+	}
 
 }

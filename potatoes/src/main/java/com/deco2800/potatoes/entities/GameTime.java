@@ -43,9 +43,9 @@ public abstract class GameTime implements Tickable {
 	/**
 	 * Increases the Current Game Time.
 	 *
-	 * @param Tick
+	 * @param tick
 	 */
-	public void onTick(int Tick) {
+	public void onTick(int tick) {
 		this.setCurrentTime((int) (this.getCurrentTime() + 0.01));
 	}
 

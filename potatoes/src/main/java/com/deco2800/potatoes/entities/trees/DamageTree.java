@@ -131,6 +131,9 @@ public class DamageTree extends AbstractTree implements Tickable {
     public Damage getDamageTreeType(){
         return damageTreeType;
     }
+    public String getTexture(){
+        return damageTreeType.getTexture();
+    }
 
 
 }

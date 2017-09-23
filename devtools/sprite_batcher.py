@@ -22,10 +22,17 @@ import ntpath
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
+# Options
+INTERVALS = 8 # The number of angles around the model to render
+MODEL_FILE = '' # The Model file, used if running this through blender
+# Ambient occlusion means concave corners are darker than other parts
+AMBIENT_OCCLUSION = False
+SHADOWS = True
+
 OBJECTS = bpy.data.objects # A list of all the objects in the scene
 SCENE = bpy.context.scene # the actual scene itself
 RENDER = SCENE.render # The data object associated with rendering
-INTERVALS = 8 # The number of angles around the model to render
+
 
 
 def get_distance(object1, object2):
@@ -39,18 +46,16 @@ def get_arg_index():
     return argv.index("--") if "--" in argv else None
 
 def get_arg(number):
-    if len(argv) - get_arg_index() > number:
-        return argv[get_arg_index() + number] 
+    arg_index = get_arg_index()
+    if arg_index and (len(argv) - arg_index) > number:
+        return argv[arg_index + number]
     else:
         return None
 
 def import_model():
     '''import the model specified in the cli, or use a pre-loaded model'''
 
-    model_file = get_arg(1)
-    # Get rid of the default cube, if it exists
-    if OBJECTS.get("Cube"):
-        OBJECTS.remove(OBJECTS.get("Cube"), do_unlink=True)
+    model_file = get_arg(1) or MODEL_FILE
 
     # import the given model file, if specified on the command line
     if OBJECTS.get("Model"):
@@ -59,17 +64,20 @@ def import_model():
     elif model_file:
         bpy.ops.import_scene.autodesk_3ds(filepath=model_file)
 
-        selected = bpy.context.selected_objects
-        if not len(selected):
-            raise Exception("The given file could not be imported")
-        # merge all the newly imported models into one supermodel
-        SCENE.objects.active = model = selected.pop()
-        bpy.ops.object.join()
+        # Get rid of the default cube, if it exists
+        if OBJECTS.get("Cube"):
+            OBJECTS.remove(OBJECTS.get("Cube"), do_unlink=True)
 
-    else:
-        # Back up: just use the default cube
-        bpy.ops.mesh.primitive_cube_add()
-        model = OBJECTS["Cube"]
+    # Use whatever models are selected in 3DView
+    # Imported files are automatically selected
+    selected = bpy.context.selected_objects
+    if not len(selected):
+        raise Exception("No model is selected in 3DView, or the file import" \
+                + " failed")
+
+    # merge all the newly imported models into one supermodel
+    SCENE.objects.active = model = selected.pop()
+    bpy.ops.object.join()
 
     model.name = "Model"
     model.select = True
@@ -86,7 +94,7 @@ def get_output_name():
 
 def centre_model(model):
     '''centre the model & its origin'''
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='BOUNDS')
     model.location = [0, 0, 0]
     model.rotation_euler = [0, 0, 0]
 
@@ -98,10 +106,6 @@ def setup_camera(camera):
 
     # make sure the camera is orthographic for an isometric appearance
     camera.data.type = 'ORTHO'
-    #camera.data.ortho_scale = 1
-
-    # make the lighting generically displayed across the whole system
-    SCENE.world.light_settings.use_environment_light = True
 
     # set the render resolution
     RENDER.resolution_x = 512
@@ -109,6 +113,23 @@ def setup_camera(camera):
     RENDER.alpha_mode = 'TRANSPARENT'
 
 
+def setup_light(light):
+    # add generic lighting across the whole scene
+    SCENE.world.light_settings.use_environment_light = True
+    bpy.context.scene.world.light_settings.environment_energy = 0.8
+
+
+    if not SHADOWS:
+        light.data.shadow_method = 'NOSHADOW'
+
+    if AMBIENT_OCCLUSION:
+        # Ambient occlusion means concave corners are darker than other parts
+        bpy.context.scene.world.light_settings.use_ambient_occlusion = True
+        bpy.context.scene.world.light_settings.ao_blend_type = 'MULTIPLY'
+
+    # sun type lights aren't effected by distance
+    light.data.type = "SUN"
+    light.data.energy = 1.3
 
 def fit_model_in_frame():
     """ Arrange the camera such that the model stays in fram as it rotates"""
@@ -118,7 +139,7 @@ def fit_model_in_frame():
         bpy.context.object.rotation_euler[2] = 2 * pi * i / INTERVALS
 
     # align camara to fit all models
-    bpy.ops.object.select_pattern(pattern="Model.0*")
+    bpy.ops.object.select_pattern(pattern="Model.*")
     bpy.ops.view3d.camera_to_view_selected()
     bpy.ops.object.delete()
 
@@ -184,10 +205,12 @@ def render_batch(model):
 
 def main():
     camera = OBJECTS["Camera"]
+    light = OBJECTS["Lamp"]
     model = import_model()
 
     centre_model(model)
     setup_camera(camera)
+    setup_light(light)
     fit_model_in_frame()
 
     render_batch(model)
