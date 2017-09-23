@@ -12,9 +12,7 @@ import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -26,6 +24,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Map;
+import java.util.HashSet;
 import java.lang.Math;
 import java.util.Set;
 
@@ -179,7 +178,25 @@ public class DebugModeGui extends Gui {
         addResourcesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Set<Resource> rsc = GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory().getInventoryResources();
+                Set<Resource> rsc = new HashSet<Resource>();
+                
+                rsc.add(new BonesResource());
+                rsc.add(new CoalResource());
+                rsc.add(new CactusThornResource());
+                rsc.add(new FishMeatResource());
+                rsc.add(new FoodResource());
+                rsc.add(new IceCrystalResource());
+                rsc.add(new ObsidianResource());
+                rsc.add(new PearlResource());
+                rsc.add(new PineconeResource());
+                rsc.add(new PricklyPearResource());
+                rsc.add(new SealSkinResource());
+                rsc.add(new SeedResource());
+                rsc.add(new SnowBallResource());
+                rsc.add(new TreasureResource());
+                rsc.add(new TumbleweedResource());
+                rsc.add(new WoodResource());
+                
                 for (Resource rscname: rsc) {
                     GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory().updateQuantity(rscname, 10);
                 }

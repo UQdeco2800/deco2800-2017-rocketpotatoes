@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.renderering;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -317,7 +319,7 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector3 worldToGuiScreenCoordinates(Stage stage, float x, float y, float z) {
 		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
-				.project(new Vector3(x, y - stage.getHeight() + 1, z));
+				.project(new Vector3(x, y - Gdx.graphics.getHeight() + 1, z));
 		screen.y = -screen.y;
 		return screen;
 	}
