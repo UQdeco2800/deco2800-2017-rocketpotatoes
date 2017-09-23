@@ -29,13 +29,8 @@ import java.util.*;
 /**
  * Entity for the playable character.
  * <p>
- * <<<<<<< HEAD
- *
- * @author leggy
- * =======
  * @author leggy, petercondoleon
  * <p>
- * >>>>>>> eeb52f35f2ea008596951d9200cc6237777177d4
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
@@ -59,7 +54,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     ;    // The states a player may take
     private ArrayList<PlayerState> currentStates = new ArrayList<>();    // The current states of the player
-    private String playerType = "wizard"; // The type class of a player
+    private static String playerType = "wizard"; // The type class of a player
 
     // The map containing all player textures
     private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap;
@@ -548,6 +543,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 
         GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
+    }
+
+    public static String getPlayerType(){
+        return playerType;
+    }
+
+    public static void setPlayerType(String s) {
+        playerType = s;
     }
 
 }
