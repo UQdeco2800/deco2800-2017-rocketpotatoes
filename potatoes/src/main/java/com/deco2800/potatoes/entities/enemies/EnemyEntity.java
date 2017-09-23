@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
-
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.ParticleManager;
@@ -245,7 +245,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
 
-				if(entity instanceof Tower) {
+				if(entity instanceof ProjectileTree) {
 					//soundManager.playSound("ree1.wav");
 				}
 

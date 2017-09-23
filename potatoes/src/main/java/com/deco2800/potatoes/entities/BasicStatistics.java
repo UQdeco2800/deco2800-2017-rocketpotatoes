@@ -10,6 +10,9 @@ import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 
+/**
+ * Class storing basic properties for a tickable entity
+ */
 public class BasicStatistics<T extends Tickable> {
 	private final float health;
 	private final List<TimeEvent<T>> events;
@@ -17,15 +20,7 @@ public class BasicStatistics<T extends Tickable> {
 	private final ProgressBar progressBar;
 
 	/**
-	 * 
-	 * @param health
-	 *            The maximum health for these stats
-	 * @param events
-	 *            The TimeEvents for these stats
-	 * @param animation
-	 *            The animation (or single texture) for these stats
-	 * @param progressBar
-	 *            The progress bar
+	 * Creates this object from the properties stored in the given builder.
 	 */
 	public BasicStatistics(StatisticsBuilder<T> builder) {
 		health = builder.getHealth();
@@ -34,16 +29,23 @@ public class BasicStatistics<T extends Tickable> {
 		progressBar = builder.getProgressBar();
 	}
 
+	/**
+	 * Registers all events stored in this object with the tickable given. All
+	 * events registered with the tickable will be unregistered
+	 */
 	public void registerEvents(T tickable) {
 		unregisterEvents(tickable);
 		for (TimeEvent<T> timeEvent : events) {
 			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
 		}
 		if (tickable instanceof Animated) {
-			AnimationFactory.registerTimeAnimations(((Animated)tickable).getAnimation(), tickable);
+			AnimationFactory.registerTimeAnimations(((Animated) tickable).getAnimation(), tickable);
 		}
 	}
 
+	/**
+	 * Unregisters all events for the tickable given.
+	 */
 	public void unregisterEvents(T tickable) {
 		GameManager.get().getManager(EventManager.class).unregisterAll(tickable);
 	}

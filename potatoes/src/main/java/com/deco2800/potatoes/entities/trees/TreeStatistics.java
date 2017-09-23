@@ -24,6 +24,9 @@ public class TreeStatistics extends BasicStatistics<AbstractTree> {
 	private final float attackRange;
 	private final List<TimeEvent<AbstractTree>> buildEvents;
 
+	/**
+	 * Creates this object from the properties stored in the given builder.
+	 */
 	public TreeStatistics(StatisticsBuilder<AbstractTree> builder) {
 		super(builder);
 		buildCost = builder.getBuildCost();
@@ -32,6 +35,10 @@ public class TreeStatistics extends BasicStatistics<AbstractTree> {
 		attackRange = builder.getAttackRange();
 	}
 
+	/**
+	 * Registers all build events stored in this object with the tickable given. All
+	 * events registered with the tickable will be unregistered
+	 */
 	public void registerBuildEvents(AbstractTree tickable) {
 		unregisterEvents(tickable);
 		for (TimeEvent<AbstractTree> timeEvent : buildEvents) {
