@@ -91,8 +91,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     private void addResources() {
 
-    	HashSet<Resource> startingResources = new HashSet<Resource>();  
-    	startingResources.add(new SeedResource());
+        HashSet<Resource> startingResources = new HashSet<Resource>();
+        startingResources.add(new SeedResource());
 
         this.inventory = new Inventory(startingResources);
     }
@@ -386,26 +386,31 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     float targetPosX = target1.get().getPosX();
                     float targetPosY = target1.get().getPosY();
                     if (playerDirections.equalsIgnoreCase("s")) {
-                        pPosX += 1.2;
+                        pPosX += 0.2;
                     }
                     if (playerDirections.equalsIgnoreCase("e")) {
                         pPosY -= 1;
-                        pPosX += 1.5;
+                        pPosX += 0.5;
+                    }
+                    if (playerDirections.equalsIgnoreCase("w")) {
+                        pPosX -= 0.5;
+                        pPosY += 0.8;
+                    }
+                    if (playerDirections.equalsIgnoreCase("n")) {
+
+                        pPosX -= 1;
                     }
                     if (playerDirections.equalsIgnoreCase("ne")) {
                         pPosY -= 1;
-                        pPosX += 1.5;
+                        pPosX += 0.5;
                     }
                     if (playerDirections.equalsIgnoreCase("sw")) {
                         pPosY += 1;
-                        pPosX += 1;
-                    }
-                    if (playerDirections.equalsIgnoreCase("se")) {
-                        pPosX += 1;
+
                     }
 
                     GameManager.get().getWorld()
-                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX - 1, pPosY, pPosZ, 10f, 100, ProjectileType.ROCKET, null,
+                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX, pPosY, pPosZ, 10f, 100, ProjectileType.ROCKET, null,
                                     null, playerDirections, targetPosX, targetPosY, Projectile.ShootingStyles.DIRECTIONAL));
 
                 } else if (!target1.isPresent()) {
@@ -421,7 +426,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         }
         checkKeyDown++;
     }
-
 
 
     private Vector2 getCursorCoords() {

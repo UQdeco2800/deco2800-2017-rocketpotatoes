@@ -126,10 +126,13 @@ public class Projectile extends AbstractEntity implements Tickable {
         this.endEffect = endEffect;
         this.Directions = Directions;
         this.range = range;
+
         this.pPosX = posX;
         this.pPosY = posY;
         this.tPosX = TargetPosX;
         this.tPosY = TargetPosY;
+
+
 
         if (startEffect != null)
             GameManager.get().getWorld().addEntity(startEffect);
@@ -228,7 +231,7 @@ public class Projectile extends AbstractEntity implements Tickable {
             /**
              * Shoots enemies based on their last position
              */
-            if(tPosX == 0f && tPosY == 0f){
+            if (tPosX == 0f && tPosY == 0f) {
                 throw new RuntimeException("Target Position X and Y cannot be 0 for ShootingStyles.ENEMYLASTPOS to work.");
             }
             setTargetPosition(tPosX, tPosY, 0);
