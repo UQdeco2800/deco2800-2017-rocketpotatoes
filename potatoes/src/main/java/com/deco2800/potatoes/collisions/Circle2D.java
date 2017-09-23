@@ -10,16 +10,18 @@ public class Circle2D implements CollisionMask {
         this.x = x;
         this.y = y;
         this.radius = radius;
+
+        //TODO check positive radius
     }
 
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
-            return (distance(point) < 0);
+            return (distance(point) <= 0);
         } else if (other instanceof Circle2D) {
             Circle2D otherCircle = (Circle2D) other;
-            return (distance(otherCircle) < 0);
+            return (distance(otherCircle) <= 0);
         } else {
             return other.overlaps(this);
         }
@@ -89,6 +91,8 @@ public class Circle2D implements CollisionMask {
         this.radius = radius;
     }
 
+    //TODO maybe: public boolean centredOnPoint(Point2D) {}
+    //used when following a path
 
     @Override
     public int hashCode() {
