@@ -289,7 +289,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		boolean collidedTankEffect = false;
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
-					&& newPos.overlaps(entity.getBox3D()) ) {
+					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
 
 				if(entity instanceof Tower) {
 					//soundManager.playSound("ree1.wav");
