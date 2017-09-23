@@ -45,7 +45,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
     
-    private String playerType = "caveman";	// The type of player
+    private String playerType;		// The type of player
     private float movementSpeed;		// The max speed the player moves
     private float speedx;			// The instantaneous speed in the x direction
     private float speedy;			// The instantaneous speed in the y direction
@@ -81,6 +81,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.movementSpeed = 0.075f;
         this.speedx = 0.0f;
         this.speedy = 0.0f;
+        
+        this.playerType = playerType = "caveman";
+        this.currentDirection = Direction.SouthEast;
+        
         addResources();	//Initialise the inventory with the valid resources
     }
     
@@ -99,13 +103,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		if (!this.currentState.equals(state)) {
     			if (this.currentState.equals(PlayerState.idle) | this.currentState.equals(PlayerState.walk)) {
         			this.currentState = state;
-        			LOGGER.info("Set player state to " + state.name());
-        			System.out.println(this.currentState);
-        			try {
-        				updateSprites();
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
+        			stateChanged();
         		} else {
         			return false;
         		}
@@ -131,16 +129,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public void clearState() {
     		this.currentState = PlayerState.idle;
-    		// TODO: Handle Change to Idle
-    		System.out.println(this.currentState);
-    		updateSprites();
+    		stateChanged();
     }
     
     /**
-     * This method is called every time the player state changes.
+     * This method is called every time the player state changes. Allows
+     * for handling changes in player state.
      */
     public void stateChanged() {
-    	
+    		updateSprites();
+    		LOGGER.info("State changed to " + currentState.name());
     }
 
     /**
