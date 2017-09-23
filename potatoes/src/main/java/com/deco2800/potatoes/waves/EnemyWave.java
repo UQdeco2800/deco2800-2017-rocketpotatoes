@@ -6,10 +6,7 @@ import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.entities.GameTime;
 import java.util.*;
-
-import static com.badlogic.gdx.math.MathUtils.random;
 
 public class EnemyWave implements Tickable {
 
@@ -19,7 +16,6 @@ public class EnemyWave implements Tickable {
     private int spawnRate = 75;     //Time counting down for gui
     private int timeToEnd = 0;
 
-    /*Probably can merge (waiting w/ finished) or (waiting w/ paused) not too sure*/
     public enum WaveState {
         WAITING, ACTIVE, PAUSED, FINISHED
     }
@@ -38,12 +34,8 @@ public class EnemyWave implements Tickable {
      * @param waveLength the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
      * */
     public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength) {
-        //addSquirrel();
-        //addSquirrel();
         this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
         this.waveLength = waveLength;
-        //spawnEnemyToRatio(enemyRatios);
-
     }
 
     /**
@@ -64,9 +56,12 @@ public class EnemyWave implements Tickable {
         return enemyRatios;
     }
 
-    /**
-     * Spawn enemies according to the ratio described by the constructor's different enemy rate arguments
-     * */
+    /***
+     * Spawn enemies according to the ratio described by the output of calculateEnemyRatios.
+     *
+     * @param enemyRatios Array of ratios of each enemy type in game where enemyRatio[i] is < enemyRatio[i+1] and
+     *                    sum to 1.
+     */
     public void spawnEnemyToRatio(float[] enemyRatios) {
         Random random = new Random();
             float randomFloat = random.nextFloat();
@@ -81,18 +76,20 @@ public class EnemyWave implements Tickable {
             }
     }
 
-    /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
-    but is unlucky enough not to have spawned... then spawn it.*/
-
+    /*Likely to be expanded along actions for waiting, paused and finished at a later point*/
+    /***
+     * Perform actions depending on the current state of the wave.
+     * Currently do nothing unless in ACTIVE state.
+     *
+     * @param i the current tick
+     */
     public void onTick(long i){
-        //System.err.println(elapsedWaveTime());
-
         switch (getWaveState()) {
             case WAITING:
-                //wait?
+                //Do nothing
                 break;
             case PAUSED:
-                //wait?
+                //Pausing not yet implemented
                 break;
             case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
@@ -104,7 +101,7 @@ public class EnemyWave implements Tickable {
                 //Check to see if wave is paused for some reason
                 break;
             case FINISHED:
-                //Handle finished state
+                //Handling finished state
                 break;
         }
     }
@@ -121,38 +118,77 @@ public class EnemyWave implements Tickable {
      */
     public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
 
+    /**
+     * @return Amount of time left in current wave
+     */
     public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
 
+    /**
+     * Add a squirrel to the world
+     */
     private void addSquirrel() {
         GameManager.get().getWorld().addEntity(new Squirrel(
                     24, 24, 0));
     }
 
+    /**
+     * Add a tank (bear) enemy to the world
+     */
     private void addTank() {
         GameManager.get().getWorld().addEntity(
                 new TankEnemy(24, 24, 0));
     }
 
+    /**
+     * Add a speedy (raccoon) enemy to the world
+     */
     private void addSpeedy() {
         GameManager.get().getWorld().addEntity(
                 new SpeedyEnemy(24, 24, 0));
 
     }
 
+    /**
+     * Add a moose to the world
+     */
     private void addMoose() {
         GameManager.get().getWorld().addEntity(new Moose(
                 24, 24, 0));
     }
 
+    /**
+     * @return The total time length of this wave in approx 1/10s of a second
+     */
     public int getWaveLength() { return waveLength; }
 
+    /**
+     * Set the total time length in unit 1/10s of a second of this wave
+     *
+     * @param waveLength time
+     */
     public void setWaveLength(int waveLength) { this.waveLength = waveLength; }
 
+    /**
+     * Get the WaveState describing the wave, i.e. WAITING, PAUSED, ACTIVE or FINISHED.
+     * @return
+     */
     public WaveState getWaveState() { return waveState; }
 
+    /**
+     * Set the WaveState of the wave according to the WaveState type
+     *
+     * @param state WaveState value; WAITING, PAUSED, ACTIVE or FINISHED
+     */
     public void setWaveState(WaveState state) { this.waveState = state; }
 
+    /***
+     * Get the array of enemyRatios that describe the composition of the wave
+     *
+     * @return
+     */
     public float[] getEnemyRatios(){ return this.enemyRatios;}
-
+    
+    /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
+    but is unlucky enough not to have spawned... then spawn it.*/
 }
 

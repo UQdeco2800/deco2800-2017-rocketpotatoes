@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
