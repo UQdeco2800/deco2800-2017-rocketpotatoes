@@ -299,15 +299,14 @@ public class Render3D implements Renderer {
 	 *            y coordinate for tile
 	 * @return a Vector3 for screen (gui) coordinates
 	 */
-	public static Vector3 tileToScreen(Stage stage, float x, float y) {
-		Vector2 tile = Render3D.tileToWorldPos(x, y);
-		Vector3 screen = worldToGuiScreenCoordinates(stage, tile.x, tile.y, 1);
-		
-		OrthographicCamera c = GameManager.get().getManager(CameraManager.class).getCamera();
-		//screen.x = screen.x*c.zoom + Gdx.graphics.getWidth()*(1-c.zoom)/2;
-		//screen.y = screen.y*c.zoom - Gdx.graphics.getHeight()*(c.zoom)/2;
-		
-		return new Vector3(screen.x, screen.y, screen.z);
+	public static Vector2 tileToScreen(Stage stage, float x, float y) {
+		OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+		Vector2 screenWorldCoords = worldToScreenCoordinates(x, y, 0);
+		Vector3 screenCoords = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+		screenCoords.y = stage.getHeight() - screenCoords.y;
+
+		return new Vector2(screenCoords.x, screenCoords.y);
 	}
 
 	/**

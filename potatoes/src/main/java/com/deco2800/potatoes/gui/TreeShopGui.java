@@ -136,10 +136,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * Updates screen position to match tile position.
 	 */
 	private void updateScreenPos() {
-		Vector3 screenPos = Render3D.tileToScreen(stage, shopTileX, shopTileY);
+		Vector2 screenPos = Render3D.tileToScreen(stage, shopTileX, shopTileY);
 		shopX = screenPos.x;
 		shopY = screenPos.y;
-
 	}
 
 	/**
@@ -155,7 +154,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	/**
 	 * Creates menu based on input parameters.
-	 * 
+	 *
 	 * @param items
 	 *            A HashMap with each AbstractEntity as the key and the
 	 *            corresponding color as value
