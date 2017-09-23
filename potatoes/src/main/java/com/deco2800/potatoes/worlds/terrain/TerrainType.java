@@ -2,6 +2,9 @@ package com.deco2800.potatoes.worlds.terrain;
 
 import java.util.List;
 
+/**
+ * Class representing all the types of terrain for a world type
+ */
 public class TerrainType {
 	// Slopes need to be sorted out
 	private final List<Terrain> slopes;
@@ -10,10 +13,16 @@ public class TerrainType {
 	private final Terrain water;
 
 	/**
+	 * Creates a terrain type with the specified terrains
+	 * 
 	 * @param slopes
+	 *            the list of slope terrains
 	 * @param grass
+	 *            the grass terrain
 	 * @param rock
+	 *            the rock terrain
 	 * @param water
+	 *            the water terrain
 	 */
 	public TerrainType(List<Terrain> slopes, Terrain grass, Terrain rock, Terrain water) {
 		this.slopes = slopes;

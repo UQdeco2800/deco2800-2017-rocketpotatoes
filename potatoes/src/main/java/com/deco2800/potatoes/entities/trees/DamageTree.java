@@ -57,7 +57,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
     public DamageTree(float posX, float posY, float posZ) {
 
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
 
         damageTreeType=new LightningTree();
 
@@ -67,7 +67,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
     public DamageTree(float posX, float posY, float posZ, Damage texture) {
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
         if(null==texture){
             damageTreeType=new LightningTree();
         }else{
@@ -81,7 +81,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
 
     public DamageTree(float posX, float posY, float posZ, Damage texture, float maxHealth,float demage) {
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
     }
 
     @Override

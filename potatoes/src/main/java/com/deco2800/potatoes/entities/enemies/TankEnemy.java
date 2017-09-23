@@ -55,7 +55,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	}
 
 	/**
-	 * Construct a new Tank Enemy at specific position
+	 * Construct a new Tank Enemy at specific position with pre-defined size and render-length.
 	 * 
 	 * @param posX
 	 *            The x-coordinate of the Tank Enemy.
@@ -92,8 +92,14 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 		return STATS;
 	}
 
+	/**
+	 *	@return the current Direction of bear
+	 * */
 	public Direction getDirection() { return currentDirection; }
 
+	/**
+	 * @return String of this type of enemy (ie 'bear').
+	 * */
 	public String getEnemyType() { return enemyType; }
 
 	/**

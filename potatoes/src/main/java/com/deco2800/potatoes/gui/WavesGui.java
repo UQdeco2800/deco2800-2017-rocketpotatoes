@@ -1,32 +1,31 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.renderering.Renderable;
-import com.deco2800.potatoes.screens.GameScreen;
 
-/*
-    Used GameMenuGUI as a template
-* */
-public class WaveGUI extends Gui {
-    private GameScreen screen;
+/**
+ * WaveGui provides a gui displaying the status of the enemy waves
+ * GameMenuGUI was used as a template and is following the same style
+ * which is likely a placeholder style.
+ *
+ * @author craig
+ */
+public class WavesGui extends Gui {
 
-    // Buttons
+    // Gui elements
     private Skin uiSkin;
     private Label waveStatusLabel;
     private Label waveTimeLabel;
     private Window window;
 
-    public WaveGUI(Stage stage, GameScreen screen) {
+    /**
+     * Construct a new WaveGui element for the current stage.
+     *
+     * @param stage the stages to place the WaveGui.
+     */
+    public WavesGui(Stage stage) {
         hidden = false;
-        this.screen = screen;
 
         // Make window with skin
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -37,20 +36,29 @@ public class WaveGUI extends Gui {
         waveTimeLabel = new Label("0", uiSkin);
 
         //window
-
         window.add(waveStatusLabel);
         window.add(waveTimeLabel);
         window.pack();
         window.setMovable(false);
-        window.setPosition(stage.getWidth(), 0);
+        window.setPosition(stage.getWidth()/2, stage.getHeight());
 
         stage.addActor(window);
 
     }
+
+    /**
+     * @return this gui's Window
+     */
     public Window getWaveGuiWindow() { return window; }
 
+    /**
+     * @return the Label describing the status of waves at the moment
+     */
     public Label getWaveStatusLabel() { return waveStatusLabel; }
 
+    /**
+     * @return The Label indicating the time of the current wave stage
+     */
     public Label getWaveTimeLabel() { return waveTimeLabel; }
 
 }

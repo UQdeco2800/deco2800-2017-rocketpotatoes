@@ -26,7 +26,7 @@ import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -208,7 +208,7 @@ public class GameScreen implements Screen {
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
-		guiManager.addGui(new WaveGUI(guiManager.getStage(), this));
+		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
@@ -271,7 +271,7 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
 			//add an enemy gate to game world
@@ -443,22 +443,22 @@ public class GameScreen implements Screen {
 		int timeToNextWave;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();
-		Gui waveGUI = guiManager.getGui(WaveGUI.class);
-		if (waveGUI instanceof WaveGUI) {
+		Gui waveGUI = guiManager.getGui(WavesGui.class);
+		if (waveGUI instanceof WavesGui) {
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WaveGUI) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
-				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WaveGUI) waveGUI).getWaveStatusLabel().setText("No more waves.");
-					((WaveGUI) waveGUI).getWaveTimeLabel().setText("");
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
 				} else {
 					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
