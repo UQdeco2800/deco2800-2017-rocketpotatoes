@@ -423,6 +423,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 			initiated = true;
 			setTreeCoords();
 		}
+		System.out.println("ShopCoords: "+shopX+", "+shopY);
+		System.out.println("Screen: "+x+", "+y);
+		OrthographicCamera c = GameManager.get().getManager(CameraManager.class).getCamera();
+		System.out.println(c.zoom);
+		System.out.println(Gdx.graphics.getHeight()+", "+Gdx.graphics.getWidth());
 	}
 
 	/**

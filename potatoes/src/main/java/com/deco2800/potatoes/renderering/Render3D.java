@@ -284,6 +284,7 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector2 screenToTile(float x, float y) {
 		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		
 		return Render3D.worldPosToTile(world.x, world.y);
 	}
 
@@ -301,6 +302,11 @@ public class Render3D implements Renderer {
 	public static Vector3 tileToScreen(Stage stage, float x, float y) {
 		Vector2 tile = Render3D.tileToWorldPos(x, y);
 		Vector3 screen = worldToGuiScreenCoordinates(stage, tile.x, tile.y, 1);
+		
+		OrthographicCamera c = GameManager.get().getManager(CameraManager.class).getCamera();
+		//screen.x = screen.x*c.zoom + Gdx.graphics.getWidth()*(1-c.zoom)/2;
+		//screen.y = screen.y*c.zoom - Gdx.graphics.getHeight()*(c.zoom)/2;
+		
 		return new Vector3(screen.x, screen.y, screen.z);
 	}
 
@@ -321,6 +327,7 @@ public class Render3D implements Renderer {
 		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
 				.project(new Vector3(x, y - Gdx.graphics.getHeight() + 1, z));
 		screen.y = -screen.y;
+		
 		return screen;
 	}
 
@@ -386,7 +393,7 @@ public class Render3D implements Renderer {
 		projX = x / tileWidth;
 		projY = -(y - tileHeight / 2f) / tileHeight + projX;
 		projX -= projY - projX;
-
+		
 		return new Vector2(projX, projY);
 	}
 
@@ -398,9 +405,11 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector2 tileToWorldPos(float x, float y) {
 		float projX = x, projY = y;
-
+		OrthographicCamera c = GameManager.get().getManager(CameraManager.class).getCamera();
+		
 		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
 
 		projX = (projY + projX) / 2;
 		y = (projY - projX) * (-tileHeight) + (tileHeight / 2f);
