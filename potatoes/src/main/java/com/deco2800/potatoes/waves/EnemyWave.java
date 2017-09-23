@@ -8,7 +8,7 @@ import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
 import java.util.*;
 
-public class EnemyWave implements Tickable {
+public class EnemyWave {
 
     private float[] enemyRatios;    //Length of wave in .001 of seconds
     private int waveLength;     //The current time of the wave
@@ -81,9 +81,8 @@ public class EnemyWave implements Tickable {
      * Perform actions depending on the current state of the wave.
      * Currently do nothing unless in ACTIVE state.
      *
-     * @param i the current tick
      */
-    public void onTick(long i){
+    public void tickAction(){
         switch (getWaveState()) {
             case WAITING:
                 //Do nothing
@@ -105,7 +104,6 @@ public class EnemyWave implements Tickable {
                 break;
         }
     }
-
 
     /**
      * @return the time elapsed since wave started in 0.001 seconds
@@ -187,7 +185,7 @@ public class EnemyWave implements Tickable {
      * @return
      */
     public float[] getEnemyRatios(){ return this.enemyRatios;}
-    
+
     /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
     but is unlucky enough not to have spawned... then spawn it.*/
 }
