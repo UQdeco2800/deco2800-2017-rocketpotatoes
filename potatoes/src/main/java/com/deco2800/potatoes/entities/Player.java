@@ -2,8 +2,12 @@ package com.deco2800.potatoes.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.animation.StateAnimation;
+import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
@@ -36,7 +40,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
     
-    private String playerType = "wizard";	// The type of player
+    private String playerType = "caveman";	// The type of player
     private float movementSpeed;		// The max speed the player moves
     private float speedx;			// The instantaneous speed in the x direction
     private float speedy;			// The instantaneous speed in the y direction
@@ -76,16 +80,27 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     }
     
     /**
-     * Add a state to the player. For example, if the player
-     * is walking, then set the 'walk' state to the player.
+     * Set the player's state. For example, if the player is walking, then 
+     * set the 'walk' state to the player. The state can only be changed when
+     * the player is in idle or is walking. The reason for this is to prevent
+     * situations where the player tries to attack while being hurt.
      *
      * @param state 
      * 			The state to set.
+     * @return true
+     * 			if the state was successfully set. False otherwise.
      */
-    public void setState(PlayerState state) {
-        this.currentState = state;
-        // TODO: Can only change state if in the base state. Prevents 
-        // the player from stopping its attack or damage while walking.
+    public boolean setState(PlayerState state) {
+    		if (!this.currentState.equals(state)) {
+    			if (this.currentState.equals(PlayerState.idle) | this.currentState.equals(PlayerState.walk)) {
+        			this.currentState = state;
+        			LOGGER.info("Set player state to " + state.name());
+        			System.out.println(this.currentState);
+        		} else {
+        			return false;
+        		}
+    		}
+    		return true;
     }
 
     /**
@@ -98,7 +113,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			otherwise.
      */
     public boolean hasState(PlayerState state) {
-    		LOGGER.info("Set player state to " + state.name());
     		return this.currentState.equals(state) ? true : false;
     }
 
@@ -107,6 +121,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public void clearState() {
     		this.currentState = PlayerState.idle;
+    		// TODO: Handle Change to Idle
+    		System.out.println(this.currentState);
     }
 
     /**
@@ -136,31 +152,34 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     private void updateDirection() {
         if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
-            return;    // Not moving
-        }
-        double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);
+        		this.setState(PlayerState.idle);
+        } else {
+        	this.setState(PlayerState.walk);
+        		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, 
+        				this.getPosX() - oldPos.x) * (180 / Math.PI);
 
-        if (angularDirection >= -180 && angularDirection < -157.5) {
-            this.setDirection(Direction.SouthWest);
-        } else if (angularDirection >= -157.5 && angularDirection < -112.5) {
-            this.setDirection(Direction.West);
-        } else if (angularDirection >= -112.5 && angularDirection < -67.5) {
-            this.setDirection(Direction.NorthWest);
-        } else if (angularDirection >= -67.5 && angularDirection < -22.5) {
-            this.setDirection(Direction.North);
-        } else if (angularDirection >= -22.5 && angularDirection < 22.5) {
-            this.setDirection(Direction.NorthEast);
-        } else if (angularDirection >= 22.5 && angularDirection < 67.5) {
-            this.setDirection(Direction.East);
-        } else if (angularDirection >= 67.5 && angularDirection < 112.5) {
-            this.setDirection(Direction.SouthEast);
-        } else if (angularDirection >= 112.5 && angularDirection < 157.5) {
-            this.setDirection(Direction.South);
-        } else if (angularDirection >= 157.5 && angularDirection <= 180) {
-            this.setDirection(Direction.SouthWest);
-        }
+            if (angularDirection >= -180 && angularDirection < -157.5) {
+                this.setDirection(Direction.SouthWest);
+            } else if (angularDirection >= -157.5 && angularDirection < -112.5) {
+                this.setDirection(Direction.West);
+            } else if (angularDirection >= -112.5 && angularDirection < -67.5) {
+                this.setDirection(Direction.NorthWest);
+            } else if (angularDirection >= -67.5 && angularDirection < -22.5) {
+                this.setDirection(Direction.North);
+            } else if (angularDirection >= -22.5 && angularDirection < 22.5) {
+                this.setDirection(Direction.NorthEast);
+            } else if (angularDirection >= 22.5 && angularDirection < 67.5) {
+                this.setDirection(Direction.East);
+            } else if (angularDirection >= 67.5 && angularDirection < 112.5) {
+                this.setDirection(Direction.SouthEast);
+            } else if (angularDirection >= 112.5 && angularDirection < 157.5) {
+                this.setDirection(Direction.South);
+            } else if (angularDirection >= 157.5 && angularDirection <= 180) {
+                this.setDirection(Direction.SouthWest);
+            }
 
-        oldPos = new Vector2(this.getPosX(), this.getPosY());
+            oldPos = new Vector2(this.getPosX(), this.getPosY());
+        }
     }
 
     /**
@@ -168,26 +187,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public void updateSprites() {
         String type = this.playerType;
-        String state = "_idle";
+        String state = "_walk";
         String direction = "_" + this.getDirection().toString();
-        String frame = "_1";
+        String frame = "_3";
         
-        switch (this.currentState) {
-		case idle:
-			break;
-		case walk:
-			break;
-		case damaged:
-			break;
-		case attack:
-			break;
-		case death:
-			break;
-		default:
-			break;
-		}
-
-
         // Determine the player state
         if (this.hasState(PlayerState.damaged)) {
             state = "_damaged";
@@ -196,25 +199,29 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 frame = "_3";
             }
         }
-
         this.setTexture(playerType + state + direction + frame);
     }
     
-    /**
-     * Initialises the inventory with all the resources in the game.
-     */
-    private void addResources() {
-    	HashSet<Resource> startingResources = new HashSet<Resource>();        
-        this.inventory = new Inventory(startingResources);
+    private String[] frames = new String[] { 
+			"caveman_walk_E_1", 
+			"caveman_walk_E_2", 
+			"caveman_walk_E_3", 
+			"caveman_walk_E_4", 
+			"caveman_walk_E_5", 
+			"caveman_walk_E_6", 
+			"caveman_walk_E_7", 
+			"caveman_walk_E_8" 
+	};
+    private TimeAnimation walkSouthEast = AnimationFactory.createSimpleTimeAnimation(1000, frames);
+    
+    private void playWalkAnimation() {
+    		
+        AnimationFactory.registerTimeAnimations(walkSouthEast, this);
     }
-
-    /**
-     * Returns the player inventory.
-     * 
-     * Returns the inventory specific to the player.
-     */
-    public Inventory getInventory() {
-        return this.inventory;
+    
+    @Override
+    public String getTexture() {
+        return walkSouthEast.getFrame();
     }
     
     /**
@@ -233,6 +240,62 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 eventManager.registerEvent(this, new PlayerDamagedEvent(200));
     		}
     		return super.damage(amount);
+    }
+    
+    /**
+     * A method for making the player attack based on the direction it
+     * faces. Allows the attack state to be enabled and respective 
+     * animations to play.
+     */
+    private void attack() {
+    		if (this.setState(PlayerState.attack)) {
+    			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+    	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+    	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+    	        
+    	        Optional<AbstractEntity> target = null;
+    	        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+    	            
+    	        if (target.isPresent()) {
+    	        		float targetPosX = target.get().getPosX();
+    	        		float targetPosY = target.get().getPosY();
+    	            
+    	        		switch (this.getDirection()) {
+    	        		case North:
+    	        			break;
+    	        		case NorthEast:
+    	        			pPosY -= 1;
+    	        			pPosX += 1.5;
+    	        			break;
+    	        		case East:
+    	        			pPosY -= 1;
+    	        			pPosX += 1.5;
+    	        			break;
+    	        		case SouthEast:
+    	        			pPosX += 1;
+    	        			break;
+    	        		case South:
+    	        			pPosX += 1.2;
+    	        			break;
+    	        		case SouthWest:
+    	        			pPosY += 1;
+    	        			pPosX += 1;
+    	        			break;
+    	        		case West:
+    	        			break;
+    	        		case NorthWest:
+    	        			break;
+    	        		default:
+    	        			break;
+    	        		}
+    	        		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
+    	                        /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
+    	        } else if (!target.isPresent()) {
+    	            //Disable shooting when no enemies is present until new fix is found.
+    	        }
+    		}
+    		// When attack finishes clear the attack state
+    		this.clearState();
     }
 
     @Override
@@ -305,6 +368,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 break;
             case Input.Keys.E:
                 harvestResources();
+                playWalkAnimation();
                 break;
             case Input.Keys.NUM_1:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
@@ -359,55 +423,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     }
     
     /**
-     * A method for making the player attack based on the direction it
-     * faces. Allows the attack state to be enabled and respective 
-     * animations to play.
+     * Initialises the inventory with all the resources in the game.
      */
-    private void attack() {
-    		float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-        
-        Optional<AbstractEntity> target = null;
-        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-            
-        if (target.isPresent()) {
-        		float targetPosX = target.get().getPosX();
-        		float targetPosY = target.get().getPosY();
-            
-        		switch (this.getDirection()) {
-        		case North:
-        			break;
-        		case NorthEast:
-        			pPosY -= 1;
-        			pPosX += 1.5;
-        			break;
-        		case East:
-        			pPosY -= 1;
-        			pPosX += 1.5;
-        			break;
-        		case SouthEast:
-        			pPosX += 1;
-        			break;
-        		case South:
-        			pPosX += 1.2;
-        			break;
-        		case SouthWest:
-        			pPosY += 1;
-        			pPosX += 1;
-        			break;
-        		case West:
-        			break;
-        		case NorthWest:
-        			break;
-        		default:
-        			break;
-        		}
-        		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-                        /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
-        } else if (!target.isPresent()) {
-            //Disable shooting when no enemies is present until new fix is found.
-        }
+    private void addResources() {
+    	HashSet<Resource> startingResources = new HashSet<Resource>();        
+        this.inventory = new Inventory(startingResources);
+    }
+
+    /**
+     * Returns the player inventory.
+     * 
+     * Returns the inventory specific to the player.
+     */
+    public Inventory getInventory() {
+        return this.inventory;
     }
     
     /**
