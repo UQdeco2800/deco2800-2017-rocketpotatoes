@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
@@ -71,8 +73,10 @@ public class GameScreen implements Screen {
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
-	private int maxShopRange;
+	// Would be nice to move this somewhere else
+	private TiledDrawable background;
 
+	private int maxShopRange;
 	/**
 	 * Start's a multiplayer game
 	 *
@@ -127,7 +131,13 @@ public class GameScreen implements Screen {
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		textureManager = GameManager.get().getManager(TextureManager.class);
-
+		
+		// Creates the object for the repeated background texture
+		// TODO this will need to be changed once proper texture is added
+		TextureRegion waterTexture = textureManager.getTextureRegion("w1");
+		waterTexture.setRegionX(waterTexture.getRegionX() + 2);
+		waterTexture.setRegionY(waterTexture.getRegionY() + 2);
+		background = new TiledDrawable(textureManager.getTextureRegion("w1"));
 		/**
 		 * Setup managers etc.
 		 */
@@ -272,7 +282,6 @@ public class GameScreen implements Screen {
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
 
-			addResourceTrees();
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
@@ -299,16 +308,6 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
-	}
-
-
-	private void addResourceTrees() {
-		// Seed Trees
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
 	}
 
 	private void initialiseResources() {
@@ -479,8 +478,22 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderGame(SpriteBatch batch) {
-
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+		int mapWidth = GameManager.get().getWorld().getWidth();
+		int mapHeight = GameManager.get().getWorld().getLength();
+		
 		/* Render the tiles first */
+		// Needs view checking
+		batch.begin();
+		Vector2 waterCoords1 = Render3D.worldToScreenCoordinates(0 - mapWidth * 1.5f, mapWidth / 2, 0);
+		Vector2 waterCoords2 = Render3D.worldToScreenCoordinates(1 - mapWidth * 1.5f, mapWidth / 2, 0);
+		background.draw(batch, waterCoords1.x, waterCoords1.y, tileWidth * mapWidth * 2,
+				tileHeight * mapHeight * 2);
+		background.draw(batch, waterCoords2.x, waterCoords2.y, tileWidth * mapWidth * 2,
+				tileHeight * mapHeight * 2);
+		batch.end();
+		
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(cameraManager.getCamera());
 		tileRenderer.render();
@@ -492,9 +505,6 @@ public class GameScreen implements Screen {
 
 		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
-
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
 		float tileX = (int) (Math.floor(tileCoords.x));
 		float tileY = (int) (Math.floor(tileCoords.y));
