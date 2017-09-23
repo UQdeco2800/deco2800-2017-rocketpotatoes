@@ -13,7 +13,7 @@ import com.deco2800.potatoes.util.Path;
 /**
  * A generic player instance for the game
  */
-public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasDirection {
+public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
 	private static final transient String TEXTURE_RIGHT = "squirrel_right";
@@ -55,6 +55,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasD
 	public void onTick(long i) {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
+
+		//System.err.println("I'm a squirrel ticking");
 
 		// check paths
 
@@ -115,60 +117,12 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress, HasD
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
 
-		super.updateDirection();
+		updateDirection();
 	}
 
 	@Override
 	public Direction getDirection() { return currentDirection; }
 
-	public void setDirection(Direction direction) {
-		if (this.currentDirection != direction) {
-			this.currentDirection = direction;
-			updateSprites();
-		}
-	}
-
-	/**
-	 * Updates the direction of the player based on change in position.
-	 */
-/*	private void updateDirection() {
-		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
-			return;    // Not moving
-		}
-		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);
-
-		if (angularDirection >= -180 && angularDirection < -157.5) {
-			this.setDirection(Direction.SouthWest);
-		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
-			this.setDirection(Direction.West);
-		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
-			this.setDirection(Direction.NorthWest);
-		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
-			this.setDirection(Direction.North);
-		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
-			this.setDirection(Direction.NorthEast);
-		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
-			this.setDirection(Direction.East);
-		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
-			this.setDirection(Direction.SouthEast);
-		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
-			this.setDirection(Direction.South);
-		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
-			this.setDirection(Direction.SouthWest);
-		}
-		oldPos = new Vector2(this.getPosX(), this.getPosY());
-	}
-*/
-	/**
-	 * Updates the player sprite based on it's state and direction.
-	 */
-/*	public void updateSprites() {
-		String type = "squirrel";
-		String direction = "_" + getDirection().toString();
-
-		this.setTexture(type + direction);
-	}
-*/
 	public String getEnemyType() {
 		return enemyType;
 	}
