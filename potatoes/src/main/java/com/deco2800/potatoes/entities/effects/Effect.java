@@ -130,6 +130,9 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getBox3D())) {
+				if (entity instanceof Player) {
+					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+				}
 				((MortalEntity) entity).damage(damage);
 			}
 		}

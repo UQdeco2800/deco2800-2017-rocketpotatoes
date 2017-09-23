@@ -30,7 +30,7 @@ public class PlayerDamagedEvent extends TimeEvent<Player> {
 
 	@Override
 	public void action(Player player) {
-		player.clearState();
+		player.removeState(PlayerState.damaged);
 		player.updateSprites();
 		setDoReset(false);
 	}
