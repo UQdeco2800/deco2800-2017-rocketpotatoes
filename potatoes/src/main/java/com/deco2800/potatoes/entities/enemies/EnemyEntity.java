@@ -59,7 +59,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
+	 * Constructs a new EnemyEntity. The entity will be rendered at the same size
 	 * used for collision between entities.
 	 * 
 	 * @param posX
@@ -331,10 +331,12 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		this.setTexture(type + direction);
 	}
 
-	/**
+	/***
 	 * Abstract method requiring extending classes to return a string corresponding
-	 * to their enemy type.
-	 * */
+	 * to their enemy type. Useful for selecting sprites.
+	 *
+	 * @return String corresponding to enemy type (e.g. squirrel)
+	 */
 	public abstract String getEnemyType();
 
 	/**
