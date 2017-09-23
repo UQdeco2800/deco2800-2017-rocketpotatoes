@@ -480,22 +480,24 @@ public class GameScreen implements Screen {
 	private void renderGame(SpriteBatch batch) {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-		int mapWidth = GameManager.get().getWorld().getWidth();
-		int mapHeight = GameManager.get().getWorld().getLength();
 		
 		/* Render the tiles first */
-		// Needs view checking
-		batch.begin();
-		Vector2 waterCoords1 = Render3D.worldToScreenCoordinates(0 - mapWidth * 1.5f, mapWidth / 2, 0);
-		Vector2 waterCoords2 = Render3D.worldToScreenCoordinates(1 - mapWidth * 1.5f, mapWidth / 2, 0);
-		background.draw(batch, waterCoords1.x, waterCoords1.y, tileWidth * mapWidth * 2,
-				tileHeight * mapHeight * 2);
-		background.draw(batch, waterCoords2.x, waterCoords2.y, tileWidth * mapWidth * 2,
-				tileHeight * mapHeight * 2);
-		batch.end();
-		
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(cameraManager.getCamera());
+
+		batch.begin();
+		// within the screen, but down rounded to the nearest tile
+		Vector2 waterCoords = new Vector2(
+				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
+				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
+		// draw with screen corner and width a little bit more than the screen
+		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
+				tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		batch.end();
+
 		tileRenderer.render();
 
 		/* Draw highlight on current tile we have selected */
