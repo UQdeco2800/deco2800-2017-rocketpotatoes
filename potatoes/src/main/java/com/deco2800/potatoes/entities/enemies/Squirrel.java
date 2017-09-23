@@ -159,7 +159,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	}
 
 	/***
-	 *
 	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
 	 */
 	@Override
