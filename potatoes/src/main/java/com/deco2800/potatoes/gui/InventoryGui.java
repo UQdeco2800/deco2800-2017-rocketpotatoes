@@ -49,15 +49,16 @@ public class InventoryGui extends Gui {
 	public InventoryGui(Stage stage) {		
 		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
-		instantiateScrollPane();
+		//inventoryTable.top().right();
+		//instantiateScrollPane();
 		
 		/* set up window */
 		window = new Window("Inventory", skin);
-		window.add(scrollPane).width(80).height(100);
+		window.add(inventoryTable).width(70);
 		
 		/* size control and position window in the top right */
-		window.setWidth(90);
-		window.setHeight(100);
+		window.setWidth(80);
+		window.setHeight(530);
 		window.setPosition(stage.getWidth(), stage.getHeight());
 
 		/* add in the window finally */
@@ -97,6 +98,7 @@ public class InventoryGui extends Gui {
 	 */
 	private void instantiateTable() {
 		inventoryTable = new Table();
+		inventoryTable.setFillParent(true);
 		inventoryTable.defaults().width(20);
 		inventoryTable.padRight(10);
 		inventoryTable.padTop(10);

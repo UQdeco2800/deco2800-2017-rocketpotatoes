@@ -52,7 +52,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				world.deSelectAll();
 			}
 		}
-		
 		treeShop.initShop(originX,originY);
 	}
 

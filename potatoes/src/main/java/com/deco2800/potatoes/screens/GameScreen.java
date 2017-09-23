@@ -208,7 +208,7 @@ public class GameScreen implements Screen {
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
-		guiManager.addGui(new WaveGUI(guiManager.getStage(), this));
+		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
@@ -443,22 +443,22 @@ public class GameScreen implements Screen {
 		int timeToNextWave;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();
-		Gui waveGUI = guiManager.getGui(WaveGUI.class);
-		if (waveGUI instanceof WaveGUI) {
+		Gui waveGUI = guiManager.getGui(WavesGui.class);
+		if (waveGUI instanceof WavesGui) {
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WaveGUI) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
-				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WaveGUI) waveGUI).getWaveStatusLabel().setText("No more waves.");
-					((WaveGUI) waveGUI).getWaveTimeLabel().setText("");
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
 				} else {
 					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
@@ -515,12 +515,15 @@ public class GameScreen implements Screen {
 		
 		float distance = playerManager.distanceFromPlayer(tileX,tileY);
 		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
+		TreeShopGui treeShopGui = (TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
 		if (terrain.getTexture().equals("void")) {
 			// Do nothing
-		}else if (distance < maxShopRange && terrain.isPlantable())
+		} else if (treeShopGui.getPlantable())
 			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-		else
+		else 
 			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+			
 		
 		batch.end();
 

@@ -18,6 +18,7 @@ public class RespawnEventTest {
 
 	@Test
 	public void actionTest() {
+		GameManager.get().clearManagers();
 		GameManager.get().setWorld(new TestWorld());
 		GameManager.get().getWorld().addEntity(player);
 		testEvent.action(player);
