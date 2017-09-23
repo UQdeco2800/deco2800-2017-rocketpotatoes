@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.health;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
 
@@ -20,7 +21,8 @@ public class RespawnEventTest {
 	public void actionTest() {
 		GameManager.get().clearManagers();
 		GameManager.get().setWorld(new TestWorld());
-		GameManager.get().getWorld().addEntity(player);
+		GameManager.get().addManager(new PlayerManager());
+		GameManager.get().getManager(PlayerManager.class).setPlayer(player);
 		testEvent.action(player);
 	}
 
