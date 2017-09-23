@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
  *
  * @author craig
  */
-public class WaveGui extends Gui {
+public class WavesGui extends Gui {
 
     // Gui elements
     private Skin uiSkin;
@@ -22,9 +22,9 @@ public class WaveGui extends Gui {
     /**
      * Construct a new WaveGui element for the current stage.
      *
-     * @param stage the stage to place the WaveGui.
+     * @param stage the stages to place the WaveGui.
      */
-    public WaveGui(Stage stage) {
+    public WavesGui(Stage stage) {
         hidden = false;
 
         // Make window with skin
