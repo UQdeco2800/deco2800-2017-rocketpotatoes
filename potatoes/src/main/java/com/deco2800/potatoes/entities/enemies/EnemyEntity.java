@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
@@ -51,6 +52,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
 	private Direction currentDirection; // The direction the player faces
+
+	private int timer = 0;
 
 
 	/**
@@ -287,6 +290,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		boolean collidedTankEffect = false;
+		timer++;
+		String stompedGroundTextureString = "";
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
@@ -304,6 +309,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
 					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
 						collidedTankEffect = true;
+						stompedGroundTextureString = entity.getTexture();
+						System.out.println(stompedGroundTextureString);
 					}
 					continue;
 				}
@@ -311,9 +318,20 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			}
 		}
 
-		if (!collidedTankEffect && this instanceof TankEnemy) {
-			GameManager.get().getWorld().addEntity(new StompedGroundEffect(MortalEntity.class,getPosX(), getPosY(), 0, true, 1,1));
-			enemySoundManager.playSound("tankEnemyFootstep.wav");
+		if (this instanceof TankEnemy) {
+			if (timer % 100 == 0 && !(collided)) {
+				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
+				GameManager.get().getWorld().addEntity(
+						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 0, 1, 1));
+			}
+			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
+					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
+				GameManager.get().getWorld().addEntity(
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+			} else if (!collidedTankEffect) {
+				GameManager.get().getWorld().addEntity(
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+			}
 		}
 
 		if (!collided) {
