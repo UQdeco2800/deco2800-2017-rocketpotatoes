@@ -10,8 +10,7 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
- * The standard / most basic enemy in the game - a squirrel.
- *
+ * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 

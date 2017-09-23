@@ -22,7 +22,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.entities.HasDirection;
 
 /**
- * A class for speedy enemy
+ * A speedy raccoon enemy that steals resources from resource trees.
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 

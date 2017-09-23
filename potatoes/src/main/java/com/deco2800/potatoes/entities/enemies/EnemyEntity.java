@@ -36,6 +36,9 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
+/**
+ * An abstract class for the basic functionality of enemy entities which extend from it
+ */
 public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);

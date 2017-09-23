@@ -11,7 +11,7 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
- * A generic player instance for the game
+ * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
  */
 public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDirection {
 

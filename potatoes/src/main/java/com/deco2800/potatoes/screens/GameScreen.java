@@ -436,22 +436,26 @@ public class GameScreen implements Screen {
 		guiManager.getStage().draw();
 	}
 
-	//Is it bad to be setting the status label text on every tick? Might want to think this through
+	/**
+	 * Get the current state of waves from WaveManager and update the WaveGui accordingly.
+	 */
 	private void updateWaveGUI() {
-		// Update WaveGui time
 		int timeToWaveEnd;
 		int timeToNextWave;
-		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();
-		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();
+		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
+		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
 		Gui waveGUI = guiManager.getGui(WaveGui.class);
 		if (waveGUI instanceof WaveGui) {
+			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
 			((WaveGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
+				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
 				((WaveGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
 				((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
+				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
 					((WaveGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
 					((WaveGui) waveGUI).getWaveTimeLabel().setText("");
