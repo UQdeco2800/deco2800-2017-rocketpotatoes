@@ -310,7 +310,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
 						collidedTankEffect = true;
 						stompedGroundTextureString = entity.getTexture();
-						System.out.println(stompedGroundTextureString);
 					}
 					continue;
 				}
