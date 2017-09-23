@@ -37,32 +37,27 @@ public class PlayerTest {
         player.handleKeyUp(Input.Keys.A);
         player.handleKeyDown(Input.Keys.D);
         player.handleKeyUp(Input.Keys.D);
+    }
+
+    @Test
+    public void keysTest2() {
         player.handleKeyUp(Input.Keys.SPACE);
         player.handleKeyUp(Input.Keys.SPACE);
         player.handleKeyUp(Input.Keys.SPACE);
         player.handleKeyUp(Input.Keys.R);
         player.handleKeyUp(Input.Keys.ESCAPE);
         player.handleKeyUp(Input.Keys.E);
-    }
-
-    @Test
-    public void keysTest2() {
-        player.handleKeyUp(Input.Keys.F);
-        player.handleKeyUp(Input.Keys.R);
-        player.handleKeyUp(Input.Keys.NUM_1);
-        player.handleKeyUp(Input.Keys.NUM_2);
-        player.handleKeyUp(Input.Keys.NUM_3);
-        player.handleKeyUp(Input.Keys.NUM_4);
-        player.handleKeyUp(Input.Keys.NUM_5);
-        player.handleKeyUp(Input.Keys.NUM_6);
-        player.handleKeyUp(Input.Keys.NUM_7);
-        player.handleKeyUp(Input.Keys.ESCAPE);
+        player.handleKeyDown(Input.Keys.F);
+        player.handleKeyDown(Input.Keys.T);
     }
 
     @Test
     public void stringTest() {
         player.toString();
         player.getProgressBar();
+        player.getPlayerType();
+        player.setPlayerType("");
+
     }
 
     @Test

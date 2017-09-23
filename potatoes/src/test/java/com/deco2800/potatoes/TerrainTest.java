@@ -14,12 +14,14 @@ public class TerrainTest {
     Terrain t1;
     Terrain t2;
     Terrain t3;
+    Terrain t4;
 
     @Before
     public void setup() {
         t1 = new Terrain("a", 1f, true);
         t2 = new Terrain("a", 1f, true);
-        t2 = new Terrain("b", 2f, false);
+        t4 = new Terrain("a", 1f, false);
+        t3 = new Terrain("b", 2f, false);
     }
 
     @Test
@@ -31,7 +33,8 @@ public class TerrainTest {
     @Test
     public void equalsTests() {
         assertTrue(t1.equals(t1));
-        assertFalse(t1.equals(t2));
+        assertTrue(t1.equals(t2));
         assertFalse(t1.equals(t3));
+        assertFalse(t1.equals(new Object()));
     }
 }
