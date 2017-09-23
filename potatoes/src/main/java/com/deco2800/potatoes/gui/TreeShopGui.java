@@ -77,8 +77,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 		// Render menu
 		this.stage = stage;
 		playerManager = GameManager.get().getManager(PlayerManager.class);
-		shopX = 300;
-		shopY = 300;
+		shopX = 0;
+		shopY = 0;
 		initiated = false;
 		items = new LinkedHashMap<AbstractTree, Color>();
 		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
@@ -142,18 +142,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopTileX = (int) tilePos.x;
 		shopTileY = (int) tilePos.y;
 
-		/*float range = MAX_RANGE;
-		if (!plantable) {
-			closeShop();
-
-			// If we want it to spawn at max range instead
-			
-			 * double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY -
-			 * player.getPosY()); angle = 360 - angle; angle = Math.toRadians(angle);
-			 * shopTileX = (int) (range * Math.cos(angle) + player.getPosX()); shopTileY =
-			 * (int) (range * Math.sin(angle) + player.getPosY());
-			 
-		}*/
 	}
 
 	/**

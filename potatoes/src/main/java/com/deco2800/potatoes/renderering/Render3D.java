@@ -298,8 +298,8 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector3 tileToScreen(Stage stage, float x, float y) {
 		Vector2 tile = Render3D.tileToWorldPos(x, y);
-		Vector3 screent = worldToGuiScreenCoordinates(stage, tile.x, tile.y, 1);
-		return new Vector3(screent.x, screent.y, screent.z);
+		Vector3 screen = worldToGuiScreenCoordinates(stage, tile.x, tile.y, 1);
+		return new Vector3(screen.x, screen.y, screen.z);
 	}
 
 	/**
