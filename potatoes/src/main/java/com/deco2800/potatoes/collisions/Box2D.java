@@ -25,6 +25,11 @@ public class Box2D implements CollisionMask{
     }
 
     @Override
+    public CollisionMask copy() {
+        return new Box2D(x, y, xLength, yLength);
+    }
+
+    @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
             Point2D otherPoint = (Point2D) other;

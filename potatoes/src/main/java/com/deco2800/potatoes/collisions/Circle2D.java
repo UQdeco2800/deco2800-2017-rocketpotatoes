@@ -15,6 +15,11 @@ public class Circle2D implements CollisionMask {
     }
 
     @Override
+    public CollisionMask copy() {
+        return new Circle2D(x, y, radius);
+    }
+
+    @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
