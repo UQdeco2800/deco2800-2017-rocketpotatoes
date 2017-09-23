@@ -191,7 +191,7 @@ public class TextureManager extends Manager {
         		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
         		
-        		for (int i=1; i<=3; i++) {
+        		for (int i=1; i<=5; i++) {
         			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
         			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
         		}
@@ -200,9 +200,14 @@ public class TextureManager extends Manager {
         			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
         			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
         		}
+        		
+        		for (int i=1; i<=3; i++) {
+        			String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
+        		}
         }
         
-     // Add all caveman sprites
+        // Add all caveman sprites
         for (Direction direction : Direction.values()) {
         		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
