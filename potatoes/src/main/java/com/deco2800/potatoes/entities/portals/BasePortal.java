@@ -32,7 +32,7 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.WorldType;
 
 /**
- * A class for creating the base portal. This class differs from AbstracPortals
+ * A class for creating the base portal. This class differs from AbstractPortals
  * because the base portal needs health.
  *
  * @author Jordan Holder, Katie Gray
