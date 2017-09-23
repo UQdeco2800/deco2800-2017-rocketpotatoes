@@ -7,7 +7,6 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
 /**
  * A gate where enemies come out.
- * 
  *
  */
 public class EnemyGate extends MortalEntity implements HasProgressBar {
