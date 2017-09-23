@@ -41,12 +41,10 @@ public class PlayerTest {
 
     @Test
     public void keysTest2() {
-        player.handleKeyUp(Input.Keys.SPACE);
-        player.handleKeyUp(Input.Keys.SPACE);
-        player.handleKeyUp(Input.Keys.SPACE);
-        player.handleKeyUp(Input.Keys.R);
-        player.handleKeyUp(Input.Keys.ESCAPE);
-        player.handleKeyUp(Input.Keys.E);
+        player.handleKeyDown(Input.Keys.SPACE);
+        player.handleKeyDown(Input.Keys.SPACE);
+        player.handleKeyDown(Input.Keys.SPACE);
+        player.handleKeyDown(Input.Keys.E);
         player.handleKeyDown(Input.Keys.F);
         player.handleKeyDown(Input.Keys.T);
     }
