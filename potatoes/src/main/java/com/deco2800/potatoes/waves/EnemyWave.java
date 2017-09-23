@@ -13,19 +13,10 @@ import static com.badlogic.gdx.math.MathUtils.random;
 
 public class EnemyWave implements Tickable {
 
-
-    /*
-        1. Could be useful for a wave to know when all of it's enemies are dead, e.g. when to say game over, or if we
-         want the waiting counter to start for the next wave to start only when the previous wave is finished*/
-
-    private float[] enemyRatios;
-    //Length of wave in .001 of seconds
-    private int waveLength;
-    //The current time of the wave
-    private int waveTime = 0;
-    //Spawn rate (100 = 1 second)
-    private int spawnRate = 75;
-    //Time counting down for gui
+    private float[] enemyRatios;    //Length of wave in .001 of seconds
+    private int waveLength;     //The current time of the wave
+    private int waveTime = 0;   //Spawn rate (100 = 1 second)
+    private int spawnRate = 75;     //Time counting down for gui
     private int timeToEnd = 0;
 
     /*Probably can merge (waiting w/ finished) or (waiting w/ paused) not too sure*/
@@ -34,8 +25,6 @@ public class EnemyWave implements Tickable {
     }
 
     WaveState waveState = WaveState.WAITING;
-
-
 
     /**
      * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
@@ -58,12 +47,15 @@ public class EnemyWave implements Tickable {
     }
 
     /**
-     * Spawn enemies at ratio given in enemy ratio
+     * Create an array of floats between 0-1, where squirrelRate < speedyRate < tankRate < mooseRate.
+     * The span of each value from itself to the immediate next highest ratio indicates its actual
+     * ratio, i.e. if speedy is .50 and tank is .75, actual ratio is .25.
+     *
+     * @return an array of floats representing the ratio of enemy rates provided
      * */
     private float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
         float total = squirrelRate + speedyRate + tankRate + mooseRate;
-        // These are 'positional ratios'
-        // Ratios are the spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
+        // Ratios are the total spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
         float squirrelRatio = squirrelRate/total;
         float speedyRatio = squirrelRatio + speedyRate/total;
         float tankRatio = speedyRatio + tankRate/total;
@@ -73,7 +65,7 @@ public class EnemyWave implements Tickable {
     }
 
     /**
-     * Spawn enemies according to the ratio described by the constructor args
+     * Spawn enemies according to the ratio described by the constructor's different enemy rate arguments
      * */
     public void spawnEnemyToRatio(float[] enemyRatios) {
         Random random = new Random();
@@ -161,34 +153,6 @@ public class EnemyWave implements Tickable {
     public void setWaveState(WaveState state) { this.waveState = state; }
 
     public float[] getEnemyRatios(){ return this.enemyRatios;}
-    
-    private void addMultipleSquirrels(int squirrelCount) {
-            for (int i = 0; i < squirrelCount; i++) {
-                GameManager.get().getWorld().addEntity(new Squirrel(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
-        }
-
-    private void addMultipleTanks(int tankCount) {
-        for (int i = 0; i < tankCount; i++) {
-            GameManager.get().getWorld().addEntity(
-                    new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-        }
-    }
-
-    private void addMultipleMoose(int mooseCount) {
-        for (int i = 0; i < mooseCount; ++i) {
-            GameManager.get().getWorld().addEntity(new Moose(
-                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-        }
-    }
-
-    private void addMultipleSpeedy(int speedyCount) {
-        for(int i=0 ; i<speedyCount ; i++) {
-            GameManager.get().getWorld().addEntity(
-                    new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
-        }
-    }
 
 }
 
