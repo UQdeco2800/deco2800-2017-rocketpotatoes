@@ -33,15 +33,14 @@ import java.util.*;
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
-    
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
     
-    private String playerType;	// The type of player
-    private float movementSpeed;
-    private float speedx;
-    private float speedy;
-    private int respawnTime = 5000; // milliseconds
+    private String playerType = "wizard";	// The type of player
+    private float movementSpeed;		// The max speed the player moves
+    private float speedx;			// The instantaneous speed in the x direction
+    private float speedy;			// The instantaneous speed in the y direction
+    private int respawnTime = 5000; 	// Time until respawn in milliseconds
     private Inventory inventory;
 
     private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
@@ -73,20 +72,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.movementSpeed = 0.075f;
         this.speedx = 0.0f;
         this.speedy = 0.0f;
-        this.currentDirection = Direction.SouthEast;
-        
-        /* Initialise the inventory with the valid resources */
-        addResources();
+        addResources();	//Initialise the inventory with the valid resources
     }
     
-    /**
-     * Initialises the inventory with all the resources in the game.
-     */
-    private void addResources() {
-    	HashSet<Resource> startingResources = new HashSet<Resource>();        
-        this.inventory = new Inventory(startingResources);
-    }
-
     /**
      * Add a state to the player. For example, if the player
      * is walking, then set the 'walk' state to the player.
@@ -110,6 +98,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			otherwise.
      */
     public boolean hasState(PlayerState state) {
+    		LOGGER.info("Set player state to " + state.name());
     		return this.currentState.equals(state) ? true : false;
     }
 
@@ -125,7 +114,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     @Override
     public Direction getDirection() {
-        return currentDirection;
+        return this.currentDirection;
     }
 
     /**
@@ -137,7 +126,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     public void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
             this.currentDirection = direction;
-            LOGGER.info("Set player direction to " + direction);
+            LOGGER.info("Set player direction to " + direction.name());
             updateSprites();
         }
     }
@@ -178,10 +167,25 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Updates the player sprite based on it's state and direction.
      */
     public void updateSprites() {
-        String type = "wizard";
+        String type = this.playerType;
         String state = "_idle";
         String direction = "_" + this.getDirection().toString();
         String frame = "_1";
+        
+        switch (this.currentState) {
+		case idle:
+			break;
+		case walk:
+			break;
+		case damaged:
+			break;
+		case attack:
+			break;
+		case death:
+			break;
+		default:
+			break;
+		}
 
 
         // Determine the player state
@@ -193,12 +197,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             }
         }
 
-        this.setTexture(type + state + direction + frame);
+        this.setTexture(playerType + state + direction + frame);
+    }
+    
+    /**
+     * Initialises the inventory with all the resources in the game.
+     */
+    private void addResources() {
+    	HashSet<Resource> startingResources = new HashSet<Resource>();        
+        this.inventory = new Inventory(startingResources);
     }
 
     /**
      * Returns the player inventory.
-     * <p>
+     * 
      * Returns the inventory specific to the player.
      */
     public Inventory getInventory() {

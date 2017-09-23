@@ -195,6 +195,11 @@ public class TextureManager extends Manager {
         			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
         			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
         		}
+        		
+        		for (int i=1; i<=8; i++) {
+        			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
+        		}
         }
         
      // Add all caveman sprites
