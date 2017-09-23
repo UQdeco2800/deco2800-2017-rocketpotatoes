@@ -11,6 +11,7 @@ import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -35,6 +36,11 @@ public class PlayerTest {
         cameraManager.setCamera(camera);
         
         m.setPlayer(player);
+    }
+    
+    @After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
     }
 
     @Test

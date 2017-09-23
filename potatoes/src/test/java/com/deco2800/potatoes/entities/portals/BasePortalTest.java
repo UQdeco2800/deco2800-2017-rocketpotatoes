@@ -13,6 +13,9 @@ import org.junit.Before;
 
 
 import static org.junit.Assert.*;
+
+import org.junit.After;
+
 import com.badlogic.gdx.Input;
 
 public class BasePortalTest{
@@ -24,6 +27,11 @@ public class BasePortalTest{
 		testPortal = new BasePortal(0, 0, 0, 3);
 		GameManager.get().setWorld(new TestWorld());
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 
 	private class TestWorld extends World {
 

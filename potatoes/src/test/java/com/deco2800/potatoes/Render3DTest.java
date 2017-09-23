@@ -2,6 +2,7 @@ package com.deco2800.potatoes;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,6 +53,10 @@ public class Render3DTest {
 		//GameManager.get().getWorld().getMap().getProperties().put("tileheight", 5);
 	}
 
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 	
 	@Test
 	public void screenAndTileTest() {
