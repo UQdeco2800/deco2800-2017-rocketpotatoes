@@ -29,6 +29,7 @@ import java.util.*;
 /**
  * Entity for the playable character.
  * <p>
+ *
  * @author leggy, petercondoleon
  * <p>
  */
@@ -84,12 +85,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         /* Initialise the inventory with the valid resources */
         addResources();
     }
-    
+
     /**
      * Initialises the inventory with all the resources in the game.
      */
     private void addResources() {
-    	HashSet<Resource> startingResources = new HashSet<Resource>();        
+        HashSet<Resource> startingResources = new HashSet<Resource>();
         this.inventory = new Inventory(startingResources);
     }
 
@@ -249,7 +250,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())&& !(entity instanceof Moose)) {
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D()) && !(entity instanceof Moose)) {
                 collided = true;
             }
         }
@@ -353,7 +354,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTree()));
                 }
-            case Input.Keys.SPACE:
+            case Input.Keys.R:
                 if (this.playerType.equals("wizard")) {
                     this.playerType = "caveman";
                     this.updateSprites();
@@ -370,49 +371,40 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     break;
                 }
                 break;
-            case Input.Keys.R:
+            case Input.Keys.SPACE:
                 Optional<AbstractEntity> target1 = null;
                 float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
                 float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-                String playerDirections = GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection().toString().replaceAll("\\s","");
-                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
-//                System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection());
+                String playerDirections = GameManager.get().getManager(PlayerManager.class).getPlayer().getDirection().toString().replaceAll("\\s", "");
+                target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
-//                if (playerDirections.equalsIgnoreCase("w")) {
-                    target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-
-
-//                }else{}
                 if (target1.isPresent()) {
                     float targetPosX = target1.get().getPosX();
                     float targetPosY = target1.get().getPosY();
                     if (playerDirections.equalsIgnoreCase("s")) {
                         pPosX += 1.2;
                     }
-                    if(playerDirections.equalsIgnoreCase("e")){
+                    if (playerDirections.equalsIgnoreCase("e")) {
                         pPosY -= 1;
                         pPosX += 1.5;
                     }
-                    if(playerDirections.equalsIgnoreCase("ne")){
+                    if (playerDirections.equalsIgnoreCase("ne")) {
                         pPosY -= 1;
                         pPosX += 1.5;
                     }
-                    if(playerDirections.equalsIgnoreCase("sw")){
+                    if (playerDirections.equalsIgnoreCase("sw")) {
                         pPosY += 1;
                         pPosX += 1;
                     }
-//                    if(playerDirections.equalsIgnoreCase("nw")){
-//
-//                    }
-                    if(playerDirections.equalsIgnoreCase("se")){
-
+                    if (playerDirections.equalsIgnoreCase("se")) {
                         pPosX += 1;
                     }
 
                     GameManager.get().getWorld()
-                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-                                    /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, playerDirections,targetPosX,targetPosY));
+                            .addEntity(new PlayerProjectile(target1.get().getClass(), pPosX - 1, pPosY, pPosZ, 10f, 100, ProjectileType.ROCKET, null,
+                                    null, playerDirections, targetPosX, targetPosY, Projectile.ShootingStyles.DIRECTIONAL));
+
                 } else if (!target1.isPresent()) {
                     //Disable shooting when no enemies is present until new fix is found.
                 }
@@ -426,6 +418,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         }
         checkKeyDown++;
     }
+
+
 
     private Vector2 getCursorCoords() {
         Vector3 worldCoords = Render3D.screenToWorldCoordiates(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -545,7 +539,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
     }
 
-    public static String getPlayerType(){
+    public static String getPlayerType() {
         return playerType;
     }
 

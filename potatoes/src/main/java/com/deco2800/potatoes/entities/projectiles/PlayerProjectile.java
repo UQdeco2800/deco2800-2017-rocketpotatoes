@@ -23,9 +23,10 @@ public class PlayerProjectile extends Projectile {
 	 */
 
 	public PlayerProjectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, ProjectileType projectileType, Effect startEffect,
-                            Effect endEffect, String Directions, float TargetPosX, float TargetPosY) {
-		super(targetClass,posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions, TargetPosX, TargetPosY);
+                            Effect endEffect, String Directions, float TargetPosX, float TargetPosY, ShootingStyles shootingStyle) {
+		super(targetClass,posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions, TargetPosX, TargetPosY, shootingStyle);
 	}
+
 
 
 	@Override

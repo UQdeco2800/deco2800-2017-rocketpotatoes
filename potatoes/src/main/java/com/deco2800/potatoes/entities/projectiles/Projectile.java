@@ -15,272 +15,305 @@ import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
 
-	protected static final float SPEED = 0.2f;
+    protected static final float SPEED = 0.2f;
 
-	protected ProjectileType projectileType;
-	protected boolean loopAnimation = true;
-	protected boolean animate = true;
+    protected ProjectileType projectileType;
+    protected boolean loopAnimation = true;
+    protected boolean animate = true;
 
-	protected Vector3 targetPos = new Vector3();
-	protected Vector3 change = new Vector3();
-	protected Vector2 delta = new Vector2();
+    protected Vector3 targetPos = new Vector3();
+    protected Vector3 change = new Vector3();
+    protected Vector2 delta = new Vector2();
 
-	protected static float xRenderLength = 1.4f;
-	protected static float yRenderLength = 1.4f;
-	protected static float xLength = 0.4f;
-	protected static float yLength = 0.4f;
-	protected static float zLength = 0.4f;
+    protected static float xRenderLength = 1.4f;
+    protected static float yRenderLength = 1.4f;
+    protected static float xLength = 0.4f;
+    protected static float yLength = 0.4f;
+    protected static float zLength = 0.4f;
+    protected String Directions;
+    protected float pPosX;
+    protected float pPosY;
+    protected float tPosX;
+    protected float tPosY;
 
-	protected Class<?> targetClass;
-	protected boolean rangeReached;
-	protected float maxRange;
-	protected float range;
-	protected float damage;
-	protected float rotationAngle = 0;
+    protected Class<?> targetClass;
+    protected boolean rangeReached;
+    protected float maxRange;
+    protected float range;
+    protected float damage;
+    protected float rotationAngle = 0;
 
-	protected Effect startEffect;
-	protected Effect endEffect;
+    protected Effect startEffect;
+    protected Effect endEffect;
 
-	public enum ProjectileType {
-		ROCKET {
-			public String toString() {
-				return "rocket";
-			}
+    public enum ProjectileType {
+        ROCKET {
+            public String toString() {
+                return "rocket";
+            }
 
-			public String[] textures() {
-				return new String[] { "rocket1", "rocket2", "rocket3" };
-			}
+            public String[] textures() {
+                return new String[]{"rocket1", "rocket2", "rocket3"};
+            }
 
-		},
-		CHILLI {
-			public String toString() {
-				return "chilli";
-			}
+        },
+        CHILLI {
+            public String toString() {
+                return "chilli";
+            }
 
-			public String[] textures() {
-				return new String[] { "chilli1", "chilli2", "chilli3" };
-			}
-		},
-		LEAVES {
-			public String toString() {
-				return "leaves";
-			}
+            public String[] textures() {
+                return new String[]{"chilli1", "chilli2", "chilli3"};
+            }
+        },
+        LEAVES {
+            public String toString() {
+                return "leaves";
+            }
 
-			public String[] textures() {
-				return new String[] { "leaves1", "leaves2", "leaves3" };
-			}
-		},
-		ACORN {
-			public String toString() {
-				return "acorn";
-			}
+            public String[] textures() {
+                return new String[]{"leaves1", "leaves2", "leaves3"};
+            }
+        },
+        ACORN {
+            public String toString() {
+                return "acorn";
+            }
 
-			public String[] textures() {
-				return new String[] { "acorn1" };
-			}
-		};
+            public String[] textures() {
+                return new String[]{"acorn1"};
+            }
+        };
 
-		public String[] textures() {
-			return new String[] { "default" };
-		}
-	}
+        public String[] textures() {
+            return new String[]{"default"};
+        }
+    }
 
-	public Projectile() {
-		// nothing yet
-	}
+    public enum ShootingStyles {
+        DIRECTIONAL {
 
-	// currently used in Player, will probably need to change out later.
-	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage,
-			ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
-			float TargetPosY) {
-		super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
-				projectileType.textures()[0]);
+        },
+        ENEMYLASTPOS {
 
-		if (targetClass != null)
-			this.targetClass = targetClass;
-		else
-			this.targetClass = MortalEntity.class;
+        }
+    }
 
-		if (projectileType == null)
-			throw new RuntimeException("projectile type must not be null");
-		else
-			this.projectileType = projectileType;
+    public Projectile() {
+        // nothing yet
+    }
 
-		this.range = damage;
-		this.damage = damage;
-		this.startEffect = startEffect;
-		this.endEffect = endEffect;
+    // Used in player for shooting of projectiles, requires TargetPosX and Y for enemylastpos shooting styles
+    public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage,
+                      ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
+                      float TargetPosY, ShootingStyles shootingStyle) {
+        super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
+                projectileType.textures()[0]);
 
-		if (startEffect != null)
-			GameManager.get().getWorld().addEntity(startEffect);
+        if (targetClass != null)
+            this.targetClass = targetClass;
+        else
+            this.targetClass = MortalEntity.class;
 
-		updatePosition();
-		/**
-		 * Shoots enemies base on their player directions
-		 */
-		if (Directions.equalsIgnoreCase("w")) {
-			setTargetPosition(posX - 5, posY - 5, posZ);
-			// setTargetPosition(TargetPosX, TargetPosY, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("e")) {
-			setTargetPosition(posX + 5, posY + 5, posZ);
-			updatePosition();
-			setPosition();
-			// setTargetPosition(TargetPosX, TargetPosY, posZ);
-		} else if (Directions.equalsIgnoreCase("n")) {
-			setTargetPosition(posX + 15, posY - 15, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("s")) {
-			setTargetPosition(posX - 15, posY + 15, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("ne")) {
-			setTargetPosition(posX + 15, posY + 1, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("nw")) {
-			setTargetPosition(posX - 15, posY - 200, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("se")) {
-			setTargetPosition(posX + 20, posY + 200, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("sw")) {
-			setTargetPosition(posX - 200, posY - 20, posZ);
-			updatePosition();
-			setPosition();
-		}
+        if (projectileType == null)
+            throw new RuntimeException("projectile type must not be null");
+        else
+            this.projectileType = projectileType;
 
-		/**
-		 * Shoots enemies based on their last position
-		 */
-		// setTargetPosition(TargetPosX,TargetPosY,0f);
-		// updatePosition();
-		// setPosition();
-	}
+        this.range = damage;
+        this.damage = damage;
+        this.startEffect = startEffect;
+        this.endEffect = endEffect;
+        this.Directions = Directions;
+        this.range = range;
+        this.pPosX = posX;
+        this.pPosY = posY;
+        this.tPosX = TargetPosX;
+        this.tPosY = TargetPosY;
 
-	public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-			ProjectileType projectileType, Effect startEffect, Effect endEffect) {
-		super(startPos.x, startPos.y, startPos.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
-				projectileType.toString());
+        if (startEffect != null)
+            GameManager.get().getWorld().addEntity(startEffect);
 
-		if (targetClass != null)
-			this.targetClass = targetClass;
-		else
-			this.targetClass = MortalEntity.class;
+        updatePosition();
+        ShootingStyle(shootingStyle);
 
-		if (projectileType == null)
-			throw new RuntimeException("projectile type must not be null");
-		else
-			this.projectileType = projectileType;
+    }
 
-		this.maxRange = this.range = range;
-		this.damage = damage;
-		this.startEffect = startEffect;
-		this.endEffect = endEffect;
 
-		if (startEffect != null)
-			GameManager.get().getWorld().addEntity(startEffect);
+    public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
+                      ProjectileType projectileType, Effect startEffect, Effect endEffect) {
+        super(startPos.x, startPos.y, startPos.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
+                projectileType.toString());
 
-		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
-		updatePosition();
-		setPosition();
-	}
+        if (targetClass != null)
+            this.targetClass = targetClass;
+        else
+            this.targetClass = MortalEntity.class;
 
-	public void setTargetPosition(float xPos, float yPos, float zPos) {
-		targetPos.set(xPos, yPos, zPos);
-	}
+        if (projectileType == null)
+            throw new RuntimeException("projectile type must not be null");
+        else
+            this.projectileType = projectileType;
 
-	/**
-	 * Initialize heading. Used if heading changes
-	 */
-	protected void updatePosition() {
-		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
-		float angle = (float) (Math.atan2(delta.y, delta.x)) + (float) (Math.PI);
-		rotationAngle = (float) ((angle * 180 / Math.PI) + 45 + 90);
-		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
-	}
+        this.maxRange = this.range = range;
+        this.damage = damage;
+        this.startEffect = startEffect;
+        this.endEffect = endEffect;
 
-	/**
-	 * every frame the position is set
-	 */
-	protected void setPosition() {
-		setPosX(getPosX() + change.x);
-		setPosY(getPosY() + change.y);
+        if (startEffect != null)
+            GameManager.get().getWorld().addEntity(startEffect);
 
-		if (range < SPEED || rangeReached) {
-			GameManager.get().getWorld().removeEntity(this);
-		} else {
-			range -= SPEED;
-		}
-	}
+        setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
+        updatePosition();
+        setPosition();
+    }
 
-	@Override
-	public float rotationAngle() {
-		return rotationAngle;
-	}
+    public void setTargetPosition(float xPos, float yPos, float zPos) {
+        targetPos.set(xPos, yPos, zPos);
+    }
 
-	/**
-	 * Returns Range value
-	 */
-	public float getRange() {
-		return maxRange;
-	}
+    /**
+     * Initialize heading. Used if heading changes
+     */
+    protected void updatePosition() {
+        delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
+        float angle = (float) (Math.atan2(delta.y, delta.x)) + (float) (Math.PI);
+        rotationAngle = (float) ((angle * 180 / Math.PI) + 45 + 90);
+        change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
+    }
 
-	/**
-	 * Returns Damage value
-	 */
-	public float getDamage() {
-		return damage;
-	}
+    public void ShootingStyle(ShootingStyles shootingStyle) {
 
-	protected int projectileEffectTimer;
-	protected int projectileCurrentSpriteIndexCount;
 
-	protected void animate() {
-		if (animate) {
-			projectileEffectTimer++;
-			if (loopAnimation) {
-				if (projectileEffectTimer % 4 == 0) {
-					setTexture(projectileType.textures()[projectileCurrentSpriteIndexCount]);
-					if (projectileCurrentSpriteIndexCount == projectileType.textures().length - 1)
-						projectileCurrentSpriteIndexCount = 0;
-					else {
-						projectileCurrentSpriteIndexCount++;
-					}
-				}
-			}
-		}
-	}
+        /**
+         * Shoots enemies base on their player directions
+         */
+        if (shootingStyle.toString().equalsIgnoreCase("directional")) {
+            if (Directions.equalsIgnoreCase("w")) {
+                setTargetPosition(pPosX - 5, pPosY - 5, 0);
+                // setTargetPosition(TargetPosX, TargetPosY, posZ);
+                updatePosition();
+                setPosition();
+            } else if (Directions.equalsIgnoreCase("e")) {
+                setTargetPosition(pPosX + 5, pPosY + 5, 0);
+                updatePosition();
+                setPosition();
+                // setTargetPosition(TargetPosX, TargetPosY, posZ);
+            } else if (Directions.equalsIgnoreCase("n")) {
+                setTargetPosition(pPosX + 15, pPosY - 15, 0);
+                updatePosition();
+                setPosition();
+            } else if (Directions.equalsIgnoreCase("s")) {
+                setTargetPosition(pPosX - 15, pPosY + 15, 0);
+                updatePosition();
+                setPosition();
+            } else if (Directions.equalsIgnoreCase("ne")) {
+                setTargetPosition(pPosX + 15, pPosY + 1, 0);
+                updatePosition();
+                setPosition();
+            } else if (Directions.equalsIgnoreCase("nw")) {
+                setTargetPosition(pPosX - 15, pPosY - 200, 0);
+                updatePosition();
+                setPosition();
+            } else if (Directions.equalsIgnoreCase("se")) {
+                setTargetPosition(pPosX + 20, pPosY + 200, 0);
+                updatePosition();
+                setPosition();
+            } else if (Directions.equalsIgnoreCase("sw")) {
+                setTargetPosition(pPosX - 200, pPosY - 20, 0);
+                updatePosition();
+                setPosition();
+            }
+        } else if (shootingStyle.toString().equalsIgnoreCase("enemylastpos")) {
+            /**
+             * Shoots enemies based on their last position
+             */
+            if(tPosX == 0f && tPosY == 0f){
+                throw new RuntimeException("Target Position X and Y cannot be 0 for ShootingStyles.ENEMYLASTPOS to work.");
+            }
+            setTargetPosition(tPosX, tPosY, 0);
+            updatePosition();
+            setPosition();
+        }
+    }
 
-	@Override
-	public void onTick(long time) {
-		animate();
-		setPosition();
+    /**
+     * every frame the position is set
+     */
+    protected void setPosition() {
+        setPosX(getPosX() + change.x);
+        setPosY(getPosY() + change.y);
 
-		Box3D newPos = getBox3D();
-		newPos.setX(this.getPosX());
-		newPos.setY(this.getPosY());
+        if (range < SPEED || rangeReached) {
+            GameManager.get().getWorld().removeEntity(this);
+        } else {
+            range -= SPEED;
+        }
+    }
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+    @Override
+    public float rotationAngle() {
+        return rotationAngle;
+    }
 
-		for (AbstractEntity entity : entities.values()) {
-			if (!targetClass.isInstance(entity)) {
-				continue;
-			}
-			if (newPos.overlaps(entity.getBox3D())) {
-				if (entity instanceof Player) {
-					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
-				}
-				((MortalEntity) entity).damage(damage);
-				if (endEffect != null)
-					GameManager.get().getWorld().addEntity(endEffect);
-				rangeReached = true;
-				setPosition();
-			}
-		}
-	}
+    /**
+     * Returns Range value
+     */
+    public float getRange() {
+        return maxRange;
+    }
+
+    /**
+     * Returns Damage value
+     */
+    public float getDamage() {
+        return damage;
+    }
+
+    protected int projectileEffectTimer;
+    protected int projectileCurrentSpriteIndexCount;
+
+    protected void animate() {
+        if (animate) {
+            projectileEffectTimer++;
+            if (loopAnimation) {
+                if (projectileEffectTimer % 4 == 0) {
+                    setTexture(projectileType.textures()[projectileCurrentSpriteIndexCount]);
+                    if (projectileCurrentSpriteIndexCount == projectileType.textures().length - 1)
+                        projectileCurrentSpriteIndexCount = 0;
+                    else {
+                        projectileCurrentSpriteIndexCount++;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onTick(long time) {
+        animate();
+        setPosition();
+
+        Box3D newPos = getBox3D();
+        newPos.setX(this.getPosX());
+        newPos.setY(this.getPosY());
+
+        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+
+        for (AbstractEntity entity : entities.values()) {
+            if (!targetClass.isInstance(entity)) {
+                continue;
+            }
+            if (newPos.overlaps(entity.getBox3D())) {
+                if (entity instanceof Player) {
+                    GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+                }
+                ((MortalEntity) entity).damage(damage);
+                if (endEffect != null)
+                    GameManager.get().getWorld().addEntity(endEffect);
+                rangeReached = true;
+                setPosition();
+            }
+        }
+    }
 }
