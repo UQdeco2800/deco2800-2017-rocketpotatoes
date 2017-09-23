@@ -126,7 +126,8 @@ public class TextureManager extends Manager {
         saveTexture("ice_basic_tree", "resources/trees/iceBasicTree.png");
         //damage tree:acorn
         saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
-        // Enemies
+
+        //Enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
         saveTexture("swipe2", "resources/enemies/swipe2.png");
         saveTexture("swipe3", "resources/enemies/swipe3.png");
@@ -136,7 +137,38 @@ public class TextureManager extends Manager {
         saveTexture("DamagedGroundTemp1", "resources/enemies/DamagedGroundTemp1.png");
         saveTexture("DamagedGroundTemp2", "resources/enemies/DamagedGroundTemp2.png");
         saveTexture("DamagedGroundTemp3", "resources/enemies/DamagedGroundTemp3.png");
-       //Portals 
+        saveTexture("TankFootstepTemp1", "resources/enemies/TankFootstepTemp1.png");
+        saveTexture("TankFootstepTemp2", "resources/enemies/TankFootstepTemp2.png");
+        saveTexture("TankFootstepTemp3", "resources/enemies/TankFootstepTemp3.png");
+        //Squirrel
+        saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
+        saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");
+        saveTexture("squirrel_NE", "resources/enemies/squirrel/squirrel_NE.png");
+        saveTexture("squirrel_NW", "resources/enemies/squirrel/squirrel_NW.png");
+        saveTexture("squirrel_S", "resources/enemies/squirrel/squirrel_S.png");
+        saveTexture("squirrel_SE", "resources/enemies/squirrel/squirrel_SE.png");
+        saveTexture("squirrel_SW", "resources/enemies/squirrel/squirrel_SW.png");
+        saveTexture("squirrel_W", "resources/enemies/squirrel/squirrel_W.png");
+        //Raccoon
+        saveTexture("raccoon_E", "resources/enemies/raccoon/raccoon_E.png");
+        saveTexture("raccoon_N", "resources/enemies/raccoon/raccoon_N.png");
+        saveTexture("raccoon_NE", "resources/enemies/raccoon/raccoon_NE.png");
+        saveTexture("raccoon_NW", "resources/enemies/raccoon/raccoon_NW.png");
+        saveTexture("raccoon_S", "resources/enemies/raccoon/raccoon_S.png");
+        saveTexture("raccoon_SE", "resources/enemies/raccoon/raccoon_SE.png");
+        saveTexture("raccoon_SW", "resources/enemies/raccoon/raccoon_SW.png");
+        saveTexture("raccoon_W", "resources/enemies/raccoon/raccoon_W.png");
+        //Bear -- all placeholders
+        saveTexture("bear_E", "resources/enemies/bear/bear_E.png");
+        saveTexture("bear_N", "resources/enemies/bear/bear_N.png");
+        saveTexture("bear_NE", "resources/enemies/bear/bear_NE.png");
+        saveTexture("bear_NW", "resources/enemies/bear/bear_NW.png");
+        saveTexture("bear_S", "resources/enemies/bear/bear_S.png");
+        saveTexture("bear_SE", "resources/enemies/bear/bear_SE.png");
+        saveTexture("bear_SW", "resources/enemies/bear/bear_SW.png");
+        saveTexture("bear_W", "resources/enemies/bear/bear_W.png");
+
+        //Portals
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
         saveTexture("iceland_portal", "resources/portals/Iceland_Portal.png");
         saveTexture("volcano_portal", "resources/portals/Volcano_Portal.png");

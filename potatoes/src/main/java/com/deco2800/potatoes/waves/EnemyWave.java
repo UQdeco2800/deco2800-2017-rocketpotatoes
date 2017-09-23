@@ -160,6 +160,8 @@ public class EnemyWave implements Tickable {
 
     public void setWaveState(WaveState state) { this.waveState = state; }
 
+    public float[] getEnemyRatios(){ return this.enemyRatios;}
+    
     private void addMultipleSquirrels(int squirrelCount) {
             for (int i = 0; i < squirrelCount; i++) {
                 GameManager.get().getWorld().addEntity(new Squirrel(

@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
@@ -71,8 +73,10 @@ public class GameScreen implements Screen {
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
-	private int maxShopRange;
+	// Would be nice to move this somewhere else
+	private TiledDrawable background;
 
+	private int maxShopRange;
 	/**
 	 * Start's a multiplayer game
 	 *
@@ -127,7 +131,13 @@ public class GameScreen implements Screen {
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		textureManager = GameManager.get().getManager(TextureManager.class);
-
+		
+		// Creates the object for the repeated background texture
+		// TODO this will need to be changed once proper texture is added
+		TextureRegion waterTexture = textureManager.getTextureRegion("w1");
+		waterTexture.setRegionX(waterTexture.getRegionX() + 2);
+		waterTexture.setRegionY(waterTexture.getRegionY() + 2);
+		background = new TiledDrawable(textureManager.getTextureRegion("w1"));
 		/**
 		 * Setup managers etc.
 		 */
@@ -468,10 +478,26 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderGame(SpriteBatch batch) {
-
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+		
 		/* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(cameraManager.getCamera());
+
+		batch.begin();
+		// within the screen, but down rounded to the nearest tile
+		Vector2 waterCoords = new Vector2(
+				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
+				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
+		// draw with screen corner and width a little bit more than the screen
+		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
+				tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		batch.end();
+
 		tileRenderer.render();
 
 		/* Draw highlight on current tile we have selected */
@@ -481,9 +507,6 @@ public class GameScreen implements Screen {
 
 		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
-
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
 		float tileX = (int) (Math.floor(tileCoords.x));
 		float tileY = (int) (Math.floor(tileCoords.y));

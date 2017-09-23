@@ -4,10 +4,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
+import com.badlogic.gdx.math.Vector2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
@@ -20,18 +19,19 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.entities.HasDirection;
 
 /**
  * A class for speedy enemy
  */
-public class SpeedyEnemy extends EnemyEntity implements Tickable {
+public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient String TEXTURE_RIGHT = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
+	private static final transient String enemyType = "raccoon";
 
 	private static final EnemyStatistics STATS = initStats();
 
@@ -42,6 +42,10 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
+
+	//Probably not necessary -- handled in abstractEntity
+	private Direction currentDirection; // The direction the enemy faces
+	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	/**
 	 * Empty constructor for serialization
@@ -96,11 +100,18 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		}
 	}
 
+	public Direction getDirection() { return currentDirection; }
+
+	public String getEnemyType() { return enemyType; }
+
 	public void onTick(long i) {
 		//raccoon steals resources from resourceTrees
 		stealResources();
 		//found closest goal to the enemy
 		Optional<AbstractEntity> tgt = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+
+		updateDirection();
+
 		//if no ResourceTree in the world, set goal to player 
 		if (!tgt.isPresent()) {
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
@@ -151,9 +162,9 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 			// flip sprite
 			if (deltaX + deltaY >= 0) {
-				this.setTexture(TEXTURE);
+				//this.setTexture(TEXTURE);
 			} else {
-				this.setTexture(TEXTURE_RIGHT);
+				//this.setTexture(TEXTURE_RIGHT);
 			}
 
 			float changeX = (float) (speed * Math.cos(angle));
@@ -211,9 +222,9 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 			// flip sprite
 			if (deltaX + deltaY >= 0) {
-				this.setTexture(TEXTURE);
+				//this.setTexture(TEXTURE);
 			} else {
-				this.setTexture(TEXTURE_RIGHT);
+				//this.setTexture(TEXTURE_RIGHT);
 			}
 
 			float changeX = (float) (speed * Math.cos(angle));
@@ -222,87 +233,5 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			this.setPosX(getPosX() + changeX);
 			this.setPosY(getPosY() + changeY);
 		}
-		
 	}
-	/*
-	 * public void onTick(long i) { double interactRange = 3f;
-	 * Collection<AbstractEntity> entities =
-	 * GameManager.get().getWorld().getEntities().values();
-	 * 
-	 * for (AbstractEntity entitiy : entities) { if (entitiy instanceof ResourceTree
-	 * && entitiy.distance(this) <= interactRange) { ((ResourceTree)
-	 * entitiy).gather(-2); } }
-	 * 
-	 * }
-	 * 
-	 * /* public void gather(int amount) { int oldCount = gather.gatherCount;
-	 * this.gatherCount += amount;
-	 * 
-	 * // Check that the new amount is bounded if (this.gatherCount >
-	 * this.gatherCapacity) { this.gatherCount = this.gatherCapacity; } else if
-	 * (this.gatherCount < 0) { this.gatherCount = 0; }
-	 * 
-	 * if (this.gatherCount - oldCount != 0) { LOGGER.info("Added " +
-	 * (this.gatherCount - oldCount) + " to " + this); } }
-	 * 
-	 * 
-	 * // @Override // public void onTick(long i) { // // /** // set the target of
-	 * speedy enemy to the closest tree/tower // testing for enemy set target // it
-	 * might change the target of speedy enemy //
-	 **/
-	// Optional<AbstractEntity> target =
-	// WorldUtil.getClosestEntityOfClass(ResourceTree.class, getPosX(), getPosY());
-	//
-	// // get the position of the target
-	// float goalX = target.get().getPosX();
-	// float goalY = target.get().getPosY();
-	//
-	//
-	// if(this.distance(target.get()) < speed) {
-	// this.setPosX(goalX);
-	// this.setPosY(goalY);
-	// return;
-	// }
-	//
-	// float deltaX = getPosX() - goalX;
-	// float deltaY = getPosY() - goalY;
-	//
-	// float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-	//
-	//
-	//
-	// float changeX = (float)(speed * Math.cos(angle));
-	// float changeY = (float)(speed * Math.sin(angle));
-	//
-	// Box3D newPos = getBox3D();
-	//
-	// newPos.setX(getPosX() + changeX);
-	// newPos.setY(getPosY() + changeY);
-	//
-	//
-	// Map<Integer, AbstractEntity> entities =
-	// GameManager.get().getWorld().getEntities();
-	// boolean collided = false;
-	// for (AbstractEntity entity : entities.values()) {
-	// if (!this.equals(entity) && !(entity instanceof Projectile) &&
-	// newPos.overlaps(entity.getBox3D()) ) {
-	// if(entity instanceof Tower) {
-	// }
-	// collided = true;
-	// }
-	// }
-	//
-	// if (!collided) {
-	// setPosX(getPosX() + changeX);
-	// setPosY(getPosY() + changeY);
-	// // speedy enemy change direction if something blocked.
-	//
-	// if(this.getPosX()>goalX){
-	// this.setTexture(TEXTURE);
-	// }
-	// else{
-	// this.setTexture(TEXTURE);
-	// }
-	// }
-	// }
 }

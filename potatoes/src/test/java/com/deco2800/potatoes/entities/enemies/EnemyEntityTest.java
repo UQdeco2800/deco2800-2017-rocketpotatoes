@@ -21,6 +21,8 @@ public class EnemyEntityTest {
 
 		private float speed = 0.1f;
 		private Class<?> goal = Player.class;
+		private String enemyType = "squirrel";
+		private Direction currentDirection;
 
 		public TestableEnemyEntity() {
 		}
@@ -50,6 +52,12 @@ public class EnemyEntityTest {
 					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
 			return result;
 		}
+
+		@Override
+		public String getEnemyType() { return enemyType; }
+
+		@Override
+		public Direction getDirection() { return currentDirection; }
 	}
 
 	TestableEnemyEntity enemyEntity;
@@ -139,12 +147,21 @@ public class EnemyEntityTest {
 
 	private class SimpleEnemy extends EnemyEntity {
 
+		private String enemyType = "squirrel";
+		private Direction currentDirection;
+
 		@Override
 		public EnemyStatistics getBasicStats() {
 			EnemyStatistics result = new StatisticsBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
 					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
 			return result;
 		}
+
+		@Override
+		public String getEnemyType() { return enemyType; }
+
+		@Override
+		public Direction getDirection() { return currentDirection; }
 	}
 //
 //	@Test

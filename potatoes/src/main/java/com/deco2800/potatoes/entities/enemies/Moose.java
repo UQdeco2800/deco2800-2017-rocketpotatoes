@@ -1,10 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.StatisticsBuilder;
-import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -17,13 +13,14 @@ import com.deco2800.potatoes.util.Path;
 /**
  * A generic player instance for the game
  */
-public class Moose extends EnemyEntity implements Tickable, HasProgress {
+public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDirection {
 
 	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
 	private static final transient String TEXTURE_RIGHT = "pronograde";
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
+	private static final transient String enemyType = "moose";
 	private static final EnemyStatistics STATS = initStats();
 
 	private static final float moose_size = 1.5f;
@@ -33,11 +30,12 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private Path path = null;
 	private Box3D target = null;
 
-
 	private int ticksSinceRandom = 0;
 	private static final int MAX_WAIT = 200;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
+
+	private Direction currentDirection; // The direction the enemy faces
 
 	/**
 	 * Empty constructor for serialization
@@ -62,6 +60,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
         float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
         target = new Box3D(x, y, 0, 1f, 1f, 1f);
     }
+
+    public String getEnemyType() { return enemyType; }
+
+    public Direction getDirection() { return currentDirection; }
 
 	/**
 	 * Moose follows it's path.
