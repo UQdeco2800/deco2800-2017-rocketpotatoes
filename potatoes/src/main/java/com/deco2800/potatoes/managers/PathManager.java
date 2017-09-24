@@ -4,9 +4,8 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Line;
 import com.deco2800.potatoes.util.MinimumSpanningTree;
-import com.deco2800.potatoes.util.MinimumSpanningTree.Vertex;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.worlds.AbstractWorld;
+import com.deco2800.potatoes.worlds.World;
 
 
 
@@ -17,7 +16,7 @@ import java.util.*;
 /**
  * Object to manage the creation and allocation of paths for enemies to follow.
  */
-public class PathManager extends Manager {
+public class PathManager extends Manager implements ForWorld {
     /* The PathManager stores a minimum spanning tree, representing all the internode connections that can be used to
      * create paths. This is represented as a hashmap in memory, where the keys are nodes, and the values are the
      * parent nodes of the keys within the minimum spanning tree.
@@ -27,9 +26,10 @@ public class PathManager extends Manager {
      */
     private Map<Box3D, Box3D> spanningTree;
     private MinimumSpanningTree treeMaker;
-    private AbstractWorld world;
+    private World world;
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
+    private ArrayDeque<Box3D> path;
     private static final int NUMBER_OF_RANDOM_NODES = 100;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
@@ -40,13 +40,17 @@ public class PathManager extends Manager {
     public PathManager() {
         spanningTree = new HashMap<>();
         nodes = new ArrayList<>();
+        path = new ArrayDeque<>();
+        world = GameManager.get().getWorld();
     }
 
     /**
      * Populates the internal graph representation of the path manager, based on the initial world state.
      * Should be run after loading the map
      */
+
     public void initialise() {
+
 
         nodes.clear();
         // Add place holder nodes at positions 0 and 1
@@ -54,7 +58,7 @@ public class PathManager extends Manager {
         // can be added later.
         nodes.add(new Box3D(dummyBox));     // Position 0 => player position.
         nodes.add(new Box3D(dummyBox));     // Position 1 => enemy position.
-        world = GameManager.get().getWorld();
+
         // Create obstacles from static entities.
         obstacles = createObstacleLines();
 
@@ -77,6 +81,7 @@ public class PathManager extends Manager {
         for (int i = 0; i < nodes.size(); i++) {
             treeMaker.addVertex(nodes.get(i), i);
         }
+
         // Calculate edge weights in graph matrix
         // based on static enemies.
         treeMaker.initGraphWeightMatrix(obstacles);
@@ -92,36 +97,30 @@ public class PathManager extends Manager {
      */
     public Path generatePath(Box3D start, Box3D goal) {
 
-        ArrayDeque<Box3D> path = new ArrayDeque<>();
+        path.clear();
         Box3D next;
         // Create line between start and goal.
         Line line = new Line(start, goal);
+        if (obstacles == null) {
+            obstacles = createObstacleLines();
+        }
+        // Check if this line has a clear path.
+        if(!checkLineClash(line, obstacles)) {
+            // line is not obstructed.
+            path.add(goal);
+            return new Path(path);
+        }
         // Check if the spanning tree has been initialise.
         if (spanningTree.size() == 0) {
             initialise();
         }
-        // Check if this line has a clear path.
-        if(!treeMaker.checkLineClash(line, obstacles)) {
-            // line is not obstructed.
-            path.add(start);
-            path.add(goal);
-            return new Path(path);
-        }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(goal, start, obstacles);
-        // Add the starting point to the path.
-        path.add(start);
-        // If the spanning tree has only two entries
-        // return a new path with the start and end point.
-        if (spanningTree.size() < 2) {
-            path.add(goal);
-            return new Path(path);
-        }
         // Add extra path points as needed.
         // Set next as the value returned from start as
         // the key to spanningTree.
         next = spanningTree.get(start);
-        while (!(next.equals(goal))) {
+        while (!(next.equals(goal)) && (path.size() < 10)) {
             path.add(next);
             next = spanningTree.get(next);
         }
@@ -151,6 +150,25 @@ public class PathManager extends Manager {
             }
         }
         return lineList;
+    }
+    /**
+     * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
+     * @param edge Line object tested.
+     * @param obstacles Line objects in list
+     * @return true in edge intersects with any lines in obstacles; false otherwise.
+     */
+    public boolean checkLineClash(Line edge, ArrayList<Line> obstacles) {
+
+        // Iterate through obstacles and check if
+        // edge between vertices is obstructed.
+        for (Line line: obstacles) {
+            if(edge.doIntersect(line)) {
+                // Edge is obstructed.
+                return true;
+            }
+        }
+        // No obstruction.
+        return false;
     }
 
 }

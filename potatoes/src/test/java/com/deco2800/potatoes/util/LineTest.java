@@ -38,4 +38,12 @@ public class LineTest {
         assertThat("Line 1 does intersect line 2", lineTwo.doIntersect(lineOne), is(equalTo(true)));
     }
 
+    @Test
+    public void equalTest() {
+        Line lineOne = new Line(1, 1, 2, 2);
+        Line lineTwo = new Line(1, 1, 2, 2);
+        assertThat("Hashcode's don't equal", lineOne.hashCode() == lineTwo.hashCode(), is(equalTo(true)));
+        assertThat("Line 1 doesn't equal line 2", lineTwo.equals(lineOne), is(equalTo(true)));
+    }
+
 }

@@ -55,17 +55,17 @@ public class ServerMessageProcessor {
         // If too many clients reject.
         if (c.getID() > 16) {
             Network.HostDisconnectMessage mes = new Network.HostDisconnectMessage();
-            mes.message = "Server full!";
+            mes.setMessage("Server full!");
             server.server.sendToTCP(c.getID(), mes);
             return;
         }
 
         // Set connection name
-        c.name = m.name;
+        c.name = m.getName();
 
         // Tell the new client their id
         Network.HostConnectionConfirmMessage cResponse = new Network.HostConnectionConfirmMessage();
-        cResponse.id = (byte) c.getID();
+        cResponse.setId((byte) c.getID());
         server.server.sendToTCP(c.getID(), cResponse);
 
         // Tell the client of all the other clients in order
@@ -77,16 +77,16 @@ public class ServerMessageProcessor {
 
             NetworkServer.NetworkConnection nCon = (NetworkServer.NetworkConnection) con;
             Network.HostExistingPlayerMessage newMess = new Network.HostExistingPlayerMessage();
-            newMess.id = nCon.getID();
-            newMess.name = nCon.name;
+            newMess.setId(nCon.getID());
+            newMess.setName(nCon.name);
             server.server.sendToTCP(c.getID(), newMess);
 
             // Tell the new client about all the entities (unless it's master)
             if (!server.isMaster(c)) {
                 for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
                     Network.HostEntityCreationMessage create = new Network.HostEntityCreationMessage();
-                    create.entity = e.getValue();
-                    create.id = e.getKey();
+                    create.setEntity(e.getValue());
+                    create.setId(e.getKey());
                     server.server.sendToTCP(c.getID(), create);
                 }
             }
@@ -94,8 +94,8 @@ public class ServerMessageProcessor {
 
         // Tell everyone of a new player
         Network.HostNewPlayerMessage response = new Network.HostNewPlayerMessage();
-        response.id = (byte) c.getID();
-        response.name = m.name;
+        response.setId((byte) c.getID());
+        response.setName(m.getName());
         server.server.sendToAllTCP(response);
 
         // Finally tell the client they are ready to play
@@ -110,7 +110,7 @@ public class ServerMessageProcessor {
      * Takes x, y coords from the message and updates the position of an entity.
      * Assumes it exists
      *
-     * Currently only used to update player positions (master uses a different method)
+     * Currently only used to update player calculatePositions (master uses a different method)
      *
      * @param server the server object to use
      * @param c the connection object that holds details about the sender
@@ -119,9 +119,9 @@ public class ServerMessageProcessor {
     private static void processEntityUpdateMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                                     Network.ClientPlayerUpdatePositionMessage m) {
         Network.HostEntityUpdatePositionMessage response = new Network.HostEntityUpdatePositionMessage();
-        response.x = m.x;
-        response.y = m.y;
-        response.id = c.getID();
+        response.setX(m.getX());
+        response.setY(m.getY());
+        response.setId(c.getID());
 
         server.server.sendToAllExceptUDP(c.getID(), response);
     }
@@ -137,8 +137,8 @@ public class ServerMessageProcessor {
      */
     private static void processBuildOrderMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                                  Network.ClientBuildOrderMessage m) {
-        if (!WorldUtil.getEntityAtPosition(m.tree.getPosX(), m.tree.getPosY()).isPresent()) {
-            GameManager.get().getWorld().addEntity(m.tree);
+        if (!WorldUtil.getEntityAtPosition(m.getTree().getPosX(), m.getTree().getPosY()).isPresent()) {
+            GameManager.get().getWorld().addEntity(m.getTree());
         }
     }
 
@@ -154,8 +154,8 @@ public class ServerMessageProcessor {
     private static void processChatMessage(NetworkServer server, NetworkServer.NetworkConnection c,
                                            Network.ClientChatMessage m) {
         Network.HostChatMessage response = new Network.HostChatMessage();
-        response.id = c.getID();
-        response.message = m.message;
+        response.setId(c.getID());
+        response.setMessage(m.getMessage());
         server.server.sendToAllTCP(response);
 
     }

@@ -1,8 +1,7 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
@@ -72,7 +71,7 @@ public class ClientMessageProcessor {
 
         //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
 
-        client.setID(m.id);
+        client.setID(m.getId());
     }
 
     /**
@@ -85,10 +84,7 @@ public class ClientMessageProcessor {
      */
     private static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
 
-        //System.out.println("[CLIENT]: disconnected because: " + m.message);
         client.disconnect();
-        // TODO notify game somehow. (Maybe we wait for connection confirmation before we start the client
-         // thread?
     }
 
     /**
@@ -102,7 +98,6 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void playReadyMessage(NetworkClient client, Network.HostPlayReadyMessage m) {
-        //System.out.println("[CLIENT]: I'm ready to go!");
         client.sendSystemMessage("Successfully joined server!");
         client.ready = true;
     }
@@ -118,32 +113,29 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
-        //System.out.println("[CLIENT]: Got host new player message: " + m.id);
-
-
-        client.getClients().set(m.id, m.name);
+        client.getClients().set(m.getId(), m.getName());
 
         // Make the player
-        Player p = new Player(10 + m.id, 10 + m.id, 0);
+        Player p = new Player(10 + m.getId(), 10 + m.getId(), 0);
 
         try {
-            GameManager.get().getWorld().addEntity(p, m.id);
+            GameManager.get().getWorld().addEntity(p, m.getId());
 
         } catch (Exception ex) {
-            // TODO Throws when we try run this in a test, this is a hacky fix for now!
+            // Throws when we try run this in a test, this is a hacky fix for now!
         }
 
 
-        if (client.getID() == m.id) {
+        if (client.getID() == m.getId()) {
             System.out.println("[CLIENT]: IT'S ME!");
             // Give the player manager me
             GameManager.get().getManager(PlayerManager.class).setPlayer(p);
 
         } else {
-            client.sendSystemMessage("New Player Joined:" + m.name + "(" + m.id + ")");
+            client.sendSystemMessage("New Player Joined:" + m.getName() + "(" + m.getId() + ")");
         }
 
-        client.getClients().add(m.name);
+        client.getClients().add(m.getName());
     }
 
     /**
@@ -157,15 +149,14 @@ public class ClientMessageProcessor {
      */
     private static void playerDisconnectMessage(NetworkClient client, Network.HostPlayerDisconnectedMessage m) {
 
-        //System.out.println("[CLIENT]: Got host player disconnected message " + m.id);
-        client.sendSystemMessage("Player Disconnected: " + client.getClients().get(m.id) + "(" + m.id + ")");
+        client.sendSystemMessage("Player Disconnected: " + client.getClients().get(m.getId()) + "(" + m.getId() + ")");
 
-        client.getClients().set(m.id, null);
+        client.getClients().set(m.getId(), null);
 
         try {
-            GameManager.get().getWorld().removeEntity(m.id);
+            GameManager.get().getWorld().removeEntity(m.getId());
         } catch (Exception ex) {
-            // TODO Throws when we try run this in a test, this is a hacky fix for now!
+            // Throws when we try run this in a test, this is a hacky fix for now!
         }
 
     }
@@ -181,10 +172,8 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void existingPlayerMessage(NetworkClient client, Network.HostExistingPlayerMessage m) {
-
-        //System.out.println("[CLIENT]: Got host existing player message: " + m.id);
-        client.sendSystemMessage("Existing Player: " + m.name + "(" + m.id + ")");
-        client.getClients().set(m.id, m.name);
+        client.sendSystemMessage("Existing Player: " + m.getName() + "(" + m.getId() + ")");
+        client.getClients().set(m.getId(), m.getName());
     }
 
     /**
@@ -197,14 +186,11 @@ public class ClientMessageProcessor {
      */
     private static void entityCreationMessage(NetworkClient client, Network.HostEntityCreationMessage m) {
 
-        //System.out.format("[CLIENT]: Got host entity creation message: %s, {%f, %f}%n",
-        //        m.entity.toString(), m.entity.getPosX(), m.entity.getPosY());
-
         // -1 is the signal for put it wherever.
-        if (m.id == -1) {
-            GameManager.get().getWorld().addEntity(m.entity);
+        if (m.getId() == -1) {
+            GameManager.get().getWorld().addEntity(m.getEntity());
         } else {
-            GameManager.get().getWorld().addEntity(m.entity, m.id);
+            GameManager.get().getWorld().addEntity(m.getEntity(), m.getId());
         }
     }
 
@@ -218,22 +204,21 @@ public class ClientMessageProcessor {
      */
     private static void entityDestroyMessage(NetworkClient client, Network.HostEntityDestroyMessage m) {
 
-        //System.out.println("[CLIENT]: Got host destroy entity message: " + m.id);
-        GameManager.get().getWorld().removeEntity(m.id);
+        GameManager.get().getWorld().removeEntity(m.getId());
     }
 
     /**
      * Handles a entity update position
      *
-     * Updates the position of an existing entity via id. Also used to update player positions
+     * Updates the position of an existing entity via id. Also used to update player calculatePositions
      *
      * @param client the network client to process this event
      * @param m the message
      */
     private static void entityUpdatePositionMessage(NetworkClient client, Network.HostEntityUpdatePositionMessage m) {
 
-        GameManager.get().getWorld().getEntities().get(m.id).setPosX(m.x);
-        GameManager.get().getWorld().getEntities().get(m.id).setPosY(m.y);
+        GameManager.get().getWorld().getEntities().get(m.getId()).setPosX(m.getX());
+        GameManager.get().getWorld().getEntities().get(m.getId()).setPosY(m.getY());
     }
 
     /**
@@ -247,8 +232,9 @@ public class ClientMessageProcessor {
      */
     private static void entityUpdateProgressMessage(NetworkClient client, Network.HostEntityUpdateProgressMessage m) {
 
-        // TODO verification?
-        ((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
+		LOGGER.error("Trying to use setProgress to update the progress. This is no longer currently"
+				+ " part of the HasProgress interface and needs to be fixed.");
+        //((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
 
     }
 
@@ -266,8 +252,8 @@ public class ClientMessageProcessor {
         ChatGui c = ((ChatGui) g.getGui(ChatGui.class));
         if (c != null) {
             c.addMessage(
-                    client.getClients().get(m.id) + " (" + m.id + ")",
-                    m.message, Color.WHITE);
+                    client.getClients().get(m.getId()) + " (" + m.getId() + ")",
+                    m.getMessage(), Color.WHITE);
         }
 
     }

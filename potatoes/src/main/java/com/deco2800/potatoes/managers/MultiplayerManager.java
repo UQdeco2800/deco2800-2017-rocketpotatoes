@@ -1,13 +1,15 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.deco2800.potatoes.networking.NetworkServer;
 import com.google.common.net.InetAddresses;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles multiplayer setup, and communication.
@@ -119,6 +121,19 @@ public class MultiplayerManager extends Manager {
         while (!isClientReady());
     }
 
+    /** Broadcasts a UDP message on the LAN to discover a running server.
+    *
+    */
+    public List<InetAddress> discoverHosts(int port) throws IOException, IllegalArgumentException {
+        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
+        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+
+        clientPort = port;
+        client = new NetworkClient();
+        List<InetAddress> ips = client.discoverHosts(port, 2000);
+        client = null;
+        return ips;
+    }
 
     /**
      * Broadcasts the supplied message to all clients currently connected to the host
@@ -165,7 +180,7 @@ public class MultiplayerManager extends Manager {
     public void broadcastEntityUpdatePosition(int id) {
         if (client != null) {
             if (!isMaster()) {
-                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entity positions!");
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entity calculatePositions!");
             }
             // Tell server directly
             server.broadcastEntityUpdatePosition(id);

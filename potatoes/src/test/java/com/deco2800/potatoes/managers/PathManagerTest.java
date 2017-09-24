@@ -11,9 +11,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.After;
 import org.junit.Before;
 
-import com.deco2800.potatoes.worlds.InitialWorld;
+import com.deco2800.potatoes.worlds.World;
 
 import java.util.HashMap;
 
@@ -29,7 +30,7 @@ public class PathManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        InitialWorld mockWorld = mock(InitialWorld.class);
+        World mockWorld = mock(World.class);
         when(mockWorld.getLength()).thenReturn(100);
         when(mockWorld.getWidth()).thenReturn(100);
         // Create generic entity to block paths.
@@ -40,13 +41,20 @@ public class PathManagerTest {
                 30f,
                 5f,
                 1f
+
         );
+
         blockingEntity.setStaticCollideable(true);
         HashMap<Integer, AbstractEntity> entityHashMap = new HashMap<>();
         entityHashMap.put(0, blockingEntity);
         when(mockWorld.getEntities()).thenReturn(entityHashMap);
         GameManager gm = GameManager.get();
         gm.setWorld(mockWorld);
+    }
+
+    @After
+    public void cleanUp() {
+        GameManager.get().clearManagers();
     }
 
     @Test
@@ -57,10 +65,8 @@ public class PathManagerTest {
 
         Path p = m.generatePath(start, finish);
 
-        assertThat("Start is not the first point of path",
-                start.equals(p.nextPoint()), is(equalTo(true)));
-        assertThat("Finish is not the last point of path",
-                finish.equals(p.goal()), is(equalTo(true)));
+
+        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
 
     }
 
@@ -72,9 +78,8 @@ public class PathManagerTest {
 
         Path p = m.generatePath(start, finish);
 
-        assertThat("Start is not the first point of path",
-                start.equals(p.nextPoint()), is(equalTo(true)));
-        assertThat("Finish is not the last point of path",
-                finish.equals(p.goal()), is(equalTo(true)));
+
+        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
     }
+
 }

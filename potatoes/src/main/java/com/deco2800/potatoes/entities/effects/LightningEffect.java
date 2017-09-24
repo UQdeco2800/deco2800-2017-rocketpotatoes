@@ -1,108 +1,132 @@
 package com.deco2800.potatoes.entities.effects;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.TextureManager;
-
 import java.util.Random;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 public class LightningEffect extends Effect {
 
-	private float lifetime = 0.25f;
-	private float segmentStep=150f;
+	private float lifetime = 0.4f;
+	private float segmentStep = 1f;
+	private int segments;
 
-	float xPos = 0;
-	float yPos = 0;
-	float fxPos = 1;
-	float fyPos = 1;
+	protected Vector3 startPos;
+	protected Vector3 targetPos;
 
-	public LightningEffect(float xPos, float yPos, float fxPos, float fyPos) {
-		setTexture("lightning");
-		this.xPos = xPos;
-		this.yPos = yPos;
-		this.fxPos = fxPos;
-		this.fyPos = fyPos;
+	float distanceDeltaX = 1f;
+	float distanceDeltaY = 1f;
+
+	float[][] pos = null;
+
+	boolean staticStrike = true;
+
+	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
+		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.LIGHTNING);
+
+		this.startPos = startPos;
+		this.targetPos = targetPos;
+
+		animate = false;
+
+		// TODO: figure out why inverses
+		// this.xPos = yPos;
+		// this.yPos = xPos;
+		// this.fxPos = fyPos;
+		// this.fyPos = fxPos;
+
+		pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
 	}
 
-	public float[][] positions(float angle,float xPos, float yPos, float fxPos, float fyPos){
+	public float[][] calculatePositions(float xPos, float yPos, float fxPos, float fyPos) {
+		float lengthX = fxPos - xPos;
+		float lengthY = fyPos - yPos;
 
+		float magnitude = (float) Math.sqrt(lengthX * lengthX + lengthY * lengthY);
 
-		float lengthX=(fxPos-xPos);
-		float lengthY=(fyPos-yPos);
+		segments = (int) Math.ceil(magnitude / segmentStep);// 8
+		float[][] positions = new float[segments + 1][2];
 
-		float magnitude=(float)Math.sqrt(lengthX*lengthX+lengthY*lengthY);
+		Random random = new Random();
 
-		int segments=(int)Math.ceil(magnitude/segmentStep);//do rounding here
-		float[][] pos=new float[segments][2];//remove round
+		float segmentSize = (float) (1.0 / segments);// 0.125
+		float segmentsDone = 0;
 
-		Random random =new Random();
+		for (int i = 0; i < segments + 1; i++) {
+			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaX;// add
+																														// limit
+			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaY;// add
+																														// limit
 
-		//20
-		for(int i=0;i<segments;i++){
-			float rand=random.nextFloat();
+			float x = (float) (xPos + segmentsDone * lengthX
+					+ Math.abs(Math.sin(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randx);
+			float y = (float) (yPos + segmentsDone * lengthY
+					+ Math.abs(Math.cos(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randy);
 
-			float x=((lengthX)/magnitude)*(float)Math.cos(angle)*rand;
-			float y=((lengthY)/magnitude)*(float)Math.sin(angle)*rand;
-//			pos[i]=[[]];
-			pos[i][0]=x;
-			pos[i][1]=y;
+			if (i == 0) {
+				positions[i][0] = xPos;
+				positions[i][1] = yPos;
+			} else if (i == segments) {
+				positions[i][0] = fxPos;
+				positions[i][1] = fyPos;
+			} else {
+				positions[i][0] = x;
+				positions[i][1] = y;
+			}
+			segmentsDone += segmentSize;
 		}
-		return pos;
+
+		return positions;
+
 	}
 
-	@Override
 	public void drawEffect(SpriteBatch batch) {
+		if (!staticStrike) {
+			pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
+		}
+		for (int x = 0; x < pos.length - 1; x++) {
+			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
+		}
 
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+		Box3D newPos = getBox3D();
+		newPos.setX(targetPos.x);
+		newPos.setY(targetPos.y);
+		//
+		// Map<Integer, AbstractEntity> entities =
+		// GameManager.get().getWorld().getEntities();
+		//
+		// float radiusOfImpact = 0.5f;
+		// for (AbstractEntity entity : entities.values()) {
+		// if (entity.distance(newPos.getX(), newPos.getY(), 0) <= radiusOfImpact) {
+		// try {
+		// ((MortalEntity) entity).damage(damage);
+		// } catch (Exception e) {
+		// //LOGGER.error(e.getMessage());
+		// }
+		// break;
+		// }
+		// }
 
-		TextureManager reg = GameManager.get().getManager(TextureManager.class);
-		Texture tex = reg.getTexture(this.getTexture());
+		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class,
+		// newPos.getX(), newPos.getY(), 0, damage,
+		// range);
 
-		float lWidth = tex.getWidth();
-		float lHeight = tex.getHeight();
-
-		Vector2 startPos = worldToScreenCoordinates(xPos, yPos);
-
-		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos);
-
-		float l = endPos.x - startPos.x;
-		float h = endPos.y - startPos.y;
-
-		float lX = startPos.x - (lWidth - tileWidth) / 2;
-		float lY = 0 - startPos.y - (lHeight - tileHeight) / 2;
-
-		float originX = tex.getWidth() / 2;
-		float originY = tex.getHeight() / 2;
-
-		float lScaleX = (float) (Math.sqrt(l * l + h * h));
-		float lScaleY = 0.4f;
-
-		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 90;
-		int srcX = 0;
-		int srcY = 0;
-		int srcWidth = tex.getWidth();
-		int srcHeight = tex.getHeight();
-	//here
-		System.out.println(positions(rotation,startPos.x,startPos.y,endPos.x,endPos.y)[0][0]+" " + positions(rotation,startPos.x,startPos.y,endPos.x,endPos.y)[0][1]);
-		batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY, rotation, srcX, srcY, srcWidth,
-				srcHeight, false, false);
+		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class, 0, 0, 0,
+		// damage, range);
+		// GameManager.get().getWorld().addEntity(expEffect);
 
 	}
 
 	@Override
 	public void onTick(long time) {
+		super.onTick(time);
 		lifetime -= 0.05;
-		if (lifetime <= 0)
+		if (lifetime <= 0) {
 			GameManager.get().getWorld().removeEntity(this);
-	}
-
-	@Override
-	public float getDamage() {
-		// TODO Auto-generated method stub
-		return 0;
+		}
 	}
 
 }
