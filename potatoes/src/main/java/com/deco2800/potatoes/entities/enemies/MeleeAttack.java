@@ -16,7 +16,6 @@ public class MeleeAttack extends Effect {
 	 * Empty constructor for serialization
 	 */
 	public MeleeAttack() {
-
 	}
 
 	/**
@@ -45,27 +44,5 @@ public class MeleeAttack extends Effect {
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);
-		/*
-		 * endEffect = new SwipeEffect(goalX - (effect_width / 2), goalY -
-		 * (effect_height / 2) + 1, 0, effect_width, effect_height, 0, effect_width,
-		 * effect_height);
-		 */
-	}
-
-	/**
-	 * Remove projectile after waiting a certain amount of ticks
-	 */
-	private static void removeProjectileLater(int ticks, Projectile projectile) {
-
 	}
 }
-
-/*
- * for (AbstractEntity entity : entities.values()) { if
- * (targetClass.isInstance(entity)) { if (newPos.overlaps(entity.getBox3D())) {
- * if (ticksWaited == 0) { ((MortalEntity) entity).damage(DAMAGE);
- * ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f,
- * 0, 1f, 1f); GameManager.get().getWorld().addEntity(expEffect); ticksWaited++;
- * } else if (ticksWaited < 3) { ticksWaited++; } else {
- * GameManager.get().getWorld().removeEntity(this); ticksWaited = 0; } } } }
- */

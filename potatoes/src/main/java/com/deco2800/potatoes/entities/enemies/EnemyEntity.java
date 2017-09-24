@@ -70,44 +70,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
-		// empty for serialization
-		getBasicStats().registerEvents(this);	//MAY BE USELESS
-	}
-
-	/**
-	 * Constructs a new EnemyEntity. The entity will be rendered at the same size
-	 * used for collision between entities.
-	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in rendering and collision
-	 *            detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in rendering and collision
-	 *            detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in rendering and collision
-	 *            detection.
-	 * @param texture
-	 *            The id of the texture for this entity.
-	 * @param maxHealth
-	 *            The initial maximum health of the enemy
-	 * @param speed
-	 * 			  The speed of the enemy
-	 * @param goal
-	 * 			  The attacking goal of the enemy
-	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float maxHealth, float speed, Class<?> goal) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		getBasicStats().registerEvents(this);		//MAY BE USELESS
-		this.speed = speed;
-		this.goal = goal;
 	}
 
 	/**
@@ -280,9 +242,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
 
-				if(entity instanceof ProjectileTree) {
-					//soundManager.playSound("ree1.wav");
-				}
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
