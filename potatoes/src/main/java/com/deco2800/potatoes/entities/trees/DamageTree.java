@@ -57,7 +57,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
     public DamageTree(float posX, float posY, float posZ) {
 
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
 
         damageTreeType=new LightningTree();
 
@@ -67,7 +67,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
     public DamageTree(float posX, float posY, float posZ, Damage texture) {
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
         if(null==texture){
             damageTreeType=new LightningTree();
         }else{
@@ -81,7 +81,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
 
     public DamageTree(float posX, float posY, float posZ, Damage texture, float maxHealth,float demage) {
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
     }
 
     @Override
@@ -93,12 +93,17 @@ public class DamageTree extends AbstractTree implements Tickable {
 
     @Override
     public List<TreeStatistics> getAllUpgradeStats() {
-        if(damageTreeType instanceof IceTree)
+        if(damageTreeType instanceof IceTree){
+            this.setTexture("ice_basic_tree");
             return ICE_TREE_STATS;
-        else if(damageTreeType instanceof AcornTree)
+        }else if(damageTreeType instanceof AcornTree){
+            this.setTexture("acorn_tree");
             return ACORN_TREE_STATS;
-        else if(damageTreeType instanceof FireTree)
-        	return FIRE_TREE_STATS;
+        } else if(damageTreeType instanceof FireTree){
+            this.setTexture("fire_tree");
+            return FIRE_TREE_STATS;
+        }
+        this.setTexture("lightning_tree1");
         return LIGHTNING_TREE_STATS;
     }
 
@@ -111,15 +116,12 @@ public class DamageTree extends AbstractTree implements Tickable {
 		 * UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade
 		 * Time, events, events, texture)
 		 */
-		if (texture.equals("lightning_tree1")) {
+
 			result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
 					.setBuildCost(1).setAnimation(animation).addEvent(new LightningShootEvent(250))
 					.createTreeStatistics());
-		} else {
-			result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-					.setBuildCost(1).setAnimation(animation).addEvent(new TreeProjectileShootEvent(3000))
-					.createTreeStatistics());
-		}
+
+
 
 		return result;
 	}
@@ -131,9 +133,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     public Damage getDamageTreeType(){
         return damageTreeType;
     }
-    public String getTexture(){
-        return damageTreeType.getTexture();
-    }
+
 
 
 }

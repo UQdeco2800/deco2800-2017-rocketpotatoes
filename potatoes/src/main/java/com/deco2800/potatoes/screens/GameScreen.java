@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
@@ -24,7 +26,7 @@ import com.deco2800.potatoes.entities.trees.AcornTree;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.FireTree;
 import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -71,8 +73,10 @@ public class GameScreen implements Screen {
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
-	private int maxShopRange;
+	// Would be nice to move this somewhere else
+	private TiledDrawable background;
 
+	private int maxShopRange;
 	/**
 	 * Start's a multiplayer game
 	 *
@@ -127,7 +131,13 @@ public class GameScreen implements Screen {
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		textureManager = GameManager.get().getManager(TextureManager.class);
-
+		
+		// Creates the object for the repeated background texture
+		// TODO this will need to be changed once proper texture is added
+		TextureRegion waterTexture = textureManager.getTextureRegion("w1");
+		waterTexture.setRegionX(waterTexture.getRegionX() + 2);
+		waterTexture.setRegionY(waterTexture.getRegionY() + 2);
+		background = new TiledDrawable(textureManager.getTextureRegion("w1"));
 		/**
 		 * Setup managers etc.
 		 */
@@ -198,7 +208,7 @@ public class GameScreen implements Screen {
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
-		guiManager.addGui(new WaveGUI(guiManager.getStage(), this));
+		guiManager.addGui(new WaveGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
@@ -261,7 +271,7 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
 			//add an enemy gate to game world
@@ -272,7 +282,6 @@ public class GameScreen implements Screen {
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
 
-			addResourceTrees();
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
@@ -299,16 +308,6 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
-	}
-
-
-	private void addResourceTrees() {
-		// Seed Trees
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
 	}
 
 	private void initialiseResources() {
@@ -437,29 +436,33 @@ public class GameScreen implements Screen {
 		guiManager.getStage().draw();
 	}
 
-	//Is it bad to be setting the status label text on every tick? Might want to think this through
+	/**
+	 * Get the current state of waves from WaveManager and update the WaveGui accordingly.
+	 */
 	private void updateWaveGUI() {
-		// Update WaveGui time
 		int timeToWaveEnd;
 		int timeToNextWave;
-		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();
-		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();
-		Gui waveGUI = guiManager.getGui(WaveGUI.class);
-		if (waveGUI instanceof WaveGUI) {
+		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
+		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
+		Gui waveGUI = guiManager.getGui(WaveGui.class);
+		if (waveGUI instanceof WaveGui) {
+			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WaveGUI) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WaveGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
+				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
-				((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WaveGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
+				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WaveGUI) waveGUI).getWaveStatusLabel().setText("No more waves.");
-					((WaveGUI) waveGUI).getWaveTimeLabel().setText("");
+					((WaveGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WaveGui) waveGUI).getWaveTimeLabel().setText("");
 				} else {
 					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WaveGUI) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WaveGUI) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+					((WaveGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
@@ -479,10 +482,26 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderGame(SpriteBatch batch) {
-
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+		
 		/* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(cameraManager.getCamera());
+
+		batch.begin();
+		// within the screen, but down rounded to the nearest tile
+		Vector2 waterCoords = new Vector2(
+				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
+				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
+		// draw with screen corner and width a little bit more than the screen
+		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
+				tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		batch.end();
+
 		tileRenderer.render();
 
 		/* Draw highlight on current tile we have selected */
@@ -492,9 +511,6 @@ public class GameScreen implements Screen {
 
 		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
-
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
 		float tileX = (int) (Math.floor(tileCoords.x));
 		float tileY = (int) (Math.floor(tileCoords.y));

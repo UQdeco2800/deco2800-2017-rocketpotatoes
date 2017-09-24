@@ -15,6 +15,7 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -214,7 +215,7 @@ public class DebugModeGui extends Gui {
 
                 if (state == States.DEBUGON) {
                     if (keycode == Input.Keys.F1) {
-                        Tower tower = new Tower((int)coords2.x,(int)coords2.y,0);
+                    	ProjectileTree tower = new ProjectileTree((int)coords2.x,(int)coords2.y,0);
                         tower.setProgress(0);
                         GameManager.get().getWorld().addEntity(tower);
                     }

@@ -22,7 +22,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.entities.HasDirection;
 
 /**
- * A class for speedy enemy
+ * A speedy raccoon enemy that steals resources from resource trees.
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
@@ -43,9 +43,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
-	//Probably not necessary -- handled in abstractEntity
 	private Direction currentDirection; // The direction the enemy faces
-	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
+	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	/**
 	 * Empty constructor for serialization
@@ -54,6 +53,13 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
         // empty for serialization
 	}
 
+	/***
+	 * Construct a new speedy raccoon enemy at specific position with pre-defined size and render-length.
+	 *
+	 * @param posX
+	 * @param posY
+	 * @param posZ
+	 */
 	public SpeedyEnemy(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
 		 this.speed = speed;
@@ -62,7 +68,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 		// resetStats();
 	}
 
-
+	/***
+	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
+	 * enemy.
+	 *
+	 * @return
+	 */
 	private static EnemyStatistics initStats() {
 		EnemyStatistics result = new StatisticsBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE).createEnemyStatistics();
@@ -70,23 +81,34 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 		return result;
 	}
 
+	/***
+	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
+	 */
 	@Override
 	public EnemyStatistics getBasicStats() {
 		return STATS;
 	}
 
+	/**
+	 * @return string representation of this class including its enemytype and x,y coordinates
+	 */
 	@Override
 	public String toString() {
-		return String.format("Speedy Enemy at (%d, %d)", (int) getPosX(), (int) getPosY());
+		return String.format("%s at (%d, %d)", getEnemyType(), (int) getPosX(), (int) getPosY());
 	}
 
+	/***
+	 * Gets the progress bar that corresponds to the health of this enemy
+	 *
+	 * @return ProgressBarEntity corresponding to enemy's health
+	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESSBAR;
 	}
 
 	/**
-	 * raccoon steals resources from resourceTrees
+	 * Steal resources from ResourceTrees if within range
 	 */
 	public void stealResources() {
 		double interactRange = 2f;
@@ -100,10 +122,24 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 		}
 	}
 
+	/**
+	 *	@return the current Direction of raccoon
+	 * */
 	public Direction getDirection() { return currentDirection; }
 
+	/**
+	 * @return String of this type of enemy (ie 'raccoon').
+	 * */
 	public String getEnemyType() { return enemyType; }
 
+	/**
+	 * Raccoon follows it's path.
+	 * Requests a new path whenever it collides with a staticCollideable entity.
+	 * moves directly towards the closest resource tree, once it reaches tree it finds
+	 * the next and moves between the two. If trees are destroyed move to player.
+	 *
+	 * @param i The current game tick
+	 */
 	public void onTick(long i) {
 		//raccoon steals resources from resourceTrees
 		stealResources();

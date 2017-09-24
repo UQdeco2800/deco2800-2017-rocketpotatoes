@@ -10,10 +10,10 @@ import org.junit.Test;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
-import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 
 public class EnemyEntityTest {
 
@@ -118,8 +118,8 @@ public class EnemyEntityTest {
 
 	@Test
 	public void setGoalTest() {
-		enemyEntity.setGoal(Tower.class);
-		Assert.assertEquals("Failed to set Goal", Tower.class, enemyEntity.getGoal());
+		enemyEntity.setGoal(ProjectileTree.class);
+		Assert.assertEquals("Failed to set Goal", ProjectileTree.class, enemyEntity.getGoal());
 	}
 
 	@Test

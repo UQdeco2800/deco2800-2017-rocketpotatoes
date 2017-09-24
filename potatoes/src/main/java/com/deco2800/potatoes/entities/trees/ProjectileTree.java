@@ -9,6 +9,11 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 
+/**
+ * A tree that shoots projectiles using the ProjectileShootEvent
+ * 
+ * @see AbstractTree
+ */
 public class ProjectileTree extends AbstractTree implements Tickable {
 	private static final transient String[] GROW_ANIMATION = createGrowList();
 	private static final transient List<TreeStatistics> STATS = initStats();
@@ -51,17 +56,27 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 *            The initial maximum health of the tower
 	 */
 
-	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range,
-			float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f, texture);
+	public ProjectileTree(float posX, float posY, float posZ, int reloadTime, float range, float maxHealth) {
+		super(posX, posY, posZ, 1f, 1f, 1f);
 		this.reloadTime = reloadTime;
 		this.maxHealth = maxHealth;
-		this.setTexture(texture);
 	}
 
+	/**
+	 * Creates a basic projectile tree at the given position with a 1 second shoot
+	 * time, 8 range and 100 health
+	 */
+	public ProjectileTree(float posX, float posY, float posZ) {
+		this(posX, posY, posZ, 1000, 8f, 100f);
+		this.setStaticCollideable(true);
+	}
+
+	/**
+	 * Creates a copy of this tree as it was when it was just created
+	 */
 	public ProjectileTree clone() {
-		return new ProjectileTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.getTexture(), this.reloadTime,
-				this.range, this.maxHealth);
+		return new ProjectileTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.reloadTime, this.range,
+				this.maxHealth);
 	}
 
 	@Override

@@ -39,12 +39,20 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture) {
-		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
+	/**
+	 * Creates this object with the given geometric properties. This tree is set to
+	 * start growing and events are registered with the EventManager
+	 * 
+	 * @see AbstractEntity
+	 */
+	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength) {
+		super(posX, posY, posZ, xLength, yLength, zLength, "", 1);
 		resetStats();
 	}
-	
+
+	/**
+	 * Creates a copy of this object as it was when it was first created.
+	 */
 	public abstract AbstractTree clone();
 
 	@Override
@@ -102,14 +110,15 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		}
 	}
 
+	/**
+	 * Decreases the construction left by 1
+	 */
 	public void decrementConstructionLeft() {
 		constructionLeft--;
 	}
 
 	/**
 	 * Upgrades to the next tree level
-	 * 
-	 * Not yet implemented
 	 */
 	public void upgrade() {
 		if (upgradeLevel + 1 >= getAllUpgradeStats().size()) {
@@ -146,7 +155,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public Animation getAnimation() {
 		return animation;
 	}
-	
+
 	@Override
 	public String getTexture() {
 		return getAnimation().getFrame();
@@ -161,7 +170,9 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	/**
 	 * Sets if this tree is currently dying. If this is set to false, the tree dies
-	 * @param dying whether this tree is dying
+	 * 
+	 * @param dying
+	 *            whether this tree is dying
 	 */
 	public void setDying(boolean dying) {
 		this.dying = dying;
@@ -179,28 +190,29 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	}
 
 	/**
-	 * @param beingDamaged the beingDamaged to set
+	 * @param beingDamaged
+	 *            the beingDamaged to set
 	 */
 	public void setBeingDamaged(boolean beingDamaged) {
 		this.beingDamaged = beingDamaged;
 	}
-	
+
 	@Override
 	public boolean damage(float amount) {
 		beingDamaged = true;
 		return super.damage(amount);
 	}
-	
+
 	@Override
 	public void deathHandler() {
 		dying = true;
 		// Don't kill the entity just yet
-		
+
 		// destroy the tree
-		//for enemy attacking test
+		// for enemy attacking test
 		GameManager.get().getWorld().removeEntity(this);
 	}
-	
+
 	/**
 	 * Returns a list of the stats for each upgrade level in order <br>
 	 * This is called often, so it is recommend you don't create a new object every

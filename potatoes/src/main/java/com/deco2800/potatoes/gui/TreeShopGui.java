@@ -22,17 +22,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TreeShopGui is generated when the user clicks on a tile on the map. It can
@@ -42,6 +43,7 @@ import com.deco2800.potatoes.util.WorldUtil;
  *
  */
 public class TreeShopGui extends Gui implements SceneGui {
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(TreeShopGui.class);
 	private Circle shopShape; // Circle around whole shop
 	private Circle cancelShape; // Circle around cross in menu center
 	private boolean mouseIn; // Mouse inside shopMenu
@@ -80,9 +82,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopY = 300;
 		initiated = false;
 		items = new LinkedHashMap<AbstractTree, Color>();
-		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
-		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
-		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
+		items.put(new ResourceTree(treeX, treeY,0, new SeedResource(),0 ), Color.RED);
+		items.put(new ResourceTree(treeX, treeY, 0 ,new FoodResource(),0), Color.BLUE);
+		items.put(new ProjectileTree(treeX, treeY, 0), Color.YELLOW);
+		items.put(new DamageTree(treeX, treeY, 0, new LightningTree()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new IceTree()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new FireTree()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new AcornTree()),Color.GREEN);
+
 
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
