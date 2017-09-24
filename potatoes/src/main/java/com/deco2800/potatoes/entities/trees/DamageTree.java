@@ -14,12 +14,21 @@ import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
-	private static final List<TreeStatistics> ICE_TREE_STATS = generateTree("ice_basic_tree",
-			x -> new SingleFrameAnimation("ice_basic_tree"));
+	private static final List<TreeStatistics> ICE_TREE_STATS = generateTree("ice_tree",
+			x -> AnimationFactory.createSimpleTimeAnimation(100,
+                    new String[]{
+			        "ice_tree1",
+			        "ice_tree2",
+			        "ice_tree3",
+			        "ice_tree4",
+			        "ice_tree5",
+			        "ice_tree6",
+			        "ice_tree7",
+    }));
 	private static final List<TreeStatistics> ACORN_TREE_STATS = generateTree("acorn_tree",
 			x -> new SingleFrameAnimation("acorn_tree"));
 	private static final List<TreeStatistics> LIGHTNING_TREE_STATS = generateTree("lightning_tree1",
-			x -> AnimationFactory.createSimpleTimeAnimation(100,
+			x -> AnimationFactory.createSimpleTimeAnimation(500,
 					new String[] {
             "lightning_tree1",
             "lightning_tree2",
@@ -32,7 +41,8 @@ public class DamageTree extends AbstractTree implements Tickable {
             "lightning_tree9",
     }));
 	
-	private static final List<TreeStatistics> FIRE_TREE_STATS=generateTree("fire_tree",x->AnimationFactory.createSimpleTimeAnimation(100,new String[]{
+	private static final List<TreeStatistics> FIRE_TREE_STATS=generateTree("fire_tree",
+            x->AnimationFactory.createSimpleTimeAnimation(500,new String[]{
 			       "fire_tree1",
 			       "fire_tree2",
 			       "fire_tree3",
