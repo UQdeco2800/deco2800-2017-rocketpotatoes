@@ -23,71 +23,60 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	protected float rotationAngle = 0;
 	protected boolean animate = true;
 	protected boolean loopAnimation = false;
+	protected Vector3 pos;
 
 	public enum EffectTexture {
 		AOE {
-			public String toString() {
-				return "aoe";
-			}
+
 
 			public String[] textures() {
 				return new String[] { "aoe1", "aoe2", "aoe3" };
 			}
 		},
 		EXPLOSION {
-			public String toString() {
-				return "explosion";
-			}
+
 
 			public String[] textures() {
 				return new String[] { "explosion1", "explosion2", "explosion3" };
 			}
 		},
 		LIGHTNING {
-			public String toString() {
-				return "lightning";
-			}
+
 
 			public String[] textures() {
 				return new String[] { "lightning" };
 			}
 		},
 		LAZER {
-			public String toString() {
-				return "lightning";
-			}
+
 
 			public String[] textures() {
 				return new String[] { "lightning" };
 			}
 		},
 		DAMAGED_GROUND {
-			public String toString() {
-				return "DamagedGroundTemp1";
-			}
+
 
 			public String[] textures() {
 				return new String[] { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
 			}
 		},
 		SWIPE {
-			public String toString() {
-				return "swipe";
-			}
+
 
 			public String[] textures() {
 				return new String[] { "swipe1", "swipe2", "swipe3" };
 			}
 		},
 		LARGE_FOOTSTEP {
-			public String toString() { return "TankFootstepTemp1"; }
+
 
 			public String[] textures() {
 				return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
 			}
 		},
 		HEALING{
-			public String toString() { return "Healing1"; }
+
 
 			public String[] textures() {
 				return new String[]{"Healing1", "Healing2", "Healing3"};
@@ -121,6 +110,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 		this.damage = damage;
 		this.range = range;
+		this.pos = position;
 	}
 
 	public void drawEffect(SpriteBatch batch) {
@@ -200,6 +190,13 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY,
 				WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45, srcX, srcY, srcWidth, srcHeight, false, false);
 
+	}
+	public float getPosX(){
+		return pos.x;
+	}
+
+	public float getPosY(){
+		return pos.y;
 	}
 
 	public float getDamage() {
