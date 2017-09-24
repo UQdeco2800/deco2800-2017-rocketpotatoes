@@ -68,10 +68,9 @@ public class HealingEffect extends Effect {
         }
     }
 
-    /**
-     * String representation of the damaged ground at its set position.
+    /*
      *
-     * @return String representation of the stomped ground
+     * @return String representation of the healing
      */
     @Override
     public String toString() {
