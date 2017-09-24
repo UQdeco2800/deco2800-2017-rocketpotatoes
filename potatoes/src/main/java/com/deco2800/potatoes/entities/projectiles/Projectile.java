@@ -251,6 +251,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public Effect getEndEffect() {
 		return endEffect;
 	}
+	
 
 
 }
