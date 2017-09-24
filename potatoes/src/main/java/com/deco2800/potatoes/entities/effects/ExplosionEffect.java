@@ -15,7 +15,7 @@ public class ExplosionEffect extends Effect {
 
 	public ExplosionEffect(Class<?> targetClass, Vector3 targetPos, float damage, float range) {
 
-		super(targetClass, new Box2D(targetPos.x,targetPos.y,effectWidth,effectHeight),effectWidth,effectHeight, damage, range, EffectTexture.AOE);
+		super(targetClass, new Box2D(targetPos.x-3,targetPos.y,effectWidth,effectHeight),effectWidth,effectHeight, damage, range, EffectTexture.EXPLOSION);
 		animate = true;
 		loopAnimation = false;
 	}

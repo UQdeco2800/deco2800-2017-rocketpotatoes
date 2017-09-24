@@ -113,10 +113,6 @@ public class LightningEffect extends Effect {
 		CollisionMask newPos = getMask();
 		newPos.setX(targetPos.x);
 		newPos.setY(targetPos.y);
-
-		ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class, targetPos, damage, range);
-		GameManager.get().getWorld().addEntity(expEffect);
-
 	}
 
 	@Override
