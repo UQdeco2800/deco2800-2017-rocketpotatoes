@@ -27,9 +27,7 @@ public class PathManager extends Manager implements ForWorld {
      */
     private Map<Point2D, Point2D> spanningTree;
     private MinimumSpanningTree treeMaker;
-    private World world;
     private ArrayDeque<Point2D> nodes;
-    private ArrayDeque<Line> obstacles;
     private ArrayDeque<Point2D> path;
     private static final int NUMBER_OF_RANDOM_NODES = 5;
 
@@ -41,7 +39,6 @@ public class PathManager extends Manager implements ForWorld {
         spanningTree = new HashMap<>();
         nodes = new ArrayDeque<>();
         path = new ArrayDeque<>();
-        world = GameManager.get().getWorld();
     }
 
     /**
@@ -51,6 +48,7 @@ public class PathManager extends Manager implements ForWorld {
 
     public void initialise() {
 
+        World world = GameManager.get().getWorld();
 
         nodes.clear();
         // Add place holder nodes at positions 0 and 1
@@ -60,8 +58,6 @@ public class PathManager extends Manager implements ForWorld {
         nodes.add(new Point2D(0, 0));   // Position 1 => enemy position.
 
         // Create obstacles from static entities.
-        obstacles = createObstacleLines();
-
         // Initialise random points on the map to add as vertices of
         // the graph.
         for (int i = 0; i < NUMBER_OF_RANDOM_NODES; i++) {
@@ -79,7 +75,7 @@ public class PathManager extends Manager implements ForWorld {
 
         // Calculate edge weights in graph matrix
         // based on static enemies.
-        treeMaker.initGraphWeightMatrix(obstacles);
+        treeMaker.initGraphWeightMatrix();
     }
 
     /**
@@ -99,11 +95,8 @@ public class PathManager extends Manager implements ForWorld {
         Point2D next;
         // Create line between start and goal.
         Line line = new Line(start.getX(), start.getY(), goal.getX(), goal.getY());
-        if (obstacles == null) {
-            obstacles = createObstacleLines();
-        }
         // Check if this line has a clear path.
-        if(!checkLineClash(line, obstacles)) {
+        if (!collides(line)) {
             // line is not obstructed.
             path.add(replaceStart);
             path.add(replaceGoal);
@@ -114,9 +107,9 @@ public class PathManager extends Manager implements ForWorld {
             initialise();
         }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
-        spanningTree = treeMaker.createTree(goal, start, obstacles);
+        spanningTree = treeMaker.createTree(replaceGoal, replaceStart);
         // Add the starting point to the path.
-        path.add(start);
+        path.addLast(replaceStart);
         // If the spanning tree has only two entries
         // return a new path with the start and end point.
         if (spanningTree.size() < 2) {
@@ -127,7 +120,7 @@ public class PathManager extends Manager implements ForWorld {
         // Set next as the value returned from start as
         // the key to spanningTree.
         next = spanningTree.get(start);
-        while (!(next.equals(goal))) {
+        while (next != null && !(next.equals(goal))) {
             path.add(next);
             // Hacky fix for infinite loop, doesn't completely fix the problem
             if (path.contains(next)) {
@@ -135,51 +128,21 @@ public class PathManager extends Manager implements ForWorld {
             }
             next = spanningTree.get(next);
         }
-        path.add(next);
         return new Path(path);
     }
 
-    /**
-     * Create line objects that represent the boarder of all static collidable entities on the map.
-     *
-     * @return List of {@code Line} objects that represent static entity boarders.
-     */
-    private ArrayDeque<Line> createObstacleLines() {
+    private boolean collides(Line line) {
+        boolean output = false;
 
-        // Create an empty Line list.
-        ArrayDeque<Line> lineList = new ArrayDeque<>();
-     
-        // Loop through static entities and make lines for
-        // the top, bottom, left and right boarders.
-        for (AbstractEntity e : world.getEntities().values()) {
-            if (e.isStaticCollideable()) {
-                // Iterate through
-                // Position = Top => Bottom => Left => Right.
-                for (Line.Position p: Line.Position.values()) {
-                    lineList.add(new Line(e.getMask(), p));
-                }
+        for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+            if (e.isStaticCollideable() &&
+                    (0 > e.getMask().distance(line.getEndPointOne().getX(), line.getEndPointOne().getY(), 
+                        line.getEndPointTwo().getX(), line.getEndPointTwo().getY()))) {
+                output = true;
+                break;
             }
         }
-        return lineList;
-    }
-    /**
-     * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
-     * @param edge Line object tested.
-     * @param obstacles Line objects in list
-     * @return true in edge intersects with any lines in obstacles; false otherwise.
-     */
-    public boolean checkLineClash(Line edge, ArrayDeque<Line> obstacles) {
 
-        // Iterate through obstacles and check if
-        // edge between vertices is obstructed.
-        for (Line line: obstacles) {
-            if(edge.doIntersect(line)) {
-                // Edge is obstructed.
-                return true;
-            }
-        }
-        // No obstruction.
-        return false;
+        return output;
     }
-
 }
