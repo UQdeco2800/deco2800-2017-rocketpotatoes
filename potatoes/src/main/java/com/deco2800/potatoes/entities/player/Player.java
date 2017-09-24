@@ -565,13 +565,4 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
         GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
     }
-
-    public static String getPlayerType(){
-        return "caveman";
-    }
-
-    public static void setPlayerType(String s) {
-        //playerType = s;
-    }
-
 }

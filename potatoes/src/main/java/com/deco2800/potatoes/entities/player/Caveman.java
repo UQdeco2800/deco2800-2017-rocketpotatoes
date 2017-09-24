@@ -34,6 +34,14 @@ public class Caveman extends Player {
     /* Caveman Animations */
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 800, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.idle, 1, 1, null);
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.damaged, 1, 200, new Runnable() {
+		@Override
+		public void run() {
+			// Handle finishing damaged
+			clearState();
+			updateSprites();
+		}
+	});
     private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.death, 3, 300, new Runnable() {
 		@Override
 		public void run() {
@@ -73,7 +81,7 @@ public class Caveman extends Player {
             		this.setAnimation(cavemanAttackAnimations.get(this.getDirection()));
         			break;
             case damaged:
-            		this.setAnimation(cavemanDeathAnimations.get(this.getDirection()));
+            		this.setAnimation(cavemanDamagedAnimations.get(this.getDirection()));
         			break;
             case death:
             		this.setAnimation(cavemanDeathAnimations.get(this.getDirection()));
