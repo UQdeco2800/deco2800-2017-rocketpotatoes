@@ -62,13 +62,13 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 			// Select random tree, and either make it in singleplayer or broadcast it in mp
 			switch ((int) (Math.random() * 3 + 1)) {
 				case 1:
-					newTree = new ResourceTree(realX, realY, 0, new FoodResource(), 8);
+					newTree = new ResourceTree(realX, realY, new FoodResource(), 8);
 					break;
 				case 2:
-					newTree = new ResourceTree(realX, realY, 0);
+					newTree = new ResourceTree(realX, realY);
 					break;
 				default:
-					newTree = new Tower(realX, realY, 0);
+					newTree = new Tower(realX, realY);
 					break;
 			}
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {

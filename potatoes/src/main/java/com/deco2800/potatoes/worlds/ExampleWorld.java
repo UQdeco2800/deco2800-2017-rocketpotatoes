@@ -39,7 +39,7 @@ public class ExampleWorld extends AbstractWorld {
                 /* Spawn trees with a 10% chance */
                 Random r = new Random();
                 if (r.nextInt(100) < 100) {
-                    this.entities.add(new Tower(i, j, 0));
+                    this.entities.add(new Tower(i, j));
                 }
             }
         }

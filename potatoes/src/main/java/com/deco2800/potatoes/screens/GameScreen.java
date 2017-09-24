@@ -222,20 +222,20 @@ public class GameScreen implements Screen {
         if (m.isMaster() || !m.isMultiplayer()) {
             for (int i = 0; i < 5; i++) {
                 GameManager.get().getWorld().addEntity(new Squirrel(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10));
             }
-            GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+            GameManager.get().getWorld().addEntity(new Tower(8, 8));
 
             for (int i = 0; i < 3; i++) {
                 GameManager.get().getWorld().addEntity(
-                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+                		new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10));
             }
 
-            GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+            GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
 
             for(int i=0 ; i<3 ; i++) {
                 GameManager.get().getWorld().addEntity(
-                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+                        new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10));
             }
             addResourceTrees();
             initialiseResources();
@@ -245,22 +245,22 @@ public class GameScreen implements Screen {
         
         if (!multiplayerManager.isMultiplayer()) {
             // Make our player
-            playerManager.setPlayer(new Player(5, 10, 0));
+            playerManager.setPlayer(new Player(5, 10));
             GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         }
     }
     private void addDamageTree(){
-        GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-        GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0,new AcornTree()));
-        GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0,new IceTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(16, 11, new LightningTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(14, 11, new AcornTree()));
+        GameManager.get().getWorld().addEntity(new DamageTree(15, 11, new IceTree()));
     }
     private void addResourceTrees() {
     		// Seed Trees
-        GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
-        GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
-        GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
-        GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
-        GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 4));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 4));
+        GameManager.get().getWorld().addEntity(new ResourceTree(14, 5));
+        GameManager.get().getWorld().addEntity(new ResourceTree(15, 5));
+        GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, new FoodResource(), 8));
     }
     
     private void initialiseResources() {
@@ -268,15 +268,15 @@ public class GameScreen implements Screen {
         SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
 		
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, seedResource));
 		
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, foodResource));
     }
 
     private void tickGame(long timeDelta) {
