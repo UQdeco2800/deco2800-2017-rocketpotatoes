@@ -70,8 +70,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+	// Opacity value for treeShop subsection when mouse is not hovering over it
 	final private float UNSELECTED_ALPHA = 0.2f;
+	// Opacity value for treeShop subsection when mouse hovers over
 	final private float SELECTED_ALPHA = 0.5f;
+	// Maximum number of tile lengths from player where you can plant trees
 	final private int MAX_RANGE = 6;
 
 	/**
@@ -117,14 +120,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 	public int getMaxRange() {
 		return MAX_RANGE;
 	}
-	
+
 	/**
 	 * Returns whether current treeShop is plantable
 	 */
 	public boolean getPlantable() {
 		return plantable;
 	}
-	
+
 	/**
 	 * Sets plantable value
 	 */

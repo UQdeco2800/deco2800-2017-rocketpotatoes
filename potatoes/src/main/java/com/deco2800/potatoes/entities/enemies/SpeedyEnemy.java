@@ -24,7 +24,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.entities.HasDirection;
 
 /**
- * A class for speedy enemy
+ * A speedy raccoon enemy that steals resources from resource trees.
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
@@ -46,13 +46,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
 	private Direction currentDirection; // The direction the enemy faces
-	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
+	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	/**
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
-        // empty for serialization
 	}
 
 	/***
@@ -158,14 +157,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			// check paths
 
 			// check collision
-			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isStaticCollideable() && this.getMask().overlaps(entity.getMask())) {
-					// collided with wall
-					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-					target = path.pop();
-					break;
-				}
-			}
 
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {

@@ -54,11 +54,9 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	/**
 	 * Construct a new Tank Enemy at specific position with pre-defined size and render-length.
-	 * 
-	 * @param posX
-	 *            The x-coordinate of the Tank Enemy.
-	 * @param posY
-	 *            The y-coordinate of the Tank Enemy.
+	 *
+	 * @param posX The x-coordinate of the Tank Enemy.
+	 * @param posY The y-coordinate of the Tank Enemy.
 	 */
 	public TankEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 1.414f), 1f, 1f, TEXTURE, HEALTH, speed, goal);
@@ -69,7 +67,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	/**
 	 * Initialize basic statistics for Tank Enemy
-	 * 
+	 *
 	 * @return basic statistics of this Tank Enemy
 	 */
 	private static EnemyProperties initStats() {
@@ -80,7 +78,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	/**
 	 * Get basic statistics of this Tank Enemy
-	 * 
+	 *
 	 * @return Get basic statistics of this Tank Enemy
 	 */
 	@Override
@@ -89,18 +87,22 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	}
 
 	/**
-	 *	@return the current Direction of bear
-	 * */
-	public Direction getDirection() { return currentDirection; }
+	 * @return the current Direction of bear
+	 */
+	public Direction getDirection() {
+		return currentDirection;
+	}
 
 	/**
 	 * @return String of this type of enemy (ie 'bear').
-	 * */
-	public String getEnemyType() { return enemyType; }
+	 */
+	public String getEnemyType() {
+		return enemyType;
+	}
 
 	/**
 	 * String representation of this Tank Enemy and its position
-	 * 
+	 *
 	 * @return String representation of this Tank Enemy and its position
 	 */
 	@Override
@@ -110,81 +112,11 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	/**
 	 * Get the health PROGRESS_BAR of this Tank Enemy
-	 * 
+	 *
 	 * @return the health PROGRESS_BAR of this Tank Enemy
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESS_BAR;
 	}
-
-
-//	/**
-//	 * Squirrel follows it's path.
-//	 * Requests a new path whenever it collides with a staticCollideable entity
-//	 * moves directly towards the player once it reaches the end of it's path
-//	 * @param i
-//	 */
-//	@Override
-//	public void onTick(long i) {
-//		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-//		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-//
-//		// check paths
-//
-//		//check collision
-//		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-//			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
-//				//collided with wall
-//				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-//				target = path.pop();
-//				break;
-//			}
-//		}
-//
-//		// check that we actually have a path
-//		if (path == null || path.isEmpty()) {
-//			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-//		}
-//
-//
-//		//check if close enough to target
-//		if (target != null && target.overlaps(this.getBox3D())) {
-//			target = null;
-//		}
-//
-//		//check if the path has another node
-//		if (target == null && !path.isEmpty()) {
-//			target = path.pop();
-//		}
-//
-//		float targetX;
-//		float targetY;
-//
-//
-//		if (target == null) {
-//			target = playerManager.getPlayer().getBox3D();
-//		}
-//
-//		targetX = target.getX();
-//		targetY = target.getY();
-//
-//		float deltaX = getPosX() - targetX;
-//		float deltaY = getPosY() - targetY;
-//
-//		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
-//
-//		//flip sprite
-//		if (deltaX + deltaY >= 0) {
-//			this.setTexture(TEXTURE_LEFT);
-//		} else {
-//			this.setTexture(TEXTURE_RIGHT);
-//		}
-//
-//		float changeX = (float)(SPEED * Math.cos(angle));
-//		float changeY = (float)(SPEED * Math.sin(angle));
-//
-//		this.setPosX(getPosX() + changeX);
-//		this.setPosY(getPosY() + changeY);
-//	}
 }

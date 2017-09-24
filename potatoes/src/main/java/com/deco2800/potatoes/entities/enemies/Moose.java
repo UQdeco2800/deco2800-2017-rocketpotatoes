@@ -14,9 +14,9 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
- * A generic player instance for the game
+ * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
  */
-public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDirection {
+public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
 	private static final transient String TEXTURE_RIGHT = "pronograde";
@@ -44,7 +44,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
-		// empty for serialization
+		//Empty for serialization (is a code smell to not have comment here)
 	}
 
 	/***
@@ -116,7 +116,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 			path = pathManager.generatePath(getMask(), target);
 		}
 
-
 		//check if close enough to target
 		if (target != null && playerManager.getPlayer().getMask().overlaps(getMask())) {
 			target = playerManager.getPlayer().getMask();
@@ -146,18 +145,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 
 		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
 
-		//flip sprite
-		if (deltaX + deltaY >= 0) {
-			this.setTexture(TEXTURE_LEFT);
-		} else {
-			this.setTexture(TEXTURE_RIGHT);
-		}
-
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));
 
 		this.setPosX(getPosX() + changeX);
 		this.setPosY(getPosY() + changeY);
+
+		updateDirection();
 	}
 
 	/**

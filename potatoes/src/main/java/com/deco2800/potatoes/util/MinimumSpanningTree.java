@@ -296,6 +296,7 @@ public class MinimumSpanningTree {
         HashMap<Point2D, Point2D> tree = new HashMap<>();
         Vertex temp;
         this.addStartGoal(goal, start);
+        cloud.clear();
         // Add the goal vertex (index 0 of vertexList) to the cloud to begin MST.
         cloud.put(0, this.getVertexList().get(0));
         updateLeastEdges();

@@ -74,9 +74,6 @@ public class SoundManager extends Manager {
 	 */
 	public void setEffectsVolume(float v) {
 		effectsVolume = v;
-		if (music != null) {
-			music.setVolume(effectsVolume);
-		}
 	}
 
 	/**

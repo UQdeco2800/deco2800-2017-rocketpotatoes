@@ -18,7 +18,7 @@ public class Path {
      * Creates a new path, with no nodes.
      */
     public Path() {
-        this.nodes = new ArrayDeque<Point2D>();
+        this.nodes = new ArrayDeque<>();
         this.angle = 0;
     }
 

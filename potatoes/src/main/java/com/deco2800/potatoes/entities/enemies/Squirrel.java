@@ -15,8 +15,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 
 /**
- * The standard / most basic enemy in the game - a squirrel.
- *
+ * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
@@ -27,7 +26,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final EnemyProperties STATS = initStats();
 	private static final String enemyType = "squirrel";
 
-	private static final float SPEED = 0.12f;
+	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private CollisionMask target = null;
@@ -35,7 +34,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	private Direction currentDirection; // The direction the enemy faces
-	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
+	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
 	 * Default constructor for serialization
@@ -69,23 +68,20 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-		/*
-		//check collision
-		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getMask().overlaps(entity.getMask())) {
-				//collided with wall
-                path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
-				target = path.pop();
-				break;
-			}
-		}
-		*/
+
+        // check paths
 
         // check that we actually have a path
         if (path == null || path.isEmpty()) {
             path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
         }
 
+
+
+		//check if last node in path matches player
+		if(!(path.goal().overlaps(playerManager.getPlayer().getMask()))) {
+			path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
+		}
 
 		//check if close enough to target
 		if (target != null && target.overlaps(this.getMask())) {
@@ -95,6 +91,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		//check if the path has another node
 		if (target == null && !path.isEmpty()) {
 			target = path.pop();
+
 		}
 
 		float targetX;

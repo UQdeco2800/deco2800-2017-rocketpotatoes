@@ -1,159 +1,156 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
+import com.deco2800.potatoes.BaseTest;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
+import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.WorldType;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.Box2D;
-import com.deco2800.potatoes.entities.PropertiesBuilder;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import static org.junit.Assert.assertEquals;
 
-public class EnemyEntityTest {
+/**
+ * Test class to test the EnemyEntity general class.
+ *
+ * @author craig & ryanjphelan
+ */
+public class EnemyEntityTest extends BaseTest {
 
-	private class TestableEnemyEntity extends EnemyEntity {
+    Squirrel squirrelEmpty;
+    TankEnemy tank1;
+    ResourceTree resourceTree;
+    GoalPotate goalPotato;
+    Player playerTest;
 
-		private float speed = 0.1f;
-		private Class<?> goal = Player.class;
-		private String enemyType = "squirrel";
-		private Direction currentDirection;
+    @Before
+    public void setUp() throws Exception {
+        squirrelEmpty = new Squirrel();
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+    }
 
-		public TestableEnemyEntity() {
-		}
+    @After
+    public void cleanUp() {
+        GameManager.get().clearManagers();
+    }
 
-		public TestableEnemyEntity(float posX, float posY, float xLength, float yLength, String texture, 
-                float maxHealth, float speed, Class<?> goal) {
-            super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, texture, maxHealth, speed, goal);
-		}
+    @Test
+    public void emptyConstructor() {
+        assertEquals(null, squirrelEmpty.getEnemyDirection());
+    }
 
-		public TestableEnemyEntity(float posX, float posY, float xLength, float yLength, float xRenderLength, 
-                float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
-            super(new Box2D(posX, posY, xLength, yLength), xRenderLength, yRenderLength, texture, maxHealth, speed, 
-                    goal);
-		}
+    @Test
+    public void nonEmptyConstructor() {
+        tank1 = new TankEnemy(7, 7);
+    }
 
-		@Override
-		public EnemyProperties getBasicStats() {
-				EnemyProperties result = new PropertiesBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
-					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
-			return result;
-		}
+    @Test
+    public void onTickTest() {
+        tank1 = new TankEnemy(7, 7);
+        resourceTree = new ResourceTree(3, 3);
+        goalPotato = new GoalPotate(0, 0);
+        playerTest = new Player(1, 1);
+        GameManager.get().getWorld().addEntity(tank1);
+        GameManager.get().getWorld().addEntity(resourceTree);
+        tank1.onTick(1);
+        resourceTree = new ResourceTree(7, 7);
+        GameManager.get().getWorld().addEntity(resourceTree);
+        tank1.onTick(1);
+        tank1.getGoal();
+        for (int i = 0; i < 100; ++i) {
+            tank1.onTick(1);
+        }
+    }
 
-		@Override
-		public String getEnemyType() { return enemyType; }
+    @Test
+    public void onTickTestPlayer() {
+        tank1 = new TankEnemy(7, 7);
+        playerTest = new Player(1, 1);
+        ProjectileTree projectileTree = new ProjectileTree(10, 10);
+        GameManager.get().getWorld().addEntity(playerTest);
+        GameManager.get().getWorld().addEntity(projectileTree);
+        GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
+        tank1.onTick(1);
+        playerTest = new Player(7, 7);
+        GameManager.get().getWorld().addEntity(playerTest);
+        GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
+        tank1.onTick(1);
+        Effect stomp = new StompedGroundEffect(MortalEntity.class, 7, 7, true, 1, 1);
+        ResourceEntity food = new ResourceEntity(7, 7, new FoodResource());
+        GameManager.get().getWorld().addEntity(stomp);
+        GameManager.get().getWorld().addEntity(food);
+        tank1.onTick(1);
+    }
 
-		@Override
-		public Direction getDirection() { return currentDirection; }
-	}
+    @Test
+    public void setSpeedTest() {
+        tank1 = new TankEnemy(7, 7);
+        tank1.setSpeed(3f);
+        Assert.assertEquals("Failed to set Speed", 3f, tank1.getSpeed(), 0f);
+    }
 
-	TestableEnemyEntity enemyEntity;
-	private float speed = 0.1f;
-	private Class<?> goal = Player.class;
+    @Test
+    public void setGoalTest() {
+        tank1 = new TankEnemy(7, 7);
+        tank1.setGoal(ProjectileTree.class);
+        Assert.assertEquals("Failed to set Goal", ProjectileTree.class, tank1.getGoal());
+    }
 
-	// @BeforeClass
-	// public static void setUpBeforeClass() throws Exception {
-	// //a fake game world so deathHandler can interact with it
-	// InitialWorld mockWorld = mock(InitialWorld.class);
-	// GameManager gm = GameManager.get();
-	// gm.setWorld(mockWorld);
-	// }
+    @Test
+    public void getShotProjectileTest() {
+        tank1 = new TankEnemy(7, 7);
+        Projectile proj =new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10,
+                            Projectile.ProjectileType.ROCKET, null, null);
+        tank1.getShot(proj);
+        Assert.assertTrue("enemy failed to getShot()", tank1.getHealth() < tank1.getMaxHealth());
+    }
 
-	@Before
-	public void setUp() throws Exception {
-		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, "texture", 100f, speed, goal);
-	}
+    @Test
+    public void getShotEffectTest() {
+        tank1 = new TankEnemy(7, 7);
+        Effect foot = new LargeFootstepEffect(MortalEntity.class, 5, 5, 1, 1);
+        tank1.getShot(foot);
+        Assert.assertTrue("enemy failed to getShot()", tank1.getHealth() < tank1.getMaxHealth());
+    }
 
-	// Common to all initialization test
-	private void initTestCommon() {
-		assertEquals("getSpeed() bad init ", speed, enemyEntity.getSpeed(), 0f);
-		assertEquals("getGoal() bad init ", goal, enemyEntity.getGoal());
-	}
+    @Test
+    public void getProgressRatioTest() {
+        tank1 = new TankEnemy(7, 7);
+        Assert.assertTrue("Ratio was not 1", tank1.getProgressRatio() == 1);
+    }
 
-	@Test
-	public void initTest() {
-		enemyEntity = new TestableEnemyEntity(1, 2, 4, 5, "texture", 100f, speed, goal);
-		initTestCommon();
-	}
+    @Test
+    public void getMaxProgressTest() {
+        tank1 = new TankEnemy(7, 7);
+        Assert.assertTrue("Ratio was not 1", tank1.getMaxProgress() == 1000);
+    }
 
-	@Test
-	public void initTest2() {
-		enemyEntity = new TestableEnemyEntity(1, 2, 4, 5, 7, 8, "texture", 100f, speed, goal);
-		initTestCommon();
-	}
+    @Test
+    public void dyingHandlerTest() {
+        tank1 = new TankEnemy(7, 7);
+        tank1.dyingHandler();
+    }
 
-	@Test
-	public void emptyTest() {
-		try {
-			enemyEntity = new TestableEnemyEntity();
-		} catch (Exception E) {
-			fail("No EnemyEntity serializable constructor");
-		}
-	}
-
-	@Test
-	public void setSpeedTest() {
-		enemyEntity.setSpeed(3f);
-		Assert.assertEquals("Failed to set Speed", 3f, enemyEntity.getSpeed(), 0f);
-	}
-
-	@Test
-	public void setGoalTest() {
-		enemyEntity.setGoal(ProjectileTree.class);
-		Assert.assertEquals("Failed to set Goal", ProjectileTree.class, enemyEntity.getGoal());
-	}
-
-	@Test
-	public void getShotTest() {
-		Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, ProjectileType.ROCKET, null,
-				null);
-		enemyEntity.getShot(proj);
-		Assert.assertTrue("enemy failed to getShot()", enemyEntity.getHealth() < enemyEntity.getMaxHealth());
-	}
-
-
-	// registerNewEvent test shoudl already have events present
-	// and then check they are all gone when the method is called.
-
-	// getShot test would need to check the enemy health and then check the
-	// health decreases as expected after some effect (only test one)
-
-	// getter methods, just check you are getting what is expected:
-	// not null and right value
-
-	//For deatherHandler, check that the enemy has been removed from the world
-	// and that it has been set to respawn in the eventManager
-
-
-
-	private class SimpleEnemy extends EnemyEntity {
-
-		private String enemyType = "squirrel";
-		private Direction currentDirection;
-
-		@Override
-		public EnemyProperties getBasicStats() {
-			EnemyProperties result = new PropertiesBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
-					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
-			return result;
-		}
-
-		@Override
-		public String getEnemyType() { return enemyType; }
-
-		@Override
-		public Direction getDirection() { return currentDirection; }
-	}
-//
-//	@Test
-//	public void normalConstructor() {
-//		SimpleEnemy se = new SimpleEnemy(1f, 1f, 1f, 2f, 2f, 2f,
-//				new String("texture"), 10f, 12f, goal);
-//	}
+    @Test
+    public void deathHandlerTest() {
+        tank1 = new TankEnemy(7, 7);
+        tank1.deathHandler();
+    }
 }

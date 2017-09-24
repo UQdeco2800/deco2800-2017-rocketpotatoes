@@ -61,7 +61,7 @@ public class PauseMenuGui extends Gui {
 
         textureManager = GameManager.get().getManager(TextureManager.class);
 
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         table = new Table(uiSkin);
 
         // Make drawables from textures

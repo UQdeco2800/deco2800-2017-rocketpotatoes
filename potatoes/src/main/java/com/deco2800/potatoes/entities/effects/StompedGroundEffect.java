@@ -16,6 +16,8 @@ import com.deco2800.potatoes.managers.SoundManager;
  * he "stomps" the ground and damages it. This effect can be either temporary or
  * permanent. When entities walk through this effect, they will be slowed down
  * TODO Actually make them slow down.
+ *
+ * @author ryanjphelan
  */
 public class StompedGroundEffect extends Effect {
 	// TODO Texture is a placeholder. Need to design proper artwork for stomped ground
@@ -52,7 +54,6 @@ public class StompedGroundEffect extends Effect {
         super(targetClass, new Circle2D(posX, posY, 1.414f), 1f, 1f, damage, range, EffectType.DAMAGED_GROUND);
 		this.isTemporary = isTemporary;
 		effectPosition = getMask();
-		animate = false;
 	}
 
 	@Override
@@ -68,6 +69,24 @@ public class StompedGroundEffect extends Effect {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the current index for the texture being used
+	 *
+	 * @return Int current index
+	 */
+	public int getCurrentTextureIndex() {
+		return currentTextureIndexCount;
+	}
+
+	/**
+	 * Return the CollisionMask position of the stomp
+	 *
+	 * @return CollisionMask position of footstep
+	 */
+	public CollisionMask getStompedGroundPosition() {
+		return effectPosition;
 	}
 
 	/**

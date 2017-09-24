@@ -52,9 +52,9 @@ public class PathManagerTest {
 
     @After
     public void cleanUp() {
-    	GameManager.get().clearManagers();
+        GameManager.get().clearManagers();
     }
-    
+
     @Test
     public void reachesGoal() {
         PathManager m = new PathManager();
@@ -63,10 +63,8 @@ public class PathManagerTest {
 
         Path p = m.generatePath(start, finish);
 
-        assertThat("Start is not the first point of path",
-                start.equals(p.nextPoint()), is(equalTo(true)));
-        assertThat("Finish is not the last point of path",
-                finish.equals(p.goal()), is(equalTo(true)));
+
+        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
 
     }
 
@@ -78,17 +76,8 @@ public class PathManagerTest {
 
         Path p = m.generatePath(start, finish);
 
-        assertThat("Start is not the first point of path",
-                start.equals(p.nextPoint()), is(equalTo(true)));
-//        assertThat("Finish is not the last point of path",
-//                finish.equals(p.goal()), is(equalTo(true)));
+
+        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
     }
 
-    @Test
-    public void leakTest() {
-        int rounds = 1;
-        for (int i = 0; i < rounds; i++) {
-          obstacleCheck();
-        }
-    }
 }
