@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 public class GameTimeManager extends Manager implements TickableManager {
 
 	private enum TimeColour {
-		SUNRISE(0xFD7D0188, 0), DAY(0xFFFFFFFF, 6), SUNSET(0xFE5B3588, 12), NIGHT_EARLY(0x0088FF88, 13),
-		NIGHT(0x00448888, 18), NIGHT_LATE(0x0066CC88, 23), SUNRISE2(0xFD7D0188, 24);
+		SUNRISE(0xFD7D01FF, 0), DAY(0xFFFFFFFF, 6), SUNSET(0xFE5B3588, 12), NIGHT_EARLY(0x0088FFFF, 13),
+		NIGHT(0x004488FF, 18), NIGHT_LATE(0x0066CCFF, 23), SUNRISE2(0xFD7D01FF, 24);
 
 		private Color color;
 		private int time;
