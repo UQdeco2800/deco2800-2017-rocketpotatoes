@@ -42,9 +42,9 @@ public class TankEnemyTest extends BaseTest {
 		assertEquals(true, tankEmpty.getDirection() == null);
 		assertEquals("bear", tankEmpty.getEnemyType());
 		assertEquals(Color.PURPLE, tank1.getProgressBar().getColours().get(0));
-		assertEquals(Color.RED, tank1.getProgressBar().getColours().get(0));
-		assertEquals(Color.ORANGE, tank1.getProgressBar().getColours().get(0));
-		assertEquals(Color.YELLOW, tank1.getProgressBar().getColours().get(0));
+		assertEquals(Color.RED, tank1.getProgressBar().getColours().get(1));
+		assertEquals(Color.ORANGE, tank1.getProgressBar().getColours().get(2));
+		assertEquals(Color.YELLOW, tank1.getProgressBar().getColours().get(3));
 	}
 
 	/*
