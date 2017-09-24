@@ -11,6 +11,7 @@ import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,6 +37,11 @@ public class PlayerTest {
         
         m.setPlayer(player);
     }
+    
+    @After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 
     @Test
     public void directionTest() {
@@ -56,14 +62,14 @@ public class PlayerTest {
 
     @Test
     public void keysTest2() {
-        player.handleKeyUp(Input.Keys.SPACE);
-        player.handleKeyUp(Input.Keys.SPACE);
-        player.handleKeyUp(Input.Keys.SPACE);
-        player.handleKeyUp(Input.Keys.R);
-        player.handleKeyUp(Input.Keys.ESCAPE);
-        player.handleKeyUp(Input.Keys.E);
+        player.setPlayerType("wizard");
+        player.handleKeyDown(Input.Keys.SPACE);
+        player.handleKeyDown(Input.Keys.SPACE);
+        player.handleKeyDown(Input.Keys.SPACE);
+        player.handleKeyDown(Input.Keys.E);
         player.handleKeyDown(Input.Keys.F);
         player.handleKeyDown(Input.Keys.T);
+        player.handleKeyDown(Input.Keys.R);
     }
 
     @Test
