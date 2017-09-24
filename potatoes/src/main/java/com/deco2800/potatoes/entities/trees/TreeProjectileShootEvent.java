@@ -44,9 +44,9 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 			GameManager.get().getWorld().addEntity(new BallisticProjectile(target1.get().getClass(),
 					new Vector3(tree.getPosX() + 0.5f, tree.getPosY() + 0.5f, tree.getPosZ()),
 					new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()),
-					tree.getUpgradeStats().getAttackRange(), 1, Projectile.ProjectileTexture.ROCKET, null,
+					tree.getUpgradeStats().getAttackRange(), 100, Projectile.ProjectileTexture.ROCKET, null,
 					new AOEEffect(target1.getClass(),
-							new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()), 100,
+							new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()), 1,
 							1),"", Projectile.ShootingStyles.BALLISTICPROJECTILE));
 
 //			GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),
