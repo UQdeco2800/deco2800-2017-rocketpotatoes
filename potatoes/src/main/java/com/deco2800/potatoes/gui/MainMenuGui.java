@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -55,7 +56,11 @@ public class MainMenuGui extends Gui {
     private ImageButton multiplayerBackButton;
 
     private HorizontalGroup multiplayerClientButtonGroup;
+    private VerticalGroup multiplayerServerGroup;
     private Drawable connectDrawable;
+    private ScrollPane multiplayerServerScrollPane;
+    private List<String> multiplayerServerList;
+    private TextButton multiplayerFindServers;
     private TextField multiplayerClientName;
     private TextField multiplayerClientIpAddConnection;
     private ImageButton multiplayerClientConnectButton;
@@ -147,12 +152,19 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer Client state
         connectDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("connectMainMenu")));
+        multiplayerServerList = new List<String>(uiSkin);
+        multiplayerServerScrollPane = new ScrollPane(multiplayerServerList, uiSkin);
+        multiplayerFindServers = new TextButton("Find Server", uiSkin);
         multiplayerClientName = new TextField("Client Name", uiSkin);
         multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerClientConnectButton = new ImageButton(connectDrawable);
         multiplayerClientBackButton = new ImageButton(backDrawable);
 
         multiplayerClientButtonGroup = new HorizontalGroup();
+        multiplayerServerGroup = new VerticalGroup();
+        multiplayerServerGroup.addActor(multiplayerServerScrollPane);
+        multiplayerServerGroup.addActor(multiplayerFindServers);
+        multiplayerClientButtonGroup.addActor(multiplayerServerGroup);
         multiplayerClientButtonGroup.addActor(multiplayerClientName);
         multiplayerClientButtonGroup.addActor(multiplayerClientIpAddConnection);
         multiplayerClientButtonGroup.addActor(multiplayerClientConnectButton);
@@ -304,14 +316,25 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer Client state
 
+        multiplayerFindServers.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.menuBlipSound();
+                multiplayerServerList.setItems((Array) mainMenuScreen.findHostAddress());
+            }
+        });
+
         multiplayerClientConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
-                        multiplayerClientIpAddConnection.getText(), 1337, false);
-                //failedMultiplayerConnection.show(stage);
-                //Todo handle failed connection
+                multiplayerServerList.setItems((Array) mainMenuScreen.findHostAddress());
+                if (multiplayerServerList.getItems().contains(multiplayerClientIpAddConnection.getText(), false)) {
+                    mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
+                            multiplayerClientIpAddConnection.getText(), 1337, false);
+                } else {
+                    failedMultiplayerConnection.show(stage);
+                }
             }
         });
 
