@@ -6,6 +6,14 @@ import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
 import java.util.ArrayList;
 
+/**
+ * Wave manager acts as a controller for the games waves of enemies. It's primary
+ * function is to hold a queue of individual enemy waves and schedule them to
+ * create the flow of wave - break, and so on. Through wave manager you can determine
+ * the progress and state of the game.
+ *
+ * @author craig
+ */
 public class WaveManager extends Manager implements TickableManager, ForWorld {
 
     private ArrayList<EnemyWave> waves;
@@ -15,12 +23,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
     private int elapsedTime = 0;
 
     /**
-     * Wave manager acts as a controller for the games waves of enemies. It's primary
-     * function is to hold a queue of individual enemy waves and schedule them to
-     * create the flow of wave - break, and so on. Through wave manager you can determine
-     * the progress and state of the game.
-     *
-     * @author craig
+     * Create a new instance of WaveManager
      */
     public WaveManager() {
         waves = new ArrayList<>();

@@ -76,7 +76,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 	}
 
 	/**
-	 * Checks the respawn location for any collisions with other entities.
+	 * Checks the respawn location for any impassable terrain or collisions with other entities.
 	 * 
 	 * @param param
 	 *            the mortal entity
@@ -84,7 +84,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 	 *            the x location of the param
 	 * @param y
 	 *            the y location of the param
-	 * @return true if collision detected, else false.
+	 * @return true if collision or impassable terrain detected, else false.
 	 */
 	private boolean hasCollisions(MortalEntity param, int x, int y) {
 		// create a box3D and set the location
@@ -93,20 +93,25 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 		newPos.setY(y);
 		// get all entities on the current map
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
+		// check if MortalEntity is on a impassable terrain (0f if impassable)
+		float epsilon = 0.00000001f;
+		float speedScale = GameManager.get().getWorld().getTerrain(x, y).getMoveScale();
+		if (Math.abs(speedScale) < epsilon) {
+			return true;
+		}
 		// check for collisions
 		for (AbstractEntity entity : entities.values()) {
-            if (!param.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-                    && newPos.overlaps(entity.getBox3D())) {
-                collided = true;
-            }
+			if (!param.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile)
+					&& !(entity instanceof Effect) && newPos.overlaps(entity.getBox3D())) {
+				return true;
+			}
 
-            if (!param.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
-                collided = true;
-            }
+			if (!param.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+				return true;
+			}
 		}
 
-		return collided;
+		return false;
 	}
 
 }

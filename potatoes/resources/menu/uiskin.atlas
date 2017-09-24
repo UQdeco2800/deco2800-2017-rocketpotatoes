@@ -133,17 +133,17 @@ default-select-selection
   index: -1
 default-slider
   rotate: false
-  xy: 29, 20
-  size: 8, 8
-  split: 2, 2, 2, 2
-  orig: 8, 8
+  xy: 203, 45
+  size: 4, 4
+  split: 1, 1, 1, 1
+  orig: 4, 4
   offset: 0, 0
   index: -1
 default-slider-knob
   rotate: false
-  xy: 1, 1
-  size: 9, 18
-  orig: 9, 18
+  xy: 176, 11
+  size: 26, 38
+  orig: 26, 38
   offset: 0, 0
   index: -1
 default-splitpane

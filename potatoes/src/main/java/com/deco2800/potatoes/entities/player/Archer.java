@@ -4,11 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.HasDirection;
-import com.deco2800.potatoes.entities.HasDirection.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
@@ -34,22 +31,16 @@ public class Archer extends Player {
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 200, new Runnable() {	//TODO: update to use attack sprites
-		@Override
-		public void run() {
-			// Handle finishing attack
-			clearState();
-			updateSprites();
-		}
-	});
-    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 200, new Runnable() {	//TODO: update to use damaged sprites
-		@Override
-		public void run() {
-			// Handle finishing attack
-			clearState();
-			updateSprites();
-		}
-	});
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 200, this::completionHandler);
+    
+    private Void completionHandler() {
+    	//TODO: update to use damaged sprites
+    	// Handle finishing attack
+    	clearState();
+		updateSprites();
+		return null;
+    }
     
     @Override
     public void updateSprites() {

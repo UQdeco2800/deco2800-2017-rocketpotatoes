@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.HasDirection;
-import com.deco2800.potatoes.entities.HasDirection.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
@@ -34,38 +32,18 @@ public class Caveman extends Player {
     /* Caveman Animations */
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 800, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.damaged, 1, 200, new Runnable() {
-		@Override
-		public void run() {
-			// Handle finishing damaged
-			clearState();
-			updateSprites();
-		}
-	});
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.death, 3, 300, new Runnable() {
-		@Override
-		public void run() {
-			// Handle finishing death
-			clearState();
-			updateSprites();
-		}
-	});
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.attack, 5, 200, new Runnable() {
-		@Override
-		public void run() {
-			// Handle finishing attack
-			clearState();
-			updateSprites();
-		}
-	});
-    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.interact, 5, 400, new Runnable() {
-		@Override
-		public void run() {
-			// Handle finishing interact
-			clearState();
-			updateSprites();
-		}
-	});
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.damaged, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.death, 3, 300, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.attack, 5, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.interact, 5, 400, this::completionHandler);
+    
+    private Void completionHandler() {
+    	//TODO: update to use damaged sprites
+    	// Handle finishing attack
+    	clearState();
+		updateSprites();
+		return null;
+    }
     
     @Override
     public void updateSprites() {
@@ -147,6 +125,7 @@ public class Caveman extends Player {
     
     @Override
     public void interact() {
+    		super.interact();
 	    	if (this.setState(PlayerState.interact)) {
 	    		// Caveman interacts
 	    	}
