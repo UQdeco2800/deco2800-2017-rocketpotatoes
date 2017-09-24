@@ -24,8 +24,10 @@ public class SingleFrameAnimationTest {
 	public void testGetAnimation() {
 		assertEquals("Frame was not test frame", "test", animation.getAnimation().getFrame());
 	}
+
+	@Test
 	public void testGetFrames() {
-		animation.getFrames();
+		assertArrayEquals("Frames was not just animation", new Animation[] { animation }, animation.getFrames());
 	}
 
 }

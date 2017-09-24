@@ -198,7 +198,7 @@ public class MinimumSpanningTree {
                 // Create edge line between vertices.
                 edge = new Line(vertexList.get(i).getEntry(), vertexList.get(j).getEntry());
                 // Check for obstructed edges
-                if (this.checkLineClash(edge, obstacles)) {
+                if (checkLineClash(edge, obstacles)) {
                     // Obstruction found
                     this.putGraphEntry(LARGE_WEIGHT, i, j);
                     // Reflect value
@@ -294,6 +294,7 @@ public class MinimumSpanningTree {
 
         HashMap<Box3D, Box3D> tree = new HashMap<>();
         Vertex temp;
+        cloud.clear();
         this.addStartGoal(goal, start, obstacles);
         // Add the goal vertex (index 0 of vertexList) to the cloud to begin MST.
         cloud.put(0, this.getVertexList().get(0));
@@ -309,7 +310,6 @@ public class MinimumSpanningTree {
             tree.put(temp.getEntry(), this.getVertexList().get(temp.getLeastEdgeAddress()).getEntry());
             updateLeastEdges();
         }
-        cloud.clear();
         return tree;
     }
 

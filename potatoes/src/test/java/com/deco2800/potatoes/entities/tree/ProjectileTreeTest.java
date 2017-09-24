@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
+
 public class ProjectileTreeTest {
 
 	private static final int RELOAD = 100;
@@ -19,9 +21,14 @@ public class ProjectileTreeTest {
 	@Before
 	public void setup() {
 		GameManager.get().setWorld(new TestWorld());
-		testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
+		testTree = new ProjectileTree(10, 10, 0, RELOAD, RANGE, HEALTH);
 		GameManager.get().getWorld().addEntity(testTree);
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 
 	@Test
 	public void emptyTest() {

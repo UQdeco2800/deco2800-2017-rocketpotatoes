@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.util;
 
 import java.util.ArrayDeque;
-
+import java.util.ArrayList;
 
 
 /**
@@ -16,7 +16,7 @@ public class Path {
      * Creates a new path, with no nodes.
      */
     public Path() {
-        this.nodes = new ArrayDeque<Box3D>();
+        this.nodes = new ArrayDeque<>();
         this.angle = 0;
     }
 
@@ -76,7 +76,7 @@ public class Path {
         // Check if the current position overlaps the first node in list
         if (currentPosition.overlaps(nodes.getFirst())) {
             // Remove first node from list as it's been reached
-            nodes.removeFirst();
+            nodes.remove(0);
             // Set angle to angle between _currentPosition_ and next node
             setAngle(currentPosition.angle(nodes.getFirst()));
             // Calculate new x and y calculatePositions

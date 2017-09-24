@@ -2,7 +2,8 @@ package com.deco2800.potatoes.collisions;
 
 public class Point2D implements CollisionMask{
     
-    private float x, y;
+    private float x;
+    private float y;
 
     /**
      * Default constructor for the purporses of serialization.

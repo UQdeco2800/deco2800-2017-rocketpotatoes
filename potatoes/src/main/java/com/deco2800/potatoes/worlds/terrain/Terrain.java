@@ -7,11 +7,14 @@ public class Terrain {
 	private final String texture;
 	private final float moveScale;
 	private final boolean plantable;
-	
+
 	/**
-	 * @param texture the texture
-	 * @param moveScale the movement speed scale
-	 * @param plantable whether trees can be planted
+	 * @param texture
+	 *            the texture
+	 * @param moveScale
+	 *            the movement speed scale
+	 * @param plantable
+	 *            whether trees can be planted
 	 */
 	public Terrain(String texture, float moveScale, boolean plantable) {
 		this.texture = texture;
@@ -40,8 +43,9 @@ public class Terrain {
 		return plantable;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/*
+	 * Auto generated, no need to manually test. Created from fields: texture,
+	 * moveScale, plantable
 	 */
 	@Override
 	public int hashCode() {
@@ -53,8 +57,9 @@ public class Terrain {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/*
+	 * Auto generated, no need to manually test. Created from fields: texture,
+	 * moveScale, plantable
 	 */
 	@Override
 	public boolean equals(Object obj) {

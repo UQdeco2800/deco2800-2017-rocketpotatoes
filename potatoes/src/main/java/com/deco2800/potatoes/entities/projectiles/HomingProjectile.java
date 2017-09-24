@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.projectiles;
 
 import java.util.Optional;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
@@ -35,21 +36,21 @@ public class HomingProjectile extends Projectile {
 	 * @param DAMAGE
 	 *            Projectile damage
 	 */
-	public HomingProjectile(Class<?> targetClass, float posX, float posY, float posZ, float targetPosX,
-			float targetPosY, float targetPosZ, float range, float damage, String projectileType, Effect startEffect,
+	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileType projectileType, Effect startEffect,
 			Effect endEffect) {
-		super(targetClass, posX, posY, posZ, targetPosX, targetPosY, targetPosZ, range, damage, projectileType,startEffect, endEffect);
+		super(targetClass, startPos, targetPos, range, damage, projectileType,
+				startEffect, endEffect);
 	}
 
 	@Override
 	public void onTick(long time) {
-		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, this.goalX, this.goalY);
-		if (targetEntity != null) {
+		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x, targetPos.y);
+		if (targetEntity.isPresent()) {
 			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
 		} else {
 			GameManager.get().getWorld().removeEntity(this);
 		}
-
+		updatePosition();
 		super.onTick(time);
 
 	}

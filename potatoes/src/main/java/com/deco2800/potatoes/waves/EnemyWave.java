@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.waves;
 
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -7,40 +8,46 @@ import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
 import java.util.*;
 
-import static com.badlogic.gdx.math.MathUtils.random;
-
 public class EnemyWave {
 
-    //The current elapsed time into the awave
-    private int elapsedTime;
-    private float[] enemyRatios;
+    private float[] enemyRatios;    //Length of wave in .001 of seconds
+    private int waveLength;     //The current time of the wave
+    private int waveTime = 0;   //Spawn rate (100 = 1 second)
+    private int spawnRate = 75;     //Time counting down for gui
+    private int timeToEnd = 0;
+
+    public enum WaveState {
+        WAITING, ACTIVE, PAUSED, FINISHED
+    }
+
+    WaveState waveState = WaveState.WAITING;
 
     /**
-     * Create the enemy wave.
-     *
+     * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
+     * enemyRate parameter, the relative rates of spawning for each type will be 5/8, 1/8, 1/8, 1/8.
      *
      * @param squirrelRate
      * @param speedyRate
      * @param tankRate
      * @param mooseRate
      * --can be changed to simply individual args for each enemy type - might actually be better
-     * @param waveTime the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
+     * @param waveLength the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
      * */
-    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, float waveTime) {
-        //addSquirrel();
-        //addSquirrel();
-        this.enemyRatios = getEnemyRatio(squirrelRate, speedyRate, tankRate, mooseRate);
-        spawnEnemyToRatio(enemyRatios);
-
+    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength) {
+        this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
+        this.waveLength = waveLength;
     }
 
     /**
-     * Spawn enemies at ratio given in enemy ratio
+     * Create an array of floats between 0-1, where squirrelRate < speedyRate < tankRate < mooseRate.
+     * The span of each value from itself to the immediate next highest ratio indicates its actual
+     * ratio, i.e. if speedy is .50 and tank is .75, actual ratio is .25.
+     *
+     * @return an array of floats representing the ratio of enemy rates provided
      * */
-    private float[] getEnemyRatio(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
+    private float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
         float total = squirrelRate + speedyRate + tankRate + mooseRate;
-        // These are 'positional ratios'
-        // Ratios are the spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
+        // Ratios are the total spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
         float squirrelRatio = squirrelRate/total;
         float speedyRatio = squirrelRatio + speedyRate/total;
         float tankRatio = speedyRatio + tankRate/total;
@@ -49,20 +56,15 @@ public class EnemyWave {
         return enemyRatios;
     }
 
-
-    /*Right now just makes 10 enemies according to the rate, but want to incorporate game time
-    to this. So maybe in the future take away the for loop and just have it generate one enemy.
-    then we give this to the gametime counter (or onTick method) and run this method every x
-    amount of time until the game wave is over.
-    */
-    /**
-     * Spawn enemies according to the ratio defined in the constructor
-     * */
-    private void spawnEnemyToRatio(float[] enemyRatios) {
+    /***
+     * Spawn enemies according to the ratio described by the output of calculateEnemyRatios.
+     *
+     * @param enemyRatios Array of ratios of each enemy type in game where enemyRatio[i] is < enemyRatio[i+1] and
+     *                    sum to 1.
+     */
+    public void spawnEnemyToRatio(float[] enemyRatios) {
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
             float randomFloat = random.nextFloat();
-
             if (randomFloat < enemyRatios[0]) {
                 addSquirrel();
             } else if (randomFloat < enemyRatios[1]) {
@@ -72,60 +74,119 @@ public class EnemyWave {
             } else if (randomFloat < enemyRatios[3]) {
                 addMoose();
             }
+    }
 
+    /*Likely to be expanded along actions for waiting, paused and finished at a later point*/
+    /***
+     * Perform actions depending on the current state of the wave.
+     * Currently do nothing unless in ACTIVE state.
+     *
+     */
+    public void tickAction(){
+        switch (getWaveState()) {
+            case WAITING:
+                //Do nothing
+                break;
+            case PAUSED:
+                //Pausing not yet implemented
+                break;
+            case ACTIVE:
+                setCurrentWaveTime(elapsedWaveTime() + 1);
+                if (elapsedWaveTime()>getWaveLength()) {
+                    setWaveState(WaveState.FINISHED);
+                } else if (elapsedWaveTime() % spawnRate == 0) {
+                    spawnEnemyToRatio(enemyRatios);
+                }
+                //Check to see if wave is paused for some reason
+                break;
+            case FINISHED:
+                //Handling finished state
+                break;
         }
     }
 
+    /**
+     * @return the time elapsed since wave started in 0.001 seconds
+     */
+    public int elapsedWaveTime() { return waveTime; }
 
+    /**
+     * Sets the current wave Time.
+     * @param CurrentTime
+     */
+    public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
 
+    /**
+     * @return Amount of time left in current wave
+     */
+    public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
+
+    /**
+     * Add a squirrel to the world
+     */
     private void addSquirrel() {
         GameManager.get().getWorld().addEntity(new Squirrel(
-                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+                    24, 24, 0));
     }
 
+    /**
+     * Add a tank (bear) enemy to the world
+     */
     private void addTank() {
         GameManager.get().getWorld().addEntity(
-                new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
+                new TankEnemy(24, 24, 0));
     }
 
+    /**
+     * Add a speedy (raccoon) enemy to the world
+     */
     private void addSpeedy() {
         GameManager.get().getWorld().addEntity(
-                new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
+                new SpeedyEnemy(24, 24, 0));
 
     }
 
+    /**
+     * Add a moose to the world
+     */
     private void addMoose() {
         GameManager.get().getWorld().addEntity(new Moose(
-                10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+                24, 24, 0));
     }
 
-    private void addMultipleSquirrels(int squirrelCount) {
-            for (int i = 0; i < squirrelCount; i++) {
-                GameManager.get().getWorld().addEntity(new Squirrel(
-                        10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-            }
-        }
+    /**
+     * @return The total time length of this wave in approx 1/10s of a second
+     */
+    public int getWaveLength() { return waveLength; }
 
-    private void addMultipleTanks(int tankCount) {
-        for (int i = 0; i < tankCount; i++) {
-            GameManager.get().getWorld().addEntity(
-                    new TankEnemy(15 + random.nextFloat()*10, 20 + random.nextFloat()*10, 0));
-        }
-    }
+    /**
+     * Set the total time length in unit 1/10s of a second of this wave
+     *
+     * @param waveLength time
+     */
+    public void setWaveLength(int waveLength) { this.waveLength = waveLength; }
 
-    private void addMultipleMoose(int mooseCount) {
-        for (int i = 0; i < mooseCount; ++i) {
-            GameManager.get().getWorld().addEntity(new Moose(
-                    10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-        }
-    }
+    /**
+     * Get the WaveState describing the wave, i.e. WAITING, PAUSED, ACTIVE or FINISHED.
+     * @return
+     */
+    public WaveState getWaveState() { return waveState; }
 
-    private void addMultipleSpeedy(int speedyCount) {
-        for(int i=0 ; i<speedyCount ; i++) {
-            GameManager.get().getWorld().addEntity(
-                    new SpeedyEnemy(24+random.nextFloat()*10, 20+random.nextFloat()*10, 0));
-        }
-    }
+    /**
+     * Set the WaveState of the wave according to the WaveState type
+     *
+     * @param state WaveState value; WAITING, PAUSED, ACTIVE or FINISHED
+     */
+    public void setWaveState(WaveState state) { this.waveState = state; }
 
+    /***
+     * Get the array of enemyRatios that describe the composition of the wave
+     *
+     * @return
+     */
+    public float[] getEnemyRatios(){ return this.enemyRatios;}
+
+    /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
+    but is unlucky enough not to have spawned... then spawn it.*/
 }
 

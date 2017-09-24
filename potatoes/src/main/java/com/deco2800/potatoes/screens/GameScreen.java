@@ -1,10 +1,10 @@
 package com.deco2800.potatoes.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -12,26 +12,22 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.AcornTree;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.*;
+import com.deco2800.potatoes.entities.trees.AcornTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.FireTree;
-import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
-import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.gui.DebugModeGui;
-import com.deco2800.potatoes.gui.GameMenuGui;
-import com.deco2800.potatoes.gui.GameOverGui;
-import com.deco2800.potatoes.gui.InventoryGui;
-import com.deco2800.potatoes.gui.PauseMenuGui;
-import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.entities.trees.FireTreeType;
+import com.deco2800.potatoes.entities.trees.IceTreeType;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.observers.KeyDownObserver;
@@ -41,11 +37,11 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
+import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Handles the creation of the world and rendering.
@@ -72,14 +68,18 @@ public class GameScreen implements Screen {
 	private CameraManager cameraManager;
 	private TextureManager textureManager;
 	private InputManager inputManager;
+	private WaveManager waveManager;
 
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
+	// Would be nice to move this somewhere else
+	private TiledDrawable background;
 
+	private int maxShopRange;
 	/**
 	 * Start's a multiplayer game
-	 * 
+	 *
 	 * @param game
 	 *            game instance
 	 * @param name
@@ -96,7 +96,7 @@ public class GameScreen implements Screen {
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		this.game = game;
 		setupGame();
-
+		
 		// setup multiplayer
 		if (isHost) {
 			multiplayerManager.createHost(port);
@@ -107,12 +107,12 @@ public class GameScreen implements Screen {
 		}
 
 		initializeGame();
-
+		
 	}
 
 	/**
 	 * Start's a singleplayer game
-	 * 
+	 *
 	 * @param game
 	 *            game instance
 	 */
@@ -127,14 +127,17 @@ public class GameScreen implements Screen {
 	 * specific things just yet
 	 */
 	private void setupGame() {
-		this.game = game;
-
-
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		textureManager = GameManager.get().getManager(TextureManager.class);
-
+		
+		// Creates the object for the repeated background texture
+		// TODO this will need to be changed once proper texture is added
+		TextureRegion waterTexture = textureManager.getTextureRegion("w1");
+		waterTexture.setRegionX(waterTexture.getRegionX() + 2);
+		waterTexture.setRegionY(waterTexture.getRegionY() + 2);
+		background = new TiledDrawable(textureManager.getTextureRegion("w1"));
 		/**
 		 * Setup managers etc.
 		 */
@@ -150,6 +153,9 @@ public class GameScreen implements Screen {
 
 		/* Create a player manager. */
 		playerManager = GameManager.get().getManager(PlayerManager.class);
+
+        /* Create an enemy wave manager */
+        waveManager = GameManager.get().getManager(WaveManager.class);
 
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
@@ -188,22 +194,29 @@ public class GameScreen implements Screen {
 
 		// Add test TreeShop Gui
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
+		maxShopRange = ((TreeShopGui)guiManager.getGui(TreeShopGui.class)).getMaxRange();
+
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
-        
+
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
+        
+        // Add World Change Gui
+        guiManager.addGui(new WorldChangeGui(guiManager.getStage(), this));
 
         //Make our game over window
-        	guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
+
+		guiManager.addGui(new WavesGui(guiManager.getStage()));
+
+		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
 		/* Setup inputs */
 		setupInputHandling();
 
-		/* Create an example world for the engine */
-		// GameManager.get().setWorld(new InitialWorld());
-		// Sets the world to the initial world, world 0
-		GameManager.get().getManager(WorldManager.class).setWorld(0);
+        // Sets the world to the initial world, forest world
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -229,7 +242,7 @@ public class GameScreen implements Screen {
 
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
-		
+
 		MouseHandler mouseHandler = new MouseHandler();
 		inputManager.addTouchDownListener(mouseHandler);
 		inputManager.addTouchDraggedListener(mouseHandler);
@@ -255,27 +268,25 @@ public class GameScreen implements Screen {
 
 		GameManager.get().getManager(EventManager.class).unregisterAll();
 
-		// Random random = new Random();
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new Tower(8, 8, 0));
+			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8, 0));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
 
-			//addSquirrel();
-            //addTankEnemy();
-            //addMoose();
-            //addSpeedyEnemy();
-            new EnemyWave(2, 1, 1,1, 2);
+			//add an enemy gate to game world
+			GameManager.get().getWorld().addEntity(new EnemyGate(24,24,0));
 
-			addResourceTrees();
+			//add enemy waves
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
+
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
 
-		}
-
-		if (!multiplayerManager.isMultiplayer()) {
+			if (!multiplayerManager.isMultiplayer()) {
 			/*
 			 * TODO bug! currently reseting the game while having a key held down will then
 			 * notify the new player with the keyUp TODO event, which will result it in
@@ -284,76 +295,68 @@ public class GameScreen implements Screen {
 			 * hassle
 			 */
 
-			// Make our player
-			playerManager.setPlayer(new Player(5, 10, 0));
-			GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-		}
-		GameManager.get().getManager(ParticleManager.class);
-	}
-
-	// For random position of enemies
-	Random random = new Random();
-
-	private void addSquirrel() {
-		for (int i = 0; i < 5; i++) {
-			GameManager.get().getWorld()
-					.addEntity(new Squirrel(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
+				// Make our player
+				playerManager.setPlayer(5, 10, 0);
+				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+			}
+			GameManager.get().getManager(ParticleManager.class);
 		}
 	}
-
-	private void addTankEnemy() {
-		for (int i = 0; i < 3; i++) {
-			GameManager.get().getWorld()
-					.addEntity(new TankEnemy(15 + random.nextFloat() * 10, 20 + random.nextFloat() * 10, 0));
-		}
-	}
-
-	private void addMoose() {
-		for (int i = 0; i < 2; ++i) {
-			GameManager.get().getWorld()
-					.addEntity(new Moose(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0));
-		}
-	}
-
-	private void addSpeedyEnemy() {
-		for (int i = 0; i < 3; i++) {
-			GameManager.get().getWorld()
-					.addEntity(new SpeedyEnemy(24 + random.nextFloat() * 10, 20 + random.nextFloat() * 10, 0));
-		}
-	}
-
 
 	private void addDamageTree() {
 		GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
-		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
-	}
-
-
-	private void addResourceTrees() {
-		// Seed Trees
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 4, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(14, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(15, 5, 0));
-		GameManager.get().getWorld().addEntity(new ResourceTree(8, 15, 0, new FoodResource(), 8));
+		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTreeType()));
 	}
 
 	private void initialiseResources() {
 
-		SeedResource seedResource = new SeedResource();   
+		SeedResource seedResource = new SeedResource();
 		FoodResource foodResource = new FoodResource();
-		
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 18, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(17, 17, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(18, 17, 0, seedResource));
-		
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(0, 17, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(1, 17, 0, foodResource));
+		WoodResource woodResource = new WoodResource();
+		TumbleweedResource tumbleweedResource = new TumbleweedResource();
+		CactusThornResource cactusThornResource = new CactusThornResource();
+		PricklyPearResource pricklyPearResource = new PricklyPearResource();
+
+		SnowBallResource snowBallResource = new SnowBallResource();
+		SealSkinResource sealSkinResource = new SealSkinResource();
+		IceCrystalResource iceCrystalResource = new IceCrystalResource();
+
+		CoalResource coalResource = new CoalResource();
+		BonesResource bonesThornResource = new BonesResource();
+		ObsidianResource obsidianResource = new ObsidianResource();
+
+		FishMeatResource fishMeatResource = new FishMeatResource();
+		PearlResource pearlResource = new PearlResource();
+		TreasureResource treasureResource = new TreasureResource();
+
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 20, 0, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 18, 0, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 16, 0, woodResource));
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 20, 0, tumbleweedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 18, 0, cactusThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 16, 0, pricklyPearResource));
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 20, 0, snowBallResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 18, 0, sealSkinResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 16, 0, iceCrystalResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 20, 0, coalResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 18, 0, bonesThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 16, 0, obsidianResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 20, 0, fishMeatResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 18, 0, pearlResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 16, 0, treasureResource));
+
+
+
 
 	}
 
@@ -375,12 +378,9 @@ public class GameScreen implements Screen {
 
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			if (e instanceof Tickable) {
-				// Only tick elements if we're singleplayer or master
-				if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-					((Tickable) e).onTick(timeDelta);
+			if (e instanceof Tickable &&(!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
+				((Tickable) e).onTick(timeDelta);
 
-				}
 			}
 
 			/*
@@ -388,11 +388,6 @@ public class GameScreen implements Screen {
 			 * peonButton = ((Selectable) e).getButton(); somethingSelected = true; } }
 			 */
 
-		}
-
-		// Tick Events
-		if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-			GameManager.get().getManager(EventManager.class).tickAll(timeDelta);
 		}
 
 		// Broadcast updates if we're master TODO only when needed.
@@ -420,10 +415,9 @@ public class GameScreen implements Screen {
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
-
-		GameManager.get().getManager(ParticleManager.class).onTick(timeDelta);
-
-	}
+		// Ticks all tickable managers, currently events, waves, particles
+		GameManager.get().onTick(timeDelta);
+    }
 
 	private void renderGUI(SpriteBatch batch) {
 
@@ -442,11 +436,68 @@ public class GameScreen implements Screen {
 		guiManager.getStage().draw();
 	}
 
-	private void renderGame(SpriteBatch batch) {
+	//Is it bad to be setting the status label text on every tick? Might want to think this through
+	private void updateWaveGUI() {
+		// Update WaveGui time
+		int timeToWaveEnd;
+		int timeToNextWave;
+		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();
+		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();
+		Gui waveGUI = guiManager.getGui(WavesGui.class);
+		if (waveGUI instanceof WavesGui) {
+			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			if (activeWave != null) {
+				timeToWaveEnd = activeWave.getTimeToEnd();
+				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+			} else {
+				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
+				} else {
+					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+				}
+			}
+		}
+	}
 
+	//TODO: better implementation?
+	private void updateRespawnGUI(){
+
+		Gui respawnGui = guiManager.getGui(RespawnGui.class);
+
+		if(playerManager.getPlayer().isDead()) {
+			int count = ((RespawnGui) respawnGui).returnCount();
+			int display =(int) Math.round(count/1000.0) + 1;
+			((RespawnGui) respawnGui).returnTimer().setText(Integer.toString(display));
+		}
+
+	}
+
+	private void renderGame(SpriteBatch batch) {
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+		
 		/* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(cameraManager.getCamera());
+
+		batch.begin();
+		// within the screen, but down rounded to the nearest tile
+		Vector2 waterCoords = new Vector2(
+				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
+				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
+		// draw with screen corner and width a little bit more than the screen
+		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
+				tileRenderer.getViewBounds().width + tileWidth * 4,
+				tileRenderer.getViewBounds().height + tileHeight * 4);
+		batch.end();
+
 		tileRenderer.render();
 
 		/* Draw highlight on current tile we have selected */
@@ -457,15 +508,23 @@ public class GameScreen implements Screen {
 		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
 
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-
 		float tileX = (int) (Math.floor(tileCoords.x));
 		float tileY = (int) (Math.floor(tileCoords.y));
 
 		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
-		batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-
+		
+		float distance = playerManager.distanceFromPlayer(tileX,tileY);
+		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
+		TreeShopGui treeShopGui = (TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
+		if (terrain.getTexture().equals("void")) {
+			// Do nothing
+		} else if (treeShopGui.getPlantable())
+			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
+		else 
+			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+			
+		
 		batch.end();
 
 		// Render entities etc.
@@ -535,6 +594,8 @@ public class GameScreen implements Screen {
 			renderGame(batch);
 		}
 
+		updateWaveGUI();
+		updateRespawnGUI();
 		renderGUI(batch);
 
 		batch.dispose();
