@@ -56,7 +56,6 @@ public class MeleeAttack extends Effect {
 	 * Remove projectile after waiting a certain amount of ticks
 	 */
 	private static void removeProjectileLater(int ticks, Projectile projectile) {
-
 	}
 }
 
