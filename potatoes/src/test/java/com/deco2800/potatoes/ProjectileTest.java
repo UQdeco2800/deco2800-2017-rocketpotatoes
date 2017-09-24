@@ -190,29 +190,7 @@ public class ProjectileTest {
         assertEquals(targetPos.y, lazerEffect.getPosY(), 0.2);
     }
 
-//    @Test
-//    public void TestExplosionEffect() {
-//        ExplosionEffect explosionEffect = new ExplosionEffect();
-//        assertEquals(damage, testAOEEffect.getDamage(), 0);
-//        assertEquals(targetPos.x, testAOEEffect.getPosX(), 0.2);
-//        assertEquals(targetPos.y, testAOEEffect.getPosY(), 0.2);
-//    }
 
-//    @Test
-//    public void TestLightningEffect() {
-//        LightningEffect lightningEffect = new LightningEffect(targetClass,startPos,targetPos,damage,range);
-//        assertEquals(damage, lightningEffect.getDamage(), 0);
-//        assertEquals(targetPos.x, lightningEffect.getPosX(), 0.2);
-//        assertEquals(targetPos.y, lightningEffect.getPosY(), 0.2);
-//    }
-
-//    @Test
-//    public void TestHealingEffect() {
-//        HealingEffect healingEffect = new HealingEffect()
-//        assertEquals(damage, testAOEEffect.getDamage(), 0);
-//        assertEquals(targetPos.x, testAOEEffect.getPosX(), 0.2);
-//        assertEquals(targetPos.y, testAOEEffect.getPosY(), 0.2);
-//    }
 
 
 }

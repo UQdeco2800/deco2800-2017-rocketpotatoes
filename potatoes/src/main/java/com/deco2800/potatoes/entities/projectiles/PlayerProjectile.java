@@ -36,13 +36,19 @@ public class PlayerProjectile extends Projectile {
 
 
     /**
-     * Creates a new Ballistic Projectile. Ballistic Projectiles do not change
-     * direction once fired. The initial direction is based on the direction to the
-     * closest entity
+     * Creates a new projectile. A projectile is the vehicle used to deliver damage
+     * to a target over a distance
      *
-     * @param posX x start position
-     * @param posY y start position
-     * @param posZ z start position
+     * @param targetClass       the targets class
+     * @param startPos
+     * @param targetPos
+     * @param range
+     * @param damage            damage of projectile
+     * @param projectileTexture the texture set to use for animations. Use ProjectileTexture._
+     * @param startEffect       the effect to play at the start of the projectile being fired
+     * @param endEffect         the effect to be played if a collision occurs
+     * @param Directions        Player Directions
+     * @param shootingStyle     Directional, Homing or Ballistic?
      */
 
     public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
@@ -62,7 +68,7 @@ public class PlayerProjectile extends Projectile {
 
     @Override
     public void onTick(long time) {
-        if(shootingStyle.toString().equalsIgnoreCase("HOMING")){
+        if (shootingStyle.toString().equalsIgnoreCase("HOMING")) {
             Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x, targetPos.y);
             if (targetEntity.isPresent()) {
                 setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
@@ -74,6 +80,9 @@ public class PlayerProjectile extends Projectile {
         super.onTick(time);
     }
 
+    /**
+     * Returns selected shooting styles
+     */
     public PlayerProjectile.PlayerShootMethod getPlayerShootMethod() {
         return shootingStyle;
     }
@@ -123,10 +132,16 @@ public class PlayerProjectile extends Projectile {
 
     }
 
+    /**
+     * Returns Target Pos X
+     */
     public float getTargetPosX() {
         return tPosX;
     }
 
+    /**
+     * Returns Target Pos Y
+     */
     public float getTargetPosY() {
         return tPosY;
     }
