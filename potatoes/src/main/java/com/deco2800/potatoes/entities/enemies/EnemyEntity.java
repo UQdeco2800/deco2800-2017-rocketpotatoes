@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -49,21 +50,12 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
 	 * used for collision between entities.
 	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in rendering and collision
-	 *            detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in rendering and collision
-	 *            detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in rendering and collision
-	 *            detection.
+	 * @param mask
+	 * 			  The collision mask of the entity.
+	 * @param xRenderLength
+	 *            The length of the entity, in x. Used in rendering.
+	 * @param yRenderLength
+	 *            The length of the entity, in y. Used in rendering.
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
@@ -73,91 +65,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param goal
 	 * 			  The attacking goal of the enemy
 	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture, float maxHealth, float speed, Class<?> goal) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
-		this.speed = speed;
-		this.goal = goal;
-	}
-
-	/**
-	 * Constructs a new AbstractEntity with specific render lengths. Allows
-	 * specification of rendering dimensions different to those used for collision.
-	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches.
-	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
-	 * @param xRenderLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yRenderLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param texture
-	 *            The id of the texture for this entity.
-	 * @param maxHealth
-	 *            The initial maximum health of the enemy
-	 * @param speed
-	 * 			  The speed of the enemy
-	 * @param goal
-	 * 			  The attacking goal of the enemy
-	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
-		this.speed = speed;
-		this.goal = goal;
-	}
-
-	/**
-	 * Constructs a new AbstractEntity with specific render lengths. Allows
-	 * specification of rendering dimensions different to those used for collision.
-	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches. Allows rendering of entities to be centered on their
-	 * coordinates if centered is true.
-	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
-	 * @param xRenderLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yRenderLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param centered
-	 *            True if the entity is to be rendered centered, false otherwise.
-	 * @param texture
-	 *            The id of the texture for this entity.
-	 * @param maxHealth
-	 *            The initial maximum health of the enemy
-	 * @param speed
-	 * 			  The speed of the enemy
-	 * @param goal
-	 * 			  The attacking goal of the enemy         
-	 *   
-	 */
-	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
+    public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth, 
+            float speed, Class<?> goal) {
+        super(mask, xRenderLength, yRenderLength, texture, maxHealth);
 		registerNewEvents(getBasicStats().getNormalEventsCopy());
 		this.speed = speed;
 		this.goal = goal;
@@ -241,7 +151,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);
@@ -254,7 +164,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		boolean collided = false;
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof Effect) && !(entity instanceof ResourceEntity) &&
-					newPos.overlaps(entity.getBox3D()) ) {
+					newPos.overlaps(entity.getMask()) ) {
 
 				if(entity instanceof Tower) {
 					//soundManager.playSound("ree1.wav");

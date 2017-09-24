@@ -8,10 +8,11 @@ import java.util.LinkedList;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static float speed = 0.02f;
 	private static Class<?> goal = Tower.class;
 	private Path path = null;
-	private Box3D target = null;
+	private CollisionMask target = null;
 
 	private static final List<Color> colours = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity progressBar = new ProgressBarEntity(colours);
@@ -45,10 +46,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public TankEnemy() {
-		//super(0, 0, 0, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		//this.speed = getBasicStats().getSpeed();
-		//this.goal = goal;
-		//resetStats();
+        this(0, 0);
 	}
 
 	/**
@@ -60,8 +58,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * @param posZ
 	 *            The z-coordinate of the Tank Enemy.
 	 */
-	public TankEnemy(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
+	public TankEnemy(float posX, float posY) {
+        super(new Circle2D(posX, posY, 1.414f), 1f, 1f, TEXTURE, HEALTH, speed, goal);
 		//this.speed = getBasicStats().getSpeed();
 		//this.goal = goal;
 		//resetStats();
@@ -122,9 +120,9 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 		//check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
+			if (entity.isStaticCollideable() && this.getMask().overlaps(entity.getMask())) {
 				//collided with wall
-				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+				path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
 				target = path.pop();
 				break;
 			}
@@ -132,12 +130,12 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 		// check that we actually have a path
 		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+			path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
 		}
 
 
 		//check if close enough to target
-		if (target != null && target.overlaps(this.getBox3D())) {
+		if (target != null && target.overlaps(this.getMask())) {
 			target = null;
 		}
 
@@ -151,7 +149,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 
 		if (target == null) {
-			target = playerManager.getPlayer().getBox3D();
+			target = playerManager.getPlayer().getMask();
 		}
 
 		targetX = target.getX();

@@ -8,7 +8,7 @@ public class SpeedyEnemyTest {
 
     @Before
     public void setup() {
-        testSpeedy = new SpeedyEnemy(2,2,3);
+        testSpeedy = new SpeedyEnemy(2,2);
     }
 
     @Test

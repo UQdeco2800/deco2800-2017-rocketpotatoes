@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -30,15 +31,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable{
     private static float speed = 0.08f;
     private static Class<?> goal = ResourceTree.class;
 
-    public SpeedyEnemy() {
-        super(0, 0, 0, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-        //this.speed = speed;
-        //this.goal = goal;
-        //resetStats();
-    }
+	public SpeedyEnemy() {
+		this(0, 0);
+	}
 
-    public SpeedyEnemy(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+    public SpeedyEnemy(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
         // this.steal
         //this.speed = speed;
         //this.goal = goal;
