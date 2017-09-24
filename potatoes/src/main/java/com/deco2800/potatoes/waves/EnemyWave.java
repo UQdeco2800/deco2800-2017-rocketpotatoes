@@ -14,7 +14,7 @@ public class EnemyWave {
     private int waveLength;     //The current time of the wave
     private int waveTime = 0;   //Spawn rate (100 = 1 second)
     private int spawnRate = 75;     //Time counting down for gui
-    private int timeToEnd = 0;
+    private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
 
     public enum WaveState {
         WAITING, ACTIVE, PAUSED, FINISHED
@@ -57,7 +57,8 @@ public class EnemyWave {
     }
 
     /***
-     * Spawn enemies according to the ratio described by the output of calculateEnemyRatios.
+     * Spawn enemies according to the ratio described by the output of calculateEnemyRatios. Adds enemies to enemy
+     * counts
      *
      * @param enemyRatios Array of ratios of each enemy type in game where enemyRatio[i] is < enemyRatio[i+1] and
      *                    sum to 1.
@@ -67,12 +68,16 @@ public class EnemyWave {
             float randomFloat = random.nextFloat();
             if (randomFloat < enemyRatios[0]) {
                 addSquirrel();
+                enemyCounts[0] += 1;
             } else if (randomFloat < enemyRatios[1]) {
                 addSpeedy();
+                enemyCounts[1] += 1;
             } else if (randomFloat < enemyRatios[2]) {
                 addTank();
+                enemyCounts[2] += 1;
             } else if (randomFloat < enemyRatios[3]) {
                 addMoose();
+                enemyCounts[3] += 1;
             }
     }
 
@@ -95,7 +100,7 @@ public class EnemyWave {
                 if (elapsedWaveTime()>getWaveLength()) {
                     setWaveState(WaveState.FINISHED);
                 } else if (elapsedWaveTime() % spawnRate == 0) {
-                    spawnEnemyToRatio(enemyRatios);
+                    spawnEnemyToRatio(getEnemyRatios());
                 }
                 //Check to see if wave is paused for some reason
                 break;
@@ -180,12 +185,20 @@ public class EnemyWave {
     public void setWaveState(WaveState state) { this.waveState = state; }
 
     /***
-     * Get the array of enemyRatios that describe the composition of the wave
      *
-     * @return
+     * @return the array of enemyRatios that describe the composition of the wave
      */
     public float[] getEnemyRatios(){ return this.enemyRatios;}
 
+    /**
+     * @return the rate in which enemies spawn in this wave
+     */
+    public int getSpawnRate() { return this.spawnRate; }
+
+    /**
+     * @return an array of the counts of squirrels : speedy : tank : moose enemies held by this wave
+     */
+    public int[] getEnemyCounts() { return this.enemyCounts; }
     /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
     but is unlucky enough not to have spawned... then spawn it.*/
 }
