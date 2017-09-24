@@ -13,8 +13,8 @@ public class WorldUtilTest {
 	@Test
 	public void TestDistanceFunctions() {
 		GameManager.get().setWorld(new TestWorld());
-		Player t1 = new Player(1, 1, 1);
-		Player t2 = new Player(2, 2, 1);
+		Player t1 = new Player(1, 1);
+		Player t2 = new Player(2, 2);
 		GameManager.get().getWorld().addEntity(t1);
 		GameManager.get().getWorld().addEntity(t2);
 

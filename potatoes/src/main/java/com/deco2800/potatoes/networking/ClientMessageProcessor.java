@@ -124,7 +124,7 @@ public class ClientMessageProcessor {
         client.getClients().set(m.id, m.name);
 
         // Make the player
-        Player p = new Player(10 + m.id, 10 + m.id, 0);
+        Player p = new Player(10 + m.id, 10 + m.id);
 
         try {
             GameManager.get().getWorld().addEntity(p, m.id);

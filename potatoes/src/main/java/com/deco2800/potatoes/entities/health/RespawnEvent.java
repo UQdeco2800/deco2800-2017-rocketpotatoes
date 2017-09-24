@@ -25,7 +25,7 @@ public class RespawnEvent extends TimeEvent<Player> {
 	@Override
 	public void action(Player param) {
 		// sets the location of the player to respawn
-		param.setPosition(5, 10, 0);
+		param.setPosition(5, 10);
 		// sets players health to maximum health
 		param.setProgress(param.getMaxHealth());
 		// readd player to world

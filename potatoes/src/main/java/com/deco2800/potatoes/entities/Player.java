@@ -11,6 +11,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
@@ -61,7 +63,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 * Default constructor for the purposes of serialization
 	 */
 	public Player() {
-		super(0, 0, 0, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+        this(0, 0);
 	}
 
 	/**
@@ -74,8 +76,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	 * @param posZ
 	 *            The z-coordinate.
 	 */
-	public Player(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
+	public Player(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.424f), 0.48f, 0.48f, TEXTURE_RIGHT, HEALTH);
 		movementSpeed = 0.075f;
 		this.speedx = 0.0f;
 		this.speedy = 0.0f;
@@ -109,7 +111,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			newPosX += speedx;
 			newPosY += speedy;
 
-			Box3D newPos = getBox3D();
+			CollisionMask newPos = getMask();
 			newPos.setX(newPosX);
 			newPos.setY(newPosY);
 
@@ -117,13 +119,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			boolean collided = false;
 			for (AbstractEntity entity : entities.values()) {
 				if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-						&& newPos.overlaps(entity.getBox3D())) {
+						&& newPos.overlaps(entity.getMask())) {
 					LOGGER.info(this + " colliding with " + entity);
 					collided = true;
 
 				}
 
-				if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+				if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getMask())) {
 					collided = true;
 
 				}
@@ -186,18 +188,18 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			break;
 		case Input.Keys.NUM_1:
 			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-				AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+				AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y));
 			}
 			break;
 		case Input.Keys.NUM_2:
 			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-				AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+				AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y));
 			}
 			break;
 		case Input.Keys.NUM_3:
 			if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
 				AbstractTree.constructTree(
-						new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+						new ResourceTree(getCursorCoords().x, getCursorCoords().y, new FoodResource(), 8));
 			}
 			break;
 		default:
@@ -222,14 +224,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 		// tosses a item in front of player
 		float x = this.getPosX();
 		float y = this.getPosY();
-		float z = this.getPosZ();
 
 		x = (direction == 0) ? x - 1 : x + 1;
 		y = (direction == 0) ? y - 2 : y + 2;
 
 		// only toss an item if there are items to toss
 		if (this.getInventory().updateQuantity(item, -1) == 1) {
-			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
+			GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, item));
 		}
 
 	}
