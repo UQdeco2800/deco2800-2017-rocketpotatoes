@@ -51,20 +51,7 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
      * Logger for all info/warning/error logs
      */
     private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
-    /*
-     *  Create a player manager.
-     */
-    private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-    /*
-     * The radius of which a collision can be detected
-	 */
-    private static final float CHANGE = (float) 0.2;
-    /*
-     * The array of calculatePositions where a collision needs to be checked
-     */
-    private static final float[][] POSITIONS = {{CHANGE, 0}, {CHANGE, CHANGE}, {0, CHANGE}, {-CHANGE, CHANGE},
-            {-CHANGE, 0}, {-CHANGE, -CHANGE}, {0, -CHANGE}, {-CHANGE, -CHANGE}};
-
+    
     /**
      * This instantiates an BasePortal given the appropriate parameters.
      *

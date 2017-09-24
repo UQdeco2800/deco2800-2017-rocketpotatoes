@@ -232,6 +232,9 @@ public class TextureManager extends Manager {
         		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
         		
+        		String textureNameDamaged = "caveman_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameDamaged, "resources/player/caveman/damaged/" + textureNameDamaged + ".png");
+        		
         		for (int i=1; i<=5; i++) {
         			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
         			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
