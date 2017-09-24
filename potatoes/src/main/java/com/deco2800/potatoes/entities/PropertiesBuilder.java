@@ -28,6 +28,8 @@ public class PropertiesBuilder<T extends Tickable> {
 	private Class<?> goal;
 	private int attackSpeed;
 	private float attackRange;
+	private Function<T, Animation> deathAnimation;
+	private Function<T, Animation> damageAnimation;
 
 	/**
 	 * Initializes this object to have all properties with their default values
@@ -60,7 +62,7 @@ public class PropertiesBuilder<T extends Tickable> {
 	 * @param texture the texture to set
 	 */
 	public PropertiesBuilder<T> setTexture(String texture) {
-		animation = x -> new SingleFrameAnimation(texture);
+		setAnimation(x -> new SingleFrameAnimation(texture));
 		return this;
 	}
 
@@ -136,6 +138,12 @@ public class PropertiesBuilder<T extends Tickable> {
 	 */
 	public PropertiesBuilder<T> setAnimation(Function<T, Animation> animation) {
 		this.animation = animation;
+		if (deathAnimation == null) {
+			deathAnimation = animation;
+		}
+		if (damageAnimation == null) {
+			damageAnimation = animation;
+		}
 		return this;
 	}
 
@@ -255,6 +263,36 @@ public class PropertiesBuilder<T extends Tickable> {
 	 */
 	public PropertiesBuilder<T> setAttackRange(float attackRange) {
 		this.attackRange = attackRange;
+		return this;
+	}
+
+	/**
+	 * @return the deathAnimation
+	 */
+	public Function<T, Animation> getDeathAnimation() {
+		return deathAnimation;
+	}
+
+	/**
+	 * @param deathAnimation the deathAnimation to set
+	 */
+	public PropertiesBuilder<T> setDeathAnimation(Function<T, Animation> deathAnimation) {
+		this.deathAnimation = deathAnimation;
+		return this;
+	}
+
+	/**
+	 * @return the damageAnimation
+	 */
+	public Function<T, Animation> getDamageAnimation() {
+		return damageAnimation;
+	}
+
+	/**
+	 * @param damageAnimation the damageAnimation to set
+	 */
+	public PropertiesBuilder<T> setDamageAnimation(Function<T, Animation> damageAnimation) {
+		this.damageAnimation = damageAnimation;
 		return this;
 	}
 }

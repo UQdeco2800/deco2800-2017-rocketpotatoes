@@ -455,6 +455,17 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return (int) getMaxHealth();
 	}
 
+	@Override
+	public boolean damage(float amount) {
+		getBasicStats().setDamageAnimation(this);
+		return super.damage(amount);
+	}
+
+	@Override
+	public void dyingHandler() {
+		getBasicStats().setDeathAnimation(this);
+	}
+	
 	/**
 	 * remove the enemy if it is dead
 	 */

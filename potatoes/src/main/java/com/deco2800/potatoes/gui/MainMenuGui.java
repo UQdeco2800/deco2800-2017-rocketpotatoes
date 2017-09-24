@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
@@ -79,7 +78,6 @@ public class MainMenuGui extends Gui {
     private Slider optionsEffectsVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
-    private CheckBox optionsFullscreenCheckbox;
     private ImageButton optionsBackButton;
 
     private Dialog failedMultiplayerConnection;
@@ -189,7 +187,6 @@ public class MainMenuGui extends Gui {
         optionsEffectsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
-        optionsFullscreenCheckbox = new CheckBox("Fullscreen", uiSkin);
         optionsBackButton = new ImageButton(backDrawable);
 
         optionsButtonGroup = new HorizontalGroup();
@@ -201,7 +198,6 @@ public class MainMenuGui extends Gui {
         musicButtonGroup.addActor(optionsMusicVolumeSlider);
         optionsButtonGroup.addActor(effectsButtonGroup);
         optionsButtonGroup.addActor(musicButtonGroup);
-        //optionsButtonGroup.addActor(optionsFullscreenCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
         optionsEffectsVolumeSlider.setValue(mainMenuScreen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(mainMenuScreen.getMusicVolume());
@@ -261,7 +257,6 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                // TODO loading etc
                 mainMenuScreen.startSinglePlayer();
             }
         });
@@ -379,13 +374,6 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.setMusicVolume(optionsMusicVolumeSlider.getValue());
-            }
-        });
-
-        optionsFullscreenCheckbox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // TODO
             }
         });
 

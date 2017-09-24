@@ -6,7 +6,10 @@ import com.deco2800.potatoes.entities.BasicProperties;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
+import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.animation.TimeAnimation;
+import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.EventManager;
@@ -49,7 +52,7 @@ public class TreeProperties extends BasicProperties<AbstractTree> {
 			AnimationFactory.registerTimeAnimations(((Animated) tickable).getAnimation(), tickable);
 		}
 	}
-
+	
 	/**
 	 * Removes the construction resources amount associated with these stats form
 	 * the player's inventory.
