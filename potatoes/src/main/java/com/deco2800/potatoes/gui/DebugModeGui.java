@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Input;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,18 +26,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.HashSet;
-import java.lang.Math;
 import java.util.Set;
 
 import static com.badlogic.gdx.utils.Align.left;
 
+/**
+ * Debug Mode Gui Class.
+ * A feature to provide numerous abilities of illegal modifications of the game state.
+ * More details at https://github.com/UQdeco2800/deco2800-2017-rocketpotatoes/wiki/Debug-'God'-Mode
+ *
+ *@author Tze Lok Cheng
+ */
 public class DebugModeGui extends Gui {
     private static final Logger LOGGER = LoggerFactory.getLogger(DebugModeGui.class);
 
     private GameScreen screen;
     private Stage stage;
 
-    // Buttons
+    //Labels
     private Skin uiSkin;
     private VerticalGroup debugButtonGroup;
     private Label debugOn;
@@ -54,9 +59,10 @@ public class DebugModeGui extends Gui {
     private Label f7;
     private Label f8;
     private Label f9;
+
+    //Buttons
     private TextButton resetButton;
     private TextButton addResourcesButton;
-    //private TextButton spawnButton;
     private TextButton entitiesIMTButton;
     private TextButton immortalButton;
     private TextButton exitButton;
@@ -70,6 +76,12 @@ public class DebugModeGui extends Gui {
 
     private States state = States.DEBUGOFF;
 
+    /**
+     * Constructor.
+     *
+     * @param stage The internal stage variable passed by the gui manager.
+     * @param screen The game's GameScreen
+     */
     public DebugModeGui(Stage stage, GameScreen screen){
 
         this.screen = screen;
@@ -82,18 +94,17 @@ public class DebugModeGui extends Gui {
         speedtoggle = new Label("Slow down [F10]/Speed up[F11]",uiSkin);
         gamespeed = new Label("Game Speed: 1.0x",uiSkin);
         resetButton = new TextButton("Reset Map", uiSkin);
-        addResourcesButton = new TextButton("+10/+10 Resources", uiSkin);
-        //spawnButton = new TextButton("Spawn", uiSkin);
+        addResourcesButton = new TextButton("All Resources +10/+10", uiSkin);
         immortalButton = new TextButton("Immortality", uiSkin);
         entitiesIMTButton = new TextButton("Other Existing Entities Immortal", uiSkin);
         spawnCommands = new Label("SPAWN COMMANDS",uiSkin);
-        f1 = new Label("F1: DMG Tower",uiSkin);
+        f1 = new Label("F1: Projectile Tree",uiSkin);
         f2 = new Label("F2: Squirrel",uiSkin);
-        f3 = new Label("F3: DMG Enemy",uiSkin);
-        f4 = new Label("F4: RSC Seed",uiSkin);
-        f5 = new Label("F5: RSC Tree",uiSkin);
+        f3 = new Label("F3: Tank Enemy",uiSkin);
+        f4 = new Label("F4: Seed Resource",uiSkin);
+        f5 = new Label("F5: Seed Tree",uiSkin);
         f6 = new Label("F6: Moose Enemy",uiSkin);
-        f7 = new Label("F7: RSCTarget Enemy",uiSkin);
+        f7 = new Label("F7: Speedy Enemy",uiSkin);
         f8 = new Label("F8: Tile Ground",uiSkin);
         f9 = new Label("F9: Tile Water",uiSkin);
         exitButton = new TextButton("Exit Debug", uiSkin);
@@ -107,7 +118,6 @@ public class DebugModeGui extends Gui {
         debugButtonGroup.addActor(entitiesIMTButton);
         debugButtonGroup.addActor(resetButton);
         debugButtonGroup.addActor(addResourcesButton);
-        //debugButtonGroup.addActor(spawnButton);
         debugButtonGroup.addActor(spawnCommands);
         debugButtonGroup.addActor(f1);
         debugButtonGroup.addActor(f2);
@@ -122,16 +132,17 @@ public class DebugModeGui extends Gui {
         table.add(debugButtonGroup);
 
         setupListeners();
-
         resetGui(stage);
         table.setVisible(false);
-        //resetGui(stage);
-
         stage.addActor(table);
-
-
     }
 
+    /**
+     *Sets table and positions it to the left-middle side of the screen.
+     * Adds all libgdx controls.
+     *
+     * @param stage The game's stage to be reset
+     */
     private void resetGui(Stage stage) {
 
         table.reset();
@@ -142,6 +153,9 @@ public class DebugModeGui extends Gui {
 
     }
 
+    /**
+     * Adds all button and key listeners for the activation of debug features.
+     */
     private void setupListeners() {
 
         /* Listener for the exit debug button. */
@@ -156,9 +170,7 @@ public class DebugModeGui extends Gui {
         immortalButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                screen.menuBlipSound();
-                GameManager.get().getManager(PlayerManager.class).getPlayer().heal(200);
-                GameManager.get().getManager(PlayerManager.class).getPlayer().addDamageScaling(0);
+                playerImmortal();
             }
         });
 
@@ -166,12 +178,7 @@ public class DebugModeGui extends Gui {
         entitiesIMTButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
-                for (AbstractEntity ent: entitiesMap.values()){
-                    if ((ent instanceof MortalEntity)&!(ent instanceof Player)){
-                        ((MortalEntity) ent).addDamageScaling(0);
-                    }
-                }
+                entitiesImmortal();
             }
         });
         
@@ -180,28 +187,7 @@ public class DebugModeGui extends Gui {
         addResourcesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Set<Resource> rsc = new HashSet<Resource>();
-                
-                rsc.add(new BonesResource());
-                rsc.add(new CoalResource());
-                rsc.add(new CactusThornResource());
-                rsc.add(new FishMeatResource());
-                rsc.add(new FoodResource());
-                rsc.add(new IceCrystalResource());
-                rsc.add(new ObsidianResource());
-                rsc.add(new PearlResource());
-                rsc.add(new PineconeResource());
-                rsc.add(new PricklyPearResource());
-                rsc.add(new SealSkinResource());
-                rsc.add(new SeedResource());
-                rsc.add(new SnowBallResource());
-                rsc.add(new TreasureResource());
-                rsc.add(new TumbleweedResource());
-                rsc.add(new WoodResource());
-                
-                for (Resource rscname: rsc) {
-                    GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory().updateQuantity(rscname, 10);
-                }
+                addResources();
             }
         });
 
@@ -209,15 +195,7 @@ public class DebugModeGui extends Gui {
         resetButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
-                LOGGER.info("Map: {}", entitiesMap.values().toString());
-
-                //Deletes all entities except player
-                for (AbstractEntity ent: entitiesMap.values()){
-                    if (!(ent instanceof Player)){
-                        GameManager.get().getWorld().removeEntity(ent);
-                    }
-                }
+                removeEntities();
             }
         });
 
@@ -248,7 +226,8 @@ public class DebugModeGui extends Gui {
 
                     if (keycode == Input.Keys.F4) {
                         SeedResource seedResource = new SeedResource();
-                        GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y,0,seedResource));
+                        GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y,0,
+                                seedResource));
                     }
 
                     if (keycode == Input.Keys.F5) {
@@ -305,6 +284,9 @@ public class DebugModeGui extends Gui {
 
     }
 
+    /**
+     * Shows the menu and sets the state of debug ON, allowing features to be be active.
+     */
     @Override
 	public void show() {
         table.setVisible(true);
@@ -312,13 +294,77 @@ public class DebugModeGui extends Gui {
         state = States.DEBUGON;
     }
 
+    /**
+     * Hides the menu and sets the state of the debug OFF, disabling features.
+     */
     @Override
 	public void hide() {
-        /*((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().addDamageScaling(1f);
-        float dmg = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer().getDamageScaling();
-        String dmgstr = String.valueOf(dmg);
-        LOGGER.info("damage SCLAING: "+dmgstr);*/
         table.setVisible(false);
         state = States.DEBUGOFF;
+    }
+
+    /**
+     * Heals the live player to full health and sets it to no longer take damage.
+     */
+    public void playerImmortal(){
+        screen.menuBlipSound();
+        GameManager.get().getManager(PlayerManager.class).getPlayer().heal(200);
+        GameManager.get().getManager(PlayerManager.class).getPlayer().addDamageScaling(0);
+    }
+
+    /**
+     * Sets all entities currently in the world (other than the player) to no longer take damage.
+     */
+    public void entitiesImmortal(){
+        Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
+        for (AbstractEntity ent: entitiesMap.values()){
+            if ((ent instanceof MortalEntity)&!(ent instanceof Player)){
+                ((MortalEntity) ent).addDamageScaling(0);
+            }
+        }
+    }
+
+    /**
+     * Adds +10 amount for every resource to the player's inventory.
+     */
+    public void addResources(){
+        Set<Resource> rsc = new HashSet<Resource>();
+
+        rsc.add(new BonesResource());
+        rsc.add(new CoalResource());
+        rsc.add(new CactusThornResource());
+        rsc.add(new FishMeatResource());
+        rsc.add(new FoodResource());
+        rsc.add(new IceCrystalResource());
+        rsc.add(new ObsidianResource());
+        rsc.add(new PearlResource());
+        rsc.add(new PineconeResource());
+        rsc.add(new PricklyPearResource());
+        rsc.add(new SealSkinResource());
+        rsc.add(new SeedResource());
+        rsc.add(new SnowBallResource());
+        rsc.add(new TreasureResource());
+        rsc.add(new TumbleweedResource());
+        rsc.add(new WoodResource());
+
+        for (Resource rscname: rsc) {
+            GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
+                    .updateQuantity(rscname, 10);
+        }
+    }
+
+    /**
+     * Removes all non-player entities currently in the world.
+     */
+    public void removeEntities(){
+        Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
+        //LOGGER.info("Map: {}", entitiesMap.values().toString());
+
+        //Excludes the player
+        for (AbstractEntity ent: entitiesMap.values()){
+            if (!(ent instanceof Player)){
+                GameManager.get().getWorld().removeEntity(ent);
+            }
+        }
     }
 }
