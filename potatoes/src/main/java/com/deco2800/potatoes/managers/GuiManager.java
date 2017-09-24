@@ -41,11 +41,12 @@ public class GuiManager extends Manager {
      * @param type the type e.g. 'Type.class'
      * @return the gui element, or null
      */
-    public Gui getGui(Class<?> type) {
+    @SuppressWarnings("unchecked")
+	public <G extends Gui> G getGui(Class<G> type) {
         /* Find gui */
         for (Gui g : gui) {
             if (g.getClass() == type) {
-                return g;
+                return (G) g;
             }
         }
 
