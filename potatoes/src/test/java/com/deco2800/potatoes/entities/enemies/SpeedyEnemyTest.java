@@ -73,7 +73,7 @@ public class SpeedyEnemyTest extends BaseTest {
         goalPotatoTest = new GoalPotate(0, 0, 0);
         playerTest = new Player(3, 3, 0);
         GameManager.get().getWorld().addEntity(playerTest);
-        speedy1.onTick(1);
+        //speedy1.onTick(1);
         GameManager.get().getWorld().addEntity(resourceTree);
         GameManager.get().getWorld().addEntity(goalPotatoTest);
         speedy1.onTick(1);
