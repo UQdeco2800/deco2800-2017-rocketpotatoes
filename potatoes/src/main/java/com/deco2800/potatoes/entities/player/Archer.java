@@ -105,7 +105,7 @@ public class Archer extends Player {
 	        		default:
 	        			break;
 	        		}
-				GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  8f, 100, ProjectileType.ROCKET, null, null, this.getDirection().toString(),targetPosX,targetPosY, Projectile.ShootingStyles.DIRECTIONAL));
+				GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  8f, 100, ProjectileType.LEAVES, null, null, this.getDirection().toString(),targetPosX,targetPosY, Projectile.ShootingStyles.DIRECTIONAL));
 	        } else if (!target.isPresent()) {
 	            //Disable shooting when no enemies is present until new fix is found.
 	        }
