@@ -7,6 +7,7 @@ import com.deco2800.potatoes.entities.player.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.net.www.content.image.png;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +72,9 @@ public class TextureManager extends Manager {
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
 
-        saveFromSpriteSheet("nicer_terrain", new String[][]{{"ground_1", "grass", "w1"}});
+
+        saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
+        
 
 
         // Projectiles
@@ -131,13 +134,21 @@ public class TextureManager extends Manager {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
                 saveTexture("ice_tree" + i, "resources/trees/ice" + i + ".png");
             }
+            if(i<4){
+                saveTexture("acorn_tree"+i, "resources/trees/acorn"+i+".png");
+                saveTexture("acorn_tree_damaged"+i, "resources/trees/acornDamaged"+i+".png");
+            }
+            if(i<6){
+                saveTexture("acorn_tree_damage_being_damaged"+i, "resources/trees/acornDamagedBeingDamaged"+i+".png");
 
+            }
+            saveTexture("acorn_tree_dead"+i, "resources/trees/acornDead"+i+".png");
 
         }
         //damage tree:ice
 
         //damage tree:acorn
-        saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
+
 
         //Enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
@@ -152,6 +163,9 @@ public class TextureManager extends Manager {
         saveTexture("TankFootstepTemp1", "resources/enemies/TankFootstepTemp1.png");
         saveTexture("TankFootstepTemp2", "resources/enemies/TankFootstepTemp2.png");
         saveTexture("TankFootstepTemp3", "resources/enemies/TankFootstepTemp3.png");
+        saveTexture("Healing1", "resources/enemies/Healing1.png");
+        saveTexture("Healing2", "resources/enemies/Healing2.png");
+        saveTexture("Healing3", "resources/enemies/Healing3.png");
         //Squirrel
         saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
         saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");

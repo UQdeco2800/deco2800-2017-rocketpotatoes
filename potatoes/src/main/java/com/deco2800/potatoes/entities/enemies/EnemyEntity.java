@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.effects.HealingEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -36,6 +37,9 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
+/**
+ * An abstract class for the basic functionality of enemy entities which extend from it
+ */
 public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
@@ -241,6 +245,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		boolean collidedTankEffect = false;
 		timer++;
 		String stompedGroundTextureString = "";
+
 		for (AbstractEntity entity : entities.values()) {
 			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
@@ -248,7 +253,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				if(entity instanceof ProjectileTree) {
 					//soundManager.playSound("ree1.wav");
 				}
-
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
@@ -264,6 +268,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				collided = true;
 			}
 		}
+
 
 		if (this instanceof TankEnemy) {
 			if (timer % 100 == 0 && !(collided)) {

@@ -16,10 +16,20 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
+	/**
+	 * Empty constructor for serialization
+	 */
 	public EnemyGate() {
 		// empty for serialization
 	}
 
+	/**
+	 * Create an enemy gate at coordinates on the map
+	 *
+	 * @param posX x coordinate to place gate
+	 * @param posY y coordinate to place gate
+	 * @param posZ z coordinate to place gate
+	 */
 	public EnemyGate(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE, 1000f);
 		this.setStaticCollideable(true);
