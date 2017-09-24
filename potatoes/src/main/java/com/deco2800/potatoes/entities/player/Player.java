@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Entity for the playable character.
@@ -226,7 +227,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @return
      * 		A map of directions with animations for the specified state.
      */
-    public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType, PlayerState state, int frameCount, int animationTime, Runnable completionHandler) {
+    public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType, PlayerState state, int frameCount, int animationTime, Supplier<Void> completionHandler) {
 		Map<Direction, TimeAnimation> animations = new HashMap<>();
 		for (Direction direction : Direction.values()) {
 			String[] frames = new String[frameCount];

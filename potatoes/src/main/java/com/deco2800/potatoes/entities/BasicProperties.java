@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
@@ -61,7 +62,10 @@ public class BasicProperties<T extends Tickable> {
 	 * Sets the death animation for the given tickable to be this object's death animation
 	 */
 	public void setDeathAnimation(T tickable) {
-		Runnable completionHandler = () -> ((MortalEntity) tickable).setDying(false);
+		Supplier<Void> completionHandler = () -> {
+			((MortalEntity) tickable).setDying(false);
+			return null; // ughh, void != Void
+		};
 		setNewTriggerAnimation(tickable, deathAnimation.apply(tickable), completionHandler);
 	}
 
@@ -72,19 +76,22 @@ public class BasicProperties<T extends Tickable> {
 		if (tickable instanceof Animated) {
 			Animated t = (Animated) tickable;
 			Animation oldAnimation = t.getAnimation();
-			Runnable completionHandler = () -> t.setAnimation(oldAnimation);
+			Supplier<Void> completionHandler = () -> {
+				t.setAnimation(oldAnimation);
+				return null; // ughh, void != Void
+			};
 			setNewTriggerAnimation(tickable, damageAnimation.apply(tickable), completionHandler);
 		}
 	}
 
-	private void setNewTriggerAnimation(T tickable, Animation normalAnimation, Runnable completionHandler) {
+	private void setNewTriggerAnimation(T tickable, Animation normalAnimation, Supplier<Void> completionHandler) {
 		if (normalAnimation instanceof TimeAnimation && tickable instanceof Animated) {
 			TimeTriggerAnimation newAnimation = new TimeTriggerAnimation((TimeAnimation) normalAnimation,
 					completionHandler);
 			AnimationFactory.registerTimeAnimations(newAnimation, tickable);
 			((Animated) tickable).setAnimation(newAnimation);
 		} else {
-			completionHandler.run();
+			completionHandler.get();
 		}
 	}
 
