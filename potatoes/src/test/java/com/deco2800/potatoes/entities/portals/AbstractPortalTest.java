@@ -1,9 +1,8 @@
 package com.deco2800.potatoes.entities.portals;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;

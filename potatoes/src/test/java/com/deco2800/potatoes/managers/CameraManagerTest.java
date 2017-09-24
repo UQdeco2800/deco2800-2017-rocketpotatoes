@@ -2,7 +2,8 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 

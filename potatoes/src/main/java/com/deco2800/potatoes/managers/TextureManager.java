@@ -3,10 +3,11 @@ package com.deco2800.potatoes.managers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.Player.PlayerState;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.net.www.content.image.png;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class TextureManager extends Manager {
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
-        
+
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
 
@@ -127,14 +128,22 @@ public class TextureManager extends Manager {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
                 saveTexture("ice_tree"+i, "resources/trees/ice"+i+".png");
             }
+            if(i<4){
+                saveTexture("acorn_tree"+i, "resources/trees/acorn"+i+".png");
+                saveTexture("acorn_tree_damaged"+i, "resources/trees/acornDamaged"+i+".png");
+            }
+            if(i<6){
+                saveTexture("acorn_tree_damage_being_damaged"+i, "resources/trees/acornDamagedBeingDamaged"+i+".png");
 
+            }
+            saveTexture("acorn_tree_dead"+i, "resources/trees/acornDead"+i+".png");
 
 
         }
         //damage tree:ice
 
         //damage tree:acorn
-        saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
+
 
         //Enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
@@ -149,6 +158,9 @@ public class TextureManager extends Manager {
         saveTexture("TankFootstepTemp1", "resources/enemies/TankFootstepTemp1.png");
         saveTexture("TankFootstepTemp2", "resources/enemies/TankFootstepTemp2.png");
         saveTexture("TankFootstepTemp3", "resources/enemies/TankFootstepTemp3.png");
+        saveTexture("Healing1", "resources/enemies/Healing1.png");
+        saveTexture("Healing2", "resources/enemies/Healing2.png");
+        saveTexture("Healing3", "resources/enemies/Healing3.png");
         //Squirrel
         saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
         saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");
@@ -232,13 +244,31 @@ public class TextureManager extends Manager {
         		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
         		
-        		for (int i=1; i<=3; i++) {
+        		String textureNameDamaged = "caveman_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameDamaged, "resources/player/caveman/damaged/" + textureNameDamaged + ".png");
+        		
+        		for (int i=1; i<=5; i++) {
         			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
         			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
         		}
+        		
+        		for (int i=1; i<=8; i++) {
+        			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=3; i++) {
+        			String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=5; i++) {
+        			String textureNameAttack = "caveman_interact_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/interact/" + textureNameAttack + ".png");
+        		}
         }
         
-     // Add all caveman sprites
+        // Add all archer sprites
         for (Direction direction : Direction.values()) {
         		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");

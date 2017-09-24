@@ -9,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.deco2800.potatoes.entities.Player;
+import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 import org.slf4j.Logger;
@@ -53,7 +55,11 @@ public class MainMenuGui extends Gui {
     private ImageButton multiplayerBackButton;
 
     private HorizontalGroup multiplayerClientButtonGroup;
+    private VerticalGroup multiplayerServerGroup;
     private Drawable connectDrawable;
+    private ScrollPane multiplayerServerScrollPane;
+    private List<String> multiplayerServerList;
+    private TextButton multiplayerFindServers;
     private TextField multiplayerClientName;
     private TextField multiplayerClientIpAddConnection;
     private ImageButton multiplayerClientConnectButton;
@@ -72,7 +78,6 @@ public class MainMenuGui extends Gui {
     private Slider optionsEffectsVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
-    private CheckBox optionsFullscreenCheckbox;
     private ImageButton optionsBackButton;
 
     private Dialog failedMultiplayerConnection;
@@ -117,7 +122,7 @@ public class MainMenuGui extends Gui {
         multiplayerDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("multiplayerMainMenu")));
         backDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backMainMenu")));
         startCharacterSelect = new SelectBox<String>(uiSkin);
-        startCharacterSelect.setItems("wizard","caveman","archer");
+        startCharacterSelect.setItems(PlayerType.names());
         singleplayerButton = new ImageButton(singleplayerDrawable);
         multiplayerButton = new ImageButton(multiplayerDrawable);
         startBackButton = new ImageButton(backDrawable);
@@ -128,7 +133,7 @@ public class MainMenuGui extends Gui {
         startButtonGroup.addActor(multiplayerButton);
         startButtonGroup.addActor(startBackButton);
         startButtonGroup.space(50);
-        startCharacterSelect.setSelected(Player.getPlayerType());
+        startCharacterSelect.setSelected(GameManager.get().getManager(PlayerManager.class).getPlayerType().name());
 
         // Start Multiplayer state
         multiplayerClientDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("clientMainMenu")));
@@ -145,12 +150,19 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer Client state
         connectDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("connectMainMenu")));
+        multiplayerServerList = new List<String>(uiSkin);
+        multiplayerServerScrollPane = new ScrollPane(multiplayerServerList, uiSkin);
+        multiplayerFindServers = new TextButton("Find Server", uiSkin);
         multiplayerClientName = new TextField("Client Name", uiSkin);
         multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerClientConnectButton = new ImageButton(connectDrawable);
         multiplayerClientBackButton = new ImageButton(backDrawable);
 
         multiplayerClientButtonGroup = new HorizontalGroup();
+        multiplayerServerGroup = new VerticalGroup();
+        multiplayerServerGroup.addActor(multiplayerServerScrollPane);
+        multiplayerServerGroup.addActor(multiplayerFindServers);
+        multiplayerClientButtonGroup.addActor(multiplayerServerGroup);
         multiplayerClientButtonGroup.addActor(multiplayerClientName);
         multiplayerClientButtonGroup.addActor(multiplayerClientIpAddConnection);
         multiplayerClientButtonGroup.addActor(multiplayerClientConnectButton);
@@ -175,7 +187,6 @@ public class MainMenuGui extends Gui {
         optionsEffectsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
-        optionsFullscreenCheckbox = new CheckBox("Fullscreen", uiSkin);
         optionsBackButton = new ImageButton(backDrawable);
 
         optionsButtonGroup = new HorizontalGroup();
@@ -187,7 +198,6 @@ public class MainMenuGui extends Gui {
         musicButtonGroup.addActor(optionsMusicVolumeSlider);
         optionsButtonGroup.addActor(effectsButtonGroup);
         optionsButtonGroup.addActor(musicButtonGroup);
-        //optionsButtonGroup.addActor(optionsFullscreenCheckbox);
         optionsButtonGroup.addActor(optionsBackButton);
         optionsEffectsVolumeSlider.setValue(mainMenuScreen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(mainMenuScreen.getMusicVolume());
@@ -239,7 +249,7 @@ public class MainMenuGui extends Gui {
         startCharacterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Player.setPlayerType(startCharacterSelect.getSelected());
+                GameManager.get().getManager(PlayerManager.class).setPlayerType(PlayerType.valueOf(startCharacterSelect.getSelected()));
             }
         });
 
@@ -247,7 +257,6 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                // TODO loading etc
                 mainMenuScreen.startSinglePlayer();
             }
         });
@@ -302,14 +311,25 @@ public class MainMenuGui extends Gui {
 
         // Multiplayer Client state
 
+        multiplayerFindServers.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                mainMenuScreen.menuBlipSound();
+                multiplayerServerList.setItems((Array) mainMenuScreen.findHostAddress());
+            }
+        });
+
         multiplayerClientConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
-                        multiplayerClientIpAddConnection.getText(), 1337, false);
-                //failedMultiplayerConnection.show(stage);
-                //Todo handle failed connection
+                multiplayerServerList.setItems((Array) mainMenuScreen.findHostAddress());
+                if (multiplayerServerList.getItems().contains(multiplayerClientIpAddConnection.getText(), false)) {
+                    mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
+                            multiplayerClientIpAddConnection.getText(), 1337, false);
+                } else {
+                    failedMultiplayerConnection.show(stage);
+                }
             }
         });
 
@@ -354,13 +374,6 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.setMusicVolume(optionsMusicVolumeSlider.getValue());
-            }
-        });
-
-        optionsFullscreenCheckbox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // TODO
             }
         });
 

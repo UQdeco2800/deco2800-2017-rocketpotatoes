@@ -4,6 +4,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
+/**
+ *  A melee attack that can be performed by an entity to damage another.
+ */
 public class MeleeAttack extends Effect {
 
 	private final static float effect_width = 1f;

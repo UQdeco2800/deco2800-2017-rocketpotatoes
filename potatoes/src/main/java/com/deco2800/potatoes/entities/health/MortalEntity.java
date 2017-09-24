@@ -10,6 +10,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.gui.GameOverGui;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 
@@ -25,6 +26,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageOffset = 0f;
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
+	private boolean dying = false;
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
@@ -218,7 +220,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		}
 
 		if (isDead() && !deathHandled) {
-			deathHandler();
+			setDying(true);
+			dyingHandler();
 			deathHandled = true;
 			return true;
 		}
@@ -269,6 +272,32 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		if (this instanceof GoalPotate){
 			GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
 		}
+	}
+	
+	/**
+	 * @return whether the entity is currently dying
+	 */
+	public boolean isDying() {
+		return dying;
+	}
+
+	/**
+	 * Sets if this tree is currently dying. If this is set to false, the death handler is called
+	 * 
+	 * @param dying
+	 *            whether this entity is dying
+	 */
+	public void setDying(boolean dying) {
+		if (isDying() && !dying) {
+			// Dying is finished, so die
+			deathHandler();
+		}
+		this.dying = dying;
+	}
+	
+	public void dyingHandler() {
+		gameManager.getManager(EventManager.class).unregisterAll(this);
+		setDying(false);
 	}
 
 	/**

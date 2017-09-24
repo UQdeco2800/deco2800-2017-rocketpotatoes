@@ -1,9 +1,9 @@
 package com.deco2800.potatoes.entities.portals;
 
 import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.ProgressBar;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
@@ -40,8 +40,7 @@ public class BasePortalTest{
 	@Test
 	public void ProgressBar() {
 		assertTrue(testPortal.getProgressBar() instanceof ProgressBar);
-		assertTrue(testPortal.showProgress() == false);
-		assertTrue(testPortal.getMaxProgress() == 1);
+		assertTrue(testPortal.showProgress() == true);
 	}
 
 

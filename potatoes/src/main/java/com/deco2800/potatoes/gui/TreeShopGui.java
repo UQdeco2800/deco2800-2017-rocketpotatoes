@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
@@ -88,10 +88,10 @@ public class TreeShopGui extends Gui implements SceneGui {
 		items.put(new ResourceTree(treeX, treeY,0, new SeedResource(),0 ), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, 0 ,new FoodResource(),0), Color.BLUE);
 		items.put(new ProjectileTree(treeX, treeY, 0), Color.YELLOW);
-		items.put(new DamageTree(treeX, treeY, 0, new LightningTree()),Color.GREEN);
-		items.put(new DamageTree(treeX, treeY, 0, new IceTree()),Color.ORANGE);
-		items.put(new DamageTree(treeX, treeY, 0, new FireTree()),Color.PURPLE);
-		items.put(new DamageTree(treeX, treeY, 0, new AcornTree()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new LightningTreeType()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new IceTreeType()),Color.ORANGE);
+		items.put(new DamageTree(treeX, treeY, 0, new FireTreeType()),Color.PURPLE);
+		items.put(new DamageTree(treeX, treeY, 0, new AcornTreeType()),Color.GREEN);
 
 
 		for (AbstractTree tree : items.keySet()) {

@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -37,36 +37,21 @@ import com.deco2800.potatoes.worlds.WorldType;
  *
  * @author Jordan Holder, Katie Gray
  */
-public class BasePortal extends AbstractPortal implements Tickable {
+public class BasePortal extends AbstractPortal implements Tickable, HasProgressBar {
 
     /*
      * Progress bar to display health of base portal
      */
-    // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
-
     private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
+    /*
+     * Base portal's texture
+    */
     private static final transient String TEXTURE = "forest_portal";
-
-
     /*
      * Logger for all info/warning/error logs
      */
     private static final transient Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
-    /*
-     *  Create a player manager.
-     */
-    private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-    /*
-     * The radius of which a collision can be detected
-	 */
-
-    private static final float CHANGE = (float) 0.2;
-    /*
-     * The array of calculatePositions where a collision needs to be checked
-     */
-    private static final float[][] POSITIONS = {{CHANGE, 0}, {CHANGE, CHANGE}, {0, CHANGE}, {-CHANGE, CHANGE},
-            {-CHANGE, 0}, {-CHANGE, -CHANGE}, {0, -CHANGE}, {-CHANGE, -CHANGE}};
-
+    
     /**
      * This instantiates an BasePortal given the appropriate parameters.
      *
@@ -76,7 +61,7 @@ public class BasePortal extends AbstractPortal implements Tickable {
      * @param maxHealth the maximum health for the base portal
      */
     public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-        super(posX, posY, posZ, TEXTURE);
+        super(posX, posY, posZ, TEXTURE, maxHealth);
     }
 
     @Override
@@ -102,18 +87,13 @@ public class BasePortal extends AbstractPortal implements Tickable {
         }
     }
 
-  //  @Override
+    @Override
     public ProgressBar getProgressBar() {
         return progressBar;
     }
-  //  @Overide
+    @Override
     public boolean showProgress() {
-        return false;
-    }
-   // @Override
-    public int getMaxProgress() {
-        // TODO Auto-generated method stub
-        return 1;
+        return true;
     }
 
 }

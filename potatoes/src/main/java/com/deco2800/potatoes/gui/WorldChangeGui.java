@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.screens.GameScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -150,7 +151,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 2
-                changeWorld(WorldType.DESERT_WORLD);
+                changeWorld(WorldType.ICE_WORLD);
                 
                 LOGGER.info("Teleported to world 2");
             }
@@ -162,7 +163,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 1
-                changeWorld(WorldType.ICE_WORLD);
+                changeWorld(WorldType.DESERT_WORLD);
                 
                 LOGGER.info("Teleported to world 1");
             }
