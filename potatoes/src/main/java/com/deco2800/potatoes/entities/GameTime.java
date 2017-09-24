@@ -3,7 +3,8 @@ package com.deco2800.potatoes.entities;
 /**
  * In game time system
  */
-public abstract class GameTime implements Tickable {
+public abstract class GameTime<T> implements Tickable {
+
 	private int currentTime = 0;
 	private int currentDay = 0;
 	private boolean dayTime = true;
@@ -39,7 +40,6 @@ public abstract class GameTime implements Tickable {
 		this.currentTime = currentTime;
 	}
 
-
 	/**
 	 * Increases the Current Game Time.
 	 *
@@ -57,6 +57,7 @@ public abstract class GameTime implements Tickable {
 			dayTime = false;
 		}
 	}
+
 
 	/**
 	 * Rolling over into next day
@@ -92,5 +93,10 @@ public abstract class GameTime implements Tickable {
 	public void setCurrentDay(int currentDay) {
 		this.currentDay = currentDay;
 	}
+
+
+	public GameTime<T> copy() { return null; }
+
+
 
 }
