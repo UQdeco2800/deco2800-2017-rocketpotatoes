@@ -208,7 +208,7 @@ public class GameScreen implements Screen {
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
-		guiManager.addGui(new WaveGui(guiManager.getStage()));
+		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
@@ -437,32 +437,32 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Get the current state of waves from WaveManager and update the WaveGui accordingly.
+	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
 		int timeToNextWave;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
-		Gui waveGUI = guiManager.getGui(WaveGui.class);
-		if (waveGUI instanceof WaveGui) {
+		Gui waveGUI = guiManager.getGui(WavesGui.class);
+		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WaveGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WaveGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
-				((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WaveGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
-					((WaveGui) waveGUI).getWaveTimeLabel().setText("");
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
 				} else {
 					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WaveGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
