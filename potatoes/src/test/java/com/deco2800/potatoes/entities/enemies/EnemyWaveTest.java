@@ -4,7 +4,6 @@ import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNot;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.deco2800.potatoes.managers.GameManager;
@@ -16,10 +15,11 @@ import static org.mockito.Mockito.*;
 
 public class EnemyWaveTest {
 	EnemyWave firstWave;
+	int waveLength = 300;
 
 	@Before
 	public void setUp() {
-		firstWave = new EnemyWave(4, 3, 2, 1, 3);
+		firstWave = new EnemyWave(4, 3, 2, 1, waveLength);
 		WaveManager waveManager = new WaveManager();
 
 		World mockWorld = mock(World.class);
@@ -50,38 +50,24 @@ public class EnemyWaveTest {
 
 	@Test
 	public void spawnEnemyToRatioTest() {
-		//firstWave.setWaveState(WaveState.ACTIVE);
-	}
+		EnemyWave spawnWave = new EnemyWave(1,1,1,1,750);
+		spawnWave.spawnEnemyToRatio(spawnWave.getEnemyRatios());
 
-
-/*	@Test
-	public void tickAction() {
-		firstWave.setWaveState(WaveState.ACTIVE);
-		if (firstWave.getWaveState() == WaveState.ACTIVE) {
-			if (firstWave.elapsedWaveTime()> firstWave.getWaveLength()) {
-				Assert.assertEquals("WaveState not finished after elapsed time has increments over wave length",
-						firstWave.getWaveState(), WaveState.FINISHED);
-			} else {
-				//verify(firstWave.spawnEnemyToRatio();
-			}
-		}
 	}
-*/
 
 	@Test
 	public void tickAction() {
+		int[] beforeEnemyCount = {0, 0, 0, 0};
 		firstWave.setWaveState(WaveState.ACTIVE);
-		firstWave.setCurrentWaveTime(10000000); //exceeds wave time
+		firstWave.setCurrentWaveTime(waveLength+1); //current time exceeds maximum wave time
 		firstWave.tickAction(); 	//do a tick action
 		Assert.assertEquals("WaveState not finished after elapse time has exceeded wave length", WaveState.FINISHED, firstWave.getWaveState());
 
-		int[] beforeEnemyCount = firstWave.getEnemyCounts();
 		firstWave.setWaveState(WaveState.ACTIVE);
-		firstWave.setCurrentWaveTime(150);		//set the time to be spawning time
+		firstWave.setCurrentWaveTime(149);		//set the time to be spawning time
 		firstWave.tickAction();
-//		Assert.assertNotEquals("An enemy wasn't spawned when it should have been", beforeEnemyCount, firstWave.getEnemyCounts());
-
-		//Assert.assertThat(firstWave.getEnemyCounts(), IsNot.not(IsEqual.equalTo(beforeEnemyCount)));
+		//Assert that an enemy has been added
+		Assert.assertThat(firstWave.getEnemyCounts(), IsNot.not(IsEqual.equalTo(beforeEnemyCount)));
 	}
 
 
@@ -98,13 +84,14 @@ public class EnemyWaveTest {
 	
 	@Test
 	public void getTimeToEnd() {
-		firstWave.setCurrentWaveTime(2);
-		Assert.assertEquals("time to end of wave is not correct", 1, firstWave.getTimeToEnd());
+		int timeChange = 2;
+		firstWave.setCurrentWaveTime(timeChange);
+		Assert.assertEquals("time to end of wave is not correct", waveLength-timeChange, firstWave.getTimeToEnd());
 	}
 	
 	@Test
 	public void getWavelengthTest() {
-		Assert.assertEquals("Wave length is not correct", 3, firstWave.getWaveLength());
+		Assert.assertEquals("Wave length is not correct", waveLength, firstWave.getWaveLength());
 	}
 	
 	@Test
