@@ -30,8 +30,13 @@ public class DamageTree extends AbstractTree implements Tickable {
 			        "ice_tree6",
 			        "ice_tree7",
     }));
-	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree",
-			x -> new SingleFrameAnimation("acorn_tree"));
+	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1",
+            x -> AnimationFactory.createSimpleTimeAnimation(100,
+                    new String[] {
+                            "acorn_tree1",
+                            "acorn_tree2",
+                            "acorn_tree3",
+                    }));
 	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1",
 			x -> AnimationFactory.createSimpleTimeAnimation(500,
 					new String[] {

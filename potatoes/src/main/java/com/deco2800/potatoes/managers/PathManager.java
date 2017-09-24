@@ -29,7 +29,7 @@ public class PathManager extends Manager implements ForWorld {
     private MinimumSpanningTree treeMaker;
     private ArrayDeque<Point2D> nodes;
     private ArrayDeque<Point2D> path;
-    private static final int NUMBER_OF_RANDOM_NODES = 5;
+    private static final int NUMBER_OF_RANDOM_NODES = 100;
 
 
     /**
@@ -122,12 +122,9 @@ public class PathManager extends Manager implements ForWorld {
         next = spanningTree.get(start);
         while (next != null && !(next.equals(goal))) {
             path.add(next);
-            // Hacky fix for infinite loop, doesn't completely fix the problem
-            if (path.contains(next)) {
-            	break;
-            }
             next = spanningTree.get(next);
         }
+        path.add(replaceGoal);
         return new Path(path);
     }
 

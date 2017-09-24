@@ -7,7 +7,6 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Map;
 
@@ -36,15 +35,17 @@ public class LargeFootstepEffect extends Effect {
 
     /**
      * Creates a new footstep effect.
+     * NOTE: Effect is currently being manually shifted for visual purposes.
+     * i.e. posX and posY do not match with the given inputs (posX is decreased by 1 and posY is increased by 0.5)
      *
      * @param posX
      *            x start position
      * @param posY
      *            y start position
      */
-    public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float posZ, float damage, float range) {
+    public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float damage, float range) {
         // TODO -- find the appropriate constants for this
-        super(targetClass, new Box2D(posX, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectType.LARGE_FOOTSTEP);
+        super(targetClass, new Box2D(posX - 1, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectType.LARGE_FOOTSTEP);
         effectPosition = getMask();
     }
 
@@ -82,6 +83,24 @@ public class LargeFootstepEffect extends Effect {
     }
 
     /**
+     * Return the CollisionMask position of the large footstep
+     *
+     * @return CollisionMask position of footstep
+     */
+    public CollisionMask getFootstepPosition() {
+        return effectPosition;
+    }
+
+    /**
+     * Get the current index for the texture being used
+     *
+     * @return Int current index
+     */
+    public int getCurrentTextureIndex() {
+        return currentTextureIndexCount;
+    }
+
+    /**
      * String representation of the footstep at its set position.
      *
      * @return String representation of the stomped ground
@@ -91,5 +110,3 @@ public class LargeFootstepEffect extends Effect {
         return String.format("Large Footstep at (%d, %d)", (int) getPosX(), (int) getPosY());
     }
 }
-
-

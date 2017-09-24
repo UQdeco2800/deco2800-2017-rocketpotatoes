@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 /**
- * WaveGui provides a gui displaying the status of the enemy waves
+ * WavesGui provides a gui displaying the status of the enemy waves
  * GameMenuGUI was used as a template and is following the same style
  * which is likely a placeholder style.
  *
@@ -20,9 +20,9 @@ public class WavesGui extends Gui {
     private Window window;
 
     /**
-     * Construct a new WaveGui element for the current stage.
+     * Construct a new WavesGui element for the current stage.
      *
-     * @param stage the stages to place the WaveGui.
+     * @param stage the stage to place the WavesGui.
      */
     public WavesGui(Stage stage) {
         hidden = false;
