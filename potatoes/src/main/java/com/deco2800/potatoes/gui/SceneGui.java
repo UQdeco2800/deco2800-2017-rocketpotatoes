@@ -11,8 +11,14 @@ import com.badlogic.gdx.math.Vector2;
  */
 public interface SceneGui {
 	
+	/**
+	 * Gets the tile coordinates where the render revolves around
+	 */
 	Vector2 getTileCoords();
 	
+	/**
+	 * Renders the scene gui
+	 */
 	void render();
 	
 }
