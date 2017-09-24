@@ -40,6 +40,11 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 				return new String[] { "explosion1", "explosion2", "explosion3" };
 			}
 		},
+		DUST {
+			public String[] textures() {
+				return new String[] { "start1", "start2", "start3", "start4", "start5" };
+			}
+		},
 		LIGHTNING {
 			public String[] textures() {
 				return new String[] { "lightning" };
