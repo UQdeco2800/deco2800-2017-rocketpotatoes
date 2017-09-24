@@ -5,11 +5,8 @@ import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
@@ -21,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test class to test the SpeedyEnemy enemy type
  *
- * @author ryanjphelan
+ * @author ryanjphelan & tl
  */
 public class SpeedyEnemyTest extends BaseTest {
 

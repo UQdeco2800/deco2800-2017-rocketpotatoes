@@ -50,7 +50,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
-        // empty for serialization
 	}
 
 	/***
