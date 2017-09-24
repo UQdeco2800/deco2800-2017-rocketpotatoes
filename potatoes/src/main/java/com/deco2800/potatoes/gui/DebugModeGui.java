@@ -94,7 +94,7 @@ public class DebugModeGui extends Gui {
         speedtoggle = new Label("Slow down [F10]/Speed up[F11]",uiSkin);
         gamespeed = new Label("Game Speed: 1.0x",uiSkin);
         resetButton = new TextButton("Reset Map", uiSkin);
-        addResourcesButton = new TextButton("All Resources +10/+10", uiSkin);
+        addResourcesButton = new TextButton("All Resources +10", uiSkin);
         immortalButton = new TextButton("Immortality", uiSkin);
         entitiesIMTButton = new TextButton("Other Existing Entities Immortal", uiSkin);
         spawnCommands = new Label("SPAWN COMMANDS",uiSkin);
