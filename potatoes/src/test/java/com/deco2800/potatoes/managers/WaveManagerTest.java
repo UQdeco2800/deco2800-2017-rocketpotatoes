@@ -14,7 +14,7 @@ import java.util.EnumMap;
 
 import static org.mockito.Mockito.mock;
 
-public class WaveManagerTest extends BaseTest {
+public class WaveManagerTest {
 
     WaveManager wm;
     EnemyWave testWaveOne = new EnemyWave(1,1,1,1,750);
