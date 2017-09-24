@@ -51,8 +51,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @param posY The y coordinate the created squirrel will spawn from
 	 */
 	public Squirrel(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
+        super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		this.goal = goal;
 		this.path = null;
 	}

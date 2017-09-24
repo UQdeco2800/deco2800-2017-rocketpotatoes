@@ -128,18 +128,6 @@ public class Line {
         }
     }
 
-    /**
-     * Create a {@code Line} from the center of box1 to the
-     * center box2.
-     * @param box1
-     * @param box2
-     */
-    public Line(Box3D box1, Box3D box2) {
-
-        this.endPointOne = new Point(box1.getX(), box1.getY());
-        this.endPointTwo = new Point(box2.getX(), box2.getY());
-    }
-
     public Point getEndPointOne() {
         return endPointOne;
     }

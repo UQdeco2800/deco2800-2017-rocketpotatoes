@@ -48,8 +48,6 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 * @param reloadTime
 	 * @param range
 	 * @param maxHealth
@@ -75,8 +73,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * Creates a copy of this tree as it was when it was just created
 	 */
 	public ProjectileTree clone() {
-		return new ProjectileTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.reloadTime, this.range,
-				this.maxHealth);
+		return new ProjectileTree(this.getPosX(), this.getPosY(), this.reloadTime, this.range, this.maxHealth);
 	}
 
 	@Override

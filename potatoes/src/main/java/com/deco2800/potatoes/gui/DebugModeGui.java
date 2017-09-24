@@ -231,19 +231,19 @@ public class DebugModeGui extends Gui {
                     }
 
                     if (keycode == Input.Keys.F5) {
-                         ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
+                         ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y);
                          rscTree.setProgress(0);
                          GameManager.get().getWorld().addEntity(rscTree);
                     
                      }
                     
                      if (keycode == Input.Keys.F6) {
-                         GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y,0));
+                         GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y));
                      }
                      
 
                      if (keycode == Input.Keys.F7) {
-                         GameManager.get().getWorld().addEntity(new SpeedyEnemy(coords2.x, coords2.y,0));
+                         GameManager.get().getWorld().addEntity(new SpeedyEnemy(coords2.x, coords2.y));
                      }
                      
                      if (keycode == Input.Keys.F8) {

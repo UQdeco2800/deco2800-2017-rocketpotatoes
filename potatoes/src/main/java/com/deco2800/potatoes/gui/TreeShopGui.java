@@ -85,13 +85,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopY = 0;
 		initiated = false;
 		items = new LinkedHashMap<AbstractTree, Color>();
-		items.put(new ResourceTree(treeX, treeY,0, new SeedResource(),0 ), Color.RED);
-		items.put(new ResourceTree(treeX, treeY, 0 ,new FoodResource(),0), Color.BLUE);
-		items.put(new ProjectileTree(treeX, treeY, 0), Color.YELLOW);
-		items.put(new DamageTree(treeX, treeY, 0, new LightningTreeType()),Color.GREEN);
-		items.put(new DamageTree(treeX, treeY, 0, new IceTreeType()),Color.ORANGE);
-		items.put(new DamageTree(treeX, treeY, 0, new FireTreeType()),Color.PURPLE);
-		items.put(new DamageTree(treeX, treeY, 0, new AcornTreeType()),Color.GREEN);
+		items.put(new ResourceTree(treeX, treeY, new SeedResource(),0 ), Color.RED);
+		items.put(new ResourceTree(treeX, treeY, new FoodResource(),0), Color.BLUE);
+		items.put(new ProjectileTree(treeX, treeY), Color.YELLOW);
+		items.put(new DamageTree(treeX, treeY, new LightningTreeType()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, new IceTreeType()),Color.ORANGE);
+		items.put(new DamageTree(treeX, treeY, new FireTreeType()),Color.PURPLE);
+		items.put(new DamageTree(treeX, treeY, new AcornTreeType()),Color.GREEN);
 
 
 		for (AbstractTree tree : items.keySet()) {
@@ -452,7 +452,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 			newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
 			newTree.setPosX(treeX);
 			newTree.setPosY(treeY);
-			newTree.setPosZ(0);
 
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);

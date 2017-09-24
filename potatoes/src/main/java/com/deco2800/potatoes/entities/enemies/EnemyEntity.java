@@ -85,7 +85,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
     public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth, 
             float speed, Class<?> goal) {
         super(mask, xRenderLength, yRenderLength, texture, maxHealth);
-		registerNewEvents(getBasicStats().getNormalEventsCopy());
+        getBasicStats().registerEvents(this);
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -184,10 +184,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
 					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
 				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
 			} else if (!collidedTankEffect) {
 				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
 			}
 		}
 

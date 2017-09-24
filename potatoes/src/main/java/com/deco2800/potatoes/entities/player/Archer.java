@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.player;
 import java.util.Map;
 import java.util.Optional;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
@@ -20,10 +21,9 @@ public class Archer extends Player {
      *
      * @param posX The x-coordinate.
      * @param posY The y-coordinate.
-     * @param posZ The z-coordinate.
      */
-    public Archer(float posX, float posY, float posZ) {
-    		super(posX, posY, posZ);
+    public Archer(float posX, float posY) {
+    		super(posX, posY);
     		this.movementSpeed = 0.07f;
     		this.currentDirection = Direction.SouthEast;
         this.currentState = PlayerState.idle;
@@ -104,8 +104,9 @@ public class Archer extends Player {
 	        		default:
 	        			break;
 	        		}
-	        		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-	                        /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
+                    GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), 
+                                new Vector3(pPosX - 1, pPosY, pPosZ), 1f, 100, ProjectileType.ROCKET, null, null, 
+                                this.getDirection().toString()));
 	        } else if (!target.isPresent()) {
 	            //Disable shooting when no enemies is present until new fix is found.
 	        }

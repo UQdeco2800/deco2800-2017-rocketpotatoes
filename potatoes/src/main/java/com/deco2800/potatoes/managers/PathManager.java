@@ -3,7 +3,6 @@ package com.deco2800.potatoes.managers;
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Line;
 import com.deco2800.potatoes.util.MinimumSpanningTree;
 import com.deco2800.potatoes.util.Path;
@@ -29,11 +28,10 @@ public class PathManager extends Manager implements ForWorld {
     private Map<Point2D, Point2D> spanningTree;
     private MinimumSpanningTree treeMaker;
     private World world;
-    private ArrayList<Point2D> nodes;
-    private ArrayList<Line> obstacles;
-    private ArrayList<Point2D> path;
+    private ArrayDeque<Point2D> nodes;
+    private ArrayDeque<Line> obstacles;
+    private ArrayDeque<Point2D> path;
     private static final int NUMBER_OF_RANDOM_NODES = 5;
-    private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
 
     /**
@@ -41,8 +39,8 @@ public class PathManager extends Manager implements ForWorld {
      */
     public PathManager() {
         spanningTree = new HashMap<>();
-        nodes = new ArrayList<>();
-        path = new ArrayList<>();
+        nodes = new ArrayDeque<>();
+        path = new ArrayDeque<>();
         world = GameManager.get().getWorld();
     }
 
@@ -58,8 +56,8 @@ public class PathManager extends Manager implements ForWorld {
         // Add place holder nodes at positions 0 and 1
         // so that the player position and enemy position
         // can be added later.
-        nodes.add(new Box3D(dummyBox));     // Position 0 => player position.
-        nodes.add(new Box3D(dummyBox));     // Position 1 => enemy position.
+        nodes.add(new Point2D(0, 0));   // Position 0 => player position.
+        nodes.add(new Point2D(0, 0));   // Position 1 => enemy position.
 
         // Create obstacles from static entities.
         obstacles = createObstacleLines();
@@ -67,21 +65,16 @@ public class PathManager extends Manager implements ForWorld {
         // Initialise random points on the map to add as vertices of
         // the graph.
         for (int i = 0; i < NUMBER_OF_RANDOM_NODES; i++) {
-            nodes.add(new Box3D(
-                    (float) (Math.random() * world.getWidth()),      // x coordinate
-                    (float) (Math.random() * world.getLength()),     // y coordinate
-                    0,
-                    1,
-                    1,
-                    1
-            ));
+            nodes.add(new Point2D((float) (Math.random() * world.getWidth()), 
+                        (float) (Math.random() * world.getLength())));
         }
 
         // Create a new minimum spanning tree
         treeMaker = new MinimumSpanningTree(nodes.size());
         // Add the nodes to the vertexList.
-        for (int i = 0; i < nodes.size(); i++) {
-            treeMaker.addVertex(nodes.get(i), i);
+        int i = 0;
+        for (Point2D node: nodes) {
+            treeMaker.addVertex(node, i++);
         }
 
         // Calculate edge weights in graph matrix
@@ -97,20 +90,23 @@ public class PathManager extends Manager implements ForWorld {
      * @param goal  The goal of the entity - where the path is going to end.
      * @return The path object itself, which can then be followed.
      */
-    public Path generatePath(Box3D start, Box3D goal) {
+    public Path generatePath(CollisionMask start, CollisionMask goal) {
+
+        Point2D replaceStart = new Point2D(start.getX(), start.getY());
+        Point2D replaceGoal = new Point2D(goal.getX(), goal.getY());
 
         path.clear();
-        Box3D next;
+        Point2D next;
         // Create line between start and goal.
-        Line line = new Line(start, goal);
+        Line line = new Line(start.getX(), start.getY(), goal.getX(), goal.getY());
         if (obstacles == null) {
             obstacles = createObstacleLines();
         }
         // Check if this line has a clear path.
         if(!checkLineClash(line, obstacles)) {
             // line is not obstructed.
-            path.add(start);
-            path.add(goal);
+            path.add(replaceStart);
+            path.add(replaceGoal);
             return new Path(path);
         }
         // Check if the spanning tree has been initialise.
@@ -124,7 +120,7 @@ public class PathManager extends Manager implements ForWorld {
         // If the spanning tree has only two entries
         // return a new path with the start and end point.
         if (spanningTree.size() < 2) {
-            path.add(goal);
+            path.add(replaceGoal);
             return new Path(path);
         }
         // Add extra path points as needed.
@@ -148,10 +144,10 @@ public class PathManager extends Manager implements ForWorld {
      *
      * @return List of {@code Line} objects that represent static entity boarders.
      */
-    private ArrayList<Line> createObstacleLines() {
+    private ArrayDeque<Line> createObstacleLines() {
 
         // Create an empty Line list.
-        ArrayList<Line> lineList = new ArrayList<>();
+        ArrayDeque<Line> lineList = new ArrayDeque<>();
      
         // Loop through static entities and make lines for
         // the top, bottom, left and right boarders.
@@ -160,7 +156,7 @@ public class PathManager extends Manager implements ForWorld {
                 // Iterate through
                 // Position = Top => Bottom => Left => Right.
                 for (Line.Position p: Line.Position.values()) {
-                    lineList.add(new Line(e.getBox3D(), p));
+                    lineList.add(new Line(e.getMask(), p));
                 }
             }
         }
@@ -172,7 +168,7 @@ public class PathManager extends Manager implements ForWorld {
      * @param obstacles Line objects in list
      * @return true in edge intersects with any lines in obstacles; false otherwise.
      */
-    public boolean checkLineClash(Line edge, ArrayList<Line> obstacles) {
+    public boolean checkLineClash(Line edge, ArrayDeque<Line> obstacles) {
 
         // Iterate through obstacles and check if
         // edge between vertices is obstructed.

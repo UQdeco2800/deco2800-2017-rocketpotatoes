@@ -45,8 +45,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 */
 	public ResourceTree(float posX, float posY) {
 		super(posX, posY, 1f, 1f);
@@ -65,8 +63,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 * @param gatherType
 	 *            The type of resource gathered by the tree.
 	 * @param gatherCapacity
@@ -87,7 +83,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	@Override
 	public ResourceTree clone() {
-		return new ResourceTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.gatherType, this.gatherCapacity);
+		return new ResourceTree(this.getPosX(), this.getPosY(), this.gatherType, this.gatherCapacity);
 	}
 
 	@Override

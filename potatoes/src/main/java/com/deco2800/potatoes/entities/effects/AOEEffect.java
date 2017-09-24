@@ -13,8 +13,7 @@ public class AOEEffect extends Effect {
 	}
 
 	public AOEEffect(Class<?> targetClass, Vector3 position, float damage, float range) {
-        super(targetClass, new Circle2D(position.getX(), position.getY(), 4), aoeWidth, aoeHeight, damage, range, 
-                EffectType.AOE);
+        super(targetClass, new Circle2D(position.x, position.y, 4), aoeWidth, aoeHeight, damage, range, EffectType.AOE);
 		loopAnimation = false;
 	}
 

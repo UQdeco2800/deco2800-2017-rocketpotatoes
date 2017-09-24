@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.health;
 import java.util.Map;
 import java.util.Random;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -66,7 +67,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			}
 		} else if (param instanceof EnemyEntity) {
 			// sets the location of the EnemyEntity to respawn
-			param.setPosition(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0);
+			param.setPosition(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10);
 		}
 
 		// sets players health to maximum health
@@ -100,7 +101,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
                 collided = true;
             }
 
-            if (!param.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+            if (!param.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getMask())) {
                 collided = true;
             }
 		}

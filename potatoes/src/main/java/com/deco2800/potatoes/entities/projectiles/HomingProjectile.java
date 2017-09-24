@@ -35,8 +35,7 @@ public class HomingProjectile extends Projectile {
 	 */
     public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
             ProjectileType projectileType, Effect startEffect, Effect endEffect) {
-        super(targetClass, new Box2D(startPos.getX(), startPos.getY(), 1, 2), targetPos, range, damage, projectileType,
-                startEffect, endEffect);
+        super(targetClass, startPos, targetPos, range, damage, projectileType, startEffect, endEffect);
 	}
 
 	@Override

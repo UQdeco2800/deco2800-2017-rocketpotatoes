@@ -1,5 +1,8 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -28,7 +31,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	private static float speed = 0.04f;
 	private static Class<?> goal = GoalPotate.class;
 	private Path path = null;
-	private Box3D target = null;
+	private CollisionMask target = null;
 
 	private int ticksSinceRandom = 0;
 	private static final int MAX_WAIT = 200;
@@ -49,10 +52,9 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	 *
 	 * @param posX The x coordinate the created squirrel will spawn from
 	 * @param posY The y coordinate the created squirrel will spawn from
-	 * @param posZ The z coordinate the created squirrel will spawn from
 	 */
-	public Moose(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
+	public Moose(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.849f), moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
 		this.goal = goal;
 		this.path = null;
@@ -65,7 +67,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	private void randomTarget() {
 		float x = (float) Math.random() * GameManager.get().getWorld().getLength();
 		float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
-		target = new Box3D(x, y, 0, 1f, 1f, 1f);
+		target = new Point2D(x, y);
 	}
 
 	/**
@@ -98,11 +100,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 
 		//check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
+			if (entity.isStaticCollideable() && getMask().overlaps(entity.getMask())) {
 				//collided with wall
 				randomTarget();
 				//break;
-			} else if (entity instanceof EnemyEntity && entity.getBox3D().overlaps(this.getBox3D())) {
+			} else if (entity instanceof EnemyEntity && entity.getMask().overlaps(getMask())) {
 				EnemyEntity enemy = (EnemyEntity) entity;
 				//heal enemy if within range
 				enemy.heal(0.1f);
@@ -111,13 +113,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 
 		// check that we actually have a path
 		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(this.getBox3D(), target);
+			path = pathManager.generatePath(getMask(), target);
 		}
 
 
 		//check if close enough to target
-		if (target != null && playerManager.getPlayer().getBox3D().overlaps(this.getBox3D())) {
-			target = playerManager.getPlayer().getBox3D();
+		if (target != null && playerManager.getPlayer().getMask().overlaps(getMask())) {
+			target = playerManager.getPlayer().getMask();
 			playerManager.getPlayer().damage(0.4f);
 		} else {
 			target = null;
@@ -133,7 +135,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 
 
 		if (target == null) {
-			target = playerManager.getPlayer().getBox3D();
+			target = playerManager.getPlayer().getMask();
 		}
 
 		targetX = target.getX();

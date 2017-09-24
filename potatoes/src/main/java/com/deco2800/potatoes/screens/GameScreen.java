@@ -271,11 +271,11 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8, 0));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8));
+			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
 
 			//add an enemy gate to game world
-			GameManager.get().getWorld().addEntity(new EnemyGate(24,24,0));
+			GameManager.get().getWorld().addEntity(new EnemyGate(24,24));
 
 			//add enemy waves
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
@@ -296,7 +296,7 @@ public class GameScreen implements Screen {
 			 */
 
 				// Make our player
-				playerManager.setPlayer(5, 10, 0);
+				playerManager.setPlayer(5, 10);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
@@ -304,10 +304,10 @@ public class GameScreen implements Screen {
 	}
 
 	private void addDamageTree() {
-		GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(16, 11));
+		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, new AcornTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, new IceTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, new FireTreeType()));
 	}
 
 	private void initialiseResources() {
@@ -333,27 +333,27 @@ public class GameScreen implements Screen {
 
 
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 20, 0, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 18, 0, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 16, 0, woodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 20, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 18, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 16, woodResource));
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 20, 0, tumbleweedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 18, 0, cactusThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 16, 0, pricklyPearResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 20, tumbleweedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 18, cactusThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 16, pricklyPearResource));
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 20, 0, snowBallResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 18, 0, sealSkinResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 16, 0, iceCrystalResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 20, 0, coalResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 18, 0, bonesThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 16, 0, obsidianResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 20, snowBallResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 18, sealSkinResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 16, iceCrystalResource));
 
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 20, 0, fishMeatResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 18, 0, pearlResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 16, 0, treasureResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 20, coalResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 18, bonesThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 16, obsidianResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 20, fishMeatResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 18, pearlResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 16, treasureResource));
 
 
 
@@ -361,7 +361,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 0, 100));
+		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 100));
 
 
 	}

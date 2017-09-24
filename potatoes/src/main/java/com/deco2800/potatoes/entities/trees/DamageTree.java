@@ -71,11 +71,11 @@ public class DamageTree extends AbstractTree implements Tickable {
      */
 
      public DamageTree(float posX, float posY) {
-         this(posX, posY, new LightningTree());
+         this(posX, posY, new LightningTreeType());
      }
 
-    public DamageTree(float posX, float posY, Damage texture) {
-        super(posX, posY, 1f, 1f, null);
+    public DamageTree(float posX, float posY, DamageTreeType texture) {
+        super(posX, posY, 1f, 1f);
         if(null==texture){
             damageTreeType=new LightningTreeType();
         }else{
@@ -94,7 +94,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
     @Override
     public DamageTree clone() {
-    	return new DamageTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.getDamageTreeType());
+    	return new DamageTree(this.getPosX(), this.getPosY(), this.getDamageTreeType());
     }
 
 

@@ -386,38 +386,38 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 break;
             case Input.Keys.NUM_1:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                    AbstractTree.constructTree(new ProjectileTree(getCursorCoords().x, getCursorCoords().y, 0));
+                    AbstractTree.constructTree(new ProjectileTree(getCursorCoords().x, getCursorCoords().y));
                 }
                 break;
             case Input.Keys.NUM_2:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                    AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+                    AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y));
                 }
                 break;
             case Input.Keys.NUM_3:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+                            new ResourceTree(getCursorCoords().x, getCursorCoords().y, new FoodResource(), 8));
                 }
             case Input.Keys.NUM_4:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new IceTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new IceTreeType()));
                 }
             case Input.Keys.NUM_5:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new LightningTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new LightningTreeType()));
                 }
             case Input.Keys.NUM_6:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new FireTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new FireTreeType()));
                 }
             case Input.Keys.NUM_7:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new AcornTreeType()));
                 }
             case Input.Keys.SPACE:
                 attack();
@@ -468,14 +468,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         // Tosses a item in front of player
         float x = this.getPosX();
         float y = this.getPosY();
-        float z = this.getPosZ();
 
         x = (currentDirection == Direction.SouthWest) ? x - 1 : x + 1;
         y = (currentDirection == Direction.SouthWest) ? y - 2 : y + 2;
 
         // Only toss an item if there are items to toss
         if (this.getInventory().updateQuantity(item, -1) == 1) {
-            GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
+            GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, item));
         }
     }
 

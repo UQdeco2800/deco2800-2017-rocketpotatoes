@@ -4,8 +4,9 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class LightningEffect extends Effect {
@@ -25,7 +26,7 @@ public class LightningEffect extends Effect {
 	boolean staticStrike = true;
 
 	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
-		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.LIGHTNING);
+        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectType.LIGHTNING);
 
 		this.startPos = startPos;
 		this.targetPos = targetPos;
@@ -91,7 +92,7 @@ public class LightningEffect extends Effect {
 			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
 		}
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(targetPos.x);
 		newPos.setY(targetPos.y);
 		//

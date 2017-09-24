@@ -15,7 +15,6 @@ import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public abstract class Effect extends AbstractEntity implements Tickable {
@@ -101,7 +100,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	}
 
     public Effect(Class<?> targetClass, CollisionMask mask, float xRenderLength, float yRenderLength, float damage,
-            float range, EffectType texture) {
+            float range, EffectType effectType) {
         super(mask, xRenderLength, yRenderLength, effectType.textures()[0]);
 
 		if (targetClass != null)
@@ -127,7 +126,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	public void onTick(long time) {
 		animate();
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
@@ -137,7 +136,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 			if (!targetClass.isInstance(entity)) {
 				continue;
 			}
-			if (newPos.overlaps(entity.getBox3D())) {
+			if (newPos.overlaps(entity.getMask())) {
 				((MortalEntity) entity).damage(damage);
 			}
 		}
