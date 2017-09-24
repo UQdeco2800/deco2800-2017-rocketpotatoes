@@ -125,7 +125,7 @@ public class EnemyEntityTest {
 	@Test
 	public void getShotTest() {
 		Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, ProjectileType.ROCKET, null,
-				null);
+				null,"", Projectile.ShootingStyles.BALLISTICPROJECTILE);
 		enemyEntity.getShot(proj);
 		Assert.assertTrue("enemy failed to getShot()", enemyEntity.getHealth() < enemyEntity.getMaxHealth());
 	}
