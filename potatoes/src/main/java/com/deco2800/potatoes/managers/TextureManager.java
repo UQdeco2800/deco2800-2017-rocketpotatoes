@@ -290,6 +290,16 @@ public class TextureManager extends Manager {
         			String textureNameWalk = "archer_walk_" + direction.toString() + "_" + i;
         			saveTexture(textureNameWalk, "resources/player/archer/walk/" + textureNameWalk + ".png");
         		}
+        		
+        		for (int i=1; i<=7; i++) {
+        			String textureNameDeath = "archer_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/archer/death/" + textureNameDeath + ".png");
+        		}
+        		
+        		for (int i=1; i<=5; i++) {
+        			String textureNameInteract = "archer_interact_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameInteract, "resources/player/archer/interact/" + textureNameInteract + ".png");
+        		}
         }
     }
 
