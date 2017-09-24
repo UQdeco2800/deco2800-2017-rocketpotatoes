@@ -6,6 +6,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -21,18 +22,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Tower;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.CameraManager;
+import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TreeShopGui is generated when the user clicks on a tile on the map. It can
@@ -42,14 +45,16 @@ import com.deco2800.potatoes.util.WorldUtil;
  *
  */
 public class TreeShopGui extends Gui implements SceneGui {
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(TreeShopGui.class);
 	private Circle shopShape; // Circle around whole shop
 	private Circle cancelShape; // Circle around cross in menu center
 	private boolean mouseIn; // Mouse inside shopMenu
 	private boolean mouseInCancel; // Mouse inside cancel circle
 	private boolean initiated; // Menu should be visible and available
+	private boolean plantable; // Set to true if mouseover terrain can plant tree
 	private int selectedSegment; // Segment of menu currently being rendered
-	private int shopX; // Screen x value of shop
-	private int shopY; // Screen y value of shop
+	private float shopX; // Screen x value of shop
+	private float shopY; // Screen y value of shop
 	private int shopTileX; // Tile x value of shop
 	private int shopTileY; // Tile y value of shop
 	private int treeX; // Tile x value where tree will be spawned
@@ -58,7 +63,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	// The trees that user can purchased. These will all be displayed in its own
 	// segment
 	private LinkedHashMap<AbstractTree, Color> items;
-	
+
 	private Stage stage;
 	private TextureManager textureManager;
 	private PlayerManager playerManager;
@@ -76,13 +81,18 @@ public class TreeShopGui extends Gui implements SceneGui {
 		// Render menu
 		this.stage = stage;
 		playerManager = GameManager.get().getManager(PlayerManager.class);
-		shopX = 300;
-		shopY = 300;
+		shopX = 0;
+		shopY = 0;
 		initiated = false;
 		items = new LinkedHashMap<AbstractTree, Color>();
-		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 2), Color.RED);
-		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 8), Color.BLUE);
-		items.put(new Tower(treeX, treeY, 0), Color.YELLOW);
+		items.put(new ResourceTree(treeX, treeY,0, new SeedResource(),0 ), Color.RED);
+		items.put(new ResourceTree(treeX, treeY, 0 ,new FoodResource(),0), Color.BLUE);
+		items.put(new ProjectileTree(treeX, treeY, 0), Color.YELLOW);
+		items.put(new DamageTree(treeX, treeY, 0, new LightningTreeType()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new IceTreeType()),Color.ORANGE);
+		items.put(new DamageTree(treeX, treeY, 0, new FireTreeType()),Color.PURPLE);
+		items.put(new DamageTree(treeX, treeY, 0, new AcornTreeType()),Color.GREEN);
+
 
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
@@ -101,18 +111,34 @@ public class TreeShopGui extends Gui implements SceneGui {
 		createTreeMenu(shopX, shopY, 110);
 	}
 
+	/**
+	 * Returns maximum range of plantation area from player
+	 */
 	public int getMaxRange() {
 		return MAX_RANGE;
 	}
 	
 	/**
+	 * Returns whether current treeShop is plantable
+	 */
+	public boolean getPlantable() {
+		return plantable;
+	}
+	
+	/**
+	 * Sets plantable value
+	 */
+	public void setPlantable(boolean plantable) {
+		this.plantable = plantable;
+	}
+
+	/**
 	 * Updates screen position to match tile position.
 	 */
 	private void updateScreenPos() {
-		Vector3 screenPos = Render3D.tileToScreen(stage, shopTileX, shopTileY);
-		shopX = (int) screenPos.x;
-		shopY = (int) screenPos.y;
-
+		Vector2 screenPos = Render3D.tileToScreen(stage, shopTileX, shopTileY);
+		shopX = screenPos.x;
+		shopY = screenPos.y;
 	}
 
 	/**
@@ -124,24 +150,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopTileX = (int) tilePos.x;
 		shopTileY = (int) tilePos.y;
 
-		double distance = playerManager.distanceFromPlayer(shopTileX, shopTileY);
-				
-		float range = MAX_RANGE;
-		if (distance > range) {
-			closeShop();
-			
-			// If we want it to spawn at max range instead
-			/*double angle = calculateAngle(shopTileX - player.getPosX(), shopTileY - player.getPosY());
-			angle = 360 - angle;
-			angle = Math.toRadians(angle);
-			shopTileX = (int) (range * Math.cos(angle) + player.getPosX());
-			shopTileY = (int) (range * Math.sin(angle) + player.getPosY());*/
-		}
 	}
 
 	/**
 	 * Creates menu based on input parameters.
-	 * 
+	 *
 	 * @param items
 	 *            A HashMap with each AbstractEntity as the key and the
 	 *            corresponding color as value
@@ -152,7 +165,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * @param radius
 	 *            Radius of circle
 	 */
-	private void createTreeMenu(int x, int y, int radius) {
+	private void createTreeMenu(float x, float y, int radius) {
 		shopShape = new Circle(x, y, radius);
 		cancelShape = new Circle(x, y, radius * 0.2f);
 
@@ -174,7 +187,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 *            radius of shop
 	 */
 
-	private void renderGui(int x, int y, int radius) {
+	private void renderGui(float x, float y, int radius) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -216,7 +229,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * menu.
 	 * 
 	 */
-	private void renderSubMenus(ShapeRenderer shapeRenderer, int guiX, float guiY, int radius) {
+	private void renderSubMenus(ShapeRenderer shapeRenderer, float guiX, float guiY, int radius) {
 
 		int numSegments = items.entrySet().size();
 		int segment = 0;
@@ -342,15 +355,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 */
 	private void calculateSegment(float mx, float my) {
 
-		float n = 3;
+		float n = items.size();
 		float x = shopShape.x;
 		float y = shopShape.y;
 
 		double mouseAngle = calculateAngle(mx - x, my - y);
 
 		double segmentAngle = 360f / n;
-		int segment = (int) (mouseAngle / segmentAngle);
-		this.selectedSegment = segment;
+		selectedSegment = (int) (mouseAngle / segmentAngle);
 
 	}
 
@@ -411,7 +423,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 				buyTree();
 				initiated = false;
 			}
-		} else {
+		} else if (plantable) {
 			updateTilePos(x, y);
 			initiated = true;
 			setTreeCoords();

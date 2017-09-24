@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.gui.Gui;
 import com.deco2800.potatoes.gui.RespawnGui;
 
@@ -29,6 +29,9 @@ public class EventManager extends Manager implements TickableManager, ForWorld {
 
 	private List<EventPair> events;
 
+	/**
+	 * Initializes this manager to have no events registered.
+	 */
 	public EventManager() {
 		events = new ArrayList<>();
 	}

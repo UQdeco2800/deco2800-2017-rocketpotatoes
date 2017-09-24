@@ -5,15 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Clickable;
-import com.deco2800.potatoes.entities.Tower;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
@@ -57,7 +52,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 				world.deSelectAll();
 			}
 		}
-		
 		treeShop.initShop(originX,originY);
 	}
 

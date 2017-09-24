@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -66,7 +66,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		},
 		DAMAGED_GROUND {
 			public String toString() {
-				return "DamagedGroundTemp";
+				return "DamagedGroundTemp1";
 			}
 
 			public String[] textures() {
@@ -81,7 +81,22 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 			public String[] textures() {
 				return new String[] { "swipe1", "swipe2", "swipe3" };
 			}
+		},
+		LARGE_FOOTSTEP {
+			public String toString() { return "TankFootstepTemp1"; }
+
+			public String[] textures() {
+				return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
+			}
+		},
+		HEALING{
+			public String toString() { return "Healing1"; }
+
+			public String[] textures() {
+				return new String[]{"Healing1", "Healing2", "Healing3"};
+			}
 		};
+
 
 		public String[] textures() {
 			return new String[] { "default" };
@@ -130,9 +145,6 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getBox3D())) {
-				if (entity instanceof Player) {
-					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
-				}
 				((MortalEntity) entity).damage(damage);
 			}
 		}

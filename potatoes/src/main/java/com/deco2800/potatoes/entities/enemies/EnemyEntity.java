@@ -7,12 +7,14 @@ import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.effects.HealingEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
-
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
@@ -25,7 +27,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
-
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.ParticleManager;
@@ -35,30 +37,37 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
-public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
+/**
+ * An abstract class for the basic functionality of enemy entities which extend from it
+ */
+public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable, HasDirection {
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	private float speed;
 	private Class<?> goal;
-	
-	//private int respawnTime = 15000; // milliseconds
 
 	private static final SoundManager enemySoundManager = new SoundManager();
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 
+	private Vector2 oldPos = Vector2.Zero; // Used to determine the player's change in direction
+	private Direction currentDirection; // The direction the player faces
+
+	private int timer = 0;
+
+
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
 		// empty for serialization
-		getBasicStats().registerEvents(this);
+		getBasicStats().registerEvents(this);	//MAY BE USELESS
 	}
 
 	/**
-	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
+	 * Constructs a new EnemyEntity. The entity will be rendered at the same size
 	 * used for collision between entities.
 	 * 
 	 * @param posX
@@ -88,7 +97,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth);
-		getBasicStats().registerEvents(this);
+		getBasicStats().registerEvents(this);		//MAY BE USELESS
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -127,7 +136,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth);
-		getBasicStats().registerEvents(this);
+		getBasicStats().registerEvents(this);		//MAY BE USELESS
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -170,7 +179,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public EnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth, float speed, Class<?> goal) {
 		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture, maxHealth);
-		getBasicStats().registerEvents(this);
+		getBasicStats().registerEvents(this); 	//MAY BE USELESS
 		this.speed = speed;
 		this.goal = goal;
 	}
@@ -213,55 +222,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 					return;
 				}
 		}
-		
-//		//if goal is player, use playerManager to set position and move towards target 
-//		if (goal == Player.class) {
-//			//goal = Player.class;
-//			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-//
-//			// The X and Y position of the player without random floats generated
-//			goalX = playerManager.getPlayer().getPosX() ;
-//			goalY = playerManager.getPlayer().getPosY() ;
-//		
-//			if(this.distance(playerManager.getPlayer()) < speed) {
-//				this.setPosX(goalX);
-//				this.setPosY(goalY);
-//				return;
-//			}
-//		} else {
-//			// set the target of Enemy to the closest goal
-//			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
-//			
-//			//if target is not found in the world, set target to player 
-//			if (!target.isPresent()) {
-//				PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-//				AbstractEntity getTarget = playerManager.getPlayer();
-//				// get the position of the target
-//				goalX = getTarget.getPosX();
-//				goalY = getTarget.getPosY(); 
-//				
-//				if(this.distance(getTarget) < speed) {
-//					this.setPosX(goalX);
-//					this.setPosY(goalY);
-//					return;
-//				}
-//				
-//			} else {
-//				//otehrwise, move to enemy's closest goal
-//				AbstractEntity getTarget = target.get();
-//				// get the position of the target
-//				goalX = getTarget.getPosX(); 
-//				goalY = getTarget.getPosY(); 
-//				
-//				if(this.distance(getTarget) < speed) {
-//					this.setPosX(goalX);
-//					this.setPosY(goalY);
-//					return;
-//				}
-//			}
-//			
-//		}
-		
 
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
@@ -283,22 +243,25 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		boolean collidedTankEffect = false;
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile)  && newPos.overlaps(entity.getBox3D()) ) {
+		timer++;
+		String stompedGroundTextureString = "";
 
-				if(entity instanceof Tower) {
+		for (AbstractEntity entity : entities.values()) {
+			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
+					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getBox3D()) ) {
+
+				if(entity instanceof ProjectileTree) {
 					//soundManager.playSound("ree1.wav");
 				}
-
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
-					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
 
 				}
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
 					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
 						collidedTankEffect = true;
+						stompedGroundTextureString = entity.getTexture();
 					}
 					continue;
 				}
@@ -306,16 +269,98 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			}
 		}
 
-		if (!collidedTankEffect && this instanceof TankEnemy) {
-			GameManager.get().getWorld().addEntity(new StompedGroundEffect(MortalEntity.class,getPosX(), getPosY(), 0, true, 1,1));
-			enemySoundManager.playSound("tankEnemyFootstep.wav");
+
+		if (this instanceof TankEnemy) {
+			if (timer % 100 == 0 && !(collided)) {
+				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
+				GameManager.get().getWorld().addEntity(
+						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 0, 1, 1));
+			}
+			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
+					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
+				GameManager.get().getWorld().addEntity(
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+			} else if (!collidedTankEffect) {
+				GameManager.get().getWorld().addEntity(
+						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), 0, true, 1, 1));
+			}
 		}
 
 		if (!collided) {
 			setPosX(getPosX() + changeX);
 			setPosY(getPosY() + changeY);
 		}
+
+		updateDirection();
 	}
+
+	/**
+	 * @return the current Direction of the enemy
+	 */
+	public Direction getEnemyDirection() {
+		return this.currentDirection;
+	}
+
+	/**
+	 * Set the direction of the enemy based on a specified direction
+	 *
+	 * @param direction the direction to set the enemy toward
+	 */
+	private void setDirection(Direction direction) {
+		if (this.currentDirection != direction) {
+			this.currentDirection = direction;
+			updateSprites();
+		}
+	}
+
+	/**
+	 * Updates the direction of the player based on change in position.
+	 */
+	public void updateDirection() {
+		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+			return;    // Not moving
+		}
+		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);
+
+		if (angularDirection >= -180 && angularDirection < -157.5) {
+			this.setDirection(Direction.SouthWest);
+		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
+			this.setDirection(Direction.West);
+		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
+			this.setDirection(Direction.NorthWest);
+		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
+			this.setDirection(Direction.North);
+		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
+			this.setDirection(Direction.NorthEast);
+		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
+			this.setDirection(Direction.East);
+		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
+			this.setDirection(Direction.SouthEast);
+		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
+			this.setDirection(Direction.South);
+		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
+			this.setDirection(Direction.SouthWest);
+		}
+		oldPos = new Vector2(this.getPosX(), this.getPosY());
+	}
+
+	/**
+	 * Updates the player sprite based on it's state and direction.
+	 */
+	public void updateSprites() {
+		String type = getEnemyType();
+		String direction = "_" + getEnemyDirection().toString();
+
+		this.setTexture(type + direction);
+	}
+
+	/***
+	 * Abstract method requiring extending classes to return a string corresponding
+	 * to their enemy type. Useful for selecting sprites.
+	 *
+	 * @return String corresponding to enemy type (e.g. squirrel)
+	 */
+	public abstract String getEnemyType();
 
 	/**
 	 * Registers the list of events given with the event manager and unregisters all
@@ -334,7 +379,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
-	public abstract EnemyStatistics getBasicStats();
+	public abstract EnemyProperties getBasicStats();
 
 	/**
 	 * Get the goal of the enemy
@@ -379,7 +424,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
-	 * @param projectile, the projectile shot
+	 * @param effect, the projectile shot
 	 */
 	public void getShot(Effect effect) {
 		this.damage(effect.getDamage());
@@ -395,22 +440,39 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return PROGRESS_BAR;
 	}
 
+	/***
+	 * Get the enemy's current health to max health progres
+	 *
+	 * @return the ratio of current to maximum health
+	 */
 	@Override
 	public float getProgressRatio() {
 		return getHealth() / getMaxHealth();
 	}
 
+	/**
+	 * Get the maximum health of the enemy
+	 *
+	 * @return the enemy's maximum health
+	 */
 	@Override
 	public int getMaxProgress() {
 		return (int) getMaxHealth();
 	}
 
-	//BROKEN BUILD!!
-	//@Override
-	//public void setMaxProgress(int p) { return; }
+	@Override
+	public boolean damage(float amount) {
+		getBasicStats().setDamageAnimation(this);
+		return super.damage(amount);
+	}
+
+	@Override
+	public void dyingHandler() {
+		getBasicStats().setDeathAnimation(this);
+	}
 	
 	/**
-	 * remove the enemy if it is dead, and respawn after seconds 
+	 * remove the enemy if it is dead
 	 */
 	@Override
 	public void deathHandler() {
@@ -430,14 +492,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		// destroy the enemy
 		GameManager.get().getWorld().removeEntity(this);
-		
-		
-
-		
-//		// get the event manager
-//		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-//		// add the respawn event
-//		eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 	}
 
 }

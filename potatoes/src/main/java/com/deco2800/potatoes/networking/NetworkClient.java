@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
@@ -18,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkClient {
     private static final transient Logger LOGGER = LoggerFactory.getLogger(NetworkClient.class);
@@ -109,11 +111,18 @@ public class NetworkClient {
         LOGGER.info("Joining " + IP + ":" + tcpPort);
         // Send initial connection info
         Network.ClientConnectionRegisterMessage cr = new Network.ClientConnectionRegisterMessage();
-        cr.name = name;
+        cr.setName(name);
 
         client.sendTCP(cr);
     }
 
+    public List<InetAddress> discoverHosts (int udpPort, int timeoutMillis) throws IOException {
+        client = new Client();
+        client.start();
+        List<InetAddress> ips = client.discoverHosts(udpPort,timeoutMillis);
+        client.dispose();
+        return ips;
+    }
 
     /**
      * Broadcasts a chat message to the server to distribute to the rest of the clients
@@ -121,7 +130,7 @@ public class NetworkClient {
      */
     public void broadcastMessage(String message) {
         ClientChatMessage m = new ClientChatMessage();
-        m.message = message;
+        m.setMessage(message);
         client.sendTCP(m);
     }
 
@@ -131,8 +140,8 @@ public class NetworkClient {
      */
     public void broadcastPlayerUpdatePosition(Player entity) {
         ClientPlayerUpdatePositionMessage message = new ClientPlayerUpdatePositionMessage();
-        message.x = entity.getPosX();
-        message.y = entity.getPosY();
+        message.setX(entity.getPosX());
+        message.setY(entity.getPosY());
 
         client.sendUDP(message);
     }
@@ -143,7 +152,7 @@ public class NetworkClient {
      */
     public void broadcastBuildOrder(AbstractTree tree) {
         ClientBuildOrderMessage m = new ClientBuildOrderMessage();
-        m.tree = tree;
+        m.setTree(tree);
         client.sendTCP(m);
     }
 

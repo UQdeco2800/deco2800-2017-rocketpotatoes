@@ -1,9 +1,8 @@
 package com.deco2800.potatoes.entities.portals;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
@@ -17,6 +16,9 @@ import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+
 import com.badlogic.gdx.Input;
 
 /**
@@ -33,6 +35,11 @@ public class AbstractPortalTest{
 		testPortal = new AbstractPortal(0, 0, 0, null);
 		GameManager.get().setWorld(new TestWorld());
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 	
 	@Test
 	public void collidedFalseTest() {

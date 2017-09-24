@@ -15,14 +15,14 @@ import com.deco2800.potatoes.util.Box3D;
  * he "stomps" the ground and damages it. This effect can be either temporary or
  * permanent. When entities walk through this effect, they will be slowed down
  * TODO Actually make them slow down.
+ *
+ * @author ryanjphelan
  */
 public class StompedGroundEffect extends Effect {
-	// TODO Texture is a placeholder. Need to design proper artwork for stomped
-	// ground.
-	private static final transient String TEXTURE = "DamagedGroundTemp";
+	// TODO Texture is a placeholder. Need to design proper artwork for stomped ground
+	private static final transient String TEXTURE = "DamagedGroundTemp1";
 
 	private boolean isTemporary;
-	private boolean resourceStomped = false;
 	private Box3D effectPosition;
 	private int currentTextureIndexCount = 0;
 	private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
@@ -55,33 +55,13 @@ public class StompedGroundEffect extends Effect {
 		super(targetClass, new Vector3(posX, posY, posZ), 1f, 1f, 1f, 1.2f, 1.2f, damage, range, EffectType.DAMAGED_GROUND);
 		this.isTemporary = isTemporary;
 		effectPosition = getBox3D();
-
-		animate = false;
 	}
 
 	@Override
 	public void onTick(long time) {
 		if (isTemporary) {
 			timer++;
-			if (!resourceStomped) {
-				Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-				for (AbstractEntity entity : entities.values()) {
-					if (this.equals(entity) || !(entity instanceof ResourceEntity)
-							|| !effectPosition.overlaps(entity.getBox3D())) {
-						continue;
-					}
-
-					String resourceType = ((ResourceEntity) entity).getType().getTypeName();
-					GameManager.get().getWorld().removeEntity(entity);
-					if ("seed".equals(resourceType)) {
-						soundManager.playSound("seedResourceDestroyed.wav");
-					} else if ("food".equals(resourceType)) {
-						soundManager.playSound("foodResourceDestroyed.wav");
-					}
-				}
-				resourceStomped = true;
-			}
-			if (timer % 150 == 0) {
+			if (timer % 200 == 0) {
 				if (currentTextureIndexCount < 3) {
 					setTexture(currentTextureArray[currentTextureIndexCount]);
 					currentTextureIndexCount++;
@@ -93,11 +73,21 @@ public class StompedGroundEffect extends Effect {
 	}
 
 	/**
-	 * Returns damage value, value is zero. This effect does not damage entities.
+	 * Get the current index for the texture being used
+	 *
+	 * @return Int current index
 	 */
-	@Override
-	public float getDamage() {
-		return 0;
+	public int getCurrentTextureIndex() {
+		return currentTextureIndexCount;
+	}
+
+	/**
+	 * Return the Box3D position of the stomp
+	 *
+	 * @return Box3D position of footstep
+	 */
+	public Box3D getStompedGroundPosition() {
+		return effectPosition;
 	}
 
 	/**

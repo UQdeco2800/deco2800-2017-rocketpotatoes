@@ -3,8 +3,6 @@ package com.deco2800.potatoes.managers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deco2800.potatoes.renderering.particles.Particle;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
-import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
-import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,7 +10,7 @@ import java.util.List;
 
 public class ParticleManager extends Manager implements TickableManager {
 
-    private class EmitterContainer {
+    public class EmitterContainer {
         public ParticleEmitter emitter;
         public float maxLifeTime;
         public float currentLifeTime;
@@ -21,9 +19,9 @@ public class ParticleManager extends Manager implements TickableManager {
     }
 
     // Emitters currently active
-    List<EmitterContainer> emitters;
+    private List<EmitterContainer> emitters;
 
-    List<Particle> particlePool;
+    private List<Particle> particlePool;
 
     /**
      * Initializes the particle manager.
@@ -36,15 +34,6 @@ public class ParticleManager extends Manager implements TickableManager {
         for (int i = 0; i < 1000000; ++i) {
             particlePool.add(new Particle());
         }
-
-        ParticleType typeOne = new BasicParticleType(100000, 5000.0f, 100.0f, 128,
-                GameManager.get().getManager(TextureManager.class).getTexture("snowflake"));
-        typeOne.speed = 0.4f;
-
-        //addParticleEmitter(0.0f, new ParticleEmitter(50, 50, typeOne));
-
-        //addParticleEmitter(5000.0f, new ParticleEmitter(50, 50, typeOne, typeTwo));
-
     }
 
     /**
@@ -115,7 +104,7 @@ public class ParticleManager extends Manager implements TickableManager {
 
     /**
      * Gracefully stops an emitter, stops producing particles and waits until all particles have timed out before
-     * destroying the emitter.
+     * destroying the emitter. Throws IllegalArg exception if the emitter is not being tracked
      * @param emitter the emitter to be removed
      */
     public void stopEmitter(ParticleEmitter emitter) {
@@ -130,10 +119,12 @@ public class ParticleManager extends Manager implements TickableManager {
                 return;
             }
         }
+        throw new IllegalArgumentException("Emitter is not being tracked");
     }
 
     /**
      * Instantly stops an emitter from producing particles, and destroys any existing particles.
+     *  Throws IllegalArg exception if the emitter is not being tracked
      * @param emitter the emitter to be removed
      */
     public void forceStopEmitter(ParticleEmitter emitter) {
@@ -148,5 +139,12 @@ public class ParticleManager extends Manager implements TickableManager {
                 return;
             }
         }
+        throw new IllegalArgumentException("Emitter is not being tracked");
+    }
+   /**
+     * @return The current emitter list (in container form)
+     */
+    public List<EmitterContainer> getEmitters() {
+        return emitters;
     }
 }

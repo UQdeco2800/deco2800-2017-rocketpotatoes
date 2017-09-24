@@ -33,7 +33,6 @@ public class PauseMenuGui extends Gui {
     private Drawable exitDrawable;
     private Drawable pauseMenuDrawable;
     private VerticalGroup pauseButtonGroup;
-    private Label pauseMenuLabel;
     private ImageButton resumeButton;
     private ImageButton optionsButton;
     private ImageButton saveButton;
@@ -73,14 +72,12 @@ public class PauseMenuGui extends Gui {
         pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backgroundPauseMenu")));
 
         // Pause State
-        pauseMenuLabel = new Label("PAUSED", uiSkin);
         resumeButton = new ImageButton(resumeDrawable);
         optionsButton = new ImageButton(optionsDrawable);
         saveButton = new ImageButton(saveDrawable);
         exitButton = new ImageButton(exitDrawable);
 
         pauseButtonGroup = new VerticalGroup();
-        // pauseButtonGroup.addActor(pauseMenuLabel);
         pauseButtonGroup.addActor(resumeButton);
         pauseButtonGroup.addActor(optionsButton);
         pauseButtonGroup.addActor(saveButton);

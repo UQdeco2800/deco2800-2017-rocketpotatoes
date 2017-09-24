@@ -1,8 +1,8 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.entities.Player;
 import org.junit.Test;
 import com.badlogic.gdx.Input;
+import com.deco2800.potatoes.entities.player.Player;
 
 import static org.junit.Assert.assertEquals;
 
