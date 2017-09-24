@@ -48,6 +48,8 @@ public class SpeedyEnemyTest extends BaseTest {
     public void emptyConstructor() {
         assertEquals(true, speedyEmpty.getDirection() == null);
         assertEquals("raccoon", speedyEmpty.getEnemyType());
+        speedyEmpty.getBasicStats().getGoal();
+        speedyEmpty.getBasicStats().getSpeed();
     }
 
     /*

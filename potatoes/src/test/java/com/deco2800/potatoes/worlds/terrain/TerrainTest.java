@@ -1,27 +1,20 @@
-package com.deco2800.potatoes;
+package com.deco2800.potatoes.worlds.terrain;
 
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.worlds.terrain.Terrain;
-import com.deco2800.potatoes.util.WorldUtil;
 import org.junit.Test;
 import org.junit.Before;
-import com.badlogic.gdx.Input;
 
 import static org.junit.Assert.*;
 
 public class TerrainTest {
-    Terrain t1;
-    Terrain t2;
-    Terrain t3;
-    Terrain t4;
+    Terrain t1, t2, t3, t4, t5, t6, t7;
 
     @Before
     public void setup() {
         t1 = new Terrain("a", 1f, true);
         t2 = new Terrain("a", 1f, true);
-        t4 = new Terrain("a", 1f, false);
         t3 = new Terrain("b", 2f, false);
+        t4 = new Terrain(null, 1f, true);
+        
     }
 
     @Test
@@ -35,6 +28,8 @@ public class TerrainTest {
         assertTrue(t1.equals(t1));
         assertTrue(t1.equals(t2));
         assertFalse(t1.equals(t3));
+        assertFalse(t1.equals(t4));
+        assertFalse(t4.equals(t1));
         assertFalse(t1.equals(new Object()));
     }
 }

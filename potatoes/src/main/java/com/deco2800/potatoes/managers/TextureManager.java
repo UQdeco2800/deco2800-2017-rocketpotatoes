@@ -192,6 +192,15 @@ public class TextureManager extends Manager {
         saveTexture("bear_SE", "resources/enemies/bear/bear_SE.png");
         saveTexture("bear_SW", "resources/enemies/bear/bear_SW.png");
         saveTexture("bear_W", "resources/enemies/bear/bear_W.png");
+        //Moose
+        saveTexture("moose_E", "resources/enemies/moose/moose_E.png");
+        saveTexture("moose_N", "resources/enemies/moose/moose_N.png");
+        saveTexture("moose_NE", "resources/enemies/moose/moose_NE.png");
+        saveTexture("moose_NW", "resources/enemies/moose/moose_NW.png");
+        saveTexture("moose_S", "resources/enemies/moose/moose_S.png");
+        saveTexture("moose_SE", "resources/enemies/moose/moose_SE.png");
+        saveTexture("moose_SW", "resources/enemies/moose/moose_SW.png");
+        saveTexture("moose_W", "resources/enemies/moose/moose_W.png");
 
         //Portals
         saveTexture("desert_portal", "resources/portals/Desert_Portal.png");
