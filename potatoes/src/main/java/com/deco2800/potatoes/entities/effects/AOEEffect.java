@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.effects;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -25,20 +26,14 @@ public class AOEEffect extends Effect {
      * Creates a new Explosion Projectile on impact (AOE Effect). Explosion Projectiles does not change
      * direction, it should be stationary and shown at the location ballistic projectile hit.
      *
-     * @param posX          x start position
-     * @param posY          y start position
-     * @param posZ          z start position
-     * @param xLength       target x position
-     * @param yLength       target y position
-     * @param zLength       target z position
+     * @param mask          The collision maks of the effect.
      * @param xRenderLength Projectile x length
      * @param yRenderLength Projectile y length
      * @param DAMAGE        Projectile damage
      */
 
-    public AOEEffect(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-                               float xRenderLength, float yRenderLength, float DAMAGE) {
-        super(posX, posY, posZ, xLength + 3, yLength + 3, zLength, xRenderLength, yRenderLength, TEXTURE);
+    public AOEEffect(CollisionMask mask, float xRenderLength, float yRenderLength, float DAMAGE) {
+        super(mask, xRenderLength, yRenderLength, TEXTURE);
         this.DAMAGE = DAMAGE;
     }
 

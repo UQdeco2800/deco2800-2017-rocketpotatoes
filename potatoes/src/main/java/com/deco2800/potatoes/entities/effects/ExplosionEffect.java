@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.effects;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.managers.GameManager;
 
 public class ExplosionEffect extends Effect {
@@ -29,28 +30,15 @@ public class ExplosionEffect extends Effect {
 	 * Projectiles does not change direction, it should be stationary and shown at
 	 * the location ballistic projectile hit.
 	 *
-	 * @param posX
-	 *            x start position
-	 * @param posY
-	 *            y start position
-	 * @param posZ
-	 *            z start position
-	 * @param xLength
-	 *            target x position
-	 * @param yLength
-	 *            target y position
-	 * @param zLength
-	 *            target z position
+	 * @param mask
+	 * 			  The collision mask of the effect.
 	 * @param xRenderLength
 	 *            Projectile x length
 	 * @param yRenderLength
 	 *            Projectile y length
 	 */
-
-	public ExplosionEffect(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, TEXTURE);
-
+    public ExplosionEffect(CollisionMask mask, float xRenderLength, float yRenderLength) {
+        super(mask, xRenderLength, yRenderLength, TEXTURE);
 	}
 
 	@Override
