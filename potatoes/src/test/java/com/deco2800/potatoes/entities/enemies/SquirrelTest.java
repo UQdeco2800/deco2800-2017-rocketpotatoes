@@ -4,13 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.PathManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,10 +28,7 @@ public class SquirrelTest extends BaseTest {
     private Squirrel squirrelEmpty;
     private Squirrel squirrel1;
     private Squirrel squirrel2;
-    private ResourceEntity seed;
-    private ResourceTree resourceTree;
     private Player playerTest;
-    private GoalPotate goalPotatoTest;
 
     @Before
     public void setup() throws Exception {
@@ -72,14 +68,14 @@ public class SquirrelTest extends BaseTest {
  */
     @Test
     public void onTickTest() {
-        /*GameManager.get().getWorld().addEntity(squirrel1);
+        GameManager.get().getWorld().addEntity(new EnemyGate(0,0,0));
+        GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
+        GameManager.get().getWorld().addEntity(new ProjectileTree(10, 10, 0));
+        GameManager.get().getWorld().addEntity(squirrel1);
         GameManager.get().getWorld().addEntity(squirrel2);
         playerTest = new Player(3, 3, 0);
+        GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         GameManager.get().getWorld().addEntity(playerTest);
-        seed = new ResourceEntity(-1, -1, 0, new FoodResource());
-        resourceTree = new ResourceTree(1, 1, 0);
-        GameManager.get().getWorld().addEntity(seed);
-        GameManager.get().getWorld().addEntity(resourceTree);
-        squirrel1.onTick(1);*/
+        squirrel1.onTick(1);
     }
 }
