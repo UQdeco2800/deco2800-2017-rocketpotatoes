@@ -44,9 +44,8 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 *            The initial maximum health of the tower
 	 */
 
-	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range,
-			float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f, texture);
+	public ProjectileTree(float posX, float posY, String texture, int reloadTime, float range, float maxHealth) {
+        super(posX, posY, 1f, 1f, texture);
 		// Lazily added here, will need to move to upgradeStats
 		setAnimation(AnimationFactory.createSimpleStateAnimation(100, 0, GROW_ANIMATION,
 				() -> (float) this.getConstructionLeft()));

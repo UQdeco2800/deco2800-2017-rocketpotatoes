@@ -15,7 +15,7 @@ public class ProjectileTreeTest {
 
 	@Before
 	public void setup() {
-		testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
+		testTree = new ProjectileTree(10, 10, "real_tree", RELOAD, RANGE, HEALTH);
 	}
 
 	@Test

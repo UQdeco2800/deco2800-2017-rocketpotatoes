@@ -28,11 +28,9 @@ public class Tower extends ProjectileTree {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 */
-	public Tower(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, TEXTURE, 1000, 8f, 100f);
+	public Tower(float posX, float posY) {
+		super(posX, posY, TEXTURE, 1000, 8f, 100f);
 		this.setStaticCollideable(true);
 	}
 

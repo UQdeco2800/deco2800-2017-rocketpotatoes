@@ -24,9 +24,9 @@ public class ResourceTreeTest {
 	
 	@Before
 	public void setup() {
-		defaultResourceTree = new ResourceTree(0, 0, 0);
-		customResourceTree = new ResourceTree(1, 0, 0, new FoodResource(), 100);
-		nullTypeResourceTree = new ResourceTree(2, 0, 0, null, -10);
+		defaultResourceTree = new ResourceTree(0, 0);
+		customResourceTree = new ResourceTree(1, 0, new FoodResource(), 100);
+		nullTypeResourceTree = new ResourceTree(2, 0, null, -10);
 		
 		emptyInventory = new Inventory();
 		

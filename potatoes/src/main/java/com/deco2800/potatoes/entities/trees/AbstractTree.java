@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.List;
 import java.util.Arrays;
 
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
@@ -63,9 +64,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		resetStats();
 	}
 
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture) {
-		super(posX, posY, posZ, xLength, yLength, zLength, texture, 1);
+    public AbstractTree(float posX, float posY, float xLength, float yLength, String texture) {
+        super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, texture, 1);
 		resetStats();
 	}
 

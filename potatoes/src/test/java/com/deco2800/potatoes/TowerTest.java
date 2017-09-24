@@ -15,7 +15,7 @@ public class TowerTest {
 
     @Before
     public void setup() {
-    	testTower = new Tower(1,2,0);
+    	testTower = new Tower(1, 2);
     }
     
     @Test
