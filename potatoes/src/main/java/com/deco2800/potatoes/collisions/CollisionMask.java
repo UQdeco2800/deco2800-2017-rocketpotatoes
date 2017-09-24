@@ -3,6 +3,14 @@ package com.deco2800.potatoes.collisions;
 public interface CollisionMask {
 
     /**
+     * Makes a copy of the current collision mask.
+     *
+     * @return
+     *          A copy of the current collision mask.
+     */
+    CollisionMask copy();
+
+    /**
      * Checks if this collision mask overlaps another collision masks.
      * 
      * @param other

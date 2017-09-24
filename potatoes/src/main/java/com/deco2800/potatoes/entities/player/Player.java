@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasDirection;
 import com.deco2800.potatoes.entities.Tickable;
@@ -27,7 +29,6 @@ import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Default constructor for the purposes of serialization
      */
     public Player() {
-        super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
+        this(0, 0);
     }
 
     /**
@@ -73,10 +74,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      *
      * @param posX The x-coordinate.
      * @param posY The y-coordinate.
-     * @param posZ The z-coordinate.
      */
-    public Player(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
+    public Player(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.424f), 0.48f, 0.48f, "player_right", HEALTH);
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
@@ -317,7 +317,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         float length = GameManager.get().getWorld().getLength();
         float width = GameManager.get().getWorld().getWidth();
 
-        Box3D newPos = getBox3D();
+        CollisionMask newPos = getMask();
         newPos.setX(newPosX);
         newPos.setY(newPosY);
 
@@ -330,13 +330,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         boolean collided = false;
         for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-                    && newPos.overlaps(entity.getBox3D())) {
+            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) &&
+                    !(entity instanceof Projectile) && !(entity instanceof Effect) &&
+                    newPos.overlaps(entity.getMask())) {
                 LOGGER.info(this + " colliding with " + entity);
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())&& !(entity instanceof Moose)) {
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getMask()) &&
+                    !(entity instanceof Moose)) {
                 collided = true;
             }
         }

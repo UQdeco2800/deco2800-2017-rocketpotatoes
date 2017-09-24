@@ -9,12 +9,12 @@ public class TankEnemyTest {
 	
 	@Before
 	public void setup() {
-		testTank = new TankEnemy(1,2,3);
+		testTank = new TankEnemy(1,2);
 	}
 	
 	@Test
 	public void emptyTest() {
-		testTank = new TankEnemy();
+	    testTank = new TankEnemy();
 	}
 	
 	@Test

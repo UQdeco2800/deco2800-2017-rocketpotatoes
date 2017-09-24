@@ -54,7 +54,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			} while (hasCollisions(param, (int) newPosX, (int) newPosY));
 			
 			// sets the location of the player to respawn
-			param.setPosition(newPosX, newPosY, 0);
+			param.setPosition(newPosX, newPosY);
 
 			try {
 				// play respawn sound effect if player is respawning
@@ -88,7 +88,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 	 */
 	private boolean hasCollisions(MortalEntity param, int x, int y) {
 		// create a box3D and set the location
-		Box3D newPos = param.getBox3D();
+		CollisionMask newPos = param.getMask();
 		newPos.setX(x);
 		newPos.setY(y);
 		// get all entities on the current map
@@ -96,8 +96,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 		boolean collided = false;
 		// check for collisions
 		for (AbstractEntity entity : entities.values()) {
-            if (!param.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-                    && newPos.overlaps(entity.getBox3D())) {
+            if (!param.equals(entity) && entity.isStaticCollideable() && newPos.overlaps(entity.getMask())) {
                 collided = true;
             }
 

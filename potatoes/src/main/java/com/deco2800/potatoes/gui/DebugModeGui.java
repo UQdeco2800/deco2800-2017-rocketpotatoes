@@ -212,23 +212,22 @@ public class DebugModeGui extends Gui {
 
                 if (state == States.DEBUGON) {
                     if (keycode == Input.Keys.F1) {
-                    	ProjectileTree tower = new ProjectileTree((int)coords2.x,(int)coords2.y,0);
+                    	ProjectileTree tower = new ProjectileTree((int)coords2.x,(int)coords2.y);
                         tower.setProgress(0);
                         GameManager.get().getWorld().addEntity(tower);
                     }
 
                     if (keycode == Input.Keys.F2) {
-                        GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y,0));
+                        GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y));
                     }
 
                     if (keycode == Input.Keys.F3) {
-                        GameManager.get().getWorld().addEntity(new TankEnemy(coords2.x, coords2.y,0));
+                        GameManager.get().getWorld().addEntity(new TankEnemy(coords2.x, coords2.y));
                     }
 
                     if (keycode == Input.Keys.F4) {
                         SeedResource seedResource = new SeedResource();
-                        GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y,0,
-                                seedResource));
+                        GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y, seedResource));
                     }
 
                     if (keycode == Input.Keys.F5) {

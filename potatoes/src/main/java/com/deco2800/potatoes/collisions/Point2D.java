@@ -26,6 +26,11 @@ public class Point2D implements CollisionMask{
     }
 
     @Override
+    public CollisionMask copy() {
+        return new Point2D(x, y);
+    }
+
+    @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
             return this.equals(other);

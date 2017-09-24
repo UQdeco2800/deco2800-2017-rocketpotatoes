@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.projectiles;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.effects.Effect;
 
 public class BallisticProjectile extends Projectile {
@@ -27,10 +28,10 @@ public class BallisticProjectile extends Projectile {
 	 * @param startEffect
 	 * @param endEffect
 	 */
-	public BallisticProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileType projectileType,
-			Effect startEffect, Effect endEffect) {
-		super(targetClass, startPos, targetPos, range, damage, projectileType,
-				startEffect, endEffect);
+	public BallisticProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, 
+            ProjectileType projectileType, Effect startEffect, Effect endEffect) {
+        super(targetClass, startPos, targetPos, range, damage, projectileType,
+                startEffect, endEffect);
 	}
 
 	@Override

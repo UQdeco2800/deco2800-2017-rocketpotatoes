@@ -10,6 +10,13 @@ public class Circle2D implements CollisionMask {
         this.x = x;
         this.y = y;
         this.radius = radius;
+
+        //TODO check positive radius
+    }
+
+    @Override
+    public CollisionMask copy() {
+        return new Circle2D(x, y, radius);
     }
 
     @Override

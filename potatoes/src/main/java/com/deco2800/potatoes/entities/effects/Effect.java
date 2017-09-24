@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
@@ -99,16 +100,15 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 	}
 
-	public Effect(Class<?> targetClass, Vector3 position, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, float damage, float range, EffectType effectType) {
-		super(position.x, position.y, position.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
-				effectType.textures()[0]);
+    public Effect(Class<?> targetClass, CollisionMask mask, float xRenderLength, float yRenderLength, float damage,
+            float range, EffectType texture) {
+        super(mask, xRenderLength, yRenderLength, effectType.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
-		
+
 		if (effectType == null)
 			throw new RuntimeException("projectile type must not be null");
 		else
@@ -116,7 +116,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 		this.damage = damage;
 		this.range = range;
-	}
+
+    }
 
 	public void drawEffect(SpriteBatch batch) {
 

@@ -20,6 +20,13 @@ public class Box2D implements CollisionMask{
         this.y = y;
         this.xLength = xLength;
         this.yLength = yLength;
+
+        //TODO check positive values
+    }
+
+    @Override
+    public CollisionMask copy() {
+        return new Box2D(x, y, xLength, yLength);
     }
 
     private boolean overlapsPoint(Point2D other) {
@@ -180,6 +187,12 @@ public class Box2D implements CollisionMask{
         return calculateDistance(distX, distY);
     }
 
+    /**
+     * returns 0 iff on the edge
+     * @param other
+     *              The other collision mask.
+     * @return
+     */
     @Override
     public float distance(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -234,6 +247,7 @@ public class Box2D implements CollisionMask{
     /**
      * Do not pass line with 0 length
      * Currently implements this.overlaps(x1, y1, x2, y2) to check for collision
+     * returns negative if touching(distance 0) or overlaping
      *
      * @param x1
      *              The starting X coordinate of the line being checked.

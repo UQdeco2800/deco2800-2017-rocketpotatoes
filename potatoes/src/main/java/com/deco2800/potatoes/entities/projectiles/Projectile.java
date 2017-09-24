@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -90,11 +91,10 @@ public class Projectile extends AbstractEntity implements Tickable {
 	}
 
 	// currently used in Player, will probably need to change out later.
-	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage,
-			ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
-			float TargetPosY) {
-		super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
-				projectileType.textures()[0]);
+    public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
+			ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions) {
+        super(new Box2D(startPos.getX(), startPos.getY(), xLength + 1f, yLength + 1f), xRenderLength, yRenderLength,
+                projectileType.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;

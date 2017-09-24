@@ -1,5 +1,11 @@
 package com.deco2800.potatoes.entities.trees;
 
+import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.LightningEffect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -64,19 +70,12 @@ public class DamageTree extends AbstractTree implements Tickable {
      * Base Constructor
      */
 
-    public DamageTree(float posX, float posY, float posZ) {
+     public DamageTree(float posX, float posY) {
+         this(posX, posY, new LightningTree());
+     }
 
-        super(posX, posY, posZ, 1f, 1f, 1f);
-
-        damageTreeType=new LightningTreeType();
-
-
-        this.resetStats();
-
-    }
-
-    public DamageTree(float posX, float posY, float posZ, DamageTreeType texture) {
-        super(posX, posY, posZ, 1f, 1f, 1f);
+    public DamageTree(float posX, float posY, Damage texture) {
+        super(posX, posY, 1f, 1f, null);
         if(null==texture){
             damageTreeType=new LightningTreeType();
         }else{
@@ -89,8 +88,8 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
 
-    public DamageTree(float posX, float posY, float posZ, DamageTreeType texture, float maxHealth,float demage) {
-        super(posX, posY, posZ, 1f, 1f, 1f);
+    public DamageTree(float posX, float posY, DamageTreeType texture, float maxHealth,float damage) {
+        super(posX, posY, 1f, 1f);
     }
 
     @Override

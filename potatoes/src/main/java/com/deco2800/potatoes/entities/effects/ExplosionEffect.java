@@ -5,6 +5,8 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
@@ -27,7 +29,7 @@ public class ExplosionEffect extends Effect {
 	// //drawTextureBetween(batch, "lightning",0,0,0.005f,0.005f);
 	// }
 
-	public ExplosionEffect(Class<?> targetClass, float posX, float posY, float posZ, float damage, float range) {
+	public ExplosionEffect(Class<?> targetClass, Vector3 position, float damage, float range) {
 		// 0-12, 0+3
 //		super(targetClass, 0 - pos(posX, posY)[0], 0 + pos(posX, posY)[1], 0, effectWidth, effectHeight, 0, effectWidth,
 //				effectHeight, damage, range, effectType);

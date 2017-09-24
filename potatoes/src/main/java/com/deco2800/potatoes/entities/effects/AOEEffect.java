@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.effects;
 
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.badlogic.gdx.math.Vector3;
 
 public class AOEEffect extends Effect {
@@ -12,8 +13,8 @@ public class AOEEffect extends Effect {
 	}
 
 	public AOEEffect(Class<?> targetClass, Vector3 position, float damage, float range) {
-		super(targetClass, position, aoeWidth + 3, aoeHeight + 3, 0, aoeWidth, aoeHeight,
-				damage, range, EffectType.AOE);
+        super(targetClass, new Circle2D(position.getX(), position.getY(), 4), aoeWidth, aoeHeight, damage, range, 
+                EffectType.AOE);
 		loopAnimation = false;
 	}
 

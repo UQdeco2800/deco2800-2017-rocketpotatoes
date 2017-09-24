@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Line;
@@ -24,12 +26,12 @@ public class PathManager extends Manager implements ForWorld {
      * This tree is centered around the node storing the player's location for now, though in future that will be
      * expanded so that multiple different goals can be set.
      */
-    private Map<Box3D, Box3D> spanningTree;
+    private Map<Point2D, Point2D> spanningTree;
     private MinimumSpanningTree treeMaker;
     private World world;
-    private ArrayList<Box3D> nodes;
+    private ArrayList<Point2D> nodes;
     private ArrayList<Line> obstacles;
-    private ArrayList<Box3D> path;
+    private ArrayList<Point2D> path;
     private static final int NUMBER_OF_RANDOM_NODES = 5;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 

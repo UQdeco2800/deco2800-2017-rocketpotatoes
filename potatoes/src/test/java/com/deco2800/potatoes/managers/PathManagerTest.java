@@ -1,8 +1,8 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.util.Box3D;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -58,8 +58,8 @@ public class PathManagerTest {
     @Test
     public void reachesGoal() {
         PathManager m = new PathManager();
-        Box3D start = new Box3D(0, 0, 0, 1, 1, 1);
-        Box3D finish = new Box3D(2, 2, 2, 1, 1, 1);
+        Point2D start = new Point2D(0, 0);
+        Point2D finish = new Point2D(2, 2);
 
         Path p = m.generatePath(start, finish);
 

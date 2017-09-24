@@ -1,11 +1,12 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
-import com.deco2800.potatoes.util.Box3D;
 
 /**
  * A AbstractEntity is an item that can exist in both 3D and 2D worlds
@@ -16,13 +17,11 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 
 	protected transient GameManager gameManager = GameManager.get();
 
-	private Box3D position;
+	private CollisionMask position;
 
 	private float xRenderLength;
 
 	private float yRenderLength;
-
-	private boolean centered;
 
 	private boolean staticCollideable = false;
 
@@ -36,85 +35,17 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * Default constructor for the purposes of serialization
 	 */
 	public AbstractEntity() {
-		this(0, 0, 0, 0, 0, 0, "error_box");
-	}
-
-	/**
-	 * Constructs a new AbstractEntity. The entity will be rendered at the same size
-	 * used for collision between entities.
-	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in rendering and collision
-	 *            detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in rendering and collision
-	 *            detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in rendering and collision
-	 *            detection.
-	 * @param texture
-	 *            The id of the texture for this entity.
-	 */
-	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			String texture) {
-		this(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture);
+        this(new Point2D(0, 0), 0, 0, "");
 	}
 
 	/**
 	 * Constructs a new AbstractEntity with specific render lengths. Allows
 	 * specification of rendering dimensions different to those used for collision.
 	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches.
+	 * the leaves/branches. 
 	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
-	 * @param xRenderLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yRenderLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param texture
-	 *            The id of the texture for this entity.
-	 */
-	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, String texture) {
-		this(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, false, texture);
-	}
-
-	/**
-	 * Constructs a new AbstractEntity with specific render lengths. Allows
-	 * specification of rendering dimensions different to those used for collision.
-	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches. Allows rendering of entities to be centered on their
-	 * coordinates if centered is true.
-	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
+     * @param mask
+     *            The collision mask used by the entity.
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -124,16 +55,13 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 */
-	public AbstractEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, boolean centered, String texture) {
+    public AbstractEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture) {
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
-		this.centered = centered;
-		
+
 		this.texture = texture;
 
-		this.position = new Box3D(posX + getCenterOffset(xLength), posY + getCenterOffset(yLength), posZ, xLength,
-				yLength, zLength);
+		this.position = mask;
 	}
 
 	/**
@@ -145,7 +73,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	@Override
 	public float getPosX() {
 		// Using Y offset seems wrong but passes test and leggy was using Y offset here
-		return position.getX() - getCenterOffsetY();
+		return position.getX();
 	}
 
 	/**
@@ -155,17 +83,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 */
 	@Override
 	public float getPosY() {
-		return position.getY() - getCenterOffsetY();
-	}
-
-	/**
-	 * Get the Z coordinate of this AbstractEntity.
-	 * 
-	 * @return The Z coordinate.
-	 */
-	@Override
-	public float getPosZ() {
-		return position.getZ();
+		return position.getY();
 	}
 
 	/**
@@ -175,43 +93,18 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 *            The x-coordinate.
 	 * @param y
 	 *            The y-coordinate.
-	 * @param z
-	 *            The z-coordinate.
 	 */
-	public void setPosition(float x, float y, float z) {
+	public void setPosition(float x, float y) {
 		setPosX(x);
 		setPosY(y);
-		setPosZ(z);
 	}
 
 	public void setPosX(float x) {
-		this.position.setX(x + getCenterOffsetX());
+		this.position.setX(x);
 	}
 
 	public void setPosY(float y) {
-		this.position.setY(y + getCenterOffsetY());
-	}
-
-	public void setPosZ(float z) {
-		this.position.setZ(z);
-	}
-
-	/**
-	 * Get the height value of this item. In 3D worlds this is the stack index. In
-	 * 2D worlds this is the height of an object
-	 * 
-	 * @return height
-	 */
-	public float getZLength() {
-		return position.getZLength();
-	}
-
-	public float getXLength() {
-		return position.getXLength();
-	}
-
-	public float getYLength() {
-		return position.getYLength();
+		this.position.setY(y);
 	}
 
 	public boolean collidesWith(AbstractEntity entity) {
@@ -229,12 +122,12 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	}
 
 	/**
-	 * Returns a Box3D representing the location.
+	 * Returns a CollisionMask representing the location.
 	 * 
-	 * @return Returns a Box3D representing the location.
+	 * @return Returns a CollisionMask representing the location.
 	 */
-	public Box3D getBox3D() {
-		return new Box3D(position);
+	public CollisionMask getMask() {
+        return position.copy();
 	}
 
 	/**
@@ -335,7 +228,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 * @return Returns the euclidean distance between this and the specified entity.
 	 */
 	public float distance(AbstractEntity entity) {
-		return this.getBox3D().distance(entity.getBox3D());
+		return this.position.distance(entity.position);
 	}
 
 	/**
@@ -345,39 +238,15 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 *            The x-coordinate.
 	 * @param y
 	 *            The y-coordinate.
-	 * @param z
-	 *            The z-coordinate.
 	 * @return Returns the euclidean distance between this and the specified
 	 *         coordinates.
 	 */
-	public float distance(float x, float y, float z) {
-		return this.getBox3D().distance(x, y, z);
+	public float distance(float x, float y) {
+		return this.position.distance(new Point2D(x, y));
 	}
 
 	public void moveTowards(float x, float y, float z) {
 
-	}
-
-	/**
-	 * Gets the offset if this entity is centered, 0 if it isn't. The offset is 1 -
-	 * size / 2
-	 */
-	private float getCenterOffset(float size) {
-		return this.centered ? (1 - size / 2) : 0;
-	}
-
-	/**
-	 * Returns the centered offset for X
-	 */
-	private float getCenterOffsetX() {
-		return getCenterOffset(this.position.getXLength());
-	}
-
-	/**
-	 * Returns the centered offset for Y
-	 */
-	private float getCenterOffsetY() {
-		return getCenterOffset(this.position.getYLength());
 	}
 
 	/**
@@ -390,4 +259,10 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	public boolean isStaticCollideable() {
 		return this.staticCollideable;
 	}
+
+    // TODO -- actual sort out 3D
+    @Override
+    public float getPosZ() {
+        return 0;
+    }
 }
