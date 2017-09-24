@@ -1,7 +1,9 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.Archer;
 import com.deco2800.potatoes.entities.Caveman;
 import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.Wizard;
 
 /**
  * PlayerManager for managing the Player instance.
@@ -21,14 +23,14 @@ public class PlayerManager extends Manager {
 	}
 	
 	public enum PlayerType { caveman, wizard, archer };	// Types of players in the game
-	private PlayerType playerType = PlayerType.caveman;	// The type of the player
+	private PlayerType playerType = PlayerType.archer;	// The type of the player
 	
 	public void setPlayerType(PlayerType type) {
 		this.playerType = type;
 	}
 
 	/**
-	 * Sets the player.
+	 * Sets the player to specified player.
 	 * 
 	 * @param player
 	 */
@@ -38,10 +40,21 @@ public class PlayerManager extends Manager {
 		GameManager.get().getManager(CameraManager.class).setTarget(player);
 	}
 	
+	/**
+	 * Sets the player based on the player type.
+	 * 
+	 * @param player
+	 */
 	public void setPlayer(float posX, float posY, float posZ) {
 		switch (this.playerType) {
 		case caveman:
 			this.player = new Caveman(posX, posY, posZ);
+			break;
+		case archer:
+			this.player = new Archer(posX, posY, posZ);
+			break;
+		case wizard:
+			this.player = new Wizard(posX, posY, posZ);
 			break;
 		default:
 			this.player = new Player(posX, posY, posZ);

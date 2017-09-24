@@ -40,12 +40,6 @@ public class PlayerTest {
 	}
 	
 	@Test
-	public void damageTest() {
-		player.setState(PlayerState.damaged);
-		player.hasState(PlayerState.damaged);
-	}
-	
-	@Test
 	public void checkKeyDownTest() {
 		player.handleKeyUp(Input.Keys.W);
 	}

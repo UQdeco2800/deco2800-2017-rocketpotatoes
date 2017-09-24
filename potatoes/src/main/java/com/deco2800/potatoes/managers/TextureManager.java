@@ -212,7 +212,7 @@ public class TextureManager extends Manager {
         		}
         }
         
-        // Add all caveman sprites
+        // Add all archer sprites
         for (Direction direction : Direction.values()) {
         		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");

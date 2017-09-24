@@ -49,7 +49,7 @@ public class Caveman extends Player {
     private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.interact, 5, 400, new Runnable() {
 		@Override
 		public void run() {
-			// Handle finishing attack
+			// Handle finishing interact
 			clearState();
 			updateSprites();
 		}
@@ -85,7 +85,6 @@ public class Caveman extends Player {
     
     @Override
     public void attack() {
-    		super.attack();
     		if (this.setState(PlayerState.attack)) {
     			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
     	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
