@@ -7,7 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
@@ -91,7 +91,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 
 	@Override
-	public List<TreeStatistics> getAllUpgradeStats() {
+	public List<TreeProperties> getAllUpgradeStats() {
 		if (this.gatherType instanceof SeedResource) {
 			// TODO hard coded currently but needs to be fixed
 			this.setTexture("seed_resource_tree");
@@ -110,19 +110,19 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 
 	 * @return the list of upgrade stats for a seed resource tree
 	 */
-	private static List<TreeStatistics> getSeedTreeStats() {
-		List<TreeStatistics> result = new LinkedList<>();
-		List<StatisticsBuilder<ResourceTree>> builders = new LinkedList<>();
+	private static List<TreeProperties> getSeedTreeStats() {
+		List<TreeProperties> result = new LinkedList<>();
+		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
 		String texture = "seed_resource_tree";
-		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
-		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
-		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(30).setBuildTime(1500).setBuildCost(1)
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(30).setBuildTime(1500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
 
-		for (StatisticsBuilder<ResourceTree> statisticsBuilder : builders) {
+		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());
 		}
 		return result;
@@ -133,19 +133,19 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 * 
 	 * @return the list of upgrade stats for a food resource tree
 	 */
-	private static List<TreeStatistics> getFoodTreeStats() {
-		List<TreeStatistics> result = new LinkedList<>();
-		List<StatisticsBuilder<ResourceTree>> builders = new LinkedList<>();
+	private static List<TreeProperties> getFoodTreeStats() {
+		List<TreeProperties> result = new LinkedList<>();
+		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
 		String texture = "food_resource_tree";
-		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
-		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
-		builders.add(new StatisticsBuilder<ResourceTree>().setHealth(15).setBuildTime(6500).setBuildCost(1)
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(15).setBuildTime(6500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
 
-		for (StatisticsBuilder<ResourceTree> statisticsBuilder : builders) {
+		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());
 		}
 		return result;

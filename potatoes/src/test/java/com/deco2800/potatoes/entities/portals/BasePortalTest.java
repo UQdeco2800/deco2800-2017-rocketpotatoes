@@ -1,9 +1,9 @@
 package com.deco2800.potatoes.entities.portals;
 
 import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.ProgressBar;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
@@ -13,6 +13,9 @@ import org.junit.Before;
 
 
 import static org.junit.Assert.*;
+
+import org.junit.After;
+
 import com.badlogic.gdx.Input;
 
 public class BasePortalTest{
@@ -24,6 +27,11 @@ public class BasePortalTest{
 		testPortal = new BasePortal(0, 0, 0, 3);
 		GameManager.get().setWorld(new TestWorld());
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 
 	private class TestWorld extends World {
 
@@ -32,8 +40,7 @@ public class BasePortalTest{
 	@Test
 	public void ProgressBar() {
 		assertTrue(testPortal.getProgressBar() instanceof ProgressBar);
-		assertTrue(testPortal.showProgress() == false);
-		assertTrue(testPortal.getMaxProgress() == 1);
+		assertTrue(testPortal.showProgress() == true);
 	}
 
 

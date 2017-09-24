@@ -4,6 +4,7 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.World;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +29,11 @@ public class MortalEntityTest {
 	public void setUp() throws Exception {
 		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 
 	//Common to all initialisation test
 	private void initTestCommon() {

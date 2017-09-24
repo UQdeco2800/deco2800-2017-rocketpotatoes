@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
@@ -47,8 +47,8 @@ public class EnemyEntityTest {
 		}
 
 		@Override
-		public EnemyStatistics getBasicStats() {
-				EnemyStatistics result = new StatisticsBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
+		public EnemyProperties getBasicStats() {
+				EnemyProperties result = new PropertiesBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
 					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
 			return result;
 		}
@@ -151,8 +151,8 @@ public class EnemyEntityTest {
 		private Direction currentDirection;
 
 		@Override
-		public EnemyStatistics getBasicStats() {
-			EnemyStatistics result = new StatisticsBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
+		public EnemyProperties getBasicStats() {
+			EnemyProperties result = new PropertiesBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
 					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
 			return result;
 		}

@@ -3,7 +3,7 @@ package com.deco2800.potatoes.managers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.Player.PlayerState;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,16 +114,25 @@ public class TextureManager extends Manager {
             saveTexture("lightning_tree" + i, "resources/trees/lightning" + i + ".png");
             saveTexture("lightning_being_damaged" + i, "resources/trees/lightningBeingDamaged" + i + ".png");
             saveTexture("lightning_damaged" + i, "resources/trees/lightningDamaged" + i + ".png");
-            if (i < 5)
+            if (i < 5){
                 saveTexture("fire_tree"+i,"resources/trees/fire" + i + ".png");
-            if (i < 9)
-            	saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
+                saveTexture("ice-break"+i,"resources/trees/ICE-break" + i + ".png");
+            }
+
+            if (i < 9) {
+                saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
+                saveTexture("ice_being_damaged" + i, "resources/trees/ICE-beingDamaged" + i + ".png");
+            }
             if (i < 8) {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
+                saveTexture("ice_tree"+i, "resources/trees/ice"+i+".png");
             }
+
+
+
         }
         //damage tree:ice
-        saveTexture("ice_basic_tree", "resources/trees/iceBasicTree.png");
+
         //damage tree:acorn
         saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
 
@@ -188,7 +197,7 @@ public class TextureManager extends Manager {
         saveTexture("pricklyPear", "resources/resourceEntities/pricklyPear.png");
 
         saveTexture("snowBall", "resources/resourceEntities/snowBall.png");
-        saveTexture("sealSkin", "resources/resourceEntities/frozenMeat-sealSkin.png");
+        saveTexture("sealSkin", "resources/resourceEntities/sealSkin.png");
         saveTexture("iceCrystal", "resources/resourceEntities/iceCrystal.png");
 
         saveTexture("coal", "resources/resourceEntities/coal.png");
@@ -226,13 +235,31 @@ public class TextureManager extends Manager {
         		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
         		
-        		for (int i=1; i<=3; i++) {
+        		String textureNameDamaged = "caveman_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameDamaged, "resources/player/caveman/damaged/" + textureNameDamaged + ".png");
+        		
+        		for (int i=1; i<=5; i++) {
         			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
         			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
         		}
+        		
+        		for (int i=1; i<=8; i++) {
+        			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=3; i++) {
+        			String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=5; i++) {
+        			String textureNameAttack = "caveman_interact_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/caveman/interact/" + textureNameAttack + ".png");
+        		}
         }
         
-     // Add all caveman sprites
+        // Add all archer sprites
         for (Direction direction : Direction.values()) {
         		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");

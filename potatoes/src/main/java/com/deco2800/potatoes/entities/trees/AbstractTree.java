@@ -25,11 +25,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private int constructionLeft = 100;
 	private int upgradeLevel = 0;
 	private transient Animation animation;
-	private boolean dying;
-	private boolean beingDamaged;
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.YELLOW);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 60, 1);
+	private static final List<Color> BUILD_COLOURS = Arrays.asList(Color.YELLOW);
+	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("progress_bar", BUILD_COLOURS, 60, 1);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	/**
 	 * Default constructor for serialization
@@ -142,7 +141,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	/**
 	 * Returns the upgrade stats for the current level of the tree
 	 */
-	public TreeStatistics getUpgradeStats() {
+	public TreeProperties getUpgradeStats() {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
@@ -161,56 +160,15 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		return getAnimation().getFrame();
 	}
 
-	/**
-	 * @return the dying
-	 */
-	public boolean isDying() {
-		return dying;
-	}
-
-	/**
-	 * Sets if this tree is currently dying. If this is set to false, the tree dies
-	 * 
-	 * @param dying
-	 *            whether this tree is dying
-	 */
-	public void setDying(boolean dying) {
-		this.dying = dying;
-		if (!dying) {
-			// Animation is finished, so die
-			super.deathHandler();
-		}
-	}
-
-	/**
-	 * @return the beingDamaged
-	 */
-	public boolean isBeingDamaged() {
-		return beingDamaged;
-	}
-
-	/**
-	 * @param beingDamaged
-	 *            the beingDamaged to set
-	 */
-	public void setBeingDamaged(boolean beingDamaged) {
-		this.beingDamaged = beingDamaged;
-	}
-
 	@Override
 	public boolean damage(float amount) {
-		beingDamaged = true;
+		getUpgradeStats().setDamageAnimation(this);
 		return super.damage(amount);
 	}
 
 	@Override
-	public void deathHandler() {
-		dying = true;
-		// Don't kill the entity just yet
-
-		// destroy the tree
-		// for enemy attacking test
-		GameManager.get().getWorld().removeEntity(this);
+	public void dyingHandler() {
+		getUpgradeStats().setDeathAnimation(this);
 	}
 
 	/**
@@ -220,7 +178,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * 
 	 * @return a list of all the upgrade stats for this tree
 	 */
-	public abstract List<TreeStatistics> getAllUpgradeStats();
+	public abstract List<TreeProperties> getAllUpgradeStats();
 
 	/**
 	 * Returns the current progress
@@ -258,7 +216,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		}
 		return false;
 	}
-
+	
 	@Override
 	public float getProgressRatio() {
 		if (constructionLeft > 0) {
@@ -276,6 +234,6 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
-		return constructionLeft > 0 ? PROGRESS_BAR : null;
+		return constructionLeft > 0 ? BUILD_PROGRESS_BAR : getHealth() < getMaxHealth() ? PROGRESS_BAR : null;
 	}
 }

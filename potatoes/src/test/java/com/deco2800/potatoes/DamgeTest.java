@@ -1,9 +1,9 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.Damage;
 import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.trees.IceTree;
-import com.deco2800.potatoes.entities.trees.LightningTree;
+import com.deco2800.potatoes.entities.trees.DamageTreeType;
+import com.deco2800.potatoes.entities.trees.IceTreeType;
+import com.deco2800.potatoes.entities.trees.LightningTreeType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,14 +14,14 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 public class DamgeTest {
-    Damage IceTree;
-    Damage LightningTree;
+    DamageTreeType IceTree;
+    DamageTreeType LightningTree;
     Resource testResource;
 
     @Before
     public void setUP(){
-        IceTree=new IceTree();
-        LightningTree=new LightningTree();
+        IceTree=new IceTreeType();
+        LightningTree=new LightningTreeType();
         testResource=new Resource();
     }
     @Test

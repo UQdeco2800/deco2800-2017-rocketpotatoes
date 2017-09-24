@@ -21,7 +21,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final transient String enemyType = "moose";
-	private static final EnemyStatistics STATS = initStats();
+	private static final EnemyProperties STATS = initStats();
 
 	private static final float moose_size = 1.5f;
 
@@ -181,8 +181,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	 *
 	 * @return
 	 */
-	private static EnemyStatistics initStats() {
-		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
+	private static EnemyProperties initStats() {
+		EnemyProperties result = new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class)).createEnemyStatistics();
 		return result;
@@ -193,7 +193,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
 	 */
 	@Override
-	public EnemyStatistics getBasicStats() {
+	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
 }
