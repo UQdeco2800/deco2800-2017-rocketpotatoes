@@ -121,7 +121,7 @@ public class Caveman extends Player {
                 Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
                 GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.CHILLI, null, null,
-                        this.getDirection().toString(), Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE));
+                        this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
 
             } else if (!target.isPresent()) {
                 //Disable shooting when no enemies is present until new fix is found.

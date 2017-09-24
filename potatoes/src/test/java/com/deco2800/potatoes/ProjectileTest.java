@@ -49,7 +49,7 @@ public class ProjectileTest {
     protected Effect endEffect = null;
     protected String Directions = "E";
 
-    protected Projectile.ShootingStyles shootingStyles = Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE;
+    protected PlayerProjectile.PlayerShootMethod playerShootMethod = PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
 
     private class TestWorld extends World {
 
@@ -57,24 +57,25 @@ public class ProjectileTest {
 
     @Test
     public void TestProjectile() {
+
         GameManager.get().setWorld(new ProjectileTest.TestWorld());
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
-        testProjectile = new Projectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyles);
+        testProjectile = new Projectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
         assertNotNull(testProjectile);
         assertNotNull(target);
         assertTrue(testProjectile.getDamage() == 10);
         assertTrue(testProjectile.getTexture().contains("rocket"));
         assertTrue(testProjectile.getRange() == 8);
-        assertEquals(5.2828426, testProjectile.getPosX(), 0.2);
-        assertEquals(10.282843, testProjectile.getPosY(), 0.2);
+        assertEquals(4.910557270050049, testProjectile.getPosX(), 0.2);
+        assertEquals(9.821114540100098, testProjectile.getPosY(), 0.2);
         assertEquals(0, testProjectile.getPosZ(), 0.0);
         assertEquals(TargetPosX, testProjectile.getTargetPosX(), 0);
         assertEquals(TargetPosY, testProjectile.getTargetPosY(), 0);
         assertEquals(startEffect,testProjectile.getStartEffect());
         assertEquals(endEffect,testProjectile.getEndEffect());
         assertEquals(targetClass.getClass(), testProjectile.getTargetClass());
-        assertEquals(Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE, shootingStyles);
+        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
 
     }
 
@@ -84,7 +85,7 @@ public class ProjectileTest {
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
         endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
-        testBallisticProjectile = new BallisticProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyles);
+        testBallisticProjectile = new BallisticProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
         assertNotNull(testBallisticProjectile);
         assertNotNull(target);
         assertTrue(testBallisticProjectile.getDamage() == 10);
@@ -92,13 +93,13 @@ public class ProjectileTest {
         assertEquals(endEffect,testBallisticProjectile.getEndEffect());
         assertTrue(testBallisticProjectile.getTexture().contains("rocket"));
         assertTrue(testBallisticProjectile.getRange() == 8);
-        assertEquals(5.2828426, testBallisticProjectile.getPosX(), 0.2);
-        assertEquals(10.282843, testBallisticProjectile.getPosY(), 0.2);
+        assertEquals(4.910557270050049, testBallisticProjectile.getPosX(), 0.2);
+        assertEquals(9.821114540100098, testBallisticProjectile.getPosY(), 0.2);
         assertEquals(0, testBallisticProjectile.getPosZ(), 0.0);
         assertEquals(TargetPosX, testBallisticProjectile.getTargetPosX(), 0);
         assertEquals(TargetPosY, testBallisticProjectile.getTargetPosY(), 0);
         assertEquals(targetClass.getClass(), testBallisticProjectile.getTargetClass());
-        assertEquals(Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE, shootingStyles);
+        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
 
     }
 
@@ -108,7 +109,7 @@ public class ProjectileTest {
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
         endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
-        testHomingProjectile = new HomingProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyles);
+        testHomingProjectile = new HomingProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
         assertNotNull(testHomingProjectile);
         assertNotNull(target);
         assertTrue(testHomingProjectile.getDamage() == 10);
@@ -116,13 +117,13 @@ public class ProjectileTest {
         assertEquals(endEffect,testHomingProjectile.getEndEffect());
         assertTrue(testHomingProjectile.getTexture().contains("rocket"));
         assertTrue(testHomingProjectile.getRange() == 8);
-        assertEquals(5.2828426, testHomingProjectile.getPosX(), 0.2);
-        assertEquals(10.282843, testHomingProjectile.getPosY(), 0.2);
+        assertEquals(4.910557270050049, testHomingProjectile.getPosX(), 0.2);
+        assertEquals(9.821114540100098, testHomingProjectile.getPosY(), 0.2);
         assertEquals(0, testHomingProjectile.getPosZ(), 0.0);
         assertEquals(TargetPosX, testHomingProjectile.getTargetPosX(), 0);
         assertEquals(TargetPosY, testHomingProjectile.getTargetPosY(), 0);
         assertEquals(targetClass.getClass(), testHomingProjectile.getTargetClass());
-        assertEquals(Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE, shootingStyles);
+        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
 
     }
 

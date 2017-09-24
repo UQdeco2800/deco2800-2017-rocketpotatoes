@@ -5,9 +5,24 @@ import com.deco2800.potatoes.entities.effects.Effect;
 
 public class PlayerProjectile extends Projectile {
 
+	public enum PlayerShootMethod {
+		DIRECTIONAL {
+
+		},
+		HOMING {
+
+		},
+		BALLISTIC {
+
+		}
+
+	}
+
+
 	public PlayerProjectile() {
 		//Blank comment to please the lord Sonar
 	}
+
 
 	/**
 	 * Creates a new Ballistic Projectile. Ballistic Projectiles do not change
@@ -23,21 +38,66 @@ public class PlayerProjectile extends Projectile {
 
 	 */
 
-//	public PlayerProjectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
-//                            Effect endEffect, String Directions, float TargetPosX, float TargetPosY, ShootingStyles shootingStyle) {
-//		super(targetClass,posX, posY, posZ, range, damage, projectileTexture, startEffect, endEffect, Directions, TargetPosX, TargetPosY, shootingStyle);
-//	}
-
 	public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
-							Effect endEffect, String Directions, ShootingStyles shootingStyle) {
+							Effect endEffect, String Directions, PlayerShootMethod shootingStyle) {
 		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyle);
+		ShootingStyle(shootingStyle);
+
 	}
-//
 
 
 
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);
+	}
+
+	public PlayerProjectile.PlayerShootMethod getPlayerShootMethod() {
+		return playerShootMethod;
+	}
+
+	public void ShootingStyle(PlayerShootMethod shootingStyle) {
+
+		/**
+		 * Shoots enemies base on the player directions
+		 */
+		if (shootingStyle.toString().equalsIgnoreCase("DIRECTIONAL")) {
+			if (Directions.equalsIgnoreCase("w")) {
+				setTargetPosition(pPosX - 5, pPosY - 5, 0);
+				// setTargetPosition(TargetPosX, TargetPosY, posZ);
+				updatePosition();
+				setPosition();
+			} else if (Directions.equalsIgnoreCase("e")) {
+				setTargetPosition(pPosX + 5, pPosY + 5, 0);
+				updatePosition();
+				setPosition();
+				// setTargetPosition(TargetPosX, TargetPosY, posZ);
+			} else if (Directions.equalsIgnoreCase("n")) {
+				setTargetPosition(pPosX + 15, pPosY - 15, 0);
+				updatePosition();
+				setPosition();
+			} else if (Directions.equalsIgnoreCase("s")) {
+				setTargetPosition(pPosX - 15, pPosY + 15, 0);
+				updatePosition();
+				setPosition();
+			} else if (Directions.equalsIgnoreCase("ne")) {
+				setTargetPosition(pPosX + 15, pPosY + 1, 0);
+				updatePosition();
+				setPosition();
+			} else if (Directions.equalsIgnoreCase("nw")) {
+				setTargetPosition(pPosX - 15, pPosY - 200, 0);
+				updatePosition();
+				setPosition();
+			} else if (Directions.equalsIgnoreCase("se")) {
+				setTargetPosition(pPosX + 20, pPosY + 200, 0);
+				updatePosition();
+				setPosition();
+			} else if (Directions.equalsIgnoreCase("sw")) {
+				setTargetPosition(pPosX - 200, pPosY - 20, 0);
+				updatePosition();
+				setPosition();
+			}
+		}
+
 	}
 }

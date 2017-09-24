@@ -32,7 +32,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     protected float pPosY;
     protected float tPosX;
     protected float tPosY;
-    protected ShootingStyles shootingStyles;
+    protected PlayerProjectile.PlayerShootMethod playerShootMethod;
 
     protected Class<?> targetClass;
     protected boolean rangeReached;
@@ -74,18 +74,7 @@ public class Projectile extends AbstractEntity implements Tickable {
         }
     }
 
-    public enum ShootingStyles {
-        PLAYERDIRECTIONALPROJECTILE {
 
-        },
-        HOMINGPROJECTILE {
-
-        },
-        BALLISTICPROJECTILE {
-
-        }
-
-    }
 
     public Projectile() {
         // nothing yet
@@ -93,7 +82,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 
     public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, ShootingStyles shootingStyles) {
+                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, PlayerProjectile.PlayerShootMethod playerShootMethod) {
         super(startPos.x, startPos.y, startPos.z, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
                 projectileTexture.textures()[0]);
 
@@ -106,7 +95,7 @@ public class Projectile extends AbstractEntity implements Tickable {
             throw new RuntimeException("projectile type must not be null");
         else
             this.projectileTexture = projectileTexture;
-        this.shootingStyles = shootingStyles;
+        this.playerShootMethod = playerShootMethod;
         this.maxRange = this.range = range;
         this.damage = damage;
         this.startEffect = startEffect;
@@ -121,8 +110,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
         if (startEffect != null)
             GameManager.get().getWorld().addEntity(startEffect);
-        if (shootingStyles.toString().equalsIgnoreCase("PLAYERDIRECTIONALPROJECTILE")) {
-            ShootingStyle(shootingStyles);
+        if (playerShootMethod.toString().equalsIgnoreCase("DIRECTIONAL")) {
             updatePosition();
             setPosition();
         } else {
@@ -132,10 +120,6 @@ public class Projectile extends AbstractEntity implements Tickable {
         }
     }
 
-
-    public ShootingStyles getShootingStyles() {
-        return shootingStyles;
-    }
 
     /**
      * Initialize heading. Used if heading changes
@@ -147,50 +131,6 @@ public class Projectile extends AbstractEntity implements Tickable {
         change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
     }
 
-    public void ShootingStyle(ShootingStyles shootingStyle) {
-
-        /**
-         * Shoots enemies base on the player directions
-         */
-        if (shootingStyle.toString().equalsIgnoreCase("PLAYERDIRECTIONALPROJECTILE")) {
-            if (Directions.equalsIgnoreCase("w")) {
-                setTargetPosition(pPosX - 5, pPosY - 5, 0);
-                // setTargetPosition(TargetPosX, TargetPosY, posZ);
-                updatePosition();
-                setPosition();
-            } else if (Directions.equalsIgnoreCase("e")) {
-                setTargetPosition(pPosX + 5, pPosY + 5, 0);
-                updatePosition();
-                setPosition();
-                // setTargetPosition(TargetPosX, TargetPosY, posZ);
-            } else if (Directions.equalsIgnoreCase("n")) {
-                setTargetPosition(pPosX + 15, pPosY - 15, 0);
-                updatePosition();
-                setPosition();
-            } else if (Directions.equalsIgnoreCase("s")) {
-                setTargetPosition(pPosX - 15, pPosY + 15, 0);
-                updatePosition();
-                setPosition();
-            } else if (Directions.equalsIgnoreCase("ne")) {
-                setTargetPosition(pPosX + 15, pPosY + 1, 0);
-                updatePosition();
-                setPosition();
-            } else if (Directions.equalsIgnoreCase("nw")) {
-                setTargetPosition(pPosX - 15, pPosY - 200, 0);
-                updatePosition();
-                setPosition();
-            } else if (Directions.equalsIgnoreCase("se")) {
-                setTargetPosition(pPosX + 20, pPosY + 200, 0);
-                updatePosition();
-                setPosition();
-            } else if (Directions.equalsIgnoreCase("sw")) {
-                setTargetPosition(pPosX - 200, pPosY - 20, 0);
-                updatePosition();
-                setPosition();
-            }
-        }
-
-    }
 
     public void setTargetPosition(float xPos, float yPos, float zPos) {
         targetPos.set(xPos, yPos, zPos);

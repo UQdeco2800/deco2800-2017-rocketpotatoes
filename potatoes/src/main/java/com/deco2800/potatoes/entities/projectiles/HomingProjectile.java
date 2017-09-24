@@ -37,7 +37,7 @@ public class HomingProjectile extends Projectile {
 	 *            Projectile damage
 	 */
 	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
-							Effect endEffect, String Directions, ShootingStyles shootingStyle) {
+							Effect endEffect, String Directions, PlayerProjectile.PlayerShootMethod shootingStyle) {
 		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyle);
 	}
 

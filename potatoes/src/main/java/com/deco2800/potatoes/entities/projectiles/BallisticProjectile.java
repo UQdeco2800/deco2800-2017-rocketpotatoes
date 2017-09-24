@@ -28,7 +28,7 @@ public class BallisticProjectile extends Projectile {
 	 * @param endEffect
 	 */
 	public BallisticProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture,
-			Effect startEffect, Effect endEffect, String Directions, ShootingStyles shootingStyle) {
+			Effect startEffect, Effect endEffect, String Directions, PlayerProjectile.PlayerShootMethod shootingStyle) {
 		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyle);
 	}
 

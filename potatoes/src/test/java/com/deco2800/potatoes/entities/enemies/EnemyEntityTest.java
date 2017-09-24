@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,7 +126,7 @@ public class EnemyEntityTest {
 	@Test
 	public void getShotTest() {
 		Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, ProjectileTexture.ROCKET, null,
-				null,"", Projectile.ShootingStyles.BALLISTICPROJECTILE);
+				null,"", PlayerProjectile.PlayerShootMethod.BALLISTIC);
 		enemyEntity.getShot(proj);
 		Assert.assertTrue("enemy failed to getShot()", enemyEntity.getHealth() < enemyEntity.getMaxHealth());
 	}

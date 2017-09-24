@@ -109,7 +109,7 @@ public class Wizard extends Player {
                 Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
                 GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.ROCKET, null, null,
-                        this.getDirection().toString(), Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE));
+                        this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
 
 
             } else if (!target.isPresent()) {
