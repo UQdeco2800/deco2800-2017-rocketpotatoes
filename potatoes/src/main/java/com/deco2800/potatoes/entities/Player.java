@@ -41,42 +41,19 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
     
-    private String playerType;		// The type of player
-    private float movementSpeed;		// The max speed the player moves
-    private float speedx;			// The instantaneous speed in the x direction
-    private float speedy;			// The instantaneous speed in the y direction
-    private int respawnTime = 5000; 	// Time until respawn in milliseconds
+    protected float movementSpeed;		// The max speed the player moves
+    private float speedx;				// The instantaneous speed in the x direction
+    private float speedy;				// The instantaneous speed in the y direction
+    protected int respawnTime = 5000; 	// Time until respawn in milliseconds
     private Inventory inventory;
 
     private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
-    private Direction currentDirection; 		// The direction the player faces
+    protected Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 
-    public enum PlayerState { idle, walk, attack, damaged, death };    // The states a player may take
-    private PlayerState currentState;    	// The current states of the player, set to idle by default
-    private TimeAnimation currentAnimation;	// The current animation of the player
-    
-    private Map<Direction, Map<PlayerState, String[]>> spriteDirectionMap; // The map containing all player textures
-    
-    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 800, null);
-    private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.death, 3, 300, new Runnable() {
-		@Override
-		public void run() {
-			clearState();
-			updateSprites();
-			System.out.println("Finished Death");
-		}
-	});
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.attack, 5, 200, new Runnable() {
-		@Override
-		public void run() {
-			clearState();
-			updateSprites();
-			System.out.println("Finished Attack");
-		}
-	});
-
+    public enum PlayerState { idle, walk, attack, damaged, death, interact };    // The states a player may take
+    protected PlayerState currentState;    	// The current states of the player, set to idle by default
+    protected TimeAnimation currentAnimation;	// The current animation of the player
 
     /**
      * Default constructor for the purposes of serialization
@@ -94,15 +71,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public Player(float posX, float posY, float posZ) {
         super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
-        this.movementSpeed = 0.075f;
         this.speedx = 0.0f;
         this.speedy = 0.0f;
-        
-        this.playerType = "caveman";
+        this.movementSpeed = 0.075f;
         this.currentDirection = Direction.SouthEast;
         this.currentState = PlayerState.idle;
-        //this.currentAnimation = ;
-        
         addResources();	//Initialise the inventory with the valid resources
     }
     
@@ -231,25 +204,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * handle setting the animations for every player state.
      */
     public void updateSprites() {
-        switch (this.currentState) {
-        case idle:
-    			this.setAnimation(cavemanIdleAnimations.get(this.getDirection()));
-    			break;
-        case walk:
-        		this.setAnimation(cavemanWalkAnimations.get(this.getDirection()));
-        		break;
-        case attack:
-        		this.setAnimation(cavemanAttackAnimations.get(this.getDirection()));
-    			break;
-        case damaged:
-        		this.setAnimation(cavemanDeathAnimations.get(this.getDirection()));
-    			break;
-        case death:
-        		this.setAnimation(cavemanDeathAnimations.get(this.getDirection()));
-        default:
-        		this.setAnimation(cavemanIdleAnimations.get(this.getDirection()));
-        		break;
-        }
+        // Override in subclasses to update the sprite based on state and direciton.
     }
     
     /**
@@ -328,8 +283,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		if (!this.hasState(PlayerState.damaged)) {
     			this.setState(PlayerState.damaged);
                 this.updateSprites();
-                //EventManager eventManager = GameManager.get().getManager(EventManager.class);
-                //eventManager.registerEvent(this, new PlayerDamagedEvent(500, frames));
     		}
     		return super.damage(amount);
     }
@@ -339,53 +292,17 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * faces. Allows the attack state to be enabled and respective 
      * animations to play.
      */
-    private void attack() {
-    		if (this.setState(PlayerState.attack)) {
-    			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-    	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-    	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-    	        
-    	        Optional<AbstractEntity> target = null;
-    	        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-    	            
-    	        if (target.isPresent()) {
-    	        		float targetPosX = target.get().getPosX();
-    	        		float targetPosY = target.get().getPosY();
-    	            
-    	        		switch (this.getDirection()) {
-    	        		case North:
-    	        			break;
-    	        		case NorthEast:
-    	        			pPosY -= 1;
-    	        			pPosX += 1.5;
-    	        			break;
-    	        		case East:
-    	        			pPosY -= 1;
-    	        			pPosX += 1.5;
-    	        			break;
-    	        		case SouthEast:
-    	        			pPosX += 1;
-    	        			break;
-    	        		case South:
-    	        			pPosX += 1.2;
-    	        			break;
-    	        		case SouthWest:
-    	        			pPosY += 1;
-    	        			pPosX += 1;
-    	        			break;
-    	        		case West:
-    	        			break;
-    	        		case NorthWest:
-    	        			break;
-    	        		default:
-    	        			break;
-    	        		}
-    	        		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  1f, 100, ProjectileType.ROCKET, null,
-    	                        /*new ExplosionEffect(target1.get().getClass(), target1.get().getPosX() -2, target1.get().getPosY(), target1.get().getPosZ(), 0, 2f)*/null, this.getDirection().toString(),targetPosX,targetPosY));
-    	        } else if (!target.isPresent()) {
-    	            //Disable shooting when no enemies is present until new fix is found.
-    	        }
-    		}
+    public void attack() {
+    		// Override in subclasses to allow attacking.
+    }
+    
+    /**
+     * A method for making the player interact based on the direction it
+     * faces. Allows the interact state to be enabled and respective 
+     * animations to play.
+     */
+    public void interact() {
+    		// Override in subclasses to allow interacting.
     }
 
     @Override
@@ -458,6 +375,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 tossItem(new FoodResource());
                 break;
             case Input.Keys.E:
+            		interact();
                 harvestResources();
                 break;
             case Input.Keys.NUM_1:
@@ -622,7 +540,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     @Override
     public String toString() {
-        return "The " + playerType + " player";
+        return "The player";
     }
 
     @Override

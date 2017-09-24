@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.Caveman;
 import com.deco2800.potatoes.entities.Player;
 
 /**
@@ -18,6 +19,13 @@ public class PlayerManager extends Manager {
 		input.addKeyDownListener(this::handleKeyDown);
 		input.addKeyUpListener(this::handleKeyUp);
 	}
+	
+	public enum PlayerType { caveman, wizard, archer };	// Types of players in the game
+	private PlayerType playerType = PlayerType.caveman;	// The type of the player
+	
+	public void setPlayerType(PlayerType type) {
+		this.playerType = type;
+	}
 
 	/**
 	 * Sets the player.
@@ -26,9 +34,22 @@ public class PlayerManager extends Manager {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
-
 		// Set camera manager to target the player
 		GameManager.get().getManager(CameraManager.class).setTarget(player);
+	}
+	
+	public void setPlayer(float posX, float posY, float posZ) {
+		switch (this.playerType) {
+		case caveman:
+			this.player = new Caveman(posX, posY, posZ);
+			break;
+		default:
+			this.player = new Player(posX, posY, posZ);
+			break;
+		}
+		
+		// Set camera manager to target the player
+		GameManager.get().getManager(CameraManager.class).setTarget(this.player);
 	}
 
 	public void handleKeyDown(int keycode) {
