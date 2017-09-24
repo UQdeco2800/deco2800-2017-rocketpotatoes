@@ -112,7 +112,7 @@ public class WorldChangeGui extends Gui {
                 // the current player
                 Player player = playerManager.getPlayer();
                 //set player to be next to the portal
-				playerManager.getPlayer().setPosition(18, 16, 0);
+				playerManager.getPlayer().setPosition(18, 16);
                 // add player back into the world
                 GameManager.get().getWorld().addEntity(player);
                 
@@ -184,7 +184,7 @@ public class WorldChangeGui extends Gui {
         // add player to new world
         GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         // set player to be next to the portal
-        playerManager.getPlayer().setPosition(9, 4, 0);
+        playerManager.getPlayer().setPosition(9, 4);
 
         // hide the world change gui
         hide();

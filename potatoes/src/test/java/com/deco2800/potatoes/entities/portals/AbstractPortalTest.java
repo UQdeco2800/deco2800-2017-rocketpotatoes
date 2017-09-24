@@ -32,7 +32,7 @@ public class AbstractPortalTest{
 	
 	@Before
 	public void setup() {
-		testPortal = new AbstractPortal(0, 0, 0, null);
+		testPortal = new AbstractPortal(0, 0, null);
 		GameManager.get().setWorld(new TestWorld());
 	}
 	
@@ -45,7 +45,7 @@ public class AbstractPortalTest{
 	public void collidedFalseTest() {
 		boolean collided;
 		// player not colliding with portal
-		Player addedPlayer = new Player(10, 10, 0);
+		Player addedPlayer = new Player(10, 10);
 		GameManager.get().getWorld().addEntity(addedPlayer);
 		
 		collided = testPortal.preTick(0);
@@ -57,7 +57,7 @@ public class AbstractPortalTest{
 	public void collidedTrueTest() {
 		boolean collided;
 		//player colliding with portal
-		Player addedPlayer = new Player(0, 0, 0);
+		Player addedPlayer = new Player(0, 0);
 		GameManager.get().getWorld().addEntity(addedPlayer);
 		
 		collided = testPortal.preTick(0);
@@ -69,7 +69,7 @@ public class AbstractPortalTest{
 	public void collidedNotPlayerTest() {
 		boolean collided;
 		//entity that isn't a player colliding with the portal
-		Squirrel entity = new Squirrel(0, 0, 0);
+		Squirrel entity = new Squirrel(0, 0);
 		GameManager.get().getWorld().addEntity(entity);
 		
 		collided = testPortal.preTick(0);
@@ -81,7 +81,7 @@ public class AbstractPortalTest{
 	public void getPlayerNullTest() {
 		Player player;
 		//entity that isn't a player
-		Squirrel entity = new Squirrel(0, 0, 0);
+		Squirrel entity = new Squirrel(0, 0);
 		GameManager.get().getWorld().addEntity(entity);
 		
 		testPortal.preTick(0);
@@ -95,7 +95,7 @@ public class AbstractPortalTest{
 	public void getPlayerTest() {
 		Player testPlayer;
 		//player added to the world
-		Player addedPlayer = new Player(0, 0, 0);
+		Player addedPlayer = new Player(0, 0);
 		GameManager.get().getWorld().addEntity(addedPlayer);
 		
 		testPortal.preTick(0);

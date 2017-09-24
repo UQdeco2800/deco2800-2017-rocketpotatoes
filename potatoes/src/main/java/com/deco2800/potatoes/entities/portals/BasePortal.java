@@ -57,11 +57,10 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
      *
      * @param posX      the x coordinate of the spite
      * @param posY      the y coordinate of the sprite
-     * @param posZ      the z coordinate of the sprite
      * @param maxHealth the maximum health for the base portal
      */
-    public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-        super(posX, posY, posZ, TEXTURE, maxHealth);
+    public BasePortal(float posX, float posY, float maxHealth) {
+        super(posX, posY, TEXTURE, maxHealth);
     }
 
     @Override

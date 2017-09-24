@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
@@ -38,7 +40,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static float speed = 0.08f;
 	private static Class<?> goal = ResourceTree.class;
 	private Path path = null;
-	private Box3D target = null;
+	private CollisionMask target = null;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
@@ -57,13 +59,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 *
 	 * @param posX
 	 * @param posY
-	 * @param posZ
 	 */
-	public SpeedyEnemy(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.50f, 0.50f, 0.50f, 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-		 this.speed = speed;
-		 this.goal = goal;
-		 this.path = null;
+	public SpeedyEnemy(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+		this.speed = speed;
+		this.goal = goal;
+		this.path = null;
 		// resetStats();
 	}
 
@@ -159,11 +160,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+				path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
 			}
 
 			// check if close enough to target
-			if (target != null && target.overlaps(this.getBox3D())) {
+			if (target != null && target.overlaps(this.getMask())) {
 				target = null;
 			}
 
@@ -176,7 +177,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			float targetY;
 
 			if (target == null) {
-				target = tgtGet.getBox3D();
+				target = tgtGet.getMask();
 			}
 
 			targetX = target.getX();
@@ -209,9 +210,9 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 			// check collision
 			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
+				if (entity.isStaticCollideable() && this.getMask().overlaps(entity.getMask())) {
 					// collided with wall
-					path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
 					target = path.pop();
 					break;
 				}
@@ -219,11 +220,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getBox3D(), tgtGet.getBox3D());
+				path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
 			}
 
 			// check if close enough to target
-			if (target != null && target.overlaps(this.getBox3D())) {
+			if (target != null && target.overlaps(this.getMask())) {
 				target = null;
 			}
 
@@ -236,7 +237,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			float targetY;
 
 			if (target == null) {
-				target = tgtGet.getBox3D();
+				target = tgtGet.getMask();
 			}
 
 			targetX = target.getX();

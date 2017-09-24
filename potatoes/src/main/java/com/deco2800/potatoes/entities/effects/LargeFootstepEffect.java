@@ -1,11 +1,12 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class LargeFootstepEffect extends Effect {
     private static final transient String TEXTURE = "TankFootstepTemp1";
 
     private boolean resourceStomped = false;
-    private Box3D effectPosition;
+    private CollisionMask effectPosition;
     private int currentTextureIndexCount = 0;
     private String[] currentTextureArray = { "TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3" };
     private int timer = 0;
@@ -41,12 +42,13 @@ public class LargeFootstepEffect extends Effect {
      *            x start position
      * @param posY
      *            y start position
-     * @param posZ
-     *            z start position
      */
-    public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float posZ, float damage, float range) {
-        super(targetClass, new Vector3(posX - 1f, posY + 0.5f, posZ), 1f, 1f, 0, 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
-        effectPosition = getBox3D();
+
+    public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float damage, float range) {
+        // TODO -- find the appropriate constants for this
+        super(targetClass, new Box2D(posX - 1, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
+        effectPosition = getMask();
+
     }
 
     @Override
@@ -56,7 +58,7 @@ public class LargeFootstepEffect extends Effect {
             Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
             for (AbstractEntity entity : entities.values()) {
                 if (this.equals(entity) || !(entity instanceof ResourceEntity)
-                        || !effectPosition.overlaps(entity.getBox3D())) {
+                        || !effectPosition.overlaps(entity.getMask())) {
                     continue;
                 }
 
@@ -83,11 +85,11 @@ public class LargeFootstepEffect extends Effect {
     }
 
     /**
-     * Return the Box3D position of the large footstep
+     * Return the CollisionMask position of the large footstep
      *
-     * @return Box3D position of footstep
+     * @return CollisionMask position of footstep
      */
-    public Box3D getFootstepPosition() {
+    public CollisionMask getFootstepPosition() {
         return effectPosition;
     }
 

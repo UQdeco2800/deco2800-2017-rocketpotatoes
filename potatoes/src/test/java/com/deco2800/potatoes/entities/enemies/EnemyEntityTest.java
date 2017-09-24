@@ -6,6 +6,8 @@ import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -66,19 +68,19 @@ public class EnemyEntityTest extends BaseTest {
 
     @Test
     public void nonEmptyConstructor() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
     }
 
     @Test
     public void onTickTest() {
-        tank1 = new TankEnemy(7, 7, 0);
-        resourceTree = new ResourceTree(3, 3, 0);
-        goalPotato = new GoalPotate(0, 0, 0);
-        playerTest = new Player(1, 1, 0);
+        tank1 = new TankEnemy(7, 7);
+        resourceTree = new ResourceTree(3, 3);
+        goalPotato = new GoalPotate(0, 0);
+        playerTest = new Player(1, 1);
         GameManager.get().getWorld().addEntity(tank1);
         GameManager.get().getWorld().addEntity(resourceTree);
         tank1.onTick(1);
-        resourceTree = new ResourceTree(7, 7, 0);
+        resourceTree = new ResourceTree(7, 7);
         GameManager.get().getWorld().addEntity(resourceTree);
         tank1.onTick(1);
         tank1.getGoal();
@@ -89,19 +91,19 @@ public class EnemyEntityTest extends BaseTest {
 
     @Test
     public void onTickTestPlayer() {
-        tank1 = new TankEnemy(7, 7, 0);
-        playerTest = new Player(1, 1, 0);
-        ProjectileTree projectileTree = new ProjectileTree(10, 10, 0);
+        tank1 = new TankEnemy(7, 7);
+        playerTest = new Player(1, 1);
+        ProjectileTree projectileTree = new ProjectileTree(10, 10);
         GameManager.get().getWorld().addEntity(playerTest);
         GameManager.get().getWorld().addEntity(projectileTree);
         GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         tank1.onTick(1);
-        playerTest = new Player(7, 7, 0);
+        playerTest = new Player(7, 7);
         GameManager.get().getWorld().addEntity(playerTest);
         GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         tank1.onTick(1);
-        Effect stomp = new StompedGroundEffect(MortalEntity.class, 7, 7, 0, true, 1, 1);
-        ResourceEntity food = new ResourceEntity(7, 7, 0, new FoodResource());
+        Effect stomp = new StompedGroundEffect(MortalEntity.class, 7, 7, true, 1, 1);
+        ResourceEntity food = new ResourceEntity(7, 7, new FoodResource());
         GameManager.get().getWorld().addEntity(stomp);
         GameManager.get().getWorld().addEntity(food);
         tank1.onTick(1);
@@ -109,58 +111,60 @@ public class EnemyEntityTest extends BaseTest {
 
     @Test
     public void setSpeedTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
         tank1.setSpeed(3f);
         Assert.assertEquals("Failed to set Speed", 3f, tank1.getSpeed(), 0f);
     }
 
     @Test
     public void setGoalTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
         tank1.setGoal(ProjectileTree.class);
         Assert.assertEquals("Failed to set Goal", ProjectileTree.class, tank1.getGoal());
     }
 
     @Test
     public void getShotProjectileTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+
+        tank1 = new TankEnemy(7, 7);
 //        Projectile proj =new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10,
 //                            Projectile.ProjectileType.ROCKET, null, null);
         Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, ProjectileTexture.ROCKET, null,
                 null);
+
         tank1.getShot(proj);
         Assert.assertTrue("enemy failed to getShot()", tank1.getHealth() < tank1.getMaxHealth());
     }
 
     @Test
     public void getShotEffectTest() {
-        tank1 = new TankEnemy(7, 7, 0);
-        Effect foot = new LargeFootstepEffect(MortalEntity.class, 5, 5, 0, 1, 1);
+        tank1 = new TankEnemy(7, 7);
+        Effect foot = new LargeFootstepEffect(MortalEntity.class, 5, 5, 1, 1);
         tank1.getShot(foot);
         Assert.assertTrue("enemy failed to getShot()", tank1.getHealth() < tank1.getMaxHealth());
     }
 
     @Test
     public void getProgressRatioTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
         Assert.assertTrue("Ratio was not 1", tank1.getProgressRatio() == 1);
     }
 
     @Test
     public void getMaxProgressTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
         Assert.assertTrue("Ratio was not 1", tank1.getMaxProgress() == 1000);
     }
 
     @Test
     public void dyingHandlerTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
         tank1.dyingHandler();
     }
 
     @Test
     public void deathHandlerTest() {
-        tank1 = new TankEnemy(7, 7, 0);
+        tank1 = new TankEnemy(7, 7);
         tank1.deathHandler();
     }
 

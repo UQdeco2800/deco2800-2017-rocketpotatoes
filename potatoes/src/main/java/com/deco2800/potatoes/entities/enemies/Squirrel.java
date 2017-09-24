@@ -1,5 +1,10 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -7,7 +12,6 @@ import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
@@ -25,7 +29,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
-	private Box3D target = null;
+	private CollisionMask target = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
@@ -36,17 +40,18 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * Default constructor for serialization
 	 */
 	public Squirrel() {
+		this(0, 0);
 	}
 
-	/***
+	/**
 	 * Constructs a new Squirrel entity with pre-defined size and rendering lengths to match.
 	 *
 	 * @param posX The x coordinate the created squirrel will spawn from
 	 * @param posY The y coordinate the created squirrel will spawn from
-	 * @param posZ The z coordinate the created squirrel will spawn from
 	 */
-	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+	public Squirrel(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+		this.goal = goal;
 		this.path = null;
 	}
 
@@ -66,19 +71,20 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
         // check paths
 
-		// check that we actually have a path
-		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-		}
+        // check that we actually have a path
+        if (path == null || path.isEmpty()) {
+            path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
+        }
+
 
 
 		//check if last node in path matches player
-		if(!(path.goal().overlaps(playerManager.getPlayer().getBox3D()))) {
-			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+		if(!(path.goal().overlaps(playerManager.getPlayer().getMask()))) {
+			path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
 		}
 
 		//check if close enough to target
-		if (target != null && target.overlaps(this.getBox3D())) {
+		if (target != null && target.overlaps(this.getMask())) {
 			target = null;
 		}
 
@@ -92,8 +98,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		float targetY;
 
 		if (target == null) {
-			target = playerManager.getPlayer().getBox3D();
-		}
+            target = playerManager.getPlayer().getMask();
+		} 
 
 		targetX = target.getX();
 		targetY = target.getY();

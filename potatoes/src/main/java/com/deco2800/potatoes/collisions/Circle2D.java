@@ -6,12 +6,39 @@ public class Circle2D implements CollisionMask {
     private float y;
     private float radius;
 
+
+    /**
+     * Create a new Box2D at a specific point with a given radius.
+     * Any negative radius will be swapped to positive.
+     *
+     * @param x Centre-point x
+     * @param y Centre-point y
+     * @param radius The radius of the circle.
+     */
     public Circle2D(float x, float y, float radius) {
         this.x = x;
         this.y = y;
-        this.radius = radius;
+        this.setRadius(radius); //converts neg radius
     }
 
+    /**
+     * Makes a copy of the current Circle2D.
+     *
+     * @return A copy of the current Circle2D
+     */
+    @Override
+    public CollisionMask copy() {
+        return new Circle2D(x, y, radius);
+    }
+
+    /**
+     * Checks if this collision mask overlaps another collision masks.
+     * This function is symmetric.
+     * Touching the edge is not considered as overlapping.
+     *
+     * @param other The other collision mask.
+     * @return True iff the collision masks are overlapping.
+     */
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -25,6 +52,13 @@ public class Circle2D implements CollisionMask {
         }
     }
 
+    /**
+     * Finds the minimum edge-to-edge distance between this collision mask and another collision mask.
+     * This function is symmetric.
+     *
+     * @param other The other collision mask.
+     * @return The distance. If the collision masks overlap, a negative number is returned.
+     */
     @Override
     public float distance(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -61,32 +95,55 @@ public class Circle2D implements CollisionMask {
         return centre.distance(x1, y1, x2, y2) - radius;
     }
 
+    /**
+     * Returns the x coordinate at the centre of the mask.
+     *
+     * @return Returns the x coordinate.
+     */
     @Override
-    public float getX() {
-        return this.x;
-    }
+    public float getX() { return this.x; }
 
+    /**
+     * Sets the x coordiante at the centre of the mask.
+     *
+     * @param x The new x coordinate.
+     */
     @Override
-    public void setX(float x) {
-        this.x = x;
-    }
+    public void setX(float x) { this.x = x; }
 
+    /**
+     * Returns the y coordinate at the centre of the mask.
+     *
+     * @return Returns the y coordinate.
+     */
     @Override
-    public float getY() {
-        return this.y;
-    }
+    public float getY() { return this.y; }
 
+    /**
+     * Sets the y coordinate at the centre of the mask.
+     *
+     * @param y The new y coordinate.
+     */
     @Override
-    public void setY(float y) {
-        this.y = y;
-    }
+    public void setY(float y) { this.y = y; }
 
+    /**
+     * Returns the radius of this Circle2D.
+     *
+     * @return Returns the radius.
+     */
     public float getRadius() {
         return this.radius;
     }
 
+    /**
+     * Sets the radius of the Circle2D.
+     * Any negative values will be swapped to positive values.
+     *
+     * @param radius The new radius.
+     */
     public void setRadius(float radius) {
-        this.radius = radius;
+        this.radius = (radius >= 0) ? radius : -radius ;
     }
 
     //TODO maybe: public boolean centredOnPoint(Point2D) {}
@@ -121,6 +178,12 @@ public class Circle2D implements CollisionMask {
         return Float.compare(circle2D.radius, radius) == 0;
     }
 
+    /**
+     * Returns the variables of this Circle2D in the form:
+     * "<x>, <y>, <radius>"
+     *
+     * @return This Circle2D's parameters
+     */
     @Override
     public String toString() {
         return this.x + ", " + this.y + ", " + this.radius;

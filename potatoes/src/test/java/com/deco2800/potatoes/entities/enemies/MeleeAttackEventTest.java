@@ -21,7 +21,7 @@ public class MeleeAttackEventTest extends BaseTest {
 
     private MeleeAttackEvent eventEmpty;
     private MeleeAttackEvent testEvent = new MeleeAttackEvent(20, Player.class);
-    private TankEnemy testMeleeEnemy = new TankEnemy(15, 15, 0);
+    private TankEnemy testMeleeEnemy = new TankEnemy(15, 15);
 
     @Before
     public void setup() throws Exception {
@@ -58,7 +58,7 @@ public class MeleeAttackEventTest extends BaseTest {
     public void actionTestOutOfRange() {
         GameManager.get().getWorld().addEntity(testMeleeEnemy);
         testEvent.action(testMeleeEnemy);
-        GameManager.get().getWorld().addEntity(new Player(17, 17, 0));
+        GameManager.get().getWorld().addEntity(new Player(17, 17));
         testEvent.action(testMeleeEnemy);
     }
 
@@ -68,7 +68,7 @@ public class MeleeAttackEventTest extends BaseTest {
     @Test
     public void actionTestInRange() {
         GameManager.get().getWorld().addEntity(testMeleeEnemy);
-        Player playerTest = new Player(16, 16, 0);
+        Player playerTest = new Player(16, 16);
         playerTest.setHealth(2);
         GameManager.get().getWorld().addEntity(playerTest);
         testEvent.action(testMeleeEnemy);

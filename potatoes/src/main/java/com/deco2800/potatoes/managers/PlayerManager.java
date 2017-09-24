@@ -62,19 +62,19 @@ public class PlayerManager extends Manager {
 	 * 
 	 * @param player
 	 */
-	public void setPlayer(float posX, float posY, float posZ) {
+	public void setPlayer(float posX, float posY) {
 		switch (this.playerType) {
 		case caveman:
-			this.player = new Caveman(posX, posY, posZ);
+			this.player = new Caveman(posX, posY);
 			break;
 		case archer:
-			this.player = new Archer(posX, posY, posZ);
+			this.player = new Archer(posX, posY);
 			break;
 		case wizard:
-			this.player = new Wizard(posX, posY, posZ);
+			this.player = new Wizard(posX, posY);
 			break;
 		default:
-			this.player = new Player(posX, posY, posZ);
+			this.player = new Player(posX, posY);
 			break;
 		}
 		

@@ -149,17 +149,16 @@ public class ResourceTest {
 	@Test
 	public void instantiationPositionTest() {
 		// Set position and type food
-		ResourceEntity foodEntity = new ResourceEntity(1,2,3,new FoodResource());
+		ResourceEntity foodEntity = new ResourceEntity(1,2,new FoodResource());
 		assert(foodEntity.getType().equals(new FoodResource()));
 		assert(foodEntity.getType().getTypeName().equals("food"));
 		assert(foodEntity.getPosX() == 1);
 		assert(foodEntity.getPosY() == 2);
-		assert(foodEntity.getPosZ() == 3);
 	}
 	
 	@Test
 	public void resourceEntityQuantityTest() {
-		ResourceEntity foodEntity = new ResourceEntity(1,2,3,new FoodResource());
+		ResourceEntity foodEntity = new ResourceEntity(1,2,new FoodResource());
 		assert(foodEntity.getQuantity() == 1);
 		foodEntity.setQuantity(3);
 		assert(foodEntity.getQuantity() == 3);
@@ -167,7 +166,7 @@ public class ResourceTest {
 	
 	@Test
 	public void toStringTest() {
-		ResourceEntity foodEntity = new ResourceEntity(1,2,3,new FoodResource());
+		ResourceEntity foodEntity = new ResourceEntity(1,2,new FoodResource());
 		// ToString
 		foodEntity.setQuantity(3);
 		assert(foodEntity.toString().equals("3 " + new FoodResource().toString()));
@@ -183,8 +182,8 @@ public class ResourceTest {
 	@Test
 	public void textureTest() {
 		ResourceEntity entity = new ResourceEntity();
-		ResourceEntity food = new ResourceEntity(0,0,0, new FoodResource());
-		ResourceEntity seed = new ResourceEntity(0,0,0, new SeedResource());
+		ResourceEntity food = new ResourceEntity(0,0, new FoodResource());
+		ResourceEntity seed = new ResourceEntity(0,0, new SeedResource());
 		assert(entity.getType().getTexture().equals("default"));
 		assert(seed.getType().getTexture().equals("seed"));
 		assert(food.getType().getTexture().equals("food"));

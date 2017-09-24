@@ -1,7 +1,9 @@
 package com.deco2800.potatoes.entities.projectiles;
 
 import com.badlogic.gdx.math.Vector3;
+
 import com.deco2800.potatoes.entities.AbstractEntity;
+
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -139,10 +141,12 @@ public class PlayerProjectile extends Projectile {
         return tPosX;
     }
 
+
     /**
      * Returns Target Pos Y
      */
     public float getTargetPosY() {
         return tPosY;
     }
+
 }

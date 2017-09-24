@@ -18,7 +18,7 @@ import org.junit.Test;
 public class RespawnEventTest {
 	private static final int respawnTime = 5000;
 	RespawnEvent testEvent = new RespawnEvent(respawnTime);
-	Player player = new Player(5, 10, 0);
+	Player player = new Player(5, 10);
 
 	@Before
 	public void initWorld() {

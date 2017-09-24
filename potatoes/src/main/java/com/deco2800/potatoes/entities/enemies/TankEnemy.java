@@ -9,12 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -37,7 +38,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static float speed = 0.006f;
 	private static Class<?> goal = AbstractTree.class;
 	private Path path = null;
-	private Box3D target = null;
+	private CollisionMask target = null;
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
@@ -48,6 +49,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 * Empty constructor for serialization
 	 */
 	public TankEnemy() {
+        this(0, 0);
 	}
 
 	/**
@@ -55,13 +57,12 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 *
 	 * @param posX The x-coordinate of the Tank Enemy.
 	 * @param posY The y-coordinate of the Tank Enemy.
-	 * @param posZ The z-coordinate of the Tank Enemy.
 	 */
-	public TankEnemy(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, TEXTURE, HEALTH, speed, goal);
-		// this.SPEED = getBasicStats().getSpeed();
-		// this.goal = goal;
-		// resetStats();
+	public TankEnemy(float posX, float posY) {
+        super(new Circle2D(posX, posY, 1.414f), 1f, 1f, TEXTURE, HEALTH, speed, goal);
+		//this.speed = getBasicStats().getSpeed();
+		//this.goal = goal;
+		//resetStats();
 	}
 
 	/**

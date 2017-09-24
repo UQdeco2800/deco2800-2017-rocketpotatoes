@@ -1,6 +1,9 @@
 package com.deco2800.potatoes.util;
 
 import java.util.*;
+import com.deco2800.potatoes.collisions.Point2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.MinimumSpanningTree.Vertex;
 
 public class MinimumSpanningTree {
@@ -9,12 +12,12 @@ public class MinimumSpanningTree {
 
     public static class Vertex {
 
-        private Box3D entry;
+        private Point2D entry;
         private int address;
         private int leastEdgeAddress;
         private float leastEdge;
 
-        public Vertex(Box3D entry, int address) {
+        public Vertex(Point2D entry, int address) {
             this.entry = entry;
             this.address = address;
         }
@@ -40,12 +43,11 @@ public class MinimumSpanningTree {
             return (this.getAddress() == other.getAddress());
         }
 
-
-        public Box3D getEntry() {
+        public Point2D getEntry() {
             return entry;
         }
 
-        public void setEntry(Box3D entry) {
+        public void setEntry(Point2D entry) {
             this.entry = entry;
         }
 
@@ -99,7 +101,7 @@ public class MinimumSpanningTree {
     //------------------ end of nested classes ---------------------
 
     // Value to inflate edge weights.
-    private static final float LARGE_WEIGHT = 1000f;
+    private static final float LARGE_WEIGHT = 1f / 0f;
     // 2D matrix of edge weights
     private float [][] graph;
     // Number of vertices
@@ -119,7 +121,7 @@ public class MinimumSpanningTree {
     }
 
 
-    public void addVertex(Box3D entry, int address) throws IndexOutOfBoundsException {
+    public void addVertex(Point2D entry, int address) throws IndexOutOfBoundsException {
 
         // Check address is valid.
         if (address < 0 || address > this.getSize()) {
@@ -128,7 +130,7 @@ public class MinimumSpanningTree {
         this.getVertexList().add(new Vertex(entry, address));
     }
 
-    public void insertVertex(Box3D entry, int address) throws IndexOutOfBoundsException {
+    public void insertVertex(Point2D entry, int address) throws IndexOutOfBoundsException {
 
         // Check address is valid.
         if (address < 0 || address > this.getSize()) {
@@ -181,7 +183,7 @@ public class MinimumSpanningTree {
      * @param start The position of entity calling the MST.
      * @param obstacles List of Lines as boarder of static entities on the map.
      */
-    public void addStartGoal(Box3D goal, Box3D start, ArrayList<Line> obstacles) {
+    public void addStartGoal(Point2D goal, Point2D start) {
 
         // Line representing edge between vertices.
         Line edge;
@@ -199,7 +201,7 @@ public class MinimumSpanningTree {
                 // Create edge line between vertices.
                 edge = new Line(vertexList.get(i).getEntry(), vertexList.get(j).getEntry());
                 // Check for obstructed edges
-                if (checkLineClash(edge, obstacles)) {
+                if (checkLineClash(edge)) {
                     // Obstruction found
                     this.putGraphEntry(LARGE_WEIGHT, i, j);
                     // Reflect value
@@ -218,9 +220,8 @@ public class MinimumSpanningTree {
      * is intersected by a line contained in list obstacles, then the edge weight is inflated to ensure that that edge
      * will not be included in the minimum spanning tree.
      *
-     * @param obstacles ArrayList of {@code Line} objects that represent the boarders of static collidable
      */
-    public void initGraphWeightMatrix(ArrayList<Line> obstacles) {
+    public void initGraphWeightMatrix() {
 
         // Line representing edge between vertices.
         Line edge;
@@ -243,13 +244,13 @@ public class MinimumSpanningTree {
                 // Create edge line between vertices.
                 edge = new Line(vertexList.get(i).getEntry(), vertexList.get(j).getEntry());
                 // Check for obstructed edges
-                if (this.checkLineClash(edge, obstacles)) {
+                if (checkLineClash(edge)) {
                     // Obstruction found
-                    this.putGraphEntry(LARGE_WEIGHT, i, j);
+                    putGraphEntry(LARGE_WEIGHT, i, j);
                     continue;
                 }
                 // No obstructions
-                this.putGraphEntry(edge.getDistance(), i, j);
+                putGraphEntry(edge.getDistance(), i, j);
             }
         }
     }
@@ -257,21 +258,20 @@ public class MinimumSpanningTree {
     /**
      * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
      * @param edge Line object tested.
-     * @param obstacles Line objects in list
      * @return true in edge intersects with any lines in obstacles; false otherwise.
      */
-    public boolean checkLineClash(Line edge, ArrayList<Line> obstacles) {
+    public boolean checkLineClash(Line line) {
+        boolean output = false;
 
-        // Iterate through obstacles and check if
-        // edge between vertices is obstructed.
-        for (Line line: obstacles) {
-            if(edge.doIntersect(line)) {
-                // Edge is obstructed.
-                return true;
+        for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+            if (e.isStaticCollideable() && (0 > e.getMask().distance(line.getEndPointOne().getX(),
+                        line.getEndPointOne().getY(), line.getEndPointTwo().getX(), line.getEndPointTwo().getY()))) {
+                output = true;
+                break;
             }
         }
-        // No obstruction.
-        return false;
+
+        return output;
     }
 
 
@@ -291,12 +291,12 @@ public class MinimumSpanningTree {
         return this.graph[row][col];
     }
 
-    public HashMap<Box3D, Box3D> createTree(Box3D goal, Box3D start, ArrayList<Line> obstacles) {
+    public HashMap<Point2D, Point2D> createTree(Point2D goal, Point2D start) {
 
-        HashMap<Box3D, Box3D> tree = new HashMap<>();
+        HashMap<Point2D, Point2D> tree = new HashMap<>();
         Vertex temp;
+        this.addStartGoal(goal, start);
         cloud.clear();
-        this.addStartGoal(goal, start, obstacles);
         // Add the goal vertex (index 0 of vertexList) to the cloud to begin MST.
         cloud.put(0, this.getVertexList().get(0));
         updateLeastEdges();

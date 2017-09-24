@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasDirection;
 import com.deco2800.potatoes.entities.Tickable;
@@ -21,7 +23,6 @@ import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Default constructor for the purposes of serialization
      */
     public Player() {
-        super(0, 0, 0, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
+        this(0, 0);
     }
 
     /**
@@ -67,10 +68,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      *
      * @param posX The x-coordinate.
      * @param posY The y-coordinate.
-     * @param posZ The z-coordinate.
      */
-    public Player(float posX, float posY, float posZ) {
-        super(posX, posY, posZ, 0.30f, 0.30f, 0.30f, 1f, 1f, "player_right", HEALTH);
+    public Player(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.424f), 0.48f, 0.48f, "player_right", HEALTH);
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
@@ -317,7 +317,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         float length = GameManager.get().getWorld().getLength();
         float width = GameManager.get().getWorld().getWidth();
 
-        Box3D newPos = getBox3D();
+        CollisionMask newPos = getMask();
         newPos.setX(newPosX);
         newPos.setY(newPosY);
 
@@ -330,13 +330,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         boolean collided = false;
         for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-                    && newPos.overlaps(entity.getBox3D())) {
+            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) &&
+                    !(entity instanceof Projectile) && !(entity instanceof Effect) &&
+                    newPos.overlaps(entity.getMask())) {
                 LOGGER.info(this + " colliding with " + entity);
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())&& !(entity instanceof Moose)) {
+            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getMask()) &&
+                    !(entity instanceof Moose)) {
                 collided = true;
             }
         }
@@ -384,38 +386,38 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 break;
             case Input.Keys.NUM_1:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                    AbstractTree.constructTree(new ProjectileTree(getCursorCoords().x, getCursorCoords().y, 0));
+                    AbstractTree.constructTree(new ProjectileTree(getCursorCoords().x, getCursorCoords().y));
                 }
                 break;
             case Input.Keys.NUM_2:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                    AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0));
+                    AbstractTree.constructTree(new ResourceTree(getCursorCoords().x, getCursorCoords().y));
                 }
                 break;
             case Input.Keys.NUM_3:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new ResourceTree(getCursorCoords().x, getCursorCoords().y, 0, new FoodResource(), 8));
+                            new ResourceTree(getCursorCoords().x, getCursorCoords().y, new FoodResource(), 8));
                 }
             case Input.Keys.NUM_4:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new IceTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new IceTreeType()));
                 }
             case Input.Keys.NUM_5:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new LightningTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new LightningTreeType()));
                 }
             case Input.Keys.NUM_6:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new FireTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new FireTreeType()));
                 }
             case Input.Keys.NUM_7:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTreeType()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, new AcornTreeType()));
                 }
             case Input.Keys.SPACE:
                 attack();
@@ -468,14 +470,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         // Tosses a item in front of player
         float x = this.getPosX();
         float y = this.getPosY();
-        float z = this.getPosZ();
 
         x = (currentDirection == Direction.SouthWest) ? x - 1 : x + 1;
         y = (currentDirection == Direction.SouthWest) ? y - 2 : y + 2;
 
         // Only toss an item if there are items to toss
         if (this.getInventory().updateQuantity(item, -1) == 1) {
-            GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, z, item));
+            GameManager.get().getWorld().addEntity(new ResourceEntity(x, y, item));
         }
     }
 

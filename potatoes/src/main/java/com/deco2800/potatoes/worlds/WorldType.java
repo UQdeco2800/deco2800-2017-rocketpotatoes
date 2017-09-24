@@ -79,7 +79,7 @@ public class WorldType {
 
 	private static List<Supplier<AbstractEntity>> defaultEntities(String worldType) {
 		List<Supplier<AbstractEntity>> result = new ArrayList<>();
-		result.add(() -> new AbstractPortal(PORTAL_POS.x, PORTAL_POS.y, 0, worldType + "_portal"));
+		result.add(() -> new AbstractPortal(PORTAL_POS.x, PORTAL_POS.y, worldType + "_portal"));
 		return result;
 	}
 

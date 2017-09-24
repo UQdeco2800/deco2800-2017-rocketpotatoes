@@ -1,8 +1,12 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Box2D;
 
 /**
  *  A melee attack that can be performed by an entity to damage another.
@@ -38,7 +42,8 @@ public class MeleeAttack extends Effect {
 	 */
 
 	public MeleeAttack(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
-		super(targetClass, startPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectTexture.SWIPE);
+        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectTexture.SWIPE);
+
 	}
 
 	@Override

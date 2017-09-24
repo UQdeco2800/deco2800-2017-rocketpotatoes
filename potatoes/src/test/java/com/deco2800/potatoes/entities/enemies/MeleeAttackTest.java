@@ -17,8 +17,8 @@ import org.junit.Test;
  */
 public class MeleeAttackTest extends BaseTest {
 
-    private TankEnemy testMeleeEnemy = new TankEnemy(15, 15, 0);
-    private Player playerTest = new Player(16, 16, 0);
+    private TankEnemy testMeleeEnemy = new TankEnemy(15, 15);
+    private Player playerTest = new Player(16, 16);
     private MeleeAttack eventEmpty = new MeleeAttack();
     private MeleeAttack testEvent = new MeleeAttack(testMeleeEnemy.getClass(),
             new Vector3(testMeleeEnemy.getPosX() + 0.5f, testMeleeEnemy.getPosY() + 0.5f, testMeleeEnemy.getPosZ()),

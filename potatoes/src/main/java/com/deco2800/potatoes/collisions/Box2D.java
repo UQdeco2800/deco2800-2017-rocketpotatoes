@@ -2,39 +2,51 @@ package com.deco2800.potatoes.collisions;
 
 public class Box2D implements CollisionMask{
 
-    private float x;
-    private float y;
-    private float xLength;
-    private float yLength;
+    private float x, y;
+    private float xLength, yLength;
 
     /**
-     * Create a new Box2D
+     * Create a new Box2D at a specific point with a length in the x and y dimension.
+     * Any negative lengths will be swapped to positive values.
      *
-     * @param x centrepoint x
-     * @param y centrepoint y
+     * @param x Centre-point x
+     * @param y Centre-point y
      * @param xLength width along x axis
      * @param yLength height along y axis
      */
     public Box2D(float x, float y, float xLength, float yLength) {
         this.x = x;
         this.y = y;
-        this.xLength = xLength;
-        this.yLength = yLength;
+        setXLength(xLength);
+        setYLength(yLength);
     }
+
+    /**
+     * Makes a copy of the current Box2D.
+     *
+     * @return A copy of the current Box2D
+     */
+    @Override
+    public CollisionMask copy() {
+        return new Box2D(x, y, xLength, yLength);
+    }
+
+
 
     private boolean overlapsPoint(Point2D other) {
         // Check x non collision
-        if ( Math.abs(this.x - other.getX()) < (this.xLength * 0.5)) {
+        if ( Math.abs(this.x - other.getX()) >= (this.xLength/2)) {
             return false;
         }
 
         // Check y non collision
-        if ( Math.abs(this.y - other.getY()) < (this.yLength * 0.5)) {
+        if ( Math.abs(this.y - other.getY()) >= (this.yLength/2)) {
             return false;
         }
 
         return true;
     }
+
 
     private boolean overlapsCircle(Circle2D other) {
         // We will consider the circle to be a point
@@ -80,7 +92,14 @@ public class Box2D implements CollisionMask{
 
         return true;
     }
-
+    /**
+     * Checks if this collision mask overlaps another collision masks.
+     * This function is symmetric.
+     * Touching the edge is not considered as overlapping.
+     *
+     * @param other The other collision mask.
+     * @return True iff the collision masks are overlapping.
+     */
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -93,6 +112,7 @@ public class Box2D implements CollisionMask{
             return other.overlaps(this);
         }
     }
+
 
     public boolean overlaps(float x1, float y1, float x2, float y2) {
         float fMin = 0;
@@ -142,7 +162,7 @@ public class Box2D implements CollisionMask{
 
         // Calc dist between sides on each dimension
         float distX = Math.abs(point.getX() - this.x) - this.xLength/2;
-        float distY = Math.abs(point.getX() - this.x) - this.yLength/2;
+        float distY = Math.abs(point.getY() - this.y) - this.yLength/2;
 
         return calculateDistance(distX, distY);
     }
@@ -180,6 +200,12 @@ public class Box2D implements CollisionMask{
         return calculateDistance(distX, distY);
     }
 
+    /**
+     * returns 0 iff on the edge
+     * @param other
+     *              The other collision mask.
+     * @return
+     */
     @Override
     public float distance(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -234,6 +260,7 @@ public class Box2D implements CollisionMask{
     /**
      * Do not pass line with 0 length
      * Currently implements this.overlaps(x1, y1, x2, y2) to check for collision
+     * returns negative if touching(distance 0) or overlaping
      *
      * @param x1
      *              The starting X coordinate of the line being checked.
@@ -342,41 +369,74 @@ public class Box2D implements CollisionMask{
         return closestCorner.distance(x1, y1, x2, y2);
     }
 
-
+    /**
+     * Returns the x coordinate at the centre of the mask.
+     *
+     * @return Returns the x coordinate.
+     */
     @Override
-    public float getX() {
-        return this.x;
-    }
+    public float getX() { return this.x; }
 
+    /**
+     * Sets the x coordiante at the centre of the mask.
+     * Any negative values will be swapped to positive values.
+     *
+     * @param x The new x coordinate.
+     */
     @Override
-    public void setX(float x) {
-        this.x = x;
-    }
+    public void setX(float x) { this.x = x; }
 
+    /**
+     * Returns the y coordinate at the centre of the mask.
+     *
+     * @return Returns the y coordinate.
+     */
     @Override
-    public float getY() {
-        return this.y;
-    }
+    public float getY() { return this.y; }
 
+    /**
+     * Sets the y coordinate at the centre of the mask.
+     * Any negative values will be swapped to positive values.
+     *
+     * @param y The new y coordinate.
+     */
     @Override
-    public void setY(float y) {
-        this.y = y;
-    }
+    public void setY(float y) { this.y = y; }
 
+    /**
+     * Returns the length in the x direction.
+     *
+     * @return Returns the x length.
+     */
     public float getXLength() {
         return this.xLength;
     }
 
+    /**
+     * Set the length in the x direction.
+     *
+     * @param xLength The desired x length.
+     */
     public void setXLength(float xLength) {
-        this.xLength = xLength;
+        this.xLength = (xLength >= 0) ? xLength : -xLength ;
     }
 
+    /**
+     * Returns the length in the y direction.
+     *
+     * @return Returns the y length.
+     */
     public float getYLength() {
         return this.yLength;
     }
 
+    /**
+     * Sets the length in the y direction.
+     *
+     * @param yLength The desired y length.
+     */
     public void setYLength(float yLength) {
-        this.yLength = yLength;
+        this.yLength = (yLength >= 0) ? yLength : -yLength ;
     }
 
 
@@ -410,6 +470,12 @@ public class Box2D implements CollisionMask{
         return Float.compare(box2D.xLength, xLength) == 0 && Float.compare(box2D.yLength, yLength) == 0;
     }
 
+    /**
+     * Returns the variables of this Box2D in the form:
+     * "<x>, <y>, <xLength>, <yLength>"
+     *
+     * @return This Box2D's parameters
+     */
     @Override
     public String toString() {
         return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength ;

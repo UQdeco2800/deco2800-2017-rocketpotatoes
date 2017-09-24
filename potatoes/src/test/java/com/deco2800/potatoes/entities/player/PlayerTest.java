@@ -35,7 +35,7 @@ public class PlayerTest {
 	@Before
     public void setup() {
         player = new Player();
-        player = new Player(1, 1, 0);
+        player = new Player(1, 1);
         GameManager.get().clearManagers();
         PlayerManager m = new PlayerManager();
 		CameraManager cameraManager = new CameraManager();
@@ -62,13 +62,13 @@ public class PlayerTest {
 	public void directionTest() {
 		player.getDirection(); // Test getting the direction
 		
-		player.setPosition(0, 0, 0); 	// Set the player to the origin
+		player.setPosition(0, 0); 	// Set the player to the origin
 		player.onTick(tick++); 			// Tick the player
-        player.setPosition(10, 10, 0); 	// Move the player in East Direction
+        player.setPosition(10, 10); 	// Move the player in East Direction
         player.onTick(tick++);
         assertTrue(player.getDirection().equals(Direction.East));
         
-        player.setPosition(15, 5, 0); 	// Move the player in North Direction
+        player.setPosition(15, 5); 	// Move the player in North Direction
         player.onTick(tick++); 
         assertTrue(player.getDirection().equals(Direction.North));
 	}
@@ -82,9 +82,9 @@ public class PlayerTest {
 		assertTrue(player.getState() == PlayerState.idle);
 		
 		// Tick the player changing position to test if state changes to walk
-		player.setPosition(0, 0, 0);
+		player.setPosition(0, 0);
 		player.onTick(tick++); 		
-        player.setPosition(10, 10, 0); 	
+        player.setPosition(10, 10);
         player.onTick(tick++);
         assertTrue(player.getState() == PlayerState.walk);
         

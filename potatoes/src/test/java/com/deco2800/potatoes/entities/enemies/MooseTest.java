@@ -30,7 +30,7 @@ public class MooseTest extends BaseTest {
     @Before
     public void setup() throws Exception {
         mooseEmpty = new Moose();
-        moose1 = new Moose(0, 0, 0);
+        moose1 = new Moose(0, 0);
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
@@ -64,11 +64,11 @@ public class MooseTest extends BaseTest {
      */
     @Test
     public void onTickTest() {
-        GameManager.get().getWorld().addEntity(new EnemyGate(0,0,0));
-        GameManager.get().getWorld().addEntity(new GoalPotate(15, 10, 0));
-        GameManager.get().getWorld().addEntity(new ProjectileTree(10, 10, 0));
+        GameManager.get().getWorld().addEntity(new EnemyGate(0,0));
+        GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
+        GameManager.get().getWorld().addEntity(new ProjectileTree(10, 10));
         GameManager.get().getWorld().addEntity(moose1);
-        playerTest = new Player(3, 3, 0);
+        playerTest = new Player(3, 3);
         GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         GameManager.get().getWorld().addEntity(playerTest);
         moose1.onTick(1);

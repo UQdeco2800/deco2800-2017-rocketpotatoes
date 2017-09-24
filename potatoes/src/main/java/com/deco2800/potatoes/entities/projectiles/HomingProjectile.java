@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.projectiles;
 import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
@@ -25,6 +26,7 @@ public class HomingProjectile extends Projectile {
 	 *            the targets class
 	 * @param startPos
 	 * @param targetPos
+
 	 * @param range
 	 * @param damage
 	 *            damage of projectile
@@ -35,6 +37,7 @@ public class HomingProjectile extends Projectile {
 	 * @param endEffect
 	 *            the effect to be played if a collision occurs
 	 */
+
 	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
 							Effect endEffect) {
 		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
@@ -43,6 +46,7 @@ public class HomingProjectile extends Projectile {
 		this.pPosY = startPos.y;
 		this.tPosX = targetPos.x;
 		this.tPosY = targetPos.y;
+
 	}
 
 	@Override

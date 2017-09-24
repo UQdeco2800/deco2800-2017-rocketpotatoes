@@ -23,10 +23,9 @@ public class Archer extends Player {
      *
      * @param posX The x-coordinate.
      * @param posY The y-coordinate.
-     * @param posZ The z-coordinate.
      */
-    public Archer(float posX, float posY, float posZ) {
-    		super(posX, posY, posZ);
+    public Archer(float posX, float posY) {
+    		super(posX, posY);
     		this.movementSpeed = 0.07f;
     		this.currentDirection = Direction.SouthEast;
         this.currentState = PlayerState.idle;
@@ -128,13 +127,14 @@ public class Archer extends Player {
 	        		default:
 	        			break;
 	        		}
+
 				Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
 				Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
 				GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.LEAVES, null, null,
 						this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
+	        } else if (!target.isPresent()) {
 
-	          } else if (!target.isPresent()) {
 	            //Disable shooting when no enemies is present until new fix is found.
 	        }
 		}

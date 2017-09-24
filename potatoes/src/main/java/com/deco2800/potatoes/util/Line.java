@@ -6,6 +6,8 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import com.deco2800.potatoes.collisions.Point2D;
+
 /**
  * Utility class for testing weather lines intersect on map.
  * Made up of 2 nested point classes.
@@ -17,7 +19,7 @@ public class Line {
     /**
      * Nested class to represent x and y coordinates of line endpoints
      */
-    private static class Point {
+    public static class Point {
 
         private float x;
         private float y;
@@ -27,7 +29,7 @@ public class Line {
             this.y = y;
         }
 
-        private float getX() {
+        public float getX() {
             return x;
         }
 
@@ -35,7 +37,7 @@ public class Line {
             this.x = x;
         }
 
-        private float getY() {
+        public float getY() {
             return y;
         }
 
@@ -70,76 +72,10 @@ public class Line {
         this.endPointTwo = new Point(x2, y2);
     }
 
-    /**
-     * Create a {@code Line} boardering one side of a {@code Box3D}.
-     * The argument given as p specifies which side the line will
-     * represent. The length of the line is equal to the value returned
-     * by {@code Box3D.getXLength} and {@code Box3D.getYLength}.
-     * @param box Box3D that the line will boarder.
-     * @param p enum type that represents top, bottom, left and right.
-     */
-    public Line(Box3D box, Position p) {
+    public Line(Point2D p1, Point2D p2) {
 
-        switch (p) {
-
-            case TOP:
-                this.endPointOne = new Point(
-                        (box.getX() - box.getXLength()/2f),
-                        (box.getY() + box.getYLength()/2f)
-                );
-                this.endPointTwo = new Point(
-                        (box.getX() + box.getXLength()/2f),
-                        (box.getY() + box.getYLength()/2f)
-                );
-                break;
-
-            case BOTTOM:
-                this.endPointOne = new Point(
-                        (box.getX() - box.getXLength()/2f),
-                        (box.getY() - box.getYLength()/2f)
-                );
-                this.endPointTwo = new Point(
-                        (box.getX() + box.getXLength()/2f),
-                        (box.getY() - box.getYLength()/2f)
-                );
-                break;
-
-            case LEFT:
-                this.endPointOne = new Point(
-                        (box.getX() - box.getXLength()/2f),
-                        (box.getY() + box.getYLength()/2f)
-                );
-                this.endPointTwo = new Point(
-                        (box.getX() - box.getXLength()/2f),
-                        (box.getY() - box.getYLength()/2f)
-                );
-                break;
-
-            case RIGHT:
-                this.endPointOne = new Point(
-                        (box.getX() + box.getXLength()/2f),
-                        (box.getY() + box.getYLength()/2f)
-                );
-                this.endPointTwo = new Point(
-                        (box.getX() + box.getXLength()/2f),
-                        (box.getY() - box.getYLength()/2f)
-                );
-                break;
-        }
-
-
-    }
-
-    /**
-     * Create a {@code Line} from the center of box1 to the
-     * center box2.
-     * @param box1
-     * @param box2
-     */
-    public Line(Box3D box1, Box3D box2) {
-
-        this.endPointOne = new Point(box1.getX(), box1.getY());
-        this.endPointTwo = new Point(box2.getX(), box2.getY());
+        this.endPointOne = new Point(p1.getX(), p1.getY());
+        this.endPointTwo = new Point(p2.getX(), p2.getY());
     }
 
     public Point getEndPointOne() {

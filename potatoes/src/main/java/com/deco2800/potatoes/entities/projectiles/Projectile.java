@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -90,8 +92,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
-		super(startPos.x, startPos.y, startPos.z, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength,
-				true, projectileTexture.textures()[0]);
+		super(new Box2D(startPos.x, startPos.y, xLength + 1f, yLength + 1f), xRenderLength, yRenderLength,
+				projectileTexture.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
@@ -110,6 +112,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
 
+
+        // TODO -- look at the other constructor -- this block of code is commented out there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
 		updatePosition();
 		setPosition();
@@ -186,7 +190,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		animate();
 		setPosition();
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
@@ -196,7 +200,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 			if (!targetClass.isInstance(entity)) {
 				continue;
 			}
-			if (newPos.overlaps(entity.getBox3D())) {
+			if (newPos.overlaps(entity.getMask())) {
 				((MortalEntity) entity).damage(damage);
 				if (endEffect != null)
 					GameManager.get().getWorld().addEntity(endEffect);

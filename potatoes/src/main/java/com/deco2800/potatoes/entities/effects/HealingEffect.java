@@ -1,8 +1,17 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.badlogic.gdx.math.Vector3;
+
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
+
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.SoundManager;
+
 
 
 
@@ -16,7 +25,7 @@ public class HealingEffect extends Effect {
     private static final transient String TEXTURE = "Healing1";
 
     private boolean isTemporary;
-    private Box3D effectPosition;
+    private CollisionMask effectPosition;
     private int currentTextureIndexCount = 0;
     private String[] currentTextureArray = { "Healing1", "Healing2", "Healing3" };
     private int timer = 0;
@@ -35,16 +44,16 @@ public class HealingEffect extends Effect {
      *            x start position
      * @param posY
      *            y start position
-     * @param posZ
-     *            z start position
      * @param isTemporary
      *            boolean for whether this effect is temporary or permanent
      */
-    public HealingEffect(Class<?> targetClass, float posX, float posY, float posZ, boolean isTemporary,
-                               float healing, float range) {
-        super(targetClass, new Vector3(posX, posY, posZ), 3f, 2f, 2f, 1.2f, 1.2f,healing, range, EffectTexture.HEALING);
+
+    public HealingEffect(Class<?> targetClass, float posX, float posY, boolean isTemporary, float healing, 
+            float range) {
+        super(targetClass, new Circle2D(posX, posY, 2.828f), 1.2f, 1.2f, healing, range, EffectTexture.HEALING);
+
         this.isTemporary = isTemporary;
-        effectPosition = getBox3D();
+        effectPosition = getMask();
         animate = false;
     }
 

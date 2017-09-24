@@ -21,7 +21,7 @@ public class CavemanTest {
 	
 	@Before
 	public void setup() {
-		caveman = new Caveman(0, 0, 0);
+		caveman = new Caveman(0, 0);
 	}
 	
 	@After

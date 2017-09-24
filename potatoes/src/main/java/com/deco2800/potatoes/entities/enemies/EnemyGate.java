@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -28,10 +29,9 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	 *
 	 * @param posX x coordinate to place gate
 	 * @param posY y coordinate to place gate
-	 * @param posZ z coordinate to place gate
 	 */
-	public EnemyGate(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, TEXTURE, 1000f);
+	public EnemyGate(float posX, float posY) {
+        super(new Box2D(posX, posY, 1f, 1f), 1f, 1f, TEXTURE, 1000f);
 		this.setStaticCollideable(true);
 	}
 

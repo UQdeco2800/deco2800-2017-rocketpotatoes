@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Circle2D;
 
 public class ExplosionEffect extends Effect {
 
@@ -12,8 +14,8 @@ public class ExplosionEffect extends Effect {
 	}
 
 	public ExplosionEffect(Class<?> targetClass, Vector3 targetPos, float damage, float range) {
-		super(targetClass, new Vector3(targetPos.x - 4, targetPos.y - 1, targetPos.z), effectWidth, effectHeight, 0,
-				effectWidth, effectHeight, damage, range, EffectTexture.EXPLOSION);
+
+		super(targetClass, new Box2D(targetPos.x,targetPos.y,effectWidth,effectHeight),effectWidth,effectHeight, damage, range, EffectTexture.AOE);
 		animate = true;
 		loopAnimation = false;
 	}

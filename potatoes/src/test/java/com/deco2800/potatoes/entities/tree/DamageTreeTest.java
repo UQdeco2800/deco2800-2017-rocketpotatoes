@@ -17,11 +17,11 @@ public class DamageTreeTest {
     @Before
     public void setup() {
 
-        defaultDamageTree = new DamageTree(0, 0, 0);
-        iceTreeDamageTree = new DamageTree(1, 0, 0, new IceTreeType());
-        acornTreeDamageTree = new DamageTree(1, 0, 0, new AcornTreeType());
-        fireTreeDamageTree = new DamageTree(1, 0, 0, new FireTreeType());
-        nullTypeDamageTree = new DamageTree(2, 0, 0,null);
+        defaultDamageTree = new DamageTree(0, 0);
+        iceTreeDamageTree = new DamageTree(1, 0, new IceTreeType());
+        acornTreeDamageTree = new DamageTree(1, 0, new AcornTreeType());
+        fireTreeDamageTree = new DamageTree(1, 0, new FireTreeType());
+        nullTypeDamageTree = new DamageTree(2, 0, null);
 
     }
 

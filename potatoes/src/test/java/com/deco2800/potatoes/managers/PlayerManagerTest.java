@@ -25,7 +25,7 @@ public class PlayerManagerTest {
 	public void distanceTest() {
 		PlayerManager manager = new PlayerManager();
 		Player player = new Player();
-		player.setPosition(10, 15, 0);
+		player.setPosition(10, 15);
 		manager.setPlayer(player);
 		
 		float distance = manager.distanceFromPlayer(5, 5);
