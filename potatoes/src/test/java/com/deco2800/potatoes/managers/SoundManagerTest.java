@@ -5,6 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SoundManagerTest {
+
     @Test
     public void initAndReadTest(){
         SoundManager m = new SoundManager();
