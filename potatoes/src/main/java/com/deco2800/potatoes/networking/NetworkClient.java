@@ -18,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkClient {
     private static final transient Logger LOGGER = LoggerFactory.getLogger(NetworkClient.class);
@@ -114,6 +116,13 @@ public class NetworkClient {
         client.sendTCP(cr);
     }
 
+    public List<InetAddress> discoverHosts (int udpPort, int timeoutMillis) throws IOException {
+        client = new Client();
+        client.start();
+        List<InetAddress> ips = client.discoverHosts(udpPort,timeoutMillis);
+        client.dispose();
+        return ips;
+    }
 
     /**
      * Broadcasts a chat message to the server to distribute to the rest of the clients

@@ -42,12 +42,11 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
     /*
      * Progress bar to display health of base portal
      */
-    // private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
-
     private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
+    /*
+     * Base portal's texture
+    */
     private static final transient String TEXTURE = "forest_portal";
-
-
     /*
      * Logger for all info/warning/error logs
      */
@@ -59,7 +58,6 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
     /*
      * The radius of which a collision can be detected
 	 */
-
     private static final float CHANGE = (float) 0.2;
     /*
      * The array of calculatePositions where a collision needs to be checked
