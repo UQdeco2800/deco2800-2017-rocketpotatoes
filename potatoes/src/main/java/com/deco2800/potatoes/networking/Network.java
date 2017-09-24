@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.FoodResource;
-import com.deco2800.potatoes.entities.Resource;
-import com.deco2800.potatoes.entities.SeedResource;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
-import com.deco2800.potatoes.entities.trees.UpgradeStats;
+import com.deco2800.potatoes.entities.trees.TreeStatistics;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.util.Box3D;
 import com.esotericsoftware.kryo.Kryo;
@@ -16,6 +16,10 @@ import org.reflections.Reflections;
 import java.util.*;
 
 public class Network {
+
+    private Network() {
+        // Hide public constructor
+    }
 
     /**
      * Registers our classes for serialization, to be used by both client and server in their initialization.
@@ -47,8 +51,8 @@ public class Network {
         k.register(java.util.Optional.class);
         k.register(Box3D.class);
         k.register(LinkedList.class);
-        k.register(TreeProjectileShootEvent.class); // TODO custom protocol for abitrary events?
-        k.register(UpgradeStats.class);
+        k.register(TreeProjectileShootEvent.class);
+        k.register(TreeStatistics.class);
         k.register(Resource.class);
         k.register(FoodResource.class);
         k.register(SeedResource.class);
@@ -69,18 +73,11 @@ public class Network {
                 reflections.getSubTypesOf(com.deco2800.potatoes.entities.AbstractEntity.class);
 
         // Order matters so let's order them
-        TreeSet<Class<? extends AbstractEntity>> sorted = new TreeSet<>(new Comparator<Class<? extends AbstractEntity>>() {
-            @Override
-            public int compare(Class<? extends AbstractEntity> aClass, Class<? extends AbstractEntity> t1) {
-                // Compare by class name
-                return aClass.getCanonicalName().compareTo(t1.getCanonicalName());
-            }
-        });
+        TreeSet<Class<? extends AbstractEntity>> sorted = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
 
         sorted.addAll(entities);
 
         for (Class c : sorted) {
-            //System.out.println(c.getCanonicalName());
             // Auto register entities!
             k.register(c);
         }
@@ -97,85 +94,259 @@ public class Network {
 
     /* Message sent when a connection is initially made,
      * should be the first message between a client and host */
-    static public class ClientConnectionRegisterMessage {
-        public String name;
+    public static class ClientConnectionRegisterMessage {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    static public class HostDisconnectMessage {
-        public String message;
+    public static class HostDisconnectMessage {
+        private String message;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 
-    static public class HostPlayerDisconnectedMessage {
-        public int id;
+    public static class HostPlayerDisconnectedMessage {
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
     /* Message telling the client they are ready to play */
-    static public class HostPlayReadyMessage {
+    public static class HostPlayReadyMessage {
     }
 
     /* Message telling other clients of a new player */
-    static public class HostNewPlayerMessage {
-        public String name;
-        public int id;
+    public static class HostNewPlayerMessage {
+        private String name;
+        private int id;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
     /* Message telling new clients of an existing player, doesn't create the player entity when processing this */
-    static public class HostExistingPlayerMessage {
-        public String name;
-        public int id;
+    public static class HostExistingPlayerMessage {
+        private String name;
+        private int id;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
 
     /* Message confirming connection, gives the client their id */
-    static public class HostConnectionConfirmMessage {
-        public int id;
+    public static class HostConnectionConfirmMessage {
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
     /* Direct response to a HostEntityCreationMessage, this message is sent to all clients
      * to tell them of this entities existence and it's unique identifier.
      */
-    static public class HostEntityCreationMessage {
-        public AbstractEntity entity;
-        public int id;
+    public static class HostEntityCreationMessage {
+        private AbstractEntity entity;
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public AbstractEntity getEntity() {
+            return entity;
+        }
+
+        public void setEntity(AbstractEntity entity) {
+            this.entity = entity;
+        }
     }
 
-    static public class HostEntityDestroyMessage {
-        public int id;
+    public static class HostEntityDestroyMessage {
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
-    /* Message indicating our player moved
-     * TODO support for z? Unused so far */
-    static public class ClientPlayerUpdatePositionMessage {
-        public float x, y;
+    /* Message indicating our player moved */
+    public static class ClientPlayerUpdatePositionMessage {
+        private float x, y;
+
+        public float getX() {
+            return x;
+        }
+
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        public float getY() {
+            return y;
+        }
+
+        public void setY(float y) {
+            this.y = y;
+        }
     }
 
-    /* Message indicating our player wants to build something
-     * TODO support other types? AbstractTree?? */
-    static public class ClientBuildOrderMessage {
-        public AbstractTree tree;
+    /* Message indicating our player wants to build something */
+    public static class ClientBuildOrderMessage {
+        private AbstractTree tree;
+
+        public AbstractTree getTree() {
+            return tree;
+        }
+
+        public void setTree(AbstractTree tree) {
+            this.tree = tree;
+        }
     }
 
     /* Message from the host indicating a new position of an entity */
-    static public class HostEntityUpdatePositionMessage {
-        public float x, y;
-        public int id;
+    public static class HostEntityUpdatePositionMessage {
+        private float x, y;
+        private int id;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public float getX() {
+            return x;
+        }
+
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        public float getY() {
+            return y;
+        }
+
+        public void setY(float y) {
+            this.y = y;
+        }
     }
 
     /* Message from the host indicating an entity's progress has changed (using the HasProgress interface) */
-    static public class HostEntityUpdateProgressMessage {
-        public int progress;
-        public int id;
+    public static class HostEntityUpdateProgressMessage {
+        private int progress;
+        private int id;
+
+        public int getProgress() {
+            return progress;
+        }
+
+        public void setProgress(int progress) {
+            this.progress = progress;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
     /* Simple chat message object */
-    static public class ClientChatMessage {
-        public String message;
+    public static class ClientChatMessage {
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        private String message;
     }
 
     /* Chat message object sent with sender ID */
-    static public class HostChatMessage {
-        public String message;
-        public int id;
+    public static class HostChatMessage {
+        private String message;
+        private int id;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
 }

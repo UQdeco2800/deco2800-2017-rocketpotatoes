@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.renderering;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,8 +10,13 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.animation.Animated;
+import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
+import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
@@ -27,25 +34,23 @@ import java.util.TreeMap;
 /**
  * A simple isometric renderer for DECO2800 games
  *
- * @Author Tim Hadwen
+ * @Author Tim Hadwen, Dion Lao
  */
 public class Render3D implements Renderer {
 
 	BitmapFont font;
-	SpriteBatch renderBatch;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Render3D.class);
 
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
-	 * AbstractWorld contains some entities and a Map to read tiles from
+	 * World contains some entities and a Map to read tiles from
 	 *
 	 * @param batch
 	 *            Batch to render onto
 	 */
 	@Override
 	public void render(SpriteBatch batch) {
-		this.renderBatch = batch;
 		if (font == null) {
 			font = new BitmapFont();
 			font.getData().setScale(1.0f);
@@ -61,7 +66,7 @@ public class Render3D implements Renderer {
 			public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
 				int val = abstractEntity.compareTo(t1);
 				// System.out.println(abstractEntity+" "+t1);
-				if (abstractEntity instanceof ExplosionProjectile) {
+				if (abstractEntity instanceof Effect) {
 					val = -1;
 				}
 				// Hacky fix so TreeMap doesn't throw away duplicate values. I.e. Renderables in
@@ -90,7 +95,7 @@ public class Render3D implements Renderer {
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+			TextureManager reg = GameManager.get().getManager(TextureManager.class);
 			Texture tex;
 			if (e.getKey() instanceof Animated) {
 				// Animations should probably be changed to TextureRegion for performance
@@ -99,7 +104,7 @@ public class Render3D implements Renderer {
 				tex = reg.getTexture(entity.getTexture());
 			}
 
-			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
+			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			// We want to keep the aspect ratio of the image so...
 			float aspect = (float) (tex.getWidth()) / (float) (tileWidth);
@@ -115,13 +120,11 @@ public class Render3D implements Renderer {
 					// x, y
 					isoPosition.x, isoPosition.y,
 					// originX, originY
-					(tileWidth * entity.getXRenderLength()) / 2,
-					(tileHeight * entity.getYRenderLength()) / 2,
+					(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
 					// width, height
-					tileWidth * entity.getXRenderLength(),
-					(tex.getHeight() / aspect) * entity.getYRenderLength(),
+					tileWidth * entity.getXRenderLength(), (tex.getHeight() / aspect) * entity.getYRenderLength(),
 					// scaleX, scaleY, rotation
-					1, 1, 0 - entity.rotateAngle(),
+					1, 1, 0 - entity.rotationAngle(),
 					// srcX, srcY
 					0, 0,
 					// srcWidth, srcHeight
@@ -133,68 +136,77 @@ public class Render3D implements Renderer {
 		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
 			AbstractEntity entity = e.getKey();
 
-			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY());
+			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				TextureManager reg = (TextureManager) GameManager.get()
-					.getManager(TextureManager.class);
-				float aspect = (float) 1 / 5;
+				ProgressBar PROGRESS_BAR = ((HasProgressBar) entity).getProgressBar();
+				// Allow entities to return null if they don't want to display their progress
+				// bar
+				if (PROGRESS_BAR != null) {
+					TextureManager reg = GameManager.get().getManager(TextureManager.class);
 
-				ProgressBar progressBar = ((HasProgressBar) entity).getProgressBar();
-				Texture barTexture = reg.getTexture((progressBar.getTexture()));
+					Texture barTexture = reg.getTexture((PROGRESS_BAR.getTexture()));
 
-				// sets colour palette
-				batch.setColor(progressBar.getColour(((HasProgress) entity).getProgressRatio()));
+					// sets colour palette
+					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) entity).getProgressRatio()));
 
-				// draws the progress bar
-				Texture entityTexture = reg.getTexture(entity.getTexture());
-				float aspect2 = (float) (entityTexture.getWidth()) / (float) (tileWidth);
-				float maxBarWidth = tileWidth * entity.getXRenderLength()
-					* progressBar.getWidthScale();
-				float barWidth = maxBarWidth * ((HasProgress) entity).getProgressRatio();
-				float width = maxBarWidth * (1 - ((HasProgress) entity).getProgressRatio());
-				//endX (the first bit of the bar) = barX + (maxWidth * entity.getProgressRatio())
-				//or endX = barX + maxWidth - width
-				//greyBarX = endX + endWidth
+					// draws the progress bar
+					Texture entityTexture = reg.getTexture(entity.getTexture());
+					float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
 
-				batch.draw(barTexture,
-						// x co-ordinate
-						// finds the overlap length of the bar and moves it half as much left
-						isoPosition.x - (tileWidth * entity.getXRenderLength()
-							* (progressBar.getWidthScale() - 1) / 2),
-						// y co-ordinate
-						// If height is specified, use it, otherwise estimate the right height
-						isoPosition.y + (progressBar.getHeight() != 0 ? progressBar.getHeight() 
-						: entityTexture.getHeight() / aspect2 + 10),
-						// width, height
-						barWidth, maxBarWidth / 8,
-						// old height
-						// (barTexture.getHeight() / aspect) * entity.getYRenderLength(),
-						// srcX, srcY
-						0, 0,
-						// srcWidth, srcHeight
-						barTexture.getWidth(), barTexture.getHeight(),
-						// flipX, flipY
-						false, false);
+					float barRatio = ((HasProgress) entity).getProgressRatio();
+					float maxBarWidth = tileWidth * entity.getXRenderLength() * PROGRESS_BAR.getWidthScale();
+					float barWidth = maxBarWidth * barRatio;
+					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
 
-				// reset the batch colour
-				batch.setColor(Color.WHITE);
+					// x co-ordinate,
+					// finds the overlap length of the bar and moves it half as much left
+					float barX = isoPosition.x
+							- (tileWidth * entity.getXRenderLength() * (PROGRESS_BAR.getWidthScale() - 1) / 2);
+					// y co-ordinate
+					// If height is specified, use it, otherwise estimate the right height
+					float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
+					float endX = barX + barWidth;
+					// We haven't implemented rounded corners, but when we do:
+					// float greyBarX = endX + endWidth;
 
-				/* display font (used for debugging)
-				 * font.setColor(Color.RED); font.getData().setScale(1.0f); font.draw(batch,
-				 * String.format("%d", ((HasProgress) entity).getProgress()), isoPosition.x +
-				 * tileWidth / 2 - 10, isoPosition.y + 60);
-				 */
+					// draw half of bar that represents current health
+					batch.draw(barTexture,
+							// x, y
+							barX, barY,
+							// width, height
+							barWidth, maxBarWidth / 8,
+							// srcX, srcY
+							0, 0,
+							// srcWidth, srcHeight
+							(int) (barTexture.getWidth() * barRatio), barTexture.getHeight(),
+							// flipX, flipY
+							false, false);
+
+					// draw shadow half of bar that represents health lost
+					batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+					batch.draw(barTexture,
+							// x, y
+							endX, barY,
+							// width, height
+							barBackgroundWidth, maxBarWidth / 8,
+							// srcX, srcY
+							(int) (barTexture.getWidth() * barRatio), 0,
+							// srcWidth, srcHeight
+							(int) (barTexture.getWidth() * (1 - barRatio)), barTexture.getHeight(),
+							// flipX, flipY
+							false, false);
+
+					// reset the batch colour
+					batch.setColor(Color.WHITE);
+
+					/*
+					 * display font (used for debugging) font.setColor(Color.RED);
+					 * font.getData().setScale(1.0f); font.draw(batch, String.format("%d",
+					 * ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth / 2 - 10,
+					 * isoPosition.y + 60);
+					 */
 				}
-
-			/*
-			 * Construction percentage displayed in yellow
-			 */
-			if (entity instanceof AbstractTree && ((AbstractTree) entity).getConstructionLeft() > 0) {
-				font.setColor(Color.YELLOW);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%d%%", 100 - ((AbstractTree) entity).getConstructionLeft()),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 60);
 			}
 
 			/*
@@ -208,7 +220,7 @@ public class Render3D implements Renderer {
 			}
 
 			/**************************/
-			MultiplayerManager m = (MultiplayerManager) GameManager.get().getManager(MultiplayerManager.class);
+			MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 			if (entity instanceof Player && m.isMultiplayer()) {
 				font.setColor(Color.WHITE);
 				font.getData().setScale(1.3f);
@@ -217,6 +229,10 @@ public class Render3D implements Renderer {
 				}
 				font.draw(batch, String.format("%s", m.getClients().get(e.getValue())),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
+			}
+
+			if (entity instanceof Effect) {
+				((Effect) entity).drawEffect(batch);
 			}
 		}
 
@@ -245,44 +261,6 @@ public class Render3D implements Renderer {
 	private void renderProgress(SpriteBatch batch, AbstractEntity entity) {
 	}
 
-	public void drawTextureBetween(String texture, float xPos, float yPos, float fxPos, float fyPos) {
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-
-		TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-		Texture tex = reg.getTexture(texture);
-
-		float lWidth = tex.getWidth();
-		float lHeight = tex.getHeight();
-
-		Vector2 startPos = worldToScreenCoordinates(xPos, yPos);
-
-		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos);
-
-		float l = endPos.x - startPos.x;
-		float h = endPos.y - startPos.y;
-
-		float lX = startPos.x - (lWidth - tileWidth) / 2;
-		float lY = 0 - startPos.y - (lHeight - tileHeight) / 2;
-
-		float originX = tex.getWidth() / 2;
-		float originY = tex.getHeight() / 2;
-
-		float lScaleX = (float) (Math.sqrt(l * l + h * h));
-		float lScaleY = 0.4f;
-
-		float rotation = (float) (Math.atan2(l, h) * 180 / Math.PI) - 90;
-
-		int srcX = 0;
-		int srcY = 0;
-		int srcWidth = tex.getWidth();
-		int srcHeight = tex.getHeight();
-
-		renderBatch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY,
-				rotation, srcX, srcY, srcWidth, srcHeight, false, false);
-
-	}
-
 	/**
 	 * Returns the correct tile renderer for the given rendering engine
 	 *
@@ -296,6 +274,63 @@ public class Render3D implements Renderer {
 	}
 
 	/**
+	 * Transforms screen(gui) coordinates to tile coordinates. Reverses tileToScreen.
+	 * 
+	 * @param x
+	 *            x coordinate in screen
+	 * @param y
+	 *            y coordinate in screen
+	 * @return a Vector2 with tile coordinates
+	 */
+	public static Vector2 screenToTile(float x, float y) {
+		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		
+		return Render3D.worldPosToTile(world.x, world.y);
+	}
+
+	/**
+	 * Transforms tile coordinates to screen(gui) coordinates. Reverses screenToTile.
+	 * 
+	 * @param stage
+	 *            stage that the screen is on
+	 * @param x
+	 *            x coordinate for tile
+	 * @param y
+	 *            y coordinate for tile
+	 * @return a Vector3 for screen (gui) coordinates
+	 */
+	public static Vector2 tileToScreen(Stage stage, float x, float y) {
+		OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+		Vector2 screenWorldCoords = worldToScreenCoordinates(x, y, 0);
+		Vector3 screenCoords = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+		screenCoords.y = stage.getHeight() - screenCoords.y;
+
+		return new Vector2(screenCoords.x, screenCoords.y);
+	}
+
+	/**
+	 * Converts world coords to screen(gui) coordinates. Reverses ScreenToWorldCoordinates.
+	 * 
+	 * @param stage
+	 *            stage that the screen is on
+	 * @param x
+	 *            x coord in world
+	 * @param y
+	 *            y coord in world
+	 * @param z
+	 *            z coord in world
+	 * @return a Vector3 screen(gui) coordinate
+	 */
+	public static Vector3 worldToGuiScreenCoordinates(Stage stage, float x, float y, float z) {
+		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
+				.project(new Vector3(x, y - Gdx.graphics.getHeight() + 1, z));
+		screen.y = -screen.y;
+		
+		return screen;
+	}
+
+	/**
 	 * Transforms world coordinates to screen coordinates for rendering.
 	 *
 	 * @param x
@@ -304,23 +339,27 @@ public class Render3D implements Renderer {
 	 *            y coord in the world
 	 * @return a Vector2 with the screen coordinates
 	 */
-	public static Vector2 worldToScreenCoordinates(float x, float y) {
+	public static Vector2 worldToScreenCoordinates(float x, float y, float z) {
 		int worldLength = GameManager.get().getWorld().getLength();
 		int worldWidth = GameManager.get().getWorld().getWidth();
 
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
-		float baseX = tileWidth * (worldWidth / 2.0f - 0.5f); // bad
-		float baseY = -tileHeight / 2 * worldLength + tileHeight / 2f; // good
+		// X and Y offset for our isometric world (centered)
+		float baseX = tileWidth * (worldWidth - 1) / 2f;
+		float baseY = -tileHeight * (worldLength - 1) / 2f; // screen y is inverted
 
 		float cartX = x;
-		float cartY = (worldWidth - 1) - y;
+		float cartY = (worldWidth - 1) - y; // screen y is from the bottom corner
 
-		float isoX = baseX + ((cartX - cartY) / 2.0f * tileWidth);
-		float isoY = baseY + ((cartX + cartY) / 2.0f) * tileHeight;
+		float isoX = baseX + (cartX - cartY) / 2.0f * tileWidth;
+		float isoY = baseY + (cartX + cartY) / 2.0f * tileHeight;
 
-		return new Vector2(isoX, isoY);
+		// scaled to length of tile side
+		float zScale = new Vector2(tileWidth, tileHeight).scl(0.5f).len();
+
+		return new Vector2(isoX, isoY + z * zScale);
 	}
 
 	/**
@@ -330,15 +369,20 @@ public class Render3D implements Renderer {
 	 *            Vector2 with the world coords
 	 * @return a Vector2 with the screen coordinates
 	 */
-	public static Vector2 worldToScreenCoordinates(Vector2 p) {
-		return worldToScreenCoordinates(p.x, p.y);
+	public static Vector2 worldToScreenCoordinates(Vector3 p) {
+		return worldToScreenCoordinates(p.x, p.y, p.z);
 	}
 
 	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
-		return ((CameraManager) GameManager.get().getManager(CameraManager.class)).getCamera()
-				.unproject(new Vector3(x, y, z));
+		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, z));
 	}
 
+	/**
+	 * Converts world to tile coordinates. Reverses tileToWorldPos.
+	 * @param x x coord in world
+	 * @param y y coord in world
+	 * @return a Vector2 for tile coordinates
+	 */
 	public static Vector2 worldPosToTile(float x, float y) {
 		float projX = 0, projY = 0;
 
@@ -348,7 +392,29 @@ public class Render3D implements Renderer {
 		projX = x / tileWidth;
 		projY = -(y - tileHeight / 2f) / tileHeight + projX;
 		projX -= projY - projX;
-
+		
 		return new Vector2(projX, projY);
+	}
+
+	/**
+	 * Converts tile to world coordinates. Reverses worldPostoTile
+	 * @param x x coord in tile
+	 * @param y y coord in tile
+	 * @return a Vector2 of world coordinates
+	 */
+	public static Vector2 tileToWorldPos(float x, float y) {
+		float projX = x, projY = y;
+		OrthographicCamera c = GameManager.get().getManager(CameraManager.class).getCamera();
+		
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+
+		projX = (projY + projX) / 2;
+		y = (projY - projX) * (-tileHeight) + (tileHeight / 2f);
+		x = projX * tileWidth;
+
+		return new Vector2(x, y);
+
 	}
 }

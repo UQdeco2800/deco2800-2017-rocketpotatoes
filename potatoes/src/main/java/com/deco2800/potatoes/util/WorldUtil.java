@@ -8,12 +8,14 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 
 /**
- * A utility class for the AbstractWorld instances
+ * A utility class for the World instances
  * Created by timhadwen on 23/7/17.
  */
 public class WorldUtil {
@@ -32,7 +34,7 @@ public class WorldUtil {
 		AbstractEntity ret = null;
 		double distance = Double.MAX_VALUE;
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			double tmp_distance = Math.sqrt(Math.pow((e.getPosX() - x), 2) + Math.pow((e.getPosY() - y), 2));
+			double tmp_distance = distance(x, y, e.getPosX(), e.getPosY());
 
 			if (tmp_distance < distance) {
 				// Closer than current closest
@@ -65,9 +67,9 @@ public class WorldUtil {
 		AbstractEntity closest = null;
 		float dist = Float.MAX_VALUE;
 		for (AbstractEntity e : entities) {
-			float tmp_distance = (float)(Math.sqrt(Math.pow((e.getPosX() - x), 2) + Math.pow((e.getPosY() - y), 2)));
-			if (closest == null || dist > tmp_distance) {
-				dist = tmp_distance;
+			float tmpDistance = distance(x, y, e.getPosX(), e.getPosY());
+			if (closest == null || dist > tmpDistance) {
+				dist = tmpDistance;
 				closest = e;
 			}
 		}
@@ -87,5 +89,31 @@ public class WorldUtil {
 			}
 		}
 		return Optional.empty();
+	}
+	
+	/**
+	 * Returns the distance between the point (x1,y1) and (x2,y2)
+	 */
+	public static float distance(float x1, float y1, float x2, float y2) {
+		return (float)(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
+	}
+	
+	/**
+	 * Returns the angle (in degrees) between the point (x1,y1) and (x2,y2) Example:
+	 * rotation(0,0,1,1) = 45 deg
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return rotation in degrees
+	 */
+	public static float rotation(float x1, float y1, float x2, float y2) {
+		Vector2 startPos = Render3D.worldToScreenCoordinates(x1, y1, 0);
+		Vector2 endPos = Render3D.worldToScreenCoordinates(x2, y2, 0);
+		float l = endPos.x - startPos.x;
+		float h = endPos.y - startPos.y;
+		// float rotation removed due to direct return
+		return (float) (Math.atan2(l, h) * 180 / Math.PI) - 45;
 	}
 }

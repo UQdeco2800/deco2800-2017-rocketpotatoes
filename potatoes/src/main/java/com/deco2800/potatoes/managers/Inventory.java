@@ -5,7 +5,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.deco2800.potatoes.entities.Resource;
+
+import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.exceptions.InvalidResourceException;
 import com.deco2800.potatoes.gui.InventoryGui;
 
@@ -22,8 +23,7 @@ public class Inventory {
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
 
 	/*
-	 * A mapping of possible resource items to the number of items the player
-	 * holds
+	 * Gui Manager to call on for updating the resources
 	 */
 	private GuiManager guiManager;
 
@@ -156,33 +156,32 @@ public class Inventory {
 	 *            the resource whose amount will be updated
 	 * @param amount
 	 *            the number of resources that will be added
-	 * @return result
-	 * 			  returns 1 if successful and 0 otherwise
+	 * @return result returns 1 if successful and 0 otherwise
 	 */
 	public int updateQuantity(Resource resource, int amount) {
 		int result = 1;
 
 		if (!this.getInventoryResources().contains(resource)) {
-			LOGGER.error("Please supply a valid resource");
+			this.addInventoryResource(resource);
+		}
+		int currentAmount = getQuantity(resource);
+
+		// check that the resource amount would not become negative.
+		if (currentAmount + amount < 0) {
+			LOGGER.warn("Sorry, not enough " + resource.toString());
 			result = 0;
 		} else {
-			int currentAmount = getQuantity(resource);
-
-			// check that the resource amount would not become negative.
-			if (currentAmount + amount < 0) {
-				LOGGER.warn("Sorry, not enough " + resource.toString());
-				result = 0;
-			} else {
+			try {
 				inventoryMap.put(resource, currentAmount + amount);
-				guiManager = (GuiManager) GameManager.get().getManager(GuiManager.class);
-				try {
-					((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(
-							resource.getTypeName(), currentAmount + amount);
-				} catch (NullPointerException exception) {
-					// catch exception for tests when the gui isn't initialised
-				}
+				guiManager = GameManager.get().getManager(GuiManager.class);
+				((InventoryGui) guiManager.getGui(InventoryGui.class)).increaseInventory(resource.getTypeName(),
+						currentAmount + amount);
+			} catch (NullPointerException exception) {
+				// catch exception for tests when the gui isn't initialised
+				result = 0;
 			}
 		}
+
 		return result;
 	}
 
@@ -206,21 +205,21 @@ public class Inventory {
 	 *            the extra items to be added to this object
 	 */
 
-    public void updateInventory(Inventory extraItems) {
-        if (extraItems == null) {
-            LOGGER.warn("Cannot add null to Inventory");
-        } else {
-            for (Resource resource : extraItems.inventoryMap.keySet()) {
-                if (inventoryMap.containsKey(resource)) {
-                    this.updateQuantity(resource, extraItems.getQuantity(resource));
-                } else {
-                    inventoryMap.put(resource,0);
-                    this.updateQuantity(resource, extraItems.getQuantity(resource));
-                }
+	public void updateInventory(Inventory extraItems) {
+		if (extraItems == null) {
+			LOGGER.warn("Cannot add null to Inventory");
+		} else {
+			for (Resource resource : extraItems.inventoryMap.keySet()) {
+				if (inventoryMap.containsKey(resource)) {
+					this.updateQuantity(resource, extraItems.getQuantity(resource));
+				} else {
+					inventoryMap.put(resource, 0);
+					this.updateQuantity(resource, extraItems.getQuantity(resource));
+				}
 
-            }
-        }
-    }
+			}
+		}
+	}
 
 	/**
 	 * <p>

@@ -17,7 +17,7 @@ public class ClientMessageProcessorTest {
     public void testConnectionConfirmMessage() {
         NetworkClient nc = new NetworkClient();
         Network.HostConnectionConfirmMessage m = new Network.HostConnectionConfirmMessage();
-        m.id = 8;
+        m.setId(8);
         ClientMessageProcessor.processMessage(nc, m);
 
         assertEquals(8, nc.getID());
@@ -45,19 +45,19 @@ public class ClientMessageProcessorTest {
     public void testNewPlayerMessage() {
         NetworkClient nc = new NetworkClient();
         Network.HostNewPlayerMessage m = new Network.HostNewPlayerMessage();
-        m.name = "bob";
-        m.id = 8;
+        m.setName("bob");
+        m.setId(8);
         ClientMessageProcessor.processMessage(nc, m);
 
         assertEquals("bob", nc.getClients().get(8));
 
-        m.name = "me";
-        m.id = 2;
+        m.setName("me");
+        m.setId(2);
         nc.setID(2);
         ClientMessageProcessor.processMessage(nc, m);
         assertEquals("me", nc.getClients().get(2));
         assertNotEquals(null,
-                ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer());
+                GameManager.get().getManager(PlayerManager.class).getPlayer());
     }
 
     @Test
@@ -66,14 +66,14 @@ public class ClientMessageProcessorTest {
 
         // Make player
         Network.HostNewPlayerMessage playerMessage = new Network.HostNewPlayerMessage();
-        playerMessage.name = "bob";
-        playerMessage.id = 8;
+        playerMessage.setName("bob");
+        playerMessage.setId(8);
         ClientMessageProcessor.processMessage(nc, playerMessage);
 
         assertEquals("bob", nc.getClients().get(8));
 
         Network.HostPlayerDisconnectedMessage m = new Network.HostPlayerDisconnectedMessage();
-        m.id = 8;
+        m.setId(8);
         ClientMessageProcessor.processMessage(nc, m);
 
         assertEquals(null, nc.getClients().get(8));
@@ -83,8 +83,8 @@ public class ClientMessageProcessorTest {
     public void testExistingPlayerMessage() {
         NetworkClient nc = new NetworkClient();
         Network.HostExistingPlayerMessage m = new Network.HostExistingPlayerMessage();
-        m.name = "bob";
-        m.id = 8;
+        m.setName("bob");
+        m.setId(8);
         ClientMessageProcessor.processMessage(nc, m);
 
         assertEquals("bob", nc.getClients().get(8));

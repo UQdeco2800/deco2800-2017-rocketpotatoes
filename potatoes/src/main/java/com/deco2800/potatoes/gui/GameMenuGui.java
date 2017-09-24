@@ -3,10 +3,7 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.managers.GameManager;
@@ -43,7 +40,7 @@ public class GameMenuGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 //Sound added just to alert a change in game state
                 screen.menuBlipSound();
-                ((DebugModeGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(DebugModeGui.class)).show();
+                ((DebugModeGui) GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class)).show();
 
             }
         });
@@ -53,7 +50,7 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
-                ((PauseMenuGui) ((GuiManager)GameManager.get().getManager(GuiManager.class)).getGui(PauseMenuGui.class)).show();
+                ((PauseMenuGui) GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class)).show();
 
             }
         });
@@ -81,6 +78,8 @@ public class GameMenuGui extends Gui {
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen
+
+        window.setMovable(true);
 
         // Finally add our Gui window to the stage
         stage.addActor(window);

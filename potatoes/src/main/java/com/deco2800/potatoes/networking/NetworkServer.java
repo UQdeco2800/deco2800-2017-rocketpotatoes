@@ -2,7 +2,7 @@ package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.HasProgress;
+import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
@@ -90,7 +90,7 @@ public class NetworkServer {
 
                 // Send disconnection message
                 HostPlayerDisconnectedMessage m = new HostPlayerDisconnectedMessage();
-                m.id = c.getID();
+                m.setId(c.getID());
                 server.sendToAllTCP(m);
             }
         });
@@ -102,8 +102,8 @@ public class NetworkServer {
 
     public void broadcastNewEntity(int id) {
         HostEntityCreationMessage message = new HostEntityCreationMessage();
-        message.entity = GameManager.get().getWorld().getEntities().get(id);
-        message.id = id;
+        message.setEntity(GameManager.get().getWorld().getEntities().get(id));
+        message.setId(id);
 
         // TCP because important info and I haven't made the super awesome safe UDP yet.
         server.sendToAllExceptTCP(MASTER_ID, message);
@@ -113,9 +113,9 @@ public class NetworkServer {
         HostEntityUpdatePositionMessage message = new HostEntityUpdatePositionMessage();
 
         AbstractEntity entity = GameManager.get().getWorld().getEntities().get(id);
-        message.id = id;
-        message.x = entity.getPosX();
-        message.y = entity.getPosY();
+        message.setId(id);
+        message.setX(entity.getPosX());
+        message.setY(entity.getPosY());
 
         // Tell everyone except the master.
         server.sendToAllExceptUDP(MASTER_ID, message);
@@ -127,8 +127,8 @@ public class NetworkServer {
         AbstractEntity entity = GameManager.get().getWorld().getEntities().get(id);
         if (entity instanceof HasProgress) {
             HasProgress e = (HasProgress) entity;
-            message.id = id;
-            message.progress = e.getProgress();
+            message.setId(id);
+            message.setProgress(e.getProgress());
 
             // Tell everyone except the master.
             server.sendToAllExceptUDP(MASTER_ID, message);
@@ -141,7 +141,7 @@ public class NetworkServer {
     public void broadcastEntityDestroy(int id) {
         HostEntityDestroyMessage message = new HostEntityDestroyMessage();
 
-        message.id = id;
+        message.setId(id);
 
         server.sendToAllExceptTCP(MASTER_ID, message);
     }
@@ -151,7 +151,7 @@ public class NetworkServer {
      * @param m
      */
     private void sendSystemMessage(String m) {
-        GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        GuiManager g = GameManager.get().getManager(GuiManager.class);
         ChatGui chat = ((ChatGui)g.getGui(ChatGui.class));
         if (chat != null) {
             chat.addMessage("System", m, Color.YELLOW);
@@ -160,9 +160,8 @@ public class NetworkServer {
 
 
     /**
-     * Returns if this connection is master
-     * @param c
-     * @return
+     * @param c the connection object to check
+     * @return Returns if this connection is master
      */
     public boolean isMaster(Connection c) {
         return c.getID() == MASTER_ID;

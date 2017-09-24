@@ -13,7 +13,7 @@ public class PlayerManager extends Manager {
 	private Player player;
 
 	public PlayerManager() {
-		InputManager input = (InputManager) GameManager.get().getManager(InputManager.class);
+		InputManager input = GameManager.get().getManager(InputManager.class);
 
 		input.addKeyDownListener(this::handleKeyDown);
 		input.addKeyUpListener(this::handleKeyUp);
@@ -28,7 +28,7 @@ public class PlayerManager extends Manager {
 		this.player = player;
 
 		// Set camera manager to target the player
-		((CameraManager)GameManager.get().getManager(CameraManager.class)).setTarget(player);
+		GameManager.get().getManager(CameraManager.class).setTarget(player);
 	}
 
 	public void handleKeyDown(int keycode) {
@@ -50,6 +50,21 @@ public class PlayerManager extends Manager {
 	 */
 	public Player getPlayer() {
 		return this.player;
+	}
+
+	/**
+	 * Returns the distance from player in tile coordinates
+	 * 
+	 * @param tileX
+	 *            x coord in tiles
+	 * @param tileY
+	 *            y coord in tiles
+	 * @return distance from position to player
+	 */
+	public float distanceFromPlayer(float tileX, float tileY) {
+		float deltaX = player.getPosX() - tileX;
+		float deltaY = player.getPosY() - tileY;
+		return (float) Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 	}
 
 }

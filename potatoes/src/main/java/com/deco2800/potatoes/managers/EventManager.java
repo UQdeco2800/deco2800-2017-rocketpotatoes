@@ -1,19 +1,21 @@
 package com.deco2800.potatoes.managers;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
+import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.gui.Gui;
+import com.deco2800.potatoes.gui.RespawnGui;
 
 /**
  * Manager for all TimeEvents associated with tickable entities. <br>
  * <br>
  * If you know a better way implement this, please change
  */
-public class EventManager extends Manager {
+public class EventManager extends Manager implements TickableManager, ForWorld {
 
 	private static class EventPair {
 		private final Tickable tickable;
@@ -27,6 +29,9 @@ public class EventManager extends Manager {
 
 	private List<EventPair> events;
 
+	/**
+	 * Initializes this manager to have no events registered.
+	 */
 	public EventManager() {
 		events = new ArrayList<>();
 	}
@@ -66,13 +71,19 @@ public class EventManager extends Manager {
 	/**
 	 * Ticks all registered events. Completed events will be automatically unregistered
 	 */
-	public void tickAll(long deltaTime) {
+	private void tickAll(long deltaTime) {
 		List<EventPair> finishedEvents = new ArrayList<>();
-		// this line throws ConcurrentModificationException, not sure why
-		// for (EventPair eventPair : events) {
 		for (int i = 0; i < events.size(); i++) {
 			EventPair eventPair = events.get(i);
 			eventPair.event.decreaseProgress(deltaTime, eventPair.tickable);
+
+			//Gets remaining time before player respawns
+			//TODO: better implementation?
+			if(eventPair.tickable instanceof Player){
+				Gui respawnGui =GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class);
+				((RespawnGui)respawnGui).setCount(eventPair.event.getProgress());
+
+			}
 			if (eventPair.event.isCompleted()) {
 				finishedEvents.add(eventPair);
 			}
@@ -82,7 +93,15 @@ public class EventManager extends Manager {
 		}
 	}
 
+	/**
+	 * Unregisters all events registerd with this manager
+	 */
 	public void unregisterAll() {
 		events = new ArrayList<>();
+	}
+
+	@Override
+	public void onTick(long i) {
+		tickAll(i);
 	}
 }

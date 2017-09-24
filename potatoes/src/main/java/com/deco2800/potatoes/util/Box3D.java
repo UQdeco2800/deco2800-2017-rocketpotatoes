@@ -220,7 +220,7 @@ public class Box3D {
 	 * @param x2 The x coord of point 2 of the line
 	 * @param y2 The y coord of point 2 of the line
 	 * @param z2 The z coord of point 2 of the line
-	 * @return
+	 * @return true iff the line intersects this box
 	 */
 	public boolean doesIntersectLine(float x1, float y1, float z1, float x2, float y2, float z2) {
 		float fMin = 0;
@@ -252,7 +252,6 @@ public class Box3D {
 	private boolean compareFloat(float a, float b) {
 		float delta = 0.00001f;
 		return Math.abs(a-b) < delta;
-
 	}
 
 	@Override

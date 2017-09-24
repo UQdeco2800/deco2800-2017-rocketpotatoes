@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,8 +10,8 @@ public class SoundManagerTest {
         SoundManager m = new SoundManager();
         float sfxVolume = m.getEffectsVolume();
         float musVolume = m.getMusicVolume();
-        assertEquals(1f,sfxVolume, 0.01f);
-        assertEquals(1f, musVolume, 0.01f);
+        assertEquals(1.0f,sfxVolume, 0.01f);
+        assertEquals(0.25f, musVolume, 0.01f);
     }
 
     /*

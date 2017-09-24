@@ -2,21 +2,33 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
+import com.deco2800.potatoes.entities.StatisticsBuilder;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 
+/**
+ * A tree that shoots projectiles using the ProjectileShootEvent
+ * 
+ * @see AbstractTree
+ */
 public class ProjectileTree extends AbstractTree implements Tickable {
-	private static final transient String TEXTURE = "tree";
 	private static final transient String[] GROW_ANIMATION = createGrowList();
-	private static final transient List<UpgradeStats> STATS = initStats();
+	private static final transient List<TreeStatistics> STATS = initStats();
+	private int reloadTime;
+	private int range;
+	private float maxHealth;
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public ProjectileTree() {
 		// default method
+		reloadTime = 10;
+		range = 10;
+		maxHealth = 10;
 	}
 
 	private static String[] createGrowList() {
@@ -44,31 +56,50 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 *            The initial maximum health of the tower
 	 */
 
-	public ProjectileTree(float posX, float posY, float posZ, String texture, int reloadTime, float range,
-			float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f, texture);
-		// Lazily added here, will need to move to upgradeStats
-		setAnimation(AnimationFactory.createSimpleStateAnimation(100, 0, GROW_ANIMATION,
-				() -> (float) this.getConstructionLeft()));
+	public ProjectileTree(float posX, float posY, float posZ, int reloadTime, float range, float maxHealth) {
+		super(posX, posY, posZ, 1f, 1f, 1f);
+		this.reloadTime = reloadTime;
+		this.maxHealth = maxHealth;
+	}
+
+	/**
+	 * Creates a basic projectile tree at the given position with a 1 second shoot
+	 * time, 8 range and 100 health
+	 */
+	public ProjectileTree(float posX, float posY, float posZ) {
+		this(posX, posY, posZ, 1000, 8f, 100f);
+		this.setStaticCollideable(true);
+	}
+
+	/**
+	 * Creates a copy of this tree as it was when it was just created
+	 */
+	public ProjectileTree clone() {
+		return new ProjectileTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.reloadTime, this.range,
+				this.maxHealth);
 	}
 
 	@Override
-	public List<UpgradeStats> getAllUpgradeStats() {
+	public List<TreeStatistics> getAllUpgradeStats() {
 		return STATS;
 	}
 
-	private static List<UpgradeStats> initStats() {
-		List<UpgradeStats> result = new LinkedList<>();
-		List<TimeEvent<AbstractTree>> normalEvents = new LinkedList<>();
-		List<TimeEvent<AbstractTree>> constructionEvents = new LinkedList<>();
+	private static List<TreeStatistics> initStats() {
+		List<TreeStatistics> result = new LinkedList<>();
 
-		result.add(new UpgradeStats(10, 1000, 8f, 5000, 1, normalEvents, constructionEvents, TEXTURE));
-		result.add(new UpgradeStats(20, 600, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
-		result.add(new UpgradeStats(30, 100, 8f, 2000, 1, normalEvents, constructionEvents, TEXTURE));
+		// This isn't very nice maybe change how animations are created
+		Function<AbstractTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
+				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
 
-		for (UpgradeStats upgradeStats : result) {
-			upgradeStats.getNormalEventsReference().add(new TreeProjectileShootEvent(upgradeStats.getSpeed()));
-		}
+		result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(3000))
+				.createTreeStatistics());
+		result.add(new StatisticsBuilder<AbstractTree>().setHealth(20).setAttackRange(8f).setBuildTime(2000)
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(2500))
+				.createTreeStatistics());
+		result.add(new StatisticsBuilder<AbstractTree>().setHealth(30).setAttackRange(8f).setBuildTime(2000)
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(1500))
+				.createTreeStatistics());
 
 		return result;
 	}

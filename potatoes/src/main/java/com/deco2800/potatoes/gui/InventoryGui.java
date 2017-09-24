@@ -1,15 +1,20 @@
 package com.deco2800.potatoes.gui;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
 
 /**
  * Inventory GUI is to display the amount of resources hold by player and
@@ -22,16 +27,17 @@ public class InventoryGui extends Gui {
 
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+	/* Create Window with skin */
+    private Window window;
+    
+    //Scroll Pane
+    private ScrollPane scrollPane;
+
 	/* Objects to be used in the inventory gui */
 	private Table inventoryTable;
-
-	private int seedAmount = 0;
-	private Image seedImage;
-	private Label seedLabelAmount = new Label(Integer.toString(seedAmount), skin);
-
-	private int foodAmount = 0;
-	private Image foodImage;
-	private Label foodLabelAmount = new Label(Integer.toString(foodAmount), skin);
+	
+	/* Hashmap with the resource type as key and respective Label as value */
+	private HashMap<String, Label> inventoryMap = new HashMap<String, Label>();	
 
 	/**
 	 * Instantiates a table for the InventoryGui to be placed on the current
@@ -40,16 +46,23 @@ public class InventoryGui extends Gui {
 	 * 
 	 * @require stage is not null
 	 */
-	public InventoryGui(Stage stage) {
-
-		/* Set up the table for positioning Inventory Gui */
+	public InventoryGui(Stage stage) {		
+		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
+		//inventoryTable.top().right();
+		//instantiateScrollPane();
+		
+		/* set up window */
+		window = new Window("Inventory", skin);
+		window.add(inventoryTable).width(70);
+		
+		/* size control and position window in the top right */
+		window.setWidth(80);
+		window.setHeight(530);
+		window.setPosition(stage.getWidth(), stage.getHeight());
 
-		/* position table in the top right */
-		inventoryTable.right().top();
-
-		/* add in the table finally */
-		stage.addActor(inventoryTable);
+		/* add in the window finally */
+		stage.addActor(window);
 
 	}
 
@@ -62,13 +75,16 @@ public class InventoryGui extends Gui {
 	 *            The amount of resource that was added to inventory
 	 */
 	public void increaseInventory(String resource, int amount) {
-
-		if (resource == "seed") {
-			seedLabelAmount.setText(Integer.toString(amount));
-		}
-
-		if (resource == "food") {
-			foodLabelAmount.setText(Integer.toString(amount));
+		Label resourceLabel = inventoryMap.get(resource);
+		if (resourceLabel == null) {
+			
+			resourceLabel = new Label("0", skin);
+			resourceLabel.setText(Integer.toString(amount));
+			inventoryMap.put(resource, resourceLabel);
+			
+			updateTable(resource);
+		} else {
+			resourceLabel.setText(Integer.toString(amount));
 		}
 	}
 
@@ -83,22 +99,42 @@ public class InventoryGui extends Gui {
 	private void instantiateTable() {
 		inventoryTable = new Table();
 		inventoryTable.setFillParent(true);
-
-		inventoryTable.defaults().width(50);
-
-		seedImage = new Image((Drawable) new TextureRegionDrawable(
-				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/seed.png")))));
-		seedImage.setOrigin(50, 50);
-		inventoryTable.add(seedImage).size(30, 30).pad(2);
-		inventoryTable.add(seedLabelAmount).pad(2);
-
-		/* next row */
+		inventoryTable.defaults().width(20);
+		inventoryTable.padRight(10);
+		inventoryTable.padTop(10);
+		inventoryTable.padBottom(10);
+	}
+	
+	/**
+	 * Adds a new resource to the inventory GUI.
+	 * 
+	 * @param resource
+	 * 			The name of the resource to be added.
+	 */
+	private void updateTable(String resource) {
+		
+		/* Image linking to display sprite */
+		TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
+		Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(resource))));
+			
+		resourceImage.setOrigin(50, 50);
+		inventoryTable.add(resourceImage).size(30, 30).pad(2);
+		inventoryTable.add(inventoryMap.get(resource)).bottom().center().pad(2);
+			
 		inventoryTable.row();
-		foodImage = new Image((Drawable) new TextureRegionDrawable(
-				new TextureRegion(new Texture(Gdx.files.internal("resources/placeholderassets/food.png")))));
-		foodImage.setOrigin(50, 50);
-		inventoryTable.add(foodImage).size(25, 25).pad(2);
-		inventoryTable.add(foodLabelAmount).pad(2);
 	}
 
+	/**
+	 * To be called by the constructor to upon first time to create Scroll Pane
+	 */
+	private void instantiateScrollPane(){
+		scrollPane = new ScrollPane(inventoryTable, skin);
+		scrollPane.setForceScroll(false, true);
+		scrollPane.setScrollingDisabled(true, false);
+		scrollPane.setScrollBarPositions(false, true);
+		scrollPane.setFadeScrollBars(false);
+		scrollPane.pack();
+		
+	}
+	
 }

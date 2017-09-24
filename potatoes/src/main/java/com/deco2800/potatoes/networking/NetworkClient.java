@@ -109,7 +109,7 @@ public class NetworkClient {
         LOGGER.info("Joining " + IP + ":" + tcpPort);
         // Send initial connection info
         Network.ClientConnectionRegisterMessage cr = new Network.ClientConnectionRegisterMessage();
-        cr.name = name;
+        cr.setName(name);
 
         client.sendTCP(cr);
     }
@@ -121,7 +121,7 @@ public class NetworkClient {
      */
     public void broadcastMessage(String message) {
         ClientChatMessage m = new ClientChatMessage();
-        m.message = message;
+        m.setMessage(message);
         client.sendTCP(m);
     }
 
@@ -131,8 +131,8 @@ public class NetworkClient {
      */
     public void broadcastPlayerUpdatePosition(Player entity) {
         ClientPlayerUpdatePositionMessage message = new ClientPlayerUpdatePositionMessage();
-        message.x = entity.getPosX();
-        message.y = entity.getPosY();
+        message.setX(entity.getPosX());
+        message.setY(entity.getPosY());
 
         client.sendUDP(message);
     }
@@ -143,7 +143,7 @@ public class NetworkClient {
      */
     public void broadcastBuildOrder(AbstractTree tree) {
         ClientBuildOrderMessage m = new ClientBuildOrderMessage();
-        m.tree = tree;
+        m.setTree(tree);
         client.sendTCP(m);
     }
 
@@ -152,7 +152,7 @@ public class NetworkClient {
      * @param m message to be posted
      */
     public void sendSystemMessage(String m) {
-        GuiManager g = (GuiManager)GameManager.get().getManager(GuiManager.class);
+        GuiManager g = GameManager.get().getManager(GuiManager.class);
         ChatGui chat = ((ChatGui)g.getGui(ChatGui.class));
         if (chat != null) {
             chat.addMessage("System", m, Color.YELLOW);

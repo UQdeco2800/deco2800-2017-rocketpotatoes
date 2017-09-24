@@ -165,7 +165,7 @@ public class MultiplayerManager extends Manager {
     public void broadcastEntityUpdatePosition(int id) {
         if (client != null) {
             if (!isMaster()) {
-                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entity positions!");
+                throw new IllegalStateException("Non-master clients shouldn't broadcast any new entity calculatePositions!");
             }
             // Tell server directly
             server.broadcastEntityUpdatePosition(id);
@@ -204,7 +204,7 @@ public class MultiplayerManager extends Manager {
      * Updates the client's player position.
      */
     public void broadcastPlayerUpdatePosition() {
-        Player p = ((PlayerManager) GameManager.get().getManager(PlayerManager.class)).getPlayer();
+        Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
         if (client != null) {
             client.broadcastPlayerUpdatePosition(p);
         }
