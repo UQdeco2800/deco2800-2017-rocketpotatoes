@@ -44,7 +44,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
 	private Direction currentDirection; // The direction the enemy faces
-	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
+	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	/**
 	 * Empty constructor for serialization

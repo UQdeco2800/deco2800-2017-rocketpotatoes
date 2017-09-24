@@ -1,24 +1,88 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
-import org.junit.*;
+import com.deco2800.potatoes.BaseTest;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PathManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.WorldType;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SpeedyEnemyTest {
-    SpeedyEnemy testSpeedy;
+import static org.junit.Assert.assertEquals;
+
+/**
+ * Test class to test the SpeedyEnemy enemy type
+ *
+ * @author ryanjphelan
+ */
+public class SpeedyEnemyTest extends BaseTest {
+
+    private SpeedyEnemy speedyEmpty;
+    private SpeedyEnemy speedy1;
+    private ResourceEntity seed;
+    private ResourceTree resourceTree;
+    private Player playerTest;
+    private GoalPotate goalPotatoTest;
 
     @Before
-    public void setup() {
-        testSpeedy = new SpeedyEnemy(2,2,3);
+    public void setUp() throws Exception {
+        speedyEmpty = new SpeedyEnemy();
+        speedy1 = new SpeedyEnemy(0, 0, 0);
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
+    @After
+    public void cleanUp() {
+        GameManager.get().clearManagers();
+    }
+
+    /*
+     * Test an emptyConstructor instance of the SpeedyEnemy.
+     */
     @Test
-    public void emptyTest() {
-        testSpeedy = new SpeedyEnemy();
+    public void emptyConstructor() {
+        assertEquals(true, speedyEmpty.getDirection() == null);
+        assertEquals("raccoon", speedyEmpty.getEnemyType());
     }
 
+    /*
+     * Test the toString method for SpeedyEnemy
+     */
     @Test
     public void toStringTest() {
-        Assert.assertEquals("String mismatch", "raccoon at (2, 2)", testSpeedy.toString());
+        assertEquals("raccoon at (0, 0)", speedy1.toString());
     }
 
+    /*
+     * Test the onTick method
+     */
+    @Test
+    public void onTickTest() {
+        GameManager.get().getWorld().addEntity(speedy1);
+        seed = new ResourceEntity(-1, -1, 0, new FoodResource());
+        resourceTree = new ResourceTree(1, 1, 0);
+        GameManager.get().getWorld().addEntity(seed);
+        GameManager.get().getWorld().addEntity(resourceTree);
+        speedy1.onTick(1);
+        GameManager.get().getWorld().removeEntity(resourceTree);
+        goalPotatoTest = new GoalPotate(0, 0, 0);
+        playerTest = new Player(3, 3, 0);
+        GameManager.get().getWorld().addEntity(playerTest);
+        speedy1.onTick(1);
+        GameManager.get().getWorld().addEntity(resourceTree);
+        GameManager.get().getWorld().addEntity(goalPotatoTest);
+        speedy1.onTick(1);
+        GameManager.get().getWorld().removeEntity(goalPotatoTest);
+        speedy1.onTick(1);
+        GameManager.get().getWorld().removeEntity(resourceTree);
+        speedy1.onTick(1);
+    }
 }
