@@ -46,7 +46,7 @@ public class ProjectileTest {
     protected String Directions = "E";
     protected float TargetPosX = 9;
     protected float TargetPosY = 12;
-    protected Projectile.ShootingStyles shootingStyles = Projectile.ShootingStyles.DIRECTIONAL;
+    protected Projectile.ShootingStyles shootingStyles = Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE;
 
     private class TestWorld extends World {
 
@@ -57,7 +57,7 @@ public class ProjectileTest {
         GameManager.get().setWorld(new ProjectileTest.TestWorld());
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
-        testProjectile = new Projectile(posX,posY,posZ,range,damage,projectileType,null,null,Directions,TargetPosX,TargetPosY, shootingStyles);
+//        testProjectile = new Projectile(posX,posY,posZ,range,damage,projectileType,null,null,Directions,TargetPosX,TargetPosY, shootingStyles);
         assertNotNull(testProjectile);
         assertNotNull(target);
         assertTrue(testProjectile.getDamage() == 10);
@@ -66,7 +66,7 @@ public class ProjectileTest {
         assertEquals(5.2828426,testProjectile.getPosX(),0.2);
         assertEquals(10.282843,testProjectile.getPosY(),0.2);
         assertEquals(0,testProjectile.getPosZ(),0.2);
-        assertEquals(Projectile.ShootingStyles.DIRECTIONAL,shootingStyles);
+        assertEquals(Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE,shootingStyles);
 
     }
 

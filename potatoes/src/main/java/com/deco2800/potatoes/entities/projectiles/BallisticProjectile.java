@@ -28,10 +28,12 @@ public class BallisticProjectile extends Projectile {
 	 * @param endEffect
 	 */
 	public BallisticProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileType projectileType,
-			Effect startEffect, Effect endEffect) {
-		super(targetClass, startPos, targetPos, range, damage, projectileType,
-				startEffect, endEffect);
+			Effect startEffect, Effect endEffect, String Directions, ShootingStyles shootingStyle) {
+//		super(targetClass, startPos, targetPos, range, damage, projectileType, startEffect, endEffect, Directions, shootingStyles);
+		super(targetClass,startPos, targetPos, range, damage, projectileType, startEffect, endEffect, Directions, shootingStyle);
 	}
+
+
 
 	@Override
 	public void onTick(long time) {

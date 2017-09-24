@@ -37,9 +37,10 @@ public class HomingProjectile extends Projectile {
 	 *            Projectile damage
 	 */
 	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileType projectileType, Effect startEffect,
-			Effect endEffect) {
-		super(targetClass, startPos, targetPos, range, damage, projectileType,
-				startEffect, endEffect);
+			Effect endEffect, String Directions, ShootingStyles shootingStyle) {
+//		super(targetClass, startPos, targetPos, range, damage, projectileType,
+//				startEffect, endEffect);
+		super(targetClass,startPos, targetPos, range, damage, projectileType, startEffect, endEffect, Directions, shootingStyle);
 	}
 
 	@Override
