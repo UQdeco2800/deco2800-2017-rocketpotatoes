@@ -29,8 +29,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected static float yLength = 0.4f;
 	protected static float zLength = 0.4f;
 
-	protected PlayerProjectile.PlayerShootMethod playerShootMethod;
-
 	protected Class<?> targetClass;
 	protected boolean rangeReached;
 	protected float maxRange;

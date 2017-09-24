@@ -80,7 +80,7 @@ public class TextureManager extends Manager {
         for (int i = 1; i < 4; i++) {
             saveTexture("aoe" + i, "resources/projectiles/aoe" + i + ".png");
             saveTexture("rocket" + i, "resources/projectiles/rocket" + i + ".png");
-            saveTexture("exp" + i, "resources/projectiles/explosion" + i + ".png");
+            saveTexture("explosion" + i, "resources/projectiles/explosion" + i + ".png");
             saveTexture("chilli" + i, "resources/projectiles/chilliproj" + i + ".png");
             saveTexture("leaves" + i, "resources/projectiles/leaves" + i + ".png");
         }

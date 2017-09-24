@@ -75,7 +75,7 @@ public class PlayerProjectile extends Projectile {
     }
 
     public PlayerProjectile.PlayerShootMethod getPlayerShootMethod() {
-        return playerShootMethod;
+        return shootingStyle;
     }
 
     public void ShootingStyle(PlayerShootMethod shootingStyle) {

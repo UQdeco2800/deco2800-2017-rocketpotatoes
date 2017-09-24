@@ -7,27 +7,26 @@ public class AOEEffect extends Effect {
 
 	private static float aoeWidth = 5f;
 	private static float aoeHeight = 2f;
-	private  Vector3 pos;
+	private Vector3 pos;
+
 	public AOEEffect() {
 		// empty for serialization
 	}
 
 	public AOEEffect(Class<?> targetClass, Vector3 position, float damage, float range) {
-		super(targetClass, position, aoeWidth + 3f, aoeHeight + 3f, 0, aoeWidth, aoeHeight,
-				damage, range, EffectTexture.AOE);
+		super(targetClass, position, aoeWidth + 3f, aoeHeight + 3f, 0, aoeWidth, aoeHeight, damage, range,
+				EffectTexture.AOE);
 		loopAnimation = false;
 		this.pos = position;
 	}
 
-	public float getPosX(){
+	public float getPosX() {
 		return pos.x;
 	}
 
-	public float getPosY(){
+	public float getPosY() {
 		return pos.y;
 	}
-
-
 
 	@Override
 	public void onTick(long time) {
