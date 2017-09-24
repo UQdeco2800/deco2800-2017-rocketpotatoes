@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.BaseTest;
-import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
@@ -10,8 +9,6 @@ import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test class to test the Melee attack event class
