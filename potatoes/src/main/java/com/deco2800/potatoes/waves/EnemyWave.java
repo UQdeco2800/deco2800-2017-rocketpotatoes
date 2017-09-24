@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.waves;
 
-import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -68,16 +67,16 @@ public class EnemyWave {
             float randomFloat = random.nextFloat();
             if (randomFloat < enemyRatios[0]) {
                 addSquirrel();
-                enemyCounts[0] += 1;
+                enemyCounts[0]++;
             } else if (randomFloat < enemyRatios[1]) {
                 addSpeedy();
-                enemyCounts[1] += 1;
+                enemyCounts[1]++;
             } else if (randomFloat < enemyRatios[2]) {
                 addTank();
-                enemyCounts[2] += 1;
+                enemyCounts[2]++;
             } else if (randomFloat < enemyRatios[3]) {
                 addMoose();
-                enemyCounts[3] += 1;
+                enemyCounts[3]++;
             }
     }
 
@@ -89,13 +88,13 @@ public class EnemyWave {
      */
     public void tickAction(){
         switch (getWaveState()) {
-            case WAITING:
+/*            case WAITING:
                 //Do nothing
                 break;
             case PAUSED:
                 //Pausing not yet implemented
                 break;
-            case ACTIVE:
+*/            case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
                 if (elapsedWaveTime()>getWaveLength()) {
                     setWaveState(WaveState.FINISHED);
@@ -104,10 +103,10 @@ public class EnemyWave {
                 }
                 //Check to see if wave is paused for some reason
                 break;
-            case FINISHED:
+ /*           case FINISHED:
                 //Handling finished state
                 break;
-        }
+   */     }
     }
 
     /**
@@ -199,7 +198,5 @@ public class EnemyWave {
      * @return an array of the counts of squirrels : speedy : tank : moose enemies held by this wave
      */
     public int[] getEnemyCounts() { return this.enemyCounts; }
-    /*May be an idea to make a safe guard spawn enemy... i.e. if an enemy has been specified to spawn a little bit
-    but is unlucky enough not to have spawned... then spawn it.*/
 }
 
