@@ -162,7 +162,7 @@ public class Box2D implements CollisionMask{
 
         // Calc dist between sides on each dimension
         float distX = Math.abs(point.getX() - this.x) - this.xLength/2;
-        float distY = Math.abs(point.getX() - this.x) - this.yLength/2;
+        float distY = Math.abs(point.getY() - this.y) - this.yLength/2;
 
         return calculateDistance(distX, distY);
     }
