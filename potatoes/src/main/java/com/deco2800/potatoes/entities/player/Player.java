@@ -132,9 +132,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * This method is called every time the player state changes. Allows
      * for handling changes in player state.
      */
-    public void stateChanged() {
-        updateSprites();
-        LOGGER.info("State changed to " + currentState.name());
+
+    private void stateChanged() {
+    		updateSprites();
+
     }
 
     /**
@@ -161,7 +162,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @param direction
      * 			The direction to set the player to.
      */
-    public void setDirection(Direction direction) {
+    private void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
             this.currentDirection = direction;
             LOGGER.info("Set player direction to " + direction.name());
