@@ -9,7 +9,10 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class HomingProjectile extends Projectile {
-
+	protected float pPosX;
+	protected float pPosY;
+	protected float tPosX;
+	protected float tPosY;
 	public HomingProjectile() {
 
 	}
@@ -39,6 +42,15 @@ public class HomingProjectile extends Projectile {
 	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
 							Effect endEffect, String Directions, PlayerProjectile.PlayerShootMethod shootingStyle) {
 		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyle);
+
+		this.pPosX = startPos.x;
+		this.pPosY = startPos.y;
+		this.tPosX = targetPos.x;
+		this.tPosY = targetPos.y;
+	}
+
+	public PlayerProjectile.PlayerShootMethod getPlayerShootMethod() {
+		return playerShootMethod;
 	}
 
 	@Override
@@ -53,4 +65,13 @@ public class HomingProjectile extends Projectile {
 		super.onTick(time);
 
 	}
+
+	public float getTargetPosX() {
+		return tPosX;
+	}
+
+	public float getTargetPosY() {
+		return tPosY;
+	}
+
 }

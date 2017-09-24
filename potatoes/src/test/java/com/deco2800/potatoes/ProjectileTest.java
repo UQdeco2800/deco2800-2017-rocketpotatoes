@@ -70,8 +70,6 @@ public class ProjectileTest {
         assertEquals(4.910557270050049, testProjectile.getPosX(), 0.2);
         assertEquals(9.821114540100098, testProjectile.getPosY(), 0.2);
         assertEquals(0, testProjectile.getPosZ(), 0.0);
-//        assertEquals(TargetPosX, testProjectile.getTargetPosX(), 0);
-//        assertEquals(TargetPosY, testProjectile.getTargetPosY(), 0);
         assertEquals(startEffect,testProjectile.getStartEffect());
         assertEquals(endEffect,testProjectile.getEndEffect());
         assertEquals(targetClass.getClass(), testProjectile.getTargetClass());
@@ -85,6 +83,7 @@ public class ProjectileTest {
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
         endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
+        playerShootMethod = PlayerProjectile.PlayerShootMethod.BALLISTIC;
         testBallisticProjectile = new BallisticProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
         assertNotNull(testBallisticProjectile);
         assertNotNull(target);
@@ -93,13 +92,13 @@ public class ProjectileTest {
         assertEquals(endEffect,testBallisticProjectile.getEndEffect());
         assertTrue(testBallisticProjectile.getTexture().contains("rocket"));
         assertTrue(testBallisticProjectile.getRange() == 8);
-        assertEquals(4.910557270050049, testBallisticProjectile.getPosX(), 0.2);
-        assertEquals(9.821114540100098, testBallisticProjectile.getPosY(), 0.2);
+        assertEquals(5.178885459899902, testBallisticProjectile.getPosX(), 0.2);
+        assertEquals(10.089442253112793, testBallisticProjectile.getPosY(), 0.2);
         assertEquals(0, testBallisticProjectile.getPosZ(), 0.0);
-//        assertEquals(TargetPosX, testBallisticProjectile.getTargetPosX(), 0);
-//        assertEquals(TargetPosY, testBallisticProjectile.getTargetPosY(), 0);
+        assertEquals(TargetPosX, testBallisticProjectile.getTargetPosX(), 0);
+        assertEquals(TargetPosY, testBallisticProjectile.getTargetPosY(), 0);
         assertEquals(targetClass.getClass(), testBallisticProjectile.getTargetClass());
-        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
+        assertEquals(PlayerProjectile.PlayerShootMethod.BALLISTIC, playerShootMethod);
 
     }
 
@@ -109,6 +108,7 @@ public class ProjectileTest {
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
         endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
+        playerShootMethod = PlayerProjectile.PlayerShootMethod.HOMING;
         testHomingProjectile = new HomingProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
         assertNotNull(testHomingProjectile);
         assertNotNull(target);
@@ -117,15 +117,49 @@ public class ProjectileTest {
         assertEquals(endEffect,testHomingProjectile.getEndEffect());
         assertTrue(testHomingProjectile.getTexture().contains("rocket"));
         assertTrue(testHomingProjectile.getRange() == 8);
-        assertEquals(4.910557270050049, testHomingProjectile.getPosX(), 0.2);
-        assertEquals(9.821114540100098, testHomingProjectile.getPosY(), 0.2);
+        assertEquals(5.178885459899902, testHomingProjectile.getPosX(), 0.2);
+        assertEquals(10.089442253112793, testHomingProjectile.getPosY(), 0.2);
         assertEquals(0, testHomingProjectile.getPosZ(), 0.0);
-//        assertEquals(TargetPosX, testHomingProjectile.getTargetPosX(), 0);
-//        assertEquals(TargetPosY, testHomingProjectile.getTargetPosY(), 0);
+        assertEquals(TargetPosX, testHomingProjectile.getTargetPosX(), 0);
+        assertEquals(TargetPosY, testHomingProjectile.getTargetPosY(), 0);
         assertEquals(targetClass.getClass(), testHomingProjectile.getTargetClass());
-        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
+        assertEquals(PlayerProjectile.PlayerShootMethod.HOMING, testHomingProjectile.getPlayerShootMethod());
 
     }
+
+    @Test
+    public void TestPlayerProjectile() {
+        GameManager.get().setWorld(new ProjectileTest.TestWorld());
+        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
+        assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
+        endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
+        testPlayerProjectile = new PlayerProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
+        assertNotNull(testPlayerProjectile);
+        assertNotNull(target);
+        assertTrue(testPlayerProjectile.getDamage() == 10);
+        assertEquals(startEffect,testPlayerProjectile.getStartEffect());
+        assertEquals(endEffect,testPlayerProjectile.getEndEffect());
+        assertTrue(testPlayerProjectile.getTexture().contains("rocket"));
+        assertTrue(testPlayerProjectile.getRange() == 8);
+        assertEquals(4.910557270050049, testPlayerProjectile.getPosX(), 0.2);
+        assertEquals(9.821114540100098, testPlayerProjectile.getPosY(), 0.2);
+        assertEquals(0, testPlayerProjectile.getPosZ(), 0.0);
+        assertEquals(TargetPosX, testPlayerProjectile.getTargetPosX(), 0);
+        assertEquals(TargetPosY, testPlayerProjectile.getTargetPosY(), 0);
+        assertEquals(targetClass.getClass(), testPlayerProjectile.getTargetClass());
+        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, testPlayerProjectile.getPlayerShootMethod());
+
+    }
+
+    @Test
+    public void TestAOEEffect(){
+        AOEEffect testAOEEffect = new AOEEffect(targetClass,targetPos,damage,range);
+        assertEquals(damage,testAOEEffect.getDamage(),0);
+        assertEquals(targetPos.x,testAOEEffect.getPosX(),0.2);
+        assertEquals(targetPos.y, testAOEEffect.getPosY(),0.2);
+    }
+
+
 
 
 }
