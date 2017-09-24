@@ -8,15 +8,16 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Caveman extends Player {
-	
+
 	/**
+
      * Creates a new Caveman instance.
      *
      * @param posX The x-coordinate.
@@ -42,16 +43,16 @@ public class Caveman extends Player {
     		clearState();
 		updateSprites();
 		return null;
-    }
-    
-    private Void damagedCompletionHandler() {
-    		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-    		clearState();
+	}
+
+	private Void damagedCompletionHandler() {
+		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+		clearState();
 		updateSprites();
 		return null;
-    }
-    
-    private Void walkCompletionHandler() {
+	}
+
+	private Void walkCompletionHandler() {
 		GameManager.get().getManager(SoundManager.class).playSound("walk.wav");
 		return null;
     }
@@ -129,9 +130,11 @@ public class Caveman extends Player {
     	        		default:
     	        			break;
     	        		}
-                        GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), 
-                                new Vector3(pPosX - 1, pPosY, pPosZ), 1f, 100, ProjectileType.ROCKET, null, null, 
-                                this.getDirection().toString()));
+					Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
+					Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
+
+					GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.CHILLI, null, null,
+							this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
     	        } else if (!target.isPresent()) {
     	            //Disable shooting when no enemies is present until new fix is found.
     	        }
@@ -146,5 +149,5 @@ public class Caveman extends Player {
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
 	    	}
     }
-	
+
 }

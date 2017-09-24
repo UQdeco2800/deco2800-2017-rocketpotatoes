@@ -16,8 +16,10 @@ public class LazerEffect extends Effect {
 	float fxPos;
 	float fyPos;
 
+
 	public LazerEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
-        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectType.LAZER);
+        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectTexture.LAZER);
+
 
 		// TODO: figure out why inverses
 		this.xPos = yPos;

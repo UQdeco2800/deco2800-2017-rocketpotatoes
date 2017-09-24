@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
@@ -10,8 +9,6 @@ import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasDirection;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -19,10 +16,7 @@ import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.*;
-import com.deco2800.potatoes.entities.player.Player.PlayerState;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.RespawnGui;
@@ -76,7 +70,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @param posY The y-coordinate.
      */
     public Player(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.424f), 0.48f, 0.48f, "player_right", HEALTH);
+        super(new Circle2D(posX, posY, 0.4f), 1f, 1f, "player_right", HEALTH);
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
@@ -97,15 +91,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			if the state was successfully set. False otherwise.
      */
     public boolean setState(PlayerState state) {
-    		if (!this.currentState.equals(state)) {
-    			if (this.currentState.equals(PlayerState.idle) | this.currentState.equals(PlayerState.walk)) {
-        			this.currentState = state;
-        			stateChanged();
-        		} else {
-        			return false;
-        		}
-    		}
-    		return true;
+        if (!this.currentState.equals(state)) {
+            if (this.currentState.equals(PlayerState.idle) | this.currentState.equals(PlayerState.walk)) {
+                this.currentState = state;
+                stateChanged();
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -117,24 +111,25 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			otherwise.
      */
     public boolean hasState(PlayerState state) {
-    		return this.currentState.equals(state) ? true : false;
+        return this.currentState.equals(state) ? true : false;
     }
 
     /**
      * Sets the player's state to the default state; that being idle.
      */
     public void clearState() {
-    		this.currentState = PlayerState.idle;
-    		stateChanged();
+        this.currentState = PlayerState.idle;
+        stateChanged();
     }
 
     /**
      * This method is called every time the player state changes. Allows
      * for handling changes in player state.
      */
+
     private void stateChanged() {
     		updateSprites();
-    		LOGGER.info("State changed to " + currentState.name());
+
     }
 
     /**
@@ -144,7 +139,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 		The current state of the player.
      */
     public PlayerState getState() {
-    		return this.currentState;
+        return this.currentState;
     }
 
     /**
@@ -174,11 +169,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     private void updateDirection() {
         if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
-        		this.setState(PlayerState.idle);
+            this.setState(PlayerState.idle);
         } else {
+
         	this.setState(PlayerState.walk);
         		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
         				this.getPosX() - oldPos.x) * (180 / Math.PI);
+
 
             if (angularDirection >= -180 && angularDirection < -157.5) {
                 this.setDirection(Direction.SouthWest);
@@ -227,6 +224,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @return
      * 		A map of directions with animations for the specified state.
      */
+
     public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType, PlayerState state, int frameCount, int animationTime, Supplier<Void> completionHandler) {
 		Map<Direction, TimeAnimation> animations = new HashMap<>();
 		for (Direction direction : Direction.values()) {
@@ -246,34 +244,36 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			The time animation to be set to the player.
      */
     public void setAnimation(TimeAnimation animation) {
+
     		stopCurrentAnimation();
 		this.currentAnimation = animation;
 		startCurrentAniamation();
 		LOGGER.info("Changed animation to " + this.getDirection().name());
 	}
 
+
     /**
      * Starts the current animation.
      */
     private void startCurrentAniamation() {
-    		GameManager.get().getManager(EventManager.class).registerEvent(this, currentAnimation);
+        GameManager.get().getManager(EventManager.class).registerEvent(this, currentAnimation);
     }
 
     /**
      * Stops the current animation.
      */
     private void stopCurrentAnimation() {
-    		GameManager.get().getManager(EventManager.class).unregisterEvent(this, this.currentAnimation);
+        GameManager.get().getManager(EventManager.class).unregisterEvent(this, this.currentAnimation);
     }
 
     @Override
     public String getTexture() {
-    		if (currentAnimation != null) {
-    			return currentAnimation.getFrame();
-    		} else {
-    			LOGGER.warn("Rendered player without texture.");
-    			return "";
-    		}
+        if (currentAnimation != null) {
+            return currentAnimation.getFrame();
+        } else {
+            LOGGER.warn("Rendered player without texture.");
+            return "";
+        }
     }
 
     /**
@@ -285,11 +285,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     @Override
     public boolean damage(float amount) {
-    		if (!this.hasState(PlayerState.damaged)) {
-    			this.setState(PlayerState.damaged);
-                this.updateSprites();
-    		}
-    		return super.damage(amount);
+        if (!this.hasState(PlayerState.damaged)) {
+            this.setState(PlayerState.damaged);
+            this.updateSprites();
+        }
+        return super.damage(amount);
     }
 
     /**
@@ -298,7 +298,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * animations to play.
      */
     public void attack() {
-    		// Override in subclasses to allow attacking.
+        // Override in subclasses to allow attacking.
     }
 
     /**
@@ -307,7 +307,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * animations to play.
      */
     public void interact() {
-    		// Override in subclasses to allow interacting.
+        // Override in subclasses to allow interacting.
     }
 
     @Override
@@ -381,7 +381,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 tossItem(new FoodResource());
                 break;
             case Input.Keys.E:
-            		interact();
+                interact();
                 harvestResources();
                 break;
             case Input.Keys.NUM_1:
@@ -446,6 +446,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Initialises the inventory with all the resources in the game.
      */
     private void addResources() {
+
     	HashSet<Resource> startingResources = new HashSet<Resource>();
     	startingResources.add(new SeedResource());
         this.inventory = new Inventory(startingResources);

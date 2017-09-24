@@ -52,6 +52,13 @@ public class Point2D implements CollisionMask{
         }
     }
 
+    /**
+     * Finds the minimum straight-line distance between this collision mask and another collision mask.
+     * This function is symmetric.
+     *
+     * @param other     The other collision mask.
+     * @return  The distance. If the collision masks overlap, a negative number is returned.
+     */
     @Override
     public float distance(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -67,6 +74,16 @@ public class Point2D implements CollisionMask{
         }
     }
 
+    /**
+     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
+     * Returns 0 if intersecting.
+     *
+     * @param x1    The x coord of point 1 of the line
+     * @param y1    The y coord of point 1 of the line
+     * @param x2    The x coord of point 2 of the line
+     * @param y2    The y coord of point 2 of the line
+     * @return      The minimum straight-line distance
+     */
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
         // don't sqrt anything you don't have to
@@ -81,8 +98,6 @@ public class Point2D implements CollisionMask{
 
         return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
     }
-
-
 
 
     /**

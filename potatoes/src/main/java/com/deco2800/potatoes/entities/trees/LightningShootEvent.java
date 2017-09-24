@@ -38,7 +38,7 @@ public class LightningShootEvent extends TimeEvent<AbstractTree> {
 				GameManager.get().getWorld()
 						.addEntity(new LightningEffect(target.getClass(),
 								new Vector3(param.getPosX(), param.getPosY(), param.getPosZ()),
-								new Vector3(target.getPosX(), target.getPosY(), target.getPosZ()), 10, 1));
+								new Vector3(target.getPosX(), target.getPosY(), target.getPosZ()), 0.05f, 1));
 				targetCount++;
 			}
 		}

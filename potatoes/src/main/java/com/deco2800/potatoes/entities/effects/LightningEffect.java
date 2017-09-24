@@ -4,8 +4,12 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
+
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -26,44 +30,59 @@ public class LightningEffect extends Effect {
 	boolean staticStrike = true;
 
 	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
-        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectType.LIGHTNING);
+
+        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectTexture.LIGHTNING);
+
 
 		this.startPos = startPos;
 		this.targetPos = targetPos;
 
 		animate = false;
 
-		// TODO: figure out why inverses
-		// this.xPos = yPos;
-		// this.yPos = xPos;
-		// this.fxPos = fyPos;
-		// this.fyPos = fxPos;
-
+		// NOTE: inverses are due to change in cartesian mapping x<->y
 		pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
 	}
 
+	/**
+	 * Returns nodes along a straight line that are offset perpendicular to the
+	 * direction of the line; creating the illusion of a lightning bolt
+	 * 
+	 * @param xPos
+	 *            start x pos
+	 * @param yPos
+	 *            start y pos
+	 * @param fxPos
+	 *            end x pos
+	 * @param fyPos
+	 *            end y pos
+	 * @return
+	 */
 	public float[][] calculatePositions(float xPos, float yPos, float fxPos, float fyPos) {
 		float lengthX = fxPos - xPos;
 		float lengthY = fyPos - yPos;
 
 		float magnitude = (float) Math.sqrt(lengthX * lengthX + lengthY * lengthY);
 
+		//the number of divisions in the line
 		segments = (int) Math.ceil(magnitude / segmentStep);// 8
 		float[][] positions = new float[segments + 1][2];
 
 		Random random = new Random();
 
+		//segments as a decimal
 		float segmentSize = (float) (1.0 / segments);// 0.125
 		float segmentsDone = 0;
 
 		for (int i = 0; i < segments + 1; i++) {
-			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaX;// add
-																														// limit
-			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaY;// add
-																														// limit
-
+			//the random x offset to add to the nodes
+			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaX;
+			//the random y offset to add to the nodes																									
+			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaY;
+																														
+			//the x pos of the node on the line
 			float x = (float) (xPos + segmentsDone * lengthX
 					+ Math.abs(Math.sin(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randx);
+			//the y pos of the node on the line
 			float y = (float) (yPos + segmentsDone * lengthY
 					+ Math.abs(Math.cos(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randy);
 
@@ -79,15 +98,14 @@ public class LightningEffect extends Effect {
 			}
 			segmentsDone += segmentSize;
 		}
-
 		return positions;
-
 	}
 
 	public void drawEffect(SpriteBatch batch) {
 		if (!staticStrike) {
 			pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
 		}
+		//draw staight line between each node and the next
 		for (int x = 0; x < pos.length - 1; x++) {
 			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
 		}
@@ -95,30 +113,6 @@ public class LightningEffect extends Effect {
 		CollisionMask newPos = getMask();
 		newPos.setX(targetPos.x);
 		newPos.setY(targetPos.y);
-		//
-		// Map<Integer, AbstractEntity> entities =
-		// GameManager.get().getWorld().getEntities();
-		//
-		// float radiusOfImpact = 0.5f;
-		// for (AbstractEntity entity : entities.values()) {
-		// if (entity.distance(newPos.getX(), newPos.getY(), 0) <= radiusOfImpact) {
-		// try {
-		// ((MortalEntity) entity).damage(damage);
-		// } catch (Exception e) {
-		// //LOGGER.error(e.getMessage());
-		// }
-		// break;
-		// }
-		// }
-
-		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class,
-		// newPos.getX(), newPos.getY(), 0, damage,
-		// range);
-
-		// ExplosionEffect expEffect = new ExplosionEffect(EnemyEntity.class, 0, 0, 0,
-		// damage, range);
-		// GameManager.get().getWorld().addEntity(expEffect);
-
 	}
 
 	@Override

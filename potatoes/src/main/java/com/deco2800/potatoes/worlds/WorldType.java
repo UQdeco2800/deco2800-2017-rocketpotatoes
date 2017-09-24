@@ -27,9 +27,9 @@ public class WorldType {
 	private static final boolean FLOOD_CHECK = false;
 	private static final boolean PORTAL_CHECK = true;
 	
-	private static final String GROUND = "ground_1";
-	private static final String WATER = "w1";
-	private static final String GRASS = "grass";
+	private static final String GROUND = "mud_tile_1";
+	private static final String WATER = "water_tile_1";
+	private static final String GRASS = "grass_tile_1";
 	private static final Point PORTAL_POS = new Point(5, 5);
 	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
 			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("forest"));

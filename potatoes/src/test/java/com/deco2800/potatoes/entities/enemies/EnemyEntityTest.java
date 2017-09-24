@@ -1,5 +1,10 @@
 package com.deco2800.potatoes.entities.enemies;
 
+
+
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
+
+
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
@@ -12,8 +17,12 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
+
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -26,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+
 
 /**
  * Test class to test the EnemyEntity general class.
@@ -115,9 +125,13 @@ public class EnemyEntityTest extends BaseTest {
 
     @Test
     public void getShotProjectileTest() {
+
         tank1 = new TankEnemy(7, 7);
-        Projectile proj =new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10,
-                            Projectile.ProjectileType.ROCKET, null, null);
+//        Projectile proj =new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10,
+//                            Projectile.ProjectileType.ROCKET, null, null);
+        Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, ProjectileTexture.ROCKET, null,
+                null);
+
         tank1.getShot(proj);
         Assert.assertTrue("enemy failed to getShot()", tank1.getHealth() < tank1.getMaxHealth());
     }
@@ -153,4 +167,5 @@ public class EnemyEntityTest extends BaseTest {
         tank1 = new TankEnemy(7, 7);
         tank1.deathHandler();
     }
+
 }
