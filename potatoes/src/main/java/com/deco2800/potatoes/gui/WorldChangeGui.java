@@ -151,7 +151,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 2
-                changeWorld(WorldType.DESERT_WORLD);
+                changeWorld(WorldType.ICE_WORLD);
                 
                 LOGGER.info("Teleported to world 2");
             }
@@ -163,7 +163,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 1
-                changeWorld(WorldType.ICE_WORLD);
+                changeWorld(WorldType.DESERT_WORLD);
                 
                 LOGGER.info("Teleported to world 1");
             }
