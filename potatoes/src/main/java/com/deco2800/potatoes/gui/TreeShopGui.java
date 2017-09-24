@@ -70,8 +70,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+	// Opacity value for treeShop subsection when mouse is not hovering over it
 	final private float UNSELECTED_ALPHA = 0.2f;
+	// Opacity value for treeShop subsection when mouse hovers over
 	final private float SELECTED_ALPHA = 0.5f;
+	// Maximum number of tile lengths from player where you can plant trees
 	final private int MAX_RANGE = 6;
 
 	/**
@@ -85,14 +88,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopY = 0;
 		initiated = false;
 		items = new LinkedHashMap<AbstractTree, Color>();
-		items.put(new ResourceTree(treeX, treeY,0, new SeedResource(),0 ), Color.RED);
-		items.put(new ResourceTree(treeX, treeY, 0 ,new FoodResource(),0), Color.BLUE);
+		items.put(new ResourceTree(treeX, treeY, 0, new SeedResource(), 0), Color.RED);
+		items.put(new ResourceTree(treeX, treeY, 0, new FoodResource(), 0), Color.BLUE);
 		items.put(new ProjectileTree(treeX, treeY, 0), Color.YELLOW);
-		items.put(new DamageTree(treeX, treeY, 0, new LightningTreeType()),Color.GREEN);
-		items.put(new DamageTree(treeX, treeY, 0, new IceTreeType()),Color.ORANGE);
-		items.put(new DamageTree(treeX, treeY, 0, new FireTreeType()),Color.PURPLE);
-		items.put(new DamageTree(treeX, treeY, 0, new AcornTreeType()),Color.GREEN);
-
+		items.put(new DamageTree(treeX, treeY, 0, new LightningTreeType()), Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, 0, new IceTreeType()), Color.ORANGE);
+		items.put(new DamageTree(treeX, treeY, 0, new FireTreeType()), Color.PURPLE);
+		items.put(new DamageTree(treeX, treeY, 0, new AcornTreeType()), Color.GREEN);
 
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
@@ -117,14 +119,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 	public int getMaxRange() {
 		return MAX_RANGE;
 	}
-	
+
 	/**
 	 * Returns whether current treeShop is plantable
 	 */
 	public boolean getPlantable() {
 		return plantable;
 	}
-	
+
 	/**
 	 * Sets plantable value
 	 */

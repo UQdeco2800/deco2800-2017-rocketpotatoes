@@ -10,14 +10,14 @@ package com.deco2800.potatoes.entities.resources;
 
 public class PineconeResource extends Resource {
 
-	private static final transient String TEXTURE = "seed";
+	private static final transient String TEXTURE = "pinecone";
 
 	/**
 	 * A type of resource that gives seeds to player.
 	 */
 	public PineconeResource() {
 		super();
-		this.resourceType = "seed";
+		this.resourceType = "pinecone";
 		this.texture = TEXTURE;
 	}
 	

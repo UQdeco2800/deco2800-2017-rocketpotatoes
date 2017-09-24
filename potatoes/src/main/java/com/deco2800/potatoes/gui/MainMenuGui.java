@@ -39,6 +39,7 @@ public class MainMenuGui extends Gui {
     private ImageButton exitButton;
 
     private HorizontalGroup startButtonGroup;
+    private Table characterSelectTable;
     private Drawable singleplayerDrawable;
     private Drawable multiplayerDrawable;
     private Drawable backDrawable;
@@ -55,7 +56,8 @@ public class MainMenuGui extends Gui {
     private ImageButton multiplayerBackButton;
 
     private HorizontalGroup multiplayerClientButtonGroup;
-    private VerticalGroup multiplayerServerGroup;
+    private Table multiplayerServerTable;
+    private Table multiplayerClientInputsTable;
     private Drawable connectDrawable;
     private ScrollPane multiplayerServerScrollPane;
     private List<String> multiplayerServerList;
@@ -66,6 +68,7 @@ public class MainMenuGui extends Gui {
     private ImageButton multiplayerClientBackButton;
 
     private HorizontalGroup multiplayerHostButtonGroup;
+    private Table multiplayerHostInputsTable;
     private Label multiplayerHostIpAddress;
     private TextField multiplayerHostName;
     private ImageButton multiplayerHostConnectButton;
@@ -128,7 +131,11 @@ public class MainMenuGui extends Gui {
         startBackButton = new ImageButton(backDrawable);
 
         startButtonGroup = new HorizontalGroup();
-        startButtonGroup.addActor(startCharacterSelect);
+        characterSelectTable = new Table();
+        characterSelectTable.add(new Label("Player Type", uiSkin));
+        characterSelectTable.row();
+        characterSelectTable.add(startCharacterSelect).width(120).height(50);
+        startButtonGroup.addActor(characterSelectTable);
         startButtonGroup.addActor(singleplayerButton);
         startButtonGroup.addActor(multiplayerButton);
         startButtonGroup.addActor(startBackButton);
@@ -153,31 +160,42 @@ public class MainMenuGui extends Gui {
         multiplayerServerList = new List<String>(uiSkin);
         multiplayerServerScrollPane = new ScrollPane(multiplayerServerList, uiSkin);
         multiplayerFindServers = new TextButton("Find Server", uiSkin);
-        multiplayerClientName = new TextField("Client Name", uiSkin);
+        multiplayerClientName = new TextField("Fred", uiSkin);
         multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerClientConnectButton = new ImageButton(connectDrawable);
         multiplayerClientBackButton = new ImageButton(backDrawable);
 
         multiplayerClientButtonGroup = new HorizontalGroup();
-        multiplayerServerGroup = new VerticalGroup();
-        multiplayerServerGroup.addActor(multiplayerServerScrollPane);
-        multiplayerServerGroup.addActor(multiplayerFindServers);
-        multiplayerClientButtonGroup.addActor(multiplayerServerGroup);
-        multiplayerClientButtonGroup.addActor(multiplayerClientName);
-        multiplayerClientButtonGroup.addActor(multiplayerClientIpAddConnection);
+        multiplayerServerTable = new Table();
+        multiplayerServerTable.add(multiplayerServerScrollPane).width(150).height(130).space(10);
+        multiplayerServerTable.row();
+        multiplayerServerTable.add(multiplayerFindServers).width(120).height(50);
+        multiplayerClientButtonGroup.addActor(multiplayerServerTable);
+        multiplayerClientInputsTable = new Table();
+        multiplayerClientInputsTable.add(new Label("Player Name", uiSkin));
+        multiplayerClientInputsTable.add(new Label("Host Address", uiSkin));
+        multiplayerClientInputsTable.row();
+        multiplayerClientInputsTable.add(multiplayerClientName);
+        multiplayerClientInputsTable.add(multiplayerClientIpAddConnection);
+        multiplayerClientButtonGroup.addActor(multiplayerClientInputsTable);
         multiplayerClientButtonGroup.addActor(multiplayerClientConnectButton);
         multiplayerClientButtonGroup.addActor(multiplayerClientBackButton);
-        multiplayerClientButtonGroup.space(50);
+        multiplayerClientButtonGroup.space(30);
 
         // Multiplayer Host state
-        multiplayerHostIpAddress = new Label("Host IP:  " + MainMenuScreen.multiplayerHostAddress(), uiSkin);
-        multiplayerHostName = new TextField("Host Name", uiSkin);
+        multiplayerHostIpAddress = new Label(MainMenuScreen.multiplayerHostAddress(), uiSkin);
+        multiplayerHostName = new TextField("Bob", uiSkin);
         multiplayerHostConnectButton = new ImageButton(connectDrawable);
         multiplayerHostBackButton = new ImageButton(backDrawable);
 
         multiplayerHostButtonGroup = new HorizontalGroup();
-        multiplayerHostButtonGroup.addActor(multiplayerHostIpAddress);
-        multiplayerHostButtonGroup.addActor(multiplayerHostName);
+        multiplayerHostInputsTable = new Table();
+        multiplayerHostInputsTable.add(new Label("Host Address", uiSkin));
+        multiplayerHostInputsTable.add(new Label("Player Name", uiSkin));
+        multiplayerHostInputsTable.row();
+        multiplayerHostInputsTable.add(multiplayerHostIpAddress);
+        multiplayerHostInputsTable.add(multiplayerHostName);
+        multiplayerHostButtonGroup.addActor(multiplayerHostInputsTable);
         multiplayerHostButtonGroup.addActor( multiplayerHostConnectButton);
         multiplayerHostButtonGroup.addActor(multiplayerHostBackButton);
         multiplayerHostButtonGroup.space(50);
