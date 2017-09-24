@@ -129,10 +129,15 @@ public class EnemyWaveTest {
 		firstWave.setWaveLength(5);
 		Assert.assertEquals("Wave length was not set correctly", 5, firstWave.getWaveLength());
 	}
+
+	@Test
+	public void getSpawnRateTest() {
+		Assert.assertEquals("Spawn rate not returning correct value", 75, firstWave.getSpawnRate());
+	}
 	
 	@Test
 	public void getWaveStateTest() {
-		Assert.assertEquals("wave state is wrong", WaveState.ACTIVE,firstWave.getWaveState() );
+		Assert.assertEquals("wave state is wrong", WaveState.ACTIVE, firstWave.getWaveState() );
 	}
 
 	@Test
