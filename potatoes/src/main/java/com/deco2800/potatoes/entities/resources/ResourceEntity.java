@@ -73,7 +73,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 * 			  The type of resource to be created.
 	 */
 	public ResourceEntity(float posX, float posY, Resource resource) {
-        super(new Circle2D(posX, posY, 1.414f), 1f, 1f, resource.getTypeName());
+        super(new Circle2D(posX, posY, 0.707f), 1f, 1f, resource.getTypeName());
 		resourceType = resource;
 		quantity = 1;
 	}
