@@ -29,8 +29,8 @@ public class PathManager extends Manager implements ForWorld {
     private World world;
     private ArrayList<Box3D> nodes;
     private ArrayList<Line> obstacles;
-    private ArrayList<Box3D> path;
-    private static final int NUMBER_OF_RANDOM_NODES = 5;
+    private ArrayDeque<Box3D> path;
+    private static final int NUMBER_OF_RANDOM_NODES = 100;
     private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
 
 
@@ -40,7 +40,7 @@ public class PathManager extends Manager implements ForWorld {
     public PathManager() {
         spanningTree = new HashMap<>();
         nodes = new ArrayList<>();
-        path = new ArrayList<>();
+        path = new ArrayDeque<>();
         world = GameManager.get().getWorld();
     }
 
@@ -107,7 +107,6 @@ public class PathManager extends Manager implements ForWorld {
         // Check if this line has a clear path.
         if(!checkLineClash(line, obstacles)) {
             // line is not obstructed.
-            path.add(start);
             path.add(goal);
             return new Path(path);
         }
@@ -117,24 +116,12 @@ public class PathManager extends Manager implements ForWorld {
         }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(goal, start, obstacles);
-        // Add the starting point to the path.
-        path.add(start);
-        // If the spanning tree has only two entries
-        // return a new path with the start and end point.
-        if (spanningTree.size() < 2) {
-            path.add(goal);
-            return new Path(path);
-        }
         // Add extra path points as needed.
         // Set next as the value returned from start as
         // the key to spanningTree.
         next = spanningTree.get(start);
-        while (!(next.equals(goal))) {
+        while (!(next.equals(goal)) && (path.size() < 10)) {
             path.add(next);
-            // Hacky fix for infinite loop, doesn't completely fix the problem
-            if (path.contains(next)) {
-            	break;
-            }
             next = spanningTree.get(next);
         }
         path.add(next);

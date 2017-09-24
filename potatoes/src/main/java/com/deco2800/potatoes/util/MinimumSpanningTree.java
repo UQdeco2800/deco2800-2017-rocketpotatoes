@@ -40,6 +40,7 @@ public class MinimumSpanningTree {
             return (this.getAddress() == other.getAddress());
         }
 
+
         public Box3D getEntry() {
             return entry;
         }
@@ -294,6 +295,7 @@ public class MinimumSpanningTree {
 
         HashMap<Box3D, Box3D> tree = new HashMap<>();
         Vertex temp;
+        cloud.clear();
         this.addStartGoal(goal, start, obstacles);
         // Add the goal vertex (index 0 of vertexList) to the cloud to begin MST.
         cloud.put(0, this.getVertexList().get(0));
