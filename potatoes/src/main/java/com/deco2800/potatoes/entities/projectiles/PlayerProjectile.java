@@ -1,14 +1,20 @@
 package com.deco2800.potatoes.entities.projectiles;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.WorldUtil;
+
+import java.util.Optional;
 
 public class PlayerProjectile extends Projectile {
     protected float pPosX;
     protected float pPosY;
     protected float tPosX;
     protected float tPosY;
-    protected  String Directions;
+    protected String Directions;
+    protected PlayerShootMethod shootingStyle;
 
     public enum PlayerShootMethod {
         DIRECTIONAL {
@@ -48,6 +54,7 @@ public class PlayerProjectile extends Projectile {
         this.tPosX = targetPos.x;
         this.tPosY = targetPos.y;
         this.Directions = Directions;
+        this.shootingStyle = shootingStyle;
         ShootingStyle(shootingStyle);
 
     }
@@ -55,6 +62,15 @@ public class PlayerProjectile extends Projectile {
 
     @Override
     public void onTick(long time) {
+        if(shootingStyle.toString().equalsIgnoreCase("HOMING")){
+            Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x, targetPos.y);
+            if (targetEntity.isPresent()) {
+                setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
+            } else {
+                GameManager.get().getWorld().removeEntity(this);
+            }
+            updatePosition();
+        }
         super.onTick(time);
     }
 
