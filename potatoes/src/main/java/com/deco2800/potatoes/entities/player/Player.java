@@ -177,9 +177,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
             this.setState(PlayerState.idle);
         } else {
-            this.setState(PlayerState.walk);
-            double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
-                    this.getPosX() - oldPos.x) * (180 / Math.PI);
+
+        	this.setState(PlayerState.walk);
+        		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
+        				this.getPosX() - oldPos.x) * (180 / Math.PI);
+
 
             if (angularDirection >= -180 && angularDirection < -157.5) {
                 this.setDirection(Direction.SouthWest);
@@ -248,11 +250,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			The time animation to be set to the player.
      */
     public void setAnimation(TimeAnimation animation) {
-        stopCurrentAnimation();
-        this.currentAnimation = animation;
-        startCurrentAniamation();
-        LOGGER.info("Changed animation to " + this.getDirection().name());
-    }
+
+    		stopCurrentAnimation();
+		this.currentAnimation = animation;
+		startCurrentAniamation();
+		LOGGER.info("Changed animation to " + this.getDirection().name());
+	}
+
 
     /**
      * Starts the current animation.
@@ -446,7 +450,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Initialises the inventory with all the resources in the game.
      */
     private void addResources() {
-        HashSet<Resource> startingResources = new HashSet<Resource>();
+
+    	HashSet<Resource> startingResources = new HashSet<Resource>();
+    	startingResources.add(new SeedResource());
         this.inventory = new Inventory(startingResources);
     }
 
@@ -497,18 +503,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         if (didHarvest) {
             GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
         }
-    }
-
-    /**
-     * Checks to see whether the player moving out of the map
-     */
-    private boolean outOfBounds() {
-        int width = GameManager.get().getWorld().getWidth();
-        int height = GameManager.get().getWorld().getLength();
-        if (this.getPosX() > width - 0.2 || this.getPosX() < 0 || this.getPosY() > height - 0.2 || this.getPosY() < 0) {
-            return true;
-        }
-        return false;
     }
 
     /**

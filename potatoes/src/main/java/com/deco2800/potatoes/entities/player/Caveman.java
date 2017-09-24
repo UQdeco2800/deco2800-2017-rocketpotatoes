@@ -134,9 +134,12 @@ public class Caveman extends Player {
 
     @Override
     public void interact() {
-        if (this.setState(PlayerState.interact)) {
-            // Caveman interacts
-        }
+
+    		super.interact();
+	    	if (this.setState(PlayerState.interact)) {
+	    		// Caveman interacts
+	    	}
+
     }
 
 }
