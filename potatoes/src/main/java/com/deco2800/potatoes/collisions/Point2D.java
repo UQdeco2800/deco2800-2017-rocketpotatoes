@@ -76,6 +76,7 @@ public class Point2D implements CollisionMask{
 
     /**
      * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
+     * Returns 0 if intersecting.
      *
      * @param x1    The x coord of point 1 of the line
      * @param y1    The y coord of point 1 of the line
