@@ -43,10 +43,12 @@ public class LargeFootstepEffect extends Effect {
      * @param posY
      *            y start position
      */
+
     public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float damage, float range) {
         // TODO -- find the appropriate constants for this
-        super(targetClass, new Box2D(posX - 1, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectType.LARGE_FOOTSTEP);
+        super(targetClass, new Box2D(posX - 1, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
         effectPosition = getMask();
+
     }
 
     @Override

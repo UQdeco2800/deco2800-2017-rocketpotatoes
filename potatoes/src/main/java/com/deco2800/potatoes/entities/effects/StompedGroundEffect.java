@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.entities.effects;
 
-import java.util.Map;
-
 import com.badlogic.gdx.math.Vector3;
+
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
+
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 
@@ -49,9 +49,11 @@ public class StompedGroundEffect extends Effect {
 	 * @param isTemporary
 	 *            boolean for whether this effect is temporary or permanent
 	 */
+
 	public StompedGroundEffect(Class<?> targetClass, float posX, float posY, boolean isTemporary, float damage, 
             float range) {
-        super(targetClass, new Circle2D(posX, posY, 1.414f), 1f, 1f, damage, range, EffectType.DAMAGED_GROUND);
+        super(targetClass, new Circle2D(posX, posY, 1.414f), 1f, 1f, damage, range, EffectTexture.DAMAGED_GROUND);
+
 		this.isTemporary = isTemporary;
 		effectPosition = getMask();
 	}

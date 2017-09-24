@@ -10,32 +10,43 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class HomingProjectile extends Projectile {
-
+	protected float pPosX;
+	protected float pPosY;
+	protected float tPosX;
+	protected float tPosY;
 	public HomingProjectile() {
 
 	}
 
 	/**
-	 * Creates a new Homing Projectile. Homing Projectiles changes direction once
-	 * fired. The initial direction is based on the direction to the closest entity
-	 * and follows it.
+	 * Creates a new projectile. A projectile is the vehicle used to deliver damage
+	 * to a target over a distance
 	 *
-	 * @param posX
-	 *            x start position
-	 * @param posY
-	 *            y start position
-	 * @param fposX
-	 *            target x position
-	 * @param targetPosY
-	 *            target y position
+	 * @param targetClass
+	 *            the targets class
+	 * @param startPos
+	 * @param targetPos
+
 	 * @param range
-	 *            Projectile range
-	 * @param DAMAGE
-	 *            Projectile damage
+	 * @param damage
+	 *            damage of projectile
+	 * @param projectileTexture
+	 *            the texture set to use for animations. Use ProjectileTexture._
+	 * @param startEffect
+	 *            the effect to play at the start of the projectile being fired
+	 * @param endEffect
+	 *            the effect to be played if a collision occurs
 	 */
-    public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-            ProjectileType projectileType, Effect startEffect, Effect endEffect) {
-        super(targetClass, startPos, targetPos, range, damage, projectileType, startEffect, endEffect);
+
+	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
+							Effect endEffect) {
+		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
+
+		this.pPosX = startPos.x;
+		this.pPosY = startPos.y;
+		this.tPosX = targetPos.x;
+		this.tPosY = targetPos.y;
+
 	}
 
 	@Override
@@ -50,4 +61,18 @@ public class HomingProjectile extends Projectile {
 		super.onTick(time);
 
 	}
+	/**
+	 * Returns Target Pos X
+	 * */
+	public float getTargetPosX() {
+		return tPosX;
+	}
+
+	/**
+	 * Returns Target Pos Y
+	 */
+	public float getTargetPosY() {
+		return tPosY;
+	}
+
 }

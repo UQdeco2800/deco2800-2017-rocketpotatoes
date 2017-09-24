@@ -10,203 +10,236 @@ import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public abstract class Effect extends AbstractEntity implements Tickable {
 
-	protected float damage = 0;
-	protected float range = 0;
-	protected EffectType effectType;
-	protected Class<?> targetClass;
-	protected float rotationAngle = 0;
-	protected boolean animate = true;
-	protected boolean loopAnimation = false;
+    protected float damage = 0;
+    protected float range = 0;
+    protected EffectTexture effectTexture;
+    protected Class<?> targetClass;
+    protected float rotationAngle = 0;
+    protected boolean animate = true;
+    protected boolean loopAnimation = false;
+    protected Vector3 position;
 
-	public enum EffectType {
-		AOE {
-			public String toString() {
-				return "aoe";
-			}
+    /**
+     * Used as a container for Effect textures and a lookup for the ones that
+     * currently exist and are usable
+     */
+    public enum EffectTexture {
+        AOE {
+            public String[] textures() {
+                return new String[]{"aoe1", "aoe2", "aoe3"};
+            }
+        },
+        EXPLOSION {
+            public String[] textures() {
+                return new String[]{"explosion1", "explosion2", "explosion3"};
+            }
+        },
+        DUST {
+            public String[] textures() {
+                return new String[]{"start1", "start2", "start3", "start4", "start5"};
+            }
+        },
+        LIGHTNING {
+            public String[] textures() {
+                return new String[]{"lightning"};
+            }
+        },
+        LAZER {
+            public String[] textures() {
+                return new String[]{"lightning"};
+            }
+        },
+        DAMAGED_GROUND {
+            public String[] textures() {
+                return new String[]{"DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3"};
+            }
+        },
+        SWIPE {
+            public String[] textures() {
+                return new String[]{"swipe1", "swipe2", "swipe3"};
+            }
+        },
+        LARGE_FOOTSTEP {
+            public String[] textures() {
+                return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
+            }
+        },
+        HEALING {
+            public String[] textures() {
+                return new String[]{"Healing1", "Healing2", "Healing3"};
+            }
+        };
 
-			public String[] textures() {
-				return new String[] { "aoe1", "aoe2", "aoe3" };
-			}
-		},
-		EXPLOSION {
-			public String toString() {
-				return "explosion";
-			}
+        public String[] textures() {
+            return new String[]{"default"};
+        }
+    }
 
-			public String[] textures() {
-				return new String[] { "explosion1", "explosion2", "explosion3" };
-			}
-		},
-		LIGHTNING {
-			public String toString() {
-				return "lightning";
-			}
-
-			public String[] textures() {
-				return new String[] { "lightning" };
-			}
-		},
-		LAZER {
-			public String toString() {
-				return "lightning";
-			}
-
-			public String[] textures() {
-				return new String[] { "lightning" };
-			}
-		},
-		DAMAGED_GROUND {
-			public String toString() {
-				return "DamagedGroundTemp1";
-			}
-
-			public String[] textures() {
-				return new String[] { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
-			}
-		},
-		SWIPE {
-			public String toString() {
-				return "swipe";
-			}
-
-			public String[] textures() {
-				return new String[] { "swipe1", "swipe2", "swipe3" };
-			}
-		},
-		LARGE_FOOTSTEP {
-			public String toString() { return "TankFootstepTemp1"; }
-
-			public String[] textures() {
-				return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
-			}
-		},
-		HEALING{
-			public String toString() { return "Healing1"; }
-
-			public String[] textures() {
-				return new String[]{"Healing1", "Healing2", "Healing3"};
-			}
-		};
-
-
-		public String[] textures() {
-			return new String[] { "default" };
-		}
-	}
-
-	public Effect() {
-
-	}
-
-    public Effect(Class<?> targetClass, CollisionMask mask, float xRenderLength, float yRenderLength, float damage,
-            float range, EffectType effectType) {
-        super(mask, xRenderLength, yRenderLength, effectType.textures()[0]);
-
-		if (targetClass != null)
-			this.targetClass = targetClass;
-		else
-			this.targetClass = MortalEntity.class;
-
-		if (effectType == null)
-			throw new RuntimeException("projectile type must not be null");
-		else
-			this.effectType = effectType;
-
-		this.damage = damage;
-		this.range = range;
+    public Effect() {
 
     }
 
-	public void drawEffect(SpriteBatch batch) {
 
-	}
+    /**
+     * The Effect classes render a texture at a location and may cause damage to
+     * specific targets in its collision area
+     *
+     * @param targetClass   the target's class i.e. MortalEntity.class
+     * @param mask          Collison mask
+     * @param xRenderLength
+     * @param yRenderLength
+     * @param damage        damage effect deals to target(s)
+     * @param range         radius of effect
+     * @param effectTexture which set of textures to use for animation. Uses EffectTexture
+     *                      enum as lookup
+     */
 
-	@Override
-	public void onTick(long time) {
-		animate();
+    public Effect(Class<?> targetClass, CollisionMask mask, float xRenderLength, float yRenderLength, float damage,
+                  float range, EffectTexture effectTexture) {
+        super(mask, xRenderLength, yRenderLength, effectTexture.textures()[0]);
 
-		CollisionMask newPos = getMask();
-		newPos.setX(this.getPosX());
-		newPos.setY(this.getPosY());
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+        if (targetClass != null)
+            this.targetClass = targetClass;
+        else
+            this.targetClass = MortalEntity.class;
 
-		for (AbstractEntity entity : entities.values()) {
-			if (!targetClass.isInstance(entity)) {
-				continue;
-			}
-			if (newPos.overlaps(entity.getMask())) {
-				((MortalEntity) entity).damage(damage);
-			}
-		}
-	}
 
-	protected int effectTimer;
-	protected int currentSpriteIndexCount;
+        if (effectTexture == null)
 
-	protected void animate() {
-		if (animate) {
-			effectTimer++;
-			if (effectTimer % 4 == 0) {
-				setTexture(effectType.textures()[currentSpriteIndexCount]);
-				if (currentSpriteIndexCount == effectType.textures().length - 1) {
-					if (loopAnimation)
-						currentSpriteIndexCount = 0;
-					else
-						GameManager.get().getWorld().removeEntity(this);
-				} else {
-					currentSpriteIndexCount++;
-				}
-			}
-		}
-	}
+            throw new RuntimeException("projectile type must not be null");
+        else
+            this.effectTexture = effectTexture;
 
-	public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,
-			float fyPos) {
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+        this.damage = damage;
+        this.range = range;
 
-		TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-		Texture tex = reg.getTexture(this.getTexture());
+        this.position = new Vector3(mask.getX(),mask.getY(),0);
+    }
 
-		float lWidth = tex.getWidth();
-		float lHeight = tex.getHeight();
 
-		Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
-		Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
+    /**
+     * Called every frame for Effect classes
+     *
+     * @param batch the SpriteBatch to render to
+     */
+    public void drawEffect(SpriteBatch batch) {
 
-		float l = endPos.x - startPos.x;
-		float h = endPos.y - startPos.y;
+    }
 
-		float lX = startPos.x - (lWidth - tileWidth) / 2;
-		float lY = 0 - startPos.y - (lHeight - tileHeight) / 2;
+    @Override
+    public void onTick(long time) {
+        animate();
 
-		float originX = tex.getWidth() / 2;
-		float originY = tex.getHeight() / 2;
+        CollisionMask newPos = getMask();
+        newPos.setX(this.getPosX());
+        newPos.setY(this.getPosY());
 
-		float lScaleX = (float) (Math.sqrt(l * l + h * h));
-		float lScaleY = 0.4f;
+        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 
-		int srcX = 0;
-		int srcY = 0;
-		int srcWidth = tex.getWidth();
-		int srcHeight = tex.getHeight();
-		batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY,
-				WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45, srcX, srcY, srcWidth, srcHeight, false, false);
+        for (AbstractEntity entity : entities.values()) {
+            if (!targetClass.isInstance(entity)) {
+                continue;
+            }
+            if (newPos.overlaps(entity.getMask())) {
+                ((MortalEntity) entity).damage(damage);
+            }
+        }
+    }
 
-	}
+    protected int effectTimer;
+    protected int currentSpriteIndexCount;
 
-	public float getDamage() {
-		return damage;
-	}
+    /*
+     * Loops through texture array and sets sprite every frame. Looking into using
+     * AnimationFactory as animation controller
+     */
+    protected void animate() {
+        if (animate) {
+            effectTimer++;
+            if (effectTimer % 4 == 0) {
+                setTexture(effectTexture.textures()[currentSpriteIndexCount]);
+                if (currentSpriteIndexCount == effectTexture.textures().length - 1) {
+                    if (loopAnimation)
+                        currentSpriteIndexCount = 0;
+                    else
+                        GameManager.get().getWorld().removeEntity(this);
+                } else {
+                    currentSpriteIndexCount++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Renders a line between two points
+     *
+     * @param batch   the SpriteBatch to render to
+     * @param texture the texture to draw
+     * @param xPos    start x position
+     * @param yPos    start y position
+     * @param fxPos   end x position
+     * @param fyPos   end y position
+     */
+    public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,
+                                   float fyPos) {
+        int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+        TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+        Texture tex = reg.getTexture(this.getTexture());
+
+        float lWidth = tex.getWidth();
+        float lHeight = tex.getHeight();
+
+        Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
+        Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
+
+        float l = endPos.x - startPos.x;
+        float h = endPos.y - startPos.y;
+
+        // length of line in x direction
+        float lX = startPos.x - (lWidth - tileWidth) / 2;
+        // length of line in y direction
+        float lY = 0 - startPos.y - (lHeight - tileHeight) / 2;
+
+        float originX = tex.getWidth() / 2;
+        float originY = tex.getHeight() / 2;
+
+        // stretch texture using x scale
+        float lScaleX = (float) (Math.sqrt(l * l + h * h));
+        float lScaleY = 0.4f;
+
+        int srcX = 0;
+        int srcY = 0;
+        int srcWidth = tex.getWidth();
+        int srcHeight = tex.getHeight();
+        batch.draw(tex, lX, lY, originX, originY, lWidth, lHeight, lScaleX, lScaleY,
+                WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45, srcX, srcY, srcWidth, srcHeight, false, false);
+
+    }
+
+    public float getPosX() {
+        return position.x;
+    }
+
+    public float getPosY() {
+        return position.y;
+    }
+
+    /**
+     * Gets effect damage
+     *
+     * @return damage
+     */
+    public float getDamage() {
+        return damage;
+    }
 
 }
