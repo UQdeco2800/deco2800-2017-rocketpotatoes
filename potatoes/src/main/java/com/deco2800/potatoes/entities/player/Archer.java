@@ -31,7 +31,8 @@ public class Archer extends Player {
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.walk, 8, 800, null);
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.attack, 5, 200, this::completionHandler);
     private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 200, this::completionHandler);
     
     private Void completionHandler() {
@@ -49,6 +50,9 @@ public class Archer extends Player {
         case idle:
     			this.setAnimation(archerIdleAnimations.get(this.getDirection()));
     			break;
+        case walk:
+			this.setAnimation(archerWalkAnimations.get(this.getDirection()));
+			break;
         case attack:
 			this.setAnimation(archerAttackAnimations.get(this.getDirection()));
 			break;
