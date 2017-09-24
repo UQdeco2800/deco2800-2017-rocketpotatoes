@@ -53,6 +53,20 @@ public class CollisionMaskTest {
     }
 
     @Test
+    public void negativeLengthsSwapped() {
+        Box2D box1 = new Box2D(5, 5, -3, -3);
+        assertTrue(box1.getXLength() == 3 && box1.getYLength() == 3 );
+        box1.setYLength(-3);
+        box1.setXLength(-3);
+        assertTrue(box1.getXLength() == 3 && box1.getYLength() == 3 );
+
+        Circle2D circ1 = new Circle2D(5, 5, -3);
+        assertTrue(circ1.getRadius() == 3);
+        circ1.setRadius(-3);
+        assertTrue(circ1.getRadius() == 3);
+    }
+
+    @Test
     public void collisionPointToPoint() {
         Point2D point1 = new Point2D(5.7f, 8.3f);
         Point2D point2 = new Point2D(5.7f, 8.3f);
@@ -67,7 +81,6 @@ public class CollisionMaskTest {
         assertFalse("point2 thinks it overlaps point1", point2.overlaps(point1));
     }
 
-
     @Test
     public void collisionPointToCircle(){
         Point2D point1 = new Point2D(5f, 5f);
@@ -79,7 +92,7 @@ public class CollisionMaskTest {
 
         assertTrue(point1.overlaps(circ1)); //overlaps
         assertTrue(circ1.overlaps(point1)); //overlaps reciprocity
-        assertTrue(point2.overlaps(circ1)); //on edge
+        assertFalse(point2.overlaps(circ1)); //on edge
         assertTrue(point3.overlaps(circ1)); //close to edge diagonal
         assertFalse(point2.overlaps(circ2)); //non collision
         assertFalse(point3.overlaps(circ2)); //non collision diagonal
@@ -98,15 +111,34 @@ public class CollisionMaskTest {
         assertTrue(circ1.overlaps(circ4)); // overlaps linear
         assertTrue(circ1.overlaps(circ5)); // overlaps diagonal
     }
-/*
+
     @Test
     public void collisionPointToBox() {
-        assertTrue(true); //TODO
-        //overlaps
-        //on edge
-        //non collision
-    }
+        Point2D point1 = new Point2D(5f, 5f);
+        Point2D point2 = new Point2D(5f, 9f);
+        Box2D box1 = new Box2D(5, 8, 2, 2);
+        Box2D box2 = new Box2D(5, 9, 2, 2);
+        Box2D box3 = new Box2D(3, 3, 1, 1);
+        Box2D box4 = new Box2D(3, 7, 1, 1);
+        Box2D box5 = new Box2D(7, 3, 1, 1);
+        Box2D box6 = new Box2D(7, 7, 1, 1);
 
+        //point1
+        assertFalse(point1.overlaps(box1)); //in line on one dimension
+        assertFalse(box1.overlaps(point1));
+        assertFalse(point1.overlaps(box2));
+        assertFalse(point1.overlaps(box3)); //diagonals
+        assertFalse(point1.overlaps(box4));
+        assertFalse(point1.overlaps(box5));
+        assertFalse(point1.overlaps(box6));
+
+        //point2
+        assertFalse(point2.overlaps(box1)); // on edge
+        assertTrue(point2.overlaps(box2)); // overlaps
+        assertFalse(point2.overlaps(box3));
+        assertFalse(point2.overlaps(box4));
+    }
+/*
     @Test
     public void collisionCircleToBox() {
         assertTrue(true); //TODO
