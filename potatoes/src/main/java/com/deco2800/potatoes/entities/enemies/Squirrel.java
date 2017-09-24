@@ -29,13 +29,12 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	private Direction currentDirection; // The direction the enemy faces
-	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
+	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
 	 * Default constructor for serialization
 	 */
 	public Squirrel() {
-		// empty for serialization
 	}
 
 	/***
