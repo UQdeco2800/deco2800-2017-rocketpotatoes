@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.HasDirection.Direction;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
+import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
@@ -232,7 +233,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 			for (int i=1; i<=frameCount; i++) {
 				frames[i-1] = playerType + "_" + state.name() + "_" + direction.toString() + "_" + i;
 			}
-			animations.put(direction, new PlayerAnimation(animationTime, frames, completionHandler));
+			animations.put(direction, new TimeTriggerAnimation(animationTime, frames, completionHandler));
 		}
 		return animations;
     }

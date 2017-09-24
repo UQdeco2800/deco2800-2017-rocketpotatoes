@@ -72,7 +72,7 @@ public final class AnimationFactory {
 		return animation;
 	}
 
-	private static Animation[] stringsToAnimationArray(String[] frames) {
+	public static Animation[] stringsToAnimationArray(String[] frames) {
 		List<Animation> frameAnimations = new ArrayList<>();
 		for (String string : frames) {
 			frameAnimations.add(new SingleFrameAnimation(string));
