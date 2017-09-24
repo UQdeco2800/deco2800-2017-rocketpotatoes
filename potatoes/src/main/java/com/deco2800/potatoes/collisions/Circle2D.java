@@ -53,7 +53,7 @@ public class Circle2D implements CollisionMask {
     }
 
     /**
-     * Finds the minimum edge-to-edge distance between this collision mask and another collision mask.
+     * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
      * This function is symmetric.
      *
      * @param other The other collision mask.
@@ -89,6 +89,15 @@ public class Circle2D implements CollisionMask {
         }
     }
 
+    /**
+     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
+     *
+     * @param x1    The x coord of point 1 of the line
+     * @param y1    The y coord of point 1 of the line
+     * @param x2    The x coord of point 2 of the line
+     * @param y2    The y coord of point 2 of the line
+     * @return      The minimum straight-line distance
+     */
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
         Point2D centre = new Point2D(x, y);
@@ -138,7 +147,7 @@ public class Circle2D implements CollisionMask {
 
     /**
      * Sets the radius of the Circle2D.
-     * Any negative values will be swapped to positive values.
+     * A negative radius will be reversed.
      *
      * @param radius The new radius.
      */

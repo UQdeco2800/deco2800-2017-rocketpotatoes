@@ -32,7 +32,12 @@ public class Box2D implements CollisionMask{
     }
 
 
-
+    /**
+     * Returns True iff this Box2D overlaps the given Point2D
+     *
+     * @param other The other CollisionMask being checked
+     * @return True iff this box2D overlaps the CollisionMask
+     */
     private boolean overlapsPoint(Point2D other) {
         // Check x non collision
         if ( Math.abs(this.x - other.getX()) >= (this.xLength/2)) {
@@ -47,7 +52,12 @@ public class Box2D implements CollisionMask{
         return true;
     }
 
-
+    /**
+     * Returns True iff this Box2D overlaps the given Circle2D
+     *
+     * @param other The other CollisionMask being checked
+     * @return True iff this box2D overlaps the CollisionMask
+     */
     private boolean overlapsCircle(Circle2D other) {
         // We will consider the circle to be a point
         // and the rectangle to be a rounded rectangle
@@ -77,6 +87,12 @@ public class Box2D implements CollisionMask{
         return cornerDistSquare <= (other.getRadius() * other.getRadius());
     }
 
+    /**
+     * Returns True iff this Box2D overlaps the given Box2D
+     *
+     * @param other The other CollisionMask being checked
+     * @return True iff this box2D overlaps the CollisionMask
+     */
     private boolean overlapsBox(Box2D other) {
         // Calc centre to centre dist
         float distX = Math.abs(other.getX() - this.x);
@@ -92,6 +108,44 @@ public class Box2D implements CollisionMask{
 
         return true;
     }
+
+    /**
+     * Checks to see if a line intersects with this Box2D.
+     * The line goes from point (x1,y1) to (x2,y2).
+     * Uses Axis-Aligned Bounding Box (AABB) Intersection
+     *
+     * @param x1 The x coord of point 1 of the line
+     * @param y1 The y coord of point 1 of the line
+     * @param x2 The x coord of point 2 of the line
+     * @param y2 The y coord of point 2 of the line
+     * @return True iff this CollisionMask is overlapped by the line.
+     */
+    public boolean overlapsLine(float x1, float y1, float x2, float y2) {
+        float fMin = 0;
+        float fMax = 1;
+
+        float[] lineMin = {Math.min(x1, x2), Math.min(y1, y2)};
+        float[] lineMax = {Math.max(x1, x2), Math.max(y1, y2)};
+        float[] boxMin = {this.x - this.xLength/2, this.y - this.yLength/2};
+        float[] boxMax = {this.x + this.xLength/2, this.y + this.yLength/2};
+
+        for (int i = 0; i < 2; i++) {
+            float lineDist = lineMax[i] - lineMin[i];
+            if (lineDist != 0) {
+                fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
+                fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
+                if (fMin > fMax) {
+                    return false;
+                }
+
+            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Checks if this collision mask overlaps another collision masks.
      * This function is symmetric.
@@ -114,32 +168,13 @@ public class Box2D implements CollisionMask{
     }
 
 
-    public boolean overlaps(float x1, float y1, float x2, float y2) {
-        float fMin = 0;
-        float fMax = 1;
-
-        float[] lineMin = {Math.min(x1, x2), Math.min(y1, y2)};
-        float[] lineMax = {Math.max(x1, x2), Math.max(y1, y2)};
-        float[] boxMin = {this.x - this.xLength/2, this.y - this.yLength/2};
-        float[] boxMax = {this.x + this.xLength/2, this.y + this.yLength/2};
-
-        for (int i = 0; i < 2; i++) {
-            float lineDist = lineMax[i] - lineMin[i];
-            if (lineDist != 0) {
-                fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
-                fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
-                if (fMin > fMax) { 
-                	return false; 
-                }
-
-            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) {
-            	return false; 
-            }
-        }
-
-        return true;
-    }
-
+    /**
+     * Used to find the minimum distance between this Box2D and a point.
+     *
+     * @param distX The x value of the point.
+     * @param distY The y value of the point.
+     * @return The minimum distance between this Box2D and the coordinates.
+     */
     private float calculateDistance(float distX, float distY) {
         if ((distX >= 0) && (distY >= 0)) {
             // Box & point are diagonal to each other, calc corner point to point dist
@@ -157,6 +192,12 @@ public class Box2D implements CollisionMask{
         }
     }
 
+    /**
+     * Finds the minimum distance between this Box2D and the given Point2D
+     *
+     * @param other The other CollisionMask being checked
+     * @return The minimum distance to the given CollisionMask
+     */
     private float distanceToPoint(Point2D other) {
         Point2D point = (Point2D) other;
 
@@ -167,6 +208,12 @@ public class Box2D implements CollisionMask{
         return calculateDistance(distX, distY);
     }
 
+    /**
+     * Finds the minimum distance between this Box2D and the given Circle2D
+     *
+     * @param other The other CollisionMask being checked
+     * @return The minimum distance to the given CollisionMask
+     */
     private float distanceToCircle(Circle2D other) {
         // Calc dist between sides on each dimension, considering the circle as a point
         float distPointX = Math.abs(other.getX() - this.x) - this.xLength/2;
@@ -192,6 +239,12 @@ public class Box2D implements CollisionMask{
         }
     }
 
+    /**
+     * Finds the minimum distance between this Box2D and the given Box2D
+     *
+     * @param other The other CollisionMask being checked
+     * @return The minimum distance to the given CollisionMask
+     */
     private float distanceToBox(Box2D other) {
         // Calc dist between sides on each dimension
         float distX = Math.abs(other.getX() - this.x) - (this.xLength + other.getXLength()) / 2;
@@ -201,10 +254,12 @@ public class Box2D implements CollisionMask{
     }
 
     /**
-     * returns 0 iff on the edge
-     * @param other
-     *              The other collision mask.
-     * @return
+     * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
+     * This function is symmetric.
+     * Returns 0 iff on the edge.
+     *
+     * @param other The other collision mask.
+     * @return The distance. If the collision masks overlap, a negative number is returned.
      */
     @Override
     public float distance(CollisionMask other) {
@@ -219,64 +274,23 @@ public class Box2D implements CollisionMask{
         }
     }
 
-    /* //Centre to centre distance, clipped by the mask
-    // made some bad assumptions, isn't minimum edge-to-edge distance
-    public float distanceCentreClipped(CollisionMask other) {
-        // Calc centre to centre dist
-        float distX = Math.abs(other.getX() - this.x);
-        float distY = Math.abs(other.getY() - this.y);
-        float dist = (float) Math.sqrt((double) distX * distX + distY * distY);
-
-        // distMin will be the initial % of the line unobstructed by this Box2D
-        // e.g. the line might be first unobstructed by this Box2D 30% along
-        float distMin = Math.min((distX - this.x/2)/distX,
-                (distY - this.y/2)/distY);
-
-        if (other instanceof Box2D) {
-            Box2D otherBox = (Box2D) other;
-
-            // distMax will be the final % of the line unobstructed by otherBox
-            // and then become obstructed again 70% along, by otherBox
-            float distMax = Math.max((distX - otherBox.getXLength()/2)/distX,
-                                    (distY - otherBox.getYLength()/2)/distY);
-
-            //scale based off of distMin & distMax
-            return (dist * (distMax - distMin));
-
-        } else if (other instanceof Circle2D) {
-            Circle2D circle = (Circle2D) other;
-
-            //scale based off of distMin & subtract the radius of the circle
-            return (dist * (1 - distMin) - circle.getRadius());
-
-        } else if (other instanceof Point2D) {
-
-            //scale based off of distMin
-            return (dist * (1 - distMin));
-        }
-    }
-    */
-
     /**
-     * Do not pass line with 0 length
+     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
+     * returns negative if touching(distance 0) or overlapping.
+     * Expects a line that does not have 0 length.
      * Currently implements this.overlaps(x1, y1, x2, y2) to check for collision
-     * returns negative if touching(distance 0) or overlaping
      *
-     * @param x1
-     *              The starting X coordinate of the line being checked.
-     * @param y1
-     *              The starting Y coordinate of the line being checked.
-     * @param x2
-     *              The ending X coordinate of the line being checked.
-     * @param y2
-     *              The ending Y coordinate of the line being checked.
-     * @return
+     * @param x1    The starting X coordinate of the line being checked.
+     * @param y1    The starting Y coordinate of the line being checked.
+     * @param x2    The ending X coordinate of the line being checked.
+     * @param y2    The ending Y coordinate of the line being checked.
+     * @return      The minimum straight-line distance
      */
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
 
         // check overlap //TODO should this be removed? expect that lines don't overlap?
-        if (this.overlaps(x1, y1, x2, y2)) {
+        if (this.overlapsLine(x1, y1, x2, y2)) {
         	return -1;
         }
 
@@ -414,6 +428,7 @@ public class Box2D implements CollisionMask{
 
     /**
      * Set the length in the x direction.
+     * A negative length will be reversed.
      *
      * @param xLength The desired x length.
      */
@@ -432,6 +447,7 @@ public class Box2D implements CollisionMask{
 
     /**
      * Sets the length in the y direction.
+     * A negative length will be reversed.
      *
      * @param yLength The desired y length.
      */
