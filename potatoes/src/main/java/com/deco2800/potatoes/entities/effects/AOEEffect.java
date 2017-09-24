@@ -12,8 +12,8 @@ public class AOEEffect extends Effect {
 	}
 
 	public AOEEffect(Class<?> targetClass, Vector3 position, float damage, float range) {
-		super(targetClass, position, aoeWidth + 3, aoeHeight + 3, 0, aoeWidth, aoeHeight,
-				damage, range, EffectType.AOE);
+		super(targetClass, position, aoeWidth + 3f, aoeHeight + 3f, 0, aoeWidth, aoeHeight,
+				damage, range, EffectTexture.AOE);
 		loopAnimation = false;
 	}
 

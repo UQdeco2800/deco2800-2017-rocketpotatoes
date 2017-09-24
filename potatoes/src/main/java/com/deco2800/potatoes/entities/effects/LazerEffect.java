@@ -16,7 +16,7 @@ public class LazerEffect extends Effect {
 
 	public LazerEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage,
 			float range) {
-		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.LAZER);
+		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectTexture.LAZER);
 
 		// TODO: figure out why inverses
 		this.xPos = yPos;

@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
@@ -22,7 +21,6 @@ import org.junit.Test;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 
-import javax.print.attribute.standard.MediaSizeName;
 import java.util.Optional;
 
 /**
@@ -40,7 +38,7 @@ public class ProjectileTest {
     protected float posZ = 0;
     protected float range = 8;
     protected float damage = 10;
-    protected Projectile.ProjectileType projectileType = Projectile.ProjectileType.ROCKET;
+    protected Projectile.ProjectileTexture projectileTexture = Projectile.ProjectileTexture.ROCKET;
     protected Effect startEffect = new AOEEffect();
     protected Effect endEffect = null;
     protected String Directions = "E";
@@ -57,7 +55,7 @@ public class ProjectileTest {
         GameManager.get().setWorld(new ProjectileTest.TestWorld());
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
-//        testProjectile = new Projectile(posX,posY,posZ,range,damage,projectileType,null,null,Directions,TargetPosX,TargetPosY, shootingStyles);
+//        testProjectile = new Projectile(posX,posY,posZ,range,damage,projectileTexture,null,null,Directions,TargetPosX,TargetPosY, shootingStyles);
         assertNotNull(testProjectile);
         assertNotNull(target);
         assertTrue(testProjectile.getDamage() == 10);

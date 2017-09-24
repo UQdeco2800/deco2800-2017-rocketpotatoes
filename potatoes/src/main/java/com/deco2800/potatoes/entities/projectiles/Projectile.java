@@ -8,15 +8,13 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
     protected static final float SPEED = 0.2f;
 
-    protected ProjectileType projectileType;
+    protected ProjectileTexture projectileTexture;
     protected boolean loopAnimation = true;
     protected boolean animate = true;
 
@@ -46,7 +44,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     protected Effect startEffect;
     protected Effect endEffect;
 
-    public enum ProjectileType {
+    public enum ProjectileTexture {
         ROCKET {
             public String[] textures() {
                 return new String[]{"rocket1", "rocket2", "rocket3"};
@@ -95,20 +93,20 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 //    // Used in player for shooting of projectiles, requires TargetPosX and Y for enemylastpos shooting styles
 //    public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage,
-//                      ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
+//                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
 //                      float TargetPosY, ShootingStyles shootingStyle) {
 //        super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
-//                projectileType.textures()[0]);
+//                projectileTexture.textures()[0]);
 //
 //        if (targetClass != null)
 //            this.targetClass = targetClass;
 //        else
 //            this.targetClass = MortalEntity.class;
 //
-//        if (projectileType == null)
+//        if (projectileTexture == null)
 //            throw new RuntimeException("projectile type must not be null");
 //        else
-//            this.projectileType = projectileType;
+//            this.projectileTexture = projectileTexture;
 //		this.shootingStyles = shootingStyle;
 //		this.maxRange = this.range = range;
 //        this.damage = damage;
@@ -134,19 +132,19 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 
     public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-                      ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, ShootingStyles shootingStyles) {
+                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, ShootingStyles shootingStyles) {
         super(startPos.x, startPos.y, startPos.z, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
-                projectileType.textures()[0]);
+                projectileTexture.textures()[0]);
 
         if (targetClass != null)
             this.targetClass = targetClass;
         else
             this.targetClass = MortalEntity.class;
 
-        if (projectileType == null)
+        if (projectileTexture == null)
             throw new RuntimeException("projectile type must not be null");
         else
-            this.projectileType = projectileType;
+            this.projectileTexture = projectileTexture;
         this.shootingStyles = shootingStyles;
         this.maxRange = this.range = range;
         this.damage = damage;
@@ -178,10 +176,10 @@ public class Projectile extends AbstractEntity implements Tickable {
      * FOR TESTING PURPOSES, DO NOT USE THIS.
      */
     public Projectile(float posX, float posY, float posZ, float range, float damage,
-                      ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
+                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
                       float TargetPosY, ShootingStyles shootingStyle) {
         super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
-                projectileType.textures()[0]);
+                projectileTexture.textures()[0]);
 
 
         if (targetClass != null)
@@ -189,10 +187,10 @@ public class Projectile extends AbstractEntity implements Tickable {
         else
             this.targetClass = MortalEntity.class;
 
-        if (projectileType == null)
+        if (projectileTexture == null)
             throw new RuntimeException("projectile type must not be null");
         else
-            this.projectileType = projectileType;
+            this.projectileTexture = projectileTexture;
         this.shootingStyles = shootingStyle;
         this.maxRange = this.range = range;
         this.damage = damage;
@@ -329,8 +327,8 @@ public class Projectile extends AbstractEntity implements Tickable {
             projectileEffectTimer++;
             if (loopAnimation) {
                 if (projectileEffectTimer % 4 == 0) {
-                    setTexture(projectileType.textures()[projectileCurrentSpriteIndexCount]);
-                    if (projectileCurrentSpriteIndexCount == projectileType.textures().length - 1)
+                    setTexture(projectileTexture.textures()[projectileCurrentSpriteIndexCount]);
+                    if (projectileCurrentSpriteIndexCount == projectileTexture.textures().length - 1)
                         projectileCurrentSpriteIndexCount = 0;
                     else {
                         projectileCurrentSpriteIndexCount++;
@@ -361,6 +359,7 @@ public class Projectile extends AbstractEntity implements Tickable {
                     GameManager.get().getWorld().addEntity(endEffect);
                 rangeReached = true;
                 setPosition();
+
             }
         }
     }

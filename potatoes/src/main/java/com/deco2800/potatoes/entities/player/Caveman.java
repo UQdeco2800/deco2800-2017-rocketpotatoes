@@ -1,18 +1,15 @@
 package com.deco2800.potatoes.entities.player;
 
-import java.lang.annotation.Target;
 import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -123,7 +120,7 @@ public class Caveman extends Player {
                 Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
                 Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
-                GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileType.CHILLI, null, null,
+                GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.CHILLI, null, null,
                         this.getDirection().toString(), Projectile.ShootingStyles.PLAYERDIRECTIONALPROJECTILE));
 
             } else if (!target.isPresent()) {

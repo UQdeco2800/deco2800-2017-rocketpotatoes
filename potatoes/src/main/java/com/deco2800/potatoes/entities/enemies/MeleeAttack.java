@@ -39,7 +39,7 @@ public class MeleeAttack extends Effect {
 	 */
 
 	public MeleeAttack(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
-		super(targetClass, startPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.SWIPE);
+		super(targetClass, startPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectTexture.SWIPE);
 	}
 
 	@Override

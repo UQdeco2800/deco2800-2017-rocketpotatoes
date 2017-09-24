@@ -25,7 +25,7 @@ public class LightningEffect extends Effect {
 	boolean staticStrike = true;
 
 	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
-		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectType.LIGHTNING);
+		super(targetClass, targetPos, 5f, 5f, 0, 1f, 1f, damage, range, EffectTexture.LIGHTNING);
 
 		this.startPos = startPos;
 		this.targetPos = targetPos;

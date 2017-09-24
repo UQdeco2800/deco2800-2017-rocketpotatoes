@@ -23,14 +23,14 @@ public class BallisticProjectile extends Projectile {
 	 * @param targetPosZ
 	 * @param range
 	 * @param damage
-	 * @param projectileType
+	 * @param projectileTexture
 	 * @param startEffect
 	 * @param endEffect
 	 */
-	public BallisticProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileType projectileType,
+	public BallisticProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture,
 			Effect startEffect, Effect endEffect, String Directions, ShootingStyles shootingStyle) {
-//		super(targetClass, startPos, targetPos, range, damage, projectileType, startEffect, endEffect, Directions, shootingStyles);
-		super(targetClass,startPos, targetPos, range, damage, projectileType, startEffect, endEffect, Directions, shootingStyle);
+//		super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyles);
+		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyle);
 	}
 
 

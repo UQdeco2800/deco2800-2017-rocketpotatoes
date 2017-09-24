@@ -45,7 +45,7 @@ public class LargeFootstepEffect extends Effect {
      *            z start position
      */
     public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float posZ, float damage, float range) {
-        super(targetClass, new Vector3(posX - 1f, posY + 0.5f, posZ), 1f, 1f, 0, 1.4f, 1.4f, damage, range, EffectType.LARGE_FOOTSTEP);
+        super(targetClass, new Vector3(posX - 1f, posY + 0.5f, posZ), 1f, 1f, 0, 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
         effectPosition = getBox3D();
     }
 

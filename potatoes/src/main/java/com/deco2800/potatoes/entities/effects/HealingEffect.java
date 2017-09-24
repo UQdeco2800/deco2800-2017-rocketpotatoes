@@ -1,12 +1,7 @@
 package com.deco2800.potatoes.entities.effects;
 
-import java.util.Map;
-
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.Box3D;
 
 
@@ -47,7 +42,7 @@ public class HealingEffect extends Effect {
      */
     public HealingEffect(Class<?> targetClass, float posX, float posY, float posZ, boolean isTemporary,
                                float healing, float range) {
-        super(targetClass, new Vector3(posX, posY, posZ), 3f, 2f, 2f, 1.2f, 1.2f,healing, range, EffectType.HEALING);
+        super(targetClass, new Vector3(posX, posY, posZ), 3f, 2f, 2f, 1.2f, 1.2f,healing, range, EffectTexture.HEALING);
         this.isTemporary = isTemporary;
         effectPosition = getBox3D();
         animate = false;

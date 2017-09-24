@@ -9,10 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -21,13 +18,13 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 	protected float damage = 0;
 	protected float range = 0;
-	protected EffectType effectType;
+	protected EffectTexture effectTexture;
 	protected Class<?> targetClass;
 	protected float rotationAngle = 0;
 	protected boolean animate = true;
 	protected boolean loopAnimation = false;
 
-	public enum EffectType {
+	public enum EffectTexture {
 		AOE {
 			public String toString() {
 				return "aoe";
@@ -108,19 +105,19 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	}
 
 	public Effect(Class<?> targetClass, Vector3 position, float xLength, float yLength, float zLength,
-			float xRenderLength, float yRenderLength, float damage, float range, EffectType effectType) {
+			float xRenderLength, float yRenderLength, float damage, float range, EffectTexture effectTexture) {
 		super(position.x, position.y, position.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
-				effectType.textures()[0]);
+				effectTexture.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
 		
-		if (effectType == null)
+		if (effectTexture == null)
 			throw new RuntimeException("projectile type must not be null");
 		else
-			this.effectType = effectType;
+			this.effectTexture = effectTexture;
 
 		this.damage = damage;
 		this.range = range;
@@ -157,8 +154,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		if (animate) {
 			effectTimer++;
 			if (effectTimer % 4 == 0) {
-				setTexture(effectType.textures()[currentSpriteIndexCount]);
-				if (currentSpriteIndexCount == effectType.textures().length - 1) {
+				setTexture(effectTexture.textures()[currentSpriteIndexCount]);
+				if (currentSpriteIndexCount == effectTexture.textures().length - 1) {
 					if (loopAnimation)
 						currentSpriteIndexCount = 0;
 					else

@@ -1,21 +1,15 @@
 package com.deco2800.potatoes.entities.effects;
 
-import java.util.Map;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
-import com.deco2800.potatoes.util.Box3D;
 
 public class ExplosionEffect extends Effect {
 
 	private static float effectWidth = 1;
 	private static float effectHeight = 1;
-	private static EffectType effectType = EffectType.EXPLOSION;
+	private static EffectTexture effectTexture = EffectTexture.EXPLOSION;
 	protected static transient String TEXTURE = "explosion1";
 
 	public ExplosionEffect() {
@@ -30,18 +24,18 @@ public class ExplosionEffect extends Effect {
 	public ExplosionEffect(Class<?> targetClass, float posX, float posY, float posZ, float damage, float range) {
 		// 0-12, 0+3
 //		super(targetClass, 0 - pos(posX, posY)[0], 0 + pos(posX, posY)[1], 0, effectWidth, effectHeight, 0, effectWidth,
-//				effectHeight, damage, range, effectType);
+//				effectHeight, damage, range, effectTexture);
 //////		super(targetClass, new Vector3(posX - (effectWidth / 2), posY - (effectHeight / 2), 0), effectWidth + 3, effectHeight + 3, 0, effectWidth,
-//////				effectHeight, damage, range, EffectType.EXPLOSION);
-		// super(targetClass, 0, 0, 0, 0, 0, 0, 0, 0, damage, range, effectType);
+//////				effectHeight, damage, range, EffectTexture.EXPLOSION);
+		// super(targetClass, 0, 0, 0, 0, 0, 0, 0, 0, damage, range, effectTexture);
 
 		animate = true;
 		// System.out.println(0+pos(posX,posY)[0]);
 		// // super(targetClass, 0f, 0f, 0,effectWidth, effectHeight, 0,
-		// effectWidth, effectHeight, damage, range, effectType);
+		// effectWidth, effectHeight, damage, range, effectTexture);
 		// super(targetClass, posX , posY , 0, effectWidth, effectHeight , 0,
 		// effectWidth,
-		// effectHeight, damage, range, effectType);
+		// effectHeight, damage, range, effectTexture);
 		loopAnimation = false;
 		// System.out.println(getCenterOffset(effectHeight));
 	}
@@ -51,7 +45,7 @@ public class ExplosionEffect extends Effect {
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
 		TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
-		Texture tex = reg.getTexture(effectType.toString()+"0");
+		Texture tex = reg.getTexture(effectTexture.toString()+"0");
 
 		float lWidth = tex.getWidth() * effectWidth;
 		float lHeight = tex.getHeight() * effectHeight;
