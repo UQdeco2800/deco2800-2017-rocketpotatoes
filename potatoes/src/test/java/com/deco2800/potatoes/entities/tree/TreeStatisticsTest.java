@@ -25,7 +25,7 @@ public class TreeStatisticsTest {
     @Test
     public void testRemoveConstructionResources() {
         PlayerManager pm = GameManager.get().getManager(PlayerManager.class);
-        pm.setPlayer(new Player(0, 0, 0));
+        pm.setPlayer(new Player(0, 0));
         pm.getPlayer().getInventory().removeInventoryResource(new SeedResource());
         pm.getPlayer().getInventory().addInventoryResource(new SeedResource());
         assertFalse("Not enough resources but construction succeeded", test.removeConstructionResources());
