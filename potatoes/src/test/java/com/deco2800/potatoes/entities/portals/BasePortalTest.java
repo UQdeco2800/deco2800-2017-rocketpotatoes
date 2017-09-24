@@ -24,7 +24,7 @@ public class BasePortalTest{
 
 	@Before
 	public void setup() {
-		testPortal = new BasePortal(0, 0, 0, 3);
+		testPortal = new BasePortal(0, 0, 3);
 		GameManager.get().setWorld(new TestWorld());
 	}
 	

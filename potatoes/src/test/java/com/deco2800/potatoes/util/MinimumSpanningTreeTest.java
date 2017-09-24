@@ -15,13 +15,15 @@ import static org.junit.Assert.assertThat;
 
 import static org.junit.Assert.*;
 
+import com.deco2800.potatoes.collisions.Point2D;
+
 public class MinimumSpanningTreeTest {
 
     float gameHeight = 100;
     float gameWidth = 100;
     int numberOfNodes = 20;
     float largeWeight = 100;
-    ArrayList<Box3D> nodes;
+    ArrayList<Point2D> nodes;
     MinimumSpanningTree tree;
 
     @Before
@@ -30,13 +32,9 @@ public class MinimumSpanningTreeTest {
         nodes = new ArrayList<>();
         // Create nodes
         for (int i = 0; i < numberOfNodes; i++) {
-            nodes.add(new Box3D(
+            nodes.add(new Point2D(
                     (float) (Math.random() * gameWidth),      // x coordinate
-                    (float) (Math.random() * gameHeight),     // y coordinate
-                    0,
-                    0,
-                    0,
-                    0
+                    (float) (Math.random() * gameHeight)     // y coordinate
             ));
         }
         // Create minimum spanning tree

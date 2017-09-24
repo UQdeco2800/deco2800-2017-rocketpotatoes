@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
@@ -27,23 +28,15 @@ public class EnemyEntityTest {
 		public TestableEnemyEntity() {
 		}
 
-		public TestableEnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-				String texture, float maxHealth, float speed, Class<?> goal) {
-			super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture, maxHealth, speed,
-					goal);
+		public TestableEnemyEntity(float posX, float posY, float xLength, float yLength, String texture, 
+                float maxHealth, float speed, Class<?> goal) {
+            super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, texture, maxHealth, speed, goal);
 		}
 
-		public TestableEnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-				float xRenderLength, float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
-			super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture, maxHealth, speed,
-					goal);
-		}
-
-		public TestableEnemyEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength,
-				float xRenderLength, float yRenderLength, boolean centered, String texture, float maxHealth,
-				float speed, Class<?> goal) {
-			super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, centered, texture,
-					maxHealth, speed, goal);
+		public TestableEnemyEntity(float posX, float posY, float xLength, float yLength, float xRenderLength, 
+                float yRenderLength, String texture, float maxHealth, float speed, Class<?> goal) {
+            super(new Box2D(posX, posY, xLength, yLength), xRenderLength, yRenderLength, texture, maxHealth, speed, 
+                    goal);
 		}
 
 		@Override
@@ -85,19 +78,13 @@ public class EnemyEntityTest {
 
 	@Test
 	public void initTest() {
-		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, "texture", 100f, speed, goal);
+		enemyEntity = new TestableEnemyEntity(1, 2, 4, 5, "texture", 100f, speed, goal);
 		initTestCommon();
 	}
 
 	@Test
 	public void initTest2() {
-		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, 7, 8, "texture", 100f, speed, goal);
-		initTestCommon();
-	}
-
-	@Test
-	public void initTest3() {
-		enemyEntity = new TestableEnemyEntity(1, 2, 3, 4, 5, 6, 7, 8, true, "texture", 100f, speed, goal);
+		enemyEntity = new TestableEnemyEntity(1, 2, 4, 5, 7, 8, "texture", 100f, speed, goal);
 		initTestCommon();
 	}
 
