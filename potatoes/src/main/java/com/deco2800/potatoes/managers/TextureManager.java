@@ -7,7 +7,6 @@ import com.deco2800.potatoes.entities.player.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.net.www.content.image.png;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -235,8 +234,8 @@ public class TextureManager extends Manager {
         for (Direction direction : Direction.values()) {
         		String textureNameIdle = "wizard_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
-        		String textureNameHurt = "wizard_damaged_" + direction.toString() + "_1";
-        		saveTexture(textureNameHurt, "resources/player/wizard/damaged/" + textureNameHurt + ".png");
+        		String textureNameDamaged = "wizard_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameDamaged, "resources/player/wizard/damaged/" + textureNameDamaged + ".png");
         }
         
         // Add all caveman sprites
@@ -253,18 +252,18 @@ public class TextureManager extends Manager {
         		}
         		
         		for (int i=1; i<=8; i++) {
-        			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
+        			String textureNameWalk = "caveman_walk_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameWalk, "resources/player/caveman/walk/" + textureNameWalk + ".png");
         		}
         		
         		for (int i=1; i<=3; i++) {
-        			String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
+        			String textureNameDeath = "caveman_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/caveman/death/" + textureNameDeath + ".png");
         		}
         		
         		for (int i=1; i<=5; i++) {
-        			String textureNameAttack = "caveman_interact_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/interact/" + textureNameAttack + ".png");
+        			String textureNameInteract = "caveman_interact_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameInteract, "resources/player/caveman/interact/" + textureNameInteract + ".png");
         		}
         }
         
