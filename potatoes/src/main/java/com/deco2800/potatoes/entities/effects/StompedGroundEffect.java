@@ -15,6 +15,8 @@ import com.deco2800.potatoes.util.Box3D;
  * he "stomps" the ground and damages it. This effect can be either temporary or
  * permanent. When entities walk through this effect, they will be slowed down
  * TODO Actually make them slow down.
+ *
+ * @author ryanjphelan
  */
 public class StompedGroundEffect extends Effect {
 	// TODO Texture is a placeholder. Need to design proper artwork for stomped ground
@@ -53,7 +55,6 @@ public class StompedGroundEffect extends Effect {
 		super(targetClass, new Vector3(posX, posY, posZ), 1f, 1f, 1f, 1.2f, 1.2f, damage, range, EffectType.DAMAGED_GROUND);
 		this.isTemporary = isTemporary;
 		effectPosition = getBox3D();
-		animate = false;
 	}
 
 	@Override
@@ -69,6 +70,24 @@ public class StompedGroundEffect extends Effect {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the current index for the texture being used
+	 *
+	 * @return Int current index
+	 */
+	public int getCurrentTextureIndex() {
+		return currentTextureIndexCount;
+	}
+
+	/**
+	 * Return the Box3D position of the stomp
+	 *
+	 * @return Box3D position of footstep
+	 */
+	public Box3D getStompedGroundPosition() {
+		return effectPosition;
 	}
 
 	/**
