@@ -127,14 +127,22 @@ public class TextureManager extends Manager {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
                 saveTexture("ice_tree"+i, "resources/trees/ice"+i+".png");
             }
+            if(i<4){
+                saveTexture("acorn_tree"+i, "resources/trees/acorn"+i+".png");
+                saveTexture("acorn_tree_damaged"+i, "resources/trees/acornDamaged"+i+".png");
+            }
+            if(i<6){
+                saveTexture("acorn_tree_damage_being_damaged"+i, "resources/trees/acornDamagedBeingDamaged"+i+".png");
 
+            }
+            saveTexture("acorn_tree_dead"+i, "resources/trees/acornDead"+i+".png");
 
 
         }
         //damage tree:ice
 
         //damage tree:acorn
-        saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
+
 
         //Enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
@@ -235,8 +243,8 @@ public class TextureManager extends Manager {
         for (Direction direction : Direction.values()) {
         		String textureNameIdle = "wizard_idle_" + direction.toString() + "_1";
         		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
-        		String textureNameHurt = "wizard_damaged_" + direction.toString() + "_1";
-        		saveTexture(textureNameHurt, "resources/player/wizard/damaged/" + textureNameHurt + ".png");
+        		String textureNameDamaged = "wizard_damaged_" + direction.toString() + "_1";
+        		saveTexture(textureNameDamaged, "resources/player/wizard/damaged/" + textureNameDamaged + ".png");
         }
         
         // Add all caveman sprites
@@ -253,18 +261,18 @@ public class TextureManager extends Manager {
         		}
         		
         		for (int i=1; i<=8; i++) {
-        			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
+        			String textureNameWalk = "caveman_walk_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameWalk, "resources/player/caveman/walk/" + textureNameWalk + ".png");
         		}
         		
         		for (int i=1; i<=3; i++) {
-        			String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
+        			String textureNameDeath = "caveman_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/caveman/death/" + textureNameDeath + ".png");
         		}
         		
         		for (int i=1; i<=5; i++) {
-        			String textureNameAttack = "caveman_interact_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/interact/" + textureNameAttack + ".png");
+        			String textureNameInteract = "caveman_interact_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameInteract, "resources/player/caveman/interact/" + textureNameInteract + ".png");
         		}
         }
         

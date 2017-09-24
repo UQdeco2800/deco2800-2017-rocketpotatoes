@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Entity for the playable character.
@@ -45,7 +46,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-    
+
     protected float movementSpeed;		// The max speed the player moves
     private float speedx;				// The instantaneous speed in the x direction
     private float speedy;				// The instantaneous speed in the y direction
@@ -55,7 +56,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
     protected Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
-    
+
     public enum PlayerState { idle, walk, attack, damaged, death, interact };    // The states a player may take
     protected PlayerState currentState;    	// The current states of the player, set to idle by default
     protected TimeAnimation currentAnimation;	// The current animation of the player
@@ -83,14 +84,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.currentState = PlayerState.idle;
         addResources();	//Initialise the inventory with the valid resources
     }
-    
+
     /**
-     * Set the player's state. For example, if the player is walking, then 
+     * Set the player's state. For example, if the player is walking, then
      * set the 'walk' state to the player. The state can only be changed when
      * the player is in idle or is walking. The reason for this is to prevent
      * situations where the player tries to attack while being hurt.
      *
-     * @param state 
+     * @param state
      * 			The state to set.
      * @return true
      * 			if the state was successfully set. False otherwise.
@@ -110,7 +111,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     /**
      * Returns true if the player is currently in the specified state.
      *
-     * @param state 
+     * @param state
      * 			A state the player may take.
      * @return true if the player has the current state and false
      * 			otherwise.
@@ -126,26 +127,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		this.currentState = PlayerState.idle;
     		stateChanged();
     }
-    
+
     /**
      * This method is called every time the player state changes. Allows
      * for handling changes in player state.
      */
-    public void stateChanged() {
+    private void stateChanged() {
     		updateSprites();
     		LOGGER.info("State changed to " + currentState.name());
     }
-    
+
     /**
      * Returns the current state of the player.
-     * 
+     *
      * @return
      * 		The current state of the player.
      */
     public PlayerState getState() {
     		return this.currentState;
     }
-    
+
     /**
      * Returns the current Direction of the player.
      */
@@ -157,10 +158,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     /**
      * Sets the direction of the player based on a specified direction.
      *
-     * @param direction 
+     * @param direction
      * 			The direction to set the player to.
      */
-    public void setDirection(Direction direction) {
+    private void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
             this.currentDirection = direction;
             LOGGER.info("Set player direction to " + direction.name());
@@ -176,7 +177,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         		this.setState(PlayerState.idle);
         } else {
         	this.setState(PlayerState.walk);
-        		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, 
+        		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
         				this.getPosX() - oldPos.x) * (180 / Math.PI);
 
             if (angularDirection >= -180 && angularDirection < -157.5) {
@@ -210,11 +211,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     public void updateSprites() {
         // Override in subclasses to update the sprite based on state and direciton.
     }
-    
+
     /**
-     * Creates a map of player directions with player state animations. Uses 
+     * Creates a map of player directions with player state animations. Uses
      * direction as a key to receive the respective animation.
-     * 
+     *
      * @param playerType
      * 			A string representing the type of player.
      * @param state
@@ -226,7 +227,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @return
      * 		A map of directions with animations for the specified state.
      */
-    public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType, PlayerState state, int frameCount, int animationTime, Runnable completionHandler) {
+    public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType, PlayerState state, int frameCount, int animationTime, Supplier<Void> completionHandler) {
 		Map<Direction, TimeAnimation> animations = new HashMap<>();
 		for (Direction direction : Direction.values()) {
 			String[] frames = new String[frameCount];
@@ -237,10 +238,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		}
 		return animations;
     }
-    
+
     /**
      * Sets the specified animation to be the player's current animation.
-     * 
+     *
      * @param animation
      * 			The time animation to be set to the player.
      */
@@ -250,21 +251,21 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		startCurrentAniamation();
 		LOGGER.info("Changed animation to " + this.getDirection().name());
 	}
-    
+
     /**
      * Starts the current animation.
      */
     private void startCurrentAniamation() {
     		GameManager.get().getManager(EventManager.class).registerEvent(this, currentAnimation);
     }
-    
+
     /**
      * Stops the current animation.
      */
     private void stopCurrentAnimation() {
     		GameManager.get().getManager(EventManager.class).unregisterEvent(this, this.currentAnimation);
     }
-    
+
     @Override
     public String getTexture() {
     		if (currentAnimation != null) {
@@ -278,7 +279,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     /**
      * A method for damaging the player's health. Allows the damaged
      * state to be enabled and respective animations to play.
-     * 
+     *
      * @param amount
      * 			The amount of damage to deal to the player.
      */
@@ -290,19 +291,19 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		}
     		return super.damage(amount);
     }
-    
+
     /**
      * A method for making the player attack based on the direction it
-     * faces. Allows the attack state to be enabled and respective 
+     * faces. Allows the attack state to be enabled and respective
      * animations to play.
      */
     public void attack() {
     		// Override in subclasses to allow attacking.
     }
-    
+
     /**
      * A method for making the player interact based on the direction it
-     * faces. Allows the interact state to be enabled and respective 
+     * faces. Allows the interact state to be enabled and respective
      * animations to play.
      */
     public void interact() {
@@ -426,10 +427,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         }
         checkKeyDown++;
     }
-    
+
     /**
      * Returns the x and y position of the cursor in the game world.
-     * 
+     *
      * @return
      * 		The coordinates of the cursor with respect to the game world.
      */
@@ -438,24 +439,25 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Vector2 coords = Render3D.worldPosToTile(worldCoords.x, worldCoords.y);
         return new Vector2((int) Math.floor(coords.x), (int) Math.floor(coords.y));
     }
-    
+
     /**
      * Initialises the inventory with all the resources in the game.
      */
     private void addResources() {
-    	HashSet<Resource> startingResources = new HashSet<Resource>();        
+    	HashSet<Resource> startingResources = new HashSet<Resource>();
+    	startingResources.add(new SeedResource());
         this.inventory = new Inventory(startingResources);
     }
 
     /**
      * Returns the player inventory.
-     * 
+     *
      * Returns the inventory specific to the player.
      */
     public Inventory getInventory() {
         return this.inventory;
     }
-    
+
     /**
      * Handles removing an item from an inventory and placing it on the map.
      *
@@ -494,18 +496,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         if (didHarvest) {
             GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
         }
-    }
-
-    /**
-     * Checks to see whether the player moving out of the map
-     */
-    private boolean outOfBounds() {
-        int width = GameManager.get().getWorld().getWidth();
-        int height = GameManager.get().getWorld().getLength();
-        if (this.getPosX() > width - 0.2 || this.getPosX() < 0 || this.getPosY() > height - 0.2 || this.getPosY() < 0) {
-            return true;
-        }
-        return false;
     }
 
     /**

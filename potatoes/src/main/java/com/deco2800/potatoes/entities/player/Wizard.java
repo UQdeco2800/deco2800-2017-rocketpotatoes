@@ -34,22 +34,16 @@ public class Wizard extends Player {
     }
     
     private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 200, new Runnable() {	//TODO: update to use attack sprites
-		@Override
-		public void run() {
-			// Handle finishing attack
-			clearState();
-			updateSprites();
-		}
-	});
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", PlayerState.damaged, 1, 200, new Runnable() {
-		@Override
-		public void run() {
-			// Handle finishing death
-			clearState();
-			updateSprites();
-		}
-	});
+    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", PlayerState.damaged, 1, 200, this::completionHandler);
+    
+    private Void completionHandler() {
+    	//TODO: update to use damaged sprites
+    	// Handle finishing attack
+    	clearState();
+		updateSprites();
+		return null;
+    }
     
     @Override
     public void updateSprites() {

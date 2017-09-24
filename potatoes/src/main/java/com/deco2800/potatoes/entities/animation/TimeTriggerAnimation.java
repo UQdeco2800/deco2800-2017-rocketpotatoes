@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.entities.animation;
 
+import java.util.function.Supplier;
+
 import com.deco2800.potatoes.entities.Tickable;
 
 /**
@@ -7,7 +9,7 @@ import com.deco2800.potatoes.entities.Tickable;
  */
 public class TimeTriggerAnimation extends TimeAnimation {
 
-	private final Runnable completionHandler;
+	private final Supplier<Void> completionHandler;
 	
 	/**
 	 * Creates an animation based on specified frames and time for 
@@ -24,7 +26,7 @@ public class TimeTriggerAnimation extends TimeAnimation {
 	 * @param completionHandler
 	 * 			A runnable object called when the animation ends or resets.
 	 */
-	public TimeTriggerAnimation(int animationTime, String[] frames, Runnable completionHandler) {
+	public TimeTriggerAnimation(int animationTime, String[] frames, Supplier<Void> completionHandler) {
 		super(animationTime, AnimationFactory.stringsToAnimationArray(frames));
 		this.completionHandler = completionHandler;
 	}
@@ -33,7 +35,7 @@ public class TimeTriggerAnimation extends TimeAnimation {
 	 * Creates this animation from the given time animation, with the completion
 	 * handler for when the animation finishes
 	 */
-	public TimeTriggerAnimation(TimeAnimation animation, Runnable completionHandler) {
+	public TimeTriggerAnimation(TimeAnimation animation, Supplier<Void> completionHandler) {
 		super(animation.getResetAmount(), animation.getFrames());
 		this.completionHandler = completionHandler;
 	}
@@ -41,7 +43,7 @@ public class TimeTriggerAnimation extends TimeAnimation {
 	@Override
 	public void action(Tickable param) {
 		if (completionHandler != null) {
-			completionHandler.run();
+			completionHandler.get();
 		}
 	}
 }
