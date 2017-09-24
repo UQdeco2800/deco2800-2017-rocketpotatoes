@@ -5,9 +5,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 /**
@@ -68,8 +69,8 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 * @param resource
 	 * 			  The type of resource to be created.
 	 */
-	public ResourceEntity(float posX, float posY, float posZ, Resource resource) {
-		super(posX, posY, posZ, 1f, 1f, 1f, 1f, 1f, resource.getTypeName());
+	public ResourceEntity(float posX, float posY, Resource resource) {
+        super(new Circle2D(posX, posY, 1.414f), 1f, 1f, resource.getTypeName());
 		resourceType = resource;
 		quantity = 1;
 	}
@@ -114,7 +115,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 		boolean collided = false;
 		Player player = null;
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(xPos);
 		newPos.setY(yPos);
 
@@ -127,7 +128,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 					newPos.setX(xPos + positions[i][0]);
 					newPos.setY(yPos + positions[i][1]);
 					// Player next to this resource
-					if (newPos.overlaps(entity.getBox3D())) {
+					if (newPos.overlaps(entity.getMask())) {
 						collided = true;
 						player = (Player) entity;
 					}
