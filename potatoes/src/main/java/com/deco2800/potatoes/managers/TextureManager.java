@@ -71,7 +71,7 @@ public class TextureManager extends Manager {
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
-        
+
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
 
@@ -158,6 +158,9 @@ public class TextureManager extends Manager {
         saveTexture("TankFootstepTemp1", "resources/enemies/TankFootstepTemp1.png");
         saveTexture("TankFootstepTemp2", "resources/enemies/TankFootstepTemp2.png");
         saveTexture("TankFootstepTemp3", "resources/enemies/TankFootstepTemp3.png");
+        saveTexture("Healing1", "resources/enemies/Healing1.png");
+        saveTexture("Healing2", "resources/enemies/Healing2.png");
+        saveTexture("Healing3", "resources/enemies/Healing3.png");
         //Squirrel
         saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
         saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");

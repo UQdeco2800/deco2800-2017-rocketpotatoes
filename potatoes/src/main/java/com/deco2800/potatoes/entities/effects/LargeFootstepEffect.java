@@ -34,6 +34,8 @@ public class LargeFootstepEffect extends Effect {
 
     /**
      * Creates a new footstep effect.
+     * NOTE: Effect is currently being manually shifted for visual purposes.
+     * i.e. posX and posY do not match with the given inputs (posX is decreased by 1 and posY is increased by 0.5)
      *
      * @param posX
      *            x start position
@@ -43,7 +45,7 @@ public class LargeFootstepEffect extends Effect {
      *            z start position
      */
     public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float posZ, float damage, float range) {
-        super(targetClass, new Vector3(posX - 1.1f, posY + 0.7f, posZ), 1f, 1f, 0, 1.4f, 1.4f, damage, range, EffectType.LARGE_FOOTSTEP);
+        super(targetClass, new Vector3(posX - 1f, posY + 0.5f, posZ), 1f, 1f, 0, 1.4f, 1.4f, damage, range, EffectType.LARGE_FOOTSTEP);
         effectPosition = getBox3D();
     }
 
@@ -81,6 +83,24 @@ public class LargeFootstepEffect extends Effect {
     }
 
     /**
+     * Return the Box3D position of the large footstep
+     *
+     * @return Box3D position of footstep
+     */
+    public Box3D getFootstepPosition() {
+        return effectPosition;
+    }
+
+    /**
+     * Get the current index for the texture being used
+     *
+     * @return Int current index
+     */
+    public int getCurrentTextureIndex() {
+        return currentTextureIndexCount;
+    }
+
+    /**
      * String representation of the footstep at its set position.
      *
      * @return String representation of the stomped ground
@@ -90,5 +110,3 @@ public class LargeFootstepEffect extends Effect {
         return String.format("Large Footstep at (%d, %d)", (int) getPosX(), (int) getPosY());
     }
 }
-
-
