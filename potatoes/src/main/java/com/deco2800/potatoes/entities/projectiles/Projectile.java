@@ -46,7 +46,6 @@ public class Projectile extends AbstractEntity implements Tickable {
             public String[] textures() {
                 return new String[]{"rocket1", "rocket2", "rocket3"};
             }
-
         },
         CHILLI {
             public String[] textures() {

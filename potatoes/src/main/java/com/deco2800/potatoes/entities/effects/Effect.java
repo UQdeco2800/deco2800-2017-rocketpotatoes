@@ -23,66 +23,52 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	protected float rotationAngle = 0;
 	protected boolean animate = true;
 	protected boolean loopAnimation = false;
-	protected Vector3 pos;
+	protected Vector3 position;
 
+	/**
+	 * Used as a container for Effect textures and lookup
+	 */
 	public enum EffectTexture {
 		AOE {
-
-
 			public String[] textures() {
 				return new String[] { "aoe1", "aoe2", "aoe3" };
 			}
 		},
 		EXPLOSION {
-
-
 			public String[] textures() {
 				return new String[] { "explosion1", "explosion2", "explosion3" };
 			}
 		},
 		LIGHTNING {
-
-
 			public String[] textures() {
 				return new String[] { "lightning" };
 			}
 		},
 		LAZER {
-
-
 			public String[] textures() {
 				return new String[] { "lightning" };
 			}
 		},
 		DAMAGED_GROUND {
-
-
 			public String[] textures() {
 				return new String[] { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
 			}
 		},
 		SWIPE {
-
-
 			public String[] textures() {
 				return new String[] { "swipe1", "swipe2", "swipe3" };
 			}
 		},
 		LARGE_FOOTSTEP {
-
-
 			public String[] textures() {
-				return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
+				return new String[] { "TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3" };
 			}
 		},
-		HEALING{
-
-
+		HEALING {
 			public String[] textures() {
-				return new String[]{"Healing1", "Healing2", "Healing3"};
+				return new String[] { "Healing1", "Healing2", "Healing3" };
 			}
 		};
-
 
 		public String[] textures() {
 			return new String[] { "default" };
@@ -93,6 +79,27 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 	}
 
+	/**
+	 * The Effect classes render a texture at a location and may cause damage to
+	 * specific targets in its collision area
+	 * 
+	 * @param targetClass
+	 *            the target's class i.e. MortalEntity.class
+	 * @param position
+	 *            starting position
+	 * @param xLength
+	 * @param yLength
+	 * @param zLength
+	 * @param xRenderLength
+	 * @param yRenderLength
+	 * @param damage
+	 *            damage effect deals to target(s)
+	 * @param range
+	 *            radius of effect
+	 * @param effectTexture
+	 *            which set of textures to use for animation. Uses EffectTexture
+	 *            enum as lookup
+	 */
 	public Effect(Class<?> targetClass, Vector3 position, float xLength, float yLength, float zLength,
 			float xRenderLength, float yRenderLength, float damage, float range, EffectTexture effectTexture) {
 		super(position.x, position.y, position.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
@@ -102,7 +109,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
-		
+
 		if (effectTexture == null)
 			throw new RuntimeException("projectile type must not be null");
 		else
@@ -110,9 +117,15 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 		this.damage = damage;
 		this.range = range;
-		this.pos = position;
+		this.position = position;
 	}
 
+	/**
+	 * Called every frame for Effect classes
+	 * 
+	 * @param batch
+	 *            the SpriteBatch to render to
+	 */
 	public void drawEffect(SpriteBatch batch) {
 
 	}
@@ -140,6 +153,10 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	protected int effectTimer;
 	protected int currentSpriteIndexCount;
 
+	/*
+	 * Loops through texture array and sets sprite every frame. Looking into using
+	 * AnimationFactory as animation controller
+	 */
 	protected void animate() {
 		if (animate) {
 			effectTimer++;
@@ -157,6 +174,22 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		}
 	}
 
+	/**
+	 * Renders a line between two points
+	 * 
+	 * @param batch
+	 *            the SpriteBatch to render to
+	 * @param texture
+	 *            the texture to draw
+	 * @param xPos
+	 *            start x position
+	 * @param yPos
+	 *            start y position
+	 * @param fxPos
+	 *            end x position
+	 * @param fyPos
+	 *            end y position
+	 */
 	public void drawTextureBetween(SpriteBatch batch, String texture, float xPos, float yPos, float fxPos,
 			float fyPos) {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
@@ -174,12 +207,15 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		float l = endPos.x - startPos.x;
 		float h = endPos.y - startPos.y;
 
+		//length of line in x direction
 		float lX = startPos.x - (lWidth - tileWidth) / 2;
+		//length of line in y direction
 		float lY = 0 - startPos.y - (lHeight - tileHeight) / 2;
 
 		float originX = tex.getWidth() / 2;
 		float originY = tex.getHeight() / 2;
 
+		//stretch texture using x scale
 		float lScaleX = (float) (Math.sqrt(l * l + h * h));
 		float lScaleY = 0.4f;
 
@@ -191,14 +227,20 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 				WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45, srcX, srcY, srcWidth, srcHeight, false, false);
 
 	}
-	public float getPosX(){
-		return pos.x;
+
+	public float getPosX() {
+		return position.x;
 	}
 
-	public float getPosY(){
-		return pos.y;
+	public float getPosY() {
+		return position.y;
 	}
 
+	/**
+	 * Gets effect damage
+	 * 
+	 * @return damage
+	 */
 	public float getDamage() {
 		return damage;
 	}
