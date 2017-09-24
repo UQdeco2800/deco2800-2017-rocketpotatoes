@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.entities.HasDirection.Direction;
-
 /**
  * 
  * An interface for handling entity direction.
@@ -36,19 +34,11 @@ public interface HasDirection {
 		}
 	};
 	
+	
 	/**
 	 * A method responsible for returning the current direction of
 	 * an entity.
 	 */
 	public Direction getDirection();
-	
-	/**
-     * A method responsible for setting the direction of 
-     * an entity.
-     *
-     * @param direction 
-     * 			The direction to set the entity to.
-     */
-	public void setDirection(Direction direction);
 	
 }

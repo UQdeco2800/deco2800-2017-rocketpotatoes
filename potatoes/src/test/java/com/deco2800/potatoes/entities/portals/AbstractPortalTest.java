@@ -17,6 +17,9 @@ import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+
 import com.badlogic.gdx.Input;
 
 /**
@@ -33,6 +36,11 @@ public class AbstractPortalTest{
 		testPortal = new AbstractPortal(0, 0, 0, null);
 		GameManager.get().setWorld(new TestWorld());
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 	
 	@Test
 	public void collidedFalseTest() {

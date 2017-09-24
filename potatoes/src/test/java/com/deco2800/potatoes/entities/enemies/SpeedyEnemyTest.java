@@ -18,7 +18,7 @@ public class SpeedyEnemyTest {
 
     @Test
     public void toStringTest() {
-        Assert.assertEquals("String mismatch", "Speedy Enemy at (2, 2)", testSpeedy.toString());
+        Assert.assertEquals("String mismatch", "raccoon at (2, 2)", testSpeedy.toString());
     }
 
 }

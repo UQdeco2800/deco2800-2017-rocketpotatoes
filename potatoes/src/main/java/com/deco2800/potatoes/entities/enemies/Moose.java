@@ -1,10 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.StatisticsBuilder;
-import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -17,13 +13,14 @@ import com.deco2800.potatoes.util.Path;
 /**
  * A generic player instance for the game
  */
-public class Moose extends EnemyEntity implements Tickable, HasProgress {
+public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDirection {
 
 	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
 	private static final transient String TEXTURE_RIGHT = "pronograde";
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
+	private static final transient String enemyType = "moose";
 	private static final EnemyStatistics STATS = initStats();
 
 	private static final float moose_size = 1.5f;
@@ -33,19 +30,27 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private Path path = null;
 	private Box3D target = null;
 
-
 	private int ticksSinceRandom = 0;
 	private static final int MAX_WAIT = 200;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
+	private Direction currentDirection; // The direction the enemy faces
+
 	/**
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
-        // empty for serialization
+		// empty for serialization
 	}
 
+	/***
+	 * Constructs a new moose entity with pre-defined size and rendering lengths to match
+	 *
+	 * @param posX The x coordinate the created squirrel will spawn from
+	 * @param posY The y coordinate the created squirrel will spawn from
+	 * @param posZ The z coordinate the created squirrel will spawn from
+	 */
 	public Moose(float posX, float posY, float posZ) {
 		super(posX, posY, posZ, 0.60f, 0.60f, 0.60f, moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
 		this.speed = speed;
@@ -54,14 +59,24 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		this.damageScaling = 0.8f; // 20% Damage reduction for Moose
 	}
 
-    /**
-     * Change the target for the moose to a random location
-     */
-    private void randomTarget() {
-        float x = (float) Math.random() * GameManager.get().getWorld().getLength();
-        float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
-        target = new Box3D(x, y, 0, 1f, 1f, 1f);
-    }
+	/**
+	 * Change the target for the moose to a random location
+	 */
+	private void randomTarget() {
+		float x = (float) Math.random() * GameManager.get().getWorld().getLength();
+		float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
+		target = new Box3D(x, y, 0, 1f, 1f, 1f);
+	}
+
+	/**
+	 * @return String of this type of enemy (ie 'moose').
+	 * */
+	public String getEnemyType() { return enemyType; }
+
+	/**
+	 *	@return the current Direction of moose
+	 * */
+	public Direction getDirection() { return currentDirection; }
 
 	/**
 	 * Moose follows it's path.
@@ -73,13 +88,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	public void onTick(long i) {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-        boolean changeLocation = false;
+		boolean changeLocation = false;
 		if (++ticksSinceRandom == MAX_WAIT || target == null) {
-		    ticksSinceRandom = 0;
-		    changeLocation = true;
-		    randomTarget();
-        }
-        // check paths
+			ticksSinceRandom = 0;
+			changeLocation = true;
+			randomTarget();
+		}
+		// check paths
 
 		//check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
@@ -94,10 +109,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 			}
 		}
 
-        // check that we actually have a path
-        if (path == null || path.isEmpty()) {
-            path = pathManager.generatePath(this.getBox3D(), target);
-        }
+		// check that we actually have a path
+		if (path == null || path.isEmpty()) {
+			path = pathManager.generatePath(this.getBox3D(), target);
+		}
 
 
 		//check if close enough to target
@@ -118,11 +133,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 
 		if (target == null) {
-            target = playerManager.getPlayer().getBox3D();
-		} 
+			target = playerManager.getPlayer().getBox3D();
+		}
 
-        targetX = target.getX();
-        targetY = target.getY();
+		targetX = target.getX();
+		targetY = target.getY();
 
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
@@ -143,16 +158,29 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		this.setPosY(getPosY() + changeY);
 	}
 
+	/**
+	 * @return string representation of this class including its enemytype and x,y coordinates
+	 */
 	@Override
 	public String toString() {
-		return String.format("Moose at (%d, %d)", (int) getPosX(), (int) getPosY());
+		return String.format("%s at (%d, %d)", getEnemyType(), (int) getPosX(), (int) getPosY());
 	}
 
+	/***
+	 * Gets the progress bar that corresponds to the health of this enemy
+	 * @return ProgressBarEntity corresponding to enemy's health
+	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESS_BAR;
 	}
 
+	/***
+	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
+	 * enemy.
+	 *
+	 * @return
+	 */
 	private static EnemyStatistics initStats() {
 		EnemyStatistics result = new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
@@ -160,6 +188,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return result;
 	}
 
+	/***
+	 *
+	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
+	 */
 	@Override
 	public EnemyStatistics getBasicStats() {
 		return STATS;

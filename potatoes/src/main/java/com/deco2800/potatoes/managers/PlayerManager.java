@@ -23,7 +23,7 @@ public class PlayerManager extends Manager {
 	}
 	
 	public enum PlayerType { caveman, wizard, archer };	// Types of players in the game
-	private PlayerType playerType = PlayerType.archer;	// The type of the player
+	private PlayerType playerType = PlayerType.caveman;	// The type of the player
 	
 	public void setPlayerType(PlayerType type) {
 		this.playerType = type;

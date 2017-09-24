@@ -2,9 +2,11 @@ package com.deco2800.potatoes.worlds;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -40,6 +42,12 @@ public class World {
 	// Store managers for this world
 	private Set<Manager> managers = new HashSet<>();
 
+	public World() {
+		map = new TiledMap();
+		map.getProperties().put("tilewidth", TILE_WIDTH);
+		map.getProperties().put("tileheight", TILE_HEIGHT);
+	}
+
 	/**
 	 * Returns a list of entities in this world
 	 * 
@@ -56,25 +64,6 @@ public class World {
 	 */
 	public TiledMap getMap() {
 		return this.map;
-	}
-	
-	/**
-	 * Create a new map based on the terrain grid supplied
-	 * @param cells
-	 */
-	public void setCells(Cell[][] cells) {
-		width = cells.length;
-		length = cells[0].length;
-		map = new TiledMap();
-		map.getProperties().put("tilewidth", TILE_WIDTH);
-		map.getProperties().put("tileheight", TILE_HEIGHT);
-		TiledMapTileLayer layer = new TiledMapTileLayer(width, length, TILE_WIDTH, TILE_HEIGHT);
-		for (int x = 0; x < cells.length; x++) {
-			for (int y = 0; y < cells[x].length; y++) {
-				layer.setCell(x, y, cells[x][y]);
-			}
-		}
-		map.getLayers().add(layer);
 	}
 
 	/**
@@ -138,6 +127,9 @@ public class World {
 
 	}
 
+	/**
+	 * Removes the entity with the given id from this world.
+	 */
 	public void removeEntity(int id) {
 		entities.remove(id);
 
@@ -148,6 +140,10 @@ public class World {
 		}
 	}
 
+	/**
+	 * Removes the given entity from this world, if it is in the world. Otherwise,
+	 * nothing happens
+	 */
 	public void removeEntity(AbstractEntity entity) {
 		for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
 			if (e.getValue() == entity) {
@@ -221,6 +217,18 @@ public class World {
 	 * Sets the terrain grid to the given grid
 	 */
 	public void setTerrain(Terrain[][] newTerrain) {
+		if (newTerrain.length != width || newTerrain[0].length != length || map.getLayers().getCount() == 0) {
+			width = newTerrain.length;
+			length = newTerrain[0].length;
+			// remove all map layers
+			Iterator<MapLayer> iter = map.getLayers().iterator();
+			while(iter.hasNext()) {
+				iter.next();
+				iter.remove();
+			}
+			// add our new map layer
+			map.getLayers().add(new TiledMapTileLayer(width, length, TILE_WIDTH, TILE_HEIGHT));
+		}
 		terrain = new Terrain[newTerrain.length][newTerrain[0].length];
 		for (int x = 0; x < newTerrain.length; x++) {
 			for (int y = 0; y < newTerrain[x].length; y++) {

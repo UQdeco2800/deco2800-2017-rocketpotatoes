@@ -49,7 +49,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The z-coordinate.
 	 */
 	public ResourceTree(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f, null);
+		super(posX, posY, posZ, 1f, 1f, 1f);
 		this.gatherCount = 0;
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
@@ -73,7 +73,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            maximum number of resources that can be held by the tree.
 	 */
 	public ResourceTree(float posX, float posY, float posZ, Resource gatherType, int gatherCapacity) {
-		super(posX, posY, posZ, 1f, 1f, 1f, null);
+		super(posX, posY, posZ, 1f, 1f, 1f);
 		this.gatherCount = 0;
 		this.setGatherCapacity(gatherCapacity);
 		if (gatherType == null) {

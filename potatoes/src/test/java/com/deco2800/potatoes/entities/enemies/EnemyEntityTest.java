@@ -10,10 +10,10 @@ import org.junit.Test;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.StatisticsBuilder;
-import com.deco2800.potatoes.entities.Tower;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
+import com.deco2800.potatoes.entities.trees.ProjectileTree;
 
 public class EnemyEntityTest {
 
@@ -21,6 +21,8 @@ public class EnemyEntityTest {
 
 		private float speed = 0.1f;
 		private Class<?> goal = Player.class;
+		private String enemyType = "squirrel";
+		private Direction currentDirection;
 
 		public TestableEnemyEntity() {
 		}
@@ -50,6 +52,12 @@ public class EnemyEntityTest {
 					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
 			return result;
 		}
+
+		@Override
+		public String getEnemyType() { return enemyType; }
+
+		@Override
+		public Direction getDirection() { return currentDirection; }
 	}
 
 	TestableEnemyEntity enemyEntity;
@@ -110,8 +118,8 @@ public class EnemyEntityTest {
 
 	@Test
 	public void setGoalTest() {
-		enemyEntity.setGoal(Tower.class);
-		Assert.assertEquals("Failed to set Goal", Tower.class, enemyEntity.getGoal());
+		enemyEntity.setGoal(ProjectileTree.class);
+		Assert.assertEquals("Failed to set Goal", ProjectileTree.class, enemyEntity.getGoal());
 	}
 
 	@Test
@@ -139,12 +147,21 @@ public class EnemyEntityTest {
 
 	private class SimpleEnemy extends EnemyEntity {
 
+		private String enemyType = "squirrel";
+		private Direction currentDirection;
+
 		@Override
 		public EnemyStatistics getBasicStats() {
 			EnemyStatistics result = new StatisticsBuilder<>().setHealth(200).setSpeed(0.4f).setAttackRange(0.4f)
 					.setTexture("tankBear").addEvent(new MeleeAttackEvent(500, Player.class)).createEnemyStatistics();
 			return result;
 		}
+
+		@Override
+		public String getEnemyType() { return enemyType; }
+
+		@Override
+		public Direction getDirection() { return currentDirection; }
 	}
 //
 //	@Test

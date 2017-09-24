@@ -14,12 +14,21 @@ import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
-	private static final List<TreeStatistics> ICE_TREE_STATS = generateTree("ice_basic_tree",
-			x -> new SingleFrameAnimation("ice_basic_tree"));
+	private static final List<TreeStatistics> ICE_TREE_STATS = generateTree("ice_tree",
+			x -> AnimationFactory.createSimpleTimeAnimation(100,
+                    new String[]{
+			        "ice_tree1",
+			        "ice_tree2",
+			        "ice_tree3",
+			        "ice_tree4",
+			        "ice_tree5",
+			        "ice_tree6",
+			        "ice_tree7",
+    }));
 	private static final List<TreeStatistics> ACORN_TREE_STATS = generateTree("acorn_tree",
 			x -> new SingleFrameAnimation("acorn_tree"));
 	private static final List<TreeStatistics> LIGHTNING_TREE_STATS = generateTree("lightning_tree1",
-			x -> AnimationFactory.createSimpleTimeAnimation(100,
+			x -> AnimationFactory.createSimpleTimeAnimation(500,
 					new String[] {
             "lightning_tree1",
             "lightning_tree2",
@@ -32,7 +41,8 @@ public class DamageTree extends AbstractTree implements Tickable {
             "lightning_tree9",
     }));
 	
-	private static final List<TreeStatistics> FIRE_TREE_STATS=generateTree("fire_tree",x->AnimationFactory.createSimpleTimeAnimation(100,new String[]{
+	private static final List<TreeStatistics> FIRE_TREE_STATS=generateTree("fire_tree",
+            x->AnimationFactory.createSimpleTimeAnimation(500,new String[]{
 			       "fire_tree1",
 			       "fire_tree2",
 			       "fire_tree3",
@@ -57,7 +67,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 
     public DamageTree(float posX, float posY, float posZ) {
 
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
 
         damageTreeType=new LightningTree();
 
@@ -67,7 +77,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
     public DamageTree(float posX, float posY, float posZ, Damage texture) {
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
         if(null==texture){
             damageTreeType=new LightningTree();
         }else{
@@ -81,24 +91,29 @@ public class DamageTree extends AbstractTree implements Tickable {
 
 
     public DamageTree(float posX, float posY, float posZ, Damage texture, float maxHealth,float demage) {
-        super(posX, posY, posZ, 1f, 1f, 1f, null);
+        super(posX, posY, posZ, 1f, 1f, 1f);
     }
 
     @Override
     public DamageTree clone() {
-    	return new DamageTree(this.getPosX(), this.getPosY(), this.getPosZ());
+    	return new DamageTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.getDamageTreeType());
     }
 
 
 
     @Override
     public List<TreeStatistics> getAllUpgradeStats() {
-        if(damageTreeType instanceof IceTree)
+        if(damageTreeType instanceof IceTree){
+            this.setTexture("ice_basic_tree");
             return ICE_TREE_STATS;
-        else if(damageTreeType instanceof AcornTree)
+        }else if(damageTreeType instanceof AcornTree){
+            this.setTexture("acorn_tree");
             return ACORN_TREE_STATS;
-        else if(damageTreeType instanceof FireTree)
-        	return FIRE_TREE_STATS;
+        } else if(damageTreeType instanceof FireTree){
+            this.setTexture("fire_tree");
+            return FIRE_TREE_STATS;
+        }
+        this.setTexture("lightning_tree1");
         return LIGHTNING_TREE_STATS;
     }
 
@@ -111,15 +126,12 @@ public class DamageTree extends AbstractTree implements Tickable {
 		 * UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade
 		 * Time, events, events, texture)
 		 */
-		if (texture.equals("lightning_tree1")) {
+
 			result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
 					.setBuildCost(1).setAnimation(animation).addEvent(new LightningShootEvent(250))
 					.createTreeStatistics());
-		} else {
-			result.add(new StatisticsBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-					.setBuildCost(1).setAnimation(animation).addEvent(new TreeProjectileShootEvent(3000))
-					.createTreeStatistics());
-		}
+
+
 
 		return result;
 	}
@@ -131,9 +143,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     public Damage getDamageTreeType(){
         return damageTreeType;
     }
-    public String getTexture(){
-        return damageTreeType.getTexture();
-    }
+
 
 
 }

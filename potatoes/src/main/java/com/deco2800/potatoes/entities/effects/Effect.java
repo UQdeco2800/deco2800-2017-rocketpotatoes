@@ -66,7 +66,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		},
 		DAMAGED_GROUND {
 			public String toString() {
-				return "DamagedGroundTemp";
+				return "DamagedGroundTemp1";
 			}
 
 			public String[] textures() {
@@ -80,6 +80,13 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
 			public String[] textures() {
 				return new String[] { "swipe1", "swipe2", "swipe3" };
+			}
+		},
+		LARGE_FOOTSTEP {
+			public String toString() { return "TankFootstepTemp1"; }
+
+			public String[] textures() {
+				return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
 			}
 		};
 

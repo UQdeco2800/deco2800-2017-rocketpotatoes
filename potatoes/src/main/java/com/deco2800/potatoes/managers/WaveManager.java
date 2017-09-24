@@ -14,6 +14,14 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
     private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
 
+    /**
+     * Wave manager acts as a controller for the games waves of enemies. It's primary
+     * function is to hold a queue of individual enemy waves and schedule them to
+     * create the flow of wave - break, and so on. Through wave manager you can determine
+     * the progress and state of the game.
+     *
+     * @author craig
+     */
     public WaveManager() {
         waves = new ArrayList<>();
     }
@@ -37,17 +45,20 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * */
     public ArrayList<EnemyWave> getWaves() { return waves; }
 
+    /**
+     * Every game tick check if there is an active wave and if so tell it
+     * to perform it's actions. If no active waves but still waves in queue,
+     * give player a small break and then activate the next wave in queue.
+     *
+     * @param i the current game tick
+     */
     public void onTick(long i) {
-        //activeWave.onTick(i);
         if ((getActiveWave()) != null) {
-            //System.err.println(getWaves().get(getWaveIndex()).getWaveState());
-            getActiveWave().onTick(i);
+            getActiveWave().tickAction();
         } else if (getWaveIndex()+1 < getWaves().size()) {
             //there are still more waves
-            countTime();
-            //System.err.println("waiting time: " + getElapsedTime());
+            incrementTime();
             if (getElapsedTime() > timeBetweenWaves) {
-                ///System.err.println("Made it past time between waves: " + getElapsedTime());
                 waveIndex++;
                 activateWave(waves.get(getWaveIndex()));
                 resetTime();
@@ -72,8 +83,8 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
     }
 
     /**
-     * Start a wave spawn enemies. Two waves cannot be turned on at the same
-     * time.
+     * Activate a wave to set its intention to spawn enemies.
+     * Two waves cannot be turned on at the same time.
      *
      * @param wave the wave wanted to be activated
      * */
@@ -84,6 +95,12 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         }
     }
 
+    /***
+     * Check to see if all waves given to WaveManger have been
+     * completed
+     *
+     * @return true if all waves given to WaveManager have been completed
+     */
     public boolean areWavesCompleted() {
         if ((getWaveIndex()+1) < getWaves().size()) {
             return false;
@@ -99,7 +116,9 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * @return waveIndex the most recently/currently active wave*/
     public int getWaveIndex() { return waveIndex; }
 
-
+    /**
+     * @return the time before next wave begins
+     */
     public int getTimeBeforeNextWave() { return timeBetweenWaves -  getElapsedTime(); }
 
     /**
@@ -116,15 +135,24 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         getActiveWave().setWaveState(WaveState.PAUSED);
     }
 
+    /**
+     * @return the time elapsed since the start of a wave
+     */
     private int getElapsedTime() {
         return elapsedTime;
     }
 
+    /**
+     * Resets the waveManagers internal wave timer
+     */
     private void resetTime() {
         elapsedTime = 0;
     }
 
-    private void countTime() {
+    /**
+     * Increment the waveManagers internal wave timer
+     */
+    private void incrementTime() {
         elapsedTime += 1;
     }
 }

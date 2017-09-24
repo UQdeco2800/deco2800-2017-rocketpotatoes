@@ -27,13 +27,14 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 /**
  * Entity for the playable character.
- * 
+ * <p>
  * @author leggy, petercondoleon
- * 
+ * <p>
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar, HasDirection {
 
@@ -50,7 +51,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
     protected Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
-
+    
     public enum PlayerState { idle, walk, attack, damaged, death, interact };    // The states a player may take
     protected PlayerState currentState;    	// The current states of the player, set to idle by default
     protected TimeAnimation currentAnimation;	// The current animation of the player
@@ -107,7 +108,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      *
      * @param state 
      * 			A state the player may take.
-     * 
      * @return true if the player has the current state and false
      * 			otherwise.
      */
@@ -270,7 +270,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     			return "";
     		}
     }
-    
+
     /**
      * A method for damaging the player's health. Allows the damaged
      * state to be enabled and respective animations to play.
@@ -339,7 +339,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             this.setPosX(Math.max((float) Math.min(newPosX, width), 0));
             this.setPosY(Math.max((float) Math.min(newPosY, length), 0));
         }
-
         updateDirection(); // Check for changes in direction
     }
 
@@ -380,7 +379,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 break;
             case Input.Keys.NUM_1:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
-                    AbstractTree.constructTree(new Tower(getCursorCoords().x, getCursorCoords().y, 0));
+                    AbstractTree.constructTree(new ProjectileTree(getCursorCoords().x, getCursorCoords().y, 0));
                 }
                 break;
             case Input.Keys.NUM_2:
@@ -562,6 +561,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 
         GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
+    }
+
+    public static String getPlayerType(){
+        return "caveman";
+    }
+
+    public static void setPlayerType(String s) {
+        //playerType = s;
     }
 
 }

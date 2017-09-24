@@ -15,23 +15,24 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 
 public class TreeStatisticsTest {
-	TreeStatistics test;
+    TreeStatistics test;
 
-	@Before
-	public void setup() {
-		test = new TreeStatistics(new StatisticsBuilder<AbstractTree>().setBuildCost(1));
-	}
+    @Before
+    public void setup() {
+        test = new TreeStatistics(new StatisticsBuilder<AbstractTree>().setBuildCost(1));
+    }
 
-	@Test
-	public void testRemoveConstructionResources() {
-		PlayerManager pm = GameManager.get().getManager(PlayerManager.class);
-		pm.setPlayer(new Player(0, 0, 0));
-		pm.getPlayer().getInventory().removeInventoryResource(new SeedResource());
-		pm.getPlayer().getInventory().addInventoryResource(new SeedResource());
-		assertFalse("Not enough resources but construction succeeded", test.removeConstructionResources());
-		pm.getPlayer().getInventory().updateQuantity(new SeedResource(), (int) test.getBuildCost());
-		//Todo: fix
-		//assertTrue("Construction failed with enough resources", test.removeConstructionResources());
-	}
+    @Test
+    public void testRemoveConstructionResources() {
+        PlayerManager pm = GameManager.get().getManager(PlayerManager.class);
+        pm.setPlayer(new Player(0, 0, 0));
+        pm.getPlayer().getInventory().removeInventoryResource(new SeedResource());
+        pm.getPlayer().getInventory().addInventoryResource(new SeedResource());
+        assertFalse("Not enough resources but construction succeeded", test.removeConstructionResources());
+        pm.getPlayer().getInventory().updateQuantity(new SeedResource(), (int) test.getBuildCost());
+        test.getBuildTime();
+        //Todo: fix
+        //assertTrue("Construction failed with enough resources", test.removeConstructionResources());
+    }
 
 }
