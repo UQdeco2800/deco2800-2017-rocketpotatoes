@@ -114,16 +114,25 @@ public class TextureManager extends Manager {
             saveTexture("lightning_tree" + i, "resources/trees/lightning" + i + ".png");
             saveTexture("lightning_being_damaged" + i, "resources/trees/lightningBeingDamaged" + i + ".png");
             saveTexture("lightning_damaged" + i, "resources/trees/lightningDamaged" + i + ".png");
-            if (i < 5)
+            if (i < 5){
                 saveTexture("fire_tree"+i,"resources/trees/fire" + i + ".png");
-            if (i < 9)
-            	saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
+                saveTexture("ice-break"+i,"resources/trees/ICE-break" + i + ".png");
+            }
+
+            if (i < 9) {
+                saveTexture("lightning_damaged_being_damaged" + i, "resources/trees/lightningDamagedBeingDamaged" + i + ".png");
+                saveTexture("ice_being_damaged" + i, "resources/trees/ICE-beingDamaged" + i + ".png");
+            }
             if (i < 8) {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
+                saveTexture("ice_tree"+i, "resources/trees/ice"+i+".png");
             }
+
+
+
         }
         //damage tree:ice
-        saveTexture("ice_basic_tree", "resources/trees/iceBasicTree.png");
+
         //damage tree:acorn
         saveTexture("acorn_tree", "resources/trees/tree-acorn.png");
 
