@@ -48,42 +48,26 @@ public class Projectile extends AbstractEntity implements Tickable {
 
     public enum ProjectileType {
         ROCKET {
-            public String toString() {
-                return "rocket";
-            }
-
             public String[] textures() {
                 return new String[]{"rocket1", "rocket2", "rocket3"};
             }
 
         },
         CHILLI {
-            public String toString() {
-                return "chilli";
-            }
-
             public String[] textures() {
                 return new String[]{"chilli1", "chilli2", "chilli3"};
             }
         },
         LEAVES {
-            public String toString() {
-                return "leaves";
-            }
-
             public String[] textures() {
-                return new String[]{"leaves1", "leaves2", "leaves3","leaves4"};
+                return new String[]{"leaves1"};
+            }
+        },
+        ACORN {
+            public String[] textures() {
+                return new String[]{"acorn1"};
             }
         };
-//        ACORN {
-//            public String toString() {
-//                return "acorn";
-//            }
-//
-//            public String[] textures() {
-//                return new String[]{"acorn1"};
-//            }
-//        };
 
         public String[] textures() {
             return new String[]{"default"};
@@ -146,7 +130,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
                       ProjectileType projectileType, Effect startEffect, Effect endEffect) {
         super(startPos.x, startPos.y, startPos.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
-                projectileType.toString());
+        		projectileType.textures()[0]);
 
         if (targetClass != null)
             this.targetClass = targetClass;
