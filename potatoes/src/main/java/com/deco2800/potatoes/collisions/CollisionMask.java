@@ -23,7 +23,7 @@ public interface CollisionMask {
     boolean overlaps(CollisionMask other);
 
     /**
-     * Finds the minimum edge-to-edge distance between this collision mask and another collision mask.
+     * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
 	 * This function is symmetric.
      * 
      * @param other
@@ -48,7 +48,7 @@ public interface CollisionMask {
      * @param y2
      *              The ending Y coordinate of the line being checked.
      * @return
-     *          If the line intersects the collision mask, then a negative number should be returned. If the line does
+     *          If the line intersects the collision mask, then a negative number is returned. If the line does
      *          not intersect the collision mask, then the number returned should be the length of a perpendicular line
      *          as seen above.
      */
