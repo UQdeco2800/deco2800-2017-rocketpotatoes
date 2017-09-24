@@ -40,10 +40,6 @@ public class BallisticProjectile extends Projectile {
 		this.tPosY = targetPos.y;
 	}
 
-	public PlayerProjectile.PlayerShootMethod getPlayerShootMethod() {
-		return playerShootMethod;
-	}
-
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);

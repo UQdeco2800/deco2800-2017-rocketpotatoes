@@ -49,10 +49,6 @@ public class HomingProjectile extends Projectile {
 		this.tPosY = targetPos.y;
 	}
 
-	public PlayerProjectile.PlayerShootMethod getPlayerShootMethod() {
-		return playerShootMethod;
-	}
-
 	@Override
 	public void onTick(long time) {
 		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x, targetPos.y);

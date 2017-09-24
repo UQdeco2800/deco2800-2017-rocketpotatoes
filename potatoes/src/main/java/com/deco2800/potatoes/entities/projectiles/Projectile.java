@@ -12,6 +12,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
+
 	protected static final float SPEED = 0.2f;
 
 	protected ProjectileTexture projectileTexture;
@@ -108,7 +109,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 			throw new RuntimeException("projectile type must not be null");
 		else
 			this.projectileTexture = projectileTexture;
-		this.playerShootMethod = playerShootMethod;
 		this.maxRange = this.range = range;
 		this.damage = damage;
 		this.startEffect = startEffect;
@@ -258,5 +258,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public Effect getEndEffect() {
 		return endEffect;
 	}
+
 
 }
