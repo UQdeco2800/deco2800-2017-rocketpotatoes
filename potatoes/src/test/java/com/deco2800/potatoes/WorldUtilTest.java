@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+
 public class WorldUtilTest {
     @Test
     public void TestDistanceFunctions() {
@@ -20,6 +22,11 @@ public class WorldUtilTest {
 
         WorldUtil.closestEntityToPosition(0f, 0f, 2f);
         assertEquals(t1, WorldUtil.closestEntityToPosition(0f, 0f, 2f).get());
+    }
+    
+    @After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
     }
 
     @Test

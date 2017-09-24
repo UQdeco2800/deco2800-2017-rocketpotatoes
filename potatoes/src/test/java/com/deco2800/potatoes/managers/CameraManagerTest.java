@@ -6,7 +6,15 @@ import com.deco2800.potatoes.entities.Player;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.junit.After;
+
 public class CameraManagerTest {
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
+	
     @Test
     public void hasTarget() {
         CameraManager m = new CameraManager();

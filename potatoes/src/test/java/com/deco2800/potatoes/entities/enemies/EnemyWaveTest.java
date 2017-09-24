@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,11 @@ public class EnemyWaveTest {
 		GameManager.get().setWorld(new TestWorld());
 		GameManager.get().getManager(WaveManager.class).addWave(firstWave);
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 	
 	@Test
 	public void spawnEnemyToRatioTest() {
