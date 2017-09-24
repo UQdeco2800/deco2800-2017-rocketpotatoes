@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;

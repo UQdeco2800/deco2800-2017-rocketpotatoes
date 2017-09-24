@@ -1,8 +1,9 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.player;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;

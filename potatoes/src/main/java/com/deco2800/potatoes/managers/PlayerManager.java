@@ -3,10 +3,10 @@ package com.deco2800.potatoes.managers;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.utils.Array;
-import com.deco2800.potatoes.entities.Archer;
-import com.deco2800.potatoes.entities.Caveman;
-import com.deco2800.potatoes.entities.Player;
-import com.deco2800.potatoes.entities.Wizard;
+import com.deco2800.potatoes.entities.player.Archer;
+import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.player.Wizard;
 
 /**
  * PlayerManager for managing the Player instance.

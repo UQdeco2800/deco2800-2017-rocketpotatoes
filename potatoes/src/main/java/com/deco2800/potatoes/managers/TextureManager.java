@@ -3,7 +3,7 @@ package com.deco2800.potatoes.managers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.Player.PlayerState;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

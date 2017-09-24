@@ -1,12 +1,14 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.player;
 
 import java.util.Map;
 import java.util.Optional;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.HasDirection;
 import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.Player.PlayerState;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
