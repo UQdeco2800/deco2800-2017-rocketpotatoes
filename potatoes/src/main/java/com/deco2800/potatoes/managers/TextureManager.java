@@ -66,13 +66,13 @@ public class TextureManager extends Manager {
         saveTexture("highlight_tile_invalid", "resources/tiles/highlight_tile_invalid.png");
         saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
-        saveTexture("enemyGate","resources/placeholderassets/enemyGate.png");
+        saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
-        
-        saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
-        
+
+        saveFromSpriteSheet("nicer_terrain", new String[][]{{"ground_1", "grass", "w1"}});
+
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
@@ -80,6 +80,10 @@ public class TextureManager extends Manager {
             saveTexture("rocket" + i, "resources/projectiles/rocket" + i + ".png");
             saveTexture("exp" + i, "resources/projectiles/explosion" + i + ".png");
             saveTexture("chilli" + i, "resources/projectiles/chilliproj" + i + ".png");
+            saveTexture("leaves" + i, "resources/projectiles/leaves" + i + ".png");
+        }
+        for (int i = 1; i < 5; i++) {
+            saveTexture("leaves" + i, "resources/projectiles/leaves" + i + ".png");
         }
         saveTexture("lightning", "resources/projectiles/lightning.png");
 
@@ -114,9 +118,9 @@ public class TextureManager extends Manager {
             saveTexture("lightning_tree" + i, "resources/trees/lightning" + i + ".png");
             saveTexture("lightning_being_damaged" + i, "resources/trees/lightningBeingDamaged" + i + ".png");
             saveTexture("lightning_damaged" + i, "resources/trees/lightningDamaged" + i + ".png");
-            if (i < 5){
-                saveTexture("fire_tree"+i,"resources/trees/fire" + i + ".png");
-                saveTexture("ice-break"+i,"resources/trees/ICE-break" + i + ".png");
+            if (i < 5) {
+                saveTexture("fire_tree" + i, "resources/trees/fire" + i + ".png");
+                saveTexture("ice-break" + i, "resources/trees/ICE-break" + i + ".png");
             }
 
             if (i < 9) {
@@ -125,9 +129,8 @@ public class TextureManager extends Manager {
             }
             if (i < 8) {
                 saveTexture("lightning_dead" + i, "resources/trees/lightningDead" + i + ".png");
-                saveTexture("ice_tree"+i, "resources/trees/ice"+i+".png");
+                saveTexture("ice_tree" + i, "resources/trees/ice" + i + ".png");
             }
-
 
 
         }
@@ -207,9 +210,9 @@ public class TextureManager extends Manager {
 
         //
 
-        saveTexture("flash_red_left","resources/placeholderassets/spacman_blue_2_1.png");
-        saveTexture("flash_red_right","resources/placeholderassets/spacman_blue_damage_1.png");
-        
+        saveTexture("flash_red_left", "resources/placeholderassets/spacman_blue_2_1.png");
+        saveTexture("flash_red_right", "resources/placeholderassets/spacman_blue_damage_1.png");
+
         saveTexture("N", "resources/player/debug/N.png");
         saveTexture("NE", "resources/player/debug/NE.png");
         saveTexture("E", "resources/player/debug/E.png");
@@ -218,50 +221,50 @@ public class TextureManager extends Manager {
         saveTexture("SW", "resources/player/debug/SW.png");
         saveTexture("W", "resources/player/debug/W.png");
         saveTexture("NW", "resources/player/debug/NW.png");
-        
+
         // Add all wizard sprites
         for (Direction direction : Direction.values()) {
-        		String textureNameIdle = "wizard_idle_" + direction.toString() + "_1";
-        		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
-        		String textureNameHurt = "wizard_damaged_" + direction.toString() + "_1";
-        		saveTexture(textureNameHurt, "resources/player/wizard/damaged/" + textureNameHurt + ".png");
+            String textureNameIdle = "wizard_idle_" + direction.toString() + "_1";
+            saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
+            String textureNameHurt = "wizard_damaged_" + direction.toString() + "_1";
+            saveTexture(textureNameHurt, "resources/player/wizard/damaged/" + textureNameHurt + ".png");
         }
-        
+
         // Add all caveman sprites
         for (Direction direction : Direction.values()) {
-        		String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
-        		saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
-        		
-        		String textureNameDamaged = "caveman_damaged_" + direction.toString() + "_1";
-        		saveTexture(textureNameDamaged, "resources/player/caveman/damaged/" + textureNameDamaged + ".png");
-        		
-        		for (int i=1; i<=5; i++) {
-        			String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
-        		}
-        		
-        		for (int i=1; i<=8; i++) {
-        			String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
-        		}
-        		
-        		for (int i=1; i<=3; i++) {
-        			String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
-        		}
-        		
-        		for (int i=1; i<=5; i++) {
-        			String textureNameAttack = "caveman_interact_" + direction.toString() + "_" + i;
-        			saveTexture(textureNameAttack, "resources/player/caveman/interact/" + textureNameAttack + ".png");
-        		}
+            String textureNameIdle = "caveman_idle_" + direction.toString() + "_1";
+            saveTexture(textureNameIdle, "resources/player/caveman/idle/" + textureNameIdle + ".png");
+
+            String textureNameDamaged = "caveman_damaged_" + direction.toString() + "_1";
+            saveTexture(textureNameDamaged, "resources/player/caveman/damaged/" + textureNameDamaged + ".png");
+
+            for (int i = 1; i <= 5; i++) {
+                String textureNameAttack = "caveman_attack_" + direction.toString() + "_" + i;
+                saveTexture(textureNameAttack, "resources/player/caveman/attack/" + textureNameAttack + ".png");
+            }
+
+            for (int i = 1; i <= 8; i++) {
+                String textureNameAttack = "caveman_walk_" + direction.toString() + "_" + i;
+                saveTexture(textureNameAttack, "resources/player/caveman/walk/" + textureNameAttack + ".png");
+            }
+
+            for (int i = 1; i <= 3; i++) {
+                String textureNameAttack = "caveman_death_" + direction.toString() + "_" + i;
+                saveTexture(textureNameAttack, "resources/player/caveman/death/" + textureNameAttack + ".png");
+            }
+
+            for (int i = 1; i <= 5; i++) {
+                String textureNameAttack = "caveman_interact_" + direction.toString() + "_" + i;
+                saveTexture(textureNameAttack, "resources/player/caveman/interact/" + textureNameAttack + ".png");
+            }
         }
-        
+
         // Add all archer sprites
         for (Direction direction : Direction.values()) {
-        		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
-        		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
+            String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
+            saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
         }
-        
+
 
     }
 
@@ -272,44 +275,41 @@ public class TextureManager extends Manager {
      * @return Texture for given id
      */
     public Texture getTexture(String id) {
-    	return getTextureRegion(id).getTexture();
+        return getTextureRegion(id).getTexture();
     }
-    
-	/**
-	 * Gets a texture region object for a given string id
-	 *
-	 * @param id
-	 *            Texture identifier
-	 * @return TextureRegion for given id
-	 */
-	public TextureRegion getTextureRegion(String id) {
-		if (textureMap.containsKey(id)) {
-			return textureMap.get(id);
-		} else {
-			return textureMap.get("spacman_ded");
-		}
-	}
-    
-	/**
-	 * Creates multiple textures from the given texture by splitting it into a grid
-	 * the size of spriteNames and save each area with the corresponding string in
-	 * spriteNames
-	 * 
-	 * @param textureId
-	 *            The texture to create the sprite sheet from
-	 * @param spriteNames
-	 *            The names for all the sprite textures created
-	 */
-	public static void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
-		TextureRegion region = textureMap.get(textureId);
-		int height = region.getRegionHeight() / spriteNames.length;
-		for (int y = 0; y < spriteNames.length; y++) {
-			int width = region.getRegionWidth() / spriteNames[y].length;
-			for (int x = 0; x < spriteNames[y].length; x++) {
-				textureMap.put(spriteNames[y][x], new TextureRegion(region, x * width, y * height, width, height));
-			}
-		}
-	}
+
+    /**
+     * Gets a texture region object for a given string id
+     *
+     * @param id Texture identifier
+     * @return TextureRegion for given id
+     */
+    public TextureRegion getTextureRegion(String id) {
+        if (textureMap.containsKey(id)) {
+            return textureMap.get(id);
+        } else {
+            return textureMap.get("spacman_ded");
+        }
+    }
+
+    /**
+     * Creates multiple textures from the given texture by splitting it into a grid
+     * the size of spriteNames and save each area with the corresponding string in
+     * spriteNames
+     *
+     * @param textureId   The texture to create the sprite sheet from
+     * @param spriteNames The names for all the sprite textures created
+     */
+    public static void saveFromSpriteSheet(String textureId, String[][] spriteNames) {
+        TextureRegion region = textureMap.get(textureId);
+        int height = region.getRegionHeight() / spriteNames.length;
+        for (int y = 0; y < spriteNames.length; y++) {
+            int width = region.getRegionWidth() / spriteNames[y].length;
+            for (int x = 0; x < spriteNames[y].length; x++) {
+                textureMap.put(spriteNames[y][x], new TextureRegion(region, x * width, y * height, width, height));
+            }
+        }
+    }
 
     /**
      * Saves a texture with a given id

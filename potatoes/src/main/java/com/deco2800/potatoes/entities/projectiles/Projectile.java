@@ -71,18 +71,18 @@ public class Projectile extends AbstractEntity implements Tickable {
             }
 
             public String[] textures() {
-                return new String[]{"leaves1", "leaves2", "leaves3"};
-            }
-        },
-        ACORN {
-            public String toString() {
-                return "acorn";
-            }
-
-            public String[] textures() {
-                return new String[]{"acorn1"};
+                return new String[]{"leaves1", "leaves2", "leaves3","leaves4"};
             }
         };
+//        ACORN {
+//            public String toString() {
+//                return "acorn";
+//            }
+//
+//            public String[] textures() {
+//                return new String[]{"acorn1"};
+//            }
+//        };
 
         public String[] textures() {
             return new String[]{"default"};
@@ -138,7 +138,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
         updatePosition();
         ShootingStyle(shootingStyle);
-
+        setPosition();
     }
 
 
@@ -290,34 +290,6 @@ public class Projectile extends AbstractEntity implements Tickable {
             }
         }
     }
-
-//    @Override
-//    public void onTick(long time) {
-//        animate();
-//        setPosition();
-//
-//        Box3D newPos = getBox3D();
-//        newPos.setX(this.getPosX());
-//        newPos.setY(this.getPosY());
-//
-//        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-//
-//        for (AbstractEntity entity : entities.values()) {
-//            if (!targetClass.isInstance(entity)) {
-//                continue;
-//            }
-//            if (newPos.overlaps(entity.getBox3D())) {
-//                if (entity instanceof Player) {
-//                    GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
-//                }
-//                ((MortalEntity) entity).damage(damage);
-//                if (endEffect != null)
-//                    GameManager.get().getWorld().addEntity(endEffect);
-//                rangeReached = true;
-//                setPosition();
-//            }
-//        }
-//    }
 
     @Override
     public void onTick(long time) {
