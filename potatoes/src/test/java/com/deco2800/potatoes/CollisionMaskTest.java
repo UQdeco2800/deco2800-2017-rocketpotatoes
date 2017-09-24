@@ -1,9 +1,7 @@
 package com.deco2800.potatoes;
 
 
-import com.deco2800.potatoes.collisions.Point2D;
-import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.*;
 
 import org.junit.Test;
 
@@ -139,7 +137,7 @@ public class CollisionMaskTest {
         assertFalse(point2.overlaps(box4));
     }
 
-    @Test //TODO untested
+    @Test
     public void collisionCircleToBox() {
         Circle2D circ1 = new Circle2D(5, 5, 1.5f);
         Circle2D circ2 = new Circle2D(5, 9, 1.5f);
@@ -169,7 +167,7 @@ public class CollisionMaskTest {
         assertTrue(circ3.overlaps(box2)); // overlaps
     }
 
-    @Test //TODO untested
+    @Test
     public void collisionBoxToBox() {
     Box2D box1 = new Box2D(5, 5, 2, 2);
     assertTrue(box1.overlaps(box1)); //self overlap
@@ -189,15 +187,7 @@ public class CollisionMaskTest {
     Box2D box6 = new Box2D(8, 10, 4, 2);
     assertFalse(box1.overlaps(box6)); //distant diagonal
     }
-/*
-    @Test
-    public void collisionLineToBox() {
-        assertTrue(true); //TODO
-        //overlaps
-        //on edge
-        //non collision
-    }
-*/
+
     @Test
     public void distancePointToPoint() {
         Point2D point1 = new Point2D(0f, 0f);
@@ -285,7 +275,7 @@ public class CollisionMaskTest {
         assertTrue(compareFloat(point2.distance(box4), (float) Math.sqrt(4.5)));
     }
 
-    @Test //TODO untested
+    @Test
     public void distanceCircleToBox() {
         Circle2D circ1 = new Circle2D(5, 5, 1.5f);
         Circle2D circ2 = new Circle2D(5, 9, 1.5f);
@@ -315,41 +305,109 @@ public class CollisionMaskTest {
         assertTrue(circ3.distance(box2) < 0); // overlaps
     }
 
-
-    @Test //TODO untested & unfinished
+    @Test
     public void distanceBoxToBox() {
         Box2D box1 = new Box2D(5, 5, 2, 2);
-        assertTrue(box1.overlaps(box1)); //self overlap
+        assertTrue(box1.distance(box1) < 0); //self overlap
 
         Box2D box2 = new Box2D(5, 6, 2, 2);
-        assertTrue(box1.overlaps(box2)); //in-line overlap
+        assertTrue(box1.distance(box2) < 0); //in-line overlap
 
         Box2D box3 = new Box2D(6, 6, 2, 2);
-        assertTrue(box1.overlaps(box3)); //overlap diagonal
+        assertTrue(box1.distance(box3) < 0); //overlap diagonal
 
         Box2D box4 = new Box2D(5, 7, 2, 2);
-        assertFalse(box1.overlaps(box4)); //edge-to-edge
+        assertTrue(box1.distance(box4) == 0); //edge-to-edge
 
         Box2D box5 = new Box2D(7, 7, 2, 2);
-        assertFalse(box1.overlaps(box5)); //edge-to-edge diagonal
+        assertTrue(compareFloat(box1.distance(box5), 0)); //edge-to-edge diagonal
 
-        Box2D box6 = new Box2D(8, 10, 4, 2);
-        assertFalse(box1.overlaps(box6)); //distant diagonal
+        Box2D box6 = new Box2D(9, 10, 4, 2);
+        assertTrue(compareFloat(box1.distance(box6), (float) Math.sqrt(10))); //distant diagonal
     }
-/*
+
+
+    //Line checking
+    @Test
+    public void collisionLineToBox() {
+
+        Box2D box1 = new Box2D(5, 5, 2, 2);
+        assertFalse(box1.overlapsLine(2, 7, 8, 7));         //Horizontal above
+        assertTrue(box1.overlapsLine(2, 4.5f, 8, 4.5f));    //Horizontal through
+        assertFalse(box1.overlapsLine(7, 2, 7, 8));         //Vertical above
+        assertTrue(box1.overlapsLine(4.5f, 2, 4.5f, 8));    //Vertical through
+
+        //quadrants labelled 1 through 9, starting top left, natural reading order
+        assertFalse(box1.overlapsLine(2, 7, 6.5f, 6.5f));   // 1 to 2 desc
+        assertFalse(box1.overlapsLine(6.5f, 6.5f, 8, 7));   // 2 to 3 rise
+        assertFalse(box1.overlapsLine(6.5f, 9, 9, 6.5f));   // 2 to 6
+        assertFalse(box1.overlapsLine(6.5f, 20, 20, 3.5f)); // 2 to 9
+        assertFalse(box1.overlapsLine(2, 5, 3, 5));         // 4 to 4 flat
+        assertFalse(box1.overlapsLine(3, 3, 6, 3));         // 8 to 8 flat
+        assertFalse(box1.overlapsLine(0, 0, 1, 1));      // 7 to 7 rise
+        assertFalse(box1.overlapsLine(5, 2, 5.5f, 1.5f));   // 7 to 7 desc
+        assertFalse(box1.overlapsLine(4.5f, 2, 5.5f, 2));   // 6 to 7 flat
+        assertTrue(box1.overlapsLine(5, 5, 5.5f, 6.5f));    // 5 to 6 rise
+        assertTrue(box1.overlapsLine(5, 5, 8, 8));          // 5 to 3 through corner
+
+        //touching
+        assertTrue(box1.overlapsLine(3, 4, 6, 4));         // bottom flat
+        assertTrue(box1.overlapsLine(4, 4, 6, 3.5f));      // bottom left corner first node
+    }
+
     @Test
     public void distanceLineToPoint() {
-        assertTrue(true); //TODO
+        Point2D point1 = new Point2D(5,5);
+
+        assertTrue(compareFloat(point1.distance(2, 7, 8, 7), 2));    //Horizontal above
+        assertTrue(compareFloat(point1.distance(2, 5, 8, 5), 0));    //Horizontal through
+        assertTrue(compareFloat(point1.distance(7, 2, 7, 8), 2));    //Vertical above
+        assertTrue(compareFloat(point1.distance(5, 2, 5, 8), 0));    //Vertical through
+        assertTrue(compareFloat(point1.distance(0, 10, 10, 0), 0));    //Diagonal through
+        assertTrue(compareFloat(point1.distance(1, 10, 11, 0), (float) Math.sqrt(2) / 2));    //diagonal above
     }
+
+
 
     @Test
     public void distanceLineToCircle() {
-        assertTrue(true); //TODO
+        Circle2D circ1 = new Circle2D(5,5,0.5f);
+
+        assertTrue(compareFloat(circ1.distance(2, 7, 8, 7), 1.5f));    //Horizontal above
+        assertTrue(circ1.distance(2, 5, 8, 5) < 0);    //Horizontal through
+        assertTrue(compareFloat(circ1.distance(7, 2, 7, 8), 1.5f));    //Vertical above
+        assertTrue(circ1.distance(5, 2, 5, 8) < 0);    //Vertical through
+        assertTrue(circ1.distance(0, 10, 10, 0) < 0);    //Diagonal through
+        System.out.println(circ1.distance(5, 10, 15, 0));
+        assertTrue(compareFloat(circ1.distance(5, 10, 15, 0), (float) Math.sqrt(2) * 2.5f - 0.5f));    //diagonal above
     }
+
 
     @Test
     public void distanceLineToBox() {
-        assertTrue(true); //TODO
+        Box2D box1 = new Box2D(5, 5, 2, 2);
+        assertTrue(compareFloat(box1.distance(2, 7, 8, 7), 1));         //Horizontal above
+        assertTrue(box1.distance(2, 4.5f, 8, 4.5f) < 0);    //Horizontal through
+        assertTrue(compareFloat(box1.distance(7, 2, 7, 8), 1));         //Vertical above
+        assertTrue(box1.distance(4.5f, 2, 4.5f, 8) < 0);    //Vertical through
+
+        //quadrants labelled 1 through 9, starting top left, natural reading order
+        assertTrue(compareFloat(box1.distance(2, 7, 5f, 6.5f), 0.5f));                      // 1 to 2 desc
+        assertTrue(compareFloat(box1.distance(5f, 6.5f, 8, 7), 0.5f));                      // 2 to 3 rise
+        assertTrue(compareFloat(box1.distance(5f, 9, 9, 6.5f),
+                   new Point2D(6, 6).distance(5f, 9, 9, 6.5f)));                            // 2 to 6
+        assertTrue(compareFloat(box1.distance(6.5f, 20, 20, 3.5f),
+                   new Point2D(6, 6).distance(6.5f, 20, 20, 3.5f)));                        // 2 to 9
+        assertTrue(compareFloat(box1.distance(2, 5, 3, 5), 1));                             // 4 to 4 flat
+        assertTrue(compareFloat(box1.distance(3, 3, 6, 3), 1));                             // 8 to 8 flat
+        assertTrue(compareFloat(box1.distance(0, 0, 1, 1), (float) Math.sqrt(2) * 3));      // 7 to 7 rise
+        assertTrue(compareFloat(box1.distance(0, 1, 1, 0), (float) Math.sqrt(2) * 3.5f));   // 7 to 7 desc
+        assertTrue(compareFloat(box1.distance(1, 2, 5.5f, 2), 2));                          // 7 to 8 flat
+        assertTrue(box1.distance(5, 5, 5.5f, 6.5f) < 0);                                    // 5 to 6 rise
+        assertTrue(box1.distance(5, 5, 8, 8) < 0);                                          // 5 to 3 through corner
+
+        //touching covered by collisionLineToBox
+
     }
-*/
+
 }

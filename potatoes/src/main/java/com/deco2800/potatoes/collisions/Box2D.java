@@ -68,15 +68,15 @@ public class Box2D implements CollisionMask{
         float distY = Math.abs(other.getY() - this.y);
 
         // Point is outside collision
-        if (distX > (this.xLength/2 + other.getRadius()))
+        if (distX >= (this.xLength/2 + other.getRadius()))
             return false;
-        if (distY > (this.yLength/2 + other.getRadius()))
+        if (distY >= (this.yLength/2 + other.getRadius()))
             return false;
 
         // Point is inside collision
-        if (distX <= (this.xLength/2))
+        if (distX < (this.xLength/2))
             return true;
-        if (distY <= (this.yLength/2))
+        if (distY < (this.yLength/2))
             return true;
 
         // May intersect corner scenario, calc oblique distance square
@@ -84,7 +84,7 @@ public class Box2D implements CollisionMask{
         float cornerY = distY - (this.yLength / 2);
         float cornerDistSquare = cornerX * cornerX + cornerY * cornerY;
 
-        return cornerDistSquare <= (other.getRadius() * other.getRadius());
+        return cornerDistSquare < (other.getRadius() * other.getRadius());
     }
 
     /**
@@ -99,10 +99,10 @@ public class Box2D implements CollisionMask{
         float distY = Math.abs(other.getY() - this.y);
 
         // Check dist's are large enough that no collision could occur
-        if (distX > (this.xLength + other.getXLength())/2) { 
+        if (distX >= (this.xLength + other.getXLength())/2) {
         	return false; 
         }
-        if (distY > (this.yLength + other.getYLength())/2) {
+        if (distY >= (this.yLength + other.getYLength())/2) {
         	return false; 
         }
 
@@ -169,7 +169,7 @@ public class Box2D implements CollisionMask{
 
 
     /**
-     * Used to find the minimum distance between this Box2D and a point.
+     * Subroutine used in both point-to-box & box-to-box distance.
      *
      * @param distX The x value of the point.
      * @param distY The y value of the point.
@@ -248,7 +248,7 @@ public class Box2D implements CollisionMask{
     private float distanceToBox(Box2D other) {
         // Calc dist between sides on each dimension
         float distX = Math.abs(other.getX() - this.x) - (this.xLength + other.getXLength()) / 2;
-        float distY = Math.abs(other.getX() - this.x) - (this.yLength + other.getYLength()) / 2;
+        float distY = Math.abs(other.getY() - this.y) - (this.yLength + other.getYLength()) / 2;
 
         return calculateDistance(distX, distY);
     }
@@ -345,18 +345,18 @@ public class Box2D implements CollisionMask{
             return distX2;
         if ((distX1 <= 0) && ((this.y < y1 && y1 < y2) || (y2 < y1 && y1 < this.y)))
             return distY1;
-        if ((distX2 <= 0) && ((this.y < y1 && y1 < y2) || (y2 < y1 && y1 < this.y)))
+        if ((distX2 <= 0) && ((this.y < y2 && y2 < y1) || (y1 < y2 && y2 < this.y)))
             return distY2;
 
 
         //both points in one diagonal
-        if ((maxLineX >= maxBoxX) && (maxLineY >= maxBoxY)) {     //top right
+        if ((minLineX >= maxBoxX) && (minLineY >= maxBoxY)) {     //top right
             return new Point2D(maxBoxX, maxBoxY).distance(x1, y1, x2, y2); }
-        if ((minLineX >= minBoxX) && (maxLineY >= maxBoxY)) {     //top left
+        if ((maxLineX <= minBoxX) && (minLineY >= maxBoxY)) {     //top left
             return new Point2D(minBoxX, maxBoxY).distance(x1, y1, x2, y2); }
-        if ((maxLineX >= maxBoxX) && (minLineY >= minBoxY)) {     //bot right
+        if ((minLineX >= maxBoxX) && (maxLineY <= minBoxY)) {     //bot right
             return new Point2D(maxBoxX, minBoxY).distance(x1, y1, x2, y2); }
-        if ((minLineX >= minBoxX) && (minLineY >= minBoxY)) {     //bot left
+        if ((maxLineX <= minBoxX) && (maxLineY <= minBoxY)) {     //bot left
             return new Point2D(minBoxX, minBoxY).distance(x1, y1, x2, y2); }
 
 
