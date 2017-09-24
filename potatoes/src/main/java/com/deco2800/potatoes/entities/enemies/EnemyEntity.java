@@ -374,7 +374,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
-	public abstract EnemyStatistics getBasicStats();
+	public abstract EnemyProperties getBasicStats();
 
 	/**
 	 * Get the goal of the enemy

@@ -2,8 +2,8 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.List;
 
-import com.deco2800.potatoes.entities.BasicStatistics;
-import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.BasicProperties;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
@@ -16,7 +16,7 @@ import com.deco2800.potatoes.managers.PlayerManager;
 /**
  * Class to represent attributes for tree upgrades
  */
-public class TreeStatistics extends BasicStatistics<AbstractTree> {
+public class TreeProperties extends BasicProperties<AbstractTree> {
 	private static final transient Resource UPGRADE_RESOURCE = new SeedResource();
 
 	private final int buildCost;
@@ -27,7 +27,7 @@ public class TreeStatistics extends BasicStatistics<AbstractTree> {
 	/**
 	 * Creates this object from the properties stored in the given builder.
 	 */
-	public TreeStatistics(StatisticsBuilder<AbstractTree> builder) {
+	public TreeProperties(PropertiesBuilder<AbstractTree> builder) {
 		super(builder);
 		buildCost = builder.getBuildCost();
 		buildTime = builder.getBuildTime();

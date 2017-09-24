@@ -142,7 +142,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	/**
 	 * Returns the upgrade stats for the current level of the tree
 	 */
-	public TreeStatistics getUpgradeStats() {
+	public TreeProperties getUpgradeStats() {
 		return getAllUpgradeStats().get(upgradeLevel);
 	}
 
@@ -220,7 +220,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * 
 	 * @return a list of all the upgrade stats for this tree
 	 */
-	public abstract List<TreeStatistics> getAllUpgradeStats();
+	public abstract List<TreeProperties> getAllUpgradeStats();
 
 	/**
 	 * Returns the current progress

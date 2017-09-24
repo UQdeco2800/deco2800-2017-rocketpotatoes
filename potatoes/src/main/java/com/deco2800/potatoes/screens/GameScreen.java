@@ -22,10 +22,10 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.AcornTree;
+import com.deco2800.potatoes.entities.trees.AcornTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.FireTree;
-import com.deco2800.potatoes.entities.trees.IceTree;
+import com.deco2800.potatoes.entities.trees.FireTreeType;
+import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
@@ -305,9 +305,9 @@ public class GameScreen implements Screen {
 
 	private void addDamageTree() {
 		GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
-		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
+		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTreeType()));
 	}
 
 	private void initialiseResources() {

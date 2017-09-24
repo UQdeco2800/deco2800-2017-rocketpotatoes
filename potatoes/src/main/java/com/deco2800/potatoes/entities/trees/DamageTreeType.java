@@ -1,6 +1,6 @@
-package com.deco2800.potatoes.entities;
+package com.deco2800.potatoes.entities.trees;
 
-public class Damage implements Comparable<Damage> {
+public class DamageTreeType implements Comparable<DamageTreeType> {
 
 
     /*
@@ -17,7 +17,7 @@ public class Damage implements Comparable<Damage> {
      * The default instantiation of a resource. This should be overrode by children
      * classes but can be used for testing purposes.
      */
-    public Damage() {
+    public DamageTreeType() {
         damageTreeType = "default";
         texture = "default";
     }
@@ -45,10 +45,10 @@ public class Damage implements Comparable<Damage> {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof Damage)) {
+        if (!(object instanceof DamageTreeType)) {
             return false;
         }
-        Damage other = (Damage) object; // the corridor to compare
+        DamageTreeType other = (DamageTreeType) object; // the corridor to compare
         return other.getTypeName().equals(damageTreeType);
     }
 
@@ -62,7 +62,7 @@ public class Damage implements Comparable<Damage> {
     }
 
     @Override
-    public int compareTo(Damage other) {
+    public int compareTo(DamageTreeType other) {
         return damageTreeType.compareTo(other.getTypeName());
     }
 

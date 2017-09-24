@@ -7,16 +7,16 @@ import java.util.function.Function;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.enemies.EnemyStatistics;
+import com.deco2800.potatoes.entities.enemies.EnemyProperties;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.TreeStatistics;
+import com.deco2800.potatoes.entities.trees.TreeProperties;
 
 /**
  * Class for storing information needed to create BasicStatistics or any of its
  * subclasses
  */
-public class StatisticsBuilder<T extends Tickable> {
+public class PropertiesBuilder<T extends Tickable> {
 	private float health;
 	private List<TimeEvent<T>> events;
 	private Function<T, Animation> animation;
@@ -33,7 +33,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * Initializes this object to have all properties with their default values
 	 * (probably null) and all lists to be empty
 	 */
-	public StatisticsBuilder() {
+	public PropertiesBuilder() {
 		events = new ArrayList<>();
 		buildEvents = new ArrayList<>();
 	}
@@ -42,24 +42,24 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * Returns a TreeStatistics object based on the properties stored in this object
 	 */
 	@SuppressWarnings("unchecked")
-	public TreeStatistics createTreeStatistics() {
+	public TreeProperties createTreeStatistics() {
 		// Checking here
-		return new TreeStatistics((StatisticsBuilder<AbstractTree>) this);
+		return new TreeProperties((PropertiesBuilder<AbstractTree>) this);
 	}
 
 	/**
 	 * Returns an EnemyStatistics object based on the properties stored in this object
 	 */
 	@SuppressWarnings("unchecked")
-	public EnemyStatistics createEnemyStatistics() {
+	public EnemyProperties createEnemyStatistics() {
 		// Checking here
-		return new EnemyStatistics((StatisticsBuilder<EnemyEntity>) this);
+		return new EnemyProperties((PropertiesBuilder<EnemyEntity>) this);
 	}
 
 	/**
 	 * @param texture the texture to set
 	 */
-	public StatisticsBuilder<T> setTexture(String texture) {
+	public PropertiesBuilder<T> setTexture(String texture) {
 		animation = x -> new SingleFrameAnimation(texture);
 		return this;
 	}
@@ -68,7 +68,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * Adds the given event to the list of events in this object
 	 */
 	@SuppressWarnings("unchecked")
-	public StatisticsBuilder<T> addEvent(TimeEvent<? extends T> event) {
+	public PropertiesBuilder<T> addEvent(TimeEvent<? extends T> event) {
 		events.add((TimeEvent<T>) event);
 		return this;
 	}
@@ -76,7 +76,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	/**
 	 * Add all events in the list of events given to the events in this object
 	 */
-	public StatisticsBuilder<T> addAllEvents(List<TimeEvent<? extends T>> events) {
+	public PropertiesBuilder<T> addAllEvents(List<TimeEvent<? extends T>> events) {
 		events.forEach(this::addEvent);
 		return this;
 	}
@@ -85,7 +85,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * Adds the given event to the list of build events in this object
 	 */
 	@SuppressWarnings("unchecked")
-	public StatisticsBuilder<T> addBuildEvent(TimeEvent<? extends T> event) {
+	public PropertiesBuilder<T> addBuildEvent(TimeEvent<? extends T> event) {
 		buildEvents.add((TimeEvent<T>) event);
 		return this;
 	}
@@ -93,7 +93,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	/**
 	 * Add all events in the list of events given to the build events in this object
 	 */
-	public StatisticsBuilder<T> addAllBuildEvents(List<TimeEvent<? extends T>> events) {
+	public PropertiesBuilder<T> addAllBuildEvents(List<TimeEvent<? extends T>> events) {
 		events.forEach(this::addBuildEvent);
 		return this;
 	}
@@ -111,7 +111,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param health
 	 *            the health to set
 	 */
-	public StatisticsBuilder<T> setHealth(float health) {
+	public PropertiesBuilder<T> setHealth(float health) {
 		this.health = health;
 		return this;
 	}
@@ -134,7 +134,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param animation
 	 *            the animation to set
 	 */
-	public StatisticsBuilder<T> setAnimation(Function<T, Animation> animation) {
+	public PropertiesBuilder<T> setAnimation(Function<T, Animation> animation) {
 		this.animation = animation;
 		return this;
 	}
@@ -150,7 +150,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param progressBar
 	 *            the progressBar to set
 	 */
-	public StatisticsBuilder<T> setProgressBar(ProgressBar progressBar) {
+	public PropertiesBuilder<T> setProgressBar(ProgressBar progressBar) {
 		this.progressBar = progressBar;
 		return this;
 	}
@@ -166,7 +166,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param buildCost
 	 *            the buildCost to set
 	 */
-	public StatisticsBuilder<T> setBuildCost(int buildCost) {
+	public PropertiesBuilder<T> setBuildCost(int buildCost) {
 		this.buildCost = buildCost;
 		return this;
 	}
@@ -182,7 +182,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param buildTime
 	 *            the buildTime to set
 	 */
-	public StatisticsBuilder<T> setBuildTime(int buildTime) {
+	public PropertiesBuilder<T> setBuildTime(int buildTime) {
 		this.buildTime = buildTime;
 		return this;
 	}
@@ -205,7 +205,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param attackSpeed
 	 *            the attackSpeed to set
 	 */
-	public StatisticsBuilder<T> setSpeed(float speed) {
+	public PropertiesBuilder<T> setSpeed(float speed) {
 		this.speed = speed;
 		return this;
 	}
@@ -221,7 +221,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param goal
 	 *            the goal to set
 	 */
-	public StatisticsBuilder<T> setGoal(Class<?> goal) {
+	public PropertiesBuilder<T> setGoal(Class<?> goal) {
 		this.goal = goal;
 		return this;
 	}
@@ -237,7 +237,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param attackSpeed
 	 *            the attackSpeed to set
 	 */
-	public StatisticsBuilder<T> setAttackSpeed(int attackSpeed) {
+	public PropertiesBuilder<T> setAttackSpeed(int attackSpeed) {
 		this.attackSpeed = attackSpeed;
 		return this;
 	}
@@ -253,7 +253,7 @@ public class StatisticsBuilder<T extends Tickable> {
 	 * @param attackRange
 	 *            the attackRange to set
 	 */
-	public StatisticsBuilder<T> setAttackRange(float attackRange) {
+	public PropertiesBuilder<T> setAttackRange(float attackRange) {
 		this.attackRange = attackRange;
 		return this;
 	}

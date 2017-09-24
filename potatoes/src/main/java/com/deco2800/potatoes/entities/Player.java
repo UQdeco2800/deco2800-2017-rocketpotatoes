@@ -395,22 +395,22 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             case Input.Keys.NUM_4:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new IceTree()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new IceTreeType()));
                 }
             case Input.Keys.NUM_5:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new LightningTree()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new LightningTreeType()));
                 }
             case Input.Keys.NUM_6:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new FireTree()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new FireTreeType()));
                 }
             case Input.Keys.NUM_7:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
-                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTree()));
+                            new DamageTree(getCursorCoords().x, getCursorCoords().y, 0, new AcornTreeType()));
                 }
             case Input.Keys.SPACE:
                 attack();

@@ -13,7 +13,7 @@ import com.deco2800.potatoes.managers.GameManager;
 /**
  * Class storing basic properties for a tickable entity
  */
-public class BasicStatistics<T extends Tickable> {
+public class BasicProperties<T extends Tickable> {
 	private final float health;
 	private final List<TimeEvent<T>> events;
 	private final Function<T, Animation> animation;
@@ -22,7 +22,7 @@ public class BasicStatistics<T extends Tickable> {
 	/**
 	 * Creates this object from the properties stored in the given builder.
 	 */
-	public BasicStatistics(StatisticsBuilder<T> builder) {
+	public BasicProperties(PropertiesBuilder<T> builder) {
 		health = builder.getHealth();
 		events = builder.getEvents();
 		animation = builder.getAnimation();

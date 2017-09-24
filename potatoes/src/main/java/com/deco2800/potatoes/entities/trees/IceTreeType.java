@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.function.Supplier;
 
-import com.deco2800.potatoes.entities.Damage;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.animation.StateAnimation;
@@ -10,10 +9,10 @@ import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 
-public class IceTree extends Damage {
+public class IceTreeType extends DamageTreeType {
     private static final String TEXTURE = "ice_basic_tree";
 
-    public IceTree(){
+    public IceTreeType(){
 
         this.damageTreeType = "IceTree";
         this.texture = TEXTURE;

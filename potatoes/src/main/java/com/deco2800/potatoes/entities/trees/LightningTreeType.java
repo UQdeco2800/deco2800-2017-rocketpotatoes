@@ -1,11 +1,9 @@
 package com.deco2800.potatoes.entities.trees;
 
-import com.deco2800.potatoes.entities.Damage;
-
-public class LightningTree extends Damage {
+public class LightningTreeType extends DamageTreeType {
     private static final String TEXTURE = "lightning_tree1";
 
-    public LightningTree(){
+    public LightningTreeType(){
         this.damageTreeType = "LightningTree";
         this.texture = TEXTURE;
     }
