@@ -24,7 +24,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
-	private static final EnemyStatistics STATS = initStats();
+	private static final EnemyProperties STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient String TEXTURE_LEFT = "tankBear";
 	private static final transient String TEXTURE_RIGHT = "tankBear";
@@ -76,8 +76,8 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 * 
 	 * @return basic statistics of this Tank Enemy
 	 */
-	private static EnemyStatistics initStats() {
-		return new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(speed)
+	private static EnemyProperties initStats() {
+		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, AbstractTree.class)).createEnemyStatistics();
 	}
@@ -88,7 +88,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 * @return Get basic statistics of this Tank Enemy
 	 */
 	@Override
-	public EnemyStatistics getBasicStats() {
+	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
 

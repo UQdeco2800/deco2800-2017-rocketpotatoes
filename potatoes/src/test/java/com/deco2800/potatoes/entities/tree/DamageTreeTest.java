@@ -18,9 +18,9 @@ public class DamageTreeTest {
     public void setup() {
 
         defaultDamageTree = new DamageTree(0, 0, 0);
-        iceTreeDamageTree = new DamageTree(1, 0, 0, new IceTree());
-        acornTreeDamageTree = new DamageTree(1, 0, 0, new AcornTree());
-        fireTreeDamageTree = new DamageTree(1, 0, 0, new FireTree());
+        iceTreeDamageTree = new DamageTree(1, 0, 0, new IceTreeType());
+        acornTreeDamageTree = new DamageTree(1, 0, 0, new AcornTreeType());
+        fireTreeDamageTree = new DamageTree(1, 0, 0, new FireTreeType());
         nullTypeDamageTree = new DamageTree(2, 0, 0,null);
 
     }
@@ -28,11 +28,11 @@ public class DamageTreeTest {
     /* Test getDmageTreeType method */
     @Test
     public void getDamageTreeTypeTest() {
-        assertTrue(iceTreeDamageTree.getDamageTreeType() instanceof IceTree);
-        assertTrue(acornTreeDamageTree.getDamageTreeType() instanceof AcornTree);
-        assertTrue(fireTreeDamageTree.getDamageTreeType() instanceof FireTree);
-        assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTree);
-        assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTree);
+        assertTrue(iceTreeDamageTree.getDamageTreeType() instanceof IceTreeType);
+        assertTrue(acornTreeDamageTree.getDamageTreeType() instanceof AcornTreeType);
+        assertTrue(fireTreeDamageTree.getDamageTreeType() instanceof FireTreeType);
+        assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTreeType);
+        assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTreeType);
 
     }
 

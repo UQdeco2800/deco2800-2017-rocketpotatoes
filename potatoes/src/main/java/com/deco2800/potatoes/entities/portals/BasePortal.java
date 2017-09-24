@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -37,7 +37,7 @@ import com.deco2800.potatoes.worlds.WorldType;
  *
  * @author Jordan Holder, Katie Gray
  */
-public class BasePortal extends AbstractPortal implements Tickable {
+public class BasePortal extends AbstractPortal implements Tickable, HasProgressBar {
 
     /*
      * Progress bar to display health of base portal
@@ -76,7 +76,7 @@ public class BasePortal extends AbstractPortal implements Tickable {
      * @param maxHealth the maximum health for the base portal
      */
     public BasePortal(float posX, float posY, float posZ, float maxHealth) {
-        super(posX, posY, posZ, TEXTURE);
+        super(posX, posY, posZ, TEXTURE, maxHealth);
     }
 
     @Override
@@ -102,18 +102,13 @@ public class BasePortal extends AbstractPortal implements Tickable {
         }
     }
 
-  //  @Override
+    @Override
     public ProgressBar getProgressBar() {
         return progressBar;
     }
-  //  @Overide
+    @Override
     public boolean showProgress() {
-        return false;
-    }
-   // @Override
-    public int getMaxProgress() {
-        // TODO Auto-generated method stub
-        return 1;
+        return true;
     }
 
 }

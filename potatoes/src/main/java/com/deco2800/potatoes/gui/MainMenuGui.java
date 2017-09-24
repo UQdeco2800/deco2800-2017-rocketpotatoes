@@ -9,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.MainMenuScreen;
 import org.slf4j.Logger;
@@ -117,7 +119,7 @@ public class MainMenuGui extends Gui {
         multiplayerDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("multiplayerMainMenu")));
         backDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backMainMenu")));
         startCharacterSelect = new SelectBox<String>(uiSkin);
-        startCharacterSelect.setItems("wizard","caveman","archer");
+        startCharacterSelect.setItems(PlayerType.names());
         singleplayerButton = new ImageButton(singleplayerDrawable);
         multiplayerButton = new ImageButton(multiplayerDrawable);
         startBackButton = new ImageButton(backDrawable);
@@ -128,7 +130,7 @@ public class MainMenuGui extends Gui {
         startButtonGroup.addActor(multiplayerButton);
         startButtonGroup.addActor(startBackButton);
         startButtonGroup.space(50);
-        startCharacterSelect.setSelected(Player.getPlayerType());
+        startCharacterSelect.setSelected(GameManager.get().getManager(PlayerManager.class).getPlayerType().name());
 
         // Start Multiplayer state
         multiplayerClientDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("clientMainMenu")));
@@ -239,7 +241,7 @@ public class MainMenuGui extends Gui {
         startCharacterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Player.setPlayerType(startCharacterSelect.getSelected());
+                GameManager.get().getManager(PlayerManager.class).setPlayerType(PlayerType.valueOf(startCharacterSelect.getSelected()));
             }
         });
 

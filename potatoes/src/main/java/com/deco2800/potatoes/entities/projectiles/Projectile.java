@@ -5,16 +5,15 @@ import java.util.Map;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
-
     protected static final float SPEED = 0.2f;
 
     protected ProjectileType projectileType;
@@ -292,6 +291,34 @@ public class Projectile extends AbstractEntity implements Tickable {
         }
     }
 
+//    @Override
+//    public void onTick(long time) {
+//        animate();
+//        setPosition();
+//
+//        Box3D newPos = getBox3D();
+//        newPos.setX(this.getPosX());
+//        newPos.setY(this.getPosY());
+//
+//        Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+//
+//        for (AbstractEntity entity : entities.values()) {
+//            if (!targetClass.isInstance(entity)) {
+//                continue;
+//            }
+//            if (newPos.overlaps(entity.getBox3D())) {
+//                if (entity instanceof Player) {
+//                    GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
+//                }
+//                ((MortalEntity) entity).damage(damage);
+//                if (endEffect != null)
+//                    GameManager.get().getWorld().addEntity(endEffect);
+//                rangeReached = true;
+//                setPosition();
+//            }
+//        }
+//    }
+
     @Override
     public void onTick(long time) {
         animate();
@@ -308,9 +335,6 @@ public class Projectile extends AbstractEntity implements Tickable {
                 continue;
             }
             if (newPos.overlaps(entity.getBox3D())) {
-                if (entity instanceof Player) {
-                    GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
-                }
                 ((MortalEntity) entity).damage(damage);
                 if (endEffect != null)
                     GameManager.get().getWorld().addEntity(endEffect);
@@ -319,4 +343,5 @@ public class Projectile extends AbstractEntity implements Tickable {
             }
         }
     }
+
 }

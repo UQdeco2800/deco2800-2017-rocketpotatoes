@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -137,9 +137,6 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getBox3D())) {
-				if (entity instanceof Player) {
-					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
-				}
 				((MortalEntity) entity).damage(damage);
 			}
 		}

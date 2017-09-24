@@ -13,7 +13,7 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
-
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
@@ -252,7 +252,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				if(entity instanceof Player) {
 					LOGGER.info("Ouch! a " + this + " hit the player!");
 					((Player) entity).damage(1);
-					GameManager.get().getManager(PlayerManager.class).getPlayer().setDamaged(true);
 
 				}
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
@@ -375,7 +374,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return the basic stats (BasicStats) for this enemy
 	 * */
-	public abstract EnemyStatistics getBasicStats();
+	public abstract EnemyProperties getBasicStats();
 
 	/**
 	 * Get the goal of the enemy

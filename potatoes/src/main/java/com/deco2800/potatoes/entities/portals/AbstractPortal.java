@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -15,6 +15,7 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 
 /**
  * A class that can create portals which are not the base portal. Because these
@@ -25,7 +26,7 @@ import com.deco2800.potatoes.worlds.WorldType;
  * @author Jordan Holder, Katie Gray
  *
  */
-public class AbstractPortal extends AbstractEntity implements Tickable {	
+public class AbstractPortal extends MortalEntity implements Tickable {
 	/*
 	 * Logger for all info/warning/error logs
 	 */
@@ -60,7 +61,11 @@ public class AbstractPortal extends AbstractEntity implements Tickable {
 	 *            the texture which represents the portal
 	 */
 	public AbstractPortal(float posX, float posY, float posZ, String texture) {
-		super(posX, posY, posZ, 3, 3, 3, texture);
+		super(posX, posY, posZ, 3, 3, 3, texture, 999);
+	}
+
+	public AbstractPortal(float posX, float posY, float posZ, String texture, float maxHealth) {
+		super(posX, posY, posZ, 3, 3, 3, texture, maxHealth);
 	}
 
 	public boolean preTick(long time){
