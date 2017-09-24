@@ -1,6 +1,6 @@
 package com.deco2800.potatoes;
 
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -8,6 +8,8 @@ import com.deco2800.potatoes.util.WorldUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
 
 public class WorldUtilTest {
     @Test
@@ -20,6 +22,11 @@ public class WorldUtilTest {
 
         WorldUtil.closestEntityToPosition(0f, 0f, 2f);
         assertEquals(t1, WorldUtil.closestEntityToPosition(0f, 0f, 2f).get());
+    }
+    
+    @After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -10,8 +11,7 @@ import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
- * The standard / most basic enemy in the game - a squirrel.
- *
+ * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
@@ -19,7 +19,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
-	private static final EnemyStatistics STATS = initStats();
+	private static final EnemyProperties STATS = initStats();
 	private static final String enemyType = "squirrel";
 
 	private static final float SPEED = 0.12f;
@@ -30,13 +30,12 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
 	private Direction currentDirection; // The direction the enemy faces
-	public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
+	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
 	 * Default constructor for serialization
 	 */
 	public Squirrel() {
-		// empty for serialization
 	}
 
 	/***
@@ -151,8 +150,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 *
 	 * @return
 	 */
-	private static EnemyStatistics initStats() {
-		return new StatisticsBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
+	private static EnemyProperties initStats() {
+		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class)).createEnemyStatistics();
 	}
@@ -161,7 +160,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
 	 */
 	@Override
-	public EnemyStatistics getBasicStats() {
+	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
 

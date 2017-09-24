@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
+
 public class ProjectileTreeTest {
 
 	private static final int RELOAD = 100;
@@ -22,6 +24,11 @@ public class ProjectileTreeTest {
 		testTree = new ProjectileTree(10, 10, 0, RELOAD, RANGE, HEALTH);
 		GameManager.get().getWorld().addEntity(testTree);
 	}
+	
+	@After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
 
 	@Test
 	public void emptyTest() {
@@ -83,15 +90,6 @@ public class ProjectileTreeTest {
 		testTree.getProgressRatio();
 		testTree.getMaxProgress();
 		testTree.getProgressBar();
-	}
-	@Test
-	public void dyingTest() {
-
-		testTree.deathHandler();
-		testTree.setBeingDamaged(true);
-		assertTrue(testTree.isBeingDamaged());
-		testTree.setDying(true);
-		assertTrue(testTree.isDying());
 	}
 
 	private class TestWorld extends World {

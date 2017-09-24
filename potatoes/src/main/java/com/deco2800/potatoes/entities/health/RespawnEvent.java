@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.Random;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Player;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.managers.GameManager;

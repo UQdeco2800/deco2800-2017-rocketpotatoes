@@ -6,7 +6,7 @@ import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
-import com.deco2800.potatoes.entities.trees.TreeStatistics;
+import com.deco2800.potatoes.entities.trees.TreeProperties;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.util.Box3D;
 import com.esotericsoftware.kryo.Kryo;
@@ -52,7 +52,7 @@ public class Network {
         k.register(Box3D.class);
         k.register(LinkedList.class);
         k.register(TreeProjectileShootEvent.class);
-        k.register(TreeStatistics.class);
+        k.register(TreeProperties.class);
         k.register(Resource.class);
         k.register(FoodResource.class);
         k.register(SeedResource.class);
