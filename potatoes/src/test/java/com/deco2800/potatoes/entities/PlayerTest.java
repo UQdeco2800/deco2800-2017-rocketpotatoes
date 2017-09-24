@@ -62,12 +62,14 @@ public class PlayerTest {
 
     @Test
     public void keysTest2() {
+        player.setPlayerType("wizard");
         player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.E);
         player.handleKeyDown(Input.Keys.F);
         player.handleKeyDown(Input.Keys.T);
+        player.handleKeyDown(Input.Keys.R);
     }
 
     @Test
