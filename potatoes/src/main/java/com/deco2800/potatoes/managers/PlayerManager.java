@@ -1,5 +1,8 @@
 package com.deco2800.potatoes.managers;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.entities.Archer;
 import com.deco2800.potatoes.entities.Caveman;
 import com.deco2800.potatoes.entities.Player;
@@ -22,11 +25,25 @@ public class PlayerManager extends Manager {
 		input.addKeyUpListener(this::handleKeyUp);
 	}
 	
-	public enum PlayerType { caveman, wizard, archer };	// Types of players in the game
+	// Types of players in the game
+	public enum PlayerType { caveman, wizard, archer;
+		public static Array<String> names() {
+			Array<String> names = new Array<>();
+			for (PlayerType type : PlayerType.values()) {
+				names.add(type.name());
+			}
+			return names;
+		}
+	};
+	
 	private PlayerType playerType = PlayerType.caveman;	// The type of the player
 	
 	public void setPlayerType(PlayerType type) {
 		this.playerType = type;
+	}
+	
+	public PlayerType getPlayerType() {
+		return this.playerType;
 	}
 
 	/**
