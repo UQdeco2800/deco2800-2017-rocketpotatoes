@@ -287,10 +287,30 @@ public class TextureManager extends Manager {
 
         // Add all archer sprites
         for (Direction direction : Direction.values()) {
-            String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
-            saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
-        }
 
+        		String textureNameIdle = "archer_idle_" + direction.toString() + "_1";
+        		saveTexture(textureNameIdle, "resources/player/archer/idle/" + textureNameIdle + ".png");
+        		
+        		for (int i=1; i<=5; i++) {
+        			String textureNameAttack = "archer_attack_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/archer/attack/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=8; i++) {
+        			String textureNameWalk = "archer_walk_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameWalk, "resources/player/archer/walk/" + textureNameWalk + ".png");
+        		}
+        		
+        		for (int i=1; i<=7; i++) {
+        			String textureNameDeath = "archer_death_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/archer/death/" + textureNameDeath + ".png");
+        		}
+        		
+        		for (int i=1; i<=5; i++) {
+        			String textureNameInteract = "archer_interact_" + direction.toString() + "_" + i;
+        			saveTexture(textureNameInteract, "resources/player/archer/interact/" + textureNameInteract + ".png");
+        		}
+        }
 
     }
 
