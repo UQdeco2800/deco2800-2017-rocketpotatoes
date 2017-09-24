@@ -8,6 +8,7 @@ public class PlayerProjectile extends Projectile {
     protected float pPosY;
     protected float tPosX;
     protected float tPosY;
+    protected  String Directions;
 
     public enum PlayerShootMethod {
         DIRECTIONAL {
@@ -40,12 +41,13 @@ public class PlayerProjectile extends Projectile {
 
     public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
                             Effect endEffect, String Directions, PlayerShootMethod shootingStyle) {
-        super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, shootingStyle);
+        super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
 
         this.pPosX = startPos.x;
         this.pPosY = startPos.y;
         this.tPosX = targetPos.x;
         this.tPosY = targetPos.y;
+        this.Directions = Directions;
         ShootingStyle(shootingStyle);
 
     }

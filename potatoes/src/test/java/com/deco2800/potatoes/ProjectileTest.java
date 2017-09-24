@@ -60,14 +60,14 @@ public class ProjectileTest {
         GameManager.get().setWorld(new ProjectileTest.TestWorld());
         target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
-        testProjectile = new Projectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
+        testProjectile = new Projectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
         assertNotNull(testProjectile);
         assertNotNull(target);
         assertTrue(testProjectile.getDamage() == 10);
         assertTrue(testProjectile.getTexture().contains("rocket"));
         assertTrue(testProjectile.getRange() == 8);
-        assertEquals(4.910557270050049, testProjectile.getPosX(), 0.2);
-        assertEquals(9.821114540100098, testProjectile.getPosY(), 0.2);
+        assertEquals(5.178885459899902, testProjectile.getPosX(), 0.2);
+        assertEquals(10.089442253112793, testProjectile.getPosY(), 0.2);
         assertEquals(0, testProjectile.getPosZ(), 0.0);
         assertEquals(startEffect, testProjectile.getStartEffect());
         assertEquals(endEffect, testProjectile.getEndEffect());
@@ -83,7 +83,7 @@ public class ProjectileTest {
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
         endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
         playerShootMethod = PlayerProjectile.PlayerShootMethod.BALLISTIC;
-        testBallisticProjectile = new BallisticProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
+        testBallisticProjectile = new BallisticProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
         assertNotNull(testBallisticProjectile);
         assertNotNull(target);
         assertTrue(testBallisticProjectile.getDamage() == 10);
@@ -108,7 +108,7 @@ public class ProjectileTest {
         assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
         endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
         playerShootMethod = PlayerProjectile.PlayerShootMethod.HOMING;
-        testHomingProjectile = new HomingProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect, Directions, playerShootMethod);
+        testHomingProjectile = new HomingProjectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
         assertNotNull(testHomingProjectile);
         assertNotNull(target);
         assertTrue(testHomingProjectile.getDamage() == 10);
@@ -122,7 +122,6 @@ public class ProjectileTest {
         assertEquals(TargetPosX, testHomingProjectile.getTargetPosX(), 0);
         assertEquals(TargetPosY, testHomingProjectile.getTargetPosY(), 0);
         assertEquals(targetClass.getClass(), testHomingProjectile.getTargetClass());
-        assertEquals(PlayerProjectile.PlayerShootMethod.HOMING, testHomingProjectile.getPlayerShootMethod());
 
     }
 
@@ -140,13 +139,12 @@ public class ProjectileTest {
         assertEquals(endEffect, testPlayerProjectile.getEndEffect());
         assertTrue(testPlayerProjectile.getTexture().contains("rocket"));
         assertTrue(testPlayerProjectile.getRange() == 8);
-        assertEquals(4.910557270050049, testPlayerProjectile.getPosX(), 0.2);
-        assertEquals(9.821114540100098, testPlayerProjectile.getPosY(), 0.2);
+        assertEquals(5.319001197814941, testPlayerProjectile.getPosX(), 0.2);
+        assertEquals(10.232157707214355, testPlayerProjectile.getPosY(), 0.2);
         assertEquals(0, testPlayerProjectile.getPosZ(), 0.0);
         assertEquals(TargetPosX, testPlayerProjectile.getTargetPosX(), 0);
         assertEquals(TargetPosY, testPlayerProjectile.getTargetPosY(), 0);
         assertEquals(targetClass.getClass(), testPlayerProjectile.getTargetClass());
-        assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, testPlayerProjectile.getPlayerShootMethod());
 
     }
 

@@ -77,7 +77,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     }
 
     public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, PlayerProjectile.PlayerShootMethod playerShootMethod) {
+                      ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
         super(startPos.x, startPos.y, startPos.z, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
                 projectileTexture.textures()[0]);
 
@@ -100,14 +100,14 @@ public class Projectile extends AbstractEntity implements Tickable {
 
         if (startEffect != null)
             GameManager.get().getWorld().addEntity(startEffect);
-        if (playerShootMethod.toString().equalsIgnoreCase("DIRECTIONAL")) {
-            updatePosition();
-            setPosition();
-        } else {
+//        if (playerShootMethod.toString().equalsIgnoreCase("DIRECTIONAL")) {
+//            updatePosition();
+//            setPosition();
+//        } else {
             setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
             updatePosition();
             setPosition();
-        }
+//        }
     }
 
 

@@ -127,7 +127,7 @@ public class EnemyEntityTest extends BaseTest {
 //        Projectile proj =new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10,
 //                            Projectile.ProjectileType.ROCKET, null, null);
         Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, ProjectileTexture.ROCKET, null,
-                null,"", PlayerProjectile.PlayerShootMethod.BALLISTIC);
+                null);
         tank1.getShot(proj);
         Assert.assertTrue("enemy failed to getShot()", tank1.getHealth() < tank1.getMaxHealth());
     }
