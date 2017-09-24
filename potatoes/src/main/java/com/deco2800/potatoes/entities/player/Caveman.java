@@ -3,9 +3,12 @@ package com.deco2800.potatoes.entities.player;
 import java.util.Map;
 import java.util.Optional;
 
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
+import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
@@ -117,7 +120,15 @@ public class Caveman extends Player {
     	        			break;
     	        		}
     	        		GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), pPosX-1, pPosY, pPosZ,  8f, 100, ProjectileType.CHILLI, null, null, this.getDirection().toString(),targetPosX,targetPosY, Projectile.ShootingStyles.DIRECTIONAL));
-    	        } else if (!target.isPresent()) {
+//					GameManager.get().getWorld().addEntity(new BallisticProjectile(target.get().getClass(),
+//							new Vector3(pPosX + 0.5f, pPosY + 0.5f, 0),
+//							new Vector3(target.get().getPosX(), target.get().getPosY(), target.get().getPosZ()),
+//							8f, 100, ProjectileType.ROCKET, null,
+//							new AOEEffect(target.getClass(),
+//									new Vector3(target.get().getPosX(), target.get().getPosY(), target.get().getPosZ()), 1,
+//									1)));
+
+    	          } else if (!target.isPresent()) {
     	            //Disable shooting when no enemies is present until new fix is found.
     	        }
     		}

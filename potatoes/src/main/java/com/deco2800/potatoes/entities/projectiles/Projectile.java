@@ -34,6 +34,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     protected float pPosY;
     protected float tPosX;
     protected float tPosY;
+    protected ShootingStyles shootingStyles;
 
     protected Class<?> targetClass;
     protected boolean rangeReached;
@@ -118,8 +119,8 @@ public class Projectile extends AbstractEntity implements Tickable {
             throw new RuntimeException("projectile type must not be null");
         else
             this.projectileType = projectileType;
-
-        this.range = damage;
+		this.shootingStyles = shootingStyle;
+		this.maxRange = this.range = range;
         this.damage = damage;
         this.startEffect = startEffect;
         this.endEffect = endEffect;
@@ -170,9 +171,54 @@ public class Projectile extends AbstractEntity implements Tickable {
         setPosition();
     }
 
+	/**
+	 * FOR TESTING PURPOSES, DO NOT USE THIS.
+	 * */
+	public Projectile(float posX, float posY, float posZ, float range, float damage,
+					  ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
+					  float TargetPosY, ShootingStyles shootingStyle) {
+		super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
+				projectileType.textures()[0]);
+
+		if (targetClass != null)
+			this.targetClass = targetClass;
+		else
+			this.targetClass = MortalEntity.class;
+
+		if (projectileType == null)
+			throw new RuntimeException("projectile type must not be null");
+		else
+			this.projectileType = projectileType;
+		this.shootingStyles = shootingStyle;
+		this.maxRange = this.range = range;
+		this.damage = damage;
+		this.startEffect = startEffect;
+		this.endEffect = endEffect;
+		this.Directions = Directions;
+		this.range = range;
+
+		this.pPosX = posX;
+		this.pPosY = posY;
+		this.tPosX = TargetPosX;
+		this.tPosY = TargetPosY;
+
+
+
+		if (startEffect != null)
+			GameManager.get().getWorld().addEntity(startEffect);
+
+		updatePosition();
+		ShootingStyle(shootingStyle);
+		setPosition();
+	}
+
     public void setTargetPosition(float xPos, float yPos, float zPos) {
         targetPos.set(xPos, yPos, zPos);
     }
+
+    public ShootingStyles getShootingStyles(){
+		return shootingStyles;
+	}
 
     /**
      * Initialize heading. Used if heading changes
@@ -315,5 +361,13 @@ public class Projectile extends AbstractEntity implements Tickable {
             }
         }
     }
+
+    public Effect getStartEffect(){
+    	return startEffect;
+	}
+
+	public Effect getEndEffect(){
+    	return endEffect;
+	}
 
 }

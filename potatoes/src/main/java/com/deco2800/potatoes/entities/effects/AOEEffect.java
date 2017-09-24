@@ -17,6 +17,8 @@ public class AOEEffect extends Effect {
 		loopAnimation = false;
 	}
 
+
+
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);

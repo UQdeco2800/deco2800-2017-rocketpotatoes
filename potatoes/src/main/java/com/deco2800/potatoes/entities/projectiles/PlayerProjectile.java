@@ -26,6 +26,13 @@ public class PlayerProjectile extends Projectile {
                             Effect endEffect, String Directions, float TargetPosX, float TargetPosY, ShootingStyles shootingStyle) {
 		super(targetClass,posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions, TargetPosX, TargetPosY, shootingStyle);
 	}
+	/**
+	 * FOR TESTING PURPOSES, DO NOT USE THIS.
+	 * */
+	public PlayerProjectile(float posX, float posY, float posZ, float range, float damage, ProjectileType projectileType, Effect startEffect,
+							Effect endEffect, String Directions, float TargetPosX, float TargetPosY, ShootingStyles shootingStyle) {
+		super(posX, posY, posZ, range, damage, projectileType, startEffect, endEffect, Directions, TargetPosX, TargetPosY, shootingStyle);
+	}
 
 
 
