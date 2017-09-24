@@ -6,6 +6,8 @@ package com.deco2800.potatoes.entities.health;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -38,27 +40,20 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 *            The x-coordinate of the entity.
 	 * @param posY
 	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
 	 * @param xLength
 	 *            The length of the entity, in x. Used in rendering and collision
 	 *            detection.
 	 * @param yLength
 	 *            The length of the entity, in y. Used in rendering and collision
 	 *            detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in rendering and collision
-	 *            detection.
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
 	 */
-	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength,
-			float zLength, String texture, float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xLength, yLength, false, texture);
-		this.maxHealth = maxHealth;
-		this.health = maxHealth;
+	public MortalEntity(float posX, float posY, float xLength, float yLength, String texture, 
+			float maxHealth) {
+		this(posX, posY, xLength, yLength, xLength, yLength, texture, maxHealth);
 	}
 
 	/**
@@ -71,8 +66,6 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 *            The x-coordinate of the entity.
 	 * @param posY
 	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
 	 * @param xLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yLength
@@ -88,13 +81,9 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
 	 */
-	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength,
-			float zLength, float xRenderLength, float yRenderLength, String texture,
-			float maxHealth) {
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength, texture);
-		this.maxHealth = maxHealth;
-		this.health = maxHealth;
-
+	public MortalEntity(float posX, float posY, float xLength, float yLength, 
+			float xRenderLength, float yRenderLength, String texture, float maxHealth) {
+		this(new Box2D(posX, posY, xLength, yLength), xRenderLength, yRenderLength, texture, maxHealth);
 	}
 
 	/**
@@ -104,18 +93,8 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * the leaves/branches. Allows rendering of entities to be centered on their
 	 * coordinates if centered is true.
 	 * 
-	 * @param posX
-	 *            The x-coordinate of the entity.
-	 * @param posY
-	 *            The y-coordinate of the entity.
-	 * @param posZ
-	 *            The z-coordinate of the entity.
-	 * @param xLength
-	 *            The length of the entity, in x. Used in collision detection.
-	 * @param yLength
-	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
+     * @param mask
+     *            The collision mask used by the entity.
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -127,12 +106,10 @@ public class MortalEntity extends AbstractEntity implements Mortal {
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
 	 */
-	public MortalEntity(float posX, float posY, float posZ, float xLength, float yLength,
-			float zLength, float xRenderLength, float yRenderLength, boolean centered,
-			String texture, float maxHealth) {
+    public MortalEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture,
+            float maxHealth) {
 
-		super(posX, posY, posZ, xLength, yLength, zLength, xRenderLength, yRenderLength,
-				centered, texture);
+        super(mask, xRenderLength, yRenderLength, texture);
 		this.maxHealth = maxHealth;
 		this.health = maxHealth;
 	}

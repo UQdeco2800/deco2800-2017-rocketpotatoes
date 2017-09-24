@@ -1,5 +1,6 @@
 package com.deco2800.potatoes;
 
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.InitialWorld;
@@ -26,7 +27,7 @@ public class MortalEntityTest {
 
 	@Before
 	public void setUp() throws Exception {
-		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
+		mortalEntity = new MortalEntity(1, 2, 4, 5, "texture", HEALTH);
 	}
 
 	//Common to all initialisation test
@@ -40,7 +41,7 @@ public class MortalEntityTest {
 
 	@Test
 	public void initTest() {
-		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, "texture", HEALTH);
+		mortalEntity = new MortalEntity(1, 2, 4, 5, "texture", HEALTH);
 		initTestCommon();
 	}
 
@@ -55,16 +56,9 @@ public class MortalEntityTest {
 
 	@Test
 	public void initTestVariableRendering() {
-		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, 7, 8, "texture", HEALTH);
+		mortalEntity = new MortalEntity(1, 2, 4, 5, 7, 8, "texture", HEALTH);
 		initTestCommon();
 	}
-
-	@Test
-	public void initTestCentred() {
-		mortalEntity = new MortalEntity(1, 2, 3, 4, 5, 6, 7, 8, true, "texture", HEALTH);
-		initTestCommon();
-	}
-
 	@Test
 	public void maxHealthTest() {
 		mortalEntity.addMaxHealth(37);
