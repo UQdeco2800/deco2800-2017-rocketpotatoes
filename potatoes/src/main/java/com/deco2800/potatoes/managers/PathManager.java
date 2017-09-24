@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
@@ -20,11 +22,11 @@ public class PathManager extends Manager {
      * This tree is centered around the node storing the player's location for now, though in future that will be
      * expanded so that multiple different goals can be set.
      */
-    private Map<Box3D, Box3D> spanningTree;
-    private Set<Box3D> nodes = new HashSet<>();
-    private Map<DoubleBox3D, Float> edges = new HashMap<>();
-    private Map<Box3D, Boolean> directNode = new HashMap<>(); //nodes which have a direct line of sight
-    private Box3D lastPlayerPosition;
+    private Map<Point2D, Point2D> spanningTree;
+    private Set<Point2D> nodes = new HashSet<>();
+    private Map<DoublePoint2D, Float> edges = new HashMap<>();
+    private Map<Point2D, Boolean> directNode = new HashMap<>(); //nodes which have a direct line of sight
+    private Point2D lastPlayerPosition;
 
 
     /**
@@ -44,49 +46,40 @@ public class PathManager extends Manager {
      * Populates the internal graph representation of the path manager, based on the initial world state.
      * Should be run after loading the map
      */
-    public void initialise(Box3D player) {
-        this.lastPlayerPosition = player;
+    public void initialise(CollisionMask player) {
+        this.lastPlayerPosition = new Point2D(player.getX(), player.getY());
         nodes.clear();
         edges.clear();
 
         AbstractWorld world = GameManager.get().getWorld();
 
-        nodes.add(player);
+        nodes.add(lastPlayerPosition);
 
         //add points in corners of map
-        nodes.add(new Box3D(0 + this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0));//left
-        nodes.add(new Box3D(world.getWidth() - this.nodeOffset, 0 + this.nodeOffset, 0, 0, 0, 0)); //top
-        nodes.add(new Box3D(0 + this.nodeOffset, world.getLength() - this.nodeOffset, 0, 0, 0, 0)); //bottom
-        nodes.add(new Box3D(world.getWidth() - this.nodeOffset, world.getLength() - this.nodeOffset, 0, 0, 0, 0)); //right
+        nodes.add(new Point2D(0, 0));
+        nodes.add(new Point2D(world.getWidth(), 0));
+        nodes.add(new Point2D(0, world.getLength()));
+        nodes.add(new Point2D(world.getWidth(), world.getLength()));
 
+        // this is where we would put nodes on the corners of our static entities -- if they had corners
 
-        //loop through entities, put nodes off of corners
-        for (AbstractEntity e : world.getEntities().values()) {
-            if (e.isStaticCollideable()) {
-                nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() - this.nodeOffset, //left
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-                nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() - this.nodeOffset, //top
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-                nodes.add(new Box3D(e.getPosX() - this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //bottom
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-                nodes.add(new Box3D(e.getPosX() + e.getXLength() + this.nodeOffset, e.getPosY() + e.getYLength() + this.nodeOffset, //right
-                        new Float(0.01), new Float(0.01), new Float(0.01), new Float(0.01)));
-            }
+        // make random nodes here
+        Random rng = new Random();
+        for (int i = 0; i < 1000; ++i) {
+            nodes.add(new Point2D(rng.nextFloat() * world.getWidth(), rng.nextFloat() * world.getLength()));
         }
 
-        //potentially make random nodes here
-
         //loop through all nodes and all entities, removing any nodes that intersect with the entity
-        Set<Box3D> removedNodes = new HashSet<>();
-        for (Box3D node : this.nodes) {
+        Set<Point2D> removedNodes = new HashSet<>();
+        for (Point2D node : this.nodes) {
             for (AbstractEntity entity : world.getEntities().values()) {
-                if (entity.isStaticCollideable() && entity.getBox3D().overlaps(node)) {
+                if (entity.isStaticCollideable() && entity.getMask().overlaps(node)) {
                     removedNodes.add(node);
                 }
             }
         }
 
-        for (Box3D node : removedNodes) {
+        for (Point2D node : removedNodes) {
             this.nodes.remove(node);
         }
 
@@ -94,21 +87,21 @@ public class PathManager extends Manager {
         //loop through every combination of 2 nodes & every entity check if the edge between the two nodes is valid
         boolean doesCollide;
         float dist;
-        for (Box3D node1 : this.nodes) {
-            for (Box3D node2 : this.nodes) {
+        for (Point2D node1 : this.nodes) {
+            for (Point2D node2 : this.nodes) {
                 if (node1 == node2) { break; }
                 doesCollide = false;
                 for (AbstractEntity entity : world.getEntities().values()) {
                     if (entity.isStaticCollideable() &&
-                            entity.getBox3D().doesIntersectLine(node1.getX(),node1.getY(),0,node2.getX(), node2.getY(),0)) {
+                            entity.getMask().distance(node1.getX(), node1.getY(), node2.getX(), node2.getY()) < 0) {
                         doesCollide = true;
                         break;
                     }
                 }
                 if(!doesCollide) {
                     dist = node1.distance(node2);
-                    this.edges.put(new DoubleBox3D(node1, node2), dist);
-                    this.edges.put(new DoubleBox3D(node2, node1), dist);
+                    this.edges.put(new DoublePoint2D(node1, node2), dist);
+                    this.edges.put(new DoublePoint2D(node2, node1), dist);
                 }
             }
         }
@@ -123,7 +116,7 @@ public class PathManager extends Manager {
      *
      * @param player coordinates of the player
      */
-    public void onTick(Box3D player) {
+    public void onTick(CollisionMask player) {
         // AbstractWorld world = GameManager.get().getWorld();
 
         // //if player hasn't moved since last tick, can skip this
@@ -158,9 +151,9 @@ public class PathManager extends Manager {
      * @param vertices The vertices of the graph of internode connections.
      * @param edges The edges of the graph of internode connections.
      */
-    private void optimiseGraph(Box3D start, Set<Box3D> vertices, Map<DoubleBox3D, Float> edges) {
-        List<Box3D> workQueue = new ArrayList<>();
-        Map<Box3D, Float> distances = new HashMap<>();
+    private void optimiseGraph(Point2D start, Set<Point2D> vertices, Map<DoublePoint2D, Float> edges) {
+        List<Point2D> workQueue = new ArrayList<>();
+        Map<Point2D, Float> distances = new HashMap<>();
 
         spanningTree.clear();
         workQueue.add(start);
@@ -168,8 +161,8 @@ public class PathManager extends Manager {
 
         while (workQueue.size() > 0) {
             // find the closest thing within the work queue
-            Box3D current = workQueue.get(0);
-            for (Box3D other : workQueue) {
+            Point2D current = workQueue.get(0);
+            for (Point2D other : workQueue) {
                 if (distances.get(other) < distances.get(current)) {
                     current = other;
                 }
@@ -178,9 +171,9 @@ public class PathManager extends Manager {
             workQueue.remove(current);
 
             // TODO make this more efficient by improving the way we store the graph
-            for (Box3D other : vertices) {
+            for (Point2D other : vertices) {
 
-                DoubleBox3D pair = new DoubleBox3D(current, other);
+                DoublePoint2D pair = new DoublePoint2D(current, other);
 
                 if (!edges.containsKey(pair)) {
                     continue;
@@ -212,21 +205,25 @@ public class PathManager extends Manager {
      * @param goal The goal of the entity - where the path is going to end.
      * @return The path object itself, which can then be followed.
      */
-    public Path generatePath(Box3D start, Box3D goal) {
-        ArrayDeque<Box3D> nodes = new ArrayDeque<>();
-        if (spanningTree.size() == 0 || !goal.equals(lastPlayerPosition)) {
+    public Path generatePath(CollisionMask start, CollisionMask goal) {
+        ArrayDeque<Point2D> nodes = new ArrayDeque<>();
+        Point2D newGoal = new Point2D(goal.getX(), goal.getY());
+        if (spanningTree.size() == 0 || !lastPlayerPosition.equals(newGoal)) {
             initialise(goal);
         }
-        nodes.add(start);
+        nodes.add(new Point2D(start.getX(), start.getY()));
         if (spanningTree.size() == 0) {
-            nodes.add(goal);
+            nodes.add(newGoal);
             return new Path(nodes);
         }
-        Box3D closest = null;
-        for (Box3D other : spanningTree.keySet()) {
+        Point2D closest = null;
+        for (Point2D other : spanningTree.keySet()) {
             if (closest == null || closest.distance(start) > other.distance(start)) {
                 closest = other;
             }
+        }
+        if (closest.distance(start) > goal.distance(start)) {
+            closest = newGoal;
         }
         do {
             nodes.add(closest);
@@ -240,12 +237,12 @@ public class PathManager extends Manager {
      * An unordered pair of two 3D boxes. Used as the keys in the mapping from edges to weights in the interal graph
      * representation. Designed so that DoubleBox3D(A, B) will compare as equal to DoubleBox3D(B, A).
      */
-    private class DoubleBox3D {
+    private class DoublePoint2D {
 
         // The two points in the pair. The names are used to represent the order in which they were passed as arguments
         // to the constructor.
-        private Box3D first;
-        private Box3D second;
+        private Point2D first;
+        private Point2D second;
 
         /**
          * Creates a new DoubleBox3D with two given points.
@@ -253,9 +250,9 @@ public class PathManager extends Manager {
          * @param first One of the points in the pair.
          * @param second The other point in the pair.
          */
-        public DoubleBox3D(Box3D first, Box3D second) {
-            this.first = new Box3D(first);
-            this.second = new Box3D(second);
+        public DoublePoint2D(Point2D first, Point2D second) {
+            this.first = first;
+            this.second = second;
         }
 
         @Override
@@ -268,8 +265,8 @@ public class PathManager extends Manager {
          *
          * @return Returns a copy of the first Box3D.
          */
-        public Box3D getFirst() {
-            return new Box3D(this.first);
+        public Point2D getFirst() {
+            return new Point2D(first.getX(), first.getY());
         }
 
         /**
@@ -277,8 +274,8 @@ public class PathManager extends Manager {
          *
          * @return Returns a copy of the second Box3D.
          */
-        public Box3D getSecond() {
-            return new Box3D(this.second);
+        public Point2D getSecond() {
+            return new Point2D(second.getX(), second.getY());
         }
 
         @Override
@@ -287,11 +284,11 @@ public class PathManager extends Manager {
                 return true;
             }
 
-            if (!(o instanceof DoubleBox3D)) {
+            if (!(o instanceof DoublePoint2D)) {
                 return false;
             }
 
-            DoubleBox3D that = (DoubleBox3D) o;
+            DoublePoint2D that = (DoublePoint2D) o;
 
             return (this.getFirst().equals(that.getFirst()) && this.getSecond().equals(that.getSecond())) ||
                     (this.getFirst().equals(that.getSecond()) && this.getSecond().equals(that.getFirst()));
