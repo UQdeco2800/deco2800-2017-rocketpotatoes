@@ -41,7 +41,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress, HasDire
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
-		// empty for serialization
 	}
 
 	/***
