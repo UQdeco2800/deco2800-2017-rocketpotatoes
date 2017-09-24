@@ -40,8 +40,7 @@ public class BasePortalTest{
 	@Test
 	public void ProgressBar() {
 		assertTrue(testPortal.getProgressBar() instanceof ProgressBar);
-		assertTrue(testPortal.showProgress() == false);
-		assertTrue(testPortal.getMaxProgress() == 1);
+		assertTrue(testPortal.showProgress() == true);
 	}
 
 
