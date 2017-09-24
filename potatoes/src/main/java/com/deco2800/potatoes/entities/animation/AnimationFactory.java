@@ -72,6 +72,9 @@ public final class AnimationFactory {
 		return animation;
 	}
 
+	/**
+	 * Converts the given texture string array into an array of SingleFrameAnimations
+	 */
 	public static Animation[] stringsToAnimationArray(String[] frames) {
 		List<Animation> frameAnimations = new ArrayList<>();
 		for (String string : frames) {

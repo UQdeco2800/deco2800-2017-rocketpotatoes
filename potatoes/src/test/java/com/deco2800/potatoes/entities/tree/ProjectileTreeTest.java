@@ -91,15 +91,6 @@ public class ProjectileTreeTest {
 		testTree.getMaxProgress();
 		testTree.getProgressBar();
 	}
-	@Test
-	public void dyingTest() {
-
-		testTree.deathHandler();
-		testTree.setBeingDamaged(true);
-		assertTrue(testTree.isBeingDamaged());
-		testTree.setDying(true);
-		assertTrue(testTree.isDying());
-	}
 
 	private class TestWorld extends World {
 

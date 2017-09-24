@@ -6,6 +6,9 @@ import java.util.function.Function;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.animation.TimeAnimation;
+import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -18,6 +21,8 @@ public class BasicProperties<T extends Tickable> {
 	private final List<TimeEvent<T>> events;
 	private final Function<T, Animation> animation;
 	private final ProgressBar progressBar;
+	private final Function<T, Animation> deathAnimation;
+	private final Function<T, Animation> damageAnimation;
 
 	/**
 	 * Creates this object from the properties stored in the given builder.
@@ -27,6 +32,8 @@ public class BasicProperties<T extends Tickable> {
 		events = builder.getEvents();
 		animation = builder.getAnimation();
 		progressBar = builder.getProgressBar();
+		deathAnimation = builder.getDeathAnimation();
+		damageAnimation = builder.getDamageAnimation();
 	}
 
 	/**
@@ -48,6 +55,37 @@ public class BasicProperties<T extends Tickable> {
 	 */
 	public void unregisterEvents(T tickable) {
 		GameManager.get().getManager(EventManager.class).unregisterAll(tickable);
+	}
+	
+	/**
+	 * Sets the death animation for the given tickable to be this object's death animation
+	 */
+	public void setDeathAnimation(T tickable) {
+		Runnable completionHandler = () -> ((MortalEntity) tickable).setDying(false);
+		setNewTriggerAnimation(tickable, deathAnimation.apply(tickable), completionHandler);
+	}
+
+	/**
+	 * Sets the damage animation for the given tickable to be this object's damage animation
+	 */
+	public void setDamageAnimation(T tickable) {
+		if (tickable instanceof Animated) {
+			Animated t = (Animated) tickable;
+			Animation oldAnimation = t.getAnimation();
+			Runnable completionHandler = () -> t.setAnimation(oldAnimation);
+			setNewTriggerAnimation(tickable, damageAnimation.apply(tickable), completionHandler);
+		}
+	}
+
+	private void setNewTriggerAnimation(T tickable, Animation normalAnimation, Runnable completionHandler) {
+		if (normalAnimation instanceof TimeAnimation && tickable instanceof Animated) {
+			TimeTriggerAnimation newAnimation = new TimeTriggerAnimation((TimeAnimation) normalAnimation,
+					completionHandler);
+			AnimationFactory.registerTimeAnimations(newAnimation, tickable);
+			((Animated) tickable).setAnimation(newAnimation);
+		} else {
+			completionHandler.run();
+		}
 	}
 
 	/**

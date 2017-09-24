@@ -29,6 +29,15 @@ public class TimeTriggerAnimation extends TimeAnimation {
 		this.completionHandler = completionHandler;
 	}
 	
+	/**
+	 * Creates this animation from the given time animation, with the completion
+	 * handler for when the animation finishes
+	 */
+	public TimeTriggerAnimation(TimeAnimation animation, Runnable completionHandler) {
+		super(animation.getResetAmount(), animation.getFrames());
+		this.completionHandler = completionHandler;
+	}
+	
 	@Override
 	public void action(Tickable param) {
 		if (completionHandler != null) {
