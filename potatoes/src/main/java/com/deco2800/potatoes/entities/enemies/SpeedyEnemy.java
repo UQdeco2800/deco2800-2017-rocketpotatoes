@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.StatisticsBuilder;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
@@ -33,7 +33,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static final transient int ATTACK_SPEED = 2000;
 	private static final transient String enemyType = "raccoon";
 
-	private static final EnemyStatistics STATS = initStats();
+	private static final EnemyProperties STATS = initStats();
 
 	private static float speed = 0.08f;
 	private static Class<?> goal = ResourceTree.class;
@@ -73,8 +73,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 *
 	 * @return
 	 */
-	private static EnemyStatistics initStats() {
-		EnemyStatistics result = new StatisticsBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
+	private static EnemyProperties initStats() {
+		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE).createEnemyStatistics();
 		// result.addEvent(new MeleeAttackEvent(500));
 		return result;
@@ -84,7 +84,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
 	 */
 	@Override
-	public EnemyStatistics getBasicStats() {
+	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
 

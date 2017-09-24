@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;

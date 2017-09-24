@@ -2,7 +2,7 @@ package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.Player;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.ResourceTree;

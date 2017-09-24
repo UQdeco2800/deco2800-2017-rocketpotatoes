@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
-import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.MainMenuGui;
-import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.List;
 
 /*
  * "Ascending the Vale" Kevin MacLeod (incompetech.com)
@@ -197,7 +198,6 @@ public class MainMenuScreen implements Screen {
      * Gets the string of the host's LocalHost IP address.
      */
     public static String multiplayerHostAddress() {
-        // TODO: Get Actual IP Addresses, not just the local host
         try {
             InetAddress ip = InetAddress.getLoopbackAddress();
             return ip.getHostAddress();
@@ -207,6 +207,28 @@ public class MainMenuScreen implements Screen {
         return "Couldn't find IP address";
 
     }
+
+    /**
+     * Finds a running server.
+     */
+    public static Array<String> findHostAddress() {
+        Array<String> ipStrings = new Array<String>();;
+        try {
+            List<InetAddress> ips = ((MultiplayerManager)GameManager.get().getManager(MultiplayerManager.class)).discoverHosts(1337);
+            for (InetAddress a: ips) {
+                ipStrings.add(a.getHostAddress());
+            }
+            if (ipStrings.random() == null) {
+                ipStrings.add("Failed to find host.");
+            }
+            return ipStrings;
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to find host.", ex);
+        }
+        ipStrings.add("Failed to find host.");
+        return ipStrings;
+    }
+
 
     /**
      * Sets the sound effects volume (v) in SoundManager. (from 0 to 1)

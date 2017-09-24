@@ -22,10 +22,10 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.AcornTree;
+import com.deco2800.potatoes.entities.trees.AcornTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.FireTree;
-import com.deco2800.potatoes.entities.trees.IceTree;
+import com.deco2800.potatoes.entities.trees.FireTreeType;
+import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
@@ -208,7 +208,7 @@ public class GameScreen implements Screen {
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
-		guiManager.addGui(new WaveGui(guiManager.getStage()));
+		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
         
@@ -296,7 +296,7 @@ public class GameScreen implements Screen {
 			 */
 
 				// Make our player
-				playerManager.setPlayer(new Player(5, 10, 0));
+				playerManager.setPlayer(5, 10, 0);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
@@ -305,9 +305,9 @@ public class GameScreen implements Screen {
 
 	private void addDamageTree() {
 		GameManager.get().getWorld().addEntity(new DamageTree(16, 11, 0));
-		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTree()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTree()));
-		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTree()));
+		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, 0, new AcornTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, 0, new IceTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, 0, new FireTreeType()));
 	}
 
 	private void initialiseResources() {
@@ -437,32 +437,32 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Get the current state of waves from WaveManager and update the WaveGui accordingly.
+	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
 		int timeToNextWave;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
-		Gui waveGUI = guiManager.getGui(WaveGui.class);
-		if (waveGUI instanceof WaveGui) {
+		Gui waveGUI = guiManager.getGui(WavesGui.class);
+		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WaveGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WaveGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
-				((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WaveGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
-					((WaveGui) waveGUI).getWaveTimeLabel().setText("");
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
 				} else {
 					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WaveGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WaveGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
@@ -519,12 +519,15 @@ public class GameScreen implements Screen {
 		
 		float distance = playerManager.distanceFromPlayer(tileX,tileY);
 		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
+		TreeShopGui treeShopGui = (TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
 		if (terrain.getTexture().equals("void")) {
 			// Do nothing
-		}else if (distance < maxShopRange && terrain.isPlantable())
+		} else if (treeShopGui.getPlantable())
 			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-		else
+		else 
 			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+			
 		
 		batch.end();
 

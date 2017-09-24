@@ -4,6 +4,8 @@ import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.World;
+
+import org.junit.After;
 import org.junit.Test;
 
 public class TreeProjectileShootEventTest {
@@ -13,6 +15,11 @@ public class TreeProjectileShootEventTest {
     private static final float RANGE = 8f;
     ProjectileTree testTree = new ProjectileTree(10, 10, 0, RELOAD, RANGE, HEALTH);
 
+    @After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
+    
     @Test
     public void emptyTest() {
         TreeProjectileShootEvent nullEvent = new TreeProjectileShootEvent();

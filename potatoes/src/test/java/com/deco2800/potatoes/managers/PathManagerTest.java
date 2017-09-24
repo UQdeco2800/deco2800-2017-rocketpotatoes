@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.After;
 import org.junit.Before;
 
 import com.deco2800.potatoes.worlds.World;
@@ -49,6 +50,11 @@ public class PathManagerTest {
         gm.setWorld(mockWorld);
     }
 
+    @After
+    public void cleanUp() {
+    	GameManager.get().clearManagers();
+    }
+    
     @Test
     public void reachesGoal() {
         PathManager m = new PathManager();
