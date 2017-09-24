@@ -18,7 +18,7 @@ public class EnemyWaveTest {
 	int waveLength = 300;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		firstWave = new EnemyWave(4, 3, 2, 1, waveLength);
 		WaveManager waveManager = new WaveManager();
 
@@ -50,10 +50,34 @@ public class EnemyWaveTest {
 
 	@Test
 	public void spawnEnemyToRatioTest() {
-		EnemyWave spawnWave = new EnemyWave(1,1,1,1,750);
-		spawnWave.spawnEnemyToRatio(spawnWave.getEnemyRatios());
+		EnemyWave spawnWave = new EnemyWave(1,1,100,1,750);
+		int numberOfEnemies = 250;	//THIS IS SAMPLE SIZE - NEEDS TO BE SUFFICIENTLY LARGE
+		int errorRate = 10;
+		int rangeBoundary = numberOfEnemies/errorRate;
+		for (int i = 0; i < numberOfEnemies; i++) {
+			spawnWave.spawnEnemyToRatio(spawnWave.getEnemyRatios());
+		}
+		float expectedSquirrels = (spawnWave.getEnemyRatios()[0])*numberOfEnemies;
+		float expectedRaccoons = (spawnWave.getEnemyRatios()[1]-spawnWave.getEnemyRatios()[0])*numberOfEnemies;
+		float expectedBears = (spawnWave.getEnemyRatios()[2]-spawnWave.getEnemyRatios()[1])*numberOfEnemies;
+		float expectedMoose = (spawnWave.getEnemyRatios()[3]-spawnWave.getEnemyRatios()[2])*numberOfEnemies;
 
-	}
+		/*See enemies produced are +/-errorRate% of totalEnemies as an indicator of enemies not being produced
+		according to ratio correctly.*/
+		Assert.assertTrue("number of squirrels exceeds their defined ratio by a very large margin",
+				(expectedSquirrels-rangeBoundary < spawnWave.getEnemyCounts()[0])
+						&& (spawnWave.getEnemyCounts()[0] < expectedSquirrels+rangeBoundary));
+		Assert.assertTrue("number of squirrels exceeds their defined ratio by a very large margin",
+				(expectedRaccoons-rangeBoundary < spawnWave.getEnemyCounts()[1])
+						&& (spawnWave.getEnemyCounts()[1] < expectedRaccoons+rangeBoundary));
+		Assert.assertTrue("number of squirrels exceeds their defined ratio by a very large margin",
+				(expectedBears-rangeBoundary < spawnWave.getEnemyCounts()[2])
+						&& (spawnWave.getEnemyCounts()[2] < expectedBears+rangeBoundary));
+		Assert.assertTrue("number of squirrels exceeds their defined ratio by a very large margin",
+				(expectedMoose-rangeBoundary < spawnWave.getEnemyCounts()[3])
+						&& (spawnWave.getEnemyCounts()[3] < expectedMoose+rangeBoundary));
+
+		}
 
 	@Test
 	public void tickAction() {
@@ -110,8 +134,4 @@ public class EnemyWaveTest {
 		firstWave.setWaveState(WaveState.PAUSED);
 		Assert.assertEquals("wave state was not set correctly", WaveState.PAUSED,firstWave.getWaveState() );
 	}
-	
-	private class TestWorld extends World {
-	}
-	
 }
