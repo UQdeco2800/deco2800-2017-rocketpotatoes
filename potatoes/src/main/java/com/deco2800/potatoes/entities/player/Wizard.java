@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Wizard extends Player {
@@ -35,12 +36,17 @@ public class Wizard extends Player {
     
     private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 1, null);
     private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", PlayerState.damaged, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", PlayerState.damaged, 1, 200, this::damagedCompletionHandler);
     
     private Void completionHandler() {
-    	//TODO: update to use damaged sprites
-    	// Handle finishing attack
-    	clearState();
+    		clearState();
+		updateSprites();
+		return null;
+    }
+    
+    private Void damagedCompletionHandler() {
+		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+		clearState();
 		updateSprites();
 		return null;
     }
@@ -68,6 +74,9 @@ public class Wizard extends Player {
     public void attack() {
 	    // Archer attack
     		if (this.setState(PlayerState.attack)) {
+    			
+    			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
+    			
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
@@ -117,7 +126,11 @@ public class Wizard extends Player {
     
     @Override
     public void interact() {
-	    	// Archer interact
+    		super.interact();
+	    	if (this.setState(PlayerState.interact)) {
+	    		// Wizard interacts
+	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
+	    	}
     }
 
 }

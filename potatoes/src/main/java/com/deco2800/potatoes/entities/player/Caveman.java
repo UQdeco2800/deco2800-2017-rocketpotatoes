@@ -10,6 +10,7 @@ import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Caveman extends Player {
@@ -30,18 +31,28 @@ public class Caveman extends Player {
     }
     
     /* Caveman Animations */
-    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 800, null);
+    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 750, this::walkCompletionHandler);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.damaged, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.damaged, 1, 200, this::damagedCompletionHandler);
     private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.death, 3, 300, this::completionHandler);
     private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.attack, 5, 200, this::completionHandler);
     private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.interact, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
-    	//TODO: update to use damaged sprites
-    	// Handle finishing attack
-    	clearState();
+    		clearState();
 		updateSprites();
+		return null;
+    }
+    
+    private Void damagedCompletionHandler() {
+    		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+    		clearState();
+		updateSprites();
+		return null;
+    }
+    
+    private Void walkCompletionHandler() {
+		GameManager.get().getManager(SoundManager.class).playSound("walk.wav");
 		return null;
     }
     
@@ -76,6 +87,9 @@ public class Caveman extends Player {
     @Override
     public void attack() {
     		if (this.setState(PlayerState.attack)) {
+    			
+    			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
+    			
     			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
     	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
     	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
@@ -128,6 +142,7 @@ public class Caveman extends Player {
     		super.interact();
 	    	if (this.setState(PlayerState.interact)) {
 	    		// Caveman interacts
+	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
 	    	}
     }
 	
