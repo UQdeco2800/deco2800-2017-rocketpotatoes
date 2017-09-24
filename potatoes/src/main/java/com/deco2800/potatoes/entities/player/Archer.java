@@ -12,6 +12,7 @@ import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileType;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Archer extends Player {
@@ -32,16 +33,26 @@ public class Archer extends Player {
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.walk, 8, 800, null);
+    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.walk, 8, 750, this::walkCompletionHandler);
     private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.attack, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.death, 7, 600, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.death, 3, 200, this::damagedCompletionHandler);
     private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", PlayerState.interact, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
-    	//TODO: update to use damaged sprites
-    	// Handle finishing attack
-    	clearState();
+    		clearState();
 		updateSprites();
+		return null;
+    }
+    
+    private Void damagedCompletionHandler() {
+		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+		clearState();
+		updateSprites();
+		return null;
+    }
+    
+    private Void walkCompletionHandler() {
+		GameManager.get().getManager(SoundManager.class).playSound("walk.wav");
 		return null;
     }
     
@@ -74,6 +85,9 @@ public class Archer extends Player {
     public void attack() {
 	    // Archer attack
     		if (this.setState(PlayerState.attack)) {
+    			
+    			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
+    			
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
@@ -127,6 +141,7 @@ public class Archer extends Player {
     		super.interact();
 	    	if (this.setState(PlayerState.interact)) {
 	    		// Archer interacts
+	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
 	    	}
     }
 
