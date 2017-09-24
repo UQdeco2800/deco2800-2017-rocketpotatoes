@@ -25,11 +25,9 @@ public class ProjectileTest {
 
     private static final int posX = 0;
     private static final float posY = 0;
-    private static final float posZ = 0;
 
     private static final int fPosX = 0;
     private static final float fPosY = 0;
-    private static final float fPosZ = 0;
 
     private static final int RANGE = 10;
     private static final int DAMAGE = 20;
@@ -40,22 +38,22 @@ public class ProjectileTest {
     public void testBallisticProjectileRotation() {
         bProj = new BallisticProjectile();
         assertTrue(bProj.rotateAngle() == 0);
-        bProj2 = new BallisticProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE, aoeDAMAGE);
+        bProj2 = new BallisticProjectile(posX, posY, fPosX, fPosY, RANGE, DAMAGE, aoeDAMAGE);
         float fPosX2 = 0;
         float fPosY2 = 0;
         float angle = (int) ((((Math.atan2(fPosX2, fPosY2) + (float) (Math.PI)) * 180 / Math.PI) + 45 + 90));
-        assertTrue(bProj2.rotateAngle() == angle);
+        assertTrue(compareFloat(bProj2.rotateAngle(), angle));
     }
 
     @Test
     public void testHomingProjectileRotation() {
         hProj = new HomingProjectile();
         assertTrue(hProj.rotateAngle() == 0);
-        hProj2 = new HomingProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE);
+        hProj2 = new HomingProjectile(posX, posY, fPosX, fPosY, RANGE, DAMAGE);
         float fPosX2 = 0;
         float fPosY2 = 0;
         float angle = (int) ((((Math.atan2(fPosX2, fPosY2) + (float) (Math.PI)) * 180 / Math.PI) + 45 + 90));
-        assertTrue(hProj2.rotateAngle() == angle);
+        assertTrue(compareFloat(hProj2.rotateAngle(), angle));
     }
 
 
@@ -65,10 +63,10 @@ public class ProjectileTest {
         assertNotNull(bProj.getDamage());
         assertTrue(bProj.getDamage() == 1);
         assertTrue(bProj.getAOEDamage() == 1);
-        bProj2 = new BallisticProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE, aoeDAMAGE);
+        bProj2 = new BallisticProjectile(posX, posY, fPosX, fPosY, RANGE, DAMAGE, aoeDAMAGE);
         assertNotNull(bProj2.getDamage());
-        assertTrue(bProj2.getDamage() == DAMAGE);
-        assertTrue(bProj2.getAOEDamage() == aoeDAMAGE);
+        assertTrue(compareFloat(bProj2.getDamage(), DAMAGE));
+        assertTrue(compareFloat(bProj2.getAOEDamage(), aoeDAMAGE));
     }
 
     @Test
@@ -76,18 +74,18 @@ public class ProjectileTest {
         hProj = new HomingProjectile();
         assertNotNull(hProj.getDamage());
         assertTrue(hProj.getDamage() == 1);
-        hProj2 = new HomingProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE);
+        hProj2 = new HomingProjectile(posX, posY, fPosX, fPosY, RANGE, DAMAGE);
         assertNotNull(hProj2.getDamage());
-        assertTrue(hProj2.getDamage() == DAMAGE);
+        assertTrue(compareFloat(hProj2.getDamage(), DAMAGE));
     }
 
 
     @Test
     public void testBallisticProjectileRange() {
-        bProj2 = new BallisticProjectile(posX, posY, posZ, fPosX, fPosY, fPosZ, RANGE, DAMAGE, aoeDAMAGE);
-        assertTrue(bProj2.getRange() == 10);
+        bProj2 = new BallisticProjectile(posX, posY, fPosX, fPosY, RANGE, DAMAGE, aoeDAMAGE);
+        assertTrue(compareFloat(bProj2.getRange(), 10));
         bProj2.updatePos();
-        assertTrue(bProj2.getRange() == (float) (10 - 0.2));
+        assertTrue(compareFloat(bProj2.getRange(), (float) (10 - 0.2)));
     }
 
     @Test
@@ -101,5 +99,11 @@ public class ProjectileTest {
 //        assertTrue(eProj.getDamage() == 1);
 
     }
+
+	private boolean compareFloat(float a, float b) {
+		float delta = 0.00001f;
+		return Math.abs(a-b) < delta;
+
+	}
 
 }

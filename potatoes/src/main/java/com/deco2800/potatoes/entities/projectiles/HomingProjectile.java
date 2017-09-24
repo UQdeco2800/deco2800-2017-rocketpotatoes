@@ -1,10 +1,11 @@
 package com.deco2800.potatoes.entities.projectiles;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 
 import java.util.Map;
 import java.util.Optional;
@@ -16,7 +17,6 @@ public class HomingProjectile extends Projectile {
 
 	private float goalX;
 	private float goalY;
-	private float goalZ;
 
 	private int rotateAngle = 0;
 
@@ -61,14 +61,13 @@ public class HomingProjectile extends Projectile {
 	 *            Projectile damage
 	 */
 
-	public HomingProjectile(Class<?> targetClass, float posX, float posY, float posZ, Optional<AbstractEntity> target,
-			float range, float DAMAGE) {
-		super(posX, posY, posZ, 1, 1, TEXTURE);
+	public HomingProjectile(Class<?> targetClass, float posX, float posY, Optional<AbstractEntity> target, float range, 
+            float DAMAGE) {
+		super(new Circle2D(posX, posY, 1.414f), 1, 1, TEXTURE);
 		this.DAMAGE = DAMAGE;
 		this.mainTarget = target;
 		this.goalX = target.get().getPosX();
 		this.goalY = target.get().getPosY();
-		this.goalZ = target.get().getPosZ();
 
 		this.range = range;
 		this.targetClass = targetClass;
@@ -99,27 +98,23 @@ public class HomingProjectile extends Projectile {
 	 *            x start position
 	 * @param posY
 	 *            y start position
-	 * @param posZ
-	 *            z start position
 	 * @param fposX
 	 *            target x position
 	 * @param fposY
 	 *            target y position
-	 * @param fposZ
-	 *            target z position
 	 * @param range
 	 *            Projectile range
 	 * @param DAMAGE
 	 *            Projectile damage
 	 */
 
-	public HomingProjectile(float posX, float posY, float posZ, float fposX, float fposY, float fposZ, float range,
-			float DAMAGE) {
-		super(posX, posY, posZ, 1, 2, TEXTURE);
+	public HomingProjectile(float posX, float posY, float fposX, float fposY, float range, float DAMAGE) {
+
+        // TODO -- the above constructor has a yRenderLength of 1, why is this different?
+        super(new Circle2D(posX, posY, 1.414f), 1, 2, TEXTURE);
 		this.DAMAGE = DAMAGE;
 		this.goalX = fposX;
 		this.goalY = fposY;
-		this.goalZ = fposZ;
 
 		this.range = range;
 
@@ -175,7 +170,7 @@ public class HomingProjectile extends Projectile {
 
 		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
@@ -183,9 +178,9 @@ public class HomingProjectile extends Projectile {
 		// Check surroundings
 		for (AbstractEntity entity : entities.values()) {
 			if (targetClass.isInstance(entity)) {
-					if (newPos.overlaps(entity.getBox3D())) {
+					if (newPos.overlaps(entity.getMask())) {
 						((MortalEntity) entity).damage(DAMAGE);
-						ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
+                        ExplosionEffect expEffect = new ExplosionEffect(new Circle2D(goalX, goalY, 7.071f), 1, 1);
 						GameManager.get().getWorld().addEntity(expEffect);
 						GameManager.get().getWorld().removeEntity(this);
 					}

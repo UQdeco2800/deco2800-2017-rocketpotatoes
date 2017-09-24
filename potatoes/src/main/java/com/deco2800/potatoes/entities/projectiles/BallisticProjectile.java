@@ -3,11 +3,12 @@ package com.deco2800.potatoes.entities.projectiles;
 import java.util.Map;
 import java.util.Optional;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 
 public class BallisticProjectile extends Projectile {
 
@@ -36,7 +37,6 @@ public class BallisticProjectile extends Projectile {
 
 	private float goalX;
 	private float goalY;
-	private float goalZ;
 
 	private int rotateAngle = 0;
 
@@ -44,7 +44,6 @@ public class BallisticProjectile extends Projectile {
 	private Optional<AbstractEntity> mainTarget;
 	private float changeX;
 	private float changeY;
-	private float changeZ;
 
 	private boolean maxRange = false;
 
@@ -78,14 +77,13 @@ public class BallisticProjectile extends Projectile {
 	 * @param aoeDAMAGE
 	 *            AOE damage
 	 */
-	public BallisticProjectile(Class<?> targetClass, float posX, float posY, float posZ,
-			Optional<AbstractEntity> target, float RANGE, float DAMAGE, float aoeDAMAGE) {
-		super(posX, posY, posZ, 1, 2, TEXTURE);
+	public BallisticProjectile(Class<?> targetClass, float posX, float posY, Optional<AbstractEntity> target, 
+            float RANGE, float DAMAGE, float aoeDAMAGE) {
+        super(new Box2D(posX, posY, 1, 2), 1, 2, TEXTURE);
 		this.DAMAGE = DAMAGE;
 		this.mainTarget = target;
 		this.goalX = target.get().getPosX();
 		this.goalY = target.get().getPosY();
-		this.goalZ = target.get().getPosZ();
 		this.aoeDAMAGE = aoeDAMAGE;
 		this.RANGE = RANGE;
 		this.targetClass = targetClass;
@@ -112,14 +110,10 @@ public class BallisticProjectile extends Projectile {
 	 *            x start position
 	 * @param posY
 	 *            y start position
-	 * @param posZ
-	 *            z start position
 	 * @param fPosX
 	 *            target x position
 	 * @param fPosY
 	 *            target y position
-	 * @param fPosZ
-	 *            target z position
 	 * @param RANGE
 	 *            Projectile range
 	 * @param DAMAGE
@@ -127,29 +121,27 @@ public class BallisticProjectile extends Projectile {
 	 * @param aoeDAMAGE
 	 *            AOE damage
 	 */
-	public BallisticProjectile(float posX, float posY, float posZ, float fPosX, float fPosY,
-			float fPosZ, float RANGE, float DAMAGE, float aoeDAMAGE) {
-		super(posX, posY, posZ, TEXTURE);
-		this.DAMAGE = DAMAGE;
-		this.aoeDAMAGE = aoeDAMAGE;
-		this.goalX = fPosX;
-		this.goalY = fPosY;
-		this.goalZ = fPosZ;
+    public BallisticProjectile(float posX, float posY, float fPosX, float fPosY, float RANGE, float DAMAGE, 
+            float aoeDAMAGE) {
+        super(new Box2D(posX, posY, 1, 2), 1, 2, TEXTURE);
+        this.DAMAGE = DAMAGE;
+        this.aoeDAMAGE = aoeDAMAGE;
+        this.goalX = fPosX;
+        this.goalY = fPosY;
 
-		this.RANGE = RANGE;
+        this.RANGE = RANGE;
 
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-		float deltaZ = getPosZ() - goalZ;
+        float deltaX = getPosX() - goalX;
+        float deltaY = getPosY() - goalY;
 
-		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+        float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
 
-		changeX = (float) (speed * Math.cos(angle));
-		changeY = (float) (speed * Math.sin(angle));
-		// TODO: add changeZ
+        changeX = (float) (speed * Math.cos(angle));
+        changeY = (float) (speed * Math.sin(angle));
+        // TODO: add changeZ
 
-		rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
-	}
+        rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
+    }
 
 	@Override
 	public int rotateAngle() {
@@ -169,7 +161,7 @@ public class BallisticProjectile extends Projectile {
 				rocketCurrentSpriteIndexCount++;
 		}
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
@@ -177,10 +169,10 @@ public class BallisticProjectile extends Projectile {
 		// Check surroundings
 		for (AbstractEntity entity : entities.values()) {
 			if (targetClass.isInstance(entity)) {
-				if (newPos.overlaps(entity.getBox3D())) {
+				if (newPos.overlaps(entity.getMask())) {
 					((MortalEntity) entity).damage(DAMAGE);
-					AOEEffect exp = new AOEEffect(goalX - (AOE_width / 2), goalY - (AOE_height / 2), 0,
-							AOE_width, AOE_height, 0, AOE_width, AOE_height, aoeDAMAGE);
+                    AOEEffect exp = new AOEEffect(new Box2D(goalX, goalY, AOE_width, AOE_height), AOE_width, 
+                            AOE_height, aoeDAMAGE);
 					GameManager.get().getWorld().addEntity(exp);
 					GameManager.get().getWorld().removeEntity(this);
 				}
@@ -197,7 +189,6 @@ public class BallisticProjectile extends Projectile {
 		if (RANGE < speed) {
 			setPosX(goalX);
 			setPosY(goalY);
-			setPosZ(goalZ);
 			maxRange = true;
 		} else {
 			setPosX(getPosX() + changeX);

@@ -11,7 +11,7 @@ public class TreeProjectileShootEventTest {
     private static final int RELOAD = 100;
     private static final float HEALTH = 10f;
     private static final float RANGE = 8f;
-    ProjectileTree testTree = new ProjectileTree(10, 10, 0, "real_tree", RELOAD, RANGE, HEALTH);
+    ProjectileTree testTree = new ProjectileTree(10, 10, "real_tree", RELOAD, RANGE, HEALTH);
 
     @Test
     public void emptyTest() {
@@ -28,7 +28,7 @@ public class TreeProjectileShootEventTest {
         GameManager.get().setWorld(new TestWorld());
         GameManager.get().getWorld().addEntity(testTree);
         testEvent.action(testTree);
-        GameManager.get().getWorld().addEntity(new Squirrel(9, 9, 0));
+        GameManager.get().getWorld().addEntity(new Squirrel(9, 9));
         testEvent.action(testTree);
     }
     private class TestWorld extends AbstractWorld {
