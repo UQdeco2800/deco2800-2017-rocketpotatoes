@@ -3,7 +3,6 @@ package com.deco2800.potatoes.managers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.player.Player.PlayerState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -301,6 +300,17 @@ public class TextureManager extends Manager {
         			saveTexture(textureNameInteract, "resources/player/archer/interact/" + textureNameInteract + ".png");
         		}
         }
+
+        // Tiles
+        // Maybe just load everything from this directory
+	    String[] tileNames = {"dirt_tile_1", "dirt_tile_2" , "grass_tile_1", "grass_tile_2", "grass_tile_3", 
+	    		"gravel_tile_1", "gravel_tile_1", "leaflitter_tile_1", "leaflitter_tile_2", "mud_tile_1", "rock_tile_1",
+	    		"rock_tile_2", "rock_tile_3", "sand_tile_1", "snow_tile_1", "snow_tile_2"};
+	    for (String string : tileNames) {
+			saveTexture(string, "resources/tiles/" + string + ".png");
+		}
+	    saveTexture("water_tile_1", "resources/placeholderassets/water_tile_1.png");
+	    saveTexture("water_tile_2", "resources/placeholderassets/water_tile_2.png");
     }
 
     /**

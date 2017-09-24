@@ -134,10 +134,7 @@ public class GameScreen implements Screen {
 		
 		// Creates the object for the repeated background texture
 		// TODO this will need to be changed once proper texture is added
-		TextureRegion waterTexture = textureManager.getTextureRegion("w1");
-		waterTexture.setRegionX(waterTexture.getRegionX() + 2);
-		waterTexture.setRegionY(waterTexture.getRegionY() + 2);
-		background = new TiledDrawable(textureManager.getTextureRegion("w1"));
+		background = new TiledDrawable(textureManager.getTextureRegion("water_tile_1"));
 		/**
 		 * Setup managers etc.
 		 */
