@@ -39,4 +39,7 @@ public class BallisticProjectile extends Projectile {
 		super.onTick(time);
 
 	}
+
+
+
 }

@@ -28,10 +28,7 @@ public class Projectile extends AbstractEntity implements Tickable {
     protected static float yLength = 0.4f;
     protected static float zLength = 0.4f;
     protected String Directions;
-    protected float pPosX;
-    protected float pPosY;
-    protected float tPosX;
-    protected float tPosY;
+
     protected PlayerProjectile.PlayerShootMethod playerShootMethod;
 
     protected Class<?> targetClass;
@@ -75,11 +72,9 @@ public class Projectile extends AbstractEntity implements Tickable {
     }
 
 
-
     public Projectile() {
         // nothing yet
     }
-
 
     public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
                       ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String Directions, PlayerProjectile.PlayerShootMethod playerShootMethod) {
@@ -101,11 +96,6 @@ public class Projectile extends AbstractEntity implements Tickable {
         this.startEffect = startEffect;
         this.endEffect = endEffect;
         this.Directions = Directions;
-
-        this.pPosX = startPos.x;
-        this.pPosY = startPos.y;
-        this.tPosX = targetPos.x;
-        this.tPosY = targetPos.y;
 
 
         if (startEffect != null)
@@ -215,13 +205,6 @@ public class Projectile extends AbstractEntity implements Tickable {
         return damage;
     }
 
-    public float getTargetPosX() {
-        return tPosX;
-    }
-
-    public float getTargetPosY() {
-        return tPosY;
-    }
 
     public Class<?> getTargetClass() {
         return targetClass;
