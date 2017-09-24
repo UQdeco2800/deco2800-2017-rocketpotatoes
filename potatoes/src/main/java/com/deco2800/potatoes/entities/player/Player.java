@@ -70,7 +70,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * @param posY The y-coordinate.
      */
     public Player(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.424f), 0.48f, 0.48f, "player_right", HEALTH);
+        super(new Circle2D(posX, posY, 0.4f), 1f, 1f, "player_right", HEALTH);
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
