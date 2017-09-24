@@ -12,14 +12,19 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.worlds.WorldType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
+/**
+ * Test class to test the LargeFootstepEffect class.
+ *
+ * @author ryanjphelan
+ */
 public class LargeFootstepEffectTest extends BaseTest {
 
     private LargeFootstepEffect footStepEmpty;
