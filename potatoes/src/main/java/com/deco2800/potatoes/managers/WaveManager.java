@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class WaveManager extends Manager implements TickableManager, ForWorld {
 
     private ArrayList<EnemyWave> waves;
-    private EnemyWave activeWave;
     private int waveIndex = 0;
     private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
@@ -38,7 +37,6 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         if (getWaves().size() == 1) {
             activateWave(waves.get(0));
         }
-        activeWave = getActiveWave();
     }
 
     /**
@@ -123,20 +121,6 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * @return the time before next wave begins
      */
     public int getTimeBeforeNextWave() { return timeBetweenWaves -  getElapsedTime(); }
-
-    /**
-     * Set a wave to its finished state - no more enemies.
-     * */
-    public void finishActiveWave() {
-        getActiveWave().setWaveState(WaveState.FINISHED);
-    }
-
-    /**
-     * Set a wave to be paused - allows to resume from the middle of a wave.
-     * */
-    public void pauseActiveWave() {
-        getActiveWave().setWaveState(WaveState.PAUSED);
-    }
 
     /**
      * @return the time elapsed since the start of a wave

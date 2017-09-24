@@ -5,6 +5,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.graphics.GL20;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.mockito.Mockito;
 
@@ -53,6 +55,7 @@ public class BaseTest {
         Gdx.gl = Gdx.gl20;
     }
 
+    @AfterClass
     public static void clean() {
         game.exit();
         game = null;

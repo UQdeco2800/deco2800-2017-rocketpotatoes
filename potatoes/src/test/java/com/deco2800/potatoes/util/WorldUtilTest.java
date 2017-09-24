@@ -1,4 +1,4 @@
-package com.deco2800.potatoes;
+package com.deco2800.potatoes.util;
 
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;

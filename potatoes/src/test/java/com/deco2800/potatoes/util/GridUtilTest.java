@@ -39,6 +39,15 @@ public class GridUtilTest {
 	}
 
 	@Test
+	public void testBlend() {
+		float[][] grid1 = { { 1, 1, 1 }, { 2, 2, 2 }, { 3, 3, 3 } };
+		float[][] grid2 = { { 0.5f, 0.1f, 1 }, { 0.5f, 0.1f, 1 }, { 0.5f, 0.1f, 1 } };
+		float[][] blended = GridUtil.blend(grid1, grid2);
+		assertEquals("Size was not correct", grid1.length, blended.length);
+		assertEquals("Size was not correct", grid1[0].length, blended[0].length);
+	}
+
+	@Test
 	public void testNormalize() {
 		float[][] grid = { { 1, 2, 1 }, { 0, 0, 0 }, { 2, 2, 1 } };
 		float[][] result = { { 0.5f, 1, 0.5f }, { 0, 0, 0 }, { 1, 1, 0.5f } };

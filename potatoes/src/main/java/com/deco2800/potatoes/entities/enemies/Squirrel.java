@@ -22,7 +22,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final EnemyProperties STATS = initStats();
 	private static final String enemyType = "squirrel";
 
-	private static final float SPEED = 0.12f;
+	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
 	private Box3D target = null;
@@ -63,20 +63,17 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-		/*
-		//check collision
-		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
-				//collided with wall
-				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-				target = path.pop();
-				break;
-			}
-		}
-		*/
+
+        // check paths
 
 		// check that we actually have a path
 		if (path == null || path.isEmpty()) {
+			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+		}
+
+
+		//check if last node in path matches player
+		if(!(path.goal().overlaps(playerManager.getPlayer().getBox3D()))) {
 			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
 		}
 
@@ -88,6 +85,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		//check if the path has another node
 		if (target == null && !path.isEmpty()) {
 			target = path.pop();
+
 		}
 
 		float targetX;

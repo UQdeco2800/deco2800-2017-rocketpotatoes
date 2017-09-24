@@ -282,9 +282,11 @@ public class GameScreen implements Screen {
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
 
+
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
+
 
 			if (!multiplayerManager.isMultiplayer()) {
 			/*
