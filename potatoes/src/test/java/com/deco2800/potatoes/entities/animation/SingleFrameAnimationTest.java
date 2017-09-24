@@ -11,6 +11,7 @@ public class SingleFrameAnimationTest {
 
 	@Before
 	public void setup() {
+		animation = new SingleFrameAnimation();
 		animation = new SingleFrameAnimation("test");
 	}
 
@@ -22,6 +23,11 @@ public class SingleFrameAnimationTest {
 	@Test
 	public void testGetAnimation() {
 		assertEquals("Frame was not test frame", "test", animation.getAnimation().getFrame());
+	}
+
+	@Test
+	public void testGetFrames() {
+		assertArrayEquals("Frames was not just animation", new Animation[] { animation }, animation.getFrames());
 	}
 
 }

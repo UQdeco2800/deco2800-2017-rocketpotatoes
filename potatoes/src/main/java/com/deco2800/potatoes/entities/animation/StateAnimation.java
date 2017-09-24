@@ -2,26 +2,18 @@ package com.deco2800.potatoes.entities.animation;
 
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An animation where the frame is dependent on some value. <br>
  * Feel free to modify this class in any way
  */
 public class StateAnimation implements Animation {
-
-	private final transient int maxValue;
-	private final transient int minValue;
-	private final transient Animation[] frames;
+	private final transient float maxValue;
+	private final transient float minValue;
+	final transient Animation[] frames;
 	private final transient Supplier<Float> valueFunction;
-
-	/**
-	 * Construction for serialization
-	 */
-	public StateAnimation() {
-		maxValue = 0;
-		minValue = 0;
-		frames = new Animation[] {};
-		valueFunction = () -> 0f;
-	}
 
 	/**
 	 * Create a state animation with the given parameters.
@@ -38,7 +30,7 @@ public class StateAnimation implements Animation {
 	 *            The function whose value this animation depends on. Note that a
 	 *            Supplier<Integer> will also work
 	 */
-	public StateAnimation(int maxValue, int minValue, Animation[] frames, Supplier<Float> valueFunction) {
+	public StateAnimation(float maxValue, float minValue, Animation[] frames, Supplier<Float> valueFunction) {
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 		this.frames = frames;
@@ -58,7 +50,20 @@ public class StateAnimation implements Animation {
 
 	@Override
 	public Animation getAnimation() {
-		return frames[Math.round((frames.length - 1) * (1 - (valueFunction.get() - minValue) / maxValue))];
+		float scaledValue = 1 - (valueFunction.get() - minValue) / maxValue;
+		if (scaledValue > 1) {
+			scaledValue = 1;
+		}
+		if (scaledValue < 0) {
+			scaledValue = 0;
+		}
+		return frames[Math.round((frames.length - 1) * scaledValue)];
+		
+	}
+
+	@Override
+	public Animation[] getFrames() {
+		return frames;
 	}
 
 }

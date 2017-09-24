@@ -1,12 +1,13 @@
 package com.deco2800.potatoes.util;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 import com.deco2800.potatoes.collisions.Point2D;
 
 
 /**
- * Class to encapsulate positions as Box3D objects in an entities path to target. Also
+ * Class to encapsulate calculatePositions as Box3D objects in an entities path to target. Also
  * holds the current angle the entity is traveling in.
  */
 public class Path {
@@ -23,7 +24,7 @@ public class Path {
 
     /**
      * Creates a new path, with given nodes.
-     * @param nodes - List of positions in path to target.
+     * @param nodes - List of calculatePositions in path to target.
      */
     public Path(ArrayDeque<Point2D> nodes) {
         this.nodes = nodes;
@@ -40,7 +41,7 @@ public class Path {
 
     /**
      * Set a new deque of nodes
-     * @param nodes list of positions in path
+     * @param nodes list of calculatePositions in path
      */
     public void setNodes(ArrayDeque<Point2D> nodes) {
         this.nodes = nodes;

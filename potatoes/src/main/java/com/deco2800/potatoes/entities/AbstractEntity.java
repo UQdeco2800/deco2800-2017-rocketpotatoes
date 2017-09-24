@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities;
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
@@ -26,7 +27,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 
 	private String texture = "error_box";
 
-	public int rotateAngle() {
+	public float rotationAngle() {
 		return 0;
 	}
 
@@ -186,7 +187,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 		if (Float.compare(isoY, otherIsoY) == 0) {
 			return Float.compare(otherIsoX, isoX);
 		}
-		if (o instanceof Effect) {
+		if (o instanceof Effect || o instanceof Projectile) {
 			return 2;
 		}
 		return Float.compare(otherIsoY, isoY);
@@ -198,7 +199,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 			return true;
 		}
 
-		if (!(o instanceof AbstractEntity)) {
+		if (o == null || !(o instanceof AbstractEntity)) {
 			return false;
 		}
 
@@ -215,6 +216,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	public int hashCode() {
 		int result = position != null ? position.hashCode() : 0;
 		result = 31 * result + (texture != null ? texture.hashCode() : 0);
+		result = 31 * result + this.getClass().hashCode();
 		return result;
 	}
 

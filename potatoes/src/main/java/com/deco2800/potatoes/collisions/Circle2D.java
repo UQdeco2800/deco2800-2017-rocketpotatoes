@@ -43,10 +43,10 @@ public class Circle2D implements CollisionMask {
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
-            return (distance(point) < 0);
+            return distance(point) < 0;
         } else if (other instanceof Circle2D) {
             Circle2D otherCircle = (Circle2D) other;
-            return (distance(otherCircle) < 0);
+            return distance(otherCircle) < 0;
         } else {
             return other.overlaps(this);
         }
@@ -164,16 +164,18 @@ public class Circle2D implements CollisionMask {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) { return true; }
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-        if (!(o instanceof Circle2D)) { return false; }
+        Circle2D circle2D = (Circle2D) o;
 
-        Circle2D that = (Circle2D) o;
-
-        return hashCode() == that.hashCode() &&
-                this.x      == that.getX() &&
-                this.y      == that.getY() &&
-                this.radius == that.getRadius();
+        if (Float.compare(circle2D.x, x) != 0)
+            return false;
+        if (Float.compare(circle2D.y, y) != 0)
+            return false;
+        return Float.compare(circle2D.radius, radius) == 0;
     }
 
     /**

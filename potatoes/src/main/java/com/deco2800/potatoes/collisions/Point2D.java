@@ -1,15 +1,16 @@
 package com.deco2800.potatoes.collisions;
 
-import java.util.Objects;
-
 public class Point2D implements CollisionMask{
     
-    private float x, y;
+    private float x;
+    private float y;
 
     /**
      * Default constructor for the purposes of serialization.
      */
-    public Point2D() { }
+    public Point2D() {
+        //Empty constructor because Sonar
+    }
 
     /**
      * Constructs a new point at a given location.
@@ -70,7 +71,7 @@ public class Point2D implements CollisionMask{
     public float distance(float x1, float y1, float x2, float y2) {
         // don't sqrt anything you don't have to
         float segmentLength = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-        if (segmentLength == 0.0) {
+        if (Float.compare(segmentLength, 0) == 0) {
             return distance(new Point2D(x1, y1));
         }
 
@@ -130,15 +131,16 @@ public class Point2D implements CollisionMask{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) { return true; }
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-        if (!(o instanceof Point2D)) { return false; }
+        Point2D point2D = (Point2D) o;
 
-        Point2D that = (Point2D) o;
-
-        return hashCode() == that.hashCode() &&
-                this.x == that.getX() &&
-                this.y == that.getY();
+        if (Float.compare(point2D.x, x) != 0)
+            return false;
+        return Float.compare(point2D.y, y) == 0;
     }
 
     /**
