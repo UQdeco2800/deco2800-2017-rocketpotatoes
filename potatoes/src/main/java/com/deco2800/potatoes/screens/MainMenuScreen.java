@@ -10,9 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
-import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.gui.MainMenuGui;
-import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -22,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -201,7 +198,6 @@ public class MainMenuScreen implements Screen {
      * Gets the string of the host's LocalHost IP address.
      */
     public static String multiplayerHostAddress() {
-        // TODO: Get Actual IP Addresses, not just the local host
         try {
             InetAddress ip = InetAddress.getLoopbackAddress();
             return ip.getHostAddress();
@@ -222,7 +218,9 @@ public class MainMenuScreen implements Screen {
             for (InetAddress a: ips) {
                 ipStrings.add(a.getHostAddress());
             }
-            if (ipStrings.random() == null) {ipStrings.add("Failed to find host."); }
+            if (ipStrings.random() == null) {
+                ipStrings.add("Failed to find host.");
+            }
             return ipStrings;
         } catch (Exception ex) {
             LOGGER.warn("Failed to find host.", ex);
