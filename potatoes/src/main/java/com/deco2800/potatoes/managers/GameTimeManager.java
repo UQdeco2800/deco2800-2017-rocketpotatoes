@@ -2,7 +2,7 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Color;
 
-/**
+/** 
  * In game time system
  */
 public class GameTimeManager extends Manager implements TickableManager {
