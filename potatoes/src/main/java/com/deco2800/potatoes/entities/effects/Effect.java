@@ -26,7 +26,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 	protected Vector3 position;
 
 	/**
-	 * Used as a container for Effect textures and lookup
+	 * Used as a container for Effect textures and a lookup for the ones that
+	 * currently exist and are usable
 	 */
 	public enum EffectTexture {
 		AOE {
@@ -207,15 +208,15 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		float l = endPos.x - startPos.x;
 		float h = endPos.y - startPos.y;
 
-		//length of line in x direction
+		// length of line in x direction
 		float lX = startPos.x - (lWidth - tileWidth) / 2;
-		//length of line in y direction
+		// length of line in y direction
 		float lY = 0 - startPos.y - (lHeight - tileHeight) / 2;
 
 		float originX = tex.getWidth() / 2;
 		float originY = tex.getHeight() / 2;
 
-		//stretch texture using x scale
+		// stretch texture using x scale
 		float lScaleX = (float) (Math.sqrt(l * l + h * h));
 		float lScaleY = 0.4f;
 
