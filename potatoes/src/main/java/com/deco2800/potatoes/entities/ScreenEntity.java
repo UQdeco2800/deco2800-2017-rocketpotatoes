@@ -11,7 +11,6 @@ public abstract class ScreenEntity extends AbstractEntity implements Clickable {
 	 * Default constructor for the purposes of serialization
 	 */
 	
-	
 	public ScreenEntity() {
 		super();
 		this.setStaticCollideable(false);
