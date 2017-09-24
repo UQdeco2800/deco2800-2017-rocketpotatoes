@@ -157,6 +157,8 @@ public class GameScreen implements Screen {
         /* Create an enemy wave manager */
         waveManager = GameManager.get().getManager(WaveManager.class);
 
+        GameManager.get().getManager(GameTimeManager.class);
+
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
 		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
@@ -490,6 +492,8 @@ public class GameScreen implements Screen {
 		/* Render the tiles first */
 		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
 		tileRenderer.setView(cameraManager.getCamera());
+
+		batch.setColor(GameManager.get().getManager(GameTimeManager.class).getColour());
 
 		batch.begin();
 		// within the screen, but down rounded to the nearest tile

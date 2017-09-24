@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.entities.GameTime;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
