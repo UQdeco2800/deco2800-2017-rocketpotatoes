@@ -60,7 +60,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
     }
 
     public AbstractPortal(float posX, float posY, String texture, float maxHealth) {
-        super(new Circle2D(posX, posY, 4.243f), 3, 3, texture, maxHealth);
+        super(new Circle2D(posX, posY, 2.11f), 3, 3, texture, maxHealth);
     }
 
     /**
