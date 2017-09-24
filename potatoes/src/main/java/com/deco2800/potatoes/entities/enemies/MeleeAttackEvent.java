@@ -55,7 +55,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
         }
 
         GameManager.get().getWorld().addEntity(new MeleeAttack(target1.get().getClass(),
-                enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), target1, 10));
+                enemy.getPosX(), enemy.getPosY(), target1, 10));
 
 
 

@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.effects.SwipeEffect;
@@ -66,13 +68,13 @@ public class MeleeAttack extends Projectile {
      *            Projectile damage
      */
 
-    public MeleeAttack(Class<?> targetClass, float posX, float posY, float posZ, Optional<AbstractEntity> target, float DAMAGE) {
-        super(posX, posY, posZ, 1, 1, TEXTURE);
+    public MeleeAttack(Class<?> targetClass, float posX, float posY, Optional<AbstractEntity> target, float DAMAGE) {
+        // TODO -- find the correct collision mask for this
+        super(new Circle2D(posX, posY, 1.414f), TEXTURE);
         this.DAMAGE = DAMAGE;
         this.mainTarget = target;
         this.goalX = target.get().getPosX();
         this.goalY = target.get().getPosY();
-        this.goalZ = target.get().getPosZ();
 
         this.targetClass = targetClass;
 
@@ -122,10 +124,6 @@ public class MeleeAttack extends Projectile {
 
         rotateAngle = (int) ((angle * 180 / Math.PI) + 45 + 90);
 
-        Box3D newPos = getBox3D();
-        newPos.setX(this.getPosX());
-        newPos.setY(this.getPosY());
-
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         // Check surroundings
         for (AbstractEntity entity : entities.values()) {
@@ -134,8 +132,9 @@ public class MeleeAttack extends Projectile {
                 //ExplosionEffect expEffect = new ExplosionEffect(goalX, goalY, goalZ, 5f, 5f, 0, 1f, 1f);
                 //GameManager.get().getWorld().addEntity(expEffect);
 
-                SwipeEffect swipe = new SwipeEffect(goalX - (effect_width / 2), goalY - (effect_height / 2) + 1, 0,
-                        effect_width, effect_height, 0, effect_width, effect_height);
+                // TODO -- find correct collision mask for the swipe effect
+                SwipeEffect swipe = new SwipeEffect(new Box2D(goalX, goalY + 1, effect_width, effect_height),
+                        effect_width, effect_height);
                 GameManager.get().getWorld().addEntity(swipe);
 
 

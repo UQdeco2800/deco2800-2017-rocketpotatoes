@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class MeleeAttackEventTest {
     MeleeAttackEvent testEvent = new MeleeAttackEvent(20, Player.class);
-    TankEnemy testMeleeEnemy = new TankEnemy(15, 15, 0);
+    TankEnemy testMeleeEnemy = new TankEnemy(15, 15);
 
     @Test
     public void stringTest() {
@@ -34,7 +34,7 @@ public class MeleeAttackEventTest {
         GameManager.get().setWorld(new TestWorld());
         GameManager.get().getWorld().addEntity(testMeleeEnemy);
         testEvent.action(testMeleeEnemy);
-        GameManager.get().getWorld().addEntity(new Player(17, 17, 0));
+        GameManager.get().getWorld().addEntity(new Player(17, 17));
         testEvent.action(testMeleeEnemy);
     }
 
