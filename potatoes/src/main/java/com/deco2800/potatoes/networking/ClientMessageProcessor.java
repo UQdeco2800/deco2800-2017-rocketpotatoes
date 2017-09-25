@@ -249,7 +249,7 @@ public class ClientMessageProcessor {
      */
     private static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
         GuiManager g = GameManager.get().getManager(GuiManager.class);
-        ChatGui c = ((ChatGui) g.getGui(ChatGui.class));
+        ChatGui c = g.getGui(ChatGui.class);
         if (c != null) {
             c.addMessage(
                     client.getClients().get(m.getId()) + " (" + m.getId() + ")",

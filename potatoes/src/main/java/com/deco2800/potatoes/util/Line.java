@@ -130,7 +130,7 @@ public class Line {
             return 0;  // colinear
         }
 
-        return (val > 0)? 1: 2; // clock or counterclock wise
+        return val > 0? 1: 2; // clock or counterclock wise
     }
 
     /**
@@ -142,8 +142,8 @@ public class Line {
      * @return true if point q lies on segment 'pr'; false otherwise.
      */
     public static boolean onSegment(Point p, Point q, Point r) {
-        return  (q.getX() <= max(p.getX(), r.getX()) && q.getX() >= min(p.getX(), r.getX()) &&
-                q.getY() <= max(p.getY(), r.getY()) && q.getY() >= min(p.getY(), r.getY()));
+        return  q.getX() <= max(p.getX(), r.getX()) && q.getX() >= min(p.getX(), r.getX()) &&
+                q.getY() <= max(p.getY(), r.getY()) && q.getY() >= min(p.getY(), r.getY());
     }
 
     /**

@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;

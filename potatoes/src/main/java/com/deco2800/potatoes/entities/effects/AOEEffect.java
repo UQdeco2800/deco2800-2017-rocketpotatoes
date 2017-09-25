@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.effects;
 
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.util.Line;
 
 public class AOEEffect extends Effect {
 
@@ -21,10 +20,12 @@ public class AOEEffect extends Effect {
 		this.pos = position;
 	}
 
+	@Override
 	public float getPosX() {
 		return pos.x;
 	}
 
+	@Override
 	public float getPosY() {
 		return pos.y;
 	}

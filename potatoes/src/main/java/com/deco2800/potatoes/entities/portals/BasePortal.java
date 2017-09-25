@@ -1,11 +1,5 @@
 package com.deco2800.potatoes.entities.portals;
 
-import java.util.Arrays;
-
-import java.util.List;
-import java.util.Map;
-
-import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 
@@ -13,23 +7,13 @@ import com.deco2800.potatoes.managers.SoundManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.util.Box3D;
-import com.deco2800.potatoes.worlds.WorldType;
 
 /**
  * A class for creating the base portal. This class differs from AbstractPortals
@@ -77,7 +61,7 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
                 //remove player from old world
                 GameManager.get().getWorld().removeEntity(this.getPlayer());
 				// Bring up portal interface
-                ((WorldChangeGui) GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class)).show();
+                GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class).show();
 
             } catch (Exception e) {
                 LOGGER.warn("Issue entering portal; " + e);

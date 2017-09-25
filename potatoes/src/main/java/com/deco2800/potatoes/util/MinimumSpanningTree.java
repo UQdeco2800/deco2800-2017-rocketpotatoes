@@ -4,7 +4,6 @@ import java.util.*;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.MinimumSpanningTree.Vertex;
 
 public class MinimumSpanningTree {
 
@@ -40,7 +39,7 @@ public class MinimumSpanningTree {
             // Cast to Vertex
             Vertex other = (Vertex) obj;
             // Check address
-            return (this.getAddress() == other.getAddress());
+            return this.getAddress() == other.getAddress();
         }
 
         public Point2D getEntry() {
@@ -92,9 +91,9 @@ public class MinimumSpanningTree {
                 return 0;
             }
             if (o1.getLeastEdge() == o2.getLeastEdge()) {
-                return (o1.getAddress() < o2.getAddress()) ? -1 : 1;
+                return o1.getAddress() < o2.getAddress() ? -1 : 1;
             }
-            return (o1.getLeastEdge() < o2.getLeastEdge()) ? -1 : 1;
+            return o1.getLeastEdge() < o2.getLeastEdge() ? -1 : 1;
         }
     }
 
@@ -264,8 +263,8 @@ public class MinimumSpanningTree {
         boolean output = false;
 
         for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-            if (e.isStaticCollideable() && (0 > e.getMask().distance(line.getEndPointOne().getX(),
-                        line.getEndPointOne().getY(), line.getEndPointTwo().getX(), line.getEndPointTwo().getY()))) {
+            if (e.isStaticCollideable() && 0 > e.getMask().distance(line.getEndPointOne().getX(),
+                        line.getEndPointOne().getY(), line.getEndPointTwo().getX(), line.getEndPointTwo().getY())) {
                 output = true;
                 break;
             }

@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
@@ -51,7 +48,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	public Squirrel(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
-		this.goal = goal;
+		Squirrel.goal = goal;
 		this.path = null;
 	}
 
@@ -79,7 +76,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 
 		//check if last node in path matches player
-		if(!(path.goal().overlaps(playerManager.getPlayer().getMask()))) {
+		if(!path.goal().overlaps(playerManager.getPlayer().getMask())) {
 			path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
 		}
 
@@ -107,7 +104,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
 
-		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+		float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
 
 		float changeX = (float) (SPEED * Math.cos(angle));
 		float changeY = (float) (SPEED * Math.sin(angle));
@@ -127,6 +124,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	/**
 	 * @return String of this type of enemy (ie 'squirrel').
 	 * */
+	@Override
 	public String getEnemyType() {
 		return enemyType;
 	}

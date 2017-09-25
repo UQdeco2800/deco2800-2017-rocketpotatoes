@@ -11,7 +11,6 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
 
@@ -46,21 +45,25 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	public enum ProjectileTexture {
 		ROCKET {
+			@Override
 			public String[] textures() {
 				return new String[] { "rocket1", "rocket2", "rocket3" };
 			}
 		},
 		CHILLI {
+			@Override
 			public String[] textures() {
 				return new String[] { "chilli1", "chilli2", "chilli3" };
 			}
 		},
 		LEAVES {
+			@Override
 			public String[] textures() {
 				return new String[] { "leaves1" };
 			}
 		},
 		ACORN {
+			@Override
 			public String[] textures() {
 
 				return new String[] { "acorn1" };
@@ -124,8 +127,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	protected void updatePosition() {
 		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
-		float angle = (float) (Math.atan2(delta.y, delta.x)) + (float) (Math.PI);
-		rotationAngle = (float) ((angle * 180 / Math.PI) + 45 + 90);
+		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
+		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
 		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
 	}
 

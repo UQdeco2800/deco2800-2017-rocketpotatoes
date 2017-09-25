@@ -269,7 +269,7 @@ public class DebugModeGui extends Gui {
                      
                      if (keycode == Input.Keys.F11) {
                          double newrate = screen.getTickrate();
-                         if (screen.getTickrate()>(10)) {
+                         if (screen.getTickrate()>10) {
                              newrate = screen.getTickrate()/2;
                          }
                          screen.setTickrate(newrate);
@@ -318,7 +318,7 @@ public class DebugModeGui extends Gui {
     public void entitiesImmortal(){
         Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
         for (AbstractEntity ent: entitiesMap.values()){
-            if ((ent instanceof MortalEntity)&!(ent instanceof Player)){
+            if (ent instanceof MortalEntity&!(ent instanceof Player)){
                 ((MortalEntity) ent).addDamageScaling(0);
             }
         }

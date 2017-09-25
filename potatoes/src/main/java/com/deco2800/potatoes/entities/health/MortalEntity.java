@@ -332,6 +332,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		return true;
 	}
 
+	@Override
 	public void onTick(long time) {
 		// TODO Auto-generated method stub
 		

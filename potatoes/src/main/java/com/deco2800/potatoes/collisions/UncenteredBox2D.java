@@ -100,7 +100,7 @@ public class UncenteredBox2D implements CollisionMask{
      * @param xLength The desired x length.
      */
     public void setXLength(float xLength) {
-        this.xLength = (xLength >= 0) ? xLength : -xLength ;
+        this.xLength = xLength >= 0 ? xLength : -xLength ;
     }
 
     /**
@@ -118,7 +118,7 @@ public class UncenteredBox2D implements CollisionMask{
      * @param yLength The desired y length.
      */
     public void setYLength(float yLength) {
-        this.yLength = (yLength >= 0) ? yLength : -yLength ;
+        this.yLength = yLength >= 0 ? yLength : -yLength ;
     }
 
 

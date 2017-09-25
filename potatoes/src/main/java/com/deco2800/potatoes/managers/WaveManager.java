@@ -52,8 +52,9 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      *
      * @param i the current game tick
      */
-    public void onTick(long i) {
-        if ((getActiveWave()) != null) {
+    @Override
+	public void onTick(long i) {
+        if (getActiveWave() != null) {
             getActiveWave().tickAction();
         } else if (getWaveIndex()+1 < getWaves().size()) {
             //there are still more waves
@@ -102,7 +103,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * @return true if all waves given to WaveManager have been completed
      */
     public boolean areWavesCompleted() {
-        if ((getWaveIndex()+1) < getWaves().size()) {
+        if (getWaveIndex()+1 < getWaves().size()) {
             return false;
         } else {
             return true;

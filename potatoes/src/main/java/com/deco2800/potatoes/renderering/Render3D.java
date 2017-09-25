@@ -18,7 +18,6 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -108,7 +107,7 @@ public class Render3D implements Renderer {
 			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 
 			// We want to keep the aspect ratio of the image so...
-			float aspect = (float) (tex.getWidth()) / (float) (tileWidth);
+			float aspect = (float) tex.getWidth() / (float) tileWidth;
 
 			// old method of draw:
 			// batch.draw(tex, isoPosition.x, isoPosition.y,
@@ -121,9 +120,9 @@ public class Render3D implements Renderer {
 					// x, y
 					isoPosition.x, isoPosition.y,
 					// originX, originY
-					(tileWidth * entity.getXRenderLength()) / 2, (tileHeight * entity.getYRenderLength()) / 2,
+					tileWidth * entity.getXRenderLength() / 2, tileHeight * entity.getYRenderLength() / 2,
 					// width, height
-					tileWidth * entity.getXRenderLength(), (tex.getHeight() / aspect) * entity.getYRenderLength(),
+					tileWidth * entity.getXRenderLength(), tex.getHeight() / aspect * entity.getYRenderLength(),
 					// scaleX, scaleY, rotation
 					1, 1, 0 - entity.rotationAngle(),
 					// srcX, srcY
@@ -146,14 +145,14 @@ public class Render3D implements Renderer {
 				if (PROGRESS_BAR != null) {
 					TextureManager reg = GameManager.get().getManager(TextureManager.class);
 
-					Texture barTexture = reg.getTexture((PROGRESS_BAR.getTexture()));
+					Texture barTexture = reg.getTexture(PROGRESS_BAR.getTexture());
 
 					// sets colour palette
 					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) entity).getProgressRatio()));
 
 					// draws the progress bar
 					Texture entityTexture = reg.getTexture(entity.getTexture());
-					float aspect = (float) (entityTexture.getWidth()) / (float) (tileWidth);
+					float aspect = (float) entityTexture.getWidth() / (float) tileWidth;
 
 					float barRatio = ((HasProgress) entity).getProgressRatio();
 					float maxBarWidth = tileWidth * entity.getXRenderLength() * PROGRESS_BAR.getWidthScale();
@@ -163,10 +162,10 @@ public class Render3D implements Renderer {
 					// x co-ordinate,
 					// finds the overlap length of the bar and moves it half as much left
 					float barX = isoPosition.x
-							- (tileWidth * entity.getXRenderLength() * (PROGRESS_BAR.getWidthScale() - 1) / 2);
+							- tileWidth * entity.getXRenderLength() * (PROGRESS_BAR.getWidthScale() - 1) / 2;
 					// y co-ordinate
 					// If height is specified, use it, otherwise estimate the right height
-					float barY = isoPosition.y + (entityTexture.getHeight() / aspect * entity.getYRenderLength());
+					float barY = isoPosition.y + entityTexture.getHeight() / aspect * entity.getYRenderLength();
 					float endX = barX + barWidth;
 					// We haven't implemented rounded corners, but when we do:
 					// float greyBarX = endX + endWidth;
@@ -352,7 +351,7 @@ public class Render3D implements Renderer {
 		float baseY = -tileHeight * (worldLength - 1) / 2f; // screen y is inverted
 
 		float cartX = x;
-		float cartY = (worldWidth - 1) - y; // screen y is from the bottom corner
+		float cartY = worldWidth - 1 - y; // screen y is from the bottom corner
 
 		float isoX = baseX + (cartX - cartY) / 2.0f * tileWidth;
 		float isoY = baseY + (cartX + cartY) / 2.0f * tileHeight;
@@ -412,7 +411,7 @@ public class Render3D implements Renderer {
 
 
 		projX = (projY + projX) / 2;
-		y = (projY - projX) * (-tileHeight) + (tileHeight / 2f);
+		y = (projY - projX) * -tileHeight + tileHeight / 2f;
 		x = projX * tileWidth;
 
 		return new Vector2(x, y);

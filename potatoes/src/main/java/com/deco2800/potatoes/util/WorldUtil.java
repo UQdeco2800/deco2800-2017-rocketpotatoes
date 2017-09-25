@@ -95,7 +95,7 @@ public class WorldUtil {
 	 * Returns the distance between the point (x1,y1) and (x2,y2)
 	 */
 	public static float distance(float x1, float y1, float x2, float y2) {
-		return (float)(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
+		return (float)Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	}
 	
 	/**

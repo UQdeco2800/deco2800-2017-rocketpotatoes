@@ -1,12 +1,8 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.CollisionMask;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Box2D;
 
 /**
  *  A melee attack that can be performed by an entity to damage another.

@@ -11,7 +11,6 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 /**

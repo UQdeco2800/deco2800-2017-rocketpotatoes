@@ -2,8 +2,6 @@ package com.deco2800.potatoes.entities.enemies;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
 import com.deco2800.potatoes.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +11,7 @@ import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * A stronger but slower enemy type, only attacks towers/trees
@@ -89,6 +83,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	/**
 	 * @return the current Direction of bear
 	 */
+	@Override
 	public Direction getDirection() {
 		return currentDirection;
 	}
@@ -96,6 +91,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	/**
 	 * @return String of this type of enemy (ie 'bear').
 	 */
+	@Override
 	public String getEnemyType() {
 		return enemyType;
 	}

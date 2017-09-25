@@ -1,16 +1,8 @@
 package com.deco2800.potatoes.entities.effects;
 
-import com.badlogic.gdx.math.Vector3;
-
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.Box3D;
-
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.SoundManager;
 
 
 

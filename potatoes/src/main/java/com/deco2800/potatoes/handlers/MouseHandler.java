@@ -30,7 +30,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	 * Constructor for the mouse handler
 	 */
 	public MouseHandler() {
-		treeShop = (TreeShopGui) GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShop = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
 	}
 
 	/**

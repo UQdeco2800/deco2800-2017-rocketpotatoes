@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
-import com.deco2800.potatoes.entities.effects.HealingEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -33,7 +32,6 @@ import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.ParticleManager;
@@ -167,7 +165,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		float deltaX = getPosX() - goalX;
 		float deltaY = getPosY() - goalY;
 
-		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
 
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));
@@ -209,7 +207,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 
 		if (this instanceof TankEnemy) {
-			if (timer % 100 == 0 && !(collided)) {
+			if (timer % 100 == 0 && !collided) {
 				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
 				GameManager.get().getWorld().addEntity(
 						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
@@ -255,7 +253,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * Updates the direction of the player based on change in position.
 	 */
 	public void updateDirection() {
-		if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+		if (this.getPosX() - oldPos.x == 0 && this.getPosY() - oldPos.y == 0) {
 			return;    // Not moving
 		}
 		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);

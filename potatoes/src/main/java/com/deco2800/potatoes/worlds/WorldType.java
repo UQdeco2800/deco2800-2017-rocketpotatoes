@@ -175,7 +175,7 @@ public class WorldType {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((terrain == null) ? 0 : terrain.hashCode());
+		result = prime * result + (terrain == null ? 0 : terrain.hashCode());
 		return result;
 	}
 

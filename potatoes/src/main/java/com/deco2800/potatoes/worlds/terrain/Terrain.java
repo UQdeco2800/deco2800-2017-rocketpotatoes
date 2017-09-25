@@ -53,7 +53,7 @@ public class Terrain {
 		int result = 1;
 		result = prime * result + Float.floatToIntBits(moveScale);
 		result = prime * result + (plantable ? 1231 : 1237);
-		result = prime * result + ((texture == null) ? 0 : texture.hashCode());
+		result = prime * result + (texture == null ? 0 : texture.hashCode());
 		return result;
 	}
 

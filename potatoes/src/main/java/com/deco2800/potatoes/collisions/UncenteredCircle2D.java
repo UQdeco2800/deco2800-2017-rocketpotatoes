@@ -98,7 +98,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * @param radius The new radius.
      */
     public void setRadius(float radius) {
-        this.radius = (radius >= 0) ? radius : -radius ;
+        this.radius = radius >= 0 ? radius : -radius ;
     }
 
     //TODO maybe: public boolean centredOnPoint(Point2D) {}

@@ -9,8 +9,6 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
@@ -55,8 +53,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	public Moose(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.849f), moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		Moose.speed = speed;
+		Moose.goal = goal;
 		this.path = null;
 		this.damageScaling = 0.8f; // 20% Damage reduction for Moose
 	}
@@ -73,11 +71,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	/**
 	 * @return String of this type of enemy (ie 'moose').
 	 * */
+	@Override
 	public String getEnemyType() { return enemyType; }
 
 	/**
 	 *	@return the current Direction of moose
 	 * */
+	@Override
 	public Direction getDirection() { return currentDirection; }
 
 	/**
@@ -143,7 +143,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
 
-		float angle = (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
 
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));

@@ -31,47 +31,56 @@ public abstract class Effect extends AbstractEntity implements Tickable {
      */
     public enum EffectTexture {
         AOE {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"aoe1", "aoe2", "aoe3"};
             }
         },
         EXPLOSION {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"explosion1", "explosion2", "explosion3"};
             }
         },
         DUST {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"start1", "start2", "start3", "start4", "start5"};
             }
         },
         LIGHTNING {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"lightning"};
             }
         },
         LAZER {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"lightning"};
             }
         },
         DAMAGED_GROUND {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3"};
             }
         },
         SWIPE {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"swipe1", "swipe2", "swipe3"};
             }
         },
         LARGE_FOOTSTEP {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3"};
             }
         },
         HEALING {
-            public String[] textures() {
+            @Override
+			public String[] textures() {
                 return new String[]{"Healing1", "Healing2", "Healing3"};
             }
         };
@@ -192,7 +201,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
         int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
         int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
-        TextureManager reg = (TextureManager) GameManager.get().getManager(TextureManager.class);
+        TextureManager reg = GameManager.get().getManager(TextureManager.class);
         Texture tex = reg.getTexture(this.getTexture());
 
         float lWidth = tex.getWidth();
@@ -213,7 +222,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
         float originY = tex.getHeight() / 2;
 
         // stretch texture using x scale
-        float lScaleX = (float) (Math.sqrt(l * l + h * h));
+        float lScaleX = (float) Math.sqrt(l * l + h * h);
         float lScaleY = 0.4f;
 
         int srcX = 0;
@@ -225,11 +234,13 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 
     }
 
-    public float getPosX() {
+    @Override
+	public float getPosX() {
         return position.x;
     }
 
-    public float getPosY() {
+    @Override
+	public float getPosY() {
         return position.y;
     }
 

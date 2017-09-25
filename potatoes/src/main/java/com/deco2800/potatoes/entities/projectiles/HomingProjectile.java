@@ -3,7 +3,6 @@ package com.deco2800.potatoes.entities.projectiles;
 import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;

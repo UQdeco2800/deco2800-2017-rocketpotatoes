@@ -168,7 +168,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Updates the direction of the player based on change in position.
      */
     private void updateDirection() {
-        if ((this.getPosX() - oldPos.x == 0) && (this.getPosY() - oldPos.y == 0)) {
+        if (this.getPosX() - oldPos.x == 0 && this.getPosY() - oldPos.y == 0) {
             this.setState(PlayerState.idle);
         } else {
 
@@ -337,14 +337,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 collided = true;
             }
 
-            if (!this.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getMask()) &&
+            if (!this.equals(entity) && entity instanceof EnemyEntity && newPos.overlaps(entity.getMask()) &&
                     !(entity instanceof Moose)) {
                 collided = true;
             }
         }
         if (!collided) {
-            this.setPosX(Math.max((float) Math.min(newPosX, width), 0));
-            this.setPosY(Math.max((float) Math.min(newPosY, length), 0));
+            this.setPosX(Math.max(Math.min(newPosX, width), 0));
+            this.setPosY(Math.max(Math.min(newPosY, length), 0));
         }
         updateDirection(); // Check for changes in direction
     }
@@ -423,7 +423,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 attack();
                 break;
             case Input.Keys.ESCAPE:
-                ((TreeShopGui) (GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class))).closeShop();
+                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
             default:
                 break;
         }
@@ -471,8 +471,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         float x = this.getPosX();
         float y = this.getPosY();
 
-        x = (currentDirection == Direction.SouthWest) ? x - 1 : x + 1;
-        y = (currentDirection == Direction.SouthWest) ? y - 2 : y + 2;
+        x = currentDirection == Direction.SouthWest ? x - 1 : x + 1;
+        y = currentDirection == Direction.SouthWest ? y - 2 : y + 2;
 
         // Only toss an item if there are items to toss
         if (this.getInventory().updateQuantity(item, -1) == 1) {

@@ -58,7 +58,7 @@ public class MainMenuScreen implements Screen {
 
         soundManager = GameManager.get().getManager(SoundManager.class);
         textureManager = GameManager.get().getManager(TextureManager.class);
-        textureManager.loadTextures();
+        TextureManager.loadTextures();
         stage = new Stage(new ScreenViewport());
 
         soundManager.playMusic("Ascending the Vale.mp3");
@@ -214,7 +214,7 @@ public class MainMenuScreen implements Screen {
     public static Array<String> findHostAddress() {
         Array<String> ipStrings = new Array<String>();;
         try {
-            List<InetAddress> ips = ((MultiplayerManager)GameManager.get().getManager(MultiplayerManager.class)).discoverHosts(1337);
+            List<InetAddress> ips = GameManager.get().getManager(MultiplayerManager.class).discoverHosts(1337);
             for (InetAddress a: ips) {
                 ipStrings.add(a.getHostAddress());
             }

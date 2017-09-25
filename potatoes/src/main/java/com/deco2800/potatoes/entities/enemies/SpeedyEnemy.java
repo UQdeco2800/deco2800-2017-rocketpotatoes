@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import com.badlogic.gdx.math.Vector2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
@@ -18,7 +17,6 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.entities.HasDirection;
@@ -62,8 +60,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 */
 	public SpeedyEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-		this.speed = speed;
-		this.goal = goal;
+		SpeedyEnemy.speed = speed;
+		SpeedyEnemy.goal = goal;
 		this.path = null;
 		// resetStats();
 	}
@@ -125,11 +123,13 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	/**
 	 *	@return the current Direction of raccoon
 	 * */
+	@Override
 	public Direction getDirection() { return currentDirection; }
 
 	/**
 	 * @return String of this type of enemy (ie 'raccoon').
 	 * */
+	@Override
 	public String getEnemyType() { return enemyType; }
 
 	/**
@@ -140,6 +140,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 *
 	 * @param i The current game tick
 	 */
+	@Override
 	public void onTick(long i) {
 		//raccoon steals resources from resourceTrees
 		stealResources();
@@ -186,7 +187,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			float deltaX = getPosX() - targetX;
 			float deltaY = getPosY() - targetY;
 
-			float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
 
 			// flip sprite
 			if (deltaX + deltaY >= 0) {
@@ -246,7 +247,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			float deltaX = getPosX() - targetX;
 			float deltaY = getPosY() - targetY;
 
-			float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
 
 			// flip sprite
 			if (deltaX + deltaY >= 0) {

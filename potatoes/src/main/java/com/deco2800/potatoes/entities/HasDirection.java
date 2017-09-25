@@ -22,6 +22,7 @@ public interface HasDirection {
 		 * Returns the initials representing a direction. For example,
 		 * a direction of 'NorthEast' will return 'NE'.
 		 */
+		@Override
 		public String toString() {
 			String initials = "";
 			for (int i = 0; i < this.name().length(); i++) {

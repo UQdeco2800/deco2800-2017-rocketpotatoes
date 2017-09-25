@@ -74,6 +74,7 @@ public class GameTimeManager extends Manager implements TickableManager {
 	 *
 	 * @param tick
 	 */
+	@Override
 	public void onTick(long tick) {
 		this.setUnscaledTime((int) (currentTime + tick));
 	}

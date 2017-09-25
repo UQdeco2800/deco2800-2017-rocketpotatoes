@@ -1,11 +1,5 @@
 package com.deco2800.potatoes.entities.trees;
 
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.effects.LightningEffect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -14,7 +8,6 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
-import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
 
 
 

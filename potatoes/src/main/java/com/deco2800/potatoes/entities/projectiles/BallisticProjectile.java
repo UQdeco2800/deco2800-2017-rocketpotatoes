@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.entities.projectiles;
 
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.effects.Effect;
 
 public class BallisticProjectile extends Projectile {

@@ -120,7 +120,7 @@ public class PathManager extends Manager implements ForWorld {
         // Set next as the value returned from start as
         // the key to spanningTree.
         next = spanningTree.get(start);
-        while (next != null && !(next.equals(goal))) {
+        while (next != null && !next.equals(goal)) {
             path.add(next);
             next = spanningTree.get(next);
         }
@@ -133,8 +133,8 @@ public class PathManager extends Manager implements ForWorld {
 
         for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
             if (e.isStaticCollideable() &&
-                    (0 > e.getMask().distance(line.getEndPointOne().getX(), line.getEndPointOne().getY(), 
-                        line.getEndPointTwo().getX(), line.getEndPointTwo().getY()))) {
+                    0 > e.getMask().distance(line.getEndPointOne().getX(), line.getEndPointOne().getY(), 
+                        line.getEndPointTwo().getX(), line.getEndPointTwo().getY())) {
                 output = true;
                 break;
             }

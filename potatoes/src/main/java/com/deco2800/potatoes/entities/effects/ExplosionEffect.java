@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.effects;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Box2D;
-import com.deco2800.potatoes.collisions.Circle2D;
 
 public class ExplosionEffect extends Effect {
 

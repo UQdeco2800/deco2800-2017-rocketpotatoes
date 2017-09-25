@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;

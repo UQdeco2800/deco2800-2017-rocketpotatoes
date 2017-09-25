@@ -4,7 +4,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -193,7 +192,7 @@ public class GameScreen implements Screen {
 
 		// Add test TreeShop Gui
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
-		maxShopRange = ((TreeShopGui)guiManager.getGui(TreeShopGui.class)).getMaxRange();
+		maxShopRange = guiManager.getGui(TreeShopGui.class).getMaxRange();
 
         // Make our chat window
         guiManager.addGui(new ChatGui(guiManager.getStage()));
@@ -515,14 +514,14 @@ public class GameScreen implements Screen {
 		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
 
-		float tileX = (int) (Math.floor(tileCoords.x));
-		float tileY = (int) (Math.floor(tileCoords.y));
+		float tileX = (int) Math.floor(tileCoords.x);
+		float tileY = (int) Math.floor(tileCoords.y);
 
 		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
 		
 		float distance = playerManager.distanceFromPlayer(tileX,tileY);
 		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
-		TreeShopGui treeShopGui = (TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		TreeShopGui treeShopGui = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
 		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
 		if (terrain.getTexture().equals("void")) {
 			// Do nothing
@@ -540,7 +539,7 @@ public class GameScreen implements Screen {
 
 		// TODO: add render for projectile's separately
 		GameManager.get().getManager(ParticleManager.class).draw(batch);
-		((TreeShopGui)GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class)).render();
+		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
 		
 	}
 
@@ -703,7 +702,7 @@ public class GameScreen implements Screen {
 				// Pause the Game
 				// ToDo
 				// Show the Pause Menu
-				((PauseMenuGui) guiManager.getGui(PauseMenuGui.class)).show();
+				guiManager.getGui(PauseMenuGui.class).show();
 			}
 		}
 	}

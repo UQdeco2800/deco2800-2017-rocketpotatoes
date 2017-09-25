@@ -1,8 +1,6 @@
 package com.deco2800.potatoes.util;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-
 import com.deco2800.potatoes.collisions.Point2D;
 
 

@@ -5,8 +5,6 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
-import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-
 import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
 
@@ -75,9 +73,9 @@ public class LightningEffect extends Effect {
 
 		for (int i = 0; i < segments + 1; i++) {
 			//the random x offset to add to the nodes
-			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaX;
+			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * (segmentSize * magnitude / 2) * distanceDeltaX;
 			//the random y offset to add to the nodes																									
-			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * ((segmentSize * magnitude) / 2) * distanceDeltaY;
+			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * (segmentSize * magnitude / 2) * distanceDeltaY;
 																														
 			//the x pos of the node on the line
 			float x = (float) (xPos + segmentsDone * lengthX
@@ -101,6 +99,7 @@ public class LightningEffect extends Effect {
 		return positions;
 	}
 
+	@Override
 	public void drawEffect(SpriteBatch batch) {
 		if (!staticStrike) {
 			pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);

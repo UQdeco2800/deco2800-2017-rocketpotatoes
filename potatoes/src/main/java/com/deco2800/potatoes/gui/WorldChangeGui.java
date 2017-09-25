@@ -3,7 +3,6 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.screens.GameScreen;

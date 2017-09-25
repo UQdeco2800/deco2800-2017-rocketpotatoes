@@ -333,7 +333,7 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                multiplayerServerList.setItems((Array) mainMenuScreen.findHostAddress());
+                multiplayerServerList.setItems(MainMenuScreen.findHostAddress());
             }
         });
 
@@ -341,7 +341,7 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                multiplayerServerList.setItems((Array) mainMenuScreen.findHostAddress());
+                multiplayerServerList.setItems(MainMenuScreen.findHostAddress());
                 if (multiplayerServerList.getItems().contains(multiplayerClientIpAddConnection.getText(), false)) {
                     mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
                             multiplayerClientIpAddConnection.getText(), 1337, false);
