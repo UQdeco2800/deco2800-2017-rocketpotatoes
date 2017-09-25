@@ -16,6 +16,7 @@ import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.*;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
@@ -49,6 +50,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private Inventory inventory;
 
     private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
+    private boolean isWalking = false;		// Used to determine if player is walking
     protected Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
 
@@ -128,8 +130,18 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
 
     private void stateChanged() {
+    		// Executes when the player stop walking
+    		if (isWalking & !this.getState().equals(PlayerState.walk)) {
+    			this.walk(false);
+    			isWalking = false;
+    		}
+    			
+    		// Executes when the player starts walking
+    		if (!isWalking & this.getState().equals(PlayerState.walk)) {
+    			this.walk(true);
+    			isWalking = true;
+    		}
     		updateSprites();
-
     }
 
     /**
@@ -206,6 +218,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * handle setting the animations for every player state.
      */
     public void updateSprites() {
+    		
         // Override in subclasses to update the sprite based on state and direciton.
     }
 
@@ -297,7 +310,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * faces. Allows the attack state to be enabled and respective
      * animations to play.
      */
-    public void attack() {
+    protected void attack() {
         // Override in subclasses to allow attacking.
     }
 
@@ -306,8 +319,21 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * faces. Allows the interact state to be enabled and respective
      * animations to play.
      */
-    public void interact() {
+    protected void interact() {
         // Override in subclasses to allow interacting.
+    }
+    
+    /**
+     * A method allowing subclasses to handle the player entering and 
+     * exiting the walk state. The method is automatically called every time
+     * this transition occurs.
+     * 
+     * @param active
+     * 			True if the player starts walking and false
+     * 			if the player stops walking.
+     */
+    protected void walk(boolean active) {
+        // Override in subclasses to allow handling of walking.
     }
 
     @Override

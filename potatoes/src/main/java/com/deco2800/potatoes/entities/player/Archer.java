@@ -2,13 +2,17 @@ package com.deco2800.potatoes.entities.player;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.TimeTriggerEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -32,7 +36,7 @@ public class Archer extends Player {
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.walk, 8, 750, this::walkCompletionHandler);
+    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.walk, 8, 750, null);
     private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.attack, 5, 200, this::completionHandler);
     private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.death, 3, 200, this::damagedCompletionHandler);
     private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", PlayerState.interact, 5, 400, this::completionHandler);
@@ -47,11 +51,6 @@ public class Archer extends Player {
 		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
 		clearState();
 		updateSprites();
-		return null;
-    }
-    
-    private Void walkCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("walk.wav");
 		return null;
     }
     
@@ -138,6 +137,35 @@ public class Archer extends Player {
 	        }
 		}
     }
+    
+    /* Custom walk sound handling */
+	private int stepNumber = 1;	// Used for playing left and right foot steps
+	private boolean alternateSound = false;	// Used for playing alternate sounds
+	private TimeTriggerEvent walkSound = new TimeTriggerEvent(350, true, this::walkHandler);
+	private Void walkHandler() {
+		if (alternateSound) {
+			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
+		} else {
+			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
+		}
+		
+		stepNumber++;
+		if (stepNumber == 3) { stepNumber = 1; }
+		alternateSound = new Random().nextBoolean();
+		return null;
+	}
+    
+    @Override
+	protected void walk(boolean active) {
+		super.walk(active);
+		if (active) {
+			// Archer starts walking
+			GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
+		} else {
+			// Archer stops walking
+			GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
+		}
+	}
     
     @Override
     public void interact() {
