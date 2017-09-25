@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.GridUtil;
 import com.deco2800.potatoes.worlds.World;
@@ -23,6 +24,7 @@ public class WorldManager extends Manager {
 	private Map<String, Cell> cells;
 	private float[][][] randomGrids;
 	private float[][][] randomGridEdges;
+	private TiledDrawable background;
 
 	/**
 	 * Initializes the world manager and generates random grids to use for
@@ -137,5 +139,19 @@ public class WorldManager extends Manager {
 		}
 		world.setTerrain(terrain);
 		return world;
+	}
+
+	/**
+	 * Returns the background for beyond the edges of the map
+	 */
+	public TiledDrawable getBackground() {
+		return background;
+	}
+
+	/**
+	 * Sets the background for beyond the edges of the map
+	 */
+	public void setBackground(TiledDrawable background) {
+		this.background = background;
 	}
 }

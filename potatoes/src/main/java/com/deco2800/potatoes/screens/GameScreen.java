@@ -4,9 +4,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,7 +34,6 @@ import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
-import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
 import java.util.Map;
@@ -72,8 +68,6 @@ public class GameScreen implements Screen {
 	private long lastGameTick = 0;
 	private boolean playing = true;
 	private double tickrate = 10;
-	// Would be nice to move this somewhere else
-	private TiledDrawable background;
 
 	private int maxShopRange;
 	/**
@@ -130,10 +124,7 @@ public class GameScreen implements Screen {
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		textureManager = GameManager.get().getManager(TextureManager.class);
-		
-		// Creates the object for the repeated background texture
-		// TODO this will need to be changed once proper texture is added
-		background = new TiledDrawable(textureManager.getTextureRegion("water_tile_1"));
+
 		/**
 		 * Setup managers etc.
 		 */
@@ -215,6 +206,10 @@ public class GameScreen implements Screen {
 
         // Sets the world to the initial world, forest world
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+		// Creates the object for the repeated background texture
+		// TODO this will need to be changed once proper texture is added
+		GameManager.get().getManager(WorldManager.class).setBackground(new TiledDrawable(textureManager
+				.getTextureRegion("water_tile_1")));
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -481,68 +476,6 @@ public class GameScreen implements Screen {
 
 	}
 
-	private void renderGame(SpriteBatch batch) {
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-		
-		/* Render the tiles first */
-		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
-		tileRenderer.setView(cameraManager.getCamera());
-
-		batch.setColor(GameManager.get().getManager(GameTimeManager.class).getColour());
-
-		batch.begin();
-		// within the screen, but down rounded to the nearest tile
-		Vector2 waterCoords = new Vector2(
-				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
-				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
-		// draw with screen corner and width a little bit more than the screen
-		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer.getViewBounds().width + tileWidth * 4,
-				tileRenderer.getViewBounds().height + tileHeight * 4);
-		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
-				tileRenderer.getViewBounds().width + tileWidth * 4,
-				tileRenderer.getViewBounds().height + tileHeight * 4);
-		batch.end();
-
-		tileRenderer.render();
-
-		/* Draw highlight on current tile we have selected */
-		batch.begin();
-		// Convert our mouse coordinates to world, where we then convert them to a tile
-		// [x, y], then back to screen
-
-		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
-		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
-
-		float tileX = (int) Math.floor(tileCoords.x);
-		float tileY = (int) Math.floor(tileCoords.y);
-
-		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
-		
-		float distance = playerManager.distanceFromPlayer(tileX,tileY);
-		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
-		TreeShopGui treeShopGui = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
-		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
-		if (terrain.getTexture().equals("void")) {
-			// Do nothing
-		} else if (treeShopGui.getPlantable())
-			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-		else 
-			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
-			
-		
-		batch.end();
-
-		// Render entities etc.
-		renderer.render(batch);
-
-
-		// TODO: add render for projectile's separately
-		GameManager.get().getManager(ParticleManager.class).draw(batch);
-		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
-		
-	}
-
 	/**
 	 * Renderer thread Must update all displayed elements using a Renderer
 	 */
@@ -597,7 +530,7 @@ public class GameScreen implements Screen {
 
 		// TODO way to render game so it appears paused (could just be a flag)
 		if (playing) {
-			renderGame(batch);
+			renderer.render(batch);
 		}
 
 		updateWaveGUI();
