@@ -7,7 +7,6 @@ import java.util.Random;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.entities.TimeTriggerEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
@@ -142,7 +141,7 @@ public class Caveman extends Player {
     /* Custom walk sound handling */
 	private int stepNumber = 1;	// Used for playing left and right foot steps
 	private boolean alternateSound = false;	// Used for playing alternate sounds
-	private TimeTriggerEvent walkSound = new TimeTriggerEvent(350, true, this::walkHandler);
+	private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
 	private Void walkHandler() {
 		if (alternateSound) {
 			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
