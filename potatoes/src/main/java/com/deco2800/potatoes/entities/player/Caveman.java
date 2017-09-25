@@ -29,18 +29,18 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
     		super(posX, posY);
     		this.movementSpeed = 0.08f;
-    		this.currentDirection = Direction.SouthEast;
-        this.currentState = PlayerState.idle;
+    		this.currentDirection = Direction.SE;
+        this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;
     }
     
     /* Caveman Animations */
-    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.walk, 8, 750, null);
-    private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.damaged, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.death, 3, 300, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.attack, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.interact, 5, 400, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", PlayerState.WALK, 8, 750, null);
+    private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", PlayerState.IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", PlayerState.DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", PlayerState.DEATH, 3, 300, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", PlayerState.ATTACK, 5, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.INTERACT, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
     		clearState();
@@ -59,22 +59,22 @@ public class Caveman extends Player {
     public void updateSprites() {
     		super.updateSprites();
     		switch (this.getState()) {
-            case idle:
+            case IDLE:
         			this.setAnimation(cavemanIdleAnimations.get(this.getDirection()));
         			break;
-            case walk:
+            case WALK:
             		this.setAnimation(cavemanWalkAnimations.get(this.getDirection()));
             		break;
-            case attack:
+            case ATTACK:
             		this.setAnimation(cavemanAttackAnimations.get(this.getDirection()));
         			break;
-            case damaged:
+            case DAMAGED:
             		this.setAnimation(cavemanDamagedAnimations.get(this.getDirection()));
         			break;
-            case death:
+            case DEATH:
             		this.setAnimation(cavemanDeathAnimations.get(this.getDirection()));
             		break;
-            case interact:
+            case INTERACT:
         			this.setAnimation(cavemanInteractAnimations.get(this.getDirection()));
         			break;
             default:
@@ -85,7 +85,7 @@ public class Caveman extends Player {
     
     @Override
     public void attack() {
-    		if (this.setState(PlayerState.attack)) {
+    		if (this.setState(PlayerState.ATTACK)) {
     			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
     			
     			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
@@ -100,29 +100,29 @@ public class Caveman extends Player {
     	        		float targetPosY = target.get().getPosY();
     	            
     	        		switch (this.getDirection()) {
-    	        		case North:
+    	        		case N:
     	        			break;
-    	        		case NorthEast:
+    	        		case NE:
     	        			pPosY -= 1;
     	        			pPosX += 1.5;
     	        			break;
-    	        		case East:
+    	        		case E:
     	        			pPosY -= 1;
     	        			pPosX += 1.5;
     	        			break;
-    	        		case SouthEast:
+    	        		case SE:
     	        			pPosX += 1;
     	        			break;
-    	        		case South:
+    	        		case S:
     	        			pPosX += 1.2;
     	        			break;
-    	        		case SouthWest:
+    	        		case SW:
     	        			pPosY += 1;
     	        			pPosX += 1;
     	        			break;
-    	        		case West:
+    	        		case W:
     	        			break;
-    	        		case NorthWest:
+    	        		case NW:
     	        			break;
     	        		default:
     	        			break;
@@ -170,7 +170,7 @@ public class Caveman extends Player {
     @Override
     public void interact() {
     		super.interact();
-	    	if (this.setState(PlayerState.interact)) {
+	    	if (this.setState(PlayerState.INTERACT)) {
 	    		// Caveman interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
 	    	}

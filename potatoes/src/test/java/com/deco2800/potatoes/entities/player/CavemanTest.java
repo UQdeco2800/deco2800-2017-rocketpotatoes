@@ -35,17 +35,17 @@ public class CavemanTest {
 	@Test
 	public void animationTest() {
 		
-		Map<Direction, TimeAnimation> animationMap = Player.makePlayerAnimation(PlayerType.caveman.name(), 
-				PlayerState.idle, 1, 1, null);
+		Map<Direction, TimeAnimation> animationMap = Player.makePlayerAnimation(PlayerType.CAVEMAN.name(), 
+				PlayerState.IDLE, 1, 1, null);
 		
 		// Test setting idle animation to north
-		caveman.setAnimation(animationMap.get(Direction.North));
+		caveman.setAnimation(animationMap.get(Direction.N));
 		
 		// Test setting idle animation to south
-		caveman.setAnimation(animationMap.get(Direction.South));
+		caveman.setAnimation(animationMap.get(Direction.S));
 				
 		// Test setting idle animation to south west
-		caveman.setAnimation(animationMap.get(Direction.SouthWest));
+		caveman.setAnimation(animationMap.get(Direction.SW));
 	}
 
 }

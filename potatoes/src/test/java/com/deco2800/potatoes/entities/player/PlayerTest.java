@@ -66,11 +66,11 @@ public class PlayerTest {
 		player.onTick(tick++); 			// Tick the player
         player.setPosition(10, 10); 	// Move the player in East Direction
         player.onTick(tick++);
-        assertTrue(player.getDirection().equals(Direction.East));
+        assertTrue(player.getDirection().equals(Direction.E));
         
         player.setPosition(15, 5); 	// Move the player in North Direction
         player.onTick(tick++); 
-        assertTrue(player.getDirection().equals(Direction.North));
+        assertTrue(player.getDirection().equals(Direction.N));
 	}
 	
 	/**
@@ -79,18 +79,18 @@ public class PlayerTest {
 	@Test
 	public void stateTest() {
 		// Test to see if in idle by default
-		assertTrue(player.getState() == PlayerState.idle);
+		assertTrue(player.getState() == PlayerState.IDLE);
 		
 		// Tick the player changing position to test if state changes to walk
 		player.setPosition(0, 0);
 		player.onTick(tick++); 		
         player.setPosition(10, 10);
         player.onTick(tick++);
-        assertTrue(player.getState() == PlayerState.walk);
+        assertTrue(player.getState() == PlayerState.WALK);
         
         // Tick player to test if it returns to idle after standing still
         player.onTick(tick++);
-        assertTrue(player.getState() == PlayerState.idle);
+        assertTrue(player.getState() == PlayerState.IDLE);
 	}
 	
 	/**

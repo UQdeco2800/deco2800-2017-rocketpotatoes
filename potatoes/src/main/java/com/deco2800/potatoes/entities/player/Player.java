@@ -53,8 +53,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private boolean isWalking = false;		// Used to determine if player is walking
     protected Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
-
-    public enum PlayerState { idle, walk, attack, damaged, death, interact };    // The states a player may take
+    
+    /* The states a player may take */
+    public enum PlayerState { IDLE, WALK, ATTACK, DAMAGED, DEATH, INTERACT;
+    		@Override
+    		public String toString() {
+    			return super.toString().toLowerCase();
+    		}
+    };    
     protected PlayerState currentState;    	// The current states of the player, set to idle by default
     protected TimeAnimation currentAnimation;	// The current animation of the player
 
@@ -76,8 +82,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
-        this.currentDirection = Direction.SouthEast;
-        this.currentState = PlayerState.idle;
+        this.currentDirection = Direction.SE;
+        this.currentState = PlayerState.IDLE;
         addResources();	//Initialise the inventory with the valid resources
     }
 
@@ -94,7 +100,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public boolean setState(PlayerState state) {
         if (!this.currentState.equals(state)) {
-            if (this.currentState.equals(PlayerState.idle) | this.currentState.equals(PlayerState.walk)) {
+            if (this.currentState.equals(PlayerState.IDLE) | this.currentState.equals(PlayerState.WALK)) {
                 this.currentState = state;
                 stateChanged();
             } else {
@@ -120,7 +126,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Sets the player's state to the default state; that being idle.
      */
     public void clearState() {
-        this.currentState = PlayerState.idle;
+        this.currentState = PlayerState.IDLE;
         stateChanged();
     }
 
@@ -131,13 +137,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     private void stateChanged() {
     		// Executes when the player stop walking
-    		if (isWalking & !this.getState().equals(PlayerState.walk)) {
+    		if (isWalking & !this.getState().equals(PlayerState.WALK)) {
     			this.walk(false);
     			isWalking = false;
     		}
     			
     		// Executes when the player starts walking
-    		if (!isWalking & this.getState().equals(PlayerState.walk)) {
+    		if (!isWalking & this.getState().equals(PlayerState.WALK)) {
     			this.walk(true);
     			isWalking = true;
     		}
@@ -171,7 +177,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
             this.currentDirection = direction;
-            LOGGER.info("Set player direction to " + direction.name());
+            LOGGER.info("Set player direction to " + direction.toString());
             updateSprites();
         }
     }
@@ -181,32 +187,32 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     private void updateDirection() {
         if (this.getPosX() - oldPos.x == 0 && this.getPosY() - oldPos.y == 0) {
-            this.setState(PlayerState.idle);
+            this.setState(PlayerState.IDLE);
         } else {
 
-        	this.setState(PlayerState.walk);
+        	this.setState(PlayerState.WALK);
         		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
         				this.getPosX() - oldPos.x) * (180 / Math.PI);
 
 
             if (angularDirection >= -180 && angularDirection < -157.5) {
-                this.setDirection(Direction.SouthWest);
+                this.setDirection(Direction.SW);
             } else if (angularDirection >= -157.5 && angularDirection < -112.5) {
-                this.setDirection(Direction.West);
+                this.setDirection(Direction.W);
             } else if (angularDirection >= -112.5 && angularDirection < -67.5) {
-                this.setDirection(Direction.NorthWest);
+                this.setDirection(Direction.NW);
             } else if (angularDirection >= -67.5 && angularDirection < -22.5) {
-                this.setDirection(Direction.North);
+                this.setDirection(Direction.N);
             } else if (angularDirection >= -22.5 && angularDirection < 22.5) {
-                this.setDirection(Direction.NorthEast);
+                this.setDirection(Direction.NE);
             } else if (angularDirection >= 22.5 && angularDirection < 67.5) {
-                this.setDirection(Direction.East);
+                this.setDirection(Direction.E);
             } else if (angularDirection >= 67.5 && angularDirection < 112.5) {
-                this.setDirection(Direction.SouthEast);
+                this.setDirection(Direction.SE);
             } else if (angularDirection >= 112.5 && angularDirection < 157.5) {
-                this.setDirection(Direction.South);
+                this.setDirection(Direction.S);
             } else if (angularDirection >= 157.5 && angularDirection <= 180) {
-                this.setDirection(Direction.SouthWest);
+                this.setDirection(Direction.SW);
             }
 
             oldPos = new Vector2(this.getPosX(), this.getPosY());
@@ -243,10 +249,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		for (Direction direction : Direction.values()) {
 			String[] frames = new String[frameCount];
 			for (int i=1; i<=frameCount; i++) {
-				frames[i-1] = playerType + "_" + state.name() + "_" + direction.toString() + "_" + i;
+				frames[i-1] = playerType + "_" + state.toString() + "_" + direction.name() + "_" + i;
 			}
 			animations.put(direction, new TimeTriggerAnimation(animationTime, frames, completionHandler));
 		}
+		
 		return animations;
     }
 
@@ -261,7 +268,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		stopCurrentAnimation();
 		this.currentAnimation = animation;
 		startCurrentAniamation();
-		LOGGER.info("Changed animation to " + this.getDirection().name());
+		LOGGER.info("Changed animation to " + this.getDirection().toString());
 	}
 
 
@@ -298,8 +305,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     @Override
     public boolean damage(float amount) {
-        if (!this.hasState(PlayerState.damaged)) {
-            this.setState(PlayerState.damaged);
+        if (!this.hasState(PlayerState.DAMAGED)) {
+            this.setState(PlayerState.DAMAGED);
             this.updateSprites();
         }
         return super.damage(amount);
@@ -497,8 +504,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         float x = this.getPosX();
         float y = this.getPosY();
 
-        x = currentDirection == Direction.SouthWest ? x - 1 : x + 1;
-        y = currentDirection == Direction.SouthWest ? y - 2 : y + 2;
+        x = currentDirection == Direction.SW ? x - 1 : x + 1;
+        y = currentDirection == Direction.SW ? y - 2 : y + 2;
 
         // Only toss an item if there are items to toss
         if (this.getInventory().updateQuantity(item, -1) == 1) {

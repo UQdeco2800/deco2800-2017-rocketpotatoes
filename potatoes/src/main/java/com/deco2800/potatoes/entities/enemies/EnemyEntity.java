@@ -259,23 +259,23 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		double angularDirection = Math.atan2(this.getPosY() - oldPos.y, this.getPosX() - oldPos.x) * (180 / Math.PI);
 
 		if (angularDirection >= -180 && angularDirection < -157.5) {
-			this.setDirection(Direction.SouthWest);
+			this.setDirection(Direction.SW);
 		} else if (angularDirection >= -157.5 && angularDirection < -112.5) {
-			this.setDirection(Direction.West);
+			this.setDirection(Direction.W);
 		} else if (angularDirection >= -112.5 && angularDirection < -67.5) {
-			this.setDirection(Direction.NorthWest);
+			this.setDirection(Direction.NW);
 		} else if (angularDirection >= -67.5 && angularDirection < -22.5) {
-			this.setDirection(Direction.North);
+			this.setDirection(Direction.N);
 		} else if (angularDirection >= -22.5 && angularDirection < 22.5) {
-			this.setDirection(Direction.NorthEast);
+			this.setDirection(Direction.NE);
 		} else if (angularDirection >= 22.5 && angularDirection < 67.5) {
-			this.setDirection(Direction.East);
+			this.setDirection(Direction.E);
 		} else if (angularDirection >= 67.5 && angularDirection < 112.5) {
-			this.setDirection(Direction.SouthEast);
+			this.setDirection(Direction.SE);
 		} else if (angularDirection >= 112.5 && angularDirection < 157.5) {
-			this.setDirection(Direction.South);
+			this.setDirection(Direction.S);
 		} else if (angularDirection >= 157.5 && angularDirection <= 180) {
-			this.setDirection(Direction.SouthWest);
+			this.setDirection(Direction.SW);
 		}
 		oldPos = new Vector2(this.getPosX(), this.getPosY());
 	}
@@ -285,7 +285,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	public void updateSprites() {
 		String type = getEnemyType();
-		String direction = "_" + getEnemyDirection().toString();
+		String direction = "_" + getEnemyDirection().name();
 
 		this.setTexture(type + direction);
 	}
