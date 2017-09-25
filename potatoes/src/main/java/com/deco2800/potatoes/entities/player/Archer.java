@@ -31,15 +31,15 @@ public class Archer extends Player {
     		super(posX, posY);
     		this.movementSpeed = 0.07f;
     		this.currentDirection = Direction.SE;
-        this.currentState = PlayerState.idle;
+        this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;
     }
     
-    private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.walk, 8, 750, null);
-    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.attack, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.death, 3, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", PlayerState.interact, 5, 400, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.WALK, 8, 750, null);
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.ATTACK, 5, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.DEATH, 3, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", PlayerState.INTERACT, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
     		clearState();
@@ -58,19 +58,19 @@ public class Archer extends Player {
     public void updateSprites() {
     		super.updateSprites();
 		switch (this.getState()) {
-        case idle:
+        case IDLE:
     			this.setAnimation(archerIdleAnimations.get(this.getDirection()));
     			break;
-        case walk:
+        case WALK:
 			this.setAnimation(archerWalkAnimations.get(this.getDirection()));
 			break;
-        case attack:
+        case ATTACK:
 			this.setAnimation(archerAttackAnimations.get(this.getDirection()));
 			break;
-        case damaged:
+        case DAMAGED:
 			this.setAnimation(archerDamagedAnimations.get(this.getDirection()));
 			break;
-        case interact:
+        case INTERACT:
         		this.setAnimation(archerInteractAnimations.get(this.getDirection()));
         		break;
         default:
@@ -82,7 +82,7 @@ public class Archer extends Player {
     @Override
     public void attack() {
 	    // Archer attack
-    		if (this.setState(PlayerState.attack)) {
+    		if (this.setState(PlayerState.ATTACK)) {
     			
     			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
     			
@@ -170,7 +170,7 @@ public class Archer extends Player {
     @Override
     public void interact() {
     		super.interact();
-	    	if (this.setState(PlayerState.interact)) {
+	    	if (this.setState(PlayerState.INTERACT)) {
 	    		// Archer interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
 	    	}

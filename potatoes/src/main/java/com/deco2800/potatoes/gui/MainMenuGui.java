@@ -267,7 +267,7 @@ public class MainMenuGui extends Gui {
         startCharacterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                GameManager.get().getManager(PlayerManager.class).setPlayerType(PlayerType.valueOf(startCharacterSelect.getSelected()));
+                GameManager.get().getManager(PlayerManager.class).setPlayerType(PlayerType.valueOf(startCharacterSelect.getSelected().toUpperCase()));
             }
         });
 

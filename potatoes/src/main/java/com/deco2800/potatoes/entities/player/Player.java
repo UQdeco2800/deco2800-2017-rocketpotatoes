@@ -53,8 +53,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private boolean isWalking = false;		// Used to determine if player is walking
     protected Direction currentDirection; 		// The direction the player faces
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
-
-    public enum PlayerState { idle, walk, attack, damaged, death, interact };    // The states a player may take
+    
+    /* The states a player may take */
+    public enum PlayerState { IDLE, WALK, ATTACK, DAMAGED, DEATH, INTERACT;
+    		@Override
+    		public String toString() {
+    			return super.toString().toLowerCase();
+    		}
+    };    
     protected PlayerState currentState;    	// The current states of the player, set to idle by default
     protected TimeAnimation currentAnimation;	// The current animation of the player
 
@@ -77,7 +83,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
         this.currentDirection = Direction.SE;
-        this.currentState = PlayerState.idle;
+        this.currentState = PlayerState.IDLE;
         addResources();	//Initialise the inventory with the valid resources
     }
 
@@ -94,7 +100,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public boolean setState(PlayerState state) {
         if (!this.currentState.equals(state)) {
-            if (this.currentState.equals(PlayerState.idle) | this.currentState.equals(PlayerState.walk)) {
+            if (this.currentState.equals(PlayerState.IDLE) | this.currentState.equals(PlayerState.WALK)) {
                 this.currentState = state;
                 stateChanged();
             } else {
@@ -120,7 +126,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * Sets the player's state to the default state; that being idle.
      */
     public void clearState() {
-        this.currentState = PlayerState.idle;
+        this.currentState = PlayerState.IDLE;
         stateChanged();
     }
 
@@ -131,13 +137,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     private void stateChanged() {
     		// Executes when the player stop walking
-    		if (isWalking & !this.getState().equals(PlayerState.walk)) {
+    		if (isWalking & !this.getState().equals(PlayerState.WALK)) {
     			this.walk(false);
     			isWalking = false;
     		}
     			
     		// Executes when the player starts walking
-    		if (!isWalking & this.getState().equals(PlayerState.walk)) {
+    		if (!isWalking & this.getState().equals(PlayerState.WALK)) {
     			this.walk(true);
     			isWalking = true;
     		}
@@ -181,10 +187,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     private void updateDirection() {
         if (this.getPosX() - oldPos.x == 0 && this.getPosY() - oldPos.y == 0) {
-            this.setState(PlayerState.idle);
+            this.setState(PlayerState.IDLE);
         } else {
 
-        	this.setState(PlayerState.walk);
+        	this.setState(PlayerState.WALK);
         		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
         				this.getPosX() - oldPos.x) * (180 / Math.PI);
 
@@ -243,10 +249,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		for (Direction direction : Direction.values()) {
 			String[] frames = new String[frameCount];
 			for (int i=1; i<=frameCount; i++) {
-				frames[i-1] = playerType + "_" + state.name() + "_" + direction.name() + "_" + i;
+				frames[i-1] = playerType + "_" + state.toString() + "_" + direction.name() + "_" + i;
 			}
 			animations.put(direction, new TimeTriggerAnimation(animationTime, frames, completionHandler));
 		}
+		
 		return animations;
     }
 
@@ -298,8 +305,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     @Override
     public boolean damage(float amount) {
-        if (!this.hasState(PlayerState.damaged)) {
-            this.setState(PlayerState.damaged);
+        if (!this.hasState(PlayerState.DAMAGED)) {
+            this.setState(PlayerState.DAMAGED);
             this.updateSprites();
         }
         return super.damage(amount);
