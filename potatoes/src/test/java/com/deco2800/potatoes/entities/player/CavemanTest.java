@@ -39,13 +39,13 @@ public class CavemanTest {
 				PlayerState.idle, 1, 1, null);
 		
 		// Test setting idle animation to north
-		caveman.setAnimation(animationMap.get(Direction.North));
+		caveman.setAnimation(animationMap.get(Direction.N));
 		
 		// Test setting idle animation to south
-		caveman.setAnimation(animationMap.get(Direction.South));
+		caveman.setAnimation(animationMap.get(Direction.S));
 				
 		// Test setting idle animation to south west
-		caveman.setAnimation(animationMap.get(Direction.SouthWest));
+		caveman.setAnimation(animationMap.get(Direction.SW));
 	}
 
 }

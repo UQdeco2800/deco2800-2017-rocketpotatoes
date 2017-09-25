@@ -76,7 +76,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         this.speedx = 0.0f;
         this.speedy = 0.0f;
         this.movementSpeed = 0.075f;
-        this.currentDirection = Direction.SouthEast;
+        this.currentDirection = Direction.SE;
         this.currentState = PlayerState.idle;
         addResources();	//Initialise the inventory with the valid resources
     }
@@ -171,7 +171,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private void setDirection(Direction direction) {
         if (this.currentDirection != direction) {
             this.currentDirection = direction;
-            LOGGER.info("Set player direction to " + direction.name());
+            LOGGER.info("Set player direction to " + direction.toString());
             updateSprites();
         }
     }
@@ -190,23 +190,23 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
 
             if (angularDirection >= -180 && angularDirection < -157.5) {
-                this.setDirection(Direction.SouthWest);
+                this.setDirection(Direction.SW);
             } else if (angularDirection >= -157.5 && angularDirection < -112.5) {
-                this.setDirection(Direction.West);
+                this.setDirection(Direction.W);
             } else if (angularDirection >= -112.5 && angularDirection < -67.5) {
-                this.setDirection(Direction.NorthWest);
+                this.setDirection(Direction.NW);
             } else if (angularDirection >= -67.5 && angularDirection < -22.5) {
-                this.setDirection(Direction.North);
+                this.setDirection(Direction.N);
             } else if (angularDirection >= -22.5 && angularDirection < 22.5) {
-                this.setDirection(Direction.NorthEast);
+                this.setDirection(Direction.NE);
             } else if (angularDirection >= 22.5 && angularDirection < 67.5) {
-                this.setDirection(Direction.East);
+                this.setDirection(Direction.E);
             } else if (angularDirection >= 67.5 && angularDirection < 112.5) {
-                this.setDirection(Direction.SouthEast);
+                this.setDirection(Direction.SE);
             } else if (angularDirection >= 112.5 && angularDirection < 157.5) {
-                this.setDirection(Direction.South);
+                this.setDirection(Direction.S);
             } else if (angularDirection >= 157.5 && angularDirection <= 180) {
-                this.setDirection(Direction.SouthWest);
+                this.setDirection(Direction.SW);
             }
 
             oldPos = new Vector2(this.getPosX(), this.getPosY());
@@ -243,7 +243,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 		for (Direction direction : Direction.values()) {
 			String[] frames = new String[frameCount];
 			for (int i=1; i<=frameCount; i++) {
-				frames[i-1] = playerType + "_" + state.name() + "_" + direction.toString() + "_" + i;
+				frames[i-1] = playerType + "_" + state.name() + "_" + direction.name() + "_" + i;
 			}
 			animations.put(direction, new TimeTriggerAnimation(animationTime, frames, completionHandler));
 		}
@@ -261,7 +261,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     		stopCurrentAnimation();
 		this.currentAnimation = animation;
 		startCurrentAniamation();
-		LOGGER.info("Changed animation to " + this.getDirection().name());
+		LOGGER.info("Changed animation to " + this.getDirection().toString());
 	}
 
 
@@ -497,8 +497,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         float x = this.getPosX();
         float y = this.getPosY();
 
-        x = currentDirection == Direction.SouthWest ? x - 1 : x + 1;
-        y = currentDirection == Direction.SouthWest ? y - 2 : y + 2;
+        x = currentDirection == Direction.SW ? x - 1 : x + 1;
+        y = currentDirection == Direction.SW ? y - 2 : y + 2;
 
         // Only toss an item if there are items to toss
         if (this.getInventory().updateQuantity(item, -1) == 1) {

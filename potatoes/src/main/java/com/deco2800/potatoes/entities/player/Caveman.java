@@ -30,7 +30,7 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
     		super(posX, posY);
     		this.movementSpeed = 0.08f;
-    		this.currentDirection = Direction.SouthEast;
+    		this.currentDirection = Direction.SE;
         this.currentState = PlayerState.idle;
         //this.currentAnimation = ;
     }
@@ -101,29 +101,29 @@ public class Caveman extends Player {
     	        		float targetPosY = target.get().getPosY();
     	            
     	        		switch (this.getDirection()) {
-    	        		case North:
+    	        		case N:
     	        			break;
-    	        		case NorthEast:
+    	        		case NE:
     	        			pPosY -= 1;
     	        			pPosX += 1.5;
     	        			break;
-    	        		case East:
+    	        		case E:
     	        			pPosY -= 1;
     	        			pPosX += 1.5;
     	        			break;
-    	        		case SouthEast:
+    	        		case SE:
     	        			pPosX += 1;
     	        			break;
-    	        		case South:
+    	        		case S:
     	        			pPosX += 1.2;
     	        			break;
-    	        		case SouthWest:
+    	        		case SW:
     	        			pPosY += 1;
     	        			pPosX += 1;
     	        			break;
-    	        		case West:
+    	        		case W:
     	        			break;
-    	        		case NorthWest:
+    	        		case NW:
     	        			break;
     	        		default:
     	        			break;

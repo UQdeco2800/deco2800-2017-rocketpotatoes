@@ -66,11 +66,11 @@ public class PlayerTest {
 		player.onTick(tick++); 			// Tick the player
         player.setPosition(10, 10); 	// Move the player in East Direction
         player.onTick(tick++);
-        assertTrue(player.getDirection().equals(Direction.East));
+        assertTrue(player.getDirection().equals(Direction.E));
         
         player.setPosition(15, 5); 	// Move the player in North Direction
         player.onTick(tick++); 
-        assertTrue(player.getDirection().equals(Direction.North));
+        assertTrue(player.getDirection().equals(Direction.N));
 	}
 	
 	/**
