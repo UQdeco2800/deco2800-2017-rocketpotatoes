@@ -2,7 +2,6 @@ package com.deco2800.potatoes.renderering.particles.types;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.renderering.particles.Particle;
 
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public class BasicParticleType extends ParticleType {
             p.x += p.vector.x * deltaTime;
             p.y += p.vector.y * deltaTime;
             p.lifeTime -= deltaTime;
-            p.rotation += this.rotationSpeed - (this.rotationSpeed  * 2.0f) * (p.hashCode() % 2);
+            p.rotation += this.rotationSpeed - this.rotationSpeed  * 2.0f * (p.hashCode() % 2);
 
             // Delete expired
             if (p.lifeTime <= 0.0f) {

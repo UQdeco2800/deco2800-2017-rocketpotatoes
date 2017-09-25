@@ -71,7 +71,7 @@ public class BuoyantParticleType extends ParticleType {
             p.x += p.vector.x * deltaTime;
             p.y += p.vector.y * deltaTime;
             p.lifeTime -= deltaTime;
-            p.rotation += this.rotationSpeed - (this.rotationSpeed  * 2.0f) * (p.hashCode() % 2);
+            p.rotation += this.rotationSpeed - this.rotationSpeed  * 2.0f * (p.hashCode() % 2);
 
             // Buoyant logic (adjust direction of vector to be up)
             p.vector.setAngle(90.0f);

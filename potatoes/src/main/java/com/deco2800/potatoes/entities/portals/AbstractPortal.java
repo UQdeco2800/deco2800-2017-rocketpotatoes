@@ -5,6 +5,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.UncenteredCircle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.player.Player;
@@ -13,7 +15,6 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 
@@ -52,15 +53,14 @@ public class AbstractPortal extends MortalEntity implements Tickable {
      *
      * @param posX    the x coordinate of the spite
      * @param posY    the y coordinate of the sprite
-     * @param posZ    the z coordinate of the sprite
      * @param texture the texture which represents the portal
      */
-    public AbstractPortal(float posX, float posY, float posZ, String texture) {
-        super(posX, posY, posZ, 3, 3, 3, texture, 999);
+    public AbstractPortal(float posX, float posY, String texture) {
+        this(posX, posY, texture, 999);
     }
 
-    public AbstractPortal(float posX, float posY, float posZ, String texture, float maxHealth) {
-        super(posX, posY, posZ, 3, 3, 3, texture, maxHealth);
+    public AbstractPortal(float posX, float posY, String texture, float maxHealth) {
+        super(new UncenteredCircle2D(posX, posY, 2.11f), 3, 3, texture, maxHealth);
     }
 
     /**
@@ -74,7 +74,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
         float yPos = getPosY();
         boolean collided = false;
 
-        Box3D newPos = getBox3D();
+        CollisionMask newPos = getMask();
         newPos.setX(xPos);
         newPos.setY(yPos);
 
@@ -92,7 +92,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
                 newPos.setX(xPos + POSITIONS[i][0]);
                 newPos.setY(yPos + POSITIONS[i][1]);
                 // Player next to this resource
-                if (newPos.overlaps(entity.getBox3D())) {
+                if (newPos.overlaps(entity.getMask())) {
                     collided = true;
 
                 }
@@ -129,7 +129,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
                 //add player to new world
                 GameManager.get().getWorld().addEntity(playerManager.getPlayer());
                 //set player to be next to the portal
-                playerManager.getPlayer().setPosition(18, 16, 0);
+                playerManager.getPlayer().setPosition(18, 16);
 
                 // Bring up portal interface
             } catch (Exception e) {

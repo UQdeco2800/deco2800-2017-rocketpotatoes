@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -7,7 +9,6 @@ import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Path;
 
 /**
@@ -22,10 +23,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final EnemyProperties STATS = initStats();
 	private static final String enemyType = "squirrel";
 
-	private static final float SPEED = 0.12f;
+	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
-	private Box3D target = null;
+	private CollisionMask target = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
@@ -36,17 +37,18 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * Default constructor for serialization
 	 */
 	public Squirrel() {
+		this(0, 0);
 	}
 
-	/***
+	/**
 	 * Constructs a new Squirrel entity with pre-defined size and rendering lengths to match.
 	 *
 	 * @param posX The x coordinate the created squirrel will spawn from
 	 * @param posY The y coordinate the created squirrel will spawn from
-	 * @param posZ The z coordinate the created squirrel will spawn from
 	 */
-	public Squirrel(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 0.47f, 0.47f, 0.47f, 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+	public Squirrel(float posX, float posY) {
+        super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+		Squirrel.goal = goal;
 		this.path = null;
 	}
 
@@ -63,39 +65,38 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-		/*
-		//check collision
-		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && this.getBox3D().overlaps(entity.getBox3D())) {
-				//collided with wall
-				path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
-				target = path.pop();
-				break;
-			}
-		}
-		*/
 
-		// check that we actually have a path
-		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(this.getBox3D(), playerManager.getPlayer().getBox3D());
+        // check paths
+
+        // check that we actually have a path
+        if (path == null || path.isEmpty()) {
+            path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
+        }
+
+
+
+		//check if last node in path matches player
+		if(!path.goal().overlaps(playerManager.getPlayer().getMask())) {
+			path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
 		}
 
 		//check if close enough to target
-		if (target != null && target.overlaps(this.getBox3D())) {
+		if (target != null && target.overlaps(this.getMask())) {
 			target = null;
 		}
 
 		//check if the path has another node
 		if (target == null && !path.isEmpty()) {
 			target = path.pop();
+
 		}
 
 		float targetX;
 		float targetY;
 
 		if (target == null) {
-			target = playerManager.getPlayer().getBox3D();
-		}
+            target = playerManager.getPlayer().getMask();
+		} 
 
 		targetX = target.getX();
 		targetY = target.getY();
@@ -103,7 +104,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
 
-		float angle = (float) (Math.atan2(deltaY, deltaX)) + (float) (Math.PI);
+		float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
 
 		float changeX = (float) (SPEED * Math.cos(angle));
 		float changeY = (float) (SPEED * Math.sin(angle));
@@ -123,6 +124,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	/**
 	 * @return String of this type of enemy (ie 'squirrel').
 	 * */
+	@Override
 	public String getEnemyType() {
 		return enemyType;
 	}

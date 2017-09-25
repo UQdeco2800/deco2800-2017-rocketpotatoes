@@ -6,7 +6,7 @@ public class Point2D implements CollisionMask{
     private float y;
 
     /**
-     * Default constructor for the purporses of serialization.
+     * Default constructor for the purposes of serialization.
      */
     public Point2D() {
         //Empty constructor because Sonar
@@ -25,6 +25,24 @@ public class Point2D implements CollisionMask{
         this.y = y;
     }
 
+    /**
+     * Makes a copy of the current Point2D.
+     *
+     * @return A copy of the current Point2D
+     */
+    @Override
+    public CollisionMask copy() {
+        return new Point2D(x, y);
+    }
+
+    /**
+     * Checks if this collision mask overlaps another collision masks.
+     * This function is symmetric.
+     * Touching the edge is not considered as overlapping.
+     *
+     * @param other The other collision mask.
+     * @return True iff the collision masks are overlapping.
+     */
     @Override
     public boolean overlaps(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -34,6 +52,13 @@ public class Point2D implements CollisionMask{
         }
     }
 
+    /**
+     * Finds the minimum straight-line distance between this collision mask and another collision mask.
+     * This function is symmetric.
+     *
+     * @param other     The other collision mask.
+     * @return  The distance. If the collision masks overlap, a negative number is returned.
+     */
     @Override
     public float distance(CollisionMask other) {
         if (other instanceof Point2D) {
@@ -49,6 +74,16 @@ public class Point2D implements CollisionMask{
         }
     }
 
+    /**
+     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
+     * Returns 0 if intersecting.
+     *
+     * @param x1    The x coord of point 1 of the line
+     * @param y1    The y coord of point 1 of the line
+     * @param x2    The x coord of point 2 of the line
+     * @param y2    The y coord of point 2 of the line
+     * @return      The minimum straight-line distance
+     */
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
         // don't sqrt anything you don't have to
@@ -65,45 +100,37 @@ public class Point2D implements CollisionMask{
     }
 
 
-
-
     /**
-     * Returns the x coordinate.
-     * 
+     * Returns the x coordinate at the centre of the mask.
+     *
      * @return Returns the x coordinate.
      */
-    public float getX() {
-        return x;
-    }
+    @Override
+    public float getX() { return this.x; }
 
     /**
-     * Sets the x coordinate.
-     * 
-     * @param x
-     *            The new x coordinate.
+     * Sets the x coordiante at the centre of the mask.
+     *
+     * @param x The new x coordinate.
      */
-    public void setX(float x) {
-        this.x = x;
-    }
+    @Override
+    public void setX(float x) { this.x = x; }
 
     /**
-     * Returns the y coordinate.
-     * 
+     * Returns the y coordinate at the centre of the mask.
+     *
      * @return Returns the y coordinate.
      */
-    public float getY() {
-        return y;
-    }
+    @Override
+    public float getY() { return this.y; }
 
     /**
-     * Sets the y coordinate.
-     * 
-     * @param y
-     *            The new y coordinate.
+     * Sets the y coordinate at the centre of the mask.
+     *
+     * @param y The new y coordinate.
      */
-    public void setY(float y) {
-        this.y = y;
-    }
+    @Override
+    public void setY(float y) { this.y = y; }
 
     @Override
     public int hashCode() {
@@ -131,6 +158,12 @@ public class Point2D implements CollisionMask{
         return Float.compare(point2D.y, y) == 0;
     }
 
+    /**
+     * Returns the variables of this Point2D in the form:
+     * "<x>, <y>"
+     *
+     * @return This Point2D's parameters
+     */
     @Override
     public String toString() {
         return this.x + ", " + this.y;

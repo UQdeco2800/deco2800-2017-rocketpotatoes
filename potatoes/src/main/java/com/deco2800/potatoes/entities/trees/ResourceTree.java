@@ -45,11 +45,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 */
-	public ResourceTree(float posX, float posY, float posZ) {
-		super(posX, posY, posZ, 1f, 1f, 1f);
+	public ResourceTree(float posX, float posY) {
+		super(posX, posY, 1f, 1f);
 		this.gatherCount = 0;
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
@@ -65,15 +63,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 * @param gatherType
 	 *            The type of resource gathered by the tree.
 	 * @param gatherCapacity
 	 *            maximum number of resources that can be held by the tree.
 	 */
-	public ResourceTree(float posX, float posY, float posZ, Resource gatherType, int gatherCapacity) {
-		super(posX, posY, posZ, 1f, 1f, 1f);
+	public ResourceTree(float posX, float posY, Resource gatherType, int gatherCapacity) {
+		super(posX, posY, 1f, 1f);
 		this.gatherCount = 0;
 		this.setGatherCapacity(gatherCapacity);
 		if (gatherType == null) {
@@ -87,7 +83,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	@Override
 	public ResourceTree clone() {
-		return new ResourceTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.gatherType, this.gatherCapacity);
+		return new ResourceTree(this.getPosX(), this.getPosY(), this.gatherType, this.gatherCapacity);
 	}
 
 	@Override

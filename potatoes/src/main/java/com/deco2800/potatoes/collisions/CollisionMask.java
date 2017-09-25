@@ -3,22 +3,33 @@ package com.deco2800.potatoes.collisions;
 public interface CollisionMask {
 
     /**
+     * Makes a copy of the current collision mask.
+     *
+     * @return
+     *          A copy of the current collision mask.
+     */
+    CollisionMask copy();
+
+    /**
      * Checks if this collision mask overlaps another collision masks.
-     * 
+     * This function is symmetric.
+	 * Touching the edge is not considered as overlapping.
+	 *
      * @param other
      *              The other collision mask.
      * @return
-     *          True if the two collision masks overlap, otherwise false.
+     *          True iff the two collision masks overlap.
      */
     boolean overlaps(CollisionMask other);
 
     /**
-     * Finds the minimum edge-to-edge distance between this collision mask and another collision mask.
+     * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
+	 * This function is symmetric.
      * 
      * @param other
      *              The other collision mask.
      * @return
-     *          The distance. If the two colision masks overlap, a negative number should be returned.
+     *          The distance. If the collision masks overlap, a negative number is returned.
      */
     float distance(CollisionMask other);
 
@@ -37,7 +48,7 @@ public interface CollisionMask {
      * @param y2
      *              The ending Y coordinate of the line being checked.
      * @return
-     *          If the line intersects the collision mask, then a negative number should be returned. If the line does
+     *          If the line intersects the collision mask, then a negative number is returned. If the line does
      *          not intersect the collision mask, then the number returned should be the length of a perpendicular line
      *          as seen above.
      */

@@ -1,8 +1,11 @@
 package com.deco2800.potatoes.managers;
 
+
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.util.Box3D;
+import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,7 +17,6 @@ import static org.mockito.Mockito.*;
 import org.junit.After;
 import org.junit.Before;
 
-import com.deco2800.potatoes.worlds.World;
 
 import java.util.HashMap;
 
@@ -22,8 +24,8 @@ public class PathManagerTest {
 
     private class TestableBlockingEntity extends AbstractEntity {
 
-        public TestableBlockingEntity(float posX, float posY, float posZ, float xLength, float yLength, float zLength) {
-            super(posX, posY, posZ, xLength, yLength, zLength, "texture");
+        public TestableBlockingEntity(float posX, float posY, float xLength, float yLength) {
+            super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, "texture");
         }
 
     }
@@ -37,10 +39,8 @@ public class PathManagerTest {
         TestableBlockingEntity blockingEntity = new TestableBlockingEntity(
                 50f,
                 50f,
-                0f,
                 30f,
-                5f,
-                1f
+                5f
                 );
         blockingEntity.setStaticCollideable(true);
         HashMap<Integer, AbstractEntity> entityHashMap = new HashMap<>();
@@ -52,43 +52,32 @@ public class PathManagerTest {
 
     @After
     public void cleanUp() {
-    	GameManager.get().clearManagers();
+        GameManager.get().clearManagers();
     }
-    
+
     @Test
     public void reachesGoal() {
         PathManager m = new PathManager();
-        Box3D start = new Box3D(0, 0, 0, 1, 1, 1);
-        Box3D finish = new Box3D(2, 2, 2, 1, 1, 1);
+        Point2D start = new Point2D(0, 0);
+        Point2D finish = new Point2D(2, 2);
 
         Path p = m.generatePath(start, finish);
 
-        assertThat("Start is not the first point of path",
-                start.equals(p.nextPoint()), is(equalTo(true)));
-        assertThat("Finish is not the last point of path",
-                finish.equals(p.goal()), is(equalTo(true)));
+
+        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
 
     }
 
     @Test
     public void obstacleCheck() {
         PathManager m = new PathManager();
-        Box3D start = new Box3D(50, 10, 0, 1, 1, 1);
-        Box3D finish = new Box3D(50, 90, 0, 1, 1, 1);
+        Point2D start = new Point2D(50, 10);
+        Point2D finish = new Point2D(50, 90);
 
         Path p = m.generatePath(start, finish);
 
-        assertThat("Start is not the first point of path",
-                start.equals(p.nextPoint()), is(equalTo(true)));
-//        assertThat("Finish is not the last point of path",
-//                finish.equals(p.goal()), is(equalTo(true)));
+
+        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
     }
 
-    @Test
-    public void leakTest() {
-        int rounds = 1;
-        for (int i = 0; i < rounds; i++) {
-          obstacleCheck();
-        }
-    }
 }

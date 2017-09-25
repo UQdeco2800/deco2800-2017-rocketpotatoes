@@ -3,7 +3,6 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.screens.GameScreen;
@@ -112,7 +111,7 @@ public class WorldChangeGui extends Gui {
                 // the current player
                 Player player = playerManager.getPlayer();
                 //set player to be next to the portal
-				playerManager.getPlayer().setPosition(18, 16, 0);
+				playerManager.getPlayer().setPosition(18, 16);
                 // add player back into the world
                 GameManager.get().getWorld().addEntity(player);
                 
@@ -184,7 +183,7 @@ public class WorldChangeGui extends Gui {
         // add player to new world
         GameManager.get().getWorld().addEntity(playerManager.getPlayer());
         // set player to be next to the portal
-        playerManager.getPlayer().setPosition(9, 4, 0);
+        playerManager.getPlayer().setPosition(9, 4);
 
         // hide the world change gui
         hide();

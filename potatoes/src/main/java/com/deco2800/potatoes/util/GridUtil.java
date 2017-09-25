@@ -197,7 +197,7 @@ public class GridUtil {
 			for (int x = size; x < result.length; x += size) {
 				for (int y = size; y < result[0].length; y += size) {
 					// Confusingly named diamond step
-					sampleStep(result, SQUARE_SAMPLES, x, y, size, (float) (rough * (Math.random())));
+					sampleStep(result, SQUARE_SAMPLES, x, y, size, (float) (rough * Math.random()));
 				}
 			}
 			for (int x = 0; x < result.length - size; x += size) {
@@ -213,12 +213,12 @@ public class GridUtil {
 		}
 		// Hacky fix, reiterate over edges
 		for (int x = 0; x < result.length; x++) {
-			sampleStep(result, DIAMOND_SAMPLES, x, 0, 1, (float) (rough * (Math.random())));
-			sampleStep(result, DIAMOND_SAMPLES, x, result.length - 1, 1, (float) (rough * (Math.random())));
+			sampleStep(result, DIAMOND_SAMPLES, x, 0, 1, (float) (rough * Math.random()));
+			sampleStep(result, DIAMOND_SAMPLES, x, result.length - 1, 1, (float) (rough * Math.random()));
 		}
 		for (int y = 0; y < result.length; y++) {
-			sampleStep(result, DIAMOND_SAMPLES, 0, y, 1, (float) (rough * (Math.random())));
-			sampleStep(result, DIAMOND_SAMPLES, result.length - 1, y, 1, (float) (rough * (Math.random())));
+			sampleStep(result, DIAMOND_SAMPLES, 0, y, 1, (float) (rough * Math.random()));
+			sampleStep(result, DIAMOND_SAMPLES, result.length - 1, y, 1, (float) (rough * Math.random()));
 		}
 		return result;
 	}
@@ -299,8 +299,8 @@ public class GridUtil {
 		int count = 0;
 		for (int[] is : sampleType) {
 			// Sample using the given pattern
-			int sampleX = (int) x + is[0] * size;
-			int sampleY = (int) y + is[1] * size;
+			int sampleX = x + is[0] * size;
+			int sampleY = y + is[1] * size;
 			// We're adding something so increase count for average
 			count++;
 			sum += get(array, sampleX, sampleY);

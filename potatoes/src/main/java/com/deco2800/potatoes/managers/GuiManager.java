@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deco2800.potatoes.gui.Gui;
-import com.deco2800.potatoes.gui.TreeShopGui;
 
 public class GuiManager extends Manager {
     private List<Gui> gui;
@@ -41,11 +40,12 @@ public class GuiManager extends Manager {
      * @param type the type e.g. 'Type.class'
      * @return the gui element, or null
      */
-    public Gui getGui(Class<?> type) {
+    @SuppressWarnings("unchecked")
+	public <G extends Gui> G getGui(Class<G> type) {
         /* Find gui */
         for (Gui g : gui) {
             if (g.getClass() == type) {
-                return g;
+                return (G) g;
             }
         }
 

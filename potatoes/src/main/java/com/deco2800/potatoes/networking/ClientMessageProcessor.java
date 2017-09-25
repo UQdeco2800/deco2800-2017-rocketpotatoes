@@ -116,7 +116,7 @@ public class ClientMessageProcessor {
         client.getClients().set(m.getId(), m.getName());
 
         // Make the player
-        Player p = new Player(10 + m.getId(), 10 + m.getId(), 0);
+        Player p = new Player(10 + m.getId(), 10 + m.getId());
 
         try {
             GameManager.get().getWorld().addEntity(p, m.getId());
@@ -249,7 +249,7 @@ public class ClientMessageProcessor {
      */
     private static void chatMessage(NetworkClient client, Network.HostChatMessage m) {
         GuiManager g = GameManager.get().getManager(GuiManager.class);
-        ChatGui c = ((ChatGui) g.getGui(ChatGui.class));
+        ChatGui c = g.getGui(ChatGui.class);
         if (c != null) {
             c.addMessage(
                     client.getClients().get(m.getId()) + " (" + m.getId() + ")",

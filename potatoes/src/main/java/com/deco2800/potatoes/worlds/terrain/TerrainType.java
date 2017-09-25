@@ -67,10 +67,10 @@ public class TerrainType {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((grass == null) ? 0 : grass.hashCode());
-		result = prime * result + ((rock == null) ? 0 : rock.hashCode());
-		result = prime * result + ((slopes == null) ? 0 : slopes.hashCode());
-		result = prime * result + ((water == null) ? 0 : water.hashCode());
+		result = prime * result + (grass == null ? 0 : grass.hashCode());
+		result = prime * result + (rock == null ? 0 : rock.hashCode());
+		result = prime * result + (slopes == null ? 0 : slopes.hashCode());
+		result = prime * result + (water == null ? 0 : water.hashCode());
 		return result;
 	}
 

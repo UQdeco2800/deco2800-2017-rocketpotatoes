@@ -21,7 +21,7 @@ public class ProjectileTreeTest {
 	@Before
 	public void setup() {
 		GameManager.get().setWorld(new TestWorld());
-		testTree = new ProjectileTree(10, 10, 0, RELOAD, RANGE, HEALTH);
+		testTree = new ProjectileTree(10, 10, RELOAD, RANGE, HEALTH);
 		GameManager.get().getWorld().addEntity(testTree);
 	}
 	

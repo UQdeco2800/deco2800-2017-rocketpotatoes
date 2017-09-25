@@ -3,18 +3,15 @@ package com.deco2800.potatoes.entities.health;
 import java.util.Map;
 import java.util.Random;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 
 /**
  * 
@@ -54,7 +51,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			} while (hasCollisions(param, (int) newPosX, (int) newPosY));
 			
 			// sets the location of the player to respawn
-			param.setPosition(newPosX, newPosY, 0);
+			param.setPosition(newPosX, newPosY);
 
 			try {
 				// play respawn sound effect if player is respawning
@@ -66,7 +63,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			}
 		} else if (param instanceof EnemyEntity) {
 			// sets the location of the EnemyEntity to respawn
-			param.setPosition(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10, 0);
+			param.setPosition(10 + random.nextFloat() * 10, 10 + random.nextFloat() * 10);
 		}
 
 		// sets players health to maximum health
@@ -76,7 +73,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 	}
 
 	/**
-	 * Checks the respawn location for any collisions with other entities.
+	 * Checks the respawn location for any impassable terrain or collisions with other entities.
 	 * 
 	 * @param param
 	 *            the mortal entity
@@ -84,24 +81,30 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 	 *            the x location of the param
 	 * @param y
 	 *            the y location of the param
-	 * @return true if collision detected, else false.
+	 * @return true if collision or impassable terrain detected, else false.
 	 */
 	private boolean hasCollisions(MortalEntity param, int x, int y) {
+        boolean collided = false;
+
 		// create a box3D and set the location
-		Box3D newPos = param.getBox3D();
+		CollisionMask newPos = param.getMask();
 		newPos.setX(x);
 		newPos.setY(y);
 		// get all entities on the current map
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
+		// check if MortalEntity is on a impassable terrain (0f if impassable)
+		float epsilon = 0.00000001f;
+		float speedScale = GameManager.get().getWorld().getTerrain(x, y).getMoveScale();
+		if (Math.abs(speedScale) < epsilon) {
+			return true;
+		}
 		// check for collisions
 		for (AbstractEntity entity : entities.values()) {
-            if (!param.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Projectile) && !(entity instanceof Effect)
-                    && newPos.overlaps(entity.getBox3D())) {
+            if (!param.equals(entity) && entity.isStaticCollideable() && newPos.overlaps(entity.getMask())) {
                 collided = true;
             }
 
-            if (!param.equals(entity) && (entity instanceof EnemyEntity) && newPos.overlaps(entity.getBox3D())) {
+            if (!param.equals(entity) && entity instanceof EnemyEntity && newPos.overlaps(entity.getMask())) {
                 collided = true;
             }
 		}

@@ -192,7 +192,7 @@ public class Box3D {
 	}
 	
 	public float distance(float x, float y, float z) {
-		return (float)(Math.sqrt(Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) + Math.pow((z - this.z), 2)));
+		return (float)Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) + Math.pow(z - this.z, 2));
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class Box3D {
 		float deltaX = this.getX() - target.getX();
 		float deltaY = this.getY() - target.getY();
 		// Return angle
-		return  (float)(Math.atan2(deltaY, deltaX)) + (float)(Math.PI);
+		return  (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
 	}
 
 	/**

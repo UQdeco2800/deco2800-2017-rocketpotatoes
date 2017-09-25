@@ -212,39 +212,38 @@ public class DebugModeGui extends Gui {
 
                 if (state == States.DEBUGON) {
                     if (keycode == Input.Keys.F1) {
-                    	ProjectileTree tower = new ProjectileTree((int)coords2.x,(int)coords2.y,0);
+                    	ProjectileTree tower = new ProjectileTree((int)coords2.x,(int)coords2.y);
                         tower.setProgress(0);
                         GameManager.get().getWorld().addEntity(tower);
                     }
 
                     if (keycode == Input.Keys.F2) {
-                        GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y,0));
+                        GameManager.get().getWorld().addEntity(new Squirrel(coords2.x, coords2.y));
                     }
 
                     if (keycode == Input.Keys.F3) {
-                        GameManager.get().getWorld().addEntity(new TankEnemy(coords2.x, coords2.y,0));
+                        GameManager.get().getWorld().addEntity(new TankEnemy(coords2.x, coords2.y));
                     }
 
                     if (keycode == Input.Keys.F4) {
                         SeedResource seedResource = new SeedResource();
-                        GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y,0,
-                                seedResource));
+                        GameManager.get().getWorld().addEntity(new ResourceEntity(coords2.x, coords2.y, seedResource));
                     }
 
                     if (keycode == Input.Keys.F5) {
-                         ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y,0);
+                         ResourceTree rscTree = new ResourceTree((int)coords2.x,(int)coords2.y);
                          rscTree.setProgress(0);
                          GameManager.get().getWorld().addEntity(rscTree);
                     
                      }
                     
                      if (keycode == Input.Keys.F6) {
-                         GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y,0));
+                         GameManager.get().getWorld().addEntity(new Moose(coords2.x, coords2.y));
                      }
                      
 
                      if (keycode == Input.Keys.F7) {
-                         GameManager.get().getWorld().addEntity(new SpeedyEnemy(coords2.x, coords2.y,0));
+                         GameManager.get().getWorld().addEntity(new SpeedyEnemy(coords2.x, coords2.y));
                      }
                      
                      if (keycode == Input.Keys.F8) {
@@ -270,7 +269,7 @@ public class DebugModeGui extends Gui {
                      
                      if (keycode == Input.Keys.F11) {
                          double newrate = screen.getTickrate();
-                         if (screen.getTickrate()>(10)) {
+                         if (screen.getTickrate()>10) {
                              newrate = screen.getTickrate()/2;
                          }
                          screen.setTickrate(newrate);
@@ -319,7 +318,7 @@ public class DebugModeGui extends Gui {
     public void entitiesImmortal(){
         Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
         for (AbstractEntity ent: entitiesMap.values()){
-            if ((ent instanceof MortalEntity)&!(ent instanceof Player)){
+            if (ent instanceof MortalEntity&!(ent instanceof Player)){
                 ((MortalEntity) ent).addDamageScaling(0);
             }
         }

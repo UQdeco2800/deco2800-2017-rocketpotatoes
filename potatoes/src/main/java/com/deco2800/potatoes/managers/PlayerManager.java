@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
@@ -26,17 +24,23 @@ public class PlayerManager extends Manager {
 	}
 	
 	// Types of players in the game
-	public enum PlayerType { caveman, wizard, archer;
+	public enum PlayerType { CAVEMAN, WIZARD, ARCHER;
+		
+		@Override
+		public String toString() {
+			return super.toString().toLowerCase();
+		}
+		
 		public static Array<String> names() {
 			Array<String> names = new Array<>();
 			for (PlayerType type : PlayerType.values()) {
-				names.add(type.name());
+				names.add(type.toString());
 			}
 			return names;
 		}
 	};
 	
-	private PlayerType playerType = PlayerType.caveman;	// The type of the player
+	private PlayerType playerType = PlayerType.CAVEMAN;	// The type of the player
 	
 	public void setPlayerType(PlayerType type) {
 		this.playerType = type;
@@ -62,19 +66,19 @@ public class PlayerManager extends Manager {
 	 * 
 	 * @param player
 	 */
-	public void setPlayer(float posX, float posY, float posZ) {
+	public void setPlayer(float posX, float posY) {
 		switch (this.playerType) {
-		case caveman:
-			this.player = new Caveman(posX, posY, posZ);
+		case CAVEMAN:
+			this.player = new Caveman(posX, posY);
 			break;
-		case archer:
-			this.player = new Archer(posX, posY, posZ);
+		case ARCHER:
+			this.player = new Archer(posX, posY);
 			break;
-		case wizard:
-			this.player = new Wizard(posX, posY, posZ);
+		case WIZARD:
+			this.player = new Wizard(posX, posY);
 			break;
 		default:
-			this.player = new Player(posX, posY, posZ);
+			this.player = new Player(posX, posY);
 			break;
 		}
 		

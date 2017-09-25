@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.entities.GameTime;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 public class WaveManager extends Manager implements TickableManager, ForWorld {
 
     private ArrayList<EnemyWave> waves;
-    private EnemyWave activeWave;
     private int waveIndex = 0;
     private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
@@ -38,7 +36,6 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         if (getWaves().size() == 1) {
             activateWave(waves.get(0));
         }
-        activeWave = getActiveWave();
     }
 
     /**
@@ -55,8 +52,9 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      *
      * @param i the current game tick
      */
-    public void onTick(long i) {
-        if ((getActiveWave()) != null) {
+    @Override
+	public void onTick(long i) {
+        if (getActiveWave() != null) {
             getActiveWave().tickAction();
         } else if (getWaveIndex()+1 < getWaves().size()) {
             //there are still more waves
@@ -105,7 +103,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * @return true if all waves given to WaveManager have been completed
      */
     public boolean areWavesCompleted() {
-        if ((getWaveIndex()+1) < getWaves().size()) {
+        if (getWaveIndex()+1 < getWaves().size()) {
             return false;
         } else {
             return true;
@@ -123,20 +121,6 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * @return the time before next wave begins
      */
     public int getTimeBeforeNextWave() { return timeBetweenWaves -  getElapsedTime(); }
-
-    /**
-     * Set a wave to its finished state - no more enemies.
-     * */
-    public void finishActiveWave() {
-        getActiveWave().setWaveState(WaveState.FINISHED);
-    }
-
-    /**
-     * Set a wave to be paused - allows to resume from the middle of a wave.
-     * */
-    public void pauseActiveWave() {
-        getActiveWave().setWaveState(WaveState.PAUSED);
-    }
 
     /**
      * @return the time elapsed since the start of a wave

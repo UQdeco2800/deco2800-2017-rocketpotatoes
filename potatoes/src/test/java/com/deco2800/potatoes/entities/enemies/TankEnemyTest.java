@@ -25,7 +25,7 @@ public class TankEnemyTest extends BaseTest {
 	@Before
 	public void setup() throws Exception {
 		tankEmpty = new TankEnemy();
-		tank1 = new TankEnemy(0, 0, 0);
+		tank1 = new TankEnemy(0, 0);
 		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
 	}
 

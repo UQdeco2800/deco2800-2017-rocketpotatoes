@@ -48,16 +48,14 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 *            The x-coordinate.
 	 * @param posY
 	 *            The y-coordinate.
-	 * @param posZ
-	 *            The z-coordinate.
 	 * @param reloadTime
 	 * @param range
 	 * @param maxHealth
 	 *            The initial maximum health of the tower
 	 */
 
-	public ProjectileTree(float posX, float posY, float posZ, int reloadTime, float range, float maxHealth) {
-		super(posX, posY, posZ, 1f, 1f, 1f);
+	public ProjectileTree(float posX, float posY, int reloadTime, float range, float maxHealth) {
+		super(posX, posY, 1f, 1f);
 		this.reloadTime = reloadTime;
 		this.maxHealth = maxHealth;
 	}
@@ -66,17 +64,17 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * Creates a basic projectile tree at the given position with a 1 second shoot
 	 * time, 8 range and 100 health
 	 */
-	public ProjectileTree(float posX, float posY, float posZ) {
-		this(posX, posY, posZ, 1000, 8f, 100f);
+	public ProjectileTree(float posX, float posY) {
+		this(posX, posY, 1000, 8f, 100f);
 		this.setStaticCollideable(true);
 	}
 
 	/**
 	 * Creates a copy of this tree as it was when it was just created
 	 */
+	@Override
 	public ProjectileTree clone() {
-		return new ProjectileTree(this.getPosX(), this.getPosY(), this.getPosZ(), this.reloadTime, this.range,
-				this.maxHealth);
+		return new ProjectileTree(this.getPosX(), this.getPosY(), this.reloadTime, this.range, this.maxHealth);
 	}
 
 	@Override

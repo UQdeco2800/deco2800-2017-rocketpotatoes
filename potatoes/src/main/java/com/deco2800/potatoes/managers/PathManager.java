@@ -1,7 +1,8 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.util.Box3D;
 import com.deco2800.potatoes.util.Line;
 import com.deco2800.potatoes.util.MinimumSpanningTree;
 import com.deco2800.potatoes.util.Path;
@@ -24,14 +25,11 @@ public class PathManager extends Manager implements ForWorld {
      * This tree is centered around the node storing the player's location for now, though in future that will be
      * expanded so that multiple different goals can be set.
      */
-    private Map<Box3D, Box3D> spanningTree;
+    private Map<Point2D, Point2D> spanningTree;
     private MinimumSpanningTree treeMaker;
-    private World world;
-    private ArrayList<Box3D> nodes;
-    private ArrayList<Line> obstacles;
-    private ArrayList<Box3D> path;
-    private static final int NUMBER_OF_RANDOM_NODES = 5;
-    private static final Box3D dummyBox = new Box3D(0f,0f,0f,1f,1f,1f);
+    private ArrayDeque<Point2D> nodes;
+    private ArrayDeque<Point2D> path;
+    private static final int NUMBER_OF_RANDOM_NODES = 100;
 
 
     /**
@@ -39,9 +37,8 @@ public class PathManager extends Manager implements ForWorld {
      */
     public PathManager() {
         spanningTree = new HashMap<>();
-        nodes = new ArrayList<>();
-        path = new ArrayList<>();
-        world = GameManager.get().getWorld();
+        nodes = new ArrayDeque<>();
+        path = new ArrayDeque<>();
     }
 
     /**
@@ -51,40 +48,34 @@ public class PathManager extends Manager implements ForWorld {
 
     public void initialise() {
 
+        World world = GameManager.get().getWorld();
 
         nodes.clear();
         // Add place holder nodes at positions 0 and 1
         // so that the player position and enemy position
         // can be added later.
-        nodes.add(new Box3D(dummyBox));     // Position 0 => player position.
-        nodes.add(new Box3D(dummyBox));     // Position 1 => enemy position.
+        nodes.add(new Point2D(0, 0));   // Position 0 => player position.
+        nodes.add(new Point2D(0, 0));   // Position 1 => enemy position.
 
         // Create obstacles from static entities.
-        obstacles = createObstacleLines();
-
         // Initialise random points on the map to add as vertices of
         // the graph.
         for (int i = 0; i < NUMBER_OF_RANDOM_NODES; i++) {
-            nodes.add(new Box3D(
-                    (float) (Math.random() * world.getWidth()),      // x coordinate
-                    (float) (Math.random() * world.getLength()),     // y coordinate
-                    0,
-                    1,
-                    1,
-                    1
-            ));
+            nodes.add(new Point2D((float) (Math.random() * world.getWidth()), 
+                        (float) (Math.random() * world.getLength())));
         }
 
         // Create a new minimum spanning tree
         treeMaker = new MinimumSpanningTree(nodes.size());
         // Add the nodes to the vertexList.
-        for (int i = 0; i < nodes.size(); i++) {
-            treeMaker.addVertex(nodes.get(i), i);
+        int i = 0;
+        for (Point2D node: nodes) {
+            treeMaker.addVertex(node, i++);
         }
 
         // Calculate edge weights in graph matrix
         // based on static enemies.
-        treeMaker.initGraphWeightMatrix(obstacles);
+        treeMaker.initGraphWeightMatrix();
     }
 
     /**
@@ -95,20 +86,20 @@ public class PathManager extends Manager implements ForWorld {
      * @param goal  The goal of the entity - where the path is going to end.
      * @return The path object itself, which can then be followed.
      */
-    public Path generatePath(Box3D start, Box3D goal) {
+    public Path generatePath(CollisionMask start, CollisionMask goal) {
+
+        Point2D replaceStart = new Point2D(start.getX(), start.getY());
+        Point2D replaceGoal = new Point2D(goal.getX(), goal.getY());
 
         path.clear();
-        Box3D next;
+        Point2D next;
         // Create line between start and goal.
-        Line line = new Line(start, goal);
-        if (obstacles == null) {
-            obstacles = createObstacleLines();
-        }
+        Line line = new Line(start.getX(), start.getY(), goal.getX(), goal.getY());
         // Check if this line has a clear path.
-        if(!checkLineClash(line, obstacles)) {
+        if (!collides(line)) {
             // line is not obstructed.
-            path.add(start);
-            path.add(goal);
+            path.add(replaceStart);
+            path.add(replaceGoal);
             return new Path(path);
         }
         // Check if the spanning tree has been initialise.
@@ -116,72 +107,39 @@ public class PathManager extends Manager implements ForWorld {
             initialise();
         }
         // build the minimum spanning tree from the graph - and set the spanningTree variable
-        spanningTree = treeMaker.createTree(goal, start, obstacles);
+        spanningTree = treeMaker.createTree(replaceGoal, replaceStart);
         // Add the starting point to the path.
-        path.add(start);
+        path.addLast(replaceStart);
         // If the spanning tree has only two entries
         // return a new path with the start and end point.
         if (spanningTree.size() < 2) {
-            path.add(goal);
+            path.add(replaceGoal);
             return new Path(path);
         }
         // Add extra path points as needed.
         // Set next as the value returned from start as
         // the key to spanningTree.
         next = spanningTree.get(start);
-        while (!(next.equals(goal))) {
+        while (next != null && !next.equals(goal)) {
             path.add(next);
-            // Hacky fix for infinite loop, doesn't completely fix the problem
-            if (path.contains(next)) {
-            	break;
-            }
             next = spanningTree.get(next);
         }
-        path.add(next);
+        path.add(replaceGoal);
         return new Path(path);
     }
 
-    /**
-     * Create line objects that represent the boarder of all static collidable entities on the map.
-     *
-     * @return List of {@code Line} objects that represent static entity boarders.
-     */
-    private ArrayList<Line> createObstacleLines() {
+    private boolean collides(Line line) {
+        boolean output = false;
 
-        // Create an empty Line list.
-        ArrayList<Line> lineList = new ArrayList<>();
-     
-        // Loop through static entities and make lines for
-        // the top, bottom, left and right boarders.
-        for (AbstractEntity e : world.getEntities().values()) {
-            if (e.isStaticCollideable()) {
-                // Iterate through
-                // Position = Top => Bottom => Left => Right.
-                for (Line.Position p: Line.Position.values()) {
-                    lineList.add(new Line(e.getBox3D(), p));
-                }
+        for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+            if (e.isStaticCollideable() &&
+                    0 > e.getMask().distance(line.getEndPointOne().getX(), line.getEndPointOne().getY(), 
+                        line.getEndPointTwo().getX(), line.getEndPointTwo().getY())) {
+                output = true;
+                break;
             }
         }
-        return lineList;
-    }
-    /**
-     * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
-     * @param edge Line object tested.
-     * @param obstacles Line objects in list
-     * @return true in edge intersects with any lines in obstacles; false otherwise.
-     */
-    public boolean checkLineClash(Line edge, ArrayList<Line> obstacles) {
 
-        // Iterate through obstacles and check if
-        // edge between vertices is obstructed.
-        for (Line line: obstacles) {
-            if(edge.doIntersect(line)) {
-                // Edge is obstructed.
-                return true;
-            }
-        }
-        // No obstruction.
-        return false;
+        return output;
     }
-
 }

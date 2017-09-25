@@ -65,7 +65,7 @@ public abstract class ParticleType {
             Color col = batch.getColor();
             float alpha = 1.0f;
 
-            float fadeOutThreshold = (this.lifeTime) * this.fadeOutPercent;
+            float fadeOutThreshold = this.lifeTime * this.fadeOutPercent;
             if (p.lifeTime < fadeOutThreshold) {
                 alpha = p.lifeTime / fadeOutThreshold;
             }

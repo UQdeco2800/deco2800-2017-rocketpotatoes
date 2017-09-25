@@ -6,13 +6,11 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -22,11 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
@@ -70,8 +65,11 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+	// Opacity value for treeShop subsection when mouse is not hovering over it
 	final private float UNSELECTED_ALPHA = 0.2f;
+	// Opacity value for treeShop subsection when mouse hovers over
 	final private float SELECTED_ALPHA = 0.5f;
+	// Maximum number of tile lengths from player where you can plant trees
 	final private int MAX_RANGE = 6;
 
 	/**
@@ -85,13 +83,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopY = 0;
 		initiated = false;
 		items = new LinkedHashMap<AbstractTree, Color>();
-		items.put(new ResourceTree(treeX, treeY,0, new SeedResource(),0 ), Color.RED);
-		items.put(new ResourceTree(treeX, treeY, 0 ,new FoodResource(),0), Color.BLUE);
-		items.put(new ProjectileTree(treeX, treeY, 0), Color.YELLOW);
-		items.put(new DamageTree(treeX, treeY, 0, new LightningTreeType()),Color.GREEN);
-		items.put(new DamageTree(treeX, treeY, 0, new IceTreeType()),Color.ORANGE);
-		items.put(new DamageTree(treeX, treeY, 0, new FireTreeType()),Color.PURPLE);
-		items.put(new DamageTree(treeX, treeY, 0, new AcornTreeType()),Color.GREEN);
+		items.put(new ResourceTree(treeX, treeY, new SeedResource(),0 ), Color.RED);
+		items.put(new ResourceTree(treeX, treeY, new FoodResource(),0), Color.BLUE);
+		items.put(new ProjectileTree(treeX, treeY), Color.YELLOW);
+		items.put(new DamageTree(treeX, treeY, new LightningTreeType()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, new IceTreeType()),Color.ORANGE);
+		items.put(new DamageTree(treeX, treeY, new FireTreeType()),Color.PURPLE);
+		items.put(new DamageTree(treeX, treeY, new AcornTreeType()),Color.GREEN);
 
 
 		for (AbstractTree tree : items.keySet()) {
@@ -117,14 +115,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 	public int getMaxRange() {
 		return MAX_RANGE;
 	}
-	
+
 	/**
 	 * Returns whether current treeShop is plantable
 	 */
 	public boolean getPlantable() {
 		return plantable;
 	}
-	
+
 	/**
 	 * Sets plantable value
 	 */
@@ -241,8 +239,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 		for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
 			Color c = entry.getValue();
 			// Show which segment is highlighted by adjusting opacity
-			int startAngle = 360 * (segment) / (numSegments);
-			float alpha = (segment == selectedSegment && mouseIn && !mouseInCancel) ? SELECTED_ALPHA : UNSELECTED_ALPHA;
+			int startAngle = 360 * segment / numSegments;
+			float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ? SELECTED_ALPHA : UNSELECTED_ALPHA;
 			float itemAngle = startAngle + degrees / 2;
 
 			// Set color and draw arc
@@ -382,7 +380,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 		// Calculate actual angle with each quadrant
 		if (y < 0)
-			mouseAngle += (x < 0) ? 180 : 360;
+			mouseAngle += x < 0 ? 180 : 360;
 		else if (x < 0)
 			mouseAngle += 180;
 		mouseAngle = 360 - mouseAngle; // make it anti clockwise
@@ -452,7 +450,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 			newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
 			newTree.setPosX(treeX);
 			newTree.setPosY(treeY);
-			newTree.setPosZ(0);
 
 			if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
 				AbstractTree.constructTree(newTree);

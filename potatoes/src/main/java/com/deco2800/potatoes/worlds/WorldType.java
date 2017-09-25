@@ -27,9 +27,9 @@ public class WorldType {
 	private static final boolean FLOOD_CHECK = false;
 	private static final boolean PORTAL_CHECK = true;
 	
-	private static final String GROUND = "ground_1";
-	private static final String WATER = "w1";
-	private static final String GRASS = "grass";
+	private static final String GROUND = "mud_tile_1";
+	private static final String WATER = "water_tile_1";
+	private static final String GRASS = "grass_tile_1";
 	private static final Point PORTAL_POS = new Point(5, 5);
 	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
 			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("forest"));
@@ -79,7 +79,7 @@ public class WorldType {
 
 	private static List<Supplier<AbstractEntity>> defaultEntities(String worldType) {
 		List<Supplier<AbstractEntity>> result = new ArrayList<>();
-		result.add(() -> new AbstractPortal(PORTAL_POS.x, PORTAL_POS.y, 0, worldType + "_portal"));
+		result.add(() -> new AbstractPortal(PORTAL_POS.x, PORTAL_POS.y, worldType + "_portal"));
 		return result;
 	}
 
@@ -175,7 +175,7 @@ public class WorldType {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((terrain == null) ? 0 : terrain.hashCode());
+		result = prime * result + (terrain == null ? 0 : terrain.hashCode());
 		return result;
 	}
 

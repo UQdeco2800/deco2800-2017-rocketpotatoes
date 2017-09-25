@@ -2,9 +2,6 @@ package com.deco2800.potatoes.entities.animation;
 
 import java.util.function.Supplier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * An animation where the frame is dependent on some value. <br>
  * Feel free to modify this class in any way

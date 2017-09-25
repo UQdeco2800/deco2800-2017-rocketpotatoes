@@ -30,7 +30,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	 * Constructor for the mouse handler
 	 */
 	public MouseHandler() {
-		treeShop = (TreeShopGui) GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
+		treeShop = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
 	}
 
 	/**
@@ -38,6 +38,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	 * 
 	 * @param x
 	 * @param y
+	 * @param button
 	 */
 	public void handleMouseClick(float x, float y, int button) {
 		Vector2 coords = Render3D.worldPosToTile(x, y);
@@ -85,7 +86,12 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		originX = screenX;
 		originY = screenY;
 	}
-
+	
+	/**
+	 * Get the camera manager
+	 * 
+	 * @return CameraManager
+	 */
 	private CameraManager getCameraManager() {
 		return GameManager.get().getManager(CameraManager.class);
 	}

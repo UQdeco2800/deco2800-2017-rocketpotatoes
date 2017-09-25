@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.collisions.UncenteredBox2D;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
@@ -44,14 +45,15 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * 
 	 * @see AbstractEntity
 	 */
-	public AbstractTree(float posX, float posY, float posZ, float xLength, float yLength, float zLength) {
-		super(posX, posY, posZ, xLength, yLength, zLength, "", 1);
+    public AbstractTree(float posX, float posY, float xLength, float yLength) {
+        super(new UncenteredBox2D(posX, posY, xLength, yLength), xLength, yLength, "", 1);
 		resetStats();
 	}
 
 	/**
 	 * Creates a copy of this object as it was when it was first created.
 	 */
+	@Override
 	public abstract AbstractTree clone();
 
 	@Override

@@ -28,7 +28,7 @@ public class StompedGroundEffectTest extends BaseTest {
     @Before
     public void setUp() throws Exception {
         stompEmpty = new StompedGroundEffect();
-        stomp1 = new StompedGroundEffect(MortalEntity.class, 0, 0, 0, true, 1, 1);
+        stomp1 = new StompedGroundEffect(MortalEntity.class, 0, 0, true, 1, 1);
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 

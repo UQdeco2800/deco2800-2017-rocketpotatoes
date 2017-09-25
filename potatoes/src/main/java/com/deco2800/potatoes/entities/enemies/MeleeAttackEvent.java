@@ -1,12 +1,12 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.Optional;
-
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
+
+import java.util.Optional;
 
 /**
  * A melee attack from enemy to a target
@@ -53,7 +53,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 		Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(target, enemy.getPosX(), enemy.getPosY());
 
 		// no target exists or target is out of range
-		if (!target1.isPresent() || (enemy.distance(target1.get()) > range)) {
+		if (!target1.isPresent() || enemy.distance(target1.get()) > range) {
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 	}
 
 	/**
-	 * @return string representation of meleee attack
+	 * @return string representation of melee attack
 	 */
 	@Override
 	public String toString() {

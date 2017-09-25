@@ -1,13 +1,10 @@
 package com.deco2800.potatoes.entities.effects;
 
-import java.util.Map;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Circle2D;
 
-import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.Box3D;
 
 /**
  * A StompedGroundEffect, essentially terrain that has been "damaged" by an
@@ -23,7 +20,7 @@ public class StompedGroundEffect extends Effect {
 	private static final transient String TEXTURE = "DamagedGroundTemp1";
 
 	private boolean isTemporary;
-	private Box3D effectPosition;
+	private CollisionMask effectPosition;
 	private int currentTextureIndexCount = 0;
 	private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
 	private int timer = 0;
@@ -45,16 +42,16 @@ public class StompedGroundEffect extends Effect {
 	 *            x start position
 	 * @param posY
 	 *            y start position
-	 * @param posZ
-	 *            z start position
 	 * @param isTemporary
 	 *            boolean for whether this effect is temporary or permanent
 	 */
-	public StompedGroundEffect(Class<?> targetClass, float posX, float posY, float posZ, boolean isTemporary,
-			float damage, float range) {
-		super(targetClass, new Vector3(posX, posY, posZ), 1f, 1f, 1f, 1.2f, 1.2f, damage, range, EffectType.DAMAGED_GROUND);
+
+	public StompedGroundEffect(Class<?> targetClass, float posX, float posY, boolean isTemporary, float damage, 
+            float range) {
+        super(targetClass, new Circle2D(posX, posY, 1.414f), 1f, 1f, damage, range, EffectTexture.DAMAGED_GROUND);
+
 		this.isTemporary = isTemporary;
-		effectPosition = getBox3D();
+		effectPosition = getMask();
 	}
 
 	@Override
@@ -82,11 +79,11 @@ public class StompedGroundEffect extends Effect {
 	}
 
 	/**
-	 * Return the Box3D position of the stomp
+	 * Return the CollisionMask position of the stomp
 	 *
-	 * @return Box3D position of footstep
+	 * @return CollisionMask position of footstep
 	 */
-	public Box3D getStompedGroundPosition() {
+	public CollisionMask getStompedGroundPosition() {
 		return effectPosition;
 	}
 

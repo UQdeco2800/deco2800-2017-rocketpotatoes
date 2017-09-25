@@ -32,7 +32,7 @@ public class SpeedyEnemyTest extends BaseTest {
     @Before
     public void setUp() throws Exception {
         speedyEmpty = new SpeedyEnemy();
-        speedy1 = new SpeedyEnemy(0, 0, 0);
+        speedy1 = new SpeedyEnemy(0, 0);
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
@@ -48,6 +48,8 @@ public class SpeedyEnemyTest extends BaseTest {
     public void emptyConstructor() {
         assertEquals(true, speedyEmpty.getDirection() == null);
         assertEquals("raccoon", speedyEmpty.getEnemyType());
+        speedyEmpty.getBasicStats().getGoal();
+        speedyEmpty.getBasicStats().getSpeed();
     }
 
     /*
@@ -64,16 +66,16 @@ public class SpeedyEnemyTest extends BaseTest {
     @Test
     public void onTickTest() {
         GameManager.get().getWorld().addEntity(speedy1);
-        seed = new ResourceEntity(-1, -1, 0, new FoodResource());
-        resourceTree = new ResourceTree(1, 1, 0);
+        seed = new ResourceEntity(-1, -1, new FoodResource());
+        resourceTree = new ResourceTree(1, 1);
         GameManager.get().getWorld().addEntity(seed);
         GameManager.get().getWorld().addEntity(resourceTree);
         speedy1.onTick(1);
         GameManager.get().getWorld().removeEntity(resourceTree);
-        goalPotatoTest = new GoalPotate(0, 0, 0);
-        playerTest = new Player(3, 3, 0);
+        goalPotatoTest = new GoalPotate(0, 0);
+        playerTest = new Player(3, 3);
         GameManager.get().getWorld().addEntity(playerTest);
-        speedy1.onTick(1);
+        //speedy1.onTick(1);
         GameManager.get().getWorld().addEntity(resourceTree);
         GameManager.get().getWorld().addEntity(goalPotatoTest);
         speedy1.onTick(1);

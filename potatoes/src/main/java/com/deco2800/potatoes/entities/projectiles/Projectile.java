@@ -4,20 +4,19 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Box3D;
 
 public class Projectile extends AbstractEntity implements Tickable {
 
 	protected static final float SPEED = 0.2f;
 
-	protected ProjectileType projectileType;
+	protected ProjectileTexture projectileTexture;
 	protected boolean loopAnimation = true;
 	protected boolean animate = true;
 
@@ -41,42 +40,34 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected Effect startEffect;
 	protected Effect endEffect;
 
-	public enum ProjectileType {
+	/**
+	 * A container to hold the textures for easy lookup
+	 */
+	public enum ProjectileTexture {
 		ROCKET {
-			public String toString() {
-				return "rocket";
-			}
-
+			@Override
 			public String[] textures() {
 				return new String[] { "rocket1", "rocket2", "rocket3" };
 			}
-
 		},
 		CHILLI {
-			public String toString() {
-				return "chilli";
-			}
-
+			@Override
 			public String[] textures() {
 				return new String[] { "chilli1", "chilli2", "chilli3" };
 			}
 		},
 		LEAVES {
-			public String toString() {
-				return "leaves";
-			}
-
+			@Override
 			public String[] textures() {
-				return new String[] { "leaves1", "leaves2", "leaves3" };
+				return new String[] { "leaves1" };
 			}
 		},
 		ACORN {
-			public String toString() {
-				return "acorn";
-			}
-
+			@Override
 			public String[] textures() {
+
 				return new String[] { "acorn1" };
+
 			}
 		};
 
@@ -89,94 +80,33 @@ public class Projectile extends AbstractEntity implements Tickable {
 		// nothing yet
 	}
 
-	// currently used in Player, will probably need to change out later.
-	public Projectile(Class<?> targetClass, float posX, float posY, float posZ, float range, float damage,
-			ProjectileType projectileType, Effect startEffect, Effect endEffect, String Directions, float TargetPosX,
-			float TargetPosY) {
-		super(posX, posY, posZ, xLength + 1f, yLength + 1f, zLength, xRenderLength, yRenderLength, true,
-				projectileType.textures()[0]);
-
-		if (targetClass != null)
-			this.targetClass = targetClass;
-		else
-			this.targetClass = MortalEntity.class;
-
-		if (projectileType == null)
-			throw new RuntimeException("projectile type must not be null");
-		else
-			this.projectileType = projectileType;
-
-		this.range = damage;
-		this.damage = damage;
-		this.startEffect = startEffect;
-		this.endEffect = endEffect;
-
-		if (startEffect != null)
-			GameManager.get().getWorld().addEntity(startEffect);
-
-		updatePosition();
-		/**
-		 * Shoots enemies base on their player directions
-		 */
-		if (Directions.equalsIgnoreCase("w")) {
-			setTargetPosition(posX - 5, posY - 5, posZ);
-			// setTargetPosition(TargetPosX, TargetPosY, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("e")) {
-			setTargetPosition(posX + 5, posY + 5, posZ);
-			updatePosition();
-			setPosition();
-			// setTargetPosition(TargetPosX, TargetPosY, posZ);
-		} else if (Directions.equalsIgnoreCase("n")) {
-			setTargetPosition(posX + 15, posY - 15, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("s")) {
-			setTargetPosition(posX - 15, posY + 15, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("ne")) {
-			setTargetPosition(posX + 15, posY + 1, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("nw")) {
-			setTargetPosition(posX - 15, posY - 200, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("se")) {
-			setTargetPosition(posX + 20, posY + 200, posZ);
-			updatePosition();
-			setPosition();
-		} else if (Directions.equalsIgnoreCase("sw")) {
-			setTargetPosition(posX - 200, posY - 20, posZ);
-			updatePosition();
-			setPosition();
-		}
-
-		/**
-		 * Shoots enemies based on their last position
-		 */
-		// setTargetPosition(TargetPosX,TargetPosY,0f);
-		// updatePosition();
-		// setPosition();
-	}
-
+	/**
+	 * Creates a new projectile. A projectile is the vehicle used to deliver damage
+	 * to a target over a distance
+	 *
+	 * @param targetClass       the targets class
+	 * @param startPos
+	 * @param targetPos
+	 * @param range
+	 * @param damage            damage of projectile
+	 * @param projectileTexture the texture set to use for animations. Use ProjectileTexture._
+	 * @param startEffect       the effect to play at the start of the projectile being fired
+	 * @param endEffect         the effect to be played if a collision occurs
+	 */
 	public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-			ProjectileType projectileType, Effect startEffect, Effect endEffect) {
-		super(startPos.x, startPos.y, startPos.z, xLength, yLength, zLength, xRenderLength, yRenderLength, true,
-				projectileType.toString());
+			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
+		super(new Box2D(startPos.x, startPos.y, xLength + 1f, yLength + 1f), xRenderLength, yRenderLength,
+				projectileTexture.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
 			this.targetClass = MortalEntity.class;
 
-		if (projectileType == null)
+		if (projectileTexture == null)
 			throw new RuntimeException("projectile type must not be null");
 		else
-			this.projectileType = projectileType;
-
+			this.projectileTexture = projectileTexture;
 		this.maxRange = this.range = range;
 		this.damage = damage;
 		this.startEffect = startEffect;
@@ -185,13 +115,11 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
 
+
+        // TODO -- look at the other constructor -- this block of code is commented out there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
 		updatePosition();
 		setPosition();
-	}
-
-	public void setTargetPosition(float xPos, float yPos, float zPos) {
-		targetPos.set(xPos, yPos, zPos);
 	}
 
 	/**
@@ -199,13 +127,27 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	protected void updatePosition() {
 		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
-		float angle = (float) (Math.atan2(delta.y, delta.x)) + (float) (Math.PI);
-		rotationAngle = (float) ((angle * 180 / Math.PI) + 45 + 90);
+		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
+		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
 		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
 	}
 
 	/**
-	 * every frame the position is set
+	 * Set the location of the target
+	 * 
+	 * @param xPos
+	 *            target x position
+	 * @param yPos
+	 *            target y position
+	 * @param zPos
+	 *            target y position
+	 */
+	public void setTargetPosition(float xPos, float yPos, float zPos) {
+		targetPos.set(xPos, yPos, zPos);
+	}
+
+	/**
+	 * Each frame the position is set/updated
 	 */
 	protected void setPosition() {
 		setPosX(getPosX() + change.x);
@@ -223,30 +165,20 @@ public class Projectile extends AbstractEntity implements Tickable {
 		return rotationAngle;
 	}
 
-	/**
-	 * Returns Range value
-	 */
-	public float getRange() {
-		return maxRange;
-	}
-
-	/**
-	 * Returns Damage value
-	 */
-	public float getDamage() {
-		return damage;
-	}
-
 	protected int projectileEffectTimer;
 	protected int projectileCurrentSpriteIndexCount;
 
+	/**
+	 * Loops through texture array and sets sprite every frame. Looking into using
+	 * AnimationFactory as animation controller
+	 */
 	protected void animate() {
 		if (animate) {
 			projectileEffectTimer++;
 			if (loopAnimation) {
 				if (projectileEffectTimer % 4 == 0) {
-					setTexture(projectileType.textures()[projectileCurrentSpriteIndexCount]);
-					if (projectileCurrentSpriteIndexCount == projectileType.textures().length - 1)
+					setTexture(projectileTexture.textures()[projectileCurrentSpriteIndexCount]);
+					if (projectileCurrentSpriteIndexCount == projectileTexture.textures().length - 1)
 						projectileCurrentSpriteIndexCount = 0;
 					else {
 						projectileCurrentSpriteIndexCount++;
@@ -261,7 +193,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		animate();
 		setPosition();
 
-		Box3D newPos = getBox3D();
+		CollisionMask newPos = getMask();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
@@ -271,13 +203,62 @@ public class Projectile extends AbstractEntity implements Tickable {
 			if (!targetClass.isInstance(entity)) {
 				continue;
 			}
-			if (newPos.overlaps(entity.getBox3D())) {
+			if (newPos.overlaps(entity.getMask())) {
 				((MortalEntity) entity).damage(damage);
 				if (endEffect != null)
 					GameManager.get().getWorld().addEntity(endEffect);
 				rangeReached = true;
 				setPosition();
+
 			}
 		}
 	}
+
+	/**
+	 * Returns max range
+	 * 
+	 * @return maxRange
+	 */
+	public float getRange() {
+		return maxRange;
+	}
+
+	/**
+	 * Returns Damage value
+	 * 
+	 * @return damage
+	 */
+	public float getDamage() {
+		return damage;
+	}
+
+	/**
+	 * Return target class
+	 * 
+	 * @return targetClass
+	 */
+	public Class<?> getTargetClass() {
+		return targetClass;
+	}
+
+	/**
+	 * Get the start effect
+	 * 
+	 * @return startEffect
+	 */
+	public Effect getStartEffect() {
+		return startEffect;
+	}
+
+	/**
+	 * Get the end effect
+	 * 
+	 * @return endEffect
+	 */
+	public Effect getEndEffect() {
+		return endEffect;
+	}
+	
+
+
 }
