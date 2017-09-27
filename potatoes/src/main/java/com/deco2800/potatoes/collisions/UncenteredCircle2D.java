@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.collisions;
+/*package com.deco2800.potatoes.collisions;
 
 public class UncenteredCircle2D implements CollisionMask {
 
@@ -14,7 +14,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * @param x Centre-point x
      * @param y Centre-point y
      * @param radius The radius of the circle.
-     */
+     *
     public UncenteredCircle2D(float x, float y, float radius) {
         this.x = x;
         this.y = y;
@@ -25,7 +25,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Makes a copy of the current Circle2D.
      *
      * @return A copy of the current Circle2D
-     */
+     *
     @Override
     public CollisionMask copy() {
         return new UncenteredCircle2D(x, y, radius);
@@ -54,7 +54,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Returns the x coordinate at the centre of the mask.
      *
      * @return Returns the x coordinate.
-     */
+     *
     @Override
     public float getX() { return this.x; }
 
@@ -62,7 +62,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Sets the x coordiante at the centre of the mask.
      *
      * @param x The new x coordinate.
-     */
+     *
     @Override
     public void setX(float x) { this.x = x; }
 
@@ -70,7 +70,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Returns the y coordinate at the centre of the mask.
      *
      * @return Returns the y coordinate.
-     */
+     *
     @Override
     public float getY() { return this.y; }
 
@@ -78,7 +78,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Sets the y coordinate at the centre of the mask.
      *
      * @param y The new y coordinate.
-     */
+     *
     @Override
     public void setY(float y) { this.y = y; }
 
@@ -86,7 +86,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Returns the radius of this Circle2D.
      *
      * @return Returns the radius.
-     */
+     *
     public float getRadius() {
         return this.radius;
     }
@@ -96,7 +96,7 @@ public class UncenteredCircle2D implements CollisionMask {
      * Any negative values will be swapped to positive values.
      *
      * @param radius The new radius.
-     */
+     *
     public void setRadius(float radius) {
         this.radius = radius >= 0 ? radius : -radius ;
     }
@@ -138,9 +138,10 @@ public class UncenteredCircle2D implements CollisionMask {
      * "<x>, <y>, <radius>"
      *
      * @return This Circle2D's parameters
-     */
+     *
     @Override
     public String toString() {
         return this.x + ", " + this.y + ", " + this.radius;
     }
 }
+*/

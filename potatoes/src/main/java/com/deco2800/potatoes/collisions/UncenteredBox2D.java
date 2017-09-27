@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.collisions;
+/*package com.deco2800.potatoes.collisions;
 
 public class UncenteredBox2D implements CollisionMask{
 
@@ -13,7 +13,7 @@ public class UncenteredBox2D implements CollisionMask{
      * @param y Centre-point y
      * @param xLength width along x axis
      * @param yLength height along y axis
-     */
+     *
     public UncenteredBox2D(float x, float y, float xLength, float yLength) {
         this.x = x;
         this.y = y;
@@ -25,7 +25,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Makes a copy of the current Box2D.
      *
      * @return A copy of the current Box2D
-     */
+     *
     @Override
     public CollisionMask copy() {
         return new UncenteredBox2D(x, y, xLength, yLength);
@@ -55,7 +55,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Returns the x coordinate at the centre of the mask.
      *
      * @return Returns the x coordinate.
-     */
+     *
     @Override
     public float getX() { return this.x; }
 
@@ -64,7 +64,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Any negative values will be swapped to positive values.
      *
      * @param x The new x coordinate.
-     */
+     *
     @Override
     public void setX(float x) { this.x = x; }
 
@@ -72,7 +72,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Returns the y coordinate at the centre of the mask.
      *
      * @return Returns the y coordinate.
-     */
+     *
     @Override
     public float getY() { return this.y; }
 
@@ -81,7 +81,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Any negative values will be swapped to positive values.
      *
      * @param y The new y coordinate.
-     */
+     *
     @Override
     public void setY(float y) { this.y = y; }
 
@@ -89,7 +89,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Returns the length in the x direction.
      *
      * @return Returns the x length.
-     */
+     *
     public float getXLength() {
         return this.xLength;
     }
@@ -98,7 +98,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Set the length in the x direction.
      *
      * @param xLength The desired x length.
-     */
+     *
     public void setXLength(float xLength) {
         this.xLength = xLength >= 0 ? xLength : -xLength ;
     }
@@ -107,7 +107,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Returns the length in the y direction.
      *
      * @return Returns the y length.
-     */
+     *
     public float getYLength() {
         return this.yLength;
     }
@@ -116,7 +116,7 @@ public class UncenteredBox2D implements CollisionMask{
      * Sets the length in the y direction.
      *
      * @param yLength The desired y length.
-     */
+     *
     public void setYLength(float yLength) {
         this.yLength = yLength >= 0 ? yLength : -yLength ;
     }
@@ -157,10 +157,11 @@ public class UncenteredBox2D implements CollisionMask{
      * "<x>, <y>, <xLength>, <yLength>"
      *
      * @return This Box2D's parameters
-     */
+     *
     @Override
     public String toString() {
         return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength ;
     }
 
 }
+*/
