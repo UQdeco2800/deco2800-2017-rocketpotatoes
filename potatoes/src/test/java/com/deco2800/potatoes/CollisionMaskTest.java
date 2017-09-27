@@ -64,6 +64,9 @@ public class CollisionMaskTest {
         assertTrue(circ1.getRadius() == 3);
     }
 
+    //TODO area
+
+    //colision
     @Test
     public void collisionPointToPoint() {
         Point2D point1 = new Point2D(5.7f, 8.3f);
@@ -188,6 +191,7 @@ public class CollisionMaskTest {
     assertFalse(box1.overlaps(box6)); //distant diagonal
     }
 
+    //distance
     @Test
     public void distancePointToPoint() {
         Point2D point1 = new Point2D(0f, 0f);
@@ -326,7 +330,6 @@ public class CollisionMaskTest {
         assertTrue(compareFloat(box1.distance(box6), (float) Math.sqrt(10))); //distant diagonal
     }
 
-
     //Line checking
     @Test
     public void collisionLineToBox() {
@@ -367,8 +370,6 @@ public class CollisionMaskTest {
         assertTrue(compareFloat(point1.distance(1, 10, 11, 0), (float) Math.sqrt(2) / 2));    //diagonal above
     }
 
-
-
     @Test
     public void distanceLineToCircle() {
         Circle2D circ1 = new Circle2D(5,5,0.5f);
@@ -381,7 +382,6 @@ public class CollisionMaskTest {
         System.out.println(circ1.distance(5, 10, 15, 0));
         assertTrue(compareFloat(circ1.distance(5, 10, 15, 0), (float) Math.sqrt(2) * 2.5f - 0.5f));    //diagonal above
     }
-
 
     @Test
     public void distanceLineToBox() {

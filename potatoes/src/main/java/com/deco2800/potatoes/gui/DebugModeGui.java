@@ -87,6 +87,7 @@ public class DebugModeGui extends Gui {
 
         this.screen = screen;
         this.stage = stage;
+        hidden = true;
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
@@ -292,6 +293,7 @@ public class DebugModeGui extends Gui {
         table.setVisible(true);
         stage.addActor(table);
         state = States.DEBUGON;
+        hidden = false;
     }
 
     /**
@@ -301,6 +303,15 @@ public class DebugModeGui extends Gui {
 	public void hide() {
         table.setVisible(false);
         state = States.DEBUGOFF;
+        hidden = true;
+    }
+
+    public void toggle() {
+        if (hidden) {
+            show();
+        } else {
+            hide();
+        }
     }
 
     /**

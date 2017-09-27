@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.collisions;
 
+//TODO author stuff
 public class Box2D implements CollisionMask{
 
     private float x, y;
@@ -289,7 +290,6 @@ public class Box2D implements CollisionMask{
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
 
-        // check overlap //TODO should this be removed? expect that lines don't overlap?
         if (this.overlapsLine(x1, y1, x2, y2)) {
         	return -1;
         }
@@ -455,6 +455,10 @@ public class Box2D implements CollisionMask{
         this.yLength = yLength >= 0 ? yLength : -yLength ;
     }
 
+
+    //TODO get area (xLen * yLen), used in physics, bigger enemies harder to push
+    //TODO move x, y
+    // X/Y, Min/Max/Extent ?
 
     @Override
     public int hashCode() {

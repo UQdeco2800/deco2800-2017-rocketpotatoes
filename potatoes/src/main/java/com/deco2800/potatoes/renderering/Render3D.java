@@ -2,16 +2,19 @@ package com.deco2800.potatoes.renderering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.deco2800.potatoes.collisions.*;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.animation.Animated;
@@ -20,6 +23,7 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -62,6 +66,10 @@ public class Render3D implements Renderer {
 	@Override
 	public void render(SpriteBatch batch) {
 		renderMap(batch);
+
+		//loops through all entities, renders their CollisionMasks as shadows TODO add opt in for entities
+		renderHitBoxShadows();
+
 
 		batch.setColor(GameManager.get().getManager(GameTimeManager.class).getColour());
 
@@ -245,6 +253,13 @@ public class Render3D implements Renderer {
 
 		// TODO: add render for projectile's separately
 		GameManager.get().getManager(ParticleManager.class).draw(batch);
+
+		//if DebugGui is shown ...
+		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
+			renderCollisionMasks(batch); 	// outline the CollisionMasks of entities
+			renderPathingNodes(batch);		// show all nodes in PathManager
+		}
+
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
 	}
 
@@ -309,6 +324,110 @@ public class Render3D implements Renderer {
 				batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
 		}
 
+
+		batch.end();
+	}
+
+	//TODO comment stuff dingus
+	private void renderHitBoxShadows() {
+		//camera used for translation
+		OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+
+		//start drawing & set fill transparent grey
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(new Color(0, 0, 0, 0.3f));
+
+		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+			CollisionMask shadow = e.getMask();
+
+			//translate centre
+			Vector2 screenWorldCoords = worldToScreenCoordinates(shadow.getX(), shadow.getY(), 0);
+			Vector3 shadowCentre = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+			if (shadow instanceof Box2D) {
+				//Box2D box = (Box2D) shadow;
+				//use 2 shapeRenderer.triangle(...) to get diamond shape
+				shapeRenderer.rect(shadowCentre.x - 100, shadowCentre.y - 100, 200, 200);
+
+
+			} else if (shadow instanceof Circle2D) {
+				//Circle2D circ = (Circle2D) shadow;
+				//use shapeRender.elipse(...)
+				shapeRenderer.circle(shadowCentre.x, shadowCentre.y, 100);
+
+			}
+		}
+
+		//stop drawing
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	//use to render the collisionMasks of entities
+	private void renderCollisionMasks(SpriteBatch batch) {
+
+
+		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
+
+		Texture pntHighlight = texMan.getTexture("Point2D_highlight");
+		Texture cirHighlight = texMan.getTexture("Circle2D_highlight");
+		Texture boxHighlight = texMan.getTexture("Box2D_highlight");
+
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+
+		batch.begin();
+		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+
+			CollisionMask shadow = e.getMask();
+
+			Texture tex;
+			if (shadow instanceof Box2D) {
+				tex = boxHighlight;
+			} else if (shadow instanceof Circle2D) {
+				tex = cirHighlight;
+			} else { //if (shadow instanceof Point2D) {
+				tex = pntHighlight;
+			}
+
+
+			Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), 0);
+
+			// We want to keep the aspect ratio of the image so...
+			float aspect = (float) tex.getWidth() / (float) tileWidth;
+
+			batch.draw(tex,
+					// x, y
+					isoPosition.x, isoPosition.y,
+					// originX, originY
+					tileWidth * e.getXRenderLength() / 2, tileHeight * e.getYRenderLength() / 2,
+					// width, height
+					tileWidth * e.getXRenderLength(), tex.getHeight() / aspect * e.getYRenderLength(),
+					// scaleX, scaleY, rotation
+					1, 1, 0 - e.rotationAngle(),
+					// srcX, srcY
+					0, 0,
+					// srcWidth, srcHeight
+					tex.getWidth(), tex.getHeight(),
+					// flipX, flipY
+					false, false);
+
+		}
+		batch.end();
+
+	}
+
+	//use to render the nodes in PathManager
+	private void renderPathingNodes(SpriteBatch batch) {
+		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
+		Texture pntHighlight = texMan.getTexture("Point2D_highlight");
+
+		batch.begin();
+
+		//for each node
+		//batch.draw
 
 		batch.end();
 	}
