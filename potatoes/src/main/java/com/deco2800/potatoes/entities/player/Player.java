@@ -363,15 +363,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         boolean collided = false;
         for (AbstractEntity entity : entities.values()) {
-            if (!this.equals(entity) && !(entity instanceof Squirrel) && !(entity instanceof Moose) &&
-                    !(entity instanceof Projectile) && !(entity instanceof Effect) &&
+            if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof Effect) &&
                     newPos.overlaps(entity.getMask())) {
                 LOGGER.info(this + " colliding with " + entity);
                 collided = true;
             }
 
-            if (!this.equals(entity) && entity instanceof EnemyEntity && newPos.overlaps(entity.getMask()) &&
-                    !(entity instanceof Moose)) {
+            if (!this.equals(entity) && entity instanceof EnemyEntity && newPos.overlaps(entity.getMask())) {
                 collided = true;
             }
         }
