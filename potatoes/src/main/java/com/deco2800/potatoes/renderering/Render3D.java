@@ -339,23 +339,58 @@ public class Render3D implements Renderer {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(new Color(0, 0, 0, 0.3f));
 
+
+		Vector2 screenWorldCoords;
+		float rt2 = (float) Math.sqrt(2);
+
 		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
 			CollisionMask shadow = e.getMask();
 
-			//translate centre
-			Vector2 screenWorldCoords = worldToScreenCoordinates(shadow.getX(), shadow.getY(), 0);
-			Vector3 shadowCentre = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
-
 			if (shadow instanceof Box2D) {
-				//Box2D box = (Box2D) shadow;
-				//use 2 shapeRenderer.triangle(...) to get diamond shape
-				shapeRenderer.rect(shadowCentre.x - 100, shadowCentre.y - 100, 200, 200);
+
+				Box2D box = (Box2D) shadow;
+
+				//calculate orthagonal corners of box
+				screenWorldCoords = worldToScreenCoordinates(
+						box.getX() + box.getXLength()/2, box.getY() + box.getYLength()/2, 0);
+				Vector3 c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+				screenWorldCoords = worldToScreenCoordinates(
+						box.getX() - box.getXLength()/2, box.getY() + box.getYLength()/2, 0);
+				Vector3 c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+				Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
+
+				Vector3 c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0); //c4 is c2 reflected on y
+
+				//use 2 triangles to get diamond shape
+				shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
+				shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
 
 
 			} else if (shadow instanceof Circle2D) {
-				//Circle2D circ = (Circle2D) shadow;
-				//use shapeRender.elipse(...)
-				shapeRenderer.circle(shadowCentre.x, shadowCentre.y, 100);
+				Circle2D circ = (Circle2D) shadow;
+
+				//calculate orthagonal corners of bounding box
+				screenWorldCoords = worldToScreenCoordinates(
+						circ.getX() + circ.getRadius(), circ.getY() + circ.getRadius(), 0);
+				Vector3 c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+				screenWorldCoords = worldToScreenCoordinates(
+						circ.getX() - circ.getRadius(), circ.getY() + circ.getRadius(), 0);
+				Vector3 c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+				Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
+
+				Vector3 c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0); //c4 is c2 reflected on y
+
+				//use 2 triangles to get diamond shape TODO remove square bounding box
+				shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
+				shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
+
+				//render ellipse
+				shapeRenderer.ellipse( c2.x - (c2.x - c3.x)/rt2, c1.y - (c1.y - c4.y)/rt2,
+						rt2 * (c1.x - c2.x), rt2  * (c2.y - c1.y));
 
 			}
 		}
