@@ -1,6 +1,10 @@
 package com.deco2800.potatoes.managers;
 
-import com.badlogic.gdx.utils.Logger;
+import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 
 /**
@@ -10,9 +14,13 @@ import com.deco2800.potatoes.entities.trees.AbstractTree;
  * @author Dion Lao
  */
 public class TreeState {
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(TreeState
+            .class);
+
     private boolean unlocked;   // Whether tree has been unlocked by player
     private Inventory cost;     // Amount of resources required to buy tree
     private AbstractTree tree;  // Tree type being bought
+    private String treeType;    // Resource, damage, or defense
 
     /**
      * Empty constructor for values to be set later.
@@ -20,7 +28,8 @@ public class TreeState {
     public TreeState() {
         unlocked = false;
         cost = new Inventory();
-        tree = null;
+        tree = new ResourceTree(0,0,new SeedResource(), 1);
+        treeType = "resource";
     }
 
     /**
@@ -29,17 +38,23 @@ public class TreeState {
      * @param tree     tree type being used
      * @param cost     amount of resources required to purchase tree
      * @param unlocked whether player has unlocked the tree yet
+     * @param treeType whether the tree is a resource, damamge or defense type
      */
-    public TreeState(AbstractTree tree, Inventory cost, boolean unlocked) {
+    public TreeState(AbstractTree tree, Inventory cost, boolean unlocked, String
+            treeType) {
         if (tree == null || !(tree instanceof AbstractTree)) {
-            LOGGER.error("Please supply a valid tree");
+            LOGGER.warn("Please supply a valid tree");
+            tree = new ResourceTree(0,0,new SeedResource(), 1);
+            treeType = "resource";
         } else if (cost == null) {
-            LOGGER.error("Please supply a valid cost");
+            LOGGER.warn("Please supply a valid cost");
+            cost = new Inventory();
         } else {
-            this.unlocked = unlocked;
             this.tree = tree;
             this.cost = cost;
+            this.treeType = treeType;
         }
+        this.unlocked = unlocked;
 
     }
 
@@ -104,6 +119,14 @@ public class TreeState {
      */
     public void updateCost(Inventory cost) {
         this.cost.updateInventory(cost);
+    }
+
+    public String getTreeType(){
+        return treeType;
+    }
+
+    public void setTreeType(String treeType){
+        this.treeType = treeType;
     }
 
     @Override

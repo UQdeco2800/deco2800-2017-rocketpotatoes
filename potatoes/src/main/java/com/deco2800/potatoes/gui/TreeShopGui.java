@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.gui;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -23,10 +22,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.MultiplayerManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
@@ -64,6 +60,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private PlayerManager playerManager;
 	private WidgetGroup container;
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+	private ArrayList<TreeState> treeStates;
+	private HashMap<String, Color> treeColorCode;
+
 
 	// Opacity value for treeShop subsection when mouse is not hovering over it
 	final private float UNSELECTED_ALPHA = 0.2f;
@@ -82,15 +81,24 @@ public class TreeShopGui extends Gui implements SceneGui {
 		shopX = 0;
 		shopY = 0;
 		initiated = false;
+		treeColorCode = new HashMap<String, Color>();
+		treeColorCode.put("resource", Color.GREEN);
+		treeColorCode.put("damage", Color.RED);
+		treeColorCode.put("defense", Color.BLUE);
 		items = new LinkedHashMap<AbstractTree, Color>();
-		items.put(new ResourceTree(treeX, treeY, new SeedResource(),0 ), Color.RED);
+		/*items.put(new ResourceTree(treeX, treeY, new SeedResource(),0 ), Color.RED);
 		items.put(new ResourceTree(treeX, treeY, new FoodResource(),0), Color.BLUE);
 		items.put(new ProjectileTree(treeX, treeY), Color.YELLOW);
 		items.put(new DamageTree(treeX, treeY, new LightningTreeType()),Color.GREEN);
 		items.put(new DamageTree(treeX, treeY, new IceTreeType()),Color.ORANGE);
 		items.put(new DamageTree(treeX, treeY, new FireTreeType()),Color.PURPLE);
-		items.put(new DamageTree(treeX, treeY, new AcornTreeType()),Color.GREEN);
+		items.put(new DamageTree(treeX, treeY, new AcornTreeType()),Color.GREEN);*/
 
+		initTreeState();
+		for (TreeState treeState : treeStates) {
+			System.out.println(treeState.getTreeType());
+			items.put(treeState.getTree(), treeColorCode.get(treeState.getTreeType()));
+		}
 
 		for (AbstractTree tree : items.keySet()) {
 			tree.setConstructionLeft(0);
@@ -98,6 +106,30 @@ public class TreeShopGui extends Gui implements SceneGui {
 		textureManager = GameManager.get().getManager(TextureManager.class);
 		container = new WidgetGroup();
 		stage.addActor(container);
+	}
+
+	private void initTreeState() {
+		treeStates = new ArrayList<TreeState>();
+		// Seed resource tree
+		Inventory seedTreeCost = new Inventory();
+		seedTreeCost.updateQuantity(new SeedResource(), 1);
+		TreeState seedTreeState = new TreeState(new ResourceTree(treeX, treeY, new
+				SeedResource(), 10), seedTreeCost, true, "resource");
+		treeStates.add(seedTreeState);
+		// Food resource tree
+		Inventory foodTreeCost = new Inventory();
+		foodTreeCost.updateQuantity(new SeedResource(), 1);
+		foodTreeCost.updateQuantity(new FoodResource(), 1);
+		TreeState foodTreeState = new TreeState(new ResourceTree(treeX, treeY, new
+				FoodResource(), 10), foodTreeCost, true, "resource");
+		treeStates.add(foodTreeState);
+		// Projectile tree
+
+		// Lightning tree
+		// Ice tree
+		// Fire tree
+		// Acorn tree
+
 	}
 
 	@Override

@@ -1,6 +1,9 @@
 package com.deco2800.potatoes;
 
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.TreeState;
 import org.junit.*;
@@ -13,10 +16,15 @@ import org.junit.*;
 public class TreeStateTest {
 
     TreeState treeState;
+    AbstractTree testTree;
+    Inventory cost;
 
     @Before
     public void setUp() {
-
+        cost = new Inventory();
+        cost.addInventoryResource(new SeedResource());
+        cost.addInventoryResource(new FoodResource());
+        testTree = new ResourceTree();
     }
 
     @Test
@@ -28,7 +36,10 @@ public class TreeStateTest {
         assert(!treeState.isUnlocked());
 
         // With full constructor
-        treeState = new TreeState()
+        treeState = new TreeState(testTree, cost, true);
+        assert(treeState.getTree().equals(testTree.clone()));
+        assert(treeState.getCost().equals(cost));
+        assert(treeState.isUnlocked() == true);
 
     }
 }
