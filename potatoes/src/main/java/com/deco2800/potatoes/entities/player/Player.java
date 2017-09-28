@@ -20,6 +20,7 @@ import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
@@ -388,6 +389,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public void handleKeyDown(int keycode) {
 
+        //freeze controls on Pause Menu
+        /* if ((!GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).isHidden())
+            && keycode != Input.Keys.ESCAPE) return; */ //causes glitches
+
         switch (keycode) {
             case Input.Keys.W:
                 speedy -= movementSpeed;
@@ -455,6 +460,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 break;
             case Input.Keys.ESCAPE:
                 GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
+                GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).toggle();
             default:
                 break;
         }

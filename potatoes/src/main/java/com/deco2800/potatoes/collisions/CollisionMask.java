@@ -1,5 +1,8 @@
 package com.deco2800.potatoes.collisions;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public interface CollisionMask {
 
     /**
@@ -53,6 +56,18 @@ public interface CollisionMask {
      *          as seen above.
      */
     float distance(float x1, float y1, float x2, float y2);
+
+	/**
+	 * Renders the fill of this shape using an current shapeRenderer
+	 * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+	 */
+	void renderShape(ShapeRenderer shapeRenderer);
+
+	/**
+	 * Renders an outline image where this shape is, in the isometric game view
+	 * @param batch Batch to render outline image onto
+	 */
+	void renderHighlight(SpriteBatch batch);
 
 	/**
 	 * Returns the x coordinate at the centre of the mask.

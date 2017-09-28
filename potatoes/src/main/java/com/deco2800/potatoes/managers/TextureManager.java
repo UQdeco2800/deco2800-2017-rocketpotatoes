@@ -323,6 +323,13 @@ public class TextureManager extends Manager {
 		}
 	    saveTexture("water_tile_1", "resources/placeholderassets/water_tile_1.png");
 	    saveTexture("water_tile_2", "resources/placeholderassets/water_tile_2.png");
+
+
+        // CollisionMask debug
+        String[] collisionSprites = {"Point2D_highlight", "Circle2D_highlight", "Box2D_highlight"};
+        for (String string : collisionSprites) {
+            saveTexture(string, "resources/collisionmasks/" + string + ".png");
+        }
     }
 
     /**

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
@@ -130,6 +131,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
         this.range = range;
 
         this.position = new Vector3(mask.getX(),mask.getY(),0);
+        this.setShadow( false );
     }
 
 

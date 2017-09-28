@@ -1,9 +1,27 @@
 package com.deco2800.potatoes.collisions;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Render3D;
+
+/**
+ * A point class that implements CollisionMask.
+ * Can be used to check distance or overlaps with other CollisionMask's.
+ * Can render to isometric view. TODO
+ * Being used by AbstractEntity & descendents for collision
+ *          & by PathManger to represent points in a path
+ *
+ * @author Tazman_Schmidt
+ */
 public class Point2D implements CollisionMask{
     
     private float x;
     private float y;
+    private static final String textureStr = "Point2D_highlight";
 
     /**
      * Default constructor for the purposes of serialization.
@@ -99,6 +117,47 @@ public class Point2D implements CollisionMask{
         return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
     }
 
+    /**
+     * Renders an X using this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+     */
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        //TODO use two shapeRenderer.rectLine();
+    }
+
+    /**
+     * Renders an X image where this shape is, in the isometric game view
+     * @param batch Batch to render outline image onto
+     */
+    @Override
+    public void renderHighlight(SpriteBatch batch) {
+        //TODO needs revision
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+
+        Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
+
+        int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+        // We want to keep the aspect ratio of the image so...
+        float aspect = (float) textureHighlight.getWidth() / (float) tileWidth;
+
+        batch.draw(textureHighlight,
+                // x, y
+                isoPosition.x, isoPosition.y,
+                // originX, originY
+                tileWidth, tileHeight,
+                // width, height
+                tileWidth, textureHighlight.getHeight() / aspect,
+                // scaleX, scaleY, rotation
+                1, 1, 0,
+                // srcX, srcY
+                0, 0,
+                // srcWidth, srcHeight
+                textureHighlight.getWidth(), textureHighlight.getHeight(),
+                // flipX, flipY
+                false, false);
+    }
 
     /**
      * Returns the x coordinate at the centre of the mask.
