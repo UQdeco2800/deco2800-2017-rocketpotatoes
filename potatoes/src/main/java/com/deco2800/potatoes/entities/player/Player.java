@@ -98,7 +98,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public boolean setState(PlayerState state) {
         if (!this.currentState.equals(state)) {
-            if (this.currentState.equals(PlayerState.IDLE) | this.currentState.equals(PlayerState.WALK)) {
+            if (this.currentState.equals(PlayerState.IDLE) || this.currentState.equals(PlayerState.WALK)) {
                 this.currentState = state;
                 stateChanged();
             } else {
@@ -135,13 +135,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     private void stateChanged() {
     		// Executes when the player stop walking
-    		if (isWalking & !this.getState().equals(PlayerState.WALK)) {
+    		if (isWalking && !this.getState().equals(PlayerState.WALK)) {
     			this.walk(false);
     			isWalking = false;
     		}
     			
     		// Executes when the player starts walking
-    		if (!isWalking & this.getState().equals(PlayerState.WALK)) {
+    		if (!isWalking && this.getState().equals(PlayerState.WALK)) {
     			this.walk(true);
     			isWalking = true;
     		}

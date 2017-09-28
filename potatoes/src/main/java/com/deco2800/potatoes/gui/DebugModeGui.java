@@ -332,7 +332,7 @@ public class DebugModeGui extends Gui {
     public void entitiesImmortal(){
         Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
         for (AbstractEntity ent: entitiesMap.values()){
-            if (ent instanceof MortalEntity&!(ent instanceof Player)){
+            if (ent instanceof MortalEntity && !(ent instanceof Player)){
                 ((MortalEntity) ent).addDamageScaling(0);
             }
         }

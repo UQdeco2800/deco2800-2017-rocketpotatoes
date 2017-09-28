@@ -1,9 +1,12 @@
 package com.deco2800.potatoes.collisions;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
@@ -128,7 +131,19 @@ public class Point2D extends CollisionMask {
      */
     @Override
     public void renderShape(ShapeRenderer shapeRenderer) {
-        //TODO use two shapeRenderer.rectLine();
+        OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+
+        //calculate orthagonal corners of box
+        Vector2 screenWorldCoords = Render3D.worldToScreenCoordinates(x , y, 0);
+        Vector3 v = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        //render ellipse
+        float rt2 = (float) Math.sqrt(2);
+        float size = 5;     //TODO test these vals
+        float width = 3;
+                                //x1, y1, x2, y2, width
+        shapeRenderer.rectLine(v.x - size, v.y - size * rt2, v.x + size, v.y + size * rt2, width);
+        shapeRenderer.rectLine(v.x - size, v.y + size * rt2, v.x + size, v.y - size * rt2, width);
     }
 
     /**
@@ -137,31 +152,12 @@ public class Point2D extends CollisionMask {
      */
     @Override
     public void renderHighlight(SpriteBatch batch) {
-        //TODO needs revision
+
         Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
 
         Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
 
-        int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-        int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-        // We want to keep the aspect ratio of the image so...
-        float aspect = (float) textureHighlight.getWidth() / (float) tileWidth;
-
-        batch.draw(textureHighlight,
-                // x, y
-                isoPosition.x, isoPosition.y,
-                // originX, originY
-                tileWidth, tileHeight,
-                // width, height
-                tileWidth, textureHighlight.getHeight() / aspect,
-                // scaleX, scaleY, rotation
-                1, 1, 0,
-                // srcX, srcY
-                0, 0,
-                // srcWidth, srcHeight
-                textureHighlight.getWidth(), textureHighlight.getHeight(),
-                // flipX, flipY
-                false, false);
+        batch.draw(textureHighlight,  isoPosition.x, isoPosition.y);
     }
 
 
