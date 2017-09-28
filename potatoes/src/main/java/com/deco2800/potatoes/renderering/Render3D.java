@@ -49,6 +49,8 @@ public class Render3D implements Renderer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Render3D.class);
 
+	private ShapeRenderer shapeRenderer;
+
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
 	 * World contains some entities and a Map to read tiles from
@@ -59,6 +61,11 @@ public class Render3D implements Renderer {
 	@Override
 	public void render(SpriteBatch batch) {
 		//IMPORTANT: each subroutine opens and closes the batch itself
+
+		// Created here because constructor is run in tests, should be moved to constructor though
+		if (shapeRenderer == null) {
+			shapeRenderer = new ShapeRenderer();
+		}
 
 		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
 		SortedMap<AbstractEntity, Integer> rendEntities = getRenderedEntitiesSorted();
@@ -198,7 +205,6 @@ public class Render3D implements Renderer {
 
 			// start drawing
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 			//pick colour based on treeShop's discretion
 			Color colour;
@@ -494,7 +500,6 @@ public class Render3D implements Renderer {
 
 		//start drawing & set fill transparent grey
 		Gdx.gl.glEnable(GL20.GL_BLEND);
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(new Color(0, 0, 0, 0.3f));
 
