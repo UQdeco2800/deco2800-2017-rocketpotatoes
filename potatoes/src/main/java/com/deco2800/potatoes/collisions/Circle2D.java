@@ -1,10 +1,30 @@
 package com.deco2800.potatoes.collisions;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.CameraManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Render3D;
+
+/**
+ * A centred circle class that implements CollisionMask.
+ * Can be used to check distance or overlaps with other CollisionMask's.
+ * Can render to isometric view.
+ * Being used by AbstractEntity & descendents for collision
+ *
+ * @author Tazman_Schmidt
+ */
 public class Circle2D implements CollisionMask {
 
     private float x;
     private float y;
     private float radius;
+    private static final String textureStr = "Circle2D_highlight";
 
 
     /**
@@ -105,6 +125,54 @@ public class Circle2D implements CollisionMask {
     }
 
     /**
+     * Renders the fill or outline of this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+     */
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+
+        //calculate orthagonal corners of box
+        Vector2 screenWorldCoords = Render3D.worldToScreenCoordinates(x + radius, y + radius, 0);
+        Vector3 c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        screenWorldCoords = Render3D.worldToScreenCoordinates(x - radius, y + radius, 0);
+        Vector3 c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
+        Vector3 c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0); //c4 is c2 reflected on y
+
+        //use 2 triangles to get diamond shape TODO debugging remove
+        //shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
+        //shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
+
+        //render ellipse
+        float rt2 = (float) Math.sqrt(2);
+        shapeRenderer.ellipse( c2.x - (c2.x - c3.x)/rt2, c1.y - (c1.y - c4.y)/rt2,
+                rt2 * (c1.x - c2.x), rt2  * (c2.y - c1.y));
+    }
+
+    /**
+     * Renders an outline image where this shape is, in the isometric game view
+     * @param batch Batch to render outline image onto
+     */
+    @Override
+    public void renderHighlight(SpriteBatch batch) {
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+
+        Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
+
+        int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        float aspect = (float) textureHighlight.getWidth() / (float) tileWidth;
+        float rt2 = (float) Math.sqrt(2);
+
+        batch.draw(textureHighlight,
+                isoPosition.x - tileWidth * radius / rt2, isoPosition.y - tileWidth * radius / rt2, // x, y
+                tileWidth * radius * rt2, textureHighlight.getHeight() / aspect * radius * rt2);    // width, height
+
+    }
+
+    /**
      * Returns the x coordinate at the centre of the mask.
      *
      * @return Returns the x coordinate.
@@ -157,6 +225,8 @@ public class Circle2D implements CollisionMask {
 
     //TODO maybe: public boolean centredOnPoint(Point2D) {}
     //used when following a path
+
+    //TODO area pi r ^2
 
     @Override
     public int hashCode() {

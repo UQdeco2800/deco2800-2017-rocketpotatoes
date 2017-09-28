@@ -22,21 +22,14 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
-import com.deco2800.potatoes.managers.CameraManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GameTimeManager;
-import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.InputManager;
-import com.deco2800.potatoes.managers.MultiplayerManager;
-import com.deco2800.potatoes.managers.ParticleManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.TextureManager;
-import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
+import jdk.nashorn.internal.runtime.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +41,7 @@ import java.util.TreeMap;
 /**
  * A simple isometric renderer for DECO2800 games
  *
- * @Author Tim Hadwen, Dion Lao
+ * @Author Tim Hadwen, Dion Lao, Tazman Schmidt
  */
 public class Render3D implements Renderer {
 
@@ -65,25 +58,53 @@ public class Render3D implements Renderer {
 	 */
 	@Override
 	public void render(SpriteBatch batch) {
-		renderMap(batch);
+		//IMPORTANT: each subroutine opens and closes the batch itself
 
-		//loops through all entities, renders their CollisionMasks as shadows TODO add opt in for entities
-		renderHitBoxShadows();
+		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
+		SortedMap<AbstractEntity, Integer> rendEntities = getRenderedEntitiesSorted();
+
+		//get shading colour for day night cycle
+		Color shading = GameManager.get().getManager(GameTimeManager.class).getColour();
 
 
-		batch.setColor(GameManager.get().getManager(GameTimeManager.class).getColour());
+		batch.setColor(shading);						// set world shading
+		renderMap(batch);								// rend tiles TODO render is offset
+		renderCursor();									//		highlighted cursor
+		renderShadows(rendEntities);					// 		CollisionMasks of entities as shadows
+		renderEntities(batch, rendEntities);			// 		entities normal
+		renderProjectiles(batch, rendEntities);			// 		entities projectile
+		renderEffects(batch, rendEntities);				// 		effect entities
 
-		if (font == null) {
-			font = new BitmapFont();
-			font.getData().setScale(1.0f);
+		GameManager.get().getManager(ParticleManager.class).draw(batch);	//rend particles
+
+
+		batch.setColor(Color.WHITE);					// clear shading
+		renderTreeResources(batch, rendEntities);		// rend tree resource count
+		renderMultiplayerName(batch, rendEntities);		// 		mutiplayer names
+		renderProgressBars(batch, rendEntities);		// 		progress bars
+
+		// tree shop radial menu
+		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
+		// TODO I think TreeshopGui's methods & method names need revision
+		// TODO does this render for other players ???
+		// TODO does planting does not match up with mouse cursor, depending on part of the tile clicked
+
+		//if DebugGui is shown ...
+		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
+			renderCollisionMasks(batch); 	// rend collisionMask outlines of entities
+			renderPathingNodes(batch);		// rend nodes in PathManager
 		}
+	}
+
+	/**
+	 * @return a list of entities sorted in render order (back to front)
+	 */
+	private SortedMap<AbstractEntity, Integer> getRenderedEntitiesSorted() {
+		//TODO only rend entities on screen or close to edges
 		Map<Integer, AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
 
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-
 		/* Tree map so we sort our entities properly */
-		SortedMap<AbstractEntity, Integer> entities = new TreeMap<>(new Comparator<AbstractEntity>() {
+		SortedMap<AbstractEntity, Integer> entMap = new TreeMap<>(new Comparator<AbstractEntity>() {
 			@Override
 			public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
 				int val = abstractEntity.compareTo(t1);
@@ -106,163 +127,17 @@ public class Render3D implements Renderer {
 
 		/* Gets a list of all entities in the renderables */
 		for (Map.Entry<Integer, AbstractEntity> e : renderables.entrySet()) {
-			entities.put(e.getValue(), e.getKey());
+			entMap.put(e.getValue(), e.getKey());
 		}
 
-		batch.begin();
-
-		/* Render each entity (backwards) in order to retain objects at the front */
-		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
-			AbstractEntity entity = e.getKey();
-
-			TextureManager reg = GameManager.get().getManager(TextureManager.class);
-			Texture tex;
-			if (e.getKey() instanceof Animated) {
-				// Animations should probably be changed to TextureRegion for performance
-				tex = reg.getTexture(((Animated) e.getKey()).getAnimation().getFrame());
-			} else {
-				tex = reg.getTexture(entity.getTexture());
-			}
-
-			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-
-			// We want to keep the aspect ratio of the image so...
-			float aspect = (float) tex.getWidth() / (float) tileWidth;
-
-			batch.draw(tex,
-					// x, y
-					isoPosition.x, isoPosition.y,
-					// originX, originY
-					tileWidth * entity.getXRenderLength() / 2, tileHeight * entity.getYRenderLength() / 2,
-					// width, height
-					tileWidth * entity.getXRenderLength(), tex.getHeight() / aspect * entity.getYRenderLength(),
-					// scaleX, scaleY, rotation
-					1, 1, 0 - entity.rotationAngle(),
-					// srcX, srcY
-					0, 0,
-					// srcWidth, srcHeight
-					tex.getWidth(), tex.getHeight(),
-					// flipX, flipY
-					false, false);
-		}
-
-		for (Map.Entry<AbstractEntity, Integer> e : entities.entrySet()) {
-			AbstractEntity entity = e.getKey();
-
-			Vector2 isoPosition = worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-
-			if (entity instanceof HasProgressBar && ((HasProgress) entity).showProgress()) {
-				ProgressBar PROGRESS_BAR = ((HasProgressBar) entity).getProgressBar();
-				// Allow entities to return null if they don't want to display their progress
-				// bar
-				if (PROGRESS_BAR != null) {
-					TextureManager reg = GameManager.get().getManager(TextureManager.class);
-
-					Texture barTexture = reg.getTexture(PROGRESS_BAR.getTexture());
-
-					// sets colour palette
-					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) entity).getProgressRatio()));
-
-					// draws the progress bar
-					Texture entityTexture = reg.getTexture(entity.getTexture());
-					float aspect = (float) entityTexture.getWidth() / (float) tileWidth;
-
-					float barRatio = ((HasProgress) entity).getProgressRatio();
-					float maxBarWidth = tileWidth * entity.getXRenderLength() * PROGRESS_BAR.getWidthScale();
-					float barWidth = maxBarWidth * barRatio;
-					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
-
-					// x co-ordinate,
-					// finds the overlap length of the bar and moves it half as much left
-					float barX = isoPosition.x
-							- tileWidth * entity.getXRenderLength() * (PROGRESS_BAR.getWidthScale() - 1) / 2;
-					// y co-ordinate
-					// If height is specified, use it, otherwise estimate the right height
-					float barY = isoPosition.y + entityTexture.getHeight() / aspect * entity.getYRenderLength();
-					float endX = barX + barWidth;
-					// We haven't implemented rounded corners, but when we do:
-					// float greyBarX = endX + endWidth;
-
-					// draw half of bar that represents current health
-					batch.draw(barTexture,
-							// x, y
-							barX, barY,
-							// width, height
-							barWidth, maxBarWidth / 8,
-							// srcX, srcY
-							0, 0,
-							// srcWidth, srcHeight
-							(int) (barTexture.getWidth() * barRatio), barTexture.getHeight(),
-							// flipX, flipY
-							false, false);
-
-					// draw shadow half of bar that represents health lost
-					batch.setColor(0.5f, 0.5f, 0.5f, 1f);
-					batch.draw(barTexture,
-							// x, y
-							endX, barY,
-							// width, height
-							barBackgroundWidth, maxBarWidth / 8,
-							// srcX, srcY
-							(int) (barTexture.getWidth() * barRatio), 0,
-							// srcWidth, srcHeight
-							(int) (barTexture.getWidth() * (1 - barRatio)), barTexture.getHeight(),
-							// flipX, flipY
-							false, false);
-
-					// reset the batch colour
-					batch.setColor(Color.WHITE);
-
-					/*
-					 * display font (used for debugging) font.setColor(Color.RED);
-					 * font.getData().setScale(1.0f); font.draw(batch, String.format("%d",
-					 * ((HasProgress) entity).getProgress()), isoPosition.x + tileWidth / 2 - 10,
-					 * isoPosition.y + 60);
-					 */
-				}
-			}
-
-			/*
-			 * Display resource collected for Resource Tree
-			 */
-			if (entity instanceof ResourceTree && ((ResourceTree) entity).getGatherCount() > 0) {
-				font.setColor(Color.GREEN);
-				font.getData().setScale(1.0f);
-				font.draw(batch, String.format("%s", ((ResourceTree) entity).getGatherCount()),
-						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
-			}
-
-			/**************************/
-			MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
-			if (entity instanceof Player && m.isMultiplayer()) {
-				font.setColor(Color.WHITE);
-				font.getData().setScale(1.3f);
-				if (m.getID() == e.getValue()) {
-					font.setColor(Color.BLUE);
-				}
-				font.draw(batch, String.format("%s", m.getClients().get(e.getValue())),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
-			}
-
-			if (entity instanceof Effect) {
-				((Effect) entity).drawEffect(batch);
-			}
-		}
-
-		batch.end();
-
-		// TODO: add render for projectile's separately
-		GameManager.get().getManager(ParticleManager.class).draw(batch);
-
-		//if DebugGui is shown ...
-		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
-			renderCollisionMasks(batch); 	// outline the CollisionMasks of entities
-			renderPathingNodes(batch);		// show all nodes in PathManager
-		}
-
-		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
+		return entMap;
 	}
 
+	/**
+	 * Renders the tiles of the Map
+	 *
+	 * @param batch	Batch to render onto
+	 */
 	private void renderMap(SpriteBatch batch) {
 		TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
 		World world = GameManager.get().getWorld();
@@ -271,12 +146,10 @@ public class Render3D implements Renderer {
 		int tileHeight = (int) world.getMap().getProperties().get("tileheight");
 
 		/* Render the tiles first */
+		batch.begin();
 		BatchTiledMapRenderer tileRenderer = getTileRenderer(batch);
 		tileRenderer.setView(GameManager.get().getManager(CameraManager.class).getCamera());
 
-		batch.setColor(GameManager.get().getManager(GameTimeManager.class).getColour());
-
-		batch.begin();
 		// within the screen, but down rounded to the nearest tile
 		Vector2 waterCoords = new Vector2(
 				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
@@ -291,45 +164,331 @@ public class Render3D implements Renderer {
 				tileRenderer.getViewBounds().width + tileWidth * 4,
 				tileRenderer.getViewBounds().height + tileHeight * 4);
 		batch.end();
-
 		tileRenderer.render();
+	}
 
-		/* Draw highlight on current tile we have selected */
-		batch.begin();
-		// Resets the colour for tile highlights
-		batch.setColor(Color.WHITE);
-		// Convert our mouse coordinates to world, where we then convert them to a tile
-		// [x, y], then back to screen
+	/**
+	 * Renders the cursor highlight the the treeShop radial menu */
+	private void renderCursor() {
+		World world = GameManager.get().getWorld();
+		TreeShopGui treeShopGui = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
 
+		//convert screen coords to game coords
 		Vector3 coords = Render3D.screenToWorldCoordiates(GameManager.get().getManager(InputManager.class).getMouseX(),
 				GameManager.get().getManager(InputManager.class).getMouseY(), 0);
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
 
-		float tileX = (int) Math.floor(tileCoords.x);
-		float tileY = (int) Math.floor(tileCoords.y);
+		float tileX = Math.round(tileCoords.x);
+		float tileY = Math.round(tileCoords.y) - 1;
 
-		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
-
-		float distance = GameManager.get().getManager(PlayerManager.class).distanceFromPlayer(tileX,tileY);
+		//find terrain at tile
 		Terrain terrain = world.getTerrain((int)tileX, (int)tileY);
-		TreeShopGui treeShopGui = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
-		treeShopGui.setPlantable(distance < treeShopGui.getMaxRange() && terrain.isPlantable() && !terrain.getTexture
-				().equals("void"));
-		if (terrain.getTexture().equals("void")) {
-			// Do nothing
-		} else {
-			if (treeShopGui.getPlantable())
-				batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-			else
-				batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
+		String terrainText = terrain.getTexture();
+
+		//send distance to treeShopGui
+		float distance = GameManager.get().getManager(PlayerManager.class).distanceFromPlayer(tileX,tileY);
+		treeShopGui.setPlantable(distance < treeShopGui.getMaxRange()
+				&& terrain.isPlantable() && !terrainText.equals("void"));
+
+		//if on the map
+		if (!(terrainText.equals("void") || terrainText.equals("water_tile_1"))) {
+
+			//make box using game coords
+			Box2D cursor = new Box2D(tileX + 0.5f, tileY + 0.5f, 1, 1);
+
+			// start drawing
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+			//pick colour based on treeShop's discretion
+			Color colour;
+			if (treeShopGui.getPlantable()) {
+				colour = new Color(0, 1, 0, 0.3f); //green
+			} else {
+				colour = new Color(1, 0, 0, 0.3f); //red
+			}
+
+			//draw fill
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+			shapeRenderer.setColor(colour);
+			cursor.renderShape(shapeRenderer);
+			shapeRenderer.end();
+
+			//draw outline
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+			shapeRenderer.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+			cursor.renderShapeOutline(shapeRenderer);
+			shapeRenderer.end();
+
+			//stop drawing
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
+	}
 
+	/**
+	 * Renders non-Projectile, non-Effect entities.
+	 * Does not consider rotate images
+	 *
+	 * @param batch 	Batch to render onto
+	 * @param entities	Render-ordered list of entities
+	 */
+	private void renderEntities(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
 
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+
+		batch.begin();
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+			AbstractEntity e = entity.getKey();
+
+			// skip projectiles & effects
+			if (e instanceof Projectile || e instanceof Effect) continue;
+
+			// get texture
+			Texture tex;
+			if (e instanceof Animated) {
+				// TODO Animations should probably be changed to TextureRegion for performance
+				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
+			} else {
+				tex = texMan.getTexture(e.getTexture());
+			}
+
+			Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
+
+			// We want to keep the aspect ratio of the image so...
+			float aspect = (float) tex.getWidth() / (float) tileWidth;
+
+			float offsetX, offsetY;
+			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
+			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
+
+			batch.draw(tex,
+					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
+					tileWidth * e.getXRenderLength(), 						// width
+					tex.getHeight() / aspect * e.getYRenderLength());		// height
+		}
 		batch.end();
 	}
 
-	//TODO comment stuff dingus
-	private void renderHitBoxShadows() {
+	/**
+	 * Renders Projectile entities
+	 *
+	 * @param batch 	Batch to render onto
+	 * @param entities	Render-ordered list of entities
+	 */
+	private void renderProjectiles(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
+
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+
+		batch.begin();
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+			AbstractEntity e = entity.getKey();
+
+			// skip projectiles & effects
+			if (!(e instanceof Projectile)) continue;
+
+			// get texture
+			Texture tex;
+			if (e instanceof Animated) {
+				// TODO Animations should probably be changed to TextureRegion for performance
+				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
+			} else {
+				tex = texMan.getTexture(e.getTexture());
+			}
+
+			Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
+
+			// We want to keep the aspect ratio of the image so...
+			float aspect = (float) tex.getWidth() / (float) tileWidth;
+
+			float offsetX, offsetY;
+			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
+			offsetY = tileWidth * e.getXRenderLength() / 2 - aspect * e.getYRenderOffset();
+
+
+			batch.draw(tex,
+					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
+					offsetX, offsetY, 										// originX, originY
+					tileWidth * e.getXRenderLength(), 						// width
+					tex.getHeight() / aspect * e.getYRenderLength(),		// height
+					1, 1, - e.rotationAngle(), 0, 0,						// scaleX, scaleY, rotation,  srcX, srcY
+					tex.getWidth(), tex.getHeight(), false, false);			// srcWidth, srcHeight, flipX, flipY
+
+		}
+		batch.end();
+	}
+
+	/**
+	 * Renders progress bars above entities
+	 *
+	 * @param batch 	Batch to render onto
+	 * @param entities	Render-ordered list of entities
+	 */
+	private void renderProgressBars(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+
+		Color currentShade = batch.getColor();
+
+		batch.begin();
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+			AbstractEntity e = entity.getKey();
+
+			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
+
+				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
+
+				ProgressBar PROGRESS_BAR = ((HasProgressBar) e).getProgressBar();
+				// Allow entities to return null if they don't want to display their progress bar
+				if (PROGRESS_BAR != null) {
+					TextureManager reg = GameManager.get().getManager(TextureManager.class);
+
+					Texture barTexture = reg.getTexture(PROGRESS_BAR.getTexture());
+
+					// sets colour palette
+					batch.setColor(PROGRESS_BAR.getColour(((HasProgress) e).getProgressRatio()));
+
+					// draws the progress bar
+					Texture entityTexture = reg.getTexture(e.getTexture());
+					float aspect = (float) entityTexture.getWidth() / (float) tileWidth;
+
+					float barRatio = ((HasProgress) e).getProgressRatio();
+					float maxBarWidth = tileWidth * e.getXRenderLength() * PROGRESS_BAR.getWidthScale();
+					float barWidth = maxBarWidth * barRatio;
+					float barBackgroundWidth = maxBarWidth * (1 - barRatio);
+
+					// x co-ordinate,
+					// finds the overlap length of the bar and moves it half as much left
+					float barX = isoPosition.x
+							- tileWidth * e.getXRenderLength() * (PROGRESS_BAR.getWidthScale() - 1) / 2;
+					// y co-ordinate
+					// If height is specified, use it, otherwise estimate the right height
+					float barY = isoPosition.y + entityTexture.getHeight() / aspect * e.getYRenderLength();
+					float endX = barX + barWidth;
+					// We haven't implemented rounded corners, but when we do:
+					// float greyBarX = endX + endWidth;
+
+					// draw half of bar that represents current health
+					batch.draw(barTexture, barX, barY,                        // texture, x, y
+							barWidth, maxBarWidth / 8, 0, 0,                // width, height srcX, srcY
+							(int) (barTexture.getWidth() * barRatio),        // srcWidth
+							barTexture.getHeight(),                            // srcHeight
+							false, false);                                    // flipX, flipY
+
+					// draw shadow half of bar that represents health lost
+					batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+					batch.draw(barTexture, endX, barY,                            // texture, x, y
+							barBackgroundWidth, maxBarWidth / 8,                // width, height
+							(int) (barTexture.getWidth() * barRatio), 0,        // srcX, srcY
+							(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
+							barTexture.getHeight(),                                // srcHeight
+							false, false);                                        // flipX, flipY
+
+					// reset the batch colour
+					batch.setColor(Color.WHITE);
+				}
+			}
+		}
+		batch.end();
+
+		batch.setColor(currentShade);
+	}
+
+	/**
+	 * Renders tree resource count
+	 *
+	 * @param batch 	Batch to render onto
+	 * @param entities	Render-ordered list of entities
+	 */
+	private void renderTreeResources(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities){
+
+		//initialise font
+		if (font == null) {
+			font = new BitmapFont();
+		}
+		font.getData().setScale(1.0f);
+		font.setColor(Color.GREEN);
+
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+
+		batch.begin();
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+			AbstractEntity e = entity.getKey();
+
+			if (e instanceof ResourceTree && ((ResourceTree) e).getGatherCount() > 0) {
+
+				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
+
+				font.draw(batch, String.format("%s", ((ResourceTree) e).getGatherCount()),
+						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
+			}
+		}
+		batch.end();
+	}
+
+	/**
+	 * Renders names of players if multiplayer is on
+	 *
+	 * @param batch 	Batch to render onto
+	 * @param entities 	Render-ordered list of entities
+	 */
+	private void renderMultiplayerName(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+		//draw multiplayer names
+		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
+
+		if (!m.isMultiplayer()) return;
+
+		font.getData().setScale(1.3f);
+
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+
+		batch.begin();
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+			AbstractEntity e = entity.getKey();
+
+			if (e instanceof Player) {
+
+				//font colour
+				if (m.getID() == entity.getValue()) {
+					font.setColor(Color.BLUE);
+				} else {
+					font.setColor(Color.WHITE);
+				}
+
+				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
+
+				font.draw(batch, String.format("%s", "<name>"),  //TODO player name: m.getClients().get(e.getValue())
+						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
+			}
+		}
+
+		return;
+	}
+
+	/**
+	 * Renders 'Effect' entities
+	 *
+	 * @param batch 	Batch to render onto
+	 * @param entities	Render-ordered list of entities
+	 */
+	private void renderEffects(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+		batch.begin();
+
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+			AbstractEntity e = entity.getKey();
+
+			if (e instanceof Effect) {
+				((Effect) e).drawEffect(batch);
+			}
+		}
+		batch.end();
+	}
+
+	/**
+	 * Renders the CollisionMasks of entities as shadows
+	 * @param entities	Render-ordered list of entities
+	 */
+	private void renderShadows(SortedMap<AbstractEntity, Integer> entities) {
 		//camera used for translation
 		OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
 
@@ -339,60 +498,13 @@ public class Render3D implements Renderer {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(new Color(0, 0, 0, 0.3f));
 
+		//Loop through entities
+		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
 
-		Vector2 screenWorldCoords;
-		float rt2 = (float) Math.sqrt(2);
+			CollisionMask shadow = entity.getKey().getShadow();
 
-		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-			CollisionMask shadow = e.getMask();
-
-			if (shadow instanceof Box2D) {
-
-				Box2D box = (Box2D) shadow;
-
-				//calculate orthagonal corners of box
-				screenWorldCoords = worldToScreenCoordinates(
-						box.getX() + box.getXLength()/2, box.getY() + box.getYLength()/2, 0);
-				Vector3 c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
-
-				screenWorldCoords = worldToScreenCoordinates(
-						box.getX() - box.getXLength()/2, box.getY() + box.getYLength()/2, 0);
-				Vector3 c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
-
-				Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
-
-				Vector3 c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0); //c4 is c2 reflected on y
-
-				//use 2 triangles to get diamond shape
-				shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
-				shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
-
-
-			} else if (shadow instanceof Circle2D) {
-				Circle2D circ = (Circle2D) shadow;
-
-				//calculate orthagonal corners of bounding box
-				screenWorldCoords = worldToScreenCoordinates(
-						circ.getX() + circ.getRadius(), circ.getY() + circ.getRadius(), 0);
-				Vector3 c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
-
-				screenWorldCoords = worldToScreenCoordinates(
-						circ.getX() - circ.getRadius(), circ.getY() + circ.getRadius(), 0);
-				Vector3 c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
-
-				Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
-
-				Vector3 c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0); //c4 is c2 reflected on y
-
-				//use 2 triangles to get diamond shape TODO remove square bounding box
-				shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
-				shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
-
-				//render ellipse
-				shapeRenderer.ellipse( c2.x - (c2.x - c3.x)/rt2, c1.y - (c1.y - c4.y)/rt2,
-						rt2 * (c1.x - c2.x), rt2  * (c2.y - c1.y));
-
-			}
+			if (shadow != null)
+				shadow.renderShape(shapeRenderer);
 		}
 
 		//stop drawing
@@ -400,75 +512,38 @@ public class Render3D implements Renderer {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
-	//use to render the collisionMasks of entities
+	/**
+	 * Renders the collisionMasks of entities
+	 * @param batch 	Batch to render onto
+	 */
 	private void renderCollisionMasks(SpriteBatch batch) {
-
-
-		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
-
-		Texture pntHighlight = texMan.getTexture("Point2D_highlight");
-		Texture cirHighlight = texMan.getTexture("Circle2D_highlight");
-		Texture boxHighlight = texMan.getTexture("Box2D_highlight");
-
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 
 		batch.begin();
 		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-
-			CollisionMask shadow = e.getMask();
-
-			Texture tex;
-			if (shadow instanceof Box2D) {
-				tex = boxHighlight;
-			} else if (shadow instanceof Circle2D) {
-				tex = cirHighlight;
-			} else { //if (shadow instanceof Point2D) {
-				tex = pntHighlight;
-			}
-
-
-			Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), 0);
-
-			// We want to keep the aspect ratio of the image so...
-			float aspect = (float) tex.getWidth() / (float) tileWidth;
-
-			batch.draw(tex,
-					// x, y
-					isoPosition.x, isoPosition.y,
-					// originX, originY
-					tileWidth * e.getXRenderLength() / 2, tileHeight * e.getYRenderLength() / 2,
-					// width, height
-					tileWidth * e.getXRenderLength(), tex.getHeight() / aspect * e.getYRenderLength(),
-					// scaleX, scaleY, rotation
-					1, 1, 0 - e.rotationAngle(),
-					// srcX, srcY
-					0, 0,
-					// srcWidth, srcHeight
-					tex.getWidth(), tex.getHeight(),
-					// flipX, flipY
-					false, false);
-
+			e.getMask().renderHighlight(batch);
 		}
 		batch.end();
 
 	}
 
-	//use to render the nodes in PathManager
+	/**
+	 * Renders the nodes in PathManager
+	 * TODO unfinished
+	 * @param batch 	Batch to render onto
+	 */
 	private void renderPathingNodes(SpriteBatch batch) {
-		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
-		Texture pntHighlight = texMan.getTexture("Point2D_highlight");
+		PathManager pathMan = GameManager.get().getManager(PathManager.class);
 
+		// TODO does PathManger store nodes as expected?
+		/*
 		batch.begin();
-
-		//for each node
-		//batch.draw
-
+		for (Point2D node : pathMan.getNodes) {
+			Point2D.render...()
+		}
 		batch.end();
+		*/
 	}
 
-	private void renderProgress(SpriteBatch batch, AbstractEntity entity) {
-	}
 
 	/**
 	 * Returns the correct tile renderer for the given rendering engine

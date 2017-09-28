@@ -58,6 +58,7 @@ public class PauseMenuGui extends Gui {
     public PauseMenuGui(Stage stage, GameScreen screen) {
         this.screen = screen;
         this.stage = stage;
+        hidden = true;
 
         textureManager = GameManager.get().getManager(TextureManager.class);
 
@@ -221,12 +222,26 @@ public class PauseMenuGui extends Gui {
         table.setVisible(true);
 
         stage.addActor(table);
+        hidden = false;
+
+        //TODO pause game when in single player
     }
 
     @Override
 	public void hide() {
         table.setVisible(false);
+        hidden = true;
     }
 
+    /**
+     * Toggles whether the menu is shown or hidden, using the hide() and show() methods.
+     */
+    public void toggle() {
+        if (hidden) {
+            show();
+        } else {
+            hide();
+        }
+    }
 
 }

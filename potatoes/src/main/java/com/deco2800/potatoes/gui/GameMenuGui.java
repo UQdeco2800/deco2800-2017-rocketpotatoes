@@ -50,8 +50,8 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
-                GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).show();
-
+                GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).toggle();
+                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
             }
         });
 

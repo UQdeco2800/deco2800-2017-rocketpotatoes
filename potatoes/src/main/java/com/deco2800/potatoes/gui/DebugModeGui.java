@@ -306,6 +306,9 @@ public class DebugModeGui extends Gui {
         hidden = true;
     }
 
+    /**
+     * Toggles whether the menu is shown or hidden, using the hide() and show() methods.
+     */
     public void toggle() {
         if (hidden) {
             show();

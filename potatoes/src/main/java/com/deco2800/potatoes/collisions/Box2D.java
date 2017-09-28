@@ -1,10 +1,31 @@
 package com.deco2800.potatoes.collisions;
 
-//TODO author stuff
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.CameraManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Render3D;
+
+/**
+ * A centred box class that implements CollisionMask.
+ * Can be used to check distance or overlaps with other CollisionMask's.
+ * Can render to isometric view.
+ * Being used by AbstractEntity & descendents for collision
+ *
+ * @author Tazman_Schmidt
+ */
 public class Box2D implements CollisionMask{
 
     private float x, y;
     private float xLength, yLength;
+    private static final String textureStr = "Box2D_highlight";
+
+    private Vector3 c1, c2, c3, c4; //corners during creen render
 
     /**
      * Create a new Box2D at a specific point with a length in the x and y dimension.
@@ -252,6 +273,76 @@ public class Box2D implements CollisionMask{
         float distY = Math.abs(other.getY() - this.y) - (this.yLength + other.getYLength()) / 2;
 
         return calculateDistance(distX, distY);
+    }
+
+    /**
+     * Used during rendering to get the screen coords of the corners of this shape
+     */
+    private void rendSetCorners() {
+        OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+
+        //calculate orthagonal corners of box
+        Vector2 screenWorldCoords = Render3D.worldToScreenCoordinates(x + xLength/2, y + yLength/2, 0);
+        c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        screenWorldCoords = Render3D.worldToScreenCoordinates(x - xLength/2, y + yLength/2, 0);
+        c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        //if square, optimise a little
+        if (xLength == yLength) {
+            //if square, reflect screen coords
+            c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
+            c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0);
+        } else {
+            screenWorldCoords = Render3D.worldToScreenCoordinates(x - xLength/2, y - yLength/2, 0);
+            c3 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+            c4 = new Vector3(c1.x - c2.x + c3.x, c1.y * 2 - c2.y, 0);
+        }
+    }
+
+    /**
+     * Renders the fill of this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+     */
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        rendSetCorners();
+
+        //use 2 triangles to get diamond shape
+        shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
+        shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
+    }
+
+    /**
+     * Renders the outline of this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+     */
+    public void renderShapeOutline(ShapeRenderer shapeRenderer) {
+        rendSetCorners();
+
+        float[] corners = {c1.x, c1.y, c2.x, c2.y, c3.x, c3.y, c4.x, c4.y};
+
+        //use polygon
+        shapeRenderer.polygon(corners);
+    }
+
+    /**
+     * Renders an outline image where this shape is, in the isometric game view
+     * @param batch Batch to render outline image onto
+     */
+    @Override
+    public void renderHighlight(SpriteBatch batch) {
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+
+        Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
+
+        int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        float aspect = (float) textureHighlight.getWidth() / (float) tileWidth;
+
+        batch.draw(textureHighlight,
+                isoPosition.x - tileWidth * xLength / 2, isoPosition.y - tileWidth * yLength / 2,   // x, y
+                tileWidth * xLength, textureHighlight.getHeight() / aspect * yLength);              // width, height
+
     }
 
     /**

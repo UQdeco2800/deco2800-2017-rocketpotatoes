@@ -45,6 +45,8 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
      */
     public BasePortal(float posX, float posY, float maxHealth) {
         super(posX, posY, TEXTURE, maxHealth);
+        setXRenderOffset(5);
+        setYRenderOffset(5);
     }
 
     @Override
