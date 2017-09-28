@@ -11,6 +11,8 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
+import java.util.Objects;
+
 /**
  * A centred circle class that implements CollisionMask.
  * Can be used to check distance or overlaps with other CollisionMask's.
@@ -19,12 +21,10 @@ import com.deco2800.potatoes.renderering.Render3D;
  *
  * @author Tazman_Schmidt
  */
-public class Circle2D implements CollisionMask {
+public class Circle2D extends CollisionMask {
 
-    private float x;
-    private float y;
     private float radius;
-    private static final String textureStr = "Circle2D_highlight";
+    private static final String textureStr = "CIRCLE_HIGHLIGHT";
 
 
     /**
@@ -139,12 +139,8 @@ public class Circle2D implements CollisionMask {
         screenWorldCoords = Render3D.worldToScreenCoordinates(x - radius, y + radius, 0);
         Vector3 c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
 
-        Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
+        Vector3 c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0); //c3 is c1 reflected on x
         Vector3 c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0); //c4 is c2 reflected on y
-
-        //use 2 triangles to get diamond shape TODO debugging remove
-        //shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
-        //shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
 
         //render ellipse
         float rt2 = (float) Math.sqrt(2);
@@ -172,37 +168,6 @@ public class Circle2D implements CollisionMask {
 
     }
 
-    /**
-     * Returns the x coordinate at the centre of the mask.
-     *
-     * @return Returns the x coordinate.
-     */
-    @Override
-    public float getX() { return this.x; }
-
-    /**
-     * Sets the x coordiante at the centre of the mask.
-     *
-     * @param x The new x coordinate.
-     */
-    @Override
-    public void setX(float x) { this.x = x; }
-
-    /**
-     * Returns the y coordinate at the centre of the mask.
-     *
-     * @return Returns the y coordinate.
-     */
-    @Override
-    public float getY() { return this.y; }
-
-    /**
-     * Sets the y coordinate at the centre of the mask.
-     *
-     * @param y The new y coordinate.
-     */
-    @Override
-    public void setY(float y) { this.y = y; }
 
     /**
      * Returns the radius of this Circle2D.
@@ -223,22 +188,26 @@ public class Circle2D implements CollisionMask {
         this.radius = radius >= 0 ? radius : -radius ;
     }
 
-    //TODO maybe: public boolean centredOnPoint(Point2D) {}
-    //used when following a path
+    /**
+     * intended use for following a path
+     * @return if this circle is approximately centred on a point
+     */
+    public boolean isCentredOnPoint(Point2D point) {
+        return (compareFloat(x, point.getX()) && compareFloat(y, point.getY()));
+    }
 
-    //TODO area pi r ^2
+    /**
+     * @return the area of this shape
+     */
+    @Override
+    public float getArea() {
+        return (float) Math.PI *radius * radius;
+    }
+
 
     @Override
     public int hashCode() {
-        // Start with a non-zero constant prime
-        int result = 17;
-
-        // Include a hash for each field.
-        result = 31 * result + Float.floatToIntBits(this.x);
-        result = 31 * result + Float.floatToIntBits(this.y);
-        result = 31 * result + Float.floatToIntBits(this.radius);
-
-        return result;
+        return Objects.hash(x, y, radius);
     }
 
     @Override

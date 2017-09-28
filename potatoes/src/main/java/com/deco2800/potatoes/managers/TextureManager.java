@@ -326,10 +326,10 @@ public class TextureManager extends Manager {
 
 
         // CollisionMask debug
-        String[] collisionSprites = {"Point2D_highlight", "Circle2D_highlight", "Box2D_highlight"};
-        for (String string : collisionSprites) {
-            saveTexture(string, "resources/collisionmasks/" + string + ".png");
-        }
+        saveTexture("POINT_HIGHLIGHT", "resources/collisionmasks/Point2D_highlight.png");
+        saveTexture("CIRCLE_HIGHLIGHT", "resources/collisionmasks/Circle2D_highlight.png");
+        saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
+
     }
 
     /**

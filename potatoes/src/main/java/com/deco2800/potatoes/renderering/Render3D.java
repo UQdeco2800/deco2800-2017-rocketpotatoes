@@ -49,6 +49,11 @@ public class Render3D implements Renderer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Render3D.class);
 
+	private ShapeRenderer shapeRenderer;
+	private SpriteBatch batch;
+	private SortedMap<AbstractEntity, Integer> rendEntities;
+
+
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
 	 * World contains some entities and a Map to read tiles from
@@ -60,51 +65,57 @@ public class Render3D implements Renderer {
 	public void render(SpriteBatch batch) {
 		//IMPORTANT: each subroutine opens and closes the batch itself
 
+		// Created here because constructor is run in tests, TODO should be moved to constructor though
+		if (shapeRenderer == null) {
+			shapeRenderer = new ShapeRenderer();
+		}
+
+		this.batch = batch;
+
 		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
-		SortedMap<AbstractEntity, Integer> rendEntities = getRenderedEntitiesSorted();
+		getRenderedEntitiesSorted();
 
 		//get shading colour for day night cycle
 		Color shading = GameManager.get().getManager(GameTimeManager.class).getColour();
 
 
-		batch.setColor(shading);						// set world shading
-		renderMap(batch);								// rend tiles TODO render is offset
-		renderCursor();									//		highlighted cursor
-		renderShadows(rendEntities);					// 		CollisionMasks of entities as shadows
-		renderEntities(batch, rendEntities);			// 		entities normal
-		renderProjectiles(batch, rendEntities);			// 		entities projectile
-		renderEffects(batch, rendEntities);				// 		effect entities
+		batch.setColor(shading);		// set world shading
+		renderMap();					// rend tiles TODO render is offset
+		renderCursor();					//		highlighted cursor
+		renderShadows();				// 		CollisionMasks of entities as shadows
+		renderEntities();				// 		entities normal
+		renderProjectiles();			// 		entities projectile
+		renderEffects();				// 		effect entities
 
 		GameManager.get().getManager(ParticleManager.class).draw(batch);	//rend particles
 
-
-		batch.setColor(Color.WHITE);					// clear shading
-		renderTreeResources(batch, rendEntities);		// rend tree resource count
-		renderMultiplayerName(batch, rendEntities);		// 		mutiplayer names
-		renderProgressBars(batch, rendEntities);		// 		progress bars
+		// text & displays
+		batch.setColor(Color.WHITE);	// clear shading
+		renderTreeResources();			// rend tree resource count
+		renderMultiplayerName();		// 		mutiplayer names
+		renderProgressBars();			// 		progress bars
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
-		// TODO I think TreeshopGui's methods & method names need revision
 		// TODO does this render for other players ???
-		// TODO does planting does not match up with mouse cursor, depending on part of the tile clicked
+		// TODO planting does not match up with mouse cursor, depending on part of the tile clicked
 
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
-			renderCollisionMasks(batch); 	// rend collisionMask outlines of entities
-			renderPathingNodes(batch);		// rend nodes in PathManager
+			renderCollisionMasks(); 	// rend collisionMask outlines of entities
+			renderPathFinderNodes();	// rend nodes in PathManager TODO
 		}
 	}
 
 	/**
 	 * @return a list of entities sorted in render order (back to front)
 	 */
-	private SortedMap<AbstractEntity, Integer> getRenderedEntitiesSorted() {
+	private void getRenderedEntitiesSorted() {
 		//TODO only rend entities on screen or close to edges
 		Map<Integer, AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
 
 		/* Tree map so we sort our entities properly */
-		SortedMap<AbstractEntity, Integer> entMap = new TreeMap<>(new Comparator<AbstractEntity>() {
+		rendEntities = new TreeMap<>(new Comparator<AbstractEntity>() {
 			@Override
 			public int compare(AbstractEntity abstractEntity, AbstractEntity t1) {
 				int val = abstractEntity.compareTo(t1);
@@ -127,18 +138,13 @@ public class Render3D implements Renderer {
 
 		/* Gets a list of all entities in the renderables */
 		for (Map.Entry<Integer, AbstractEntity> e : renderables.entrySet()) {
-			entMap.put(e.getValue(), e.getKey());
+			rendEntities.put(e.getValue(), e.getKey());
 		}
-
-		return entMap;
 	}
 
 	/**
-	 * Renders the tiles of the Map
-	 *
-	 * @param batch	Batch to render onto
-	 */
-	private void renderMap(SpriteBatch batch) {
+	 * Renders the tiles of the Map	*/
+	private void renderMap() {
 		TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
 		World world = GameManager.get().getWorld();
 
@@ -227,18 +233,14 @@ public class Render3D implements Renderer {
 
 	/**
 	 * Renders non-Projectile, non-Effect entities.
-	 * Does not consider rotate images
-	 *
-	 * @param batch 	Batch to render onto
-	 * @param entities	Render-ordered list of entities
-	 */
-	private void renderEntities(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+	 * Does not consider rotate images */
+	private void renderEntities() {
 		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
 
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 
 		batch.begin();
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			// skip projectiles & effects
@@ -271,18 +273,14 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders Projectile entities
-	 *
-	 * @param batch 	Batch to render onto
-	 * @param entities	Render-ordered list of entities
-	 */
-	private void renderProjectiles(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+	 * Renders Projectile entities */
+	private void renderProjectiles() {
 		TextureManager texMan = GameManager.get().getManager(TextureManager.class);
 
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 
 		batch.begin();
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			// skip projectiles & effects
@@ -320,18 +318,14 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders progress bars above entities
-	 *
-	 * @param batch 	Batch to render onto
-	 * @param entities	Render-ordered list of entities
-	 */
-	private void renderProgressBars(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+	 * Renders progress bars above entities */
+	private void renderProgressBars() {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 
 		Color currentShade = batch.getColor();
 
 		batch.begin();
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
@@ -395,12 +389,8 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders tree resource count
-	 *
-	 * @param batch 	Batch to render onto
-	 * @param entities	Render-ordered list of entities
-	 */
-	private void renderTreeResources(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities){
+	 * Renders tree resource count */
+	private void renderTreeResources(){
 
 		//initialise font
 		if (font == null) {
@@ -412,7 +402,7 @@ public class Render3D implements Renderer {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 
 		batch.begin();
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			if (e instanceof ResourceTree && ((ResourceTree) e).getGatherCount() > 0) {
@@ -427,12 +417,8 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders names of players if multiplayer is on
-	 *
-	 * @param batch 	Batch to render onto
-	 * @param entities 	Render-ordered list of entities
-	 */
-	private void renderMultiplayerName(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+	 * Renders names of players if multiplayer is on */
+	private void renderMultiplayerName() {
 		//draw multiplayer names
 		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 
@@ -443,7 +429,7 @@ public class Render3D implements Renderer {
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 
 		batch.begin();
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			if (e instanceof Player) {
@@ -466,15 +452,11 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders 'Effect' entities
-	 *
-	 * @param batch 	Batch to render onto
-	 * @param entities	Render-ordered list of entities
-	 */
-	private void renderEffects(SpriteBatch batch, SortedMap<AbstractEntity, Integer> entities) {
+	 * Renders 'Effect' rendEntities */
+	private void renderEffects() {
 		batch.begin();
 
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			if (e instanceof Effect) {
@@ -485,10 +467,8 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders the CollisionMasks of entities as shadows
-	 * @param entities	Render-ordered list of entities
-	 */
-	private void renderShadows(SortedMap<AbstractEntity, Integer> entities) {
+	 * Renders the CollisionMasks of entities as shadows */
+	private void renderShadows() {
 		//camera used for translation
 		OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
 
@@ -499,7 +479,7 @@ public class Render3D implements Renderer {
 		shapeRenderer.setColor(new Color(0, 0, 0, 0.3f));
 
 		//Loop through entities
-		for (Map.Entry<AbstractEntity, Integer> entity : entities.entrySet()) {
+		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 
 			CollisionMask shadow = entity.getKey().getShadow();
 
@@ -513,10 +493,8 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders the collisionMasks of entities
-	 * @param batch 	Batch to render onto
-	 */
-	private void renderCollisionMasks(SpriteBatch batch) {
+	 * Renders the collisionMasks of entities */
+	private void renderCollisionMasks() {
 
 		batch.begin();
 		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
@@ -527,11 +505,8 @@ public class Render3D implements Renderer {
 	}
 
 	/**
-	 * Renders the nodes in PathManager
-	 * TODO unfinished
-	 * @param batch 	Batch to render onto
-	 */
-	private void renderPathingNodes(SpriteBatch batch) {
+	 * Renders the nodes in PathManager */
+	private void renderPathFinderNodes() {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
 
 		// TODO does PathManger store nodes as expected?

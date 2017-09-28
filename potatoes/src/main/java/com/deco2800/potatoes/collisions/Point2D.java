@@ -8,6 +8,8 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
+import java.util.Objects;
+
 /**
  * A point class that implements CollisionMask.
  * Can be used to check distance or overlaps with other CollisionMask's.
@@ -17,11 +19,9 @@ import com.deco2800.potatoes.renderering.Render3D;
  *
  * @author Tazman_Schmidt
  */
-public class Point2D implements CollisionMask{
-    
-    private float x;
-    private float y;
-    private static final String textureStr = "Point2D_highlight";
+public class Point2D extends CollisionMask {
+
+    private static final String textureStr = "POINT_HIGHLIGHT";
 
     /**
      * Default constructor for the purposes of serialization.
@@ -51,6 +51,11 @@ public class Point2D implements CollisionMask{
     @Override
     public CollisionMask copy() {
         return new Point2D(x, y);
+    }
+
+    @Override
+    public float getArea() {
+        return 0;
     }
 
     /**
@@ -159,48 +164,10 @@ public class Point2D implements CollisionMask{
                 false, false);
     }
 
-    /**
-     * Returns the x coordinate at the centre of the mask.
-     *
-     * @return Returns the x coordinate.
-     */
-    @Override
-    public float getX() { return this.x; }
-
-    /**
-     * Sets the x coordiante at the centre of the mask.
-     *
-     * @param x The new x coordinate.
-     */
-    @Override
-    public void setX(float x) { this.x = x; }
-
-    /**
-     * Returns the y coordinate at the centre of the mask.
-     *
-     * @return Returns the y coordinate.
-     */
-    @Override
-    public float getY() { return this.y; }
-
-    /**
-     * Sets the y coordinate at the centre of the mask.
-     *
-     * @param y The new y coordinate.
-     */
-    @Override
-    public void setY(float y) { this.y = y; }
 
     @Override
     public int hashCode() {
-        // Start with a non-zero constant prime
-        int result = 17;
-
-        // Include a hash for each field.
-        result = 31 * result + Float.floatToIntBits(this.x);
-        result = 31 * result + Float.floatToIntBits(this.y);
-
-        return result;
+        return Objects.hash(x, y);
     }
 
     @Override

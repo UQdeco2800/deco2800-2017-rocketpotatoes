@@ -1,11 +1,6 @@
 package com.deco2800.potatoes.entities.portals;
 
-import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.health.ProgressBar;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.World;
 import org.junit.Test;
@@ -15,8 +10,6 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 
 import org.junit.After;
-
-import com.badlogic.gdx.Input;
 
 public class BasePortalTest{
 

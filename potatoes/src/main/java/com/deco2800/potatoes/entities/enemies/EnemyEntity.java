@@ -186,7 +186,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		String stompedGroundTextureString = "";
 
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
+			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy)
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getMask()) ) {
 
 				if(entity instanceof Player) {

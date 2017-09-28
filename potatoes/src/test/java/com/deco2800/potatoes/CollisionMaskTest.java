@@ -13,7 +13,6 @@ public class CollisionMaskTest {
     private boolean compareFloat(float a, float b) {
         float delta = 0.00001f;
         return Math.abs(a-b) < delta;
-
     }
 
     @Test
