@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
 public class BasicParticleType extends ParticleType {
 
     // Random gen
@@ -130,7 +132,7 @@ public class BasicParticleType extends ParticleType {
                         count++;
                     }
                 }
-                if (this.cycleDelta == 0.0f) { break; }
+                if (compareFloat(this.cycleDelta, 0.0f)) { break; }
             }
         }
     }

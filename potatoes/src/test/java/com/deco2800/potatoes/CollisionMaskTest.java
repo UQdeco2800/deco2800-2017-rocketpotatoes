@@ -6,15 +6,10 @@ import com.deco2800.potatoes.collisions.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 
 public class CollisionMaskTest {
-
-    private boolean compareFloat(float a, float b) {
-        float delta = 0.00001f;
-        return Math.abs(a-b) < delta;
-
-    }
 
     @Test
     public void duplicatesEqual() {

@@ -2,6 +2,8 @@ package com.deco2800.potatoes.util;
 
 import java.util.Objects;
 
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
 /**
  * Representation of a box in 3d space, defined by a corner point in XYZ and
  * extends in x (xLength), y (yLength), and z (zLength).
@@ -233,7 +235,7 @@ public class Box3D {
 
 		for (int i = 0; i < 3; i++) {
 			float lineDist = lineMax[i] - lineMin[i];
-			if (lineDist != 0) {
+			if (!compareFloat(lineDist, 0)) {
 				fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
 				fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
 				if (fMin > fMax) { return false; }
@@ -247,11 +249,6 @@ public class Box3D {
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y, z, xLength, yLength, zLength);
-	}
-
-	private boolean compareFloat(float a, float b) {
-		float delta = 0.00001f;
-		return Math.abs(a-b) < delta;
 	}
 
 	@Override

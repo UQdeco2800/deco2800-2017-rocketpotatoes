@@ -11,6 +11,8 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
 /**
  * A centred box class that implements CollisionMask.
  * Can be used to check distance or overlaps with other CollisionMask's.
@@ -153,7 +155,7 @@ public class Box2D implements CollisionMask{
 
         for (int i = 0; i < 2; i++) {
             float lineDist = lineMax[i] - lineMin[i];
-            if (lineDist != 0) {
+            if (!compareFloat(lineDist, 0)) {
                 fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
                 fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
                 if (fMin > fMax) {
@@ -289,7 +291,7 @@ public class Box2D implements CollisionMask{
         c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
 
         //if square, optimise a little
-        if (xLength == yLength) {
+        if (compareFloat(xLength, yLength)) {
             //if square, reflect screen coords
             c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
             c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0);
@@ -400,7 +402,7 @@ public class Box2D implements CollisionMask{
 
 
         //gradient = 0 cases
-        if (x1 == x2) {
+        if (compareFloat(x1, x2)) {
             if (minBoxY <= maxLineY ) {
                 if(minLineY <= maxBoxY) {
                     return distX1;      //line overlaps Box on Y, return X dist
@@ -414,7 +416,7 @@ public class Box2D implements CollisionMask{
             }
         }
 
-        if (y1 == y2) {
+        if (compareFloat(y1, y2)) {
             if (minBoxX <= maxLineX ) {
                 if(minLineX <= maxBoxX) {
                     return distY1;      //line overlaps Box on X, return Y dist

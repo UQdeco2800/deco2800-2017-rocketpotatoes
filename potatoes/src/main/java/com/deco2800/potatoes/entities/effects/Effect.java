@@ -121,11 +121,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
             this.targetClass = MortalEntity.class;
 
 
-        if (effectTexture == null)
-
-            throw new RuntimeException("projectile type must not be null");
-        else
-            this.effectTexture = effectTexture;
+        // if effectTexture is null, exception will be thrown at effectTexture.textures() call
+        this.effectTexture = effectTexture;
 
         this.damage = damage;
         this.range = range;
