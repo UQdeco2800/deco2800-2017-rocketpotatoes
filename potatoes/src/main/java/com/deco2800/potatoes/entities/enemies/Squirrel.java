@@ -6,6 +6,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -25,6 +26,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
+	private static Class<?> portal = BasePortal.class;
 	private Path path = null;
 	private CollisionMask target = null;
 
@@ -65,54 +67,52 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
+		if (findPortal() != null) {
+			// check paths
 
-        // check paths
+			// check that we actually have a path
+			if (path == null || path.isEmpty()) {
+				path = pathManager.generatePath(this.getMask(), findPortal().getMask());
+			}
 
-        // check that we actually have a path
-        if (path == null || path.isEmpty()) {
-            path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
-        }
+			//check if last node in path matches player
+			if (!path.goal().overlaps(findPortal().getMask())) {
+				path = pathManager.generatePath(this.getMask(), findPortal().getMask());
+			}
 
+			//check if close enough to target
+			if (target != null && target.overlaps(this.getMask())) {
+				target = null;
+			}
 
+			//check if the path has another node
+			if (target == null && !path.isEmpty()) {
+				target = path.pop();
+			}
 
-		//check if last node in path matches player
-		if(!path.goal().overlaps(playerManager.getPlayer().getMask())) {
-			path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
+			float targetX;
+			float targetY;
+
+			if (target == null) {
+				target = findPortal().getMask();
+			}
+
+			targetX = target.getX();
+			targetY = target.getY();
+
+			float deltaX = getPosX() - targetX;
+			float deltaY = getPosY() - targetY;
+
+			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
+
+			float changeX = (float) (SPEED * Math.cos(angle));
+			float changeY = (float) (SPEED * Math.sin(angle));
+
+			this.setPosX(getPosX() + changeX);
+			this.setPosY(getPosY() + changeY);
+			updateDirection();
 		}
 
-		//check if close enough to target
-		if (target != null && target.overlaps(this.getMask())) {
-			target = null;
-		}
-
-		//check if the path has another node
-		if (target == null && !path.isEmpty()) {
-			target = path.pop();
-
-		}
-
-		float targetX;
-		float targetY;
-
-		if (target == null) {
-            target = playerManager.getPlayer().getMask();
-		} 
-
-		targetX = target.getX();
-		targetY = target.getY();
-
-		float deltaX = getPosX() - targetX;
-		float deltaY = getPosY() - targetY;
-
-		float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
-
-		float changeX = (float) (SPEED * Math.cos(angle));
-		float changeY = (float) (SPEED * Math.sin(angle));
-
-		this.setPosX(getPosX() + changeX);
-		this.setPosY(getPosY() + changeY);
-
-		updateDirection();
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s at (%d, %d)", getEnemyType (), (int) getPosX(), (int) getPosY());
+		return String.format("%s at (%d, %d)", getEnemyType(), (int) getPosX(), (int) getPosY());
 	}
 
 	/***
@@ -155,7 +155,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class)).createEnemyStatistics();
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class)).createEnemyStatistics();
 	}
 
 	/***
