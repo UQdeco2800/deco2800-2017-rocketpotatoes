@@ -40,7 +40,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
-
+    
+    private boolean walkEnabled = true;	// Used to determine if the player should be walking
     protected float movementSpeed;		// The max speed the player moves
     private float speedx;				// The instantaneous speed in the x direction
     private float speedy;				// The instantaneous speed in the y direction
@@ -187,12 +188,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         if (this.getPosX() - oldPos.x == 0 && this.getPosY() - oldPos.y == 0) {
             this.setState(PlayerState.IDLE);
         } else {
-
-        	this.setState(PlayerState.WALK);
         		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
         				this.getPosX() - oldPos.x) * (180 / Math.PI);
-
-
             if (angularDirection >= -180 && angularDirection < -157.5) {
                 this.setDirection(Direction.SW);
             } else if (angularDirection >= -157.5 && angularDirection < -112.5) {
@@ -212,8 +209,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             } else if (angularDirection >= 157.5 && angularDirection <= 180) {
                 this.setDirection(Direction.SW);
             }
-
-            oldPos = new Vector2(this.getPosX(), this.getPosY());
+            
+            if (walkEnabled) {
+    				this.setState(PlayerState.WALK);
+    				oldPos = new Vector2(this.getPosX(), this.getPosY());
+    			} else {
+    				this.setPosX(oldPos.x);
+    				this.setPosY(oldPos.y);
+    			}
         }
     }
 
@@ -222,7 +225,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * handle setting the animations for every player state.
      */
     public void updateSprites() {
-    		
         // Override in subclasses to update the sprite based on state and direciton.
     }
 
@@ -407,6 +409,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 speedx += movementSpeed;
                 speedy += movementSpeed;
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		if (this.currentState.equals(PlayerState.IDLE) || this.currentState.equals(PlayerState.WALK)) {
+            			clearState();
+            			walkEnabled = false; // Disable Walking
+            		}
+            		break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
                 break;
@@ -561,6 +569,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 speedx -= movementSpeed;
                 speedy -= movementSpeed;
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		walkEnabled = true; // Enable Walking
+        			break;
             default:
                 break;
         }
