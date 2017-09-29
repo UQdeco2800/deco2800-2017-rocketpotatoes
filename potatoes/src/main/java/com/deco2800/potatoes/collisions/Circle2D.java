@@ -12,6 +12,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
 import java.util.Objects;
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 /**
  * A centred circle class that implements CollisionMask.

@@ -50,6 +50,7 @@ public class Render3D implements Renderer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Render3D.class);
 
 	private ShapeRenderer shapeRenderer;
+
 	private SpriteBatch batch;
 	private SortedMap<AbstractEntity, Integer> rendEntities;
 
@@ -57,7 +58,6 @@ public class Render3D implements Renderer {
 	private int tileHeight;
 	private final static String tileWidthName =  "tilewidth";
 	private final static String tileHeightName =  "tileheight";
-
 
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
@@ -207,7 +207,6 @@ public class Render3D implements Renderer {
 
 			// start drawing
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 			//pick colour based on treeShop's discretion
 			Color colour;
@@ -474,7 +473,6 @@ public class Render3D implements Renderer {
 
 		//start drawing & set fill transparent grey
 		Gdx.gl.glEnable(GL20.GL_BLEND);
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(new Color(0, 0, 0, 0.3f));
 

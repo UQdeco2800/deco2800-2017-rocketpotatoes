@@ -2,6 +2,8 @@ package com.deco2800.potatoes.util;
 
 import java.util.Objects;
 
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
 /**
  * Representation of a box in 3d space, defined by a corner point in XYZ and
  * extends in x (xLength), y (yLength), and z (zLength).
@@ -249,11 +251,6 @@ public class Box3D {
 		return Objects.hash(x, y, z, xLength, yLength, zLength);
 	}
 
-	// approximately equal for floats a & b
-	private boolean compareFloat(float a, float b) {
-		float delta = 0.00001f;
-		return Math.abs(a-b) < delta;
-	}
 
 	@Override
 	public boolean equals(Object o) {

@@ -115,9 +115,4 @@ public abstract class CollisionMask {
 	 */
 	abstract public void renderHighlight(SpriteBatch batch);
 
-	// approximately equal for floats a & b
-	boolean compareFloat(float a, float b) {
-		float delta = 0.00001f;
-		return Math.abs(a-b) < delta;
-	}
 }
