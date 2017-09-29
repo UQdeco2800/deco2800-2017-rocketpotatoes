@@ -44,7 +44,7 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
      * @param maxHealth the maximum health for the base portal
      */
     public BasePortal(float posX, float posY, float maxHealth) {
-        super(posX, posY, TEXTURE, maxHealth);
+        super(posX, posY, TEXTURE, 1000);
     }
 
     @Override
