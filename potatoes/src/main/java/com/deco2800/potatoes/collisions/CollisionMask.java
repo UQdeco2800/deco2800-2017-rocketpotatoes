@@ -52,12 +52,12 @@ public abstract class CollisionMask {
      * @return
      *          A copy of the current collision mask.
      */
-	abstract public CollisionMask copy();
+	public abstract CollisionMask copy();
 
 	/**
 	 * @return The area of this shape
 	 */
-	abstract public float getArea();
+	public abstract float getArea();
 
     /**
      * Checks if this collision mask overlaps another collision masks.
@@ -69,7 +69,7 @@ public abstract class CollisionMask {
      * @return
      *          True iff the two collision masks overlap.
      */
-	abstract public boolean overlaps(CollisionMask other);
+	public abstract boolean overlaps(CollisionMask other);
 
     /**
      * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
@@ -80,7 +80,7 @@ public abstract class CollisionMask {
      * @return
      *          The distance. If the collision masks overlap, a negative number is returned.
      */
-	abstract public float distance(CollisionMask other);
+	public abstract float distance(CollisionMask other);
 
     /**
      * Finds the minimum perpendicular distance between a straight line and this collision mask. This is used primarily 
@@ -101,18 +101,18 @@ public abstract class CollisionMask {
      *          not intersect the collision mask, then the number returned should be the length of a perpendicular line
      *          as seen above.
      */
-	abstract public float distance(float x1, float y1, float x2, float y2);
+	public abstract float distance(float x1, float y1, float x2, float y2);
 
 	/**
 	 * Renders the fill of this shape using an current shapeRenderer
 	 * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
 	 */
-	abstract public void renderShape(ShapeRenderer shapeRenderer);
+	public abstract void renderShape(ShapeRenderer shapeRenderer);
 
 	/**
 	 * Renders an outline image where this shape is, in the isometric game view
 	 * @param batch Batch to render outline image onto
 	 */
-	abstract public void renderHighlight(SpriteBatch batch);
+	public abstract void renderHighlight(SpriteBatch batch);
 
 }

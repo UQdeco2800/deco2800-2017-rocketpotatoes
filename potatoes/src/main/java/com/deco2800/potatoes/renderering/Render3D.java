@@ -56,8 +56,8 @@ public class Render3D implements Renderer {
 
 	private int tileWidth;
 	private int tileHeight;
-	private final static String tileWidthName =  "tilewidth";
-	private final static String tileHeightName =  "tileheight";
+	private static final String TILE_WIDTH =  "tilewidth";
+	private static final String TILE_HEIGHT =  "tileheight";
 
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
@@ -78,8 +78,8 @@ public class Render3D implements Renderer {
 		this.batch = batch;
 
 		World world = GameManager.get().getWorld();
-		this.tileWidth = (int) world.getMap().getProperties().get(tileWidthName);
-		this.tileHeight = (int) world.getMap().getProperties().get(tileHeightName);
+		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
+		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);
 
 		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
 		getRenderedEntitiesSorted();
@@ -600,8 +600,8 @@ public class Render3D implements Renderer {
 		int worldLength = GameManager.get().getWorld().getLength();
 		int worldWidth = GameManager.get().getWorld().getWidth();
 
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(tileWidthName);
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(tileHeightName);
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_WIDTH);
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_HEIGHT);
 
 		// X and Y offset for our isometric world (centered)
 		float baseX = tileWidth * (worldWidth - 1) / 2f;
@@ -644,8 +644,8 @@ public class Render3D implements Renderer {
 		float projX;
 		float projY;
 
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(tileWidthName);
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(tileHeightName);
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_WIDTH);
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_HEIGHT);
 
 		projX = x / tileWidth;
 		projY = -(y - tileHeight / 2f) / tileHeight + projX;
@@ -664,8 +664,8 @@ public class Render3D implements Renderer {
 		float projX = x;
 		float projY = y;
 
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(tileWidthName);
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(tileHeightName);
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_WIDTH);
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_HEIGHT);
 
 
 		projX = (projY + projX) / 2;

@@ -194,7 +194,7 @@ public class Circle2D extends CollisionMask {
      * @return if this circle is approximately centred on a point
      */
     public boolean isCentredOnPoint(Point2D point) {
-        return (compareFloat(x, point.getX()) && compareFloat(y, point.getY()));
+        return compareFloat(x, point.getX()) && compareFloat(y, point.getY());
     }
 
     /**
