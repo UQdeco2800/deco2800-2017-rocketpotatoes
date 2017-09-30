@@ -15,13 +15,13 @@ import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
 /**
  * JUnit tests for validating the Player class
  */
-public class CavemanTest {
+public class WizardTest {
 	
-	Caveman caveman;
+	Wizard caveman;
 	
 	@Before
 	public void setup() {
-		caveman = new Caveman(0, 0);
+		caveman = new Wizard(0, 0);
 	}
 	
 	@After
