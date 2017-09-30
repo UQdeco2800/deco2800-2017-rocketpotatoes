@@ -32,5 +32,12 @@ public class PlayerManagerTest {
 		
 		assertEquals(11.1803, distance, 0.0001);
 	}
+    @Test
+    public void getTest() {
+        PlayerManager manager = new PlayerManager();
+        manager.setPlayerType(manager.getPlayerType());
+        manager.getPlayerType().toString();
+        manager.setPlayer(0,0);
+    }
 
 }

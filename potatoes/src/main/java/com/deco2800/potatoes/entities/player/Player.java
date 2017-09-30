@@ -440,26 +440,31 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     AbstractTree.constructTree(
                             new ResourceTree(getCursorCoords().x, getCursorCoords().y, new FoodResource(), 8));
                 }
+                break;
             case Input.Keys.NUM_4:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new IceTreeType()));
                 }
+                break;
             case Input.Keys.NUM_5:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new LightningTreeType()));
                 }
+                break;
             case Input.Keys.NUM_6:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new FireTreeType()));
                 }
+                break;
             case Input.Keys.NUM_7:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new AcornTreeType()));
                 }
+                break;
             case Input.Keys.SPACE:
                 attack();
                 break;
