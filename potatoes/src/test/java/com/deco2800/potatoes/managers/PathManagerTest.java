@@ -79,5 +79,16 @@ public class PathManagerTest {
 
         assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
     }
+    @Test
+    public void pathTest() {
+        PathManager m = new PathManager();
+        Point2D start = new Point2D(50, 10);
+        Point2D finish = new Point2D(50, 90);
+
+        Path p = m.generatePath(start, finish);
+        p.getNodes();
+        p.getAngle();
+        p.setAngle(2);
+    }
 
 }

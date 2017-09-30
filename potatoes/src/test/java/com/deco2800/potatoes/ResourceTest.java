@@ -196,4 +196,9 @@ public class ResourceTest {
 		entity.setResourceType(new SeedResource());
 		assert(entity.getType().toString().equals("seed"));
 	}
+	@Test
+	public void tickTest(){
+		ResourceEntity foodEntity = new ResourceEntity(1,2,new FoodResource());
+		foodEntity.onTick(1);
+	}
 }
