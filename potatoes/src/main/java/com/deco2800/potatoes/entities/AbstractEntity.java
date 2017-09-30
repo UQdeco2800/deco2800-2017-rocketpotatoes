@@ -18,14 +18,17 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	protected transient GameManager gameManager = GameManager.get();
 
 	private CollisionMask position;
+	private CollisionMask shadow;
 
 	private float xRenderLength;
-
 	private float yRenderLength;
+	private float xRenderOffset;
+	private float yRenderOffset;
 
 	private boolean staticCollideable = false;
 
 	private String texture = "error_box";
+
 
 	public float rotationAngle() {
 		return 0;
@@ -50,18 +53,51 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
 	 *            The length of the entity, in y. Used in collision detection.
-	 * @param centered
-	 *            True if the entity is to be rendered centered, false otherwise.
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 */
     public AbstractEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture) {
 		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
+		this.xRenderOffset = 0;
+		this.yRenderOffset = 0;
 
 		this.texture = texture;
 
 		this.position = mask;
+		this.shadow = mask;
+	}
+
+	/**
+	 * Constructs a new AbstractEntity with specific render lengths. Allows
+	 * specification of rendering dimensions different to those used for collision.
+	 * For example, could be used to have collision on the trunk of a tree but not
+	 * the leaves/branches.
+	 *
+	 * @param mask
+	 *            The collision mask used by the entity.
+	 * @param xRenderLength
+	 *            The length of the entity, in x. Used in collision detection.
+	 * @param yRenderLength
+	 *            The length of the entity, in y. Used in collision detection.
+	 * @param xRenderOffset
+	 *            Offset this entities image, in x, by a percentage (100 = 100%)
+	 * @param yRenderOffset
+	 *            Offset this entities image, in y, by a percentage (100 = 100%)
+	 * @param texture
+	 *            The id of the texture for this entity.
+	 */
+	public AbstractEntity(CollisionMask mask, float xRenderLength, float yRenderLength,
+						  float xRenderOffset, float yRenderOffset, String texture) {
+		this.xRenderLength = xRenderLength;
+		this.yRenderLength = yRenderLength;
+		this.xRenderOffset = xRenderOffset;
+		this.yRenderOffset = yRenderOffset;
+
+		this.texture = texture;
+
+		this.position = mask;
+		this.shadow = mask;
 	}
 
 	/**
@@ -101,10 +137,14 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 
 	public void setPosX(float x) {
 		this.position.setX(x);
+		if (shadow != null)
+			this.shadow.setX(x);
 	}
 
 	public void setPosY(float y) {
 		this.position.setY(y);
+		if (shadow != null)
+			this.shadow.setY(y);
 	}
 
 	public boolean collidesWith(AbstractEntity entity) {
@@ -122,12 +162,74 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	}
 
 	/**
+	 * The image is offset along screen horizontal by this value when it renders,
+	 * where 0 is a 0% offset & 100 is a full sprite width to the right. */
+	public float getXRenderOffset() {
+		return this.xRenderOffset;
+	}
+
+	/**
+	 * The image is offset along screen vertical by this value when it renders,
+	 * where 0 is a 0% offset & 100 is a full sprite height up. */
+	public float getYRenderOffset() {
+		return this.yRenderOffset;
+	}
+
+	/**
+	 * Offset the image when it renders by this value,
+	 * where 0 is no offset & 100 is a full sprite width right.
+	 *
+	 * @param xRenderOffset offset percentage
+	 */
+	public void setXRenderOffset(float xRenderOffset) {
+		this.xRenderOffset = xRenderOffset;
+	}
+
+	/**
+	 * Offset the image when it renders by this value,
+	 * where 0 is no offset & 100 is a full sprite height up.
+	 *
+	 * @param yRenderOffset offset percentage
+	 */
+	public void setYRenderOffset(float yRenderOffset) {
+		this.yRenderOffset = yRenderOffset;
+	}
+
+	/**
 	 * Returns a CollisionMask representing the location.
 	 * 
 	 * @return Returns a CollisionMask representing the location.
 	 */
 	public CollisionMask getMask() {
         return position.copy();
+	}
+
+	/**
+	 * Returns The CollisionMask to be used as a shadow.
+	 * By default, the same as the position CollisionMask.
+	 *
+	 * @return	The shadow of this entity
+	 */
+	public CollisionMask getShadow() {
+		return shadow;
+	}
+
+	/**
+	 * Set the shadow to be rendered under this entity.
+	 * Set to null to remove shadow.
+	 *
+	 * @param shadow	The new shadow for this entity
+	 */
+	/*public void setShadow(CollisionMask shadow) {
+		this.shadow = shadow; //TODO need to track shadow with position
+	}*/
+
+	/**
+	 * turn shadow on or off in rendering
+	 * @param on whether the shadow is on
+	 */
+	public void setShadow(boolean on) {
+		this.shadow = on? position : null;
 	}
 
 	/**
@@ -223,7 +325,7 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
 	/**
 	 * Calculates the distance between two entities.
 	 * 
-	 * @param e
+	 * @param entity
 	 *            The entity to calculate the distance to.
 	 * @return Returns the euclidean distance between this and the specified entity.
 	 */
@@ -265,4 +367,6 @@ public abstract class AbstractEntity extends Render3D implements Renderable, Com
     public float getPosZ() {
         return 0;
     }
+
+
 }

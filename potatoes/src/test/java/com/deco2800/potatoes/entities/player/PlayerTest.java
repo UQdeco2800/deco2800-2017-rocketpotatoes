@@ -113,6 +113,8 @@ public class PlayerTest {
         player.handleKeyDown(Input.Keys.F);
         player.handleKeyDown(Input.Keys.T);
         player.handleKeyDown(Input.Keys.R);
+		player.handleKeyDown(Input.Keys.SHIFT_LEFT);
+		player.handleKeyUp(Input.Keys.SHIFT_LEFT);
 	}
 
 	/**
@@ -122,6 +124,7 @@ public class PlayerTest {
 	public void stringTest() {
 		player.toString();
 		player.getProgressBar();
+        player.getTexture();
 	}
 	
 	/**
@@ -132,5 +135,4 @@ public class PlayerTest {
         player.updateSprites();
         player.onTick(2);
     }
-
 }

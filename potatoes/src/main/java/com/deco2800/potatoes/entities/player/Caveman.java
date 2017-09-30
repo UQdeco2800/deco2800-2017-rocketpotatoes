@@ -27,11 +27,13 @@ public class Caveman extends Player {
      * @param posY The y-coordinate.
      */
     public Caveman(float posX, float posY) {
-    		super(posX, posY);
-    		this.movementSpeed = 0.08f;
-    		this.currentDirection = Direction.SE;
+		super(posX, posY);
+    	this.movementSpeed = 0.08f;
+    	this.currentDirection = Direction.SE;
         this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;
+
+		this.setYRenderOffset(9);
     }
     
     /* Caveman Animations */

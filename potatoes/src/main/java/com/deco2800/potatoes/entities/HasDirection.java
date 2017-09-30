@@ -15,7 +15,7 @@ public interface HasDirection {
 	 * South-East, South, South-West, West, North-West.
 	 */
 	public enum Direction { N("North"), NE("North-East"), E("East"), SE("South-East"), 
-					S(("South")), SW("South-West"), W("West"), NW("North-West");
+					S("South"), SW("South-West"), W("West"), NW("North-West");
 		
 		private final String name;
 		
