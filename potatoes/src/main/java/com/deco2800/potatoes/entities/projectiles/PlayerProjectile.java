@@ -15,7 +15,7 @@ public class PlayerProjectile extends Projectile {
     protected float pPosY;
     protected float tPosX;
     protected float tPosY;
-    protected String Directions;
+    protected String directions;
     protected PlayerShootMethod shootingStyle;
 
     public enum PlayerShootMethod {
@@ -49,19 +49,19 @@ public class PlayerProjectile extends Projectile {
      * @param projectileTexture the texture set to use for animations. Use ProjectileTexture._
      * @param startEffect       the effect to play at the start of the projectile being fired
      * @param endEffect         the effect to be played if a collision occurs
-     * @param Directions        Player Directions
+     * @param directions        Player Directions
      * @param shootingStyle     Directional, Homing or Ballistic?
      */
 
     public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
-                            Effect endEffect, String Directions, PlayerShootMethod shootingStyle) {
+                            Effect endEffect, String directions, PlayerShootMethod shootingStyle) {
         super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
 
         this.pPosX = startPos.x;
         this.pPosY = startPos.y;
         this.tPosX = targetPos.x;
         this.tPosY = targetPos.y;
-        this.Directions = Directions;
+        this.directions = directions;
         this.shootingStyle = shootingStyle;
         ShootingStyle(shootingStyle);
 
@@ -95,37 +95,37 @@ public class PlayerProjectile extends Projectile {
          * Shoots enemies base on the player directions
          */
         if (shootingStyle.toString().equalsIgnoreCase("DIRECTIONAL")) {
-            if (Directions.equalsIgnoreCase("w")) {
+            if (directions.equalsIgnoreCase("w")) {
                 setTargetPosition(pPosX - 5, pPosY - 5, 0);
                 // setTargetPosition(TargetPosX, TargetPosY, posZ);
                 updatePosition();
                 setPosition();
-            } else if (Directions.equalsIgnoreCase("e")) {
+            } else if (directions.equalsIgnoreCase("e")) {
                 setTargetPosition(pPosX + 5, pPosY + 5, 0);
                 updatePosition();
                 setPosition();
                 // setTargetPosition(TargetPosX, TargetPosY, posZ);
-            } else if (Directions.equalsIgnoreCase("n")) {
+            } else if (directions.equalsIgnoreCase("n")) {
                 setTargetPosition(pPosX + 15, pPosY - 15, 0);
                 updatePosition();
                 setPosition();
-            } else if (Directions.equalsIgnoreCase("s")) {
+            } else if (directions.equalsIgnoreCase("s")) {
                 setTargetPosition(pPosX - 15, pPosY + 15, 0);
                 updatePosition();
                 setPosition();
-            } else if (Directions.equalsIgnoreCase("ne")) {
+            } else if (directions.equalsIgnoreCase("ne")) {
                 setTargetPosition(pPosX + 15, pPosY + 1, 0);
                 updatePosition();
                 setPosition();
-            } else if (Directions.equalsIgnoreCase("nw")) {
+            } else if (directions.equalsIgnoreCase("nw")) {
                 setTargetPosition(pPosX - 15, pPosY - 200, 0);
                 updatePosition();
                 setPosition();
-            } else if (Directions.equalsIgnoreCase("se")) {
+            } else if (directions.equalsIgnoreCase("se")) {
                 setTargetPosition(pPosX + 20, pPosY + 200, 0);
                 updatePosition();
                 setPosition();
-            } else if (Directions.equalsIgnoreCase("sw")) {
+            } else if (directions.equalsIgnoreCase("sw")) {
                 setTargetPosition(pPosX - 200, pPosY - 20, 0);
                 updatePosition();
                 setPosition();
