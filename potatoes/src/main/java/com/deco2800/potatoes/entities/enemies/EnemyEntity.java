@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
@@ -27,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
@@ -50,7 +50,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private float speed;
 	private Path path;
-	private CollisionMask targetPos = null;
+	private Shape2D targetPos = null;
 	private Class<?> goal;
 
 	private static final SoundManager enemySoundManager = new SoundManager();
@@ -93,8 +93,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param goal
 	 * 			  The attacking goal of the enemy
 	 */
-    public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth, 
-            float speed, Class<?> goal) {
+    public EnemyEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture, float maxHealth,
+                       float speed, Class<?> goal) {
         super(mask, xRenderLength, yRenderLength, texture, maxHealth);
         getBasicStats().registerEvents(this);
 		this.speed = speed;
@@ -155,7 +155,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				goalX = getTarget.getPosX(); 
 				goalY = getTarget.getPosY(); 
 				
-				if(this.distance(getTarget) < speed) {
+				if(this.distanceTo(getTarget) < speed) {
 					this.setPosX(goalX);
 					this.setPosY(goalY);
 					return;
@@ -170,7 +170,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		float changeX = (float)(speed * Math.cos(angle));
 		float changeY = (float)(speed * Math.sin(angle));
 
-		CollisionMask newPos = getMask();
+		Shape2D newPos = getMask();
 
 		newPos.setX(getPosX() + changeX);
 		newPos.setY(getPosY() + changeY);

@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities.effects;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
@@ -21,7 +21,7 @@ public class LargeFootstepEffect extends Effect {
     private static final transient String TEXTURE = "TankFootstepTemp1";
 
     private boolean resourceStomped = false;
-    private CollisionMask effectPosition;
+    private Shape2D effectPosition;
     private int currentTextureIndexCount = 0;
     private String[] currentTextureArray = { "TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3" };
     private int timer = 0;
@@ -84,11 +84,11 @@ public class LargeFootstepEffect extends Effect {
     }
 
     /**
-     * Return the CollisionMask position of the large footstep
+     * Return the Shape2D position of the large footstep
      *
-     * @return CollisionMask position of footstep
+     * @return Shape2D position of footstep
      */
-    public CollisionMask getFootstepPosition() {
+    public Shape2D getFootstepPosition() {
         return effectPosition;
     }
 

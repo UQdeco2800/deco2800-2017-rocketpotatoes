@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
@@ -26,7 +26,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final float SPEED = 0.05f;
 	private static Class<?> goal = Player.class;
 	private Path path = null;
-	private CollisionMask target = null;
+	private Shape2D target = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 

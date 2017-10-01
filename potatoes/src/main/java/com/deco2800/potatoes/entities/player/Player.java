@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.HasDirection;
 import com.deco2800.potatoes.entities.Tickable;
@@ -41,7 +41,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 
-    protected float movementSpeed;		// The max speed the player moves
+    protected float moveSpeed;		// The max speed the player moves
     private float speedx;				// The instantaneous speed in the x direction
     private float speedy;				// The instantaneous speed in the y direction
     protected int respawnTime = 5000; 	// Time until respawn in milliseconds
@@ -49,7 +49,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     private Vector2 oldPos = Vector2.Zero;	// Used to determine the player's change in direction
     private boolean isWalking = false;		// Used to determine if player is walking
-    protected Direction currentDirection; 		// The direction the player faces
+    protected Direction currentDirection; 		// The direction the player faces TODO rework
     private int checkKeyDown = 0; // an integer to check if key down has been pressed before key up
     
     /* The states a player may take */
@@ -79,7 +79,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         super(new Circle2D(posX, posY, 0.4f), 1f, 1f, "player_right", HEALTH);
         this.speedx = 0.0f;
         this.speedy = 0.0f;
-        this.movementSpeed = 0.075f;
+        this.moveSpeed = 0.075f;
+        this.setMoveSpeed(0.075f);
         this.currentDirection = Direction.SE;
         this.currentState = PlayerState.IDLE;
         addResources();	//Initialise the inventory with the valid resources
@@ -265,7 +266,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
 
     		stopCurrentAnimation();
 		this.currentAnimation = animation;
-		startCurrentAniamation();
+		startCurrentAnimation();
 		LOGGER.info("Changed animation to " + this.getDirection().toString());
 	}
 
@@ -273,7 +274,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     /**
      * Starts the current animation.
      */
-    private void startCurrentAniamation() {
+    private void startCurrentAnimation() {
         GameManager.get().getManager(EventManager.class).registerEvent(this, currentAnimation);
     }
 
@@ -348,7 +349,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         float length = GameManager.get().getWorld().getLength();
         float width = GameManager.get().getWorld().getWidth();
 
-        CollisionMask newPos = getMask();
+        Shape2D newPos = getMask();
         newPos.setX(newPosX);
         newPos.setY(newPosY);
 
@@ -386,26 +387,24 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      */
     public void handleKeyDown(int keycode) {
 
-        //freeze controls on Pause Menu
-        /* if ((!GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).isHidden())
-            && keycode != Input.Keys.ESCAPE) return; */ //causes glitches
+        //TODO pressing a(down) CapsLock(down) a(depress) causes an error
 
         switch (keycode) {
             case Input.Keys.W:
-                speedy -= movementSpeed;
-                speedx += movementSpeed;
+                speedy -= moveSpeed;
+                speedx += moveSpeed;
                 break;
             case Input.Keys.S:
-                speedy += movementSpeed;
-                speedx -= movementSpeed;
+                speedy += moveSpeed;
+                speedx -= moveSpeed;
                 break;
             case Input.Keys.A:
-                speedx -= movementSpeed;
-                speedy -= movementSpeed;
+                speedx -= moveSpeed;
+                speedy -= moveSpeed;
                 break;
             case Input.Keys.D:
-                speedx += movementSpeed;
-                speedy += movementSpeed;
+                speedx += moveSpeed;
+                speedy += moveSpeed;
                 break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
@@ -456,6 +455,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 attack();
                 break;
             case Input.Keys.ESCAPE:
+                //TODO pause game on pauseMenu
                 GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
                 GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).toggle();
             default:
@@ -523,7 +523,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
-            if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange
+            if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange
                     && ((ResourceTree) entitiy).getGatherCount() > 0) {
                 didHarvest = true;
                 ((ResourceTree) entitiy).transferResources(this.inventory);
@@ -546,20 +546,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             return;
         switch (keycode) {
             case Input.Keys.W:
-                speedy += movementSpeed;
-                speedx -= movementSpeed;
+                speedy += moveSpeed;
+                speedx -= moveSpeed;
                 break;
             case Input.Keys.S:
-                speedy -= movementSpeed;
-                speedx += movementSpeed;
+                speedy -= moveSpeed;
+                speedx += moveSpeed;
                 break;
             case Input.Keys.A:
-                speedx += movementSpeed;
-                speedy += movementSpeed;
+                speedx += moveSpeed;
+                speedy += moveSpeed;
                 break;
             case Input.Keys.D:
-                speedx -= movementSpeed;
-                speedy -= movementSpeed;
+                speedx -= moveSpeed;
+                speedy -= moveSpeed;
                 break;
             default:
                 break;

@@ -5,7 +5,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
@@ -74,7 +74,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
         float yPos = getPosY();
         boolean collided = false;
 
-        CollisionMask newPos = getMask();
+        Shape2D newPos = getMask();
         newPos.setX(xPos);
         newPos.setY(yPos);
 

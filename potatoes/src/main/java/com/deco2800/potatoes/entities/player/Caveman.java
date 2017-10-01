@@ -28,7 +28,7 @@ public class Caveman extends Player {
      */
     public Caveman(float posX, float posY) {
 		super(posX, posY);
-    	this.movementSpeed = 0.08f;
+    	this.moveSpeed = 0.08f;
     	this.currentDirection = Direction.SE;
         this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;

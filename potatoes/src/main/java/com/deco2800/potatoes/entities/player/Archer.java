@@ -28,7 +28,7 @@ public class Archer extends Player {
      */
     public Archer(float posX, float posY) {
     		super(posX, posY);
-    		this.movementSpeed = 0.07f;
+    		this.moveSpeed = 0.07f;
     		this.currentDirection = Direction.SE;
         this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;

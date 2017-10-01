@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
@@ -38,7 +38,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static float speed = 0.08f;
 	private static Class<?> goal = ResourceTree.class;
 	private Path path = null;
-	private CollisionMask target = null;
+	private Shape2D target = null;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
@@ -112,7 +112,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 		double interactRange = 2f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange) {
 				if (((ResourceTree) entitiy).getGatherCount() > 0) {
 					((ResourceTree) entitiy).gather(-1);
 				}
@@ -211,7 +211,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 			// check collision
 			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isStaticCollideable() && this.getMask().overlaps(entity.getMask())) {
+				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
 					// collided with wall
 					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
 					target = path.pop();

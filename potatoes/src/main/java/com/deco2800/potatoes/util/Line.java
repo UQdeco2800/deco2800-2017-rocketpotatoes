@@ -15,6 +15,8 @@ import com.deco2800.potatoes.collisions.Point2D;
  */
 public class Line {
 
+    //TODO integrate with Shape2D
+
     //-------------------- Nested Point class ---------------
 
     /**

@@ -32,7 +32,8 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	 */
 	public EnemyGate(float posX, float posY) {
         super(new Box2D(posX, posY, 1f, 1f), 1f, 1f, TEXTURE, 1000f);
-		this.setStaticCollideable(true);
+        this.setSolid( false );
+        this.setStatic( true );
 	}
 
 	@Override

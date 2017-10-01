@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
@@ -58,6 +59,9 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		super(posX, posY, 1f, 1f);
 		this.reloadTime = reloadTime;
 		this.maxHealth = maxHealth;
+		this.setStatic(true);
+		this.setSolid(true);
+		this.setShadow(new Circle2D(0,0,0.4f));
 	}
 
 	/**
@@ -66,7 +70,6 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 */
 	public ProjectileTree(float posX, float posY) {
 		this(posX, posY, 1000, 8f, 100f);
-		this.setStaticCollideable(true);
 	}
 
 	/**

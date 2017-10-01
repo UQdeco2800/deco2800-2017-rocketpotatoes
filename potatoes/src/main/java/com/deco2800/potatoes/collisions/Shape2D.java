@@ -3,8 +3,9 @@ package com.deco2800.potatoes.collisions;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-public abstract class CollisionMask {
+public abstract class Shape2D {
 
+	// The centre of the shape
 	float x;
 	float y;
 
@@ -46,13 +47,48 @@ public abstract class CollisionMask {
 		this.y = y;
 	}
 
+	/**
+	 * Gets the angle of the line from the centre of this Shape2D to
+	 * the other Shape2D in radians, using Math.atan2()
+	 *
+	 * Reminder: on a regular graph/cartesian plane
+	 * 		0 is right
+	 * 	 pi/2 is up
+	 * 	   pi is left
+	 * 3 pi/2 is down
+	 *
+	 * The return value might contain a positive or negative multiple of 2 pi.
+	 * It is still an equivalent angle
+	 *
+	 * @param other The other Shape2D to get an angle to.
+	 * @return
+	 * 			The angle of the line from the centre of this Shape2D to
+	 * 			the other Shape2D in radians.
+	 */
+	public float getAngle(Shape2D other) {
+		return (float) Math.atan2(other.y - y, other.x - x);
+	}
+
+	/**
+	 * Offset this Shape2D by a vector
+	 *
+	 * @param theta	The angle, in radians
+	 * @param dist	The magnitude of the vector
+	 */
+	public void moveVector(float theta, float dist) {
+		x += (float) (dist * Math.cos(theta));
+		y += (float) (dist * Math.sin(theta));
+	}
+
+	// ----------     Abstract Methods     ---------- //
+
     /**
      * Makes a copy of the current collision mask.
      *
      * @return
      *          A copy of the current collision mask.
      */
-	public abstract CollisionMask copy();
+	public abstract Shape2D copy();
 
 	/**
 	 * @return The area of this shape
@@ -69,7 +105,7 @@ public abstract class CollisionMask {
      * @return
      *          True iff the two collision masks overlap.
      */
-	public abstract boolean overlaps(CollisionMask other);
+	public abstract boolean overlaps(Shape2D other);
 
     /**
      * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
@@ -80,7 +116,7 @@ public abstract class CollisionMask {
      * @return
      *          The distance. If the collision masks overlap, a negative number is returned.
      */
-	public abstract float distance(CollisionMask other);
+	public abstract float distance(Shape2D other);
 
     /**
      * Finds the minimum perpendicular distance between a straight line and this collision mask. This is used primarily 
@@ -114,5 +150,6 @@ public abstract class CollisionMask {
 	 * @param batch Batch to render outline image onto
 	 */
 	public abstract void renderHighlight(SpriteBatch batch);
+
 
 }

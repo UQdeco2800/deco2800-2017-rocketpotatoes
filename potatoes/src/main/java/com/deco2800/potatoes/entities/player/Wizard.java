@@ -26,7 +26,7 @@ public class Wizard extends Player {
 
     public Wizard(float posX, float posY) {
         super(posX, posY);
-        this.movementSpeed = 0.09f;
+        this.moveSpeed = 0.09f;
         this.currentDirection = Direction.SE;
         this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;

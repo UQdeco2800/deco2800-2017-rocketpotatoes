@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.*;
@@ -29,7 +29,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static float speed = 0.04f;
 	private static Class<?> goal = GoalPotate.class;
 	private Path path = null;
-	private CollisionMask target = null;
+	private Shape2D target = null;
 
 	private int ticksSinceRandom = 0;
 	private static final int MAX_WAIT = 200;
@@ -100,7 +100,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 		//check collision
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isStaticCollideable() && getMask().overlaps(entity.getMask())) {
+			if (entity.isSolid() && getMask().overlaps(entity.getMask())) {
 				//collided with wall
 				randomTarget();
 				//break;

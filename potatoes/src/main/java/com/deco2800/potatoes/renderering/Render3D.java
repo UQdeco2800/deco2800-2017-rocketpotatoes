@@ -29,7 +29,6 @@ import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-import jdk.nashorn.internal.runtime.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +89,7 @@ public class Render3D implements Renderer {
 
 		batch.setColor(shading);		// set world shading
 		renderMap();					// rend tiles TODO render is offset
-		renderCursor();					//		highlighted cursor
+		renderCursor();					//		highlighted cursor, communicates with treeShopGui
 		renderShadows();				// 		CollisionMasks of entities as shadows
 		renderEntities();				// 		entities normal
 		renderProjectiles();			// 		entities projectile
@@ -102,7 +101,7 @@ public class Render3D implements Renderer {
 		batch.setColor(Color.WHITE);	// clear shading
 		renderTreeResources();			// rend tree resource count
 		renderMultiplayerName();		// 		mutiplayer names
-		renderProgressBars();			// 		progress bars
+		renderProgressBars();			// 		progress bars TODO not centred, offset x by -ve spritewidth?
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
@@ -266,6 +265,9 @@ public class Render3D implements Renderer {
 			float offsetY;
 			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
 			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
+
+			//TODO use batch.setColour to recolor an entitiy when it takes damage, then reset batch colour
+			//probably use the event manager to toggle some internal "takingDamage" boolean of the entity
 
 			batch.draw(tex,
 					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
@@ -479,10 +481,12 @@ public class Render3D implements Renderer {
 		//Loop through entities
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 
-			CollisionMask shadow = entity.getKey().getShadow();
+			AbstractEntity e = entity.getKey();
 
-			if (shadow != null)
+			if (e.hasShadow()) {
+				Shape2D shadow = e.getShadow();
 				shadow.renderShape(shapeRenderer);
+			}
 		}
 
 		//stop drawing
@@ -630,6 +634,7 @@ public class Render3D implements Renderer {
 		return worldToScreenCoordinates(p.x, p.y, p.z);
 	}
 
+	//TODO comment
 	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
 		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, z));
 	}
