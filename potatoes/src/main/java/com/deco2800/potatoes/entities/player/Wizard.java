@@ -70,7 +70,7 @@ public class Wizard extends Player {
 
     @Override
     public void attack() {
-        // Archer attack
+    		super.attack();
         if (this.setState(PlayerState.ATTACK)) {
 
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");

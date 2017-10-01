@@ -42,6 +42,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
     
     private boolean walkEnabled = true;	// Used to determine if the player should be walking
+    private boolean walkLocked = false; // Used to determine if the user locks player movement
     protected float movementSpeed;		// The max speed the player moves
     private float speedx;				// The instantaneous speed in the x direction
     private float speedy;				// The instantaneous speed in the y direction
@@ -342,6 +343,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     protected void walk(boolean active) {
         // Override in subclasses to allow handling of walking.
     }
+    
+    /**
+     * Allows the ability to set whether walking is enabled or disabled.
+     * If disabled, the player will be locked in place. If enabled, the 
+     * player can freely walking around the game world.
+     * 
+     * @param enabled
+     * 			A boolean indicating whether walking is allowed or not.
+     */
+    protected void setWalkEnabled(boolean enabled) {
+    		if (enabled & !walkLocked) {
+    			walkEnabled = true; // Enable walking
+    		} else {
+    			// Only disable walking if the player is in idle or walk to prevent clearing other states.
+    			if (this.currentState.equals(PlayerState.IDLE) || this.currentState.equals(PlayerState.WALK)) {
+    				clearState();
+    				walkEnabled = false; // Disable walking
+    			}
+    		}
+	}
 
     @Override
     public void onTick(long arg0) {
@@ -410,10 +431,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 speedy += movementSpeed;
                 break;
             case Input.Keys.SHIFT_LEFT:
-            		if (this.currentState.equals(PlayerState.IDLE) || this.currentState.equals(PlayerState.WALK)) {
-            			clearState();
-            			walkEnabled = false; // Disable Walking
-            		}
+            		walkLocked = true;
+            		setWalkEnabled(false);
             		break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
@@ -575,7 +594,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 speedy -= movementSpeed;
                 break;
             case Input.Keys.SHIFT_LEFT:
-            		walkEnabled = true; // Enable Walking
+            		walkLocked = false;
+            		setWalkEnabled(true);
         			break;
             default:
                 break;
