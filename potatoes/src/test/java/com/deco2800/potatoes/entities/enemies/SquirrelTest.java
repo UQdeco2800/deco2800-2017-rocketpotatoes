@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
@@ -32,10 +32,12 @@ public class SquirrelTest extends BaseTest {
 
     @Before
     public void setup() throws Exception {
+        GameManager gameManager = GameManager.get();
         squirrelEmpty = new Squirrel();
         squirrel1 = new Squirrel(0, 0);
         squirrel2 = new Squirrel(8, 8);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        gameManager.getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        gameManager.getWorld().addEntity(new BasePortal(14, 17, 100));
     }
 
     @After

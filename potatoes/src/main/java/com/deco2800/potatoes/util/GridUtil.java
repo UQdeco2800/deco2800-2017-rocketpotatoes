@@ -90,38 +90,20 @@ public class GridUtil {
 		Queue<Point> q = new LinkedList<>();
 		q.add(new Point(start.x, start.y));
 		while (!q.isEmpty()) {
-			Point p = q.poll();
+			Point p = q.peek();
 
-			checkEastWest(func, edges, filled, q, p, WEST);
-			checkEastWest(func, edges, filled, q, p, EAST);
-		}
-	}
-
-	private static void checkEastWest(Function<Point, Boolean> func, Set<Point> edges, Set<Point> filled,
-			Queue<Point> q, Point p, Point direction) {
-		// Continues in the given direction until it hits an edge
-		do {
-			filled.add(new Point(p));
-			checkNorthSouth(func, edges, filled, q, new Point(p), NORTH);
-			checkNorthSouth(func, edges, filled, q, new Point(p), SOUTH);
-			p.translate(direction.x, direction.y);
-		} while (func.apply(p));
-		// Once finished, p is at an edge
-		p.translate(-direction.x, -direction.y);
-		edges.add(new Point(p));
-	}
-
-	private static void checkNorthSouth(Function<Point, Boolean> func, Set<Point> edges, Set<Point> filled,
-			Queue<Point> q, Point p, Point direction) {
-		p.translate(direction.x, direction.y);
-		if (!filled.contains(p)) {
-			if (func.apply(p)) {
-				q.add(p);
-			} else {
-				// At an edge
-				p.translate(-direction.x, -direction.y);
-				edges.add(p);
+			for (int[] offset : DIAMOND_SAMPLES) {
+				Point newPoint = new Point(p.x + offset[0], p.y + offset[1]);
+				if (!filled.contains(newPoint)) {
+					if (func.apply(newPoint)) {
+						q.add(newPoint);
+						filled.add(newPoint);
+					} else {
+						edges.add(p);
+					}
+				}
 			}
+			q.poll();
 		}
 	}
 

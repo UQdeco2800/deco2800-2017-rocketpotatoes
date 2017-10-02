@@ -1,6 +1,50 @@
 package com.deco2800.potatoes.collisions;
 
-public interface CollisionMask {
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+public abstract class CollisionMask {
+
+	float x;
+	float y;
+
+	/**
+	 * Returns the x coordinate at the centre of the mask.
+	 *
+	 * @return Returns the x coordinate.
+	 */
+	public float getX() {
+		return this.x;
+	}
+
+	/**
+	 * Sets the x coordiante at the centre of the mask.
+	 *
+	 * @param x
+	 *             The new x coordinate.
+	 */
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	/**
+	 * Returns the y coordinate at the centre of the mask.
+	 *
+	 * @return Returns the y coordinate.
+	 */
+	public float getY() {
+		return this.y;
+	}
+
+	/**
+	 * Sets the y coordinate at the centre of the mask.
+	 *
+	 * @param y
+	 *            The new y coordinate.
+	 */
+	public void setY(float y) {
+		this.y = y;
+	}
 
     /**
      * Makes a copy of the current collision mask.
@@ -8,7 +52,12 @@ public interface CollisionMask {
      * @return
      *          A copy of the current collision mask.
      */
-    CollisionMask copy();
+	abstract public CollisionMask copy();
+
+	/**
+	 * @return The area of this shape
+	 */
+	abstract public float getArea();
 
     /**
      * Checks if this collision mask overlaps another collision masks.
@@ -20,7 +69,7 @@ public interface CollisionMask {
      * @return
      *          True iff the two collision masks overlap.
      */
-    boolean overlaps(CollisionMask other);
+	abstract public boolean overlaps(CollisionMask other);
 
     /**
      * Finds the minimum straight-line distance between the edges of this collision mask and another collision mask.
@@ -31,7 +80,7 @@ public interface CollisionMask {
      * @return
      *          The distance. If the collision masks overlap, a negative number is returned.
      */
-    float distance(CollisionMask other);
+	abstract public float distance(CollisionMask other);
 
     /**
      * Finds the minimum perpendicular distance between a straight line and this collision mask. This is used primarily 
@@ -52,36 +101,18 @@ public interface CollisionMask {
      *          not intersect the collision mask, then the number returned should be the length of a perpendicular line
      *          as seen above.
      */
-    float distance(float x1, float y1, float x2, float y2);
+	abstract public float distance(float x1, float y1, float x2, float y2);
 
 	/**
-	 * Returns the x coordinate at the centre of the mask.
-	 * 
-	 * @return Returns the x coordinate.
+	 * Renders the fill of this shape using an current shapeRenderer
+	 * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
 	 */
-    float getX();
-
-    /**
-     * Sets the x coordiante at the centre of the mask.
-     * 
-     * @param x
-     *             The new x coordinate.
-     */
-    public void setX(float x);
+	abstract public void renderShape(ShapeRenderer shapeRenderer);
 
 	/**
-	 * Returns the y coordinate at the centre of the mask.
-	 * 
-	 * @return Returns the y coordinate.
+	 * Renders an outline image where this shape is, in the isometric game view
+	 * @param batch Batch to render outline image onto
 	 */
-    public float getY();
+	abstract public void renderHighlight(SpriteBatch batch);
 
-
-	/**
-	 * Sets the y coordinate at the centre of the mask.
-	 * 
-	 * @param y
-	 *            The new y coordinate.
-	 */
-    public void setY(float y);
 }

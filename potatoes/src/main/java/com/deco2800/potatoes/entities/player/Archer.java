@@ -9,7 +9,6 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.EventManager;
@@ -42,6 +41,7 @@ public class Archer extends Player {
     private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", PlayerState.INTERACT, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
+    		setWalkEnabled(true); // Re-enable walking
     		clearState();
 		updateSprites();
 		return null;
@@ -81,7 +81,8 @@ public class Archer extends Player {
     
     @Override
     public void attack() {
-	    // Archer attack
+	    super.attack();
+	    setWalkEnabled(false); // Stop walking for attacking
     		if (this.setState(PlayerState.ATTACK)) {
     			
     			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
@@ -170,6 +171,7 @@ public class Archer extends Player {
     @Override
     public void interact() {
     		super.interact();
+    		setWalkEnabled(false); // Stop walking for interacting
 	    	if (this.setState(PlayerState.INTERACT)) {
 	    		// Archer interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");

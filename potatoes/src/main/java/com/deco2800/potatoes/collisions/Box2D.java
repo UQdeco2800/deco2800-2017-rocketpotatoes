@@ -1,9 +1,37 @@
 package com.deco2800.potatoes.collisions;
 
-public class Box2D implements CollisionMask{
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.CameraManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import java.util.Objects;
 
-    private float x, y;
-    private float xLength, yLength;
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
+/**
+ * A centred box class that implements CollisionMask.
+ * Can be used to check distance or overlaps with other CollisionMask's.
+ * Can render to isometric view.
+ * Being used by AbstractEntity & descendents for collision
+ *
+ * @author Tazman_Schmidt
+ */
+public class Box2D extends CollisionMask {
+
+    private float xLength;
+    private float yLength;
+    private static final String textureStr = "BOX_HIGHLIGHT";
+
+    private Vector3 c1;//corners during screen render
+    private Vector3 c2;
+    private Vector3 c3;
+    private Vector3 c4;
 
     /**
      * Create a new Box2D at a specific point with a length in the x and y dimension.
@@ -29,6 +57,50 @@ public class Box2D implements CollisionMask{
     @Override
     public CollisionMask copy() {
         return new Box2D(x, y, xLength, yLength);
+    }
+
+    @Override
+    public float getArea() {
+        return xLength * yLength;
+    }
+
+
+    /**
+     * Returns the length in the x direction.
+     *
+     * @return Returns the x length.
+     */
+    public float getXLength() {
+        return this.xLength;
+    }
+
+    /**
+     * Set the length in the x direction.
+     * A negative length will be reversed.
+     *
+     * @param xLength The desired x length.
+     */
+    public void setXLength(float xLength) {
+        this.xLength = xLength >= 0 ? xLength : -xLength ;
+    }
+
+    /**
+     * Returns the length in the y direction.
+     *
+     * @return Returns the y length.
+     */
+    public float getYLength() {
+        return this.yLength;
+    }
+
+    /**
+     * Sets the length in the y direction.
+     * A negative length will be reversed.
+     *
+     * @param yLength The desired y length.
+     */
+    public void setYLength(float yLength) {
+        this.yLength = yLength >= 0 ? yLength : -yLength ;
     }
 
 
@@ -68,16 +140,15 @@ public class Box2D implements CollisionMask{
         float distY = Math.abs(other.getY() - this.y);
 
         // Point is outside collision
-        if (distX >= this.xLength/2 + other.getRadius())
-            return false;
-        if (distY >= this.yLength/2 + other.getRadius())
+        if (distX >= this.xLength/2 + other.getRadius() ||
+                distY >= this.yLength/2 + other.getRadius())
             return false;
 
         // Point is inside collision
-        if (distX < this.xLength/2)
+        if (distX < this.xLength/2 ||
+                distY < this.yLength/2)
             return true;
-        if (distY < this.yLength/2)
-            return true;
+
 
         // May intersect corner scenario, calc oblique distance square
         float cornerX = distX - this.xLength / 2;
@@ -131,16 +202,14 @@ public class Box2D implements CollisionMask{
 
         for (int i = 0; i < 2; i++) {
             float lineDist = lineMax[i] - lineMin[i];
-            if (lineDist != 0) {
+            if (!compareFloat(lineDist, 0)) {
                 fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
                 fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
-                if (fMin > fMax) {
+                if (fMin > fMax)
                     return false;
-                }
 
-            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i]) {
+            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i])
                 return false;
-            }
         }
 
         return true;
@@ -233,9 +302,9 @@ public class Box2D implements CollisionMask{
             // Box & circle are diagonal to each other, calc corner point to point dist
             return (float) Math.sqrt(distPointX * distPointX + distPointY * distPointY) - other.getRadius();
         } else {
-            // Box & circle overlap, return rough negative val
+            // Box & circle overlap, return negative val
             // TODO this val might be used in physics
-            return Math.max(distX, distY);
+            return -1;
         }
     }
 
@@ -251,6 +320,76 @@ public class Box2D implements CollisionMask{
         float distY = Math.abs(other.getY() - this.y) - (this.yLength + other.getYLength()) / 2;
 
         return calculateDistance(distX, distY);
+    }
+
+    /**
+     * Used during rendering to get the screen coords of the corners of this shape
+     */
+    private void rendSetCorners() {
+        OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+
+        //calculate orthagonal corners of box
+        Vector2 screenWorldCoords = Render3D.worldToScreenCoordinates(x + xLength/2, y + yLength/2, 0);
+        c1 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        screenWorldCoords = Render3D.worldToScreenCoordinates(x - xLength/2, y + yLength/2, 0);
+        c2 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        //if square, optimise a little
+        if (compareFloat(xLength, yLength)) {
+            //if square, reflect screen coords
+            c3 = new Vector3(c2.x * 2 - c1.x, c1.y, 0);
+            c4 = new Vector3(c2.x, c1.y * 2 - c2.y, 0);
+        } else {
+            screenWorldCoords = Render3D.worldToScreenCoordinates(x - xLength/2, y - yLength/2, 0);
+            c3 = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+            c4 = new Vector3(c1.x - c2.x + c3.x, c1.y * 2 - c2.y, 0);
+        }
+    }
+
+    /**
+     * Renders the fill of this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+     */
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        rendSetCorners();
+
+        //use 2 triangles to get diamond shape
+        shapeRenderer.triangle(c1.x, c1.y, c2.x, c2.y, c3.x, c3.y);
+        shapeRenderer.triangle(c1.x, c1.y, c4.x, c4.y, c3.x, c3.y);
+    }
+
+    /**
+     * Renders the outline of this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
+     */
+    public void renderShapeOutline(ShapeRenderer shapeRenderer) {
+        rendSetCorners();
+
+        float[] corners = {c1.x, c1.y, c2.x, c2.y, c3.x, c3.y, c4.x, c4.y};
+
+        //use polygon
+        shapeRenderer.polygon(corners);
+    }
+
+    /**
+     * Renders an outline image where this shape is, in the isometric game view
+     * @param batch Batch to render outline image onto
+     */
+    @Override
+    public void renderHighlight(SpriteBatch batch) {
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+
+        Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
+
+        int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+        float aspect = (float) textureHighlight.getWidth() / (float) tileWidth;
+
+        batch.draw(textureHighlight,
+                isoPosition.x - tileWidth * xLength / 2, isoPosition.y - tileWidth * yLength / 2,   // x, y
+                tileWidth * xLength, textureHighlight.getHeight() / aspect * yLength);              // width, height
+
     }
 
     /**
@@ -289,7 +428,6 @@ public class Box2D implements CollisionMask{
     @Override
     public float distance(float x1, float y1, float x2, float y2) {
 
-        // check overlap //TODO should this be removed? expect that lines don't overlap?
         if (this.overlapsLine(x1, y1, x2, y2)) {
         	return -1;
         }
@@ -309,7 +447,7 @@ public class Box2D implements CollisionMask{
 
 
         //gradient = 0 cases
-        if (x1 == x2) {
+        if (compareFloat(x1, x2)) {
             if (minBoxY <= maxLineY ) {
                 if(minLineY <= maxBoxY) {
                     return distX1;      //line overlaps Box on Y, return X dist
@@ -323,7 +461,7 @@ public class Box2D implements CollisionMask{
             }
         }
 
-        if (y1 == y2) {
+        if (compareFloat(y1, y2)) {
             if (minBoxX <= maxLineX ) {
                 if(minLineX <= maxBoxX) {
                     return distY1;      //line overlaps Box on X, return Y dist
@@ -383,91 +521,10 @@ public class Box2D implements CollisionMask{
         return closestCorner.distance(x1, y1, x2, y2);
     }
 
-    /**
-     * Returns the x coordinate at the centre of the mask.
-     *
-     * @return Returns the x coordinate.
-     */
-    @Override
-    public float getX() { return this.x; }
-
-    /**
-     * Sets the x coordiante at the centre of the mask.
-     * Any negative values will be swapped to positive values.
-     *
-     * @param x The new x coordinate.
-     */
-    @Override
-    public void setX(float x) { this.x = x; }
-
-    /**
-     * Returns the y coordinate at the centre of the mask.
-     *
-     * @return Returns the y coordinate.
-     */
-    @Override
-    public float getY() { return this.y; }
-
-    /**
-     * Sets the y coordinate at the centre of the mask.
-     * Any negative values will be swapped to positive values.
-     *
-     * @param y The new y coordinate.
-     */
-    @Override
-    public void setY(float y) { this.y = y; }
-
-    /**
-     * Returns the length in the x direction.
-     *
-     * @return Returns the x length.
-     */
-    public float getXLength() {
-        return this.xLength;
-    }
-
-    /**
-     * Set the length in the x direction.
-     * A negative length will be reversed.
-     *
-     * @param xLength The desired x length.
-     */
-    public void setXLength(float xLength) {
-        this.xLength = xLength >= 0 ? xLength : -xLength ;
-    }
-
-    /**
-     * Returns the length in the y direction.
-     *
-     * @return Returns the y length.
-     */
-    public float getYLength() {
-        return this.yLength;
-    }
-
-    /**
-     * Sets the length in the y direction.
-     * A negative length will be reversed.
-     *
-     * @param yLength The desired y length.
-     */
-    public void setYLength(float yLength) {
-        this.yLength = yLength >= 0 ? yLength : -yLength ;
-    }
-
 
     @Override
     public int hashCode() {
-        // Start with a non-zero constant prime
-        int result = 17;
-
-        // Include a hash for each field.
-        result = 31 * result + Float.floatToIntBits(this.x);
-        result = 31 * result + Float.floatToIntBits(this.y);
-        result = 31 * result + Float.floatToIntBits(this.xLength);
-        result = 31 * result + Float.floatToIntBits(this.yLength);
-
-        return result;
+        return Objects.hash(x, y, xLength, yLength);
     }
 
     @Override

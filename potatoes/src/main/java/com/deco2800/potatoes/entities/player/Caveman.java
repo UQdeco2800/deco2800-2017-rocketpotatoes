@@ -27,11 +27,13 @@ public class Caveman extends Player {
      * @param posY The y-coordinate.
      */
     public Caveman(float posX, float posY) {
-    		super(posX, posY);
-    		this.movementSpeed = 0.08f;
-    		this.currentDirection = Direction.SE;
+		super(posX, posY);
+    	this.movementSpeed = 0.08f;
+    	this.currentDirection = Direction.SE;
         this.currentState = PlayerState.IDLE;
         //this.currentAnimation = ;
+
+		this.setYRenderOffset(9);
     }
     
     /* Caveman Animations */
@@ -43,6 +45,7 @@ public class Caveman extends Player {
     private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", PlayerState.INTERACT, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
+    		setWalkEnabled(true); // Re-enable walking
     		clearState();
 		updateSprites();
 		return null;
@@ -85,6 +88,8 @@ public class Caveman extends Player {
     
     @Override
     public void attack() {
+    		super.attack();
+    		setWalkEnabled(false); // Stop walking for attacking
     		if (this.setState(PlayerState.ATTACK)) {
     			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
     			
@@ -170,6 +175,7 @@ public class Caveman extends Player {
     @Override
     public void interact() {
     		super.interact();
+    		setWalkEnabled(false); // Stop walking for interacting
 	    	if (this.setState(PlayerState.INTERACT)) {
 	    		// Caveman interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");

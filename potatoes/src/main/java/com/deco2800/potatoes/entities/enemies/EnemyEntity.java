@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
+import com.deco2800.potatoes.entities.portals.BasePortal;
 
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.util.Path;
@@ -62,7 +63,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Direction currentDirection; // The direction the player faces
 
 	private int timer = 0;
-
+	private Map<Integer, AbstractEntity> entities;
 
 	/**
 	 * Default constructor for serialization
@@ -101,14 +102,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		this.goal = goal;
 	}
 
+
 	/**
 	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target, 
 	 * otherwise get the closest targeted entity position.
 	 */
 	@Override
 	public void onTick(long i) {
-		float goalX;
-		float goalY;
+		float goalX = getPosX();
+		float goalY = getPosY();
 		//if goal is player, use playerManager to eet position and move towards target 
 		if (goal == Player.class) {
 			//goal = Player.class;
@@ -120,20 +122,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 				path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
 			}
 
-
 			//check if close enough to target
 			if (targetPos != null && targetPos.overlaps(this.getMask())) {
 				targetPos = null;
 			}
 
-
 			//check if the path has another node
 			if (targetPos == null && !path.isEmpty()) {
 				targetPos = path.pop();
 			}
-
-
-
 
 			if (targetPos == null) {
 				targetPos = playerManager.getPlayer().getMask();
@@ -141,25 +138,23 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 			goalX = targetPos.getX();
 			goalY = targetPos.getY();
-
 		} else {
-
-
 			//set the target of Enemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 
-
+			if (target.isPresent()) {
 				//otherwise, move to enemy's closest goal
 				AbstractEntity getTarget = target.get();
 				// get the position of the target
-				goalX = getTarget.getPosX(); 
-				goalY = getTarget.getPosY(); 
-				
-				if(this.distance(getTarget) < speed) {
+				goalX = getTarget.getPosX();
+				goalY = getTarget.getPosY();
+
+				if (this.distance(getTarget) < speed) {
 					this.setPosX(goalX);
 					this.setPosY(goalY);
 					return;
 				}
+			}
 		}
 
 		float deltaX = getPosX() - goalX;
@@ -179,14 +174,14 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
 		 *     -> Enemies of the same type, projectiles, resources.
 		 */
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
 		boolean collidedTankEffect = false;
 		timer++;
 		String stompedGroundTextureString = "";
 
 		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy) 
+			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy)
 					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getMask()) ) {
 
 				if(entity instanceof Player) {
@@ -247,6 +242,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			this.currentDirection = direction;
 			updateSprites();
 		}
+	}
+
+	public BasePortal findPortal() {
+		entities = GameManager.get().getWorld().getEntities();
+		for (AbstractEntity entity : entities.values()) {
+			if (entity instanceof BasePortal) {
+				return (BasePortal)entity;
+			}
+		}
+		return null;
 	}
 
 	/**

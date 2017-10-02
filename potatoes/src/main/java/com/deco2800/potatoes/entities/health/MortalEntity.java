@@ -3,6 +3,7 @@
  */
 package com.deco2800.potatoes.entities.health;
 
+import com.badlogic.gdx.math.Vector2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,51 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
 	private boolean dying = false;
+
+	/* TODO will get to this after rendering is fixed
+	//physics
+	private Vector2 movement; //where the entity wants to move
+	private Vector2 velocity; // the current velocity of the entity
+	private float friction = 0.7f;
+
+	public void push(float x, float y) {
+		//velocity.add(force);
+		getMask().setX(getMask().getX() + x);
+		getMask().setY(getMask().getY() + y);
+	}
+
+	public void onTickMovement() {
+
+		//apply friction to my current velocity
+		velocity.scl(1 - friction);
+
+		Vector2 bump;
+
+		//if I do overlap with any entities add velocity in opposite direction with 0.01
+		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+			if ((e.isStaticCollideable() || e instanceof  MortalEntity) && getMask().overlaps(e.getMask())) {
+				bump = new Vector2( getMask().getX() - e.getMask().getX(), getMask().getY() - e.getMask().getY());
+				bump.setLength(0.075f);
+				velocity.add(bump);
+			}
+		}
+
+
+		CollisionMask nextPos = getMask().copy();
+		nextPos.setX(nextPos.getX() + velocity.x);
+
+		//check if next position overlaps with any entities, push them out of the way if possible
+		//let them push the player too, do not allow nextPos to overlap another entity
+		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
+			if ((e.isStaticCollideable() || e instanceof  MortalEntity) && getMask().overlaps(e.getMask())) {
+
+				//move as far as posible with distance, the push this away from e and push e away from this
+				//dependant on the ration of their areas, so that large/heavy entities are harder to push
+				// e.getMask().getArea();
+			}
+		}
+	}
+	*/
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
@@ -246,6 +292,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
+		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		if (this instanceof GoalPotate){
 			GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
 		}
