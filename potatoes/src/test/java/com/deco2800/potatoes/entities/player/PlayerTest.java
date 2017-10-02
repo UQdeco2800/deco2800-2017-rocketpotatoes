@@ -98,13 +98,23 @@ public class PlayerTest {
 	 */
 	@Test
 	public void keysTest(){
+		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.W);
+		player.onTick(2);
+		player.updateSprites();
+		player.handleKeyUp(Input.Keys.P);
 		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.S);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.S);
 		player.handleKeyDown(Input.Keys.A);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.A);
 		player.handleKeyDown(Input.Keys.D);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.D);
 		player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.SPACE);
@@ -134,5 +144,11 @@ public class PlayerTest {
     public void updateTest() {
         player.updateSprites();
         player.onTick(2);
+        player.setWalkEnabled(false);
+		player.updateSprites();
+		player.onTick(2);
+		player.setWalkEnabled(true);
+		player.updateSprites();
+		player.onTick(2);
     }
 }
