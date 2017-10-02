@@ -238,4 +238,20 @@ public class Inventory {
 		return result;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if (!(o instanceof Inventory))
+			return false;
+		Inventory other = (Inventory) o;
+		if (other.getInventoryResources().size() != this.getInventoryResources().size())
+			return false;
+
+		Set<Resource> otherResources = other.getInventoryResources();
+		for (Resource resource : inventoryMap.keySet()) {
+			if (!otherResources.contains(resource))
+				return false;
+		}
+		return true;
+	}
+
 }

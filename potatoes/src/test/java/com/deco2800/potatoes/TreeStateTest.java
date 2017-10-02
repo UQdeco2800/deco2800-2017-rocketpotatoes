@@ -32,14 +32,15 @@ public class TreeStateTest {
         // With empty constructor
         treeState = new TreeState();
         assert(treeState.getCost().equals(new Inventory()));
-        assert(treeState.getTree().equals(null));
+        assert(treeState.getTree().equals(new ResourceTree(0,0,new SeedResource(), 1)));
         assert(!treeState.isUnlocked());
 
         // With full constructor
-        treeState = new TreeState(testTree, cost, true);
+        treeState = new TreeState(testTree, cost, true, "resource");
         assert(treeState.getTree().equals(testTree.clone()));
         assert(treeState.getCost().equals(cost));
         assert(treeState.isUnlocked() == true);
+        assert(treeState.getTreeType().equals("resource"));
 
     }
 }

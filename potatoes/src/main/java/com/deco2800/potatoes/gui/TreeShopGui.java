@@ -110,12 +110,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	private void initTreeState() {
 		treeStates = new ArrayList<TreeState>();
+
 		// Seed resource tree
 		Inventory seedTreeCost = new Inventory();
 		seedTreeCost.updateQuantity(new SeedResource(), 1);
 		TreeState seedTreeState = new TreeState(new ResourceTree(treeX, treeY, new
 				SeedResource(), 10), seedTreeCost, true, "resource");
 		treeStates.add(seedTreeState);
+
 		// Food resource tree
 		Inventory foodTreeCost = new Inventory();
 		foodTreeCost.updateQuantity(new SeedResource(), 1);
@@ -123,13 +125,47 @@ public class TreeShopGui extends Gui implements SceneGui {
 		TreeState foodTreeState = new TreeState(new ResourceTree(treeX, treeY, new
 				FoodResource(), 10), foodTreeCost, true, "resource");
 		treeStates.add(foodTreeState);
+
 		// Projectile tree
 
 		// Lightning tree
+		Inventory lightningTreeCost = new Inventory();
+		lightningTreeCost.updateQuantity(new FoodResource(), 1);
+		DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
+		TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
+				false, "damage");
+		treeStates.add(lightningTreeState);
 		// Ice tree
 		// Fire tree
 		// Acorn tree
 
+	}
+
+	/**
+	 * Adds treeStates into list of treeStates. If the tree type already exists,
+	 * replace it.
+	 */
+	public void addTreeState(TreeState treeState){
+		removeTreeState(treeState.getTree());
+		treeStates.add(treeState);
+	}
+
+	/**
+	 * Removes treeState of tree type.
+	 */
+	public void removeTreeState(AbstractTree tree){
+		if (treeStates.contains(tree)){
+			treeStates.remove(tree);
+		}
+	}
+
+	/**
+	 * Returns a clone of treeStates.
+	 */
+	public ArrayList<TreeState> getTreeStates(){
+		ArrayList<TreeState> clone = new ArrayList<TreeState>();
+		clone.addAll(treeStates);
+		return clone;
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class TreeState {
      * Returns the tree type.
      */
     public AbstractTree getTree() {
-        return this.tree.clone();
+        return (this.tree == null) ? null : this.tree.clone();
     }
 
     /**
