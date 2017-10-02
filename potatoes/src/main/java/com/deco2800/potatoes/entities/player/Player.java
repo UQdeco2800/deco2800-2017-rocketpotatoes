@@ -353,7 +353,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * 			A boolean indicating whether walking is allowed or not.
      */
     protected void setWalkEnabled(boolean enabled) {
-    		if (enabled & !walkLocked) {
+    		if (enabled && !walkLocked) {
     			walkEnabled = true; // Enable walking
     		} else {
     			// Only disable walking if the player is in idle or walk to prevent clearing other states.
