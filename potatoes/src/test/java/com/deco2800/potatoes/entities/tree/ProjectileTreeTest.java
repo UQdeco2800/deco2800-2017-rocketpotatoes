@@ -90,6 +90,8 @@ public class ProjectileTreeTest {
 		testTree.getProgressRatio();
 		testTree.getMaxProgress();
 		testTree.getProgressBar();
+		testTree.getTexture();
+		testTree.dyingHandler();
 	}
 
 	private class TestWorld extends World {

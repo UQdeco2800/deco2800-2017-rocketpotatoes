@@ -41,7 +41,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 
-    protected float moveSpeed;		// The max speed the player moves
+    protected float moveSpeed;		// The speed the player moves
+    
+    private boolean walkEnabled = true;	// Used to determine if the player should be walking
+    private boolean walkLocked = false; // Used to determine if the user locks player movement
     private float speedx;				// The instantaneous speed in the x direction
     private float speedy;				// The instantaneous speed in the y direction
     protected int respawnTime = 5000; 	// Time until respawn in milliseconds
@@ -188,12 +191,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
         if (this.getPosX() - oldPos.x == 0 && this.getPosY() - oldPos.y == 0) {
             this.setState(PlayerState.IDLE);
         } else {
-
-        	this.setState(PlayerState.WALK);
         		double angularDirection = Math.atan2(this.getPosY() - oldPos.y,
         				this.getPosX() - oldPos.x) * (180 / Math.PI);
-
-
             if (angularDirection >= -180 && angularDirection < -157.5) {
                 this.setDirection(Direction.SW);
             } else if (angularDirection >= -157.5 && angularDirection < -112.5) {
@@ -213,8 +212,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
             } else if (angularDirection >= 157.5 && angularDirection <= 180) {
                 this.setDirection(Direction.SW);
             }
-
-            oldPos = new Vector2(this.getPosX(), this.getPosY());
+            
+            if (walkEnabled) {
+    				this.setState(PlayerState.WALK);
+    				oldPos = new Vector2(this.getPosX(), this.getPosY());
+    			} else {
+    				this.setPosX(oldPos.x);
+    				this.setPosY(oldPos.y);
+    			}
         }
     }
 
@@ -223,7 +228,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
      * handle setting the animations for every player state.
      */
     public void updateSprites() {
-    		
         // Override in subclasses to update the sprite based on state and direciton.
     }
 
@@ -341,6 +345,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
     protected void walk(boolean active) {
         // Override in subclasses to allow handling of walking.
     }
+    
+    /**
+     * Allows the ability to set whether walking is enabled or disabled.
+     * If disabled, the player will be locked in place. If enabled, the 
+     * player can freely walking around the game world.
+     * 
+     * @param enabled
+     * 			A boolean indicating whether walking is allowed or not.
+     */
+    protected void setWalkEnabled(boolean enabled) {
+    		if (enabled & !walkLocked) {
+    			walkEnabled = true; // Enable walking
+    		} else {
+    			// Only disable walking if the player is in idle or walk to prevent clearing other states.
+    			if (this.currentState.equals(PlayerState.IDLE) || this.currentState.equals(PlayerState.WALK)) {
+    				clearState();
+    				walkEnabled = false; // Disable walking
+    			}
+    		}
+	}
 
     @Override
     public void onTick(long arg0) {
@@ -406,6 +430,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 speedx += moveSpeed;
                 speedy += moveSpeed;
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		walkLocked = true;
+            		setWalkEnabled(false);
+            		break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
                 break;
@@ -431,26 +459,31 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                     AbstractTree.constructTree(
                             new ResourceTree(getCursorCoords().x, getCursorCoords().y, new FoodResource(), 8));
                 }
+                break;
             case Input.Keys.NUM_4:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new IceTreeType()));
                 }
+                break;
             case Input.Keys.NUM_5:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new LightningTreeType()));
                 }
+                break;
             case Input.Keys.NUM_6:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new FireTreeType()));
                 }
+                break;
             case Input.Keys.NUM_7:
                 if (!WorldUtil.getEntityAtPosition(getCursorCoords().x, getCursorCoords().y).isPresent()) {
                     AbstractTree.constructTree(
                             new DamageTree(getCursorCoords().x, getCursorCoords().y, new AcornTreeType()));
                 }
+                break;
             case Input.Keys.SPACE:
                 attack();
                 break;
@@ -561,6 +594,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar, Ha
                 speedx -= moveSpeed;
                 speedy -= moveSpeed;
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		walkLocked = false;
+            		setWalkEnabled(true);
+        			break;
             default:
                 break;
         }
