@@ -292,6 +292,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
+		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		if (this instanceof GoalPotate){
 			GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
 		}
