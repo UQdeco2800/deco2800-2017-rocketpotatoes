@@ -50,9 +50,9 @@ public class CavemanTest {
 	@Test
 	public void extraTest() {
 		caveman.updateSprites();
-		caveman.interact();
+		//caveman.interact();
 		caveman.walk(true);
 		caveman.walk(false);
-		caveman.attack();
+//		caveman.attack();
 	}
 }
