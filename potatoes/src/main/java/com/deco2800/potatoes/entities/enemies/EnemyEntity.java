@@ -108,8 +108,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	@Override
 	public void onTick(long i) {
-		float goalX;
-		float goalY;
+		float goalX = getPosX();
+		float goalY = getPosY();
 		//if goal is player, use playerManager to eet position and move towards target 
 		if (goal == Player.class) {
 			//goal = Player.class;
@@ -141,9 +141,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			//set the target of Enemy to the closest goal
 			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 
+			if (target.isPresent()) {
 				//otherwise, move to enemy's closest goal
 				AbstractEntity getTarget = target.get();
 				// get the position of the target
+
 				goalX = getTarget.getPosX(); 
 				goalY = getTarget.getPosY(); 
 				
@@ -152,6 +154,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 					this.setPosY(goalY);
 					return;
 				}
+			}
 		}
 
 		float deltaX = getPosX() - goalX;

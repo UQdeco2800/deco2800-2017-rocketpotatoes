@@ -33,8 +33,8 @@ public class WorldManager extends Manager {
 	public WorldManager() {
 		worlds = new HashMap<>();
 		cells = new HashMap<>();
-		randomGrids = new float[20][][];
-		randomGridEdges = new float[5][][];
+		randomGrids = new float[100][][];
+		randomGridEdges = new float[40][][];
 		for (int i = 0; i < randomGrids.length; i++) {
 			randomGrids[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.42f, 2);
 		}

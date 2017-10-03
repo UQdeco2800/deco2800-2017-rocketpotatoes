@@ -103,17 +103,27 @@ public class PlayerTest {
 	}
 	
 	/**
-	 * Test handling key presses
+	 * Test handling key presses TODO doesn't actually assert any checks
 	 */
 	@Test
 	public void keysTest(){
+		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.W);
+		player.onTick(2);
+		player.updateSprites();
+		player.handleKeyUp(Input.Keys.P);
 		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.S);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.S);
 		player.handleKeyDown(Input.Keys.A);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.A);
 		player.handleKeyDown(Input.Keys.D);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.D);
 		player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.SPACE);
@@ -135,13 +145,5 @@ public class PlayerTest {
 		player.getProgressBar();
         player.getTexture();
 	}
-	
-	/**
-	 * Test updating the player
-	 */
-    @Test
-    public void updateTest() {
-        player.updateSprites();
-        player.onTick(2);
-    }
+
 }
