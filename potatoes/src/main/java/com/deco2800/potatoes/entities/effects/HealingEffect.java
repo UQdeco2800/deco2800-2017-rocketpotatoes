@@ -1,7 +1,7 @@
 package com.deco2800.potatoes.entities.effects;
 
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 
 
@@ -17,7 +17,7 @@ public class HealingEffect extends Effect {
     private static final transient String TEXTURE = "Healing1";
 
     private boolean isTemporary;
-    private CollisionMask effectPosition;
+    private Shape2D effectPosition;
     private int currentTextureIndexCount = 0;
     private String[] currentTextureArray = { "Healing1", "Healing2", "Healing3" };
     private int timer = 0;

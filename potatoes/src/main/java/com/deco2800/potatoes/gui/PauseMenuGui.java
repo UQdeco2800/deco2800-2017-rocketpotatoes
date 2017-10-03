@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
 import org.slf4j.Logger;
@@ -122,6 +125,13 @@ public class PauseMenuGui extends Gui {
 
     private void setupListeners() {
 
+        GameManager.get().getManager(InputManager.class).addKeyDownListener(keycode -> {
+            if (keycode == Input.Keys.ESCAPE) {
+                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
+                toggle();
+            }
+        });
+
         /* Listener for the resume button. */
         resumeButton.addListener(new ChangeListener() {
             @Override
@@ -224,13 +234,14 @@ public class PauseMenuGui extends Gui {
         stage.addActor(table);
         hidden = false;
 
-        //TODO pause game when in single player
+        GameManager.get().setPaused(true);
     }
 
     @Override
 	public void hide() {
         table.setVisible(false);
         hidden = true;
+        GameManager.get().setPaused(false);
     }
 
     /**

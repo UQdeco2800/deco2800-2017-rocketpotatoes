@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.CollisionMask;
-import com.deco2800.potatoes.collisions.Point2D;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public abstract class Effect extends AbstractEntity implements Tickable {
@@ -110,7 +110,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
      *                      enum as lookup
      */
 
-    public Effect(Class<?> targetClass, CollisionMask mask, float xRenderLength, float yRenderLength, float damage,
+    public Effect(Class<?> targetClass, Shape2D mask, float xRenderLength, float yRenderLength, float damage,
                   float range, EffectTexture effectTexture) {
         super(mask, xRenderLength, yRenderLength, effectTexture.textures()[0]);
 
@@ -128,7 +128,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
         this.range = range;
 
         this.position = new Vector3(mask.getX(),mask.getY(),0);
-        this.setShadow( false );
+        this.setHasShadow( false );
     }
 
 
@@ -145,7 +145,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
     public void onTick(long time) {
         animate();
 
-        CollisionMask newPos = getMask();
+        Shape2D newPos = getMask();
         newPos.setX(this.getPosX());
         newPos.setY(this.getPosY());
 
@@ -206,8 +206,8 @@ public abstract class Effect extends AbstractEntity implements Tickable {
         float lWidth = tex.getWidth();
         float lHeight = tex.getHeight();
 
-        Vector2 startPos = worldToScreenCoordinates(xPos, yPos, 0);
-        Vector2 endPos = worldToScreenCoordinates(fxPos, fyPos, 0);
+        Vector2 startPos = Render3D.worldToScreenCoordinates(xPos, yPos, 0);
+        Vector2 endPos = Render3D.worldToScreenCoordinates(fxPos, fyPos, 0);
 
         float l = endPos.x - startPos.x;
         float h = endPos.y - startPos.y;

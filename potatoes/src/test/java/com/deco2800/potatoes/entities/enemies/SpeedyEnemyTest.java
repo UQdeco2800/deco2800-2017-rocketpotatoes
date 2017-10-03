@@ -61,9 +61,9 @@ public class SpeedyEnemyTest extends BaseTest {
     }
 
     /*
-     * Test the onTick method
+     * Test the onTick method TODO does not actually use any assert tests
      */
-    @Test
+    /*@Test
     public void onTickTest() {
         GameManager.get().getWorld().addEntity(speedy1);
         seed = new ResourceEntity(-1, -1, new FoodResource());
@@ -83,5 +83,6 @@ public class SpeedyEnemyTest extends BaseTest {
         speedy1.onTick(1);
         GameManager.get().getWorld().removeEntity(resourceTree);
         speedy1.onTick(1);
-    }
+
+    }*/
 }

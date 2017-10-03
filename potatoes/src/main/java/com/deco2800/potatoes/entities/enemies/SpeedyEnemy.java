@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import com.deco2800.potatoes.entities.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
@@ -19,12 +21,11 @@ import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.entities.HasDirection;
 
 /**
  * A speedy raccoon enemy that steals resources from resource trees.
  */
-public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
+public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
@@ -38,7 +39,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static float speed = 0.08f;
 	private static Class<?> goal = ResourceTree.class;
 	private Path path = null;
-	private CollisionMask target = null;
+	private Shape2D target = null;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
@@ -112,7 +113,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 		double interactRange = 2f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distance(this) <= interactRange) {
+			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange) {
 				if (((ResourceTree) entitiy).getGatherCount() > 0) {
 					((ResourceTree) entitiy).gather(-1);
 				}
@@ -123,7 +124,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	/**
 	 *	@return the current Direction of raccoon
 	 * */
-	@Override
+	//@Override
 	public Direction getDirection() { return currentDirection; }
 
 	/**
@@ -187,14 +188,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			float deltaX = getPosX() - targetX;
 			float deltaY = getPosY() - targetY;
 
+			//sprite direction
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY) + (float) Math.PI);
+			super.updateDirection();
+
 			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
 
-			// flip sprite
-			if (deltaX + deltaY >= 0) {
-				//this.setTexture(TEXTURE);
-			} else {
-				//this.setTexture(TEXTURE_RIGHT);
-			}
 
 			float changeX = (float) (speed * Math.cos(angle));
 			float changeY = (float) (speed * Math.sin(angle));
@@ -211,7 +210,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 
 			// check collision
 			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isStaticCollideable() && this.getMask().overlaps(entity.getMask())) {
+				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
 					// collided with wall
 					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
 					target = path.pop();
@@ -247,14 +246,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 			float deltaX = getPosX() - targetX;
 			float deltaY = getPosY() - targetY;
 
+			//sprite direction
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY) + (float) Math.PI);
+			super.updateDirection();
+
 			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
 
-			// flip sprite
-			if (deltaX + deltaY >= 0) {
-				//this.setTexture(TEXTURE);
-			} else {
-				//this.setTexture(TEXTURE_RIGHT);
-			}
 
 			float changeX = (float) (speed * Math.cos(angle));
 			float changeY = (float) (speed * Math.sin(angle));

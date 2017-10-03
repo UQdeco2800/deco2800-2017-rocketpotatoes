@@ -3,7 +3,7 @@ package com.deco2800.potatoes.entities.health;
 import java.util.Map;
 import java.util.Random;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
@@ -87,7 +87,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
         boolean collided = false;
 
 		// create a box3D and set the location
-		CollisionMask newPos = param.getMask();
+		Shape2D newPos = param.getMask();
 		newPos.setX(x);
 		newPos.setY(y);
 		// get all entities on the current map
@@ -100,7 +100,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 		}
 		// check for collisions
 		for (AbstractEntity entity : entities.values()) {
-            if (!param.equals(entity) && entity.isStaticCollideable() && newPos.overlaps(entity.getMask())) {
+            if (!param.equals(entity) && entity.isStatic() && newPos.overlaps(entity.getMask())) {
                 collided = true;
             }
 

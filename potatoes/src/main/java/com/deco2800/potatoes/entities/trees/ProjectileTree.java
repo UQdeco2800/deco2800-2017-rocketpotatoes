@@ -42,8 +42,6 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	/**
 	 * Constructor for the base
 	 *
-	 * @param world
-	 *            The world of the tower.
 	 * @param posX
 	 *            The x-coordinate.
 	 * @param posY
@@ -58,6 +56,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		super(posX, posY, 1f, 1f);
 		this.reloadTime = reloadTime;
 		this.maxHealth = maxHealth;
+
 	}
 
 	/**
@@ -66,7 +65,6 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 */
 	public ProjectileTree(float posX, float posY) {
 		this(posX, posY, 1000, 8f, 100f);
-		this.setStaticCollideable(true);
 	}
 
 	/**

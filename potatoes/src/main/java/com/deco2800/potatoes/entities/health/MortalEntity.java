@@ -3,11 +3,11 @@
  */
 package com.deco2800.potatoes.entities.health;
 
-import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.entities.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.GoalPotate;
@@ -30,51 +30,10 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
 	private boolean dying = false;
-
-	/* TODO will get to this after rendering is fixed
-	//physics
-	private Vector2 movement; //where the entity wants to move
-	private Vector2 velocity; // the current velocity of the entity
-	private float friction = 0.7f;
-
-	public void push(float x, float y) {
-		//velocity.add(force);
-		getMask().setX(getMask().getX() + x);
-		getMask().setY(getMask().getY() + y);
-	}
-
-	public void onTickMovement() {
-
-		//apply friction to my current velocity
-		velocity.scl(1 - friction);
-
-		Vector2 bump;
-
-		//if I do overlap with any entities add velocity in opposite direction with 0.01
-		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-			if ((e.isStaticCollideable() || e instanceof  MortalEntity) && getMask().overlaps(e.getMask())) {
-				bump = new Vector2( getMask().getX() - e.getMask().getX(), getMask().getY() - e.getMask().getY());
-				bump.setLength(0.075f);
-				velocity.add(bump);
-			}
-		}
+	//TODO use states like the player does
+	protected Direction facing; 		// The direction the entity is facing
 
 
-		CollisionMask nextPos = getMask().copy();
-		nextPos.setX(nextPos.getX() + velocity.x);
-
-		//check if next position overlaps with any entities, push them out of the way if possible
-		//let them push the player too, do not allow nextPos to overlap another entity
-		for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-			if ((e.isStaticCollideable() || e instanceof  MortalEntity) && getMask().overlaps(e.getMask())) {
-
-				//move as far as posible with distance, the push this away from e and push e away from this
-				//dependant on the ration of their areas, so that large/heavy entities are harder to push
-				// e.getMask().getArea();
-			}
-		}
-	}
-	*/
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
@@ -123,8 +82,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yLength
 	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -152,15 +109,13 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
 	 *            The length of the entity, in y. Used in collision detection.
-	 * @param centered
-	 *            True if the entity is to be rendered centered, false otherwise.
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
-	 */
-    public MortalEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture,
-            float maxHealth) {
+	 */ //TODO max health probably shouldn't be set here
+    public MortalEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture,
+						float maxHealth) {
 
         super(mask, xRenderLength, yRenderLength, texture);
 		this.maxHealth = maxHealth;
@@ -194,7 +149,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	@Override
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
-		if (maxHealth <= 0 ) { maxHealth = 1; }
+		if (maxHealth <= 0 )
+			maxHealth = 1;
 		return this.maxHealth;
 	}
 
@@ -339,7 +295,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	/**
 	 * Alters the scale of damage dealt to the entity
-	 * @param amount - the decimal coefficient to scale damage to the entity by
 	 * @return current value of damage scaling
 	 */
 	@Override
@@ -350,7 +305,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	/**
 	 * Alters the scale of damage dealt to the entity
-	 * @param amount - the decimal coefficient to cancel scaling by
 	 * @return current value of damage scaling
 	 */
 	@Override
@@ -381,8 +335,10 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	@Override
 	public void onTick(long time) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
+    public Direction getFacing() {
+        return this.facing;
+    }
 }

@@ -29,7 +29,6 @@ import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-import jdk.nashorn.internal.runtime.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +55,8 @@ public class Render3D implements Renderer {
 
 	private int tileWidth;
 	private int tileHeight;
-	private final static String tileWidthName =  "tilewidth";
-	private final static String tileHeightName =  "tileheight";
+	private static final String TILE_WIDTH =  "tilewidth";
+	private static final String TILE_HEIGHT =  "tileheight";
 
 	/**
 	 * Renders onto a batch, given a renderables with entities It is expected that
@@ -78,8 +77,8 @@ public class Render3D implements Renderer {
 		this.batch = batch;
 
 		World world = GameManager.get().getWorld();
-		this.tileWidth = (int) world.getMap().getProperties().get(tileWidthName);
-		this.tileHeight = (int) world.getMap().getProperties().get(tileHeightName);
+		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
+		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);
 
 		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
 		getRenderedEntitiesSorted();
@@ -90,7 +89,7 @@ public class Render3D implements Renderer {
 
 		batch.setColor(shading);		// set world shading
 		renderMap();					// rend tiles TODO render is offset
-		renderCursor();					//		highlighted cursor
+		renderCursor();					//		highlighted cursor, communicates with treeShopGui
 		renderShadows();				// 		CollisionMasks of entities as shadows
 		renderEntities();				// 		entities normal
 		renderProjectiles();			// 		entities projectile
@@ -102,7 +101,7 @@ public class Render3D implements Renderer {
 		batch.setColor(Color.WHITE);	// clear shading
 		renderTreeResources();			// rend tree resource count
 		renderMultiplayerName();		// 		mutiplayer names
-		renderProgressBars();			// 		progress bars
+		renderProgressBars();			// 		progress bars TODO not centred, offset x by -ve spritewidth?
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
@@ -184,7 +183,7 @@ public class Render3D implements Renderer {
 
 		//convert screen coords to game coords
 		Vector3 coords = Render3D.screenToWorldCoordiates(GameManager.get().getManager(InputManager.class).getMouseX(),
-				GameManager.get().getManager(InputManager.class).getMouseY(), 0);
+				GameManager.get().getManager(InputManager.class).getMouseY());
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
 
 		float tileX = Math.round(tileCoords.x);
@@ -266,6 +265,9 @@ public class Render3D implements Renderer {
 			float offsetY;
 			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
 			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
+
+			//TODO use batch.setColour to recolor an entitiy when it takes damage, then reset batch colour
+			//probably use the event manager to toggle some internal "takingDamage" boolean of the entity
 
 			batch.draw(tex,
 					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
@@ -479,10 +481,12 @@ public class Render3D implements Renderer {
 		//Loop through entities
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 
-			CollisionMask shadow = entity.getKey().getShadow();
+			AbstractEntity e = entity.getKey();
 
-			if (shadow != null)
+			if (e.hasShadow()) {
+				Shape2D shadow = e.getShadow();
 				shadow.renderShape(shapeRenderer);
+			}
 		}
 
 		//stop drawing
@@ -540,7 +544,7 @@ public class Render3D implements Renderer {
 	 * @return a Vector2 with tile coordinates
 	 */
 	public static Vector2 screenToTile(float x, float y) {
-		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		Vector3 world = Render3D.screenToWorldCoordiates(x, y);
 		
 		return Render3D.worldPosToTile(world.x, world.y);
 	}
@@ -600,8 +604,8 @@ public class Render3D implements Renderer {
 		int worldLength = GameManager.get().getWorld().getLength();
 		int worldWidth = GameManager.get().getWorld().getWidth();
 
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(tileWidthName);
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(tileHeightName);
+		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_WIDTH);
+		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_HEIGHT);
 
 		// X and Y offset for our isometric world (centered)
 		float baseX = tileWidth * (worldWidth - 1) / 2f;
@@ -630,8 +634,15 @@ public class Render3D implements Renderer {
 		return worldToScreenCoordinates(p.x, p.y, p.z);
 	}
 
-	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
-		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, z));
+	/**
+	 * Transforms screen coordinates to world coordinates
+	 *
+	 * @param x		The x coordinate on the screen
+	 * @param y		The y coordinate on the screen
+	 * @return		A Vector3 with the corresponding x and y world coordinates
+	 */
+	public static Vector3 screenToWorldCoordiates(float x, float y) {
+		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, 0));
 	}
 
 	/**
@@ -644,8 +655,8 @@ public class Render3D implements Renderer {
 		float projX;
 		float projY;
 
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(tileWidthName);
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(tileHeightName);
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_WIDTH);
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_HEIGHT);
 
 		projX = x / tileWidth;
 		projY = -(y - tileHeight / 2f) / tileHeight + projX;
@@ -664,8 +675,8 @@ public class Render3D implements Renderer {
 		float projX = x;
 		float projY = y;
 
-		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(tileWidthName);
-		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(tileHeightName);
+		float tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_WIDTH);
+		float tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get(TILE_HEIGHT);
 
 
 		projX = (projY + projX) / 2;

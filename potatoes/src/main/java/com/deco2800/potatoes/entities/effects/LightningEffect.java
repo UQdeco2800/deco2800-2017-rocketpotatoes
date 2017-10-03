@@ -5,7 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 
 import com.deco2800.potatoes.managers.GameManager;
@@ -109,7 +109,7 @@ public class LightningEffect extends Effect {
 			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
 		}
 
-		CollisionMask newPos = getMask();
+		Shape2D newPos = getMask();
 		newPos.setX(targetPos.x);
 		newPos.setY(targetPos.y);
 	}
