@@ -168,6 +168,19 @@ public class TreeShopGui extends Gui implements SceneGui {
 		return clone;
 	}
 
+	/**
+	 * Returns TreeState of type tree
+	 * @param tree
+	 * @return
+	 */
+	public TreeState getTreeStateByTree(AbstractTree tree){
+		for (TreeState treeState : treeStates){
+			if (treeState.getTree().equals(tree))
+				return treeState;
+		}
+		return null;
+	}
+
 	@Override
 	public void render() {
 		float distance = playerManager.distanceFromPlayer(shopTileX, shopTileY);
@@ -363,14 +376,15 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * Renders the resources and amount required to buy tree.
 	 */
 	private void renderCostGui(Vector2 offset, float radius, float itemAngle, float guiX, float guiY, int seedSize) {
+
 		Table costContainer = new Table();
 		costContainer.setFillParent(true);
 
 		costContainer.defaults().width(20);
 		costContainer.pad(20f);
 
-		Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
 
+		Image seedImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("seed"))));
 		Label costLbl = new Label("1", skin);
 
 		offset = calculateDisplacement(radius * 0.86f, itemAngle + 2);

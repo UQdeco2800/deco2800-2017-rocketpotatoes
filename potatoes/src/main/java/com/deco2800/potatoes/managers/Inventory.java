@@ -222,6 +222,44 @@ public class Inventory {
 	}
 
 	/**
+	 * @require Inventory needs to have enough resources to subtract item resources
+	 * from it
+	 *
+	 * <p>
+	 * This method subtracts all of the items in parameter items to this
+	 * object.
+	 * </p>
+	 *
+	 * <p>
+	 * That is, for each resource, this method updates the quantity of that
+	 * resource in this object
+	 * </p>
+	 *
+	 * <p>
+	 * This method will not modify items (unless this ==
+	 * items)
+	 * </p>
+	 *
+	 * @param items
+	 *            the extra items to be added to this object
+	 */
+	public void subtractInventory(Inventory items){
+		if (items == null) {
+			LOGGER.warn("Cannot add null to Inventory");
+		} else {
+			for (Resource resource : items.inventoryMap.keySet()) {
+				if (inventoryMap.containsKey(resource)) {
+					this.updateQuantity(resource, -items.getQuantity(resource));
+				} else {
+					inventoryMap.put(resource, 0);
+					this.updateQuantity(resource, -items.getQuantity(resource));
+				}
+
+			}
+		}
+	}
+
+	/**
 	 * <p>
 	 * Returns a string representation of the inventory in the form of: <br>
 	 * resource.toString() " count = " this.getQuantity(resource) for each

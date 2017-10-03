@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.deco2800.potatoes.entities.BasicProperties;
@@ -9,9 +10,8 @@ import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.managers.*;
 
 /**
  * Class to represent attributes for tree upgrades
@@ -58,6 +58,20 @@ public class TreeProperties extends BasicProperties<AbstractTree> {
 	 *         not.
 	 */
 	public boolean removeConstructionResources() {
+
+		/*TreeState treeState = ((TreeShopGui)(GameManager.get().getManager
+				(GuiManager.class).getGui(TreeShopGui.class))).getTreeStateByTree(tree);
+
+		try {
+			GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
+					.subtractInventory(treeState.getCost());
+		} catch (Exception e) {
+			return false;
+		}
+
+		return true;*/
+
+
 		return 1 == GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
 				.updateQuantity(UPGRADE_RESOURCE, -getBuildCost());
 	}
