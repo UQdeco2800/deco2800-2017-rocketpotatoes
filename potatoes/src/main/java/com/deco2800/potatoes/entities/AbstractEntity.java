@@ -1,27 +1,33 @@
 package com.deco2800.potatoes.entities;
 
-import com.deco2800.potatoes.collisions.Box2D;
+
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
-import com.deco2800.potatoes.renderering.Renderer;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * A AbstractEntity is an item that can exist in both 3D and 2D worlds
+ * A AbstractEntity is an item that has a physical position in the 2D world
  * AbstractEntities are rendered by Render2D and Render3D An item that does not
- * need to be rendered should not be a WorldEntity
+ * need to be rendered should not be an AbstractEntity.
  *
- * //TODO elaborate more
+ * This class has support for positioning & scaling a texture for the entity,
+ * the rest of the implementation is in Render3D.
+ *
+ * This class uses a Shape2D as a collision mask to detect it's physical position
+ * as well as distance and overlapping methods.
+ *
+ * A Shape2D is also used for the shadow, by default the shadow is on
+ * and just renders the collisionMask
+ *
+ * This class also handles physical movements and collisions of the AbstractEntity
+ *
  * @author Tazman Schmidt
  */
 public abstract class AbstractEntity implements Renderable, Comparable<AbstractEntity> {
@@ -32,7 +38,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	// Rendering texture
 	private String texture = "error_box";
-	//TODO there currently is no error_box?
+
 	private float xRenderLength = 25;
 	private float yRenderLength = 25;
 	private float xRenderOffset = 0;
@@ -47,10 +53,10 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	private boolean isStatic = false;	// Whether this is static or mobile
 	private boolean isSolid = false;		// Whether to do collisions
 
-	protected float moveSpeed = 0; 			// The speed the entity moves at (dist per game step)
-	protected float moveSpeedModifier = 1; 	// a multiplier for speed
-	protected float moveAngle = 0; 			// Measured in Radians
-	protected float mass = 1;				// mass used in mobile on mobile collisions
+	private float moveSpeed = 0; 			// The speed the entity moves at (dist per game step)
+	private float moveSpeedModifier = 1; 	// a multiplier for speed
+	private float moveAngle = 0; 			// Measured in Radians
+	private float mass = 1;					// mass used in mobile on mobile collisions
 
 	private static final float MIN_DIST = 0.000001f; 		// the closest we will move to another entity
 	private static final float ESCAPE_SPEED = 0.15f; 		// the speed to get out from inside another object
@@ -99,13 +105,16 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 	/**
-	 * Constructs a new AbstractEntity with specific render lengths. Allows
-	 * specification of rendering dimensions different to those used for collision.
-	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches.
+	 * Constructs a new AbstractEntity with specified physical & rendering properties.
 	 *
 	 * @param mask
 	 *            The collision mask used by the entity.
+	 * @param isSolid
+	 * 			  Whether the entity should collide with other entities when it moves
+	 * @param isStatic
+	 * 			  Whether the entity can move (mobile), or cannot move or be moved (static)
+	 * @param hasShadow
+	 * 			  Whether the entity should render a shadow, by default the shadow is the mask
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -116,7 +125,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            Offset this entities image, in y, by a percentage (100 = 100%)
 	 * @param texture
 	 *            The id of the texture for this entity.
-	 */ //TODO
+	 */
 	public AbstractEntity(Shape2D mask, boolean isSolid, boolean isStatic, boolean hasShadow,
 		  float xRenderLength, float yRenderLength, float xRenderOffset, float yRenderOffset, String texture) {
 		this.collisionMask = mask;
@@ -135,7 +144,28 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		setMass();
 	}
 
-	//TODO
+	/**
+	 * Constructs a new AbstractEntity with specified physical & rendering properties.
+	 *
+	 * @param mask
+	 *            The collision mask used by the entity.
+	 * @param isSolid
+	 * 			  Whether the entity should collide with other entities when it moves
+	 * @param isStatic
+	 * 			  Whether the entity can move (mobile), or cannot move or be moved (static)
+	 * @param shadow
+	 * 			  The shadow that should be rendered below this entity
+	 * @param xRenderLength
+	 *            The length of the entity, in x. Used in collision detection.
+	 * @param yRenderLength
+	 *            The length of the entity, in y. Used in collision detection.
+	 * @param xRenderOffset
+	 *            Offset this entities image, in x, by a percentage (100 = 100%)
+	 * @param yRenderOffset
+	 *            Offset this entities image, in y, by a percentage (100 = 100%)
+	 * @param texture
+	 *            The id of the texture for this entity.
+	 */
 	public AbstractEntity(Shape2D mask, boolean isSolid, boolean isStatic, Shape2D shadow,
 			  float xRenderLength, float yRenderLength, float xRenderOffset, float yRenderOffset, String texture) {
 		this.collisionMask = mask;
@@ -184,13 +214,19 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		return 0;
 	}
 
-	//TODO
+	/**
+	 * Sets the x position of this entity and it's shadow
+	 * @param x		The new x value of this entity
+	 */
 	public void setPosX(float x) {
 		this.collisionMask.setX(x);
 		this.shadow.setX(x);		// if shadow is same as collisionMask, this is redundant but acceptable
 	}
 
-	//TODO
+	/**
+	 * Sets the y position of this entity and it's shadow
+	 * @param y		The new x value of this entity
+	 */
 	public void setPosY(float y) {
 		this.collisionMask.setY(y);
 		this.shadow.setY(y);		// if shadow is same as collisionMask, this is redundant but acceptable
@@ -320,7 +356,9 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		this.hasShadow = hasShadow;
 	}
 
-	//TODO
+	/**
+	 * @return Whether or not this entities shadow should be rendered
+	 */
 	public boolean hasShadow() {
 		return hasShadow;
 	}
@@ -342,47 +380,45 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 
 	/**
-	 * Sets this entity to be a static collideable entity that gets pathed around
-	 * when considering path finding in the PathManager
+	 * Sets whether this entity is static or mobile.
+	 * During collisions a static entity will not move.
+	 * If this entity is static & solid other entities will bounce off, e.g. walls
+	 *
+	 * The PathManager will also consider static & solid entities & path around them
 	 *
 	 * @param isStatic
-	 *            true iff this entity is intended to be stationary and have a
-	 *            collision box
-	 */ //TODO desc is static or mobile entity
+	 *            True iff this entity is intended to be stationary.
+	 */
 	public void setStatic(boolean isStatic) {
 		this.isStatic = isStatic;
 	}
 
 	/**
-	 * Checks if this entity is a static collideable entity that gets pathed around
-	 * when considering path finding in the PathManager
-	 *
-	 * @return true iff this entity is intended to be stationary and have a
-	 *         collision box
-	 */ //TODO
+	 * @return 	True if this entity is intended to be stationary,
+	 *       	False if this entity is intended to be mobile
+	 */
 	public boolean isStatic() {
 		return isStatic;
 	}
 
 	/**
-	 * Sets this entity to be a static collideable entity that gets pathed around
-	 * when considering path finding in the PathManager
+	 * Sets whether this entity is solid or collision-free.
+	 * During collisions a solid entity will not overlap with other solid entities.
+	 * If this entity is static & solid other entities will bounce off, e.g. walls
+	 *
+	 * The PathManager will also consider static & solid entities & path around them
 	 *
 	 * @param isSolid
-	 *            true iff this entity is intended to be stationary and have a
-	 *            collision box
-	 */ //TODO desc is solid or collision-free
+	 *            True iff this entity is intended to be solid
+	 */
 	public void setSolid(boolean isSolid) {
 		this.isSolid = isSolid;
 	}
 
 	/**
-	 * Checks if this entity is a static collideable entity that gets pathed around
-	 * when considering path finding in the PathManager
-	 *
-	 * @return true iff this entity is intended to be stationary and have a
-	 *         collision box
-	 */ //TODO
+	 * @return 	True if this entity is intended to be solid,
+	 *       	False if this entity is intended to be collision-free
+	 */
 	public boolean isSolid() {
 		return isSolid;
 	}
@@ -414,18 +450,25 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		return this.collisionMask.distance(entity.collisionMask);
 	}
 
-	//TODO
+
+	/**
+	 * @param entity
+	 * 				An entity to check collision with
+	 * @return
+	 * 				Whether this entities collisionMask overlaps the other entities collisionMask
+	 */
 	public boolean collidesWith(AbstractEntity entity) {
 		return this.collisionMask.overlaps(entity.collisionMask);
 	}
 
-	//TODO duplicate method
-	private float getDistance(AbstractEntity entity) {
-		return this.collisionMask.distance(entity.collisionMask);
-	}
 
-
-	//TODO comm & use more frequently
+	/**
+	 * Sets the mass of this entity.
+	 * Mass is used during collisions, so that if a large entity tries to walk through a small entity,
+	 * the small entity will be pushed more that the large one.
+	 *
+	 * This method sets the mass to be the area of this entities shadow or if no shadow, the collisionMask
+	 */
 	public void setMass() {
 		if (hasShadow)
 			this.mass = shadow.getArea();
@@ -433,52 +476,101 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 			this.mass = collisionMask.getArea();
 	}
 
-	//TODO
+	/**
+	 * Sets the mass of this entity for use in physical collisions
+	 *
+	 * @param mass	The new mass of this entity		*/
 	public void setMass(float mass) {
 		this.mass = mass;
 	}
 
-	//TODO
+	/**
+	 * @return 		The mass of this entity
+	 */
 	public float getMass() {
 		return this.mass;
 	}
 
-	//TODO
+	/**
+	 * The movement speed of this entity, to be used in the onTickMove() method.
+	 * Typically this should only be done once, during initialisation.
+	 * If a speed buff or terrain modifies the speed of the entity try to use the speedModifier
+	 *
+	 * @param speed		The movement speed of this entity.
+	 */
 	public void setMoveSpeed(float speed) {
 		this.moveSpeed =  speed;
 	}
 
-	//TODO
+	/**
+	 * @return 		The movement speed of this entity
+	 */
+	public  float getMoveSpeed() {
+		return this.moveSpeed;
+	}
+
+	/**
+	 * @return		The movement speed modifier of this entity
+	 */
 	public float getMoveSpeedModifier() {
 		return moveSpeedModifier;
 	}
 
-	//TODO
+	/**
+	 * The movement speed modifier of this entity, multiplies the moveSpeed during the onTickMove() method.
+	 * Typically set to 0, 1, a terrain or buff scalar.
+	 *
+	 * @param moveSpeedModifier		The speed scalar for this entities movement
+	 */
 	public void setMoveSpeedModifier(float moveSpeedModifier) {
 		this.moveSpeedModifier = moveSpeedModifier;
 	}
 
-	//TODO
+	/**
+	 * Sets the angle that this entity should move in.
+	 * The angle is measured in radians.
+	 * Try using the methods in the Direction class with this call.
+	 *
+	 * @param angle		The angle of this entities movement in radians
+	 */
 	public void setMoveAngle(float angle) {
 		this.moveAngle = angle;
 	}
 
-	//TODO
+	/**
+	 * @return		The angle of this entities movement in radians
+	 */
 	public float getMoveAngle() {
 		return moveAngle;
 	}
 
-	//TODO
+	/**
+	 * Sets the angle that this entity should move in.
+	 * Sets the angle of movement to point towards the centre of an entity
+	 *
+	 * @param target		The target entity
+	 */
 	public void setMoveTowards(Shape2D target) {
 		this.moveAngle = this.collisionMask.getAngle(target);
 	}
 
-	//TODO
+	/**
+	 * Sets the angle that this entity should move in.
+	 * Sets the angle of movement to point towards the given coordinates
+	 *
+	 * @param x		The x coordinate to point towards
+	 * @param y		The y coordinate to point towards
+	 */
 	public void setMoveTowards(float x, float y) {
 		this.moveAngle = (float) Math.atan2( y - this.collisionMask.getY(), x - this.collisionMask.getX());
 	}
 
-	//TODO
+	/**
+	 * Move this entity a given distance, in a given direction (in radians)
+	 *
+	 * @param theta		The angle to move
+	 * @param dist		The distance to move
+	 */
 	public void moveVector(float theta, float dist) {
 		float dx = (float) (dist * Math.cos(theta));
 		float dy = (float) (dist * Math.sin(theta));
@@ -491,7 +583,17 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	// ----------     Physics onTick    ---------- //
 
-	// TODO does not run if you have set isStatic
+	/**
+	 * Used primarily for solid mobile entities
+	 *
+	 * First, this entity is pushed away from any entities it might overlap
+	 * Second, this entity moves the distance and direction, defined by moveSpeed & moveAngle
+	 * If it collides with any solid entities it will push that entity, and this entity,
+	 * away from each other, dependent on the masses of the entities.
+	 *
+	 * Moves without collision if !isSolid
+	 * Exits running if isStatic
+ 	 */
 	public void onTickMovement() {
 
 
@@ -532,7 +634,20 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 
-	//TODO
+	/**
+	 * Used in onTickMovement
+	 * Gets the ratio of masses.
+	 *
+	 * If the other entity isStatic, considers its mass as infinity,
+	 * returns 0
+	 *
+	 * result will always be bounded by 1 and 0
+	 *
+	 * @param entity
+	 * 				The other entity to get a ratio to
+	 * @return
+	 * 				The ratio of myMass / (myMass + entityMass)
+	 */
 	private float getMassRatio(AbstractEntity entity) {
 		// when objects collide the resulting speed of each is dependent on their ratio of masses, PHYSICS!
 		float massRatio;		//ratio (my mass) / (my mass + their mass)
@@ -548,7 +663,12 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		return massRatio;
 	}
 
-	// TODO
+	/**
+	 * Used in onTickMovement
+	 * Tries to escape any entities currently overlapped.
+	 *
+	 * @param entities	The entities to check collision against
+	 */
 	private void moveEscapeOverlapping(Map<Integer, AbstractEntity> entities) {
 
 		// Check for entities i'm already overlapping, and move away from those entities centres
@@ -576,7 +696,13 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		}
 	}
 
-	// TODO
+	/**
+	 * Used in onTickMovement
+	 * Tries to move the distance and direction, defined by moveSpeed & moveAngle.
+	 * Pushes entities where possible.
+	 *
+	 * @param entities 	The entities to check collision against
+	 */
 	private void moveAndPush(Map<Integer, AbstractEntity> entities){
 
 		float movDist = moveSpeed * moveSpeedModifier;
@@ -602,7 +728,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 				// if this is a new overlap: push this away from e and e away from this
 
 				//get the max distance that I could move before collision
-				float dist = this.getDistance(e);
+				float dist = this.distanceTo(e);
 				/* TODO this method returns min dist, not min dist in the direction of movement
 				need method accurate methods for minDist and angle of incidence/reflection */
 

@@ -27,7 +27,7 @@ public class Wizard extends Player {
 
     public Wizard(float posX, float posY) {
         super(posX, posY);
-        this.moveSpeed = 0.09f;
+        super.setMoveSpeed(0.09f);
         this.facing = Direction.SE;
         this.state = IDLE;
         //this.currentAnimation = ;
@@ -38,15 +38,16 @@ public class Wizard extends Player {
     private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
 
     private Void completionHandler() {
-        state = IDLE;
-        updateSprites();
+        // Re-enable walking
+        super.state = IDLE;
+        super.updateMovingAndFacing();
         return null;
     }
 
     private Void damagedCompletionHandler() {
         GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-        state = IDLE;
-        updateSprites();
+        super.state = IDLE;
+        super.updateMovingAndFacing();
         return null;
     }
 
@@ -122,8 +123,6 @@ public class Wizard extends Player {
                 GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET, null, null,
                         super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
 
-            } else if (!target.isPresent()) {
-                //Disable shooting when no enemies is present until new fix is found.
             }
         }
     }

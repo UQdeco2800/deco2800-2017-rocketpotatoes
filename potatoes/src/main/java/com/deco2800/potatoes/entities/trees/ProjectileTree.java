@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
@@ -43,8 +42,6 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	/**
 	 * Constructor for the base
 	 *
-	 * @param world
-	 *            The world of the tower.
 	 * @param posX
 	 *            The x-coordinate.
 	 * @param posY

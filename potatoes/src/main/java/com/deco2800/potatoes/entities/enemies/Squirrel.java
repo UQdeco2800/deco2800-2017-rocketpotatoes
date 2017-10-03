@@ -16,7 +16,6 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -104,8 +103,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				target = path.pop();
 			}
 
-			float targetX;
-			float targetY;
 
 			if (target == null) {
 				target = relevantTarget.getMask();
@@ -135,9 +132,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : entities.values()) {
 			for (Class sightTarget : targets.getSightAggroTargets()) {
 				if (entity.getClass().isAssignableFrom(sightTarget)) {
-					//System.err.println("going to sight aggro");
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-					//System.err.println("distance: " + distance);
 					if (distance < 10) {
 						return entity;
 					}
@@ -148,12 +143,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : entities.values()) {
 			for (Class mainTarget : targets.getMainTargets()) {
 				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					//System.err.println("going to main target");
 					return entity;
 				}
 			}
 		}
-		//System.err.println("I'm returning null");
 		return null;
 	}
 

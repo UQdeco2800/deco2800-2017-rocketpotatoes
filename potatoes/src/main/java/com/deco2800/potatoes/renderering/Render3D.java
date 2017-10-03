@@ -183,7 +183,7 @@ public class Render3D implements Renderer {
 
 		//convert screen coords to game coords
 		Vector3 coords = Render3D.screenToWorldCoordiates(GameManager.get().getManager(InputManager.class).getMouseX(),
-				GameManager.get().getManager(InputManager.class).getMouseY(), 0);
+				GameManager.get().getManager(InputManager.class).getMouseY());
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
 
 		float tileX = Math.round(tileCoords.x);
@@ -544,7 +544,7 @@ public class Render3D implements Renderer {
 	 * @return a Vector2 with tile coordinates
 	 */
 	public static Vector2 screenToTile(float x, float y) {
-		Vector3 world = Render3D.screenToWorldCoordiates(x, y, 1);
+		Vector3 world = Render3D.screenToWorldCoordiates(x, y);
 		
 		return Render3D.worldPosToTile(world.x, world.y);
 	}
@@ -634,9 +634,15 @@ public class Render3D implements Renderer {
 		return worldToScreenCoordinates(p.x, p.y, p.z);
 	}
 
-	//TODO comment
-	public static Vector3 screenToWorldCoordiates(float x, float y, float z) {
-		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, z));
+	/**
+	 * Transforms screen coordinates to world coordinates
+	 *
+	 * @param x		The x coordinate on the screen
+	 * @param y		The y coordinate on the screen
+	 * @return		A Vector3 with the corresponding x and y world coordinates
+	 */
+	public static Vector3 screenToWorldCoordiates(float x, float y) {
+		return GameManager.get().getManager(CameraManager.class).getCamera().unproject(new Vector3(x, y, 0));
 	}
 
 	/**

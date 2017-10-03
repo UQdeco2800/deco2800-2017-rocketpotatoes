@@ -149,7 +149,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	@Override
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
-		if (maxHealth <= 0 ) { maxHealth = 1; }
+		if (maxHealth <= 0 )
+			maxHealth = 1;
 		return this.maxHealth;
 	}
 
@@ -334,8 +335,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	@Override
 	public void onTick(long time) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
     public Direction getFacing() {
