@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
@@ -27,24 +28,24 @@ public class Wizard extends Player {
     public Wizard(float posX, float posY) {
         super(posX, posY);
         this.moveSpeed = 0.09f;
-        this.currentDirection = Direction.SE;
-        this.currentState = PlayerState.IDLE;
+        this.facing = Direction.SE;
+        this.state = IDLE;
         //this.currentAnimation = ;
     }
 
-    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", PlayerState.IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", PlayerState.IDLE, 1, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", PlayerState.DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", IDLE, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
 
     private Void completionHandler() {
-        clearState();
+        state = IDLE;
         updateSprites();
         return null;
     }
 
     private Void damagedCompletionHandler() {
         GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-        clearState();
+        state = IDLE;
         updateSprites();
         return null;
     }
@@ -54,16 +55,16 @@ public class Wizard extends Player {
         super.updateSprites();
         switch (this.getState()) {
             case IDLE:
-                this.setAnimation(wizardIdleAnimations.get(this.getDirection()));
+                super.setAnimation(wizardIdleAnimations.get(super.facing));
                 break;
             case DAMAGED:
-                this.setAnimation(wizardDamagedAnimations.get(this.getDirection()));
+                super.setAnimation(wizardDamagedAnimations.get(super.facing));
                 break;
             case ATTACK:
-                this.setAnimation(wizardAttackAnimations.get(this.getDirection()));
+                super.setAnimation(wizardAttackAnimations.get(super.facing));
                 break;
             default:
-                this.setAnimation(wizardIdleAnimations.get(this.getDirection()));
+                super.setAnimation(wizardIdleAnimations.get(super.facing));
                 break;
         }
     }
@@ -71,7 +72,7 @@ public class Wizard extends Player {
     @Override
     public void attack() {
     		super.attack();
-        if (this.setState(PlayerState.ATTACK)) {
+        if (this.setState(ATTACK)) {
 
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
@@ -86,7 +87,7 @@ public class Wizard extends Player {
                 float targetPosX = target.get().getPosX();
                 float targetPosY = target.get().getPosY();
 
-                switch (this.getDirection()) {
+                switch (super.facing) {
                     case N:
                         break;
                     case NE:
@@ -119,7 +120,7 @@ public class Wizard extends Player {
                 Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
                 GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET, null, null,
-                        this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
+                        super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
 
             } else if (!target.isPresent()) {
                 //Disable shooting when no enemies is present until new fix is found.
@@ -130,7 +131,7 @@ public class Wizard extends Player {
     @Override
     public void interact() {
         super.interact();
-        if (this.setState(PlayerState.INTERACT)) {
+        if (this.setState(INTERACT)) {
             // Wizard interacts
             GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
         }

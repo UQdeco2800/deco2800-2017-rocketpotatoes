@@ -14,6 +14,7 @@ import com.deco2800.potatoes.renderering.Renderer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A AbstractEntity is an item that can exist in both 3D and 2D worlds
@@ -31,7 +32,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	// Rendering texture
 	private String texture = "error_box";
-	//TODO there currently is no error_box
+	//TODO there currently is no error_box?
 	private float xRenderLength = 25;
 	private float yRenderLength = 25;
 	private float xRenderOffset = 0;
@@ -43,25 +44,25 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	// Physics
 	private Shape2D collisionMask;
-	private boolean isStatic = false;	// Whether this can move or be pushed
-	private boolean isSolid = false;	// Whether to do collisions
+	private boolean isStatic = false;	// Whether this is static or mobile
+	private boolean isSolid = false;		// Whether to do collisions
 
-	private float moveSpeed = 0; 		// How far to move this game step
-	private float moveAngle = 0; 		// Measured in Radians
-	private float myMass = 1;
+	protected float moveSpeed = 0; 			// The speed the entity moves at (dist per game step)
+	protected float moveSpeedModifier = 1; 	// a multiplier for speed
+	protected float moveAngle = 0; 			// Measured in Radians
+	protected float mass = 1;				// mass used in mobile on mobile collisions
 
-	private static final float ESCAPE_SPEED = 0.2f; 	// the speed to get out from inside another object
-	private static final float MIN_DIST = 0.00001f; 		// the closest we will move to another entity
+	private static final float MIN_DIST = 0.000001f; 		// the closest we will move to another entity
+	private static final float ESCAPE_SPEED = 0.15f; 		// the speed to get out from inside another object
+	//private static final float FRICTION = 0.005f; 		// the amount we will decrease our momentumSpeed by
 
-	Collection<AbstractEntity> overlappedEntities;		// entities I overlap this step
-	Collection<AbstractEntity> pushedEntities;			// entities I pushed this step
-
+	Set<AbstractEntity> overlappedEntities = new HashSet<AbstractEntity>();		// entities I overlap this step
+	Set<AbstractEntity> pushedEntities = new HashSet<AbstractEntity>();			// entities I pushed this step
 
 
 
 	// ----------     Initialisation     ---------- //
 
-	//TODO add more descriptive declerations
 
 	/**
 	 * Default constructor for the purposes of serialization
@@ -93,6 +94,8 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		this.yRenderLength = yRenderLength;
 
 		this.texture = texture;
+
+		setMass();
 	}
 
 	/**
@@ -129,6 +132,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		this.yRenderOffset = yRenderOffset;
 
 		this.texture = texture;
+		setMass();
 	}
 
 	//TODO
@@ -147,6 +151,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		this.yRenderOffset = yRenderOffset;
 
 		this.texture = texture;
+		setMass();
 	}
 
 
@@ -368,7 +373,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            collision box
 	 */ //TODO desc is solid or collision-free
 	public void setSolid(boolean isSolid) {
-		this.isStatic = isSolid;
+		this.isSolid = isSolid;
 	}
 
 	/**
@@ -414,12 +419,29 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		return this.collisionMask.overlaps(entity.collisionMask);
 	}
 
-	//TODO
+	//TODO duplicate method
 	private float getDistance(AbstractEntity entity) {
 		return this.collisionMask.distance(entity.collisionMask);
 	}
 
 
+	//TODO comm & use more frequently
+	public void setMass() {
+		if (hasShadow)
+			this.mass = shadow.getArea();
+		else
+			this.mass = collisionMask.getArea();
+	}
+
+	//TODO
+	public void setMass(float mass) {
+		this.mass = mass;
+	}
+
+	//TODO
+	public float getMass() {
+		return this.mass;
+	}
 
 	//TODO
 	public void setMoveSpeed(float speed) {
@@ -427,8 +449,23 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	}
 
 	//TODO
+	public float getMoveSpeedModifier() {
+		return moveSpeedModifier;
+	}
+
+	//TODO
+	public void setMoveSpeedModifier(float moveSpeedModifier) {
+		this.moveSpeedModifier = moveSpeedModifier;
+	}
+
+	//TODO
 	public void setMoveAngle(float angle) {
 		this.moveAngle = angle;
+	}
+
+	//TODO
+	public float getMoveAngle() {
+		return moveAngle;
 	}
 
 	//TODO
@@ -445,7 +482,6 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	public void moveVector(float theta, float dist) {
 		float dx = (float) (dist * Math.cos(theta));
 		float dy = (float) (dist * Math.sin(theta));
-
 		setPosX(getPosX() + dx);
 		setPosY(getPosY() + dy);
 	}
@@ -455,21 +491,22 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	// ----------     Physics onTick    ---------- //
 
-	// does not run if you have set isStatic
+	// TODO does not run if you have set isStatic
 	public void onTickMovement() {
+
 
 		if (isStatic) //does not run if i'm static
 			return;
 
 		if (!isSolid) {
 			// projectile style movement, without collision
-			moveVector(moveSpeed, moveAngle);
+			moveVector(moveAngle, moveSpeed * moveSpeedModifier);
 			return;
 		}
 
 		// use the area of my shadow as my mass
 		// more massive entities will move less during mobile entity to mobile entity collision
-		myMass = shadow.getArea();	//TODO this doesn't need to be so frequent
+
 
 
 		// TODO only consider nearby entities using some sort of World.getNearbySolid, should implement a quadtree
@@ -477,19 +514,23 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 
 		// collection of entities I overlap during this step
-		Collection<AbstractEntity> overlappedEntities = new HashSet<AbstractEntity>();
+		overlappedEntities.clear();
 
 
 		// If I'm overlapping any entities, move away from them/try push them away
 		// This method modifies overlappedEntities to contain entities I overlap this step
-		 moveEscapeOverlapping( entities );
+		moveEscapeOverlapping( entities );
 
+
+		if (moveSpeedModifier <= 0)
+			return;
 
 		// Move me and distribute my momentum with any entities I collide with
 		// This method modifies pushedEntities to contain entities I overlap this step
 		moveAndPush( entities );
 
 	}
+
 
 	//TODO
 	private float getMassRatio(AbstractEntity entity) {
@@ -498,10 +539,10 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		if (entity.isStatic) {
 			// it's not moving, so I do all the moving
-			massRatio = 1;
+			massRatio = 0;
 		} else {
 			// move out of each others way
-			massRatio = myMass / (myMass + entity.getShadow().getArea());
+			massRatio = mass / (mass + entity.getMass());
 		}
 
 		return massRatio;
@@ -509,8 +550,6 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	// TODO
 	private void moveEscapeOverlapping(Map<Integer, AbstractEntity> entities) {
-
-		overlappedEntities.clear();
 
 		// Check for entities i'm already overlapping, and move away from those entities centres
 		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
@@ -525,8 +564,8 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 				float massRatio = getMassRatio(e);
 				float angle = collisionMask.getAngle(e.collisionMask);
 
-				this.moveVector(angle, ESCAPE_SPEED * (1 - massRatio));
-				e.moveVector(angle + (float) Math.PI, ESCAPE_SPEED * massRatio);
+				this.moveVector(angle+ (float) Math.PI, ESCAPE_SPEED * (1 - massRatio));
+				e.moveVector(angle, ESCAPE_SPEED * massRatio);
 
 				// note: if the other entity runs onTickMovement in the same tick, it will also
 				// push us, meaning we get out of those entities twice as fast as static ones
@@ -540,35 +579,54 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	// TODO
 	private void moveAndPush(Map<Integer, AbstractEntity> entities){
 
+		float movDist = moveSpeed * moveSpeedModifier;
+
 		//set next pos
 		Shape2D nextPos = collisionMask.copy();
-		nextPos.moveVector(moveSpeed, moveAngle);
+		nextPos.moveVector(moveAngle, movDist);
+
+
 
 		//check if next position overlaps with any new entities, push them out of the way if possible
 		//let them push this entity too, do not allow nextPos to overlap another entity
 		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
 			AbstractEntity e = entity.getValue();
 
+			if (this.equals(e) || !e.isSolid)         // don't collide with yourself silly, or non solid entities
+				continue;
+
 			if (this.collidesWith(e) && ! overlappedEntities.contains(e)) {
+
+
+
 				// if this is a new overlap: push this away from e and e away from this
 
-				//get the max distance that I could move before collision, and do that before I
+				//get the max distance that I could move before collision
 				float dist = this.getDistance(e);
 				/* TODO this method returns min dist, not min dist in the direction of movement
-				probably would be getting a bit pedantic though */
+				need method accurate methods for minDist and angle of incidence/reflection */
 
-				// move backwards until not in collision
-				nextPos.moveVector(moveSpeed - dist - MIN_DIST,  moveAngle + (float) Math.PI);
+				float remainDist = movDist - dist;
 
-				// push nextPos against e
-				float massRatio = getMassRatio(e);
-				float angle = nextPos.getAngle(e.collisionMask);
+				if (e.isSolid) {
 
-				nextPos.moveVector(angle, dist * (1 - massRatio));
-				e.moveVector(angle + (float) Math.PI, dist * massRatio);
+					// move backwards until not in collision
+					nextPos.moveVector(moveAngle + (float) Math.PI, remainDist - MIN_DIST);
+				} else {
+
+					// push nextPos against e
+					float massRatio = getMassRatio(e);
+					float angle = nextPos.getAngle(e.collisionMask);
+
+					nextPos.moveVector(angle, remainDist * (1 - massRatio));
+					e.moveVector(angle + (float) Math.PI, remainDist * massRatio);
+				}
 			}
 
 		}
+
+		setPosX(nextPos.getX());
+		setPosY(nextPos.getY());
 	}
 
 

@@ -77,7 +77,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	/**
 	 *	@return the current Direction of moose
 	 * */
-	@Override
+	//@Override
 	public Direction getDirection() { return currentDirection; }
 
 	/**

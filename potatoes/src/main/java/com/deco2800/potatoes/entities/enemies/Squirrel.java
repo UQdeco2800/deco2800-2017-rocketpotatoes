@@ -111,21 +111,17 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				target = relevantTarget.getMask();
 			}
 
-			targetX = target.getX();
-			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
 
-			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
+			float deltaX = target.getX() - getPosX();
+			float deltaY = target.getY() - getPosY();
 
-			float changeX = (float) (SPEED * Math.cos(angle));
-			float changeY = (float) (SPEED * Math.sin(angle));
 
-			this.setPosX(getPosX() + changeX);
-			this.setPosY(getPosY() + changeY);
 
-			updateDirection();
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.onTickMovement();
+
+			super.updateDirection();
 		}
 	}
 
@@ -139,9 +135,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : entities.values()) {
 			for (Class sightTarget : targets.getSightAggroTargets()) {
 				if (entity.getClass().isAssignableFrom(sightTarget)) {
-					System.err.println("going to sight aggro");
+					//System.err.println("going to sight aggro");
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-					System.err.println("distance: " + distance);
+					//System.err.println("distance: " + distance);
 					if (distance < 10) {
 						return entity;
 					}
@@ -152,19 +148,19 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : entities.values()) {
 			for (Class mainTarget : targets.getMainTargets()) {
 				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					System.err.println("going to main target");
+					//System.err.println("going to main target");
 					return entity;
 				}
 			}
 		}
-		System.err.println("I'm returning null");
+		//System.err.println("I'm returning null");
 		return null;
 	}
 
 	/**
 	 *	@return the current Direction of squirrel
 	 * */
-	@Override
+	//@Override
 	public Direction getDirection() { return currentDirection; }
 
 	/**

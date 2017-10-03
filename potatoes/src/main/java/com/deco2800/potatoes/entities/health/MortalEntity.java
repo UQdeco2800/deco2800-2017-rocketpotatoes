@@ -3,6 +3,7 @@
  */
 package com.deco2800.potatoes.entities.health;
 
+import com.deco2800.potatoes.entities.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
 	private boolean dying = false;
+	//TODO use states like the player does
+	protected Direction facing; 		// The direction the entity is facing
 
 
 
@@ -79,8 +82,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yLength
 	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -336,4 +337,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		
 	}
 
+    public Direction getFacing() {
+        return this.facing;
+    }
 }

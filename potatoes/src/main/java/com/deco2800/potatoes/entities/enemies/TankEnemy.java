@@ -17,7 +17,7 @@ import com.deco2800.potatoes.util.Path;
 /**
  * A stronger but slower enemy type, only attacks towers/trees
  */
-public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
+public class TankEnemy extends EnemyEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyProperties STATS = initStats();
@@ -84,7 +84,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	/**
 	 * @return the current Direction of bear
 	 */
-	@Override
+	//@Override
 	public Direction getDirection() {
 		return currentDirection;
 	}

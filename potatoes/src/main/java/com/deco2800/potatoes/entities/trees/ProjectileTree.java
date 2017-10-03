@@ -59,9 +59,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 		super(posX, posY, 1f, 1f);
 		this.reloadTime = reloadTime;
 		this.maxHealth = maxHealth;
-		this.setStatic(true);
-		this.setSolid(true);
-		this.setShadow(new Circle2D(0,0,0.4f));
+
 	}
 
 	/**

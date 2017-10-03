@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
@@ -29,27 +30,27 @@ public class Archer extends Player {
     public Archer(float posX, float posY) {
     		super(posX, posY);
     		this.moveSpeed = 0.07f;
-    		this.currentDirection = Direction.SE;
-        this.currentState = PlayerState.IDLE;
+    		this.facing = Direction.SE;
+        this.state = IDLE;
         //this.currentAnimation = ;
     }
     
-    private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", PlayerState.IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", PlayerState.WALK, 8, 750, null);
-    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", PlayerState.ATTACK, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", PlayerState.DEATH, 3, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", PlayerState.INTERACT, 5, 400, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
-    		setWalkEnabled(true); // Re-enable walking
-    		clearState();
+    		//TODO Re-enable walking
+    		state = IDLE;
 		updateSprites();
 		return null;
     }
     
     private Void damagedCompletionHandler() {
 		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		clearState();
+		state = IDLE;
 		updateSprites();
 		return null;
     }
@@ -59,22 +60,22 @@ public class Archer extends Player {
     		super.updateSprites();
 		switch (this.getState()) {
         case IDLE:
-    			this.setAnimation(archerIdleAnimations.get(this.getDirection()));
+    			super.setAnimation(archerIdleAnimations.get(super.facing));
     			break;
         case WALK:
-			this.setAnimation(archerWalkAnimations.get(this.getDirection()));
+			super.setAnimation(archerWalkAnimations.get(super.facing));
 			break;
         case ATTACK:
-			this.setAnimation(archerAttackAnimations.get(this.getDirection()));
+			super.setAnimation(archerAttackAnimations.get(super.facing));
 			break;
         case DAMAGED:
-			this.setAnimation(archerDamagedAnimations.get(this.getDirection()));
+			super.setAnimation(archerDamagedAnimations.get(super.facing));
 			break;
         case INTERACT:
-        		this.setAnimation(archerInteractAnimations.get(this.getDirection()));
+        		super.setAnimation(archerInteractAnimations.get(super.facing));
         		break;
         default:
-        		this.setAnimation(archerIdleAnimations.get(this.getDirection()));
+        		super.setAnimation(archerIdleAnimations.get(super.facing));
         		break;
         }
     }
@@ -82,8 +83,8 @@ public class Archer extends Player {
     @Override
     public void attack() {
 	    super.attack();
-	    setWalkEnabled(false); // Stop walking for attacking
-    		if (this.setState(PlayerState.ATTACK)) {
+	    //TODO setWalkEnabled(false); // Stop walking for attacking
+    		if (this.setState(ATTACK)) {
     			
     			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
     			
@@ -98,7 +99,7 @@ public class Archer extends Player {
 	        		float targetPosX = target.get().getPosX();
 	        		float targetPosY = target.get().getPosY();
 	            
-	        		switch (this.getDirection()) {
+	        		switch (super.facing) {
 	        		case N:
 	        			break;
 	        		case NE:
@@ -131,7 +132,7 @@ public class Archer extends Player {
 				Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
 				GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.LEAVES, null, null,
-						this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
+						super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
 	        } else if (!target.isPresent()) {
 
 	            //Disable shooting when no enemies is present until new fix is found.
@@ -171,8 +172,8 @@ public class Archer extends Player {
     @Override
     public void interact() {
     		super.interact();
-    		setWalkEnabled(false); // Stop walking for interacting
-	    	if (this.setState(PlayerState.INTERACT)) {
+    		//TODO Stop walking for interacting
+	    	if (this.setState(INTERACT)) {
 	    		// Archer interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
 	    	}
