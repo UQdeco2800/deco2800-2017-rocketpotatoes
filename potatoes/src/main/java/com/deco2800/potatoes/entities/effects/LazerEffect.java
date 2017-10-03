@@ -2,7 +2,7 @@ package com.deco2800.potatoes.entities.effects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -32,7 +32,7 @@ public class LazerEffect extends Effect {
 
 		drawTextureBetween(batch, getTexture(), xPos, yPos, fxPos, fyPos);
 
-		CollisionMask newPos = getMask();
+		Shape2D newPos = getMask();
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 

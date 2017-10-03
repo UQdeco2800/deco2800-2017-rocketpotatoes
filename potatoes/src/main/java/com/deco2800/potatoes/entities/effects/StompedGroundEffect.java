@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities.effects;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 
 import com.deco2800.potatoes.managers.GameManager;
@@ -20,7 +20,7 @@ public class StompedGroundEffect extends Effect {
 	private static final transient String TEXTURE = "DamagedGroundTemp1";
 
 	private boolean isTemporary;
-	private CollisionMask effectPosition;
+	private Shape2D effectPosition;
 	private int currentTextureIndexCount = 0;
 	private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
 	private int timer = 0;
@@ -79,11 +79,11 @@ public class StompedGroundEffect extends Effect {
 	}
 
 	/**
-	 * Return the CollisionMask position of the stomp
+	 * Return the Shape2D position of the stomp
 	 *
-	 * @return CollisionMask position of footstep
+	 * @return Shape2D position of footstep
 	 */
-	public CollisionMask getStompedGroundPosition() {
+	public Shape2D getStompedGroundPosition() {
 		return effectPosition;
 	}
 

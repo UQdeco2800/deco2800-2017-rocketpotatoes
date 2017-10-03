@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 
-public class CollisionMaskTest {
+public class Shape2DTest {
 
 
 

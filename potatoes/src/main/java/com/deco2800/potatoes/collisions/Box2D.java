@@ -15,14 +15,14 @@ import java.util.Objects;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 /**
- * A centred box class that implements CollisionMask.
- * Can be used to check distance or overlaps with other CollisionMask's.
+ * A centred box class that implements Shape2D.
+ * Can be used to check distance or overlaps with other Shape2D's.
  * Can render to isometric view.
  * Being used by AbstractEntity & descendents for collision
  *
  * @author Tazman_Schmidt
  */
-public class Box2D extends CollisionMask {
+public class Box2D extends Shape2D {
 
     private float xLength;
     private float yLength;
@@ -55,7 +55,7 @@ public class Box2D extends CollisionMask {
      * @return A copy of the current Box2D
      */
     @Override
-    public CollisionMask copy() {
+    public Box2D copy() {
         return new Box2D(x, y, xLength, yLength);
     }
 
@@ -107,8 +107,8 @@ public class Box2D extends CollisionMask {
     /**
      * Returns True iff this Box2D overlaps the given Point2D
      *
-     * @param other The other CollisionMask being checked
-     * @return True iff this box2D overlaps the CollisionMask
+     * @param other The other Shape2D being checked
+     * @return True iff this box2D overlaps the Shape2D
      */
     private boolean overlapsPoint(Point2D other) {
         // Check x non collision
@@ -127,8 +127,8 @@ public class Box2D extends CollisionMask {
     /**
      * Returns True iff this Box2D overlaps the given Circle2D
      *
-     * @param other The other CollisionMask being checked
-     * @return True iff this box2D overlaps the CollisionMask
+     * @param other The other Shape2D being checked
+     * @return True iff this box2D overlaps the Shape2D
      */
     private boolean overlapsCircle(Circle2D other) {
         // We will consider the circle to be a point
@@ -161,8 +161,8 @@ public class Box2D extends CollisionMask {
     /**
      * Returns True iff this Box2D overlaps the given Box2D
      *
-     * @param other The other CollisionMask being checked
-     * @return True iff this box2D overlaps the CollisionMask
+     * @param other The other Shape2D being checked
+     * @return True iff this box2D overlaps the Shape2D
      */
     private boolean overlapsBox(Box2D other) {
         // Calc centre to centre dist
@@ -189,7 +189,7 @@ public class Box2D extends CollisionMask {
      * @param y1 The y coord of point 1 of the line
      * @param x2 The x coord of point 2 of the line
      * @param y2 The y coord of point 2 of the line
-     * @return True iff this CollisionMask is overlapped by the line.
+     * @return True iff this Shape2D is overlapped by the line.
      */
     public boolean overlapsLine(float x1, float y1, float x2, float y2) {
         float fMin = 0;
@@ -224,7 +224,7 @@ public class Box2D extends CollisionMask {
      * @return True iff the collision masks are overlapping.
      */
     @Override
-    public boolean overlaps(CollisionMask other) {
+    public boolean overlaps(Shape2D other) {
         if (other instanceof Point2D) {
             return overlapsPoint((Point2D)other);
         } else if (other instanceof Circle2D) {
@@ -264,8 +264,8 @@ public class Box2D extends CollisionMask {
     /**
      * Finds the minimum distance between this Box2D and the given Point2D
      *
-     * @param other The other CollisionMask being checked
-     * @return The minimum distance to the given CollisionMask
+     * @param other The other Shape2D being checked
+     * @return The minimum distance to the given Shape2D
      */
     private float distanceToPoint(Point2D other) {
         Point2D point = other;
@@ -280,8 +280,8 @@ public class Box2D extends CollisionMask {
     /**
      * Finds the minimum distance between this Box2D and the given Circle2D
      *
-     * @param other The other CollisionMask being checked
-     * @return The minimum distance to the given CollisionMask
+     * @param other The other Shape2D being checked
+     * @return The minimum distance to the given Shape2D
      */
     private float distanceToCircle(Circle2D other) {
         // Calc dist between sides on each dimension, considering the circle as a point
@@ -311,8 +311,8 @@ public class Box2D extends CollisionMask {
     /**
      * Finds the minimum distance between this Box2D and the given Box2D
      *
-     * @param other The other CollisionMask being checked
-     * @return The minimum distance to the given CollisionMask
+     * @param other The other Shape2D being checked
+     * @return The minimum distance to the given Shape2D
      */
     private float distanceToBox(Box2D other) {
         // Calc dist between sides on each dimension
@@ -401,7 +401,7 @@ public class Box2D extends CollisionMask {
      * @return The distance. If the collision masks overlap, a negative number is returned.
      */
     @Override
-    public float distance(CollisionMask other) {
+    public float distance(Shape2D other) {
         if (other instanceof Point2D) {
             return distanceToPoint((Point2D)other);
         } else if (other instanceof Circle2D) {

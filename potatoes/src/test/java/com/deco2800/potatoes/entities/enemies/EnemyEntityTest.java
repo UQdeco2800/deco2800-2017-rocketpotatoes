@@ -58,7 +58,7 @@ public class EnemyEntityTest extends BaseTest {
 
     @Test
     public void emptyConstructor() {
-        assertEquals(null, squirrelEmpty.getEnemyDirection());
+        assertEquals(null, squirrelEmpty.getFacing());
     }
 
     @Test

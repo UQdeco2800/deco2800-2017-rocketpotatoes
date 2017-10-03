@@ -42,7 +42,8 @@ public class PathManagerTest {
                 30f,
                 5f
                 );
-        blockingEntity.setStaticCollideable(true);
+        blockingEntity.setStatic(true);
+        blockingEntity.setSolid(true);
         HashMap<Integer, AbstractEntity> entityHashMap = new HashMap<>();
         entityHashMap.put(0, blockingEntity);
         when(mockWorld.getEntities()).thenReturn(entityHashMap);

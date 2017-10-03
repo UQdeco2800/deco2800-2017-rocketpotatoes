@@ -265,7 +265,7 @@ public class MinimumSpanningTree {
         boolean output = false;
 
         for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-            if (e.isStaticCollideable() && 0 > e.getMask().distance(line.getEndPointOne().getX(),
+            if (e.isStatic() && 0 > e.getMask().distance(line.getEndPointOne().getX(),
                         line.getEndPointOne().getY(), line.getEndPointTwo().getX(), line.getEndPointTwo().getY())) {
                 output = true;
                 break;

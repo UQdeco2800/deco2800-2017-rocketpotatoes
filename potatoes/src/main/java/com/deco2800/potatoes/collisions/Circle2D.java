@@ -15,14 +15,14 @@ import java.util.Objects;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 /**
- * A centred circle class that implements CollisionMask.
- * Can be used to check distance or overlaps with other CollisionMask's.
+ * A centred circle class that implements Shape2D.
+ * Can be used to check distance or overlaps with other Shape2D's.
  * Can render to isometric view.
  * Being used by AbstractEntity & descendents for collision
  *
  * @author Tazman_Schmidt
  */
-public class Circle2D extends CollisionMask {
+public class Circle2D extends Shape2D {
 
     private float radius;
     private static final String textureStr = "CIRCLE_HIGHLIGHT";
@@ -48,7 +48,7 @@ public class Circle2D extends CollisionMask {
      * @return A copy of the current Circle2D
      */
     @Override
-    public CollisionMask copy() {
+    public Circle2D copy() {
         return new Circle2D(x, y, radius);
     }
 
@@ -61,7 +61,7 @@ public class Circle2D extends CollisionMask {
      * @return True iff the collision masks are overlapping.
      */
     @Override
-    public boolean overlaps(CollisionMask other) {
+    public boolean overlaps(Shape2D other) {
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
             return distance(point) < 0;
@@ -81,7 +81,7 @@ public class Circle2D extends CollisionMask {
      * @return The distance. If the collision masks overlap, a negative number is returned.
      */
     @Override
-    public float distance(CollisionMask other) {
+    public float distance(Shape2D other) {
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
 
@@ -194,7 +194,7 @@ public class Circle2D extends CollisionMask {
      * @return if this circle is approximately centred on a point
      */
     public boolean isCentredOnPoint(Point2D point) {
-        return (compareFloat(x, point.getX()) && compareFloat(y, point.getY()));
+        return compareFloat(x, point.getX()) && compareFloat(y, point.getY());
     }
 
     /**
