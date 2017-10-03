@@ -1,27 +1,19 @@
 package com.deco2800.potatoes.entities.player;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.*;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.renderering.Render3D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -306,9 +298,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 keyD = false;
                 updateMovingAndFacing();
                 break;
-            case Input.Keys.SHIFT_LEFT:
-                //setWalkEnabled(true);
-                break;
             default:
                 break;
         }
@@ -367,7 +356,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             case 7:
                 newFacing = Direction.S;
                 break;
-            case 8:
+            default:        //(case 8)
                 newFacing = Direction.SE;
                 break;
         }

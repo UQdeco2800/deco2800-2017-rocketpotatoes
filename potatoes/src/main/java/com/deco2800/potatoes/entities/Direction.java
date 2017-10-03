@@ -6,7 +6,8 @@ package com.deco2800.potatoes.entities;
  * The directions are described as follows: North, North-East, East,
  * South-East, South, South-West, West, North-West.
  * This class also provides methods for converting to & from an angle.
- * //TODO add old dudes name
+ *
+ * @author petercondoleon, Tazman Schmidt
  */
 public enum Direction { N("North"), NE("North-East"), E("East"), SE("South-East"),
     S("South"), SW("South-West"), W("West"), NW("North-West");
@@ -42,7 +43,7 @@ public enum Direction { N("North"), NE("North-East"), E("East"), SE("South-East"
         if (this == S)
             return 2.35619f;    // 135 deg
         if (this == SW)
-            return 3.14159f;    // 180 deg
+            return (float) Math.PI;    // 180 deg
         if (this == W)
             return 3.92700f;    // 225 deg
         if (this == NW)
@@ -64,7 +65,7 @@ public enum Direction { N("North"), NE("North-East"), E("East"), SE("South-East"
      * Returns an angle based on the x and y components of
      * a vector representing the movement direction of an entity
      * The angle is in Radians.
-     * if xSpeed & ySpeed are both 0, default? //TODO check default
+     * if xSpeed & ySpeed are both 0, returns 0
      *
      * @param xVector The x component of a movement vector.
      * @param yVector The y component of a movement vector.
@@ -77,15 +78,14 @@ public enum Direction { N("North"), NE("North-East"), E("East"), SE("South-East"
     /**
      * Returns a {@code Direction} based on the x and y components of
      * a vector representing the movement direction of an entity
-     * if xSpeed & ySpeed are both 0, default WEST? //TODO check default
+     * if xSpeed & ySpeed are both 0, default NE
      *
      * @param xVector The x component of a movement vector.
      * @param yVector The y component of a movement vector.
      * @return
      */
     public static Direction getFromCoords(float xVector, float yVector) {
-        float angle = (float) Math.atan2(yVector, xVector);
-        return getFromRad(angle);
+        return getFromRad( getRadFromCoords( xVector, yVector) );
     }
 
     /**

@@ -208,7 +208,7 @@ public class DebugModeGui extends Gui {
                 float y = GameManager.get().getManager(InputManager.class).getMouseY();
 
                 //Converting mouse coordinates to tiles
-                Vector3 coords = Render3D.screenToWorldCoordiates(x,y,0);
+                Vector3 coords = Render3D.screenToWorldCoordiates(x,y);
                 Vector2 coords2 = Render3D.worldPosToTile(coords.x,coords.y);
 
                 if (state == States.DEBUGON) {

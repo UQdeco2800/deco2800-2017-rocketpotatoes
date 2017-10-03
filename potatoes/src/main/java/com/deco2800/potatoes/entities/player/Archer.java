@@ -29,7 +29,7 @@ public class Archer extends Player {
      */
     public Archer(float posX, float posY) {
     		super(posX, posY);
-    		this.moveSpeed = 0.07f;
+    		super.setMoveSpeed(0.07f);
     		this.facing = Direction.SE;
         this.state = IDLE;
         //this.currentAnimation = ;
@@ -42,16 +42,16 @@ public class Archer extends Player {
     private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, this::completionHandler);
     
     private Void completionHandler() {
-    		//TODO Re-enable walking
-    		state = IDLE;
-		updateSprites();
+		// Re-enable walking
+		super.state = IDLE;
+		super.updateMovingAndFacing();
 		return null;
     }
     
     private Void damagedCompletionHandler() {
 		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		state = IDLE;
-		updateSprites();
+		super.state = IDLE;
+		super.updateMovingAndFacing();
 		return null;
     }
     
@@ -83,7 +83,7 @@ public class Archer extends Player {
     @Override
     public void attack() {
 	    super.attack();
-	    //TODO setWalkEnabled(false); // Stop walking for attacking
+
     		if (this.setState(ATTACK)) {
     			
     			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
@@ -133,9 +133,6 @@ public class Archer extends Player {
 
 				GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.LEAVES, null, null,
 						super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
-	        } else if (!target.isPresent()) {
-
-	            //Disable shooting when no enemies is present until new fix is found.
 	        }
 		}
     }
@@ -152,7 +149,8 @@ public class Archer extends Player {
 		}
 		
 		stepNumber++;
-		if (stepNumber == 3) { stepNumber = 1; }
+		if (stepNumber == 3)
+			stepNumber = 1;
 		alternateSound = new Random().nextBoolean();
 		return null;
 	}
@@ -172,7 +170,7 @@ public class Archer extends Player {
     @Override
     public void interact() {
     		super.interact();
-    		//TODO Stop walking for interacting
+
 	    	if (this.setState(INTERACT)) {
 	    		// Archer interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
