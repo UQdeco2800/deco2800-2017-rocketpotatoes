@@ -449,7 +449,9 @@ public class Render3D implements Renderer {
 				font.draw(batch, String.format("%s", m.getClients().get(entity.getValue())),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
 			}
+
 		}
+		batch.end();
 
 		return;
 	}
