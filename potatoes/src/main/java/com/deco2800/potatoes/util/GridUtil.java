@@ -1,6 +1,10 @@
 package com.deco2800.potatoes.util;
 
-import java.awt.Point;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -300,5 +304,25 @@ public class GridUtil {
 		int adjustedX = x < 0 ? x + array.length : x >= array.length ? x - array.length : x;
 		int adjustedY = y < 0 ? y + array[0].length : y >= array[0].length ? y - array[0].length : y;
 		return array[adjustedX][adjustedY];
+	}
+
+
+	/********************************
+	 -	 * FOR TESTING
+	 -	 ********************************
+	 -	 * Outputs and image from the algorithm output, try not to add the heightmap
+	 -	 * file to git
+	 -	 */
+	public static void main(String[] args) throws IOException {
+		final int SIZE = 25;
+		BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_RGB);
+		float[][] heightmap = smoothDiamondSquareAlgorithm(SIZE, 0.4f, 2);
+		for (int i = 0; i < heightmap.length; i++) {
+			for (int j = 0; j < heightmap[i].length; j++) {
+				Color color = new Color(heightmap[i][j], heightmap[i][j], heightmap[i][j]);
+				image.setRGB(i, j, color.getRGB());
+			}
+		}
+		ImageIO.write(image, "png", new File("random_image.png"));
 	}
 }
