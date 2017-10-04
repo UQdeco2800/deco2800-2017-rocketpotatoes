@@ -38,10 +38,20 @@ task(run, dependsOn: "classes", type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task rustyfish(type:RustBuild) {
+task rustyfish(type: RustBuild) {
     group 'rusty'
     description 'Builds the project as a Rust crate.'
     release = true
 
-    // When run, this would call "cargo build --release --quiet".
 }
+
+task copyRustyfish(type: Copy) {
+    copy {
+        from 'target/release/'
+        into "build/classes/main"
+        include 'librustyfish.so'
+    }
+}
+
+compileJava.finalizedBy(rustyfish)
+rustyfish.finalizedBy(copyRustyfish)

@@ -13,7 +13,7 @@ public class GameLauncher {
 	private GameLauncher() { }
 
 	public interface RLibrary extends Library {
-		RLibrary INSTANCE = (RLibrary) Native.loadLibrary("fewefw", RLibrary.class);
+		RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
 
 		void print_stuff(String stuff);
 	}
