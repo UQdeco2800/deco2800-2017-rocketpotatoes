@@ -150,6 +150,7 @@ public class GameScreen implements Screen {
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
 		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
+		cameraManager.getCamera().zoom += 1;
 		
 		/* Setup progress bar manager. */
 		progressBarManager = GameManager.get().getManager(ProgressBarManager.class);
