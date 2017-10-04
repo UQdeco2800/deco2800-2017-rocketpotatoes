@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
+import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
@@ -153,6 +154,9 @@ public class GameScreen implements Screen {
 		
 		/* Setup progress bar manager. */
 		progressBarManager = GameManager.get().getManager(ProgressBarManager.class);
+
+        /* Set up cheat codes. */
+        CheatList.addCheats();
 
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our
