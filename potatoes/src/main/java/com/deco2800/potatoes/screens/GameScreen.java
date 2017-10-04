@@ -64,6 +64,8 @@ public class GameScreen implements Screen {
 	private TextureManager textureManager;
 	private InputManager inputManager;
 	private WaveManager waveManager;
+	private ProgressBarManager progressBarManager;
+
 
 	private long lastGameTick = 0;
 	private double tickrate = 10;
@@ -148,6 +150,9 @@ public class GameScreen implements Screen {
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
 		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
+		
+		/* Setup progress bar manager. */
+		progressBarManager = GameManager.get().getManager(ProgressBarManager.class);
 
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our

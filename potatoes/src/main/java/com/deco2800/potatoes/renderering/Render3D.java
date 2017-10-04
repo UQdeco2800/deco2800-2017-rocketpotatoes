@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.deco2800.potatoes.collisions.*;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
@@ -32,6 +34,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
@@ -325,6 +328,8 @@ public class Render3D implements Renderer {
 	/**
 	 * Renders progress bars above entities */
 	private void renderProgressBars() {
+		// progress bar toggle values [player, potato, allies, enemies]
+		ArrayList<Boolean> progressValues = GameManager.get().getManager(ProgressBarManager.class).getProgressValues();
 
 		Color currentShade = batch.getColor();
 
@@ -332,6 +337,26 @@ public class Render3D implements Renderer {
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
+			// Progress Bars for players.
+			if (!progressValues.get(0) && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+				continue;
+			}
+			// Progress Bar for Goal Potato.
+			if (!progressValues.get(1) && e instanceof GoalPotate) {
+				continue;
+			}
+			
+			// Progress Bars for allies [Trees, Portals].
+			if (!progressValues.get(2) && !(e instanceof EnemyEntity)
+					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())
+					&& !(e instanceof EnemyGate) && !(e instanceof GoalPotate)) {
+				continue;
+			}
+			// Progress Bars for enemy entities.
+			if (!progressValues.get(3) && (e instanceof EnemyEntity || e instanceof EnemyGate)) {
+				continue;
+			}
+			
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
 
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
