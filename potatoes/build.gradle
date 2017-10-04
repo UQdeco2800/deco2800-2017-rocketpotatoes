@@ -46,11 +46,9 @@ task rustyfish(type: RustBuild) {
 }
 
 task copyRustyfish(type: Copy) {
-    copy {
-        from 'target/release/'
-        into "build/classes/main"
-        include 'librustyfish.so'
-    }
+    from 'target/release/'
+    into "build/classes/main"
+    include 'librustyfish.so'
 }
 
 compileJava.finalizedBy(rustyfish)
