@@ -188,8 +188,14 @@ public class ProjectileTest {
     public void TestLazerEffect() {
         LazerEffect lazerEffect = new LazerEffect(targetClass,startPos,targetPos,damage,range);
         assertEquals(damage, lazerEffect.getDamage(), 0);
+        lazerEffect.onTick(4);
     }
-
+    @Test
+    public void getTest() {
+        testProjectile = new Projectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
+        testProjectile.rotationAngle();
+        testProjectile.onTick(2);
+    }
 
 
 

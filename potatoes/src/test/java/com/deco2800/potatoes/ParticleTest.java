@@ -77,4 +77,14 @@ public class ParticleTest {
         manager.stopEmitter(em);
 
     }
+    @Test
+    public void testGetSet() {
+        ParticleManager manager = new ParticleManager();
+        ParticleEmitter em = new ParticleEmitter(0, 0);
+        manager.addParticleEmitter(100.0f, em);
+        em.start();
+        em.setOrigin(1,2);
+        em.getParticleTypes();
+    }
+
 }

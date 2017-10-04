@@ -87,6 +87,7 @@ public class DebugModeGui extends Gui {
 
         this.screen = screen;
         this.stage = stage;
+        hidden = true;
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
@@ -207,7 +208,7 @@ public class DebugModeGui extends Gui {
                 float y = GameManager.get().getManager(InputManager.class).getMouseY();
 
                 //Converting mouse coordinates to tiles
-                Vector3 coords = Render3D.screenToWorldCoordiates(x,y,0);
+                Vector3 coords = Render3D.screenToWorldCoordiates(x,y);
                 Vector2 coords2 = Render3D.worldPosToTile(coords.x,coords.y);
 
                 if (state == States.DEBUGON) {
@@ -292,6 +293,7 @@ public class DebugModeGui extends Gui {
         table.setVisible(true);
         stage.addActor(table);
         state = States.DEBUGON;
+        hidden = false;
     }
 
     /**
@@ -301,6 +303,18 @@ public class DebugModeGui extends Gui {
 	public void hide() {
         table.setVisible(false);
         state = States.DEBUGOFF;
+        hidden = true;
+    }
+
+    /**
+     * Toggles whether the menu is shown or hidden, using the hide() and show() methods.
+     */
+    public void toggle() {
+        if (hidden) {
+            show();
+        } else {
+            hide();
+        }
     }
 
     /**
@@ -318,7 +332,7 @@ public class DebugModeGui extends Gui {
     public void entitiesImmortal(){
         Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
         for (AbstractEntity ent: entitiesMap.values()){
-            if (ent instanceof MortalEntity&!(ent instanceof Player)){
+            if (ent instanceof MortalEntity && !(ent instanceof Player)){
                 ((MortalEntity) ent).addDamageScaling(0);
             }
         }

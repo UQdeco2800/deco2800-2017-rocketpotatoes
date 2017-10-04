@@ -2,12 +2,13 @@ package com.deco2800.potatoes.entities.enemies;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
@@ -16,7 +17,7 @@ import com.deco2800.potatoes.util.Path;
 /**
  * A stronger but slower enemy type, only attacks towers/trees
  */
-public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
+public class TankEnemy extends EnemyEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyProperties STATS = initStats();
@@ -32,7 +33,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	private static float speed = 0.006f;
 	private static Class<?> goal = AbstractTree.class;
 	private Path path = null;
-	private CollisionMask target = null;
+	private Shape2D target = null;
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
@@ -84,7 +85,7 @@ public class TankEnemy extends EnemyEntity implements Tickable, HasDirection {
 	/**
 	 * @return the current Direction of bear
 	 */
-	@Override
+	//@Override
 	public Direction getDirection() {
 		return currentDirection;
 	}

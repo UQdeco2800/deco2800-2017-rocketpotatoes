@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.UncenteredBox2D;
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.Animation;
@@ -46,8 +48,12 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * @see AbstractEntity
 	 */
     public AbstractTree(float posX, float posY, float xLength, float yLength) {
-        super(new UncenteredBox2D(posX, posY, xLength, yLength), xLength, yLength, "", 1);
+        super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, "", 1);
 		resetStats();
+
+		super.setStatic(true);
+		super.setSolid(true);
+		super.setShadow(new Circle2D(0,0,0.4f));
 	}
 
 	/**

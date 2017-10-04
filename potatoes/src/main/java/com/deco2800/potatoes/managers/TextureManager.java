@@ -2,8 +2,8 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.deco2800.potatoes.entities.HasDirection.Direction;
 
+import com.deco2800.potatoes.entities.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,6 +323,13 @@ public class TextureManager extends Manager {
 		}
 	    saveTexture("water_tile_1", "resources/placeholderassets/water_tile_1.png");
 	    saveTexture("water_tile_2", "resources/placeholderassets/water_tile_2.png");
+
+
+        // CollisionMask debug
+        saveTexture("POINT_HIGHLIGHT", "resources/collisionmasks/Point2D_highlight.png");
+        saveTexture("CIRCLE_HIGHLIGHT", "resources/collisionmasks/Circle2D_highlight.png");
+        saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
+
     }
 
     /**

@@ -1,25 +1,16 @@
 package com.deco2800.potatoes.entities.portals;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.util.WorldUtil;
 //import com.deco2800.potatoes.worlds.InitialWorld;
 import com.deco2800.potatoes.worlds.World;
-import com.deco2800.potatoes.worlds.WorldType;
 
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
-
-import com.badlogic.gdx.Input;
 
 /**
  * Tests for abstract portals.

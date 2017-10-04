@@ -47,7 +47,7 @@ public class Render3DTest extends BaseTest {
 		//assertEquals(0.6619, testVector1.len(), 0.001);
 		
 		
-		Render3D.screenToWorldCoordiates(10, 10, 10);
+		Render3D.screenToWorldCoordiates(10, 10);
 		
 	}
 	

@@ -2,10 +2,10 @@ package com.deco2800.potatoes.entities.resources;
 
 import java.util.Map;
 
+import com.deco2800.potatoes.collisions.Shape2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.player.Player;
@@ -117,7 +117,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 		boolean collided = false;
 		Player player = null;
 
-		CollisionMask newPos = getMask();
+		Shape2D newPos = getMask();
 		newPos.setX(xPos);
 		newPos.setY(yPos);
 

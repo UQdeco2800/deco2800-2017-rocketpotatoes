@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
@@ -16,7 +16,6 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Map<Integer, AbstractEntity> entities;
 
 	private Path path = null;
-	private CollisionMask target = null;
+	private Shape2D target = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
@@ -104,28 +103,22 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				target = path.pop();
 			}
 
-			float targetX;
-			float targetY;
 
 			if (target == null) {
 				target = relevantTarget.getMask();
 			}
 
-			targetX = target.getX();
-			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
 
-			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
+			float deltaX = target.getX() - getPosX();
+			float deltaY = target.getY() - getPosY();
 
-			float changeX = (float) (SPEED * Math.cos(angle));
-			float changeY = (float) (SPEED * Math.sin(angle));
 
-			this.setPosX(getPosX() + changeX);
-			this.setPosY(getPosY() + changeY);
 
-			updateDirection();
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.onTickMovement();
+
+			super.updateDirection();
 		}
 	}
 
@@ -139,9 +132,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : entities.values()) {
 			for (Class sightTarget : targets.getSightAggroTargets()) {
 				if (entity.getClass().isAssignableFrom(sightTarget)) {
-					System.err.println("going to sight aggro");
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-					System.err.println("distance: " + distance);
 					if (distance < 10) {
 						return entity;
 					}
@@ -152,19 +143,17 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (AbstractEntity entity : entities.values()) {
 			for (Class mainTarget : targets.getMainTargets()) {
 				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					System.err.println("going to main target");
 					return entity;
 				}
 			}
 		}
-		System.err.println("I'm returning null");
 		return null;
 	}
 
 	/**
 	 *	@return the current Direction of squirrel
 	 * */
-	@Override
+	//@Override
 	public Direction getDirection() { return currentDirection; }
 
 	/**

@@ -16,4 +16,12 @@ public class GameTimeManagerTest {
         assertEquals(gt.getCurrentDay(), 1 );
     }
 
+    @Test
+    public void setGetTests(){
+        GameTimeManager gt = new GameTimeManager();
+        gt.resetCurrentDay(1);
+        gt.onTick(1);
+        gt.getColour();
+    }
+
 }

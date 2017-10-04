@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
 public class ParticleManager extends Manager implements TickableManager {
 
     public class EmitterContainer {
@@ -73,12 +75,12 @@ public class ParticleManager extends Manager implements TickableManager {
 
             e.emitter.onTick(deltaTime, particlePool);
 
-            if (e.maxLifeTime != 0.0f) {
+            if (!compareFloat(e.maxLifeTime, 0.0f)) {
                 e.currentLifeTime += deltaTime;
             }
 
             // If exceeded max (don't do anything if lifetime is set to unlimited)
-            if (e.toRemove || (e.currentLifeTime >= e.maxLifeTime && e.maxLifeTime != 0)) {
+            if (e.toRemove || (e.currentLifeTime >= e.maxLifeTime && !compareFloat(e.maxLifeTime, 0))) {
                 e.toRemove = true;
                 if (!e.emitter.hasParticles()) {
                     emitterIterator.remove();

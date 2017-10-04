@@ -104,4 +104,12 @@ public class AbstractEntityTest {
 		assertFalse(original.equals(imposter));
 		assertFalse(imposter.equals(original));
 	}
+	@Test
+	public void getTest() {
+		TestableAbstractEntity original = new TestableAbstractEntity(1, 2, 3, 4, "texture");
+		original.getXRenderOffset();
+		original.getYRenderOffset();
+		original.getShadow();
+        original.distance(9,9);
+	}
 }
