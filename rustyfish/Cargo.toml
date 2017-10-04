@@ -1,7 +1,11 @@
 [package]
 name = "rustyfish"
-crate-type = ["dylib"]
 version = "0.1.0"
 authors = ["Tom Richardson <tgrkzus@gmail.com>"]
+
+[lib]
+name = "rustyfish"
+path = "src/lib.rs"
+crate-type = ["dylib"]
 
 [dependencies]

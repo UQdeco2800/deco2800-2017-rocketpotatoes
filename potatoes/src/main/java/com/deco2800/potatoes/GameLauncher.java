@@ -18,7 +18,7 @@ public class GameLauncher {
 	/**
 	 * Main function for the game
 	 * 
-	 * @param arg
+	 * @param args
 	 *            Command line arguments (we wont use these)
 	 */
 	public static void main(String[] args) {
