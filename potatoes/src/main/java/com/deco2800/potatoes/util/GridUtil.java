@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.util;
 
+import com.deco2800.potatoes.worlds.terrain.Terrain;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -321,8 +323,19 @@ public class GridUtil {
 			for (int j = 0; j < heightmap[i].length; j++) {
 				Color color = new Color(heightmap[i][j], heightmap[i][j], heightmap[i][j]);
 				image.setRGB(i, j, color.getRGB());
+				// Current terrain choosing
+				Terrain spot;
+				if (height < 0.4 || water < 0.7) {
+					spot = getTerrain().getWater();
+				} else if (height < 0.5 || water < 0.8) {
+					spot = getTerrain().getRock();
+				} else {
+					spot = grass < 0.6 ? getTerrain().getGrass() : getTerrain().getRock();
+				}
+				return spot;
 			}
 		}
 		ImageIO.write(image, "png", new File("random_image.png"));
+
 	}
 }
