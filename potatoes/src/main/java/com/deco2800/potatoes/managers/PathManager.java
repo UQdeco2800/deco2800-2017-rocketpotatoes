@@ -98,7 +98,7 @@ public class PathManager extends Manager implements ForWorld {
         // Check if this line has a clear path.
         if (!collides(line)) {
             // line is not obstructed.
-            path.add(replaceStart);
+            //path.add(replaceStart);
             path.add(replaceGoal);
             return new Path(path);
         }
@@ -109,13 +109,7 @@ public class PathManager extends Manager implements ForWorld {
         // build the minimum spanning tree from the graph - and set the spanningTree variable
         spanningTree = treeMaker.createTree(replaceGoal, replaceStart);
         // Add the starting point to the path.
-        path.addLast(replaceStart);
-        // If the spanning tree has only two entries
-        // return a new path with the start and end point.
-        if (spanningTree.size() < 2) {
-            path.add(replaceGoal);
-            return new Path(path);
-        }
+
         // Add extra path points as needed.
         // Set next as the value returned from start as
         // the key to spanningTree.
