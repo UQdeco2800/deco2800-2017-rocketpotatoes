@@ -125,10 +125,14 @@ public class PauseMenuGui extends Gui {
 
     private void setupListeners() {
 
+    		/* Listener for the ESC key. If not paused, pause, else unpause. */
         GameManager.get().getManager(InputManager.class).addKeyDownListener(keycode -> {
-            if (keycode == Input.Keys.ESCAPE) {
+            if (keycode == Input.Keys.ESCAPE && state != States.PAUSE) {
                 GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
                 toggle();
+            } else {
+            		screen.menuBlipSound();
+            		hide();
             }
         });
 
