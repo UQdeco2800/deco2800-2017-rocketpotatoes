@@ -166,6 +166,7 @@ public class PauseMenuGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
                 screen.exitToMenu();
+				GameManager.get().setPaused(false);
             }
         });
 
