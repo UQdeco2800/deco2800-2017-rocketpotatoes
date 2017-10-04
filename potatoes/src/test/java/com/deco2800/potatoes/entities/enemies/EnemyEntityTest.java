@@ -2,12 +2,7 @@ package com.deco2800.potatoes.entities.enemies;
 
 
 
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
-
-
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.collisions.Box2D;
-import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -63,7 +58,7 @@ public class EnemyEntityTest extends BaseTest {
 
     @Test
     public void emptyConstructor() {
-        assertEquals(null, squirrelEmpty.getEnemyDirection());
+        assertEquals(null, squirrelEmpty.getFacing());
     }
 
     @Test

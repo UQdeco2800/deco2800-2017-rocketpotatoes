@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
@@ -26,26 +27,27 @@ public class Wizard extends Player {
 
     public Wizard(float posX, float posY) {
         super(posX, posY);
-        this.movementSpeed = 0.09f;
-        this.currentDirection = Direction.SouthEast;
-        this.currentState = PlayerState.idle;
+        super.setMoveSpeed(0.09f);
+        this.facing = Direction.SE;
+        this.state = IDLE;
         //this.currentAnimation = ;
     }
 
-    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", PlayerState.idle, 1, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", PlayerState.damaged, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", IDLE, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
 
     private Void completionHandler() {
-        clearState();
-        updateSprites();
+        // Re-enable walking
+        super.state = IDLE;
+        super.updateMovingAndFacing();
         return null;
     }
 
     private Void damagedCompletionHandler() {
         GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-        clearState();
-        updateSprites();
+        super.state = IDLE;
+        super.updateMovingAndFacing();
         return null;
     }
 
@@ -53,25 +55,25 @@ public class Wizard extends Player {
     public void updateSprites() {
         super.updateSprites();
         switch (this.getState()) {
-            case idle:
-                this.setAnimation(wizardIdleAnimations.get(this.getDirection()));
+            case IDLE:
+                super.setAnimation(wizardIdleAnimations.get(super.facing));
                 break;
-            case damaged:
-                this.setAnimation(wizardDamagedAnimations.get(this.getDirection()));
+            case DAMAGED:
+                super.setAnimation(wizardDamagedAnimations.get(super.facing));
                 break;
-            case attack:
-                this.setAnimation(wizardAttackAnimations.get(this.getDirection()));
+            case ATTACK:
+                super.setAnimation(wizardAttackAnimations.get(super.facing));
                 break;
             default:
-                this.setAnimation(wizardIdleAnimations.get(this.getDirection()));
+                super.setAnimation(wizardIdleAnimations.get(super.facing));
                 break;
         }
     }
 
     @Override
     public void attack() {
-        // Archer attack
-        if (this.setState(PlayerState.attack)) {
+    		super.attack();
+        if (this.setState(ATTACK)) {
 
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
@@ -86,30 +88,30 @@ public class Wizard extends Player {
                 float targetPosX = target.get().getPosX();
                 float targetPosY = target.get().getPosY();
 
-                switch (this.getDirection()) {
-                    case North:
+                switch (super.facing) {
+                    case N:
                         break;
-                    case NorthEast:
+                    case NE:
                         pPosY -= 1;
                         pPosX += 1.5;
                         break;
-                    case East:
+                    case E:
                         pPosY -= 1;
                         pPosX += 1.5;
                         break;
-                    case SouthEast:
+                    case SE:
                         pPosX += 1;
                         break;
-                    case South:
+                    case S:
                         pPosX += 1.2;
                         break;
-                    case SouthWest:
+                    case SW:
                         pPosY += 1;
                         pPosX += 1;
                         break;
-                    case West:
+                    case W:
                         break;
-                    case NorthWest:
+                    case NW:
                         break;
                     default:
                         break;
@@ -119,10 +121,8 @@ public class Wizard extends Player {
                 Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
                 GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET, null, null,
-                        this.getDirection().toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
+                        super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
 
-            } else if (!target.isPresent()) {
-                //Disable shooting when no enemies is present until new fix is found.
             }
         }
     }
@@ -130,7 +130,7 @@ public class Wizard extends Player {
     @Override
     public void interact() {
         super.interact();
-        if (this.setState(PlayerState.interact)) {
+        if (this.setState(INTERACT)) {
             // Wizard interacts
             GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
         }

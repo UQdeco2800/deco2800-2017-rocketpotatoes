@@ -4,10 +4,14 @@ import java.util.*;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
+
 
 /**
  * Object to manage methods for creating a minimum spanning tree.
  */
+
+
 
 public class MinimumSpanningTree {
     /**
@@ -102,7 +106,7 @@ public class MinimumSpanningTree {
             if (o1.equals(o2)) {
                 return 0;
             }
-            if (o1.getLeastEdge() == o2.getLeastEdge()) {
+            if (compareFloat(o1.getLeastEdge(), o2.getLeastEdge())) {
                 return o1.getAddress() < o2.getAddress() ? -1 : 1;
             }
             return o1.getLeastEdge() < o2.getLeastEdge() ? -1 : 1;
@@ -274,7 +278,7 @@ public class MinimumSpanningTree {
         boolean output = false;
 
         for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-            if (e.isStaticCollideable() && 0 > e.getMask().distance(line.getEndPointOne().getX(),
+            if (e.isStatic() && 0 > e.getMask().distance(line.getEndPointOne().getX(),
                         line.getEndPointOne().getY(), line.getEndPointTwo().getX(), line.getEndPointTwo().getY())) {
                 output = true;
                 break;

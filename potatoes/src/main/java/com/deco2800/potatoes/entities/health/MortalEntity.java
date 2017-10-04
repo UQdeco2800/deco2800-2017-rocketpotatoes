@@ -3,10 +3,11 @@
  */
 package com.deco2800.potatoes.entities.health;
 
+import com.deco2800.potatoes.entities.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.GoalPotate;
@@ -29,6 +30,10 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
 	private boolean dying = false;
+	//TODO use states like the player does
+	protected Direction facing; 		// The direction the entity is facing
+
+
 
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
@@ -77,8 +82,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yLength
 	 *            The length of the entity, in y. Used in collision detection.
-	 * @param zLength
-	 *            The length of the entity, in z. Used in collision detection.
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -106,15 +109,13 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
 	 *            The length of the entity, in y. Used in collision detection.
-	 * @param centered
-	 *            True if the entity is to be rendered centered, false otherwise.
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
-	 */
-    public MortalEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture,
-            float maxHealth) {
+	 */ //TODO max health probably shouldn't be set here
+    public MortalEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture,
+						float maxHealth) {
 
         super(mask, xRenderLength, yRenderLength, texture);
 		this.maxHealth = maxHealth;
@@ -148,7 +149,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	@Override
 	public float addMaxHealth(float offset) {
 		this.maxHealth += offset;
-		if (maxHealth <= 0 ) { maxHealth = 1; }
+		if (maxHealth <= 0 )
+			maxHealth = 1;
 		return this.maxHealth;
 	}
 
@@ -246,6 +248,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
+		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		if (this instanceof GoalPotate){
 			GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
 		}
@@ -292,7 +295,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	/**
 	 * Alters the scale of damage dealt to the entity
-	 * @param amount - the decimal coefficient to scale damage to the entity by
 	 * @return current value of damage scaling
 	 */
 	@Override
@@ -303,7 +305,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	/**
 	 * Alters the scale of damage dealt to the entity
-	 * @param amount - the decimal coefficient to cancel scaling by
 	 * @return current value of damage scaling
 	 */
 	@Override
@@ -334,8 +335,10 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	@Override
 	public void onTick(long time) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
+    public Direction getFacing() {
+        return this.facing;
+    }
 }

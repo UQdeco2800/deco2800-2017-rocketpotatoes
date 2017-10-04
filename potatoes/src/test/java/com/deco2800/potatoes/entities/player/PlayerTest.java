@@ -1,20 +1,16 @@
 package com.deco2800.potatoes.entities.player;
 
-import com.deco2800.potatoes.entities.HasDirection.Direction;
-import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,17 +56,33 @@ public class PlayerTest {
 	 */
 	@Test
 	public void directionTest() {
-		player.getDirection(); // Test getting the direction
+		player.getFacing(); // Test getting the direction
 		
-		player.setPosition(0, 0); 	// Set the player to the origin
-		player.onTick(tick++); 			// Tick the player
-        player.setPosition(10, 10); 	// Move the player in East Direction
-        player.onTick(tick++);
-        assertTrue(player.getDirection().equals(Direction.East));
-        
-        player.setPosition(15, 5); 	// Move the player in North Direction
-        player.onTick(tick++); 
-        assertTrue(player.getDirection().equals(Direction.North));
+		player.setPosition(0, 0); 				// Set the player to the origin
+
+		player.handleKeyDown(Input.Keys.D);					// Tell the player the D key is pressed
+        assertTrue(player.getFacing().equals(Direction.E)); // The player should be moving screen East
+
+		player.handleKeyDown(Input.Keys.W);
+        assertTrue(player.getFacing().equals(Direction.NE));
+
+		player.handleKeyUp(Input.Keys.D);
+		assertTrue(player.getFacing().equals(Direction.N));
+
+		player.handleKeyDown(Input.Keys.A);
+		assertTrue(player.getFacing().equals(Direction.NW));
+
+		player.handleKeyUp(Input.Keys.W);
+		assertTrue(player.getFacing().equals(Direction.W));
+
+		player.handleKeyDown(Input.Keys.S);
+		assertTrue(player.getFacing().equals(Direction.SW));
+
+		player.handleKeyUp(Input.Keys.A);
+		assertTrue(player.getFacing().equals(Direction.S));
+
+		player.handleKeyDown(Input.Keys.D);
+		assertTrue(player.getFacing().equals(Direction.SE));
 	}
 	
 	/**
@@ -79,33 +91,69 @@ public class PlayerTest {
 	@Test
 	public void stateTest() {
 		// Test to see if in idle by default
-		assertTrue(player.getState() == PlayerState.idle);
+		assertTrue(player.getState() == PlayerState.IDLE);
 		
 		// Tick the player changing position to test if state changes to walk
-		player.setPosition(0, 0);
-		player.onTick(tick++); 		
-        player.setPosition(10, 10);
-        player.onTick(tick++);
-        assertTrue(player.getState() == PlayerState.walk);
+		player.handleKeyDown(Input.Keys.D);					// Tell the player the D key is pressed
+        assertTrue(player.getState() == PlayerState.WALK);
         
         // Tick player to test if it returns to idle after standing still
-        player.onTick(tick++);
-        assertTrue(player.getState() == PlayerState.idle);
+		player.handleKeyUp(Input.Keys.D);					// Tell the player the D key is released
+        assertTrue(player.getState() == PlayerState.IDLE);
 	}
 	
 	/**
-	 * Test handling key presses
+	 * Test handling key presses TODO doesn't actually assert any checks
 	 */
 	@Test
 	public void keysTest(){
+		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.W);
+		player.onTick(2);
+		player.updateSprites();
+		player.handleKeyUp(Input.Keys.P);
 		player.handleKeyUp(Input.Keys.W);
 		player.handleKeyDown(Input.Keys.S);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.S);
 		player.handleKeyDown(Input.Keys.A);
+		player.onTick(2);
+		player.updateSprites();
 		player.handleKeyUp(Input.Keys.A);
 		player.handleKeyDown(Input.Keys.D);
-		player.handleKeyUp(Input.Keys.D);
+		player.onTick(2);
+		player.updateSprites();
+        player.handleKeyUp(Input.Keys.D);
+
+        player.handleKeyDown(Input.Keys.A);
+        player.handleKeyDown(Input.Keys.W);
+        player.onTick(2);
+        player.updateSprites();
+        player.handleKeyUp(Input.Keys.W);
+        player.handleKeyUp(Input.Keys.A);
+
+        player.handleKeyDown(Input.Keys.A);
+        player.handleKeyDown(Input.Keys.S);
+        player.onTick(2);
+        player.updateSprites();
+        player.handleKeyUp(Input.Keys.A);
+        player.handleKeyUp(Input.Keys.S);
+
+        player.handleKeyDown(Input.Keys.W);
+        player.handleKeyDown(Input.Keys.D);
+        player.onTick(2);
+        player.updateSprites();
+        player.handleKeyUp(Input.Keys.D);
+        player.handleKeyUp(Input.Keys.W);
+
+        player.handleKeyDown(Input.Keys.S);
+        player.handleKeyDown(Input.Keys.D);
+        player.onTick(2);
+        player.updateSprites();
+        player.handleKeyUp(Input.Keys.D);
+        player.handleKeyUp(Input.Keys.S);
+
 		player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.SPACE);
         player.handleKeyDown(Input.Keys.SPACE);
@@ -113,6 +161,8 @@ public class PlayerTest {
         player.handleKeyDown(Input.Keys.F);
         player.handleKeyDown(Input.Keys.T);
         player.handleKeyDown(Input.Keys.R);
+		player.handleKeyDown(Input.Keys.SHIFT_LEFT);
+		player.handleKeyUp(Input.Keys.SHIFT_LEFT);
 	}
 
 	/**
@@ -122,15 +172,7 @@ public class PlayerTest {
 	public void stringTest() {
 		player.toString();
 		player.getProgressBar();
+        player.getTexture();
 	}
-	
-	/**
-	 * Test updating the player
-	 */
-    @Test
-    public void updateTest() {
-        player.updateSprites();
-        player.onTick(2);
-    }
 
 }

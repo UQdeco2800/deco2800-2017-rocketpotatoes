@@ -63,7 +63,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		originX = screenX;
 		originY = screenY;
 
-		Vector3 worldCoords = Render3D.screenToWorldCoordiates(screenX, screenY, 0);
+		Vector3 worldCoords = Render3D.screenToWorldCoordiates(screenX, screenY);
 		handleMouseClick(worldCoords.x, worldCoords.y, button);
 		
 	}

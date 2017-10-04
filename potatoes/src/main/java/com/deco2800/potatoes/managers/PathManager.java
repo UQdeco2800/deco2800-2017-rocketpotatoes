@@ -1,6 +1,6 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.Line;
@@ -86,7 +86,7 @@ public class PathManager extends Manager implements ForWorld {
      * @param goal  The goal of the entity - where the path is going to end.
      * @return The path object itself, which can then be followed.
      */
-    public Path generatePath(CollisionMask start, CollisionMask goal) {
+    public Path generatePath(Shape2D start, Shape2D goal) {
 
         Point2D replaceStart = new Point2D(start.getX(), start.getY());
         Point2D replaceGoal = new Point2D(goal.getX(), goal.getY());
@@ -126,7 +126,7 @@ public class PathManager extends Manager implements ForWorld {
         boolean output = false;
 
         for (AbstractEntity e : GameManager.get().getWorld().getEntities().values()) {
-            if (e.isStaticCollideable() &&
+            if (e.isStatic() &&
                     0 > e.getMask().distance(line.getEndPointOne().getX(), line.getEndPointOne().getY(), 
                         line.getEndPointTwo().getX(), line.getEndPointTwo().getY())) {
                 output = true;

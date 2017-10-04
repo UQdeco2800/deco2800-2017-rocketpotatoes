@@ -1,9 +1,30 @@
 package com.deco2800.potatoes.collisions;
 
-public class Point2D implements CollisionMask{
-    
-    private float x;
-    private float y;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.managers.CameraManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.renderering.Render3D;
+
+import java.util.Objects;
+
+/**
+ * A point class that implements Shape2D.
+ * Can be used to check distance or overlaps with other Shape2D's.
+ * Can render to isometric view. TODO
+ * Being used by AbstractEntity & descendents for collision
+ *          & by PathManger to represent points in a path
+ *
+ * @author Tazman_Schmidt
+ */
+public class Point2D extends Shape2D {
+
+    private static final String textureStr = "POINT_HIGHLIGHT";
 
     /**
      * Default constructor for the purposes of serialization.
@@ -31,8 +52,13 @@ public class Point2D implements CollisionMask{
      * @return A copy of the current Point2D
      */
     @Override
-    public CollisionMask copy() {
+    public Point2D copy() {
         return new Point2D(x, y);
+    }
+
+    @Override
+    public float getArea() {
+        return 0;
     }
 
     /**
@@ -44,7 +70,7 @@ public class Point2D implements CollisionMask{
      * @return True iff the collision masks are overlapping.
      */
     @Override
-    public boolean overlaps(CollisionMask other) {
+    public boolean overlaps(Shape2D other) {
         if (other instanceof Point2D) {
             return this.equals(other);
         } else {
@@ -60,7 +86,7 @@ public class Point2D implements CollisionMask{
      * @return  The distance. If the collision masks overlap, a negative number is returned.
      */
     @Override
-    public float distance(CollisionMask other) {
+    public float distance(Shape2D other) {
         if (other instanceof Point2D) {
             Point2D point = (Point2D) other;
 
@@ -99,49 +125,45 @@ public class Point2D implements CollisionMask{
         return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
     }
 
-
     /**
-     * Returns the x coordinate at the centre of the mask.
-     *
-     * @return Returns the x coordinate.
+     * Renders an X using this shape using an current shapeRenderer
+     * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
      */
     @Override
-    public float getX() { return this.x; }
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
+
+        //calculate orthagonal corners of box
+        Vector2 screenWorldCoords = Render3D.worldToScreenCoordinates(x , y, 0);
+        Vector3 v = camera.project(new Vector3(screenWorldCoords.x, screenWorldCoords.y, 0));
+
+        //render ellipse
+        float rt2 = (float) Math.sqrt(2);
+        float size = 5;     //TODO test these vals
+        float width = 3;
+                                //x1, y1, x2, y2, width
+        shapeRenderer.rectLine(v.x - size, v.y - size * rt2, v.x + size, v.y + size * rt2, width);
+        shapeRenderer.rectLine(v.x - size, v.y + size * rt2, v.x + size, v.y - size * rt2, width);
+    }
 
     /**
-     * Sets the x coordiante at the centre of the mask.
-     *
-     * @param x The new x coordinate.
+     * Renders an X image where this shape is, in the isometric game view
+     * @param batch Batch to render outline image onto
      */
     @Override
-    public void setX(float x) { this.x = x; }
+    public void renderHighlight(SpriteBatch batch) {
 
-    /**
-     * Returns the y coordinate at the centre of the mask.
-     *
-     * @return Returns the y coordinate.
-     */
-    @Override
-    public float getY() { return this.y; }
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
 
-    /**
-     * Sets the y coordinate at the centre of the mask.
-     *
-     * @param y The new y coordinate.
-     */
-    @Override
-    public void setY(float y) { this.y = y; }
+        Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
+
+        batch.draw(textureHighlight,  isoPosition.x, isoPosition.y);
+    }
+
 
     @Override
     public int hashCode() {
-        // Start with a non-zero constant prime
-        int result = 17;
-
-        // Include a hash for each field.
-        result = 31 * result + Float.floatToIntBits(this.x);
-        result = 31 * result + Float.floatToIntBits(this.y);
-
-        return result;
+        return Objects.hash(x, y);
     }
 
     @Override

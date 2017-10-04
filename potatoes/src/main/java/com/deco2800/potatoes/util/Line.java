@@ -2,6 +2,7 @@ package com.deco2800.potatoes.util;
 
 import java.util.Objects;
 
+import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -13,6 +14,8 @@ import com.deco2800.potatoes.collisions.Point2D;
  * Made up of 2 nested point classes.
  */
 public class Line {
+
+    //TODO integrate with Shape2D
 
     //-------------------- Nested Point class ---------------
 
@@ -126,7 +129,7 @@ public class Line {
 
         float val = (q.getY() - p.getY()) * (r.getX() - q.getX()) - (q.getX() - p.getX()) * (r.getY() - q.getY());
 
-        if (val == 0) {
+        if (compareFloat(val, 0)) {
             return 0;  // colinear
         }
 
@@ -191,11 +194,6 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(endPointOne.x, endPointOne.y, endPointTwo.x, endPointTwo.y);
-    }
-
-    private boolean compareFloat(float a, float b) {
-        float delta = 0.00001f;
-        return Math.abs(a-b) < delta;
     }
 
     @Override

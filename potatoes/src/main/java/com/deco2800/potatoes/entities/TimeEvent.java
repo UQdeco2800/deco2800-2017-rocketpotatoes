@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.entities;
 
+import java.util.function.Consumer;
+
 /**
  * Represents an event that happens after a certain amount of time e.g. firing a
  * projectile when an amount of time has passed
@@ -10,6 +12,24 @@ public abstract class TimeEvent<T> {
 	private long progress = 0;
 	private boolean doReset = false;
 	private int resetAmount = 0;
+
+	public static <T> TimeEvent<T> createWithSimpleAction(int resetAmount, boolean doReset, Action action) {
+		return createWithFunction(resetAmount, doReset, action == null ? null : x -> action.run());
+	}
+
+	public static <T> TimeEvent<T> createWithFunction(int resetAmount, boolean doReset, Consumer<T> action) {
+		Consumer<T> actionOrNothing = action == null ? x -> {return;} : action;
+		TimeEvent<T> result =  new TimeEvent<T>() {
+			@Override
+			public void action(T param) {
+				action.accept(param);
+			}
+		};
+		result.setDoReset(doReset);
+		result.setResetAmount(resetAmount);
+		result.reset();
+		return result;
+	}
 
 	/**
 	 * Default constructor for serialization

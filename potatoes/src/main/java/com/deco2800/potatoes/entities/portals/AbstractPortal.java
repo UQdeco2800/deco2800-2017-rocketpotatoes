@@ -5,8 +5,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.CollisionMask;
-import com.deco2800.potatoes.collisions.UncenteredCircle2D;
+import com.deco2800.potatoes.collisions.Shape2D;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.player.Player;
@@ -60,7 +60,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
     }
 
     public AbstractPortal(float posX, float posY, String texture, float maxHealth) {
-        super(new UncenteredCircle2D(posX, posY, 2.11f), 3, 3, texture, maxHealth);
+        super(new Circle2D(posX, posY, 2.11f), 3, 3, texture, maxHealth);
     }
 
     /**
@@ -74,7 +74,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
         float yPos = getPosY();
         boolean collided = false;
 
-        CollisionMask newPos = getMask();
+        Shape2D newPos = getMask();
         newPos.setX(xPos);
         newPos.setY(yPos);
 

@@ -4,9 +4,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,7 +34,6 @@ import com.deco2800.potatoes.renderering.Renderer;
 
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
-import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
 import java.util.Map;
@@ -70,10 +66,7 @@ public class GameScreen implements Screen {
 	private WaveManager waveManager;
 
 	private long lastGameTick = 0;
-	private boolean playing = true;
 	private double tickrate = 10;
-	// Would be nice to move this somewhere else
-	private TiledDrawable background;
 
 	private int maxShopRange;
 	/**
@@ -130,10 +123,7 @@ public class GameScreen implements Screen {
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
 		textureManager = GameManager.get().getManager(TextureManager.class);
-		
-		// Creates the object for the repeated background texture
-		// TODO this will need to be changed once proper texture is added
-		background = new TiledDrawable(textureManager.getTextureRegion("water_tile_1"));
+
 		/**
 		 * Setup managers etc.
 		 */
@@ -215,6 +205,10 @@ public class GameScreen implements Screen {
 
         // Sets the world to the initial world, forest world
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+		// Creates the object for the repeated background texture
+		// TODO this will need to be changed once proper texture is added
+		GameManager.get().getManager(WorldManager.class).setBackground(new TiledDrawable(textureManager
+				.getTextureRegion("water_tile_1")));
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -269,11 +263,11 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new ProjectileTree(8, 8));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
+			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
+			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add an enemy gate to game world
-			GameManager.get().getWorld().addEntity(new EnemyGate(24,24));
+			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
 			//add enemy waves
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
@@ -296,7 +290,7 @@ public class GameScreen implements Screen {
 			 */
 
 				// Make our player
-				playerManager.setPlayer(5, 10);
+				playerManager.setPlayer(5.5f, 10.5f);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
@@ -304,10 +298,10 @@ public class GameScreen implements Screen {
 	}
 
 	private void addDamageTree() {
-		GameManager.get().getWorld().addEntity(new DamageTree(16, 11));
-		GameManager.get().getWorld().addEntity(new DamageTree(14, 11, new AcornTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15, 11, new IceTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(13, 11, new FireTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
+		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));
 	}
 
 	private void initialiseResources() {
@@ -333,27 +327,27 @@ public class GameScreen implements Screen {
 
 
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 20, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 18, foodResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10, 16, woodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 20.5f, seedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 16.5f, woodResource));
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 20, tumbleweedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 18, cactusThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9, 16, pricklyPearResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 20.5f, tumbleweedResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 18.5f, cactusThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 16.5f, pricklyPearResource));
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 20, snowBallResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 18, sealSkinResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8, 16, iceCrystalResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 20, coalResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 18, bonesThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7, 16, obsidianResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 20.5f, snowBallResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 18.5f, sealSkinResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 16.5f, iceCrystalResource));
 
 
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 20, fishMeatResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 18, pearlResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6, 16, treasureResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 20.5f, coalResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 18.5f, bonesThornResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 16.5f, obsidianResource));
+
+
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 20.5f, fishMeatResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 18.5f, pearlResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 16.5f, treasureResource));
 
 
 
@@ -361,9 +355,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(14, 17, 100));
-
-
+		GameManager.get().getWorld().addEntity(new BasePortal(14.5f, 17.5f, 100));
 	}
 
 	private void tickGame(long timeDelta) {
@@ -481,68 +473,6 @@ public class GameScreen implements Screen {
 
 	}
 
-	private void renderGame(SpriteBatch batch) {
-		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-		
-		/* Render the tiles first */
-		BatchTiledMapRenderer tileRenderer = renderer.getTileRenderer(batch);
-		tileRenderer.setView(cameraManager.getCamera());
-
-		batch.setColor(GameManager.get().getManager(GameTimeManager.class).getColour());
-
-		batch.begin();
-		// within the screen, but down rounded to the nearest tile
-		Vector2 waterCoords = new Vector2(
-				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
-				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
-		// draw with screen corner and width a little bit more than the screen
-		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer.getViewBounds().width + tileWidth * 4,
-				tileRenderer.getViewBounds().height + tileHeight * 4);
-		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
-				tileRenderer.getViewBounds().width + tileWidth * 4,
-				tileRenderer.getViewBounds().height + tileHeight * 4);
-		batch.end();
-
-		tileRenderer.render();
-
-		/* Draw highlight on current tile we have selected */
-		batch.begin();
-		// Convert our mouse coordinates to world, where we then convert them to a tile
-		// [x, y], then back to screen
-
-		Vector3 coords = Render3D.screenToWorldCoordiates(inputManager.getMouseX(), inputManager.getMouseY(), 0);
-		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
-
-		float tileX = (int) Math.floor(tileCoords.x);
-		float tileY = (int) Math.floor(tileCoords.y);
-
-		Vector2 realCoords = Render3D.worldToScreenCoordinates(tileX, tileY, 0);
-		
-		float distance = playerManager.distanceFromPlayer(tileX,tileY);
-		Terrain terrain = GameManager.get().getWorld().getTerrain((int)tileX, (int)tileY);
-		TreeShopGui treeShopGui = GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class);
-		treeShopGui.setPlantable(distance < maxShopRange && terrain.isPlantable() && !terrain.getTexture().equals("void"));
-		if (terrain.getTexture().equals("void")) {
-			// Do nothing
-		} else if (treeShopGui.getPlantable())
-			batch.draw(textureManager.getTexture("highlight_tile"), realCoords.x, realCoords.y);
-		else 
-			batch.draw(textureManager.getTexture("highlight_tile_invalid"), realCoords.x, realCoords.y);
-			
-		
-		batch.end();
-
-		// Render entities etc.
-		renderer.render(batch);
-
-
-		// TODO: add render for projectile's separately
-		GameManager.get().getManager(ParticleManager.class).draw(batch);
-		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
-		
-	}
-
 	/**
 	 * Renderer thread Must update all displayed elements using a Renderer
 	 */
@@ -550,14 +480,13 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		/**
 		 * We only tick/render the game if we're actually playing. Lets us seperate main
-		 * menu and such from the game TODO We may lose/gain a tick or part of a tick
-		 * when we pause/unpause?
+		 * menu and such from the game
 		 */
 		/*
 		 * Tickrate = 100Hz
 		 */
 
-		if (playing) {
+		if (!GameManager.get().isPaused()) {
 			// Stop the first tick lasting years
 			if (lastGameTick != 0) {
 				long timeDelta = TimeUtils.millis() - lastGameTick;
@@ -570,6 +499,8 @@ public class GameScreen implements Screen {
 			} else {
 				lastGameTick = TimeUtils.millis();
 			}
+		} else {
+			lastGameTick = 0;
 		}
 
 		/*
@@ -595,10 +526,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// TODO way to render game so it appears paused (could just be a flag)
-		if (playing) {
-			renderGame(batch);
-		}
+			renderer.render(batch);
 
 		updateWaveGUI();
 		updateRespawnGUI();

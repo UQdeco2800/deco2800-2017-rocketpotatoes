@@ -24,13 +24,11 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
  */
 public class WorldType {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorldType.class);
-	private static final boolean FLOOD_CHECK = false;
-	private static final boolean PORTAL_CHECK = true;
-	
+
 	private static final String GROUND = "mud_tile_1";
 	private static final String WATER = "water_tile_1";
 	private static final String GRASS = "grass_tile_1";
-	private static final Point PORTAL_POS = new Point(5, 5);
+	private static final Point PORTAL_POS = new Point(10, 10);
 	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
 			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("forest"));
 	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 0.5f, true),
@@ -68,10 +66,7 @@ public class WorldType {
 		// portal and surrounding
 		for (int x = PORTAL_POS.x - 2; x < PORTAL_POS.x + 2; x++) {
 			for (int y = PORTAL_POS.y - 2; y < PORTAL_POS.y + 2; y++) {
-				// Very slow right now, portal is too close to the edge
-				if (PORTAL_CHECK) {
-					clearPoints.add(new Point(x, y));
-				}
+				clearPoints.add(new Point(x, y));
 			}
 		}
 		return clearPoints;
@@ -134,17 +129,15 @@ public class WorldType {
 
 	private boolean checkValidLand(int worldSize, Terrain[][] terrainSet) {
 		boolean validLand = true;
+		Set<Point> filled = new HashSet<>();
+		GridUtil.genericFloodFill(clearSpots.get(0), floodFillCheck(worldSize, terrainSet), new HashSet<>(), filled);
 		for (Point point : clearSpots) {
 			// Positions on the map have x and y swapped
 			point = new Point(point.y, point.x);
-			if (FLOOD_CHECK) {
-				// Currently broken
-				Set<Point> filled = new HashSet<>();
-				GridUtil.genericFloodFill(point, floodFillCheck(worldSize, terrainSet), new HashSet<>(), filled);
-				if (landAmount * worldSize * worldSize > filled.size()) {
-					validLand = false;
-				}
-			} else if(terrainSet[point.x][point.y].getMoveScale() < 0.01) {
+			if (!filled.contains(point)) {
+				validLand = false;
+			}
+			if (landAmount * worldSize * worldSize > filled.size()) {
 				validLand = false;
 			}
 		}
@@ -158,12 +151,12 @@ public class WorldType {
 
 	private Terrain chooseTerrain(float water, float height, float grass) {
 		Terrain spot;
-		if (height < 0.3 || water < 0.4) {
+		if (height < 0.4 || water < 0.7) {
 			spot = getTerrain().getWater();
-		} else if (height < 0.35 || water < 0.5) {
+		} else if (height < 0.5 || water < 0.8) {
 			spot = getTerrain().getRock();
 		} else {
-			spot = grass < 0.5 ? getTerrain().getGrass() : getTerrain().getRock();
+			spot = grass < 0.6 ? getTerrain().getGrass() : getTerrain().getRock();
 		}
 		return spot;
 	}
