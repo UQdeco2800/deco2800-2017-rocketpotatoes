@@ -199,6 +199,9 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
+		
+		// Make our TutorialGui
+		guiManager.addGui(new TutorialGui(guiManager.getStage(), this));
         
 		/* Setup inputs */
 		setupInputHandling();
@@ -295,6 +298,9 @@ public class GameScreen implements Screen {
 			}
 			GameManager.get().getManager(ParticleManager.class);
 		}
+		
+		//show the tutorial menu
+		guiManager.getGui(TutorialGui.class).show();
 	}
 
 	private void addDamageTree() {
