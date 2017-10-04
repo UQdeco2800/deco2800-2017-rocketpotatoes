@@ -1,14 +1,10 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.ArrayList;
-
 public class ProgressBarManager extends Manager {
 	private boolean showPlayerProgress = true;
 	private boolean showPotatoProgress = true;
 	private boolean showAlliesProgress = true;
 	private boolean showEnemyProgress = true;
-
-	private ArrayList<Boolean> progressValues = new ArrayList<>();
 
 	public void togglePlayerProgress() {
 		showPlayerProgress = !showPlayerProgress;
@@ -22,18 +18,24 @@ public class ProgressBarManager extends Manager {
 		showAlliesProgress = !showAlliesProgress;
 	}
 
-	public void toggleEnemyProgress() {
+	public void toggleEnemiesProgress() {
 		showEnemyProgress = !showEnemyProgress;
 	}
 
-	public ArrayList<Boolean> getProgressValues() {
-		progressValues.clear();
-		progressValues.add(showPlayerProgress);
-		progressValues.add(showPotatoProgress);
-		progressValues.add(showAlliesProgress);
-		progressValues.add(showEnemyProgress);
+	public boolean showPlayerProgress() {
+		return showPlayerProgress;
+	}
 
-		return new ArrayList<>(progressValues);
+	public boolean showPotatoProgress() {
+		return showPotatoProgress;
+	}
+
+	public boolean showAlliesProgress() {
+		return showAlliesProgress;
+	}
+
+	public boolean showEnemiesProgress() {
+		return showEnemyProgress;
 	}
 
 }

@@ -34,7 +34,6 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
@@ -328,9 +327,7 @@ public class Render3D implements Renderer {
 	/**
 	 * Renders progress bars above entities */
 	private void renderProgressBars() {
-		// progress bar toggle values [player, potato, allies, enemies]
-		ArrayList<Boolean> progressValues = GameManager.get().getManager(ProgressBarManager.class).getProgressValues();
-
+		ProgressBarManager progressValues = GameManager.get().getManager(ProgressBarManager.class);
 		Color currentShade = batch.getColor();
 
 		batch.begin();
@@ -338,22 +335,22 @@ public class Render3D implements Renderer {
 			AbstractEntity e = entity.getKey();
 
 			// Progress Bars for players.
-			if (!progressValues.get(0) && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+			if (!progressValues.showPlayerProgress() && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
 				continue;
 			}
 			// Progress Bar for Goal Potato.
-			if (!progressValues.get(1) && e instanceof GoalPotate) {
+			if (!progressValues.showPotatoProgress() && e instanceof GoalPotate) {
 				continue;
 			}
 			
 			// Progress Bars for allies [Trees, Portals].
-			if (!progressValues.get(2) && !(e instanceof EnemyEntity)
+			if (!progressValues.showAlliesProgress() && !(e instanceof EnemyEntity)
 					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())
 					&& !(e instanceof EnemyGate) && !(e instanceof GoalPotate)) {
 				continue;
 			}
 			// Progress Bars for enemy entities.
-			if (!progressValues.get(3) && (e instanceof EnemyEntity || e instanceof EnemyGate)) {
+			if (!progressValues.showEnemiesProgress() && (e instanceof EnemyEntity || e instanceof EnemyGate)) {
 				continue;
 			}
 			
