@@ -37,3 +37,11 @@ task(run, dependsOn: "classes", type: JavaExec) {
     main = "com.deco2800.potatoes.GameLauncher"
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task rustyfish(type:RustBuild) {
+    group 'rusty'
+    description 'Builds the project as a Rust crate.'
+    release = true
+
+    // When run, this would call "cargo build --release --quiet".
+}
