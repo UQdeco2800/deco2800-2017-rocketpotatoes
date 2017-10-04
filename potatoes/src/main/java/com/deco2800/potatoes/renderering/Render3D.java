@@ -101,7 +101,7 @@ public class Render3D implements Renderer {
 		batch.setColor(Color.WHITE);	// clear shading
 		renderTreeResources();			// rend tree resource count
 		renderMultiplayerName();		// 		mutiplayer names
-		renderProgressBars();			// 		progress bars TODO not centred, offset x by -ve spritewidth?
+		renderProgressBars();			// 		progress bars
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
@@ -358,7 +358,7 @@ public class Render3D implements Renderer {
 					// x co-ordinate,
 					// finds the overlap length of the bar and moves it half as much left
 					float barX = isoPosition.x
-							- tileWidth * e.getXRenderLength() * (progressBar.getWidthScale() - 1) / 2;
+							- tileWidth * e.getXRenderLength() * (progressBar.getWidthScale()) / 2;
 					// y co-ordinate
 					// If height is specified, use it, otherwise estimate the right height
 					float barY = isoPosition.y + entityTexture.getHeight() / aspect * e.getYRenderLength();
