@@ -41,7 +41,7 @@ public class EnemyWave {
     }
 
     // Used for testing when waves not in use
-    
+
     public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength) {
         this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
         this.waveLength = waveLength;

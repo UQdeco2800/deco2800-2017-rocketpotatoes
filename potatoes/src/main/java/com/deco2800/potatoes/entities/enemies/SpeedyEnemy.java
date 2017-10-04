@@ -60,7 +60,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable, HasDirection {
 	 */
 	public SpeedyEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-		SpeedyEnemy.speed = speed;
+		SpeedyEnemy.speed = speed + ((speed*round_number)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
 		// resetStats();
