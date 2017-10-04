@@ -1,8 +1,22 @@
 package com.deco2800.potatoes.util;
 
+import com.deco2800.potatoes.worlds.terrain.Terrain;
+
 import javax.imageio.ImageIO;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.InputVerifier;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -314,15 +328,111 @@ public class GridUtil {
 	 -	 * file to git
 	 -	 */
 	public static void main(String[] args) throws IOException {
-		final int SIZE = 25;
+		final int SIZE = 100;
 		BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_RGB);
-		float[][] heightmap = smoothDiamondSquareAlgorithm(SIZE, 0.4f, 2);
-		for (int i = 0; i < heightmap.length; i++) {
-			for (int j = 0; j < heightmap[i].length; j++) {
-				Color color = new Color(heightmap[i][j], heightmap[i][j], heightmap[i][j]);
+
+		JFrame frame = new JFrame();
+
+		InputVerifier verifer = new InputVerifier() {
+			@Override
+			public boolean verify(JComponent input) {
+				return ((JTextField)input).getText().matches("\\d+(\\.\\d+)?");
+			}
+		};
+
+		JPanel canvas = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.drawImage(image, 100, 5,SIZE * 4, SIZE * 4, null);
+			}
+		};
+
+		JPanel panel = new JPanel();
+
+		JTextField roughnessText = new JTextField();
+		roughnessText.setText("0.5");
+		roughnessText.setInputVerifier(verifer);
+		JTextField iterationsText = new JTextField();
+		iterationsText.setText("2");
+		iterationsText.setInputVerifier(verifer);
+		JTextField heightText = new JTextField();
+		heightText.setText("0.5");
+		heightText.setInputVerifier(verifer);
+		JTextField waterText = new JTextField();
+		waterText.setText("0.5");
+		waterText.setInputVerifier(verifer);
+		JTextField heightDirtEdge = new JTextField();
+		heightDirtEdge.setText("0.5");
+		heightDirtEdge.setInputVerifier(verifer);
+		JTextField waterDirtEdge = new JTextField();
+		waterDirtEdge.setText("0.5");
+		waterDirtEdge.setInputVerifier(verifer);
+		JTextField grassText = new JTextField();
+		grassText.setText("0.5");
+		grassText.setInputVerifier(verifer);
+
+		JButton button = new JButton();
+		button.setText("Go!");
+		button.addActionListener(e -> {
+			getImage(SIZE, image, (float)Double.parseDouble(roughnessText.getText()), (int)Double.parseDouble
+							(iterationsText.getText()),
+					new double[] {Double.parseDouble(heightText.getText()), Double.parseDouble(waterText.getText()),
+							Double.parseDouble(heightDirtEdge.getText()), Double.parseDouble(waterDirtEdge.getText()),
+							Double.parseDouble(grassText.getText())});
+			canvas.repaint();
+		});
+
+		frame.setLayout(new GridLayout(2,1));
+		panel.setLayout(new GridLayout(8,2));
+
+		frame.add(canvas);
+		
+		panel.add(new JLabel("Roughness:"));
+		panel.add(roughnessText);
+		panel.add(new JLabel("Iterations (rounded to integer):"));
+		panel.add(iterationsText);
+		panel.add(new JLabel("Height:"));
+		panel.add(heightText);
+		panel.add(new JLabel("Water:"));
+		panel.add(waterText);
+		panel.add(new JLabel("Height Dirt Edge:"));
+		panel.add(heightDirtEdge);
+		panel.add(new JLabel("Water Dirt Edge:"));
+		panel.add(waterDirtEdge);
+		panel.add(new JLabel("Grass:"));
+		panel.add(grassText);
+		panel.add(button);
+
+		frame.add(panel);
+
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.setSize(1000, 1000);
+	}
+
+	private static void getImage(int SIZE, BufferedImage image, float roughness, int iterations, double[] vals) {
+		float[][] height = smoothDiamondSquareAlgorithm(SIZE, roughness, iterations);
+		float[][] water = smoothDiamondSquareAlgorithm(SIZE, roughness, iterations);
+		float[][] grass = smoothDiamondSquareAlgorithm(SIZE, roughness, iterations);
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				Color color = pickTerrain(height[i][j], water[i][j], grass[i][j], vals);
 				image.setRGB(i, j, color.getRGB());
 			}
 		}
-		ImageIO.write(image, "png", new File("random_image.png"));
+	}
+
+	private static Color pickTerrain(float height, float water, float grass, double[] vals) {
+		// Current terrain choosing
+		Color spot;
+		if (height < vals[0] || water < vals[1]) {
+			spot = Color.BLUE;
+		} else if (height < vals[2] || water < vals[3]) {
+			spot = Color.GRAY;
+		} else {
+			spot = grass < vals[4] ? Color.GREEN : Color.GRAY;
+		}
+		return spot;
 	}
 }
