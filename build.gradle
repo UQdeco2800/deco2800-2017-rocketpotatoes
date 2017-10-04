@@ -3,6 +3,19 @@ allprojects {
     version = '0.1'
 }
 
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.jtitor:rust-gradle-plugin:0.1.4"
+    }
+}
+apply plugin: "com.jtitor.rust"
+
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -52,6 +65,7 @@ subprojects {
     }
 
     dependencies {
+
         // Logging via Log4J 2.0 using the SLF4J API
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
@@ -75,6 +89,9 @@ subprojects {
 
         // Reflections for testing
         compile 'org.reflections:reflections:0.9.11'
+
+        // JNA
+        compile 'net.java.dev.jna:jna:4.5.0'
     }
 
     sourceSets {

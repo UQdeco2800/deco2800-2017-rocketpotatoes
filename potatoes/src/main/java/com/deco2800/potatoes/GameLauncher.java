@@ -1,12 +1,7 @@
 package com.deco2800.potatoes;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import com.sun.jna.*;
+import com.sun.jna.Library;
+import com.sun.jna.Native;
 
 /**
  * Launches RocketPotatoes.
@@ -18,7 +13,7 @@ public class GameLauncher {
 	private GameLauncher() { }
 
 	public interface RLibrary extends Library {
-		RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
+		RLibrary INSTANCE = (RLibrary) Native.loadLibrary("fewefw", RLibrary.class);
 
 		void print_stuff(String stuff);
 	}
@@ -26,7 +21,7 @@ public class GameLauncher {
 	/**
 	 * Main function for the game
 	 *
-	 * @param arg
+	 * @param args
 	 *            Command line arguments (we wont use these)
 	 */
 	public static void main(String[] args) {
