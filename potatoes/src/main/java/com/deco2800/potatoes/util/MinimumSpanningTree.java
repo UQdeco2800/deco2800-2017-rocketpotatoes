@@ -1,6 +1,8 @@
-package com.deco2800.potatoes.util;
+/*package com.deco2800.potatoes.util;
 
 import java.util.*;
+
+import com.deco2800.potatoes.collisions.Line;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -31,7 +33,7 @@ public class MinimumSpanningTree {
          * @param obj the reference object with which to compare.
          * @return {@code true} if this object is the same as the obj
          * argument; {@code false} otherwise.
-         */
+         * /
         @Override
         public boolean equals(Object obj) {
 
@@ -85,7 +87,7 @@ public class MinimumSpanningTree {
          * @return a negative integer, zero, or a positive integer as the
          * first argument is less than, equal to, or greater than the
          * second.
-         */
+         * /
         @Override
         public int compare(Vertex o1, Vertex o2) {
 
@@ -183,7 +185,7 @@ public class MinimumSpanningTree {
      * @param goal The target position of the MST.
      * @param start The position of entity calling the MST.
      * @param obstacles List of Lines as boarder of static entities on the map.
-     */
+     * /
     public void addStartGoal(Point2D goal, Point2D start) {
 
         // Line representing edge between vertices.
@@ -221,7 +223,7 @@ public class MinimumSpanningTree {
      * is intersected by a line contained in list obstacles, then the edge weight is inflated to ensure that that edge
      * will not be included in the minimum spanning tree.
      *
-     */
+     * /
     public void initGraphWeightMatrix() {
 
         // Line representing edge between vertices.
@@ -260,7 +262,7 @@ public class MinimumSpanningTree {
      * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
      * @param edge Line object tested.
      * @return true in edge intersects with any lines in obstacles; false otherwise.
-     */
+     * /
     public boolean checkLineClash(Line line) {
         boolean output = false;
 
@@ -317,3 +319,4 @@ public class MinimumSpanningTree {
 
 
 }
+*/

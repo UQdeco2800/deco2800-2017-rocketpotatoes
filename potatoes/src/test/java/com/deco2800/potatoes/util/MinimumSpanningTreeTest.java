@@ -1,19 +1,14 @@
 package com.deco2800.potatoes.util;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
+import com.deco2800.potatoes.collisions.Line;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertThat;
-
-import static org.junit.Assert.*;
 
 import com.deco2800.potatoes.collisions.Point2D;
 

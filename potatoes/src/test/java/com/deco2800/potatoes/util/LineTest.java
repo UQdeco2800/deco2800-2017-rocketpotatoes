@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 
+import com.deco2800.potatoes.collisions.Line;
 import org.junit.Test;
 
 public class LineTest {

@@ -1,4 +1,4 @@
-package com.deco2800.potatoes.util;
+/*package com.deco2800.potatoes.collisions;
 
 import java.util.Objects;
 
@@ -7,12 +7,10 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import com.deco2800.potatoes.collisions.Point2D;
-
 /**
  * Utility class for testing weather lines intersect on map.
  * Made up of 2 nested point classes.
- */
+ * /
 public class Line {
 
     //TODO integrate with Shape2D
@@ -21,7 +19,7 @@ public class Line {
 
     /**
      * Nested class to represent x and y coordinates of line endpoints
-     */
+     * /
     public static class Point {
 
         private float x;
@@ -68,7 +66,7 @@ public class Line {
      * @param y1 y coordinate of endPointOne.
      * @param x2 x coordinate of endPointTwo.
      * @param y2 y coordinate of endPointTwo.
-     */
+     * /
     public Line(float x1, float y1, float x2, float y2) {
 
         this.endPointOne = new Point(x1, y1);
@@ -92,7 +90,7 @@ public class Line {
     /**
      * Get the true length between the two endpoints of the line.
      * @return The length of the line as a float.
-     */
+     * /
     public float getDistance() {
         return (float) Math.sqrt(
                 Math.pow(abs(getEndPointOne().getX() - getEndPointTwo().getX()), 2) +
@@ -124,7 +122,7 @@ public class Line {
      * @return 0 --> p, q and r are collinear
      *         1 --> Clockwise
      *         2 --> Counterclockwise
-     */
+     * /
     public static int orientation(Point p, Point q, Point r) {
 
         float val = (q.getY() - p.getY()) * (r.getX() - q.getX()) - (q.getX() - p.getX()) * (r.getY() - q.getY());
@@ -143,7 +141,7 @@ public class Line {
      * @param q point q
      * @param r point r
      * @return true if point q lies on segment 'pr'; false otherwise.
-     */
+     * /
     public static boolean onSegment(Point p, Point q, Point r) {
         return  q.getX() <= max(p.getX(), r.getX()) && q.getX() >= min(p.getX(), r.getX()) &&
                 q.getY() <= max(p.getY(), r.getY()) && q.getY() >= min(p.getY(), r.getY());
@@ -154,7 +152,7 @@ public class Line {
      * orientations of line endpoints to one another.
      * @param other line that is tested for intersection
      * @return true if lines intersect; false otherwise.
-     */
+     * /
     public boolean doIntersect(Line other) {
         // Find the four orientations needed for general and
         // special cases
@@ -219,3 +217,4 @@ public class Line {
 
     }
 }
+*/

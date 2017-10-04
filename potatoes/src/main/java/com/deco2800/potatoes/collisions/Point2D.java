@@ -157,7 +157,7 @@ public class Point2D extends Shape2D {
 
         Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
 
-        batch.draw(textureHighlight,  isoPosition.x, isoPosition.y);
+        batch.draw(textureHighlight,  isoPosition.x - textureHighlight.getWidth(), isoPosition.y - textureHighlight.getHeight());
     }
 
 

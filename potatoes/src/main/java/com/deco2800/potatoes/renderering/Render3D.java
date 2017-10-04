@@ -509,16 +509,15 @@ public class Render3D implements Renderer {
 	/**
 	 * Renders the nodes in PathManager */
 	private void renderPathFinderNodes() {
+
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
 
-		// TODO does PathManger store nodes as expected?
-		/*
 		batch.begin();
-		for (Point2D node : pathMan.getNodes) {
-			Point2D.render...()
+		for (Point2D node : pathMan.getNodes()) {
+			node.renderHighlight(batch);
 		}
 		batch.end();
-		*/
+
 	}
 
 

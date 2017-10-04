@@ -36,10 +36,11 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static Class<?> goal = Player.class;
 
 	private static EnemyTargets targets = initTargets();
-	private Map<Integer, AbstractEntity> entities;
 
-	private Path path = null;
-	private Shape2D target = null;
+
+
+	private AbstractEntity target = null;
+	private Shape2D targetNode = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
@@ -61,8 +62,16 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	public Squirrel(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
-		Squirrel.goal = goal;
-		this.path = null;
+
+
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+
+		for (AbstractEntity entity : entities.values()) {
+			if (entity instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
+				this.target = entity;
+				break;
+			}
+		}
 	}
 
 
@@ -75,45 +84,19 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		PathManager pathManager = GameManager.get().getManager(PathManager.class);
+		//PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		PathManager pathMan = GameManager.get().getManager(PathManager.class);
+
+		pathMan.initialise();
 
 		AbstractEntity relevantTarget = mostRelevantTarget();
 
 		if (relevantTarget != null) {
-			// check paths
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
-			}
-
-			//check if last node in path matches player
-			if (!path.goal().overlaps(relevantTarget.getMask())) {
-				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
-			}
-
-			//check if close enough to target
-			if (target != null && target.overlaps(this.getMask())) {
-				target = null;
-			}
-
-			//check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
-
-
-			if (target == null) {
-				target = relevantTarget.getMask();
-			}
 
 
 
-			float deltaX = target.getX() - getPosX();
-			float deltaY = target.getY() - getPosY();
-
-
+			float deltaX = target.getPosX() - getPosX();
+			float deltaY = target.getPosY() - getPosY();
 
 			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
 			super.onTickMovement();
@@ -127,7 +110,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	* This is likely to get EnemyEntity, squirrel is being used for testing aggro at the moment
 	* */
 	private AbstractEntity mostRelevantTarget() {
-		entities = GameManager.get().getWorld().getEntities();
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
 		for (AbstractEntity entity : entities.values()) {
 			for (Class sightTarget : targets.getSightAggroTargets()) {

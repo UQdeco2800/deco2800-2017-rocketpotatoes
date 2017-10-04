@@ -63,8 +63,6 @@ public class PlayerManager extends Manager {
 	
 	/**
 	 * Sets the player based on the player type.
-	 * 
-	 * @param player
 	 */
 	public void setPlayer(float posX, float posY) {
 		switch (this.playerType) {
