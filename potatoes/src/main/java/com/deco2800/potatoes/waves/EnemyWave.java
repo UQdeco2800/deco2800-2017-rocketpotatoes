@@ -48,6 +48,14 @@ public class EnemyWave {
     }
 
     /**
+     * Pause wave consturctor, no enemies.
+     */
+    public EnemyWave() {
+        this.enemyRatios = calculateEnemyRatios(0,0,0,0);
+        this.waveLength = 500;
+    }
+
+    /**
      * Create an array of floats between 0-1, where squirrelRate < speedyRate < tankRate < mooseRate.
      * The span of each value from itself to the immediate next highest ratio indicates its actual
      * ratio, i.e. if speedy is .50 and tank is .75, actual ratio is .25.

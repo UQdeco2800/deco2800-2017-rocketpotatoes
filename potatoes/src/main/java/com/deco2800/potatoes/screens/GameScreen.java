@@ -277,8 +277,9 @@ public class GameScreen implements Screen {
 
 			//add enemy waves
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, 1));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750, 2));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750, 3));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave()); // pause wave
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 900, 2));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 1050, 3));
 
 
 			initialiseResources();
