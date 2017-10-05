@@ -31,7 +31,6 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
 
@@ -46,6 +45,7 @@ public class GameScreen implements Screen {
 
 	// References to the 'game' object which handles our screens/
 	private RocketPotatoes game;
+
 	/**
 	 * Set the renderer. 3D is for Isometric worlds 2D is for Side Scrolling worlds
 	 * Check the documentation for each renderer to see how it handles WorldEntity
@@ -71,6 +71,11 @@ public class GameScreen implements Screen {
 	private double tickrate = 10;
 
 	private int maxShopRange;
+
+	float minimumZoom = 1.0f;
+	float maximumZoom = 4.0f;
+	float zoomSpeed = 0.2f;
+
 	/**
 	 * Start's a multiplayer game
 	 *
@@ -236,7 +241,7 @@ public class GameScreen implements Screen {
 		inputManager = GameManager.get().getManager(InputManager.class);
 		inputManager.addKeyDownListener(new CameraHandler());
 		inputManager.addKeyDownListener(new PauseHandler());
-		inputManager.addScrollListener(new ScrollTester());
+		inputManager.addScrollListener(new ZoomHandler());
 
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
@@ -606,18 +611,27 @@ public class GameScreen implements Screen {
 
 	private class CameraHandler implements KeyDownObserver {
 
+		float newZoom;
+
 		@Override
 		public void notifyKeyDown(int keycode) {
 			OrthographicCamera c = cameraManager.getCamera();
 			int speed = 10;
 
 			if (keycode == Input.Keys.EQUALS) {
-				if (c.zoom > 0.1) {
-					c.zoom -= 0.1;
+				newZoom = c.zoom + zoomSpeed;
+				if (newZoom < maximumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = maximumZoom;
 				}
 			} else if (keycode == Input.Keys.MINUS) {
-				c.zoom += 0.1;
-
+				newZoom = c.zoom + zoomSpeed;
+				if (c.zoom > minimumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = minimumZoom;
+				}
 			} else if (keycode == Input.Keys.UP) {
 				c.translate(0, 1 * speed * c.zoom, 0);
 			} else if (keycode == Input.Keys.DOWN) {
@@ -653,11 +667,29 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private class ScrollTester implements ScrollObserver {
+	private class ZoomHandler implements ScrollObserver {
+
+		float newZoom;
 
 		@Override
 		public void notifyScrolled(int amount) {
-			// System.out.println(amount);
+			OrthographicCamera c = cameraManager.getCamera();
+			if (amount == 1) {
+				newZoom = c.zoom + zoomSpeed * amount;
+				if (newZoom < maximumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = maximumZoom;
+				}
+			}
+			if (amount == -1) {
+				newZoom = c.zoom + zoomSpeed * amount;
+				if (c.zoom > minimumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = minimumZoom;
+				}
+			}
 		}
 
 	}
