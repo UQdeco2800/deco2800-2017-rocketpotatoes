@@ -26,6 +26,8 @@ public class GameManager implements TickableManager {
 	
 	private World mainWorld;
 
+	private boolean paused = false;
+
 	/**
 	 * Returns an instance of the GM
 	 * @return GameManager
@@ -158,5 +160,19 @@ public class GameManager implements TickableManager {
 	 */
 	public void clearManagers() {
 		managers.clear();
+	}
+
+	/**
+	 * Returns if the game is paused or not
+	 */
+	public boolean isPaused() {
+		return paused;
+	}
+
+	/**
+	 * Sets if the game is paused or not
+	 */
+	public void setPaused(boolean paused) {
+		this.paused = paused;
 	}
 }

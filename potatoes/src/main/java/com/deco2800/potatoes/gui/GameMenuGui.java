@@ -30,9 +30,9 @@ public class GameMenuGui extends Gui {
         window = new Window("Menu", uiSkin);
 
 		// Make our buttons
-        pauseMenuButton = new TextButton("Pause", uiSkin);
+        pauseMenuButton = new TextButton("Menu", uiSkin);
         selectButton = new TextButton("Select a Unit", uiSkin);
-        godModeButton = new TextButton("God",uiSkin);
+        godModeButton = new TextButton("Debug",uiSkin);
 
            /* Listener to godMode button */
         godModeButton.addListener(new ChangeListener() {
@@ -73,7 +73,7 @@ public class GameMenuGui extends Gui {
 		*   Note: this is left to right order
 		* */
         window.add(pauseMenuButton);
-        window.add(selectButton);
+        //window.add(selectButton);
         window.add(godModeButton);
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen

@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,6 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.ProgressBarManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
 import org.slf4j.Logger;
@@ -39,6 +43,7 @@ public class PauseMenuGui extends Gui {
     private ImageButton exitButton;
     private Table table;
 
+    // Options
     private VerticalGroup optionsButtonGroup;
     private Label optionsMenuLabel;
     private Label optionsEffectsVolumeLabel;
@@ -46,6 +51,13 @@ public class PauseMenuGui extends Gui {
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
     private TextButton optionsBackButton;
+    
+    // Progress bar
+	private Label progressBarLabel;
+	private CheckBox playerProgressBarCheckBox;
+	private CheckBox alliesProgressBarCheckBox;
+	private CheckBox enemyProgressBarCheckBox;
+	private CheckBox potatoProgressBarCheckBox;
 
     // State indicator
     private enum States {
@@ -92,13 +104,30 @@ public class PauseMenuGui extends Gui {
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsBackButton = new TextButton("Back", uiSkin);
-
+		
+        // progress bar options
+		progressBarLabel = new Label("Progress Bars", uiSkin);
+		playerProgressBarCheckBox = new CheckBox("Show Player Progress Bar", uiSkin);
+		playerProgressBarCheckBox.setChecked(true);
+		potatoProgressBarCheckBox = new CheckBox("Show Goal Potato Progress Bar", uiSkin);
+		potatoProgressBarCheckBox.setChecked(true);
+		alliesProgressBarCheckBox = new CheckBox("Show Allies Progress Bar", uiSkin);
+		alliesProgressBarCheckBox.setChecked(true);
+		enemyProgressBarCheckBox = new CheckBox("Show Enemy Progress Bar", uiSkin);
+		enemyProgressBarCheckBox.setChecked(true);
+		
         optionsButtonGroup = new VerticalGroup();
         optionsButtonGroup.addActor(optionsMenuLabel);
         optionsButtonGroup.addActor(optionsEffectsVolumeLabel);
         optionsButtonGroup.addActor(optionsEffectsVolumeSlider);
         optionsButtonGroup.addActor(optionsMusicVolumeLabel);
         optionsButtonGroup.addActor(optionsMusicVolumeSlider);
+		optionsButtonGroup.addActor(progressBarLabel);
+		optionsButtonGroup.addActor(playerProgressBarCheckBox);
+		optionsButtonGroup.addActor(potatoProgressBarCheckBox);
+		optionsButtonGroup.addActor(alliesProgressBarCheckBox);
+		optionsButtonGroup.addActor(enemyProgressBarCheckBox);
+		optionsButtonGroup.addActor(optionsBackButton);
         optionsButtonGroup.addActor(optionsBackButton);
         optionsEffectsVolumeSlider.setValue(screen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(screen.getMusicVolume());
@@ -121,6 +150,13 @@ public class PauseMenuGui extends Gui {
     }
 
     private void setupListeners() {
+
+        GameManager.get().getManager(InputManager.class).addKeyDownListener(keycode -> {
+            if (keycode == Input.Keys.ESCAPE) {
+                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
+                toggle();
+            }
+        });
 
         /* Listener for the resume button. */
         resumeButton.addListener(new ChangeListener() {
@@ -156,6 +192,7 @@ public class PauseMenuGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {
                 screen.menuBlipSound();
                 screen.exitToMenu();
+				GameManager.get().setPaused(false);
             }
         });
 
@@ -183,6 +220,34 @@ public class PauseMenuGui extends Gui {
                 resetGui(stage);
             }
         });
+        
+		playerProgressBarCheckBox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				GameManager.get().getManager(ProgressBarManager.class).togglePlayerProgress();
+			}
+		});
+		
+		alliesProgressBarCheckBox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				GameManager.get().getManager(ProgressBarManager.class).toggleAlliesProgress();
+			}
+		});
+		
+		enemyProgressBarCheckBox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				GameManager.get().getManager(ProgressBarManager.class).toggleEnemiesProgress();
+			}
+		});
+		
+		potatoProgressBarCheckBox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				GameManager.get().getManager(ProgressBarManager.class).togglePotatoProgress();
+			}
+		});
     }
 
     private void resetGui(Stage stage) {
@@ -224,13 +289,14 @@ public class PauseMenuGui extends Gui {
         stage.addActor(table);
         hidden = false;
 
-        //TODO pause game when in single player
+        GameManager.get().setPaused(true);
     }
 
     @Override
 	public void hide() {
         table.setVisible(false);
         hidden = true;
+        GameManager.get().setPaused(false);
     }
 
     /**

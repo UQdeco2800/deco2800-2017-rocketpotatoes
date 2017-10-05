@@ -264,10 +264,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             case Input.Keys.SPACE:
                 attack();
                 break;
-            case Input.Keys.ESCAPE:
-                //TODO pause game on pauseMenu
-                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
-                GameManager.get().getManager(GuiManager.class).getGui(PauseMenuGui.class).toggle();
             default:
                 break;
         }

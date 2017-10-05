@@ -64,9 +64,10 @@ public class GameScreen implements Screen {
 	private TextureManager textureManager;
 	private InputManager inputManager;
 	private WaveManager waveManager;
+	private ProgressBarManager progressBarManager;
+
 
 	private long lastGameTick = 0;
-	private boolean playing = true;
 	private double tickrate = 10;
 
 	private int maxShopRange;
@@ -149,6 +150,10 @@ public class GameScreen implements Screen {
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
 		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
+		cameraManager.getCamera().zoom += 1;
+		
+		/* Setup progress bar manager. */
+		progressBarManager = GameManager.get().getManager(ProgressBarManager.class);
 
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our
@@ -481,14 +486,13 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		/**
 		 * We only tick/render the game if we're actually playing. Lets us seperate main
-		 * menu and such from the game TODO We may lose/gain a tick or part of a tick
-		 * when we pause/unpause?
+		 * menu and such from the game
 		 */
 		/*
 		 * Tickrate = 100Hz
 		 */
 
-		if (playing) {
+		if (!GameManager.get().isPaused()) {
 			// Stop the first tick lasting years
 			if (lastGameTick != 0) {
 				long timeDelta = TimeUtils.millis() - lastGameTick;
@@ -501,6 +505,8 @@ public class GameScreen implements Screen {
 			} else {
 				lastGameTick = TimeUtils.millis();
 			}
+		} else {
+			lastGameTick = 0;
 		}
 
 		/*
@@ -526,10 +532,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// TODO way to render game so it appears paused (could just be a flag)
-		if (playing) {
 			renderer.render(batch);
-		}
 
 		updateWaveGUI();
 		updateRespawnGUI();

@@ -1,10 +1,11 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.BaseTest;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SoundManagerTest {
+public class SoundManagerTest extends BaseTest {
 
     @Test
     public void initAndReadTest(){
