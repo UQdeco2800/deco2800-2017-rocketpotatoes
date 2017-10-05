@@ -31,14 +31,14 @@ public class CheatCodeManager extends Manager {
         input.addKeyDownListener(this::handleKeyDown);
     }
 
-    private void handleKeyUp(int keyCode) {
+    public void handleKeyUp(int keyCode) {
         Key key = getKey(keyCode);
         if (key != null) {
             keys.remove(key);
         }
     }
 
-    private void handleKeyDown(int keyCode) {
+    public void handleKeyDown(int keyCode) {
         Key key = getKey(keyCode);
         if (key != null && keys.add(key)) {
             for (CheatCode cheat : codes ) {
