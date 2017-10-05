@@ -3,6 +3,7 @@ package com.deco2800.potatoes.managers;
 import com.deco2800.potatoes.cheats.CheatExecution;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,8 +105,8 @@ public class CheatCodeManager extends Manager {
      * A single cheat code that is being managed.
      */
     private class CheatCode {
-        private List<Key> keys;
-        private int status;
+        private List<Key> goal;
+        private ArrayDeque<Key> entered;
         private CheatExecution cheat;
 
         /**
@@ -119,9 +120,9 @@ public class CheatCodeManager extends Manager {
          *          The cheat execution object that will be run once these keys are entered.
          */
         public CheatCode(List<Key> keys, CheatExecution cheat) {
-            this.keys = keys;
-            status = 0;
+            goal = keys;
             this.cheat = cheat;
+            entered = new ArrayDeque<>();
         }
 
         /**
@@ -132,15 +133,21 @@ public class CheatCodeManager extends Manager {
          *          The key that has been input.
          */
         public void handleKey(Key input) {
-            if (input == keys.get(status)) {
-                ++status;
-            } else {
-                status = 0;
+            entered.addLast(input);
+            if (entered.size() > goal.size()) {
+                entered.removeFirst();
             }
 
-            if (status == keys.size()) {
+            if (entered.size() == goal.size()) {
+                int i = 0;
+                for (Key key : entered) {
+                    if (key != goal.get(i++)) {
+                        return;
+                    }
+                }
+
+                entered.clear();
                 cheat.run();
-                status = 0;
             }
         }
     }

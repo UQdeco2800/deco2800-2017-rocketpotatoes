@@ -11,7 +11,6 @@ import com.deco2800.potatoes.gui.DebugModeGui;
 public class Konami implements CheatExecution {
     @Override
     public void run() {
-        System.out.println("KONAMI CHEAT CODE EVERYBODY");
         GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).toggle();
     }
 }
