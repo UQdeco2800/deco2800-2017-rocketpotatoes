@@ -84,6 +84,7 @@ public class ChatGui extends Gui {
                     cState = chatStates.HIDDEN;
                     resetGui(stage);
                 }
+                hidden = !hidden;
             }
         });
 
