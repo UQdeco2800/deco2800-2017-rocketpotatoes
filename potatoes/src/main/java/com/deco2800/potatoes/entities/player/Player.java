@@ -385,15 +385,21 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         float myY = super.getPosY();
         float length = GameManager.get().getWorld().getLength();
         float width = GameManager.get().getWorld().getWidth();
-
         float terrainModifier = GameManager.get().getWorld()
                 .getTerrain(Math.round(Math.min(myX, width - 1)), Math.round(Math.min(myY, length - 1)))
                 .getMoveScale();
-
+        float moveDist = getMoveSpeed()*terrainModifier;
+        float newX = moveDist*(float)Math.cos(this.getMoveAngle());
+        float newY = moveDist*(float)Math.sin(this.getMoveAngle());
+        terrainModifier = GameManager.get().getWorld()
+                .getTerrain(Math.round(Math.min(myX+newX, width - 1)), Math.round(Math.min(myY+newY, length - 1)))
+                .getMoveScale();
+        
         //TODO getting terrainModifier should be easier as multiple entities will use it
         //TODO is not using terrainModifier
-
-        //super.moveSpeedModifier = terrainModifier;
+        if (state != IDLE) {
+            super.setMoveSpeedModifier(terrainModifier);
+        }
         super.onTickMovement();
 
 
