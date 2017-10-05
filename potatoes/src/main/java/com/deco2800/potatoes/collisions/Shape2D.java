@@ -118,27 +118,6 @@ public abstract class Shape2D {
      */
 	public abstract float distance(Shape2D other);
 
-    /**
-     * Finds the minimum perpendicular distance between a straight line and this collision mask. This is used primarily 
-     * in path finding to see if an entity can walk past an object without colliding with it.
-     * 
-     * For visual examples, see the relevant wiki page.
-     * 
-     * @param x1
-     *              The starting X coordinate of the line being checked.
-     * @param y1
-     *              The starting Y coordinate of the line being checked.
-     * @param x2
-     *              The ending X coordinate of the line being checked.
-     * @param y2
-     *              The ending Y coordinate of the line being checked.
-     * @return
-     *          If the line intersects the collision mask, then a negative number is returned. If the line does
-     *          not intersect the collision mask, then the number returned should be the length of a perpendicular line
-     *          as seen above.
-     */
-	public abstract float distance(float x1, float y1, float x2, float y2);
-
 	/**
 	 * Renders the fill of this shape using an current shapeRenderer
 	 * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
@@ -150,6 +129,25 @@ public abstract class Shape2D {
 	 * @param batch Batch to render outline image onto
 	 */
 	public abstract void renderHighlight(SpriteBatch batch);
+
+
+	//TODO smooth collision:
+	//angle of Incidence
+	//angle of reflection
+	//distanceInDirection(Shape2D other, float angle)
+
+
+	// ----------     Generic Object Methods    ---------- //
+
+	@Override
+	public abstract int hashCode();
+
+	@Override
+	public abstract boolean equals(Object o);
+
+	@Override
+	public abstract String toString();
+
 
 
 }

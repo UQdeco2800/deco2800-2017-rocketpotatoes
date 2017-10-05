@@ -9,7 +9,6 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Path;
 
 /**
  * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
@@ -28,7 +27,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private static float speed = 0.04f;
 	private static Class<?> goal = GoalPotate.class;
-	private Path path = null;
 	private Shape2D target = null;
 
 	private int ticksSinceRandom = 0;
@@ -55,7 +53,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
         super(new Circle2D(posX, posY, 0.849f), moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
 		Moose.speed = speed;
 		Moose.goal = goal;
-		this.path = null;
 		this.damageScaling = 0.8f; // 20% Damage reduction for Moose
 	}
 
@@ -111,23 +108,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 			}
 		}
 
-		// check that we actually have a path
-		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(getMask(), target);
-		}
-
-		//check if close enough to target
-		if (target != null && playerManager.getPlayer().getMask().overlaps(getMask())) {
-			target = playerManager.getPlayer().getMask();
-			playerManager.getPlayer().damage(0.4f);
-		} else {
-			target = null;
-		}
-
-		//check if the path has another node
-		if (target == null && !path.isEmpty()) {
-			target = path.pop();
-		}
 
 		float targetX;
 		float targetY;

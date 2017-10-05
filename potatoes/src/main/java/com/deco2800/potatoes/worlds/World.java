@@ -33,6 +33,10 @@ public class World {
 	// First 16 index's are reserved for clients
 	// TODO game will likely crash/break badly when this overflows
 	private int currentIndex = 17;
+
+	// the subset of entities that isStatic and isSolid
+	private Set<AbstractEntity> obstacles = new HashSet<>();
+
 	protected TiledMap map;
 	private int width;
 	private int length;
@@ -100,6 +104,10 @@ public class World {
 		} else {
 				// Singleplayer behaviour
 				entities.put(currentIndex++, entity);
+
+				if (entity.isSolid() && entity.isStatic()) {
+					obstacles.add(entity);
+				}
 		}
 	}
 
@@ -128,7 +136,10 @@ public class World {
 	 * Removes the entity with the given id from this world.
 	 */
 	public void removeEntity(int id) {
+		obstacles.remove(entities.get(id));
 		entities.remove(id);
+
+
 
 		// Tell the other clients if we're master and in multiplayer.
 		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
@@ -144,6 +155,7 @@ public class World {
 	public void removeEntity(AbstractEntity entity) {
 		for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
 			if (e.getValue() == entity) {
+				obstacles.remove(e.getValue());
 				entities.remove(e.getKey());
 
 				// Tell the other clients if we're master and in multiplayer.
@@ -159,7 +171,7 @@ public class World {
 
 	/**
 	 * Sets the tile int the current world at coordinated x and y to the type of the
-	 * terrain given. No idea if this currently works
+	 * terrain given. TODO No idea if this currently works
 	 * 
 	 * @param x
 	 * @param y

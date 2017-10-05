@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.util.Path;
 
 /**
  * A stronger but slower enemy type, only attacks towers/trees
@@ -32,7 +31,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	/* Define speed, goal and path variables */
 	private static float speed = 0.006f;
 	private static Class<?> goal = AbstractTree.class;
-	private Path path = null;
 	private Shape2D target = null;
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);

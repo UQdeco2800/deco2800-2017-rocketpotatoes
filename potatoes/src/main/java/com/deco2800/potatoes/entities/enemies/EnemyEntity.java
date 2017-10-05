@@ -17,7 +17,6 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 
 import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.util.Path;
 
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.renderering.Render3D;
@@ -50,7 +49,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	private float speed;
-	private Path path;
 	private Shape2D targetPos = null;
 	private Class<?> goal;
 
@@ -116,24 +114,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
-			}
-
-			//check if close enough to target
-			if (targetPos != null && targetPos.overlaps(this.getMask())) {
-				targetPos = null;
-			}
-
-			//check if the path has another node
-			if (targetPos == null && !path.isEmpty()) {
-				targetPos = path.pop();
-			}
-
-			if (targetPos == null) {
-				targetPos = playerManager.getPlayer().getMask();
-			}
 
 			goalX = targetPos.getX();
 			goalY = targetPos.getY();

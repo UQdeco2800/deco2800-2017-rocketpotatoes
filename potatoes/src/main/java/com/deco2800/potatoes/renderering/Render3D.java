@@ -111,7 +111,8 @@ public class Render3D implements Renderer {
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
 			renderCollisionMasks(); 	// rend collisionMask outlines of entities
-			renderPathFinderNodes();	// rend nodes in PathManager TODO
+			renderPathFinderNodes();	// rend nodes in PathManager
+			renderPathFinderEdges();	// rend edges in PathManager
 		}
 	}
 
@@ -513,10 +514,35 @@ public class Render3D implements Renderer {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
 
 		batch.begin();
+
+		//render nodes
 		for (Point2D node : pathMan.getNodes()) {
 			node.renderHighlight(batch);
 		}
+
 		batch.end();
+
+	}
+
+	/**
+	 * Renders the nodes in PathManager */
+	private void renderPathFinderEdges() {
+
+		PathManager pathMan = GameManager.get().getManager(PathManager.class);
+
+		//start drawing & set fill transparent red
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		shapeRenderer.setColor(new Color(0.8f, 0, 0, 0.5f));
+
+		//render lines
+		for (Line2D line : pathMan.getEdges()) {
+			line.renderShape(shapeRenderer);
+		}
+
+		//stop drawing
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 	}
 

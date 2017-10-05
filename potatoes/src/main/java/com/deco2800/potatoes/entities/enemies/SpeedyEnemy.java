@@ -19,7 +19,6 @@ import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
 /**
@@ -38,7 +37,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static float speed = 0.08f;
 	private static Class<?> goal = ResourceTree.class;
-	private Path path = null;
 	private Shape2D target = null;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
@@ -63,7 +61,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
         super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
 		SpeedyEnemy.speed = speed;
 		SpeedyEnemy.goal = goal;
-		this.path = null;
 		// resetStats();
 	}
 
@@ -156,31 +153,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			AbstractEntity tgtGet = playerManager.getPlayer();
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-			// check paths
 
-			// check collision
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-			}
-
-			// check if close enough to target
-			if (target != null && target.overlaps(this.getMask())) {
-				target = null;
-			}
-
-			// check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
 
 			float targetX;
 			float targetY;
 
-			if (target == null) {
-				target = tgtGet.getMask();
-			}
 
 			targetX = target.getX();
 			targetY = target.getY();
@@ -201,44 +178,21 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			this.setPosX(getPosX() + changeX);
 			this.setPosY(getPosY() + changeY);
 		} else {
-			//otherwise, set resourceTrees and move towards them
-			
-			AbstractEntity tgtGet = tgt.get();
+
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-			// check paths
 
-			// check collision
-			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
-					// collided with wall
-					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-					target = path.pop();
-					break;
-				}
-			}
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-			}
 
 			// check if close enough to target
 			if (target != null && target.overlaps(this.getMask())) {
 				target = null;
 			}
 
-			// check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
+
 
 			float targetX;
 			float targetY;
 
-			if (target == null) {
-				target = tgtGet.getMask();
-			}
 
 			targetX = target.getX();
 			targetY = target.getY();

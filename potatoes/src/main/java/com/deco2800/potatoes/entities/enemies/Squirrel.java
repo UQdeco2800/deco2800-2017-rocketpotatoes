@@ -13,7 +13,6 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		if (relevantTarget != null) {
 
-
+			targetNode = pathMan.getTargetNode(this, target, targetNode);
 
 			float deltaX = target.getPosX() - getPosX();
 			float deltaY = target.getPosY() - getPosY();
