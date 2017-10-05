@@ -62,6 +62,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private int timer = 0;
 
+	protected int round_number = 0;
 	/**
 	 * Default constructor for serialization
 	 */
@@ -101,6 +102,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		this.goal = goal;
 	}
 
+	// Method of creating enemy with round number included
+
+   /* public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth,
+                       float speed, Class<?> goal, int round_number) {
+        super(mask, xRenderLength, yRenderLength, texture, maxHealth);
+        getBasicStats().registerEvents(this);
+        this.speed = speed + round_number;
+        this.goal = goal;
+        this.round_number = round_number;
+    }*/
 
 	/**
 	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target, 

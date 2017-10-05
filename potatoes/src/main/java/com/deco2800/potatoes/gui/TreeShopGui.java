@@ -153,9 +153,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Creates menu based on input parameters.
 	 *
-	 * @param items
-	 *            A HashMap with each AbstractEntity as the key and the
-	 *            corresponding color as value
 	 * @param x
 	 *            Center x point
 	 * @param y
@@ -241,13 +238,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 			// Show which segment is highlighted by adjusting opacity
 			int startAngle = 360 * segment / numSegments;
 			float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ? SELECTED_ALPHA : UNSELECTED_ALPHA;
-			float itemAngle = startAngle + degrees / 2;
+			float itemAngle = (float) (startAngle + degrees / 2);
 
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
 			renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees);
 
-			Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
+			Vector2 offset = calculateDisplacement((float) (radius / 2), itemAngle);
 
 			// Render Items
 			float itemX = guiX - imgSize / 2 + offset.x;
