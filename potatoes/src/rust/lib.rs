@@ -1,10 +1,11 @@
 #![crate_type = "dylib"]
 
 use std::ffi::{CStr, CString};
-use std::str;
 use std::mem;
 use std::os::raw::c_char;
-use std::{thread, time};
+use std::str;
+use std::thread;
+use std::time::Duration;
 
 /// Non windows callback
 #[cfg(not(windows))]
@@ -36,7 +37,7 @@ impl<T> Callback<T> {
 pub extern fn startGame(render: extern "C" fn(*const c_char)) {
     println!("Running game Linux");
     run_game(Callback { function: render });
-    thread::sleep(time::Duration::from_secs(1));
+    thread::sleep(Duration::from_secs(1));
     println!("Game finished");
 }
 
@@ -47,7 +48,7 @@ pub extern fn startGame(render: extern "C" fn(*const c_char)) {
 pub extern fn startGame(render: extern "stdcall" fn(*const c_char)) {
     println!("Running game Win");
     run_game(Callback { function: render });
-    thread::sleep(time::Duration::from_secs(1));
+    thread::sleep(Duration::from_secs(1));
     println!("Game finished");
 }
 
@@ -72,5 +73,5 @@ fn to_ptr(string: String) -> *const c_char {
     // Don't destroy our string while we still have pointer
     mem::forget(cs);
 
-    return ptr;
+    ptr
 }
