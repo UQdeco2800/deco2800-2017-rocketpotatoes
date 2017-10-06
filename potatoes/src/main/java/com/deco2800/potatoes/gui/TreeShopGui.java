@@ -72,6 +72,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	// Maximum number of tile lengths from player where you can plant trees
 	private static final int MAX_RANGE = 6;
 
+	// Stored shape renderer for efficient drawing
+	private ShapeRenderer shapeRenderer;
+
 	/**
 	 * Instantiates shop with but doesn't display it yet.
 	 */
@@ -185,7 +188,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private void renderGui(float x, float y, int radius) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		if (shapeRenderer == null) {
+			shapeRenderer = new ShapeRenderer();
+		}
 		shapeRenderer.begin(ShapeType.Filled);
 
 		float guiY = stage.getHeight() - y;

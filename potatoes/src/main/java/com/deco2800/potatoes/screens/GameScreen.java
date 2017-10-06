@@ -67,6 +67,7 @@ public class GameScreen implements Screen {
 	private WaveManager waveManager;
 	private ProgressBarManager progressBarManager;
 
+	private SpriteBatch batch;
 
 	private long lastGameTick = 0;
 	private double tickrate = 10;
@@ -228,6 +229,12 @@ public class GameScreen implements Screen {
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
 		cameraManager.getCamera().position.y = 0;
+
+		/*
+		 * Create a new render batch. At this stage we only want one but perhaps we need
+		 * more for HUDs etc
+		 */
+		batch = new SpriteBatch();
 	}
 
 	private void setupInputHandling() {
@@ -520,12 +527,6 @@ public class GameScreen implements Screen {
 		}
 
 		/*
-		 * Create a new render batch. At this stage we only want one but perhaps we need
-		 * more for HUDs etc
-		 */
-		SpriteBatch batch = new SpriteBatch();
-
-		/*
 		 * Update the input handlers
 		 */
 		// handleInput();
@@ -548,7 +549,6 @@ public class GameScreen implements Screen {
 		updateRespawnGUI();
 		renderGUI(batch);
 
-		batch.dispose();
 	}
 
 	/**

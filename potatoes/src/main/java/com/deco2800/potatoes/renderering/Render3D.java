@@ -53,6 +53,7 @@ public class Render3D implements Renderer {
 	private ShapeRenderer shapeRenderer;
 
 	private SpriteBatch batch;
+	private BatchTiledMapRenderer tiledMap;
 	private SortedMap<AbstractEntity, Integer> rendEntities;
 
 	private int tileWidth;
@@ -553,7 +554,10 @@ public class Render3D implements Renderer {
 	 */
 	@Override
 	public BatchTiledMapRenderer getTileRenderer(SpriteBatch batch) {
-		return new IsometricTiledMapRenderer(GameManager.get().getWorld().getMap(), 1, batch);
+		if (tiledMap == null) {
+			tiledMap = new IsometricTiledMapRenderer(GameManager.get().getWorld().getMap(), 1, batch);
+		}
+		return tiledMap;
 	}
 
 	/**
