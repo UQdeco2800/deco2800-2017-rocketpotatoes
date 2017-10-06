@@ -1,8 +1,5 @@
 #![crate_type = "dylib"]
 
-extern crate piston_window;
-use piston_window::{PistonWindow, WindowSettings};
-
 use std::ffi::{CStr, CString};
 use std::mem;
 use std::os::raw::c_char;
@@ -32,23 +29,73 @@ impl<T> Callback<T> {
     }
 }
 
-/// Runs the game (Linux/MacOS specific)
-#[no_mangle]
-#[cfg(not(windows))]
-#[allow(non_snake_case)]
-pub extern fn startGame(render: extern "C" fn(*const c_char)) {
-    println!("Running game Linux");
-    run_game(Callback { function: render });
-    println!("Game finished");
+#[repr(C)]
+#[allow(missing_copy_implementation)]
+pub struct RenderObject {
+    asset: *const c_char,
+}
+
+impl RenderObject {
+    fn new(name: String, x: i32, y: i32, rotation: f32) -> Self {
+        Self {
+            asset: to_ptr(name),
+        }
+    }
+}
+
+impl Drop for RenderObject {
+    fn drop(&mut self) { }
+}
+
+pub struct RenderFunctions {
+    pub start_draw: Callback<()>,
+    pub end_draw: Callback<()>,
+    pub update_window: Callback<()>,
+    pub get_window_info: Callback<()>,
+    pub draw_sprite: Callback<()>,
 }
 
 /// Runs the game (Linux/MacOS specific)
 #[no_mangle]
+#[cfg(not(windows))]
+#[allow(non_snake_case)]
+pub extern fn startGame(
+    startDraw: extern "C" fn(()),
+    endDraw: extern "C" fn(()), 
+    updateWindow: extern "C" fn(()), 
+    getWindowInfo: extern "C" fn(()), 
+    drawSprite: extern "C" fn(())) {
+
+    println!("Running game Linux");
+    run_game(RenderFunctions { 
+        start_draw: Callback { function: startDraw },
+        end_draw: Callback { function: endDraw },
+        update_window: Callback { function: updateWindow },
+        get_window_info: Callback { function: getWindowInfo },
+        draw_sprite: Callback { function: drawSprite },
+    });
+    println!("Game finished");
+}
+
+/// Runs the game (Windows specific)
+#[no_mangle]
 #[cfg(windows)]
 #[allow(non_snake_case)]
-pub extern fn startGame(render: extern "stdcall" fn(*const c_char)) {
-    println!("Running game Win");
-    run_game(Callback { function: render });
+pub extern fn startGame(
+    startDraw: extern "stdcall" fn(()),
+    endDraw: extern "stdcall" fn(()), 
+    updateWindow: extern "stdcall" fn(()), 
+    getWindowInfo: extern "stdcall" fn(()), 
+    drawSprite: extern "stdcall" fn(())) {
+
+    println!("Running game Linux");
+    run_game(RenderFunctions { 
+        start_draw: Callback { function: startDraw },
+        end_draw: Callback { function: endDraw },
+        update_window: Callback { function: updateWindow },
+        get_window_info: Callback { function: getWindowInfo },
+        draw_sprite: Callback { function: drawSprite },
+    });
     println!("Game finished");
 }
 
@@ -56,35 +103,19 @@ pub extern fn startGame(render: extern "stdcall" fn(*const c_char)) {
 /// since the Rust library is not aware of the OpenGL context and it's rather hard
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
-pub fn run_game(render: Callback<*const c_char>) {
-    render.call(to_ptr("Hey java".to_string()));
-
-    let mut window: PistonWindow = WindowSettings::new("Rustyfish", [1024, 784])
-        .exit_on_esc(true)
-        .build()
-        .unwrap();
+pub fn run_game(renderFunctions: RenderFunctions) {
 
 
+    /*
     let timer = Instant::now();
-    while let Some(event) = window.next() {
-        window.draw_2d(&event, |context, graphics| {
-
-            piston_window::clear([1.0; 4], graphics);
-
-            let width = 100.0;
-            let height = 100.0;
-            let elapsed = timer.elapsed();
-            let x = (context.get_view_size()[0] as f64 - width) / 2.0
-                * (1.0 + f64::sin(elapsed.as_secs() as f64 +
-                           elapsed.subsec_nanos() as f64 * 1e-9));
-            let y = context.get_view_size()[1] as f64 / 2.0;
-            piston_window::rectangle(
-                [1.0, 0.0, 0.0, 1.0],
-                [x, y, width, height],
-                context.transform,
-                graphics);
-        });
-    }
+    let width = 100.0;
+    let height = 100.0;
+    let elapsed = timer.elapsed();
+    let x = (context.get_view_size()[0] as f64 - width) / 2.0
+        * (1.0 + f64::sin(elapsed.as_secs() as f64 +
+                          elapsed.subsec_nanos() as f64 * 1e-9));
+    let y = context.get_view_size()[1] as f64 / 2.0;
+    */
 }
 
 /// Converts native string to rust string

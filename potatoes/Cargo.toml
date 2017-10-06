@@ -9,4 +9,3 @@ path = "src/rust/lib.rs"
 crate-type = ["dylib"]
 
 [dependencies]
-piston_window = "0.70.0"
