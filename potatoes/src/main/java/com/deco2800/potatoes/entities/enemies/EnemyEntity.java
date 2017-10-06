@@ -1,9 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Shape2D;
@@ -14,6 +11,9 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
+import com.deco2800.potatoes.entities.player.Archer;
+import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 
 import com.deco2800.potatoes.managers.*;
@@ -50,17 +50,14 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	private float speed;
-	private Path path;
 	private Shape2D targetPos = null;
 	private Class<?> goal;
+	private Map<Integer, AbstractEntity> entities;
 
 	private static final SoundManager enemySoundManager = new SoundManager();
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
-	
-
-	private int timer = 0;
 
 	protected int round_number = 0;
 	/**
@@ -113,136 +110,70 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
         this.round_number = round_number;
     }*/
 
-	/**
-	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target, 
-	 * otherwise get the closest targeted entity position.
-	 */
-	@Override
-	public void onTick(long i) {
-		float goalX = getPosX();
-		float goalY = getPosY();
-		//if goal is player, use playerManager to eet position and move towards target 
-		if (goal == Player.class) {
-			//goal = Player.class;
-			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			PathManager pathManager = GameManager.get().getManager(PathManager.class);
+	public void pathMovement(PathAndTarget pathTarget, AbstractEntity relevantTarget) {
+		Path path = pathTarget.getPath();
+		Shape2D target = pathTarget.getTarget();
 
+		PathManager pathManager = GameManager.get().getManager(PathManager.class);
+		if (relevantTarget != null) {
+			// check paths
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
+				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
+			}
+
+			//check if last node in path matches player
+			if (!path.goal().overlaps(relevantTarget.getMask())) {
+				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
 			}
 
 			//check if close enough to target
-			if (targetPos != null && targetPos.overlaps(this.getMask())) {
-				targetPos = null;
+			if (target != null && target.overlaps(this.getMask())) {
+				target = null;
 			}
 
 			//check if the path has another node
-			if (targetPos == null && !path.isEmpty()) {
-				targetPos = path.pop();
+			if (target == null && !path.isEmpty()) {
+				target = path.pop();
 			}
 
-			if (targetPos == null) {
-				targetPos = playerManager.getPlayer().getMask();
+			if (target == null) {
+				target = relevantTarget.getMask();
 			}
 
-			goalX = targetPos.getX();
-			goalY = targetPos.getY();
-		} else {
-			//set the target of Enemy to the closest goal
-			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
+			float deltaX = target.getX() - getPosX();
+			float deltaY = target.getY() - getPosY();
 
-			if (target.isPresent()) {
-				//otherwise, move to enemy's closest goal
-				AbstractEntity getTarget = target.get();
-				// get the position of the target
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
 
-				goalX = getTarget.getPosX(); 
-				goalY = getTarget.getPosY(); 
-				
-				if(this.distanceTo(getTarget) < speed) {
-					this.setPosX(goalX);
-					this.setPosY(goalY);
-					return;
-				}
-			}
+			pathTarget.setPath(path);
+			pathTarget.setTarget(target);
 		}
-
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
-
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
-
-		Shape2D newPos = getMask();
-
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
-
-		/*
-		 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
-		 *     -> Enemies of the same type, projectiles, resources.
-		 */
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		boolean collidedTankEffect = false;
-		timer++;
-		String stompedGroundTextureString = "";
-
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy)
-					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getMask()) ) {
-
-				if(entity instanceof Player) {
-					LOGGER.info("Ouch! a " + this + " hit the player!");
-					((Player) entity).damage(1);
-
-				}
-				if (entity instanceof Effect || entity instanceof ResourceEntity) {
-					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
-						collidedTankEffect = true;
-						stompedGroundTextureString = entity.getTexture();
-					}
-					continue;
-				}
-				collided = true;
-			}
-		}
-
-
-		if (this instanceof TankEnemy) {
-			if (timer % 100 == 0 && !collided) {
-				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
-				GameManager.get().getWorld().addEntity(
-						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
-			}
-			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
-					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			} else if (!collidedTankEffect) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			}
-		}
-
-		if (!collided) {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
-
-		updateDirection();
 	}
 
-
-
-	public BasePortal findPortal() {
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+	/*Find the most relevant target to go to according to its EnemyTargets
+*
+* This is likely to get EnemyEntity, squirrel is being used for testing aggro at the moment
+* */
+	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
+		entities = GameManager.get().getWorld().getEntities();
+		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
 		for (AbstractEntity entity : entities.values()) {
-			if (entity instanceof BasePortal) {
-				return (BasePortal)entity;
+			for (Class sightTarget : targets.getSightAggroTargets()) {
+				if (entity.getClass().isAssignableFrom(sightTarget)) {
+					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
+					if (distance < 10) {
+						return entity;
+					}
+				}
+			}
+		}
+		/*If no aggro, return 'ultimate' target*/
+		for (AbstractEntity entity : entities.values()) {
+			for (Class mainTarget : targets.getMainTargets()) {
+				if (entity.getClass().isAssignableFrom(mainTarget)) {
+					return entity;
+				}
 			}
 		}
 		return null;

@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -11,8 +12,6 @@ import java.util.Optional;
 /**
  * A melee attack from enemy to a target
  *
- * -Implementation inspired by "../trees/TreeProjectileShootEvent" - ty trees
- * team
  **/
 public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 
@@ -62,12 +61,11 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 						new Vector3(enemy.getPosX() + 0.5f, enemy.getPosY() + 0.5f, enemy.getPosZ()),
 						new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()), 1, 4));
 
-		/*
-		 * If the enemy this attack event belongs to, stop firing !DOES NOT REMOVE
-		 * EVENT, JUST STOPS REPEATING IT!
-		 */
+		/*Stop attacking if dead (deathHandler of mortal entity will eventually unregister the event).*/
 		if (enemy.isDead()) {
+			GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
 			setDoReset(false);
+
 		}
 	}
 
