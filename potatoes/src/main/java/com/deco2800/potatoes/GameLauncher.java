@@ -21,7 +21,9 @@ public class GameLauncher {
 	public interface RLibrary extends Library {
 		RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
 
-		void startGame(Callback callback);
+		void startGame(Callback startDraw, Callback endDraw,
+					   Callback updateWindow, Callback getWindowInfo,
+					   Callback drawSprite);
 	}
 
 	/**

@@ -30,7 +30,6 @@ impl<T> Callback<T> {
 }
 
 #[repr(C)]
-#[allow(missing_copy_implementation)]
 pub struct RenderObject {
     asset: *const c_char,
 }
@@ -103,8 +102,12 @@ pub extern fn startGame(
 /// since the Rust library is not aware of the OpenGL context and it's rather hard
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
-pub fn run_game(renderFunctions: RenderFunctions) {
-
+pub fn run_game(render_functions: RenderFunctions) {
+    render_functions.start_draw.call(());
+    render_functions.end_draw.call(());
+    render_functions.update_window.call(());
+    render_functions.get_window_info.call(());
+    render_functions.draw_sprite.call(());
 
     /*
     let timer = Instant::now();
