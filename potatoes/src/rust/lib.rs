@@ -18,6 +18,18 @@ pub struct Callback<T> {
     function: extern "stdcall" fn(T),
 }
 
+/// Non windows callback
+#[cfg(not(windows))]
+pub struct VoidCallback {
+    function: extern "C" fn(),
+}
+
+/// Windows snowflake callback
+#[cfg(windows)]
+pub struct VoidCallback {
+    function: extern "C" fn(),
+}
+
 impl<T> Callback<T> {
     /// Calls the internal function with the parameter
     ///
@@ -28,6 +40,14 @@ impl<T> Callback<T> {
         (self.function)(param);
     }
 }
+
+impl VoidCallback {
+    /// Calls the internal function
+    pub fn call(&self) {
+        (self.function)();
+    }
+}
+
 
 #[repr(C)]
 pub struct RenderObject {
@@ -47,11 +67,11 @@ impl Drop for RenderObject {
 }
 
 pub struct RenderFunctions {
-    pub start_draw: Callback<()>,
-    pub end_draw: Callback<()>,
-    pub update_window: Callback<()>,
-    pub get_window_info: Callback<()>,
-    pub draw_sprite: Callback<()>,
+    pub start_draw: VoidCallback,
+    pub end_draw: VoidCallback, 
+    pub update_window: VoidCallback, 
+    pub get_window_info: VoidCallback, 
+    pub draw_sprite: Callback<()>, 
 }
 
 /// Runs the game (Linux/MacOS specific)
@@ -59,18 +79,18 @@ pub struct RenderFunctions {
 #[cfg(not(windows))]
 #[allow(non_snake_case)]
 pub extern fn startGame(
-    startDraw: extern "C" fn(()),
-    endDraw: extern "C" fn(()), 
-    updateWindow: extern "C" fn(()), 
-    getWindowInfo: extern "C" fn(()), 
+    startDraw: extern "C" fn(),
+    endDraw: extern "C" fn(), 
+    updateWindow: extern "C" fn(), 
+    getWindowInfo: extern "C" fn(), 
     drawSprite: extern "C" fn(())) {
 
     println!("Running game Linux");
     run_game(RenderFunctions { 
-        start_draw: Callback { function: startDraw },
-        end_draw: Callback { function: endDraw },
-        update_window: Callback { function: updateWindow },
-        get_window_info: Callback { function: getWindowInfo },
+        start_draw: VoidCallback { function: startDraw },
+        end_draw: VoidCallback { function: endDraw },
+        update_window: VoidCallback { function: updateWindow },
+        get_window_info: VoidCallback { function: getWindowInfo },
         draw_sprite: Callback { function: drawSprite },
     });
     println!("Game finished");
@@ -81,18 +101,18 @@ pub extern fn startGame(
 #[cfg(windows)]
 #[allow(non_snake_case)]
 pub extern fn startGame(
-    startDraw: extern "stdcall" fn(()),
-    endDraw: extern "stdcall" fn(()), 
-    updateWindow: extern "stdcall" fn(()), 
-    getWindowInfo: extern "stdcall" fn(()), 
+    startDraw: extern "stdcall" fn(),
+    endDraw: extern "stdcall" fn(), 
+    updateWindow: extern "stdcall" fn(), 
+    getWindowInfo: extern "stdcall" fn(), 
     drawSprite: extern "stdcall" fn(())) {
 
     println!("Running game Linux");
     run_game(RenderFunctions { 
-        start_draw: Callback { function: startDraw },
-        end_draw: Callback { function: endDraw },
-        update_window: Callback { function: updateWindow },
-        get_window_info: Callback { function: getWindowInfo },
+        start_draw: VoidCallback { function: startDraw },
+        end_draw: VoidCallback { function: endDraw },
+        update_window: VoidCallback { function: updateWindow },
+        get_window_info: VoidCallback { function: getWindowInfo },
         draw_sprite: Callback { function: drawSprite },
     });
     println!("Game finished");
@@ -103,10 +123,10 @@ pub extern fn startGame(
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
 pub fn run_game(render_functions: RenderFunctions) {
-    render_functions.start_draw.call(());
-    render_functions.end_draw.call(());
-    render_functions.update_window.call(());
-    render_functions.get_window_info.call(());
+    render_functions.start_draw.call();
+    render_functions.end_draw.call();
+    render_functions.update_window.call();
+    render_functions.get_window_info.call();
     render_functions.draw_sprite.call(());
 
     /*
