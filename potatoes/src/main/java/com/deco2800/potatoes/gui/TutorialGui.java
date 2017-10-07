@@ -43,8 +43,8 @@ public class TutorialGui extends Gui {
     private HorizontalGroup tutorialButtonGroup;
     
     // Array of all the slides to show
-    private String[] slides = {"backgroundMainMenu", "forest_portal", "desert_portal",
-    		"iceland_portal", "sea_portal", "volcano_portal"};
+    private String[] slides = {"tutorial1", "tutorial2", "tutorial3",
+    		"tutorial4", "tutorial5", "tutorial6", "tutorial7"};
     // Current slide being displayed
     private int position;
 
