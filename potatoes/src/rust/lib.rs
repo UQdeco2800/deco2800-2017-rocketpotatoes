@@ -7,59 +7,24 @@ use std::mem;
 use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
-
-use callback::*;
 use render::{RenderFunctions, RenderInfo, RenderObject};
+
 /// Runs the game (Linux/MacOS specific)
 #[no_mangle]
-#[cfg(not(windows))]
 #[allow(non_snake_case)]
 pub extern fn startGame(
     startDraw: extern "C" fn(),
     endDraw: extern "C" fn(), 
     updateWindow: extern "C" fn(), 
     getWindowInfo: extern "C" fn(&RenderInfo), 
-    drawSprite: extern "C" fn(())) {
+    drawSprite: extern "C" fn()) {
 
-    run_game(&Callback { function: getWindowInfo} );
-
-
-    /*
-    println!("Running game Linux");
     run_game(RenderFunctions { 
-        start_draw: VoidCallback { function: startDraw },
-        end_draw: VoidCallback { function: endDraw },
-        update_window: VoidCallback { function: updateWindow },
-        get_window_info: Callback { function: getWindowInfo },
-        draw_sprite: Callback { function: drawSprite },
-    });
-    println!("Game finished");
-    */
-}
-
-
-/// Runs the game (Windows specific)
-#[no_mangle]
-#[cfg(windows)]
-#[allow(non_snake_case)]
-pub extern fn startGame(
-    startDraw: extern "stdcall" fn(),
-    endDraw: extern "stdcall" fn(), 
-    updateWindow: extern "stdcall" fn(), 
-    getWindowInfo: extern "stdcall" fn(&RenderInfo), 
-    drawSprite: extern "stdcall" fn(())) {
-
-    /*
-    println!("Running game Linux");
-    run_game(RenderFunctions { 
-        start_draw: VoidCallback { function: startDraw },
-        end_draw: VoidCallback { function: endDraw },
-        update_window: VoidCallback { function: updateWindow },
-        get_window_info: Callback { function: getWindowInfo },
-        draw_sprite: Callback { function: drawSprite },
-    });
-    println!("Game finished");
-    */
+        start_draw: startDraw,
+        end_draw: endDraw,
+        update_window: updateWindow,
+        get_window_info: getWindowInfo,
+        draw_sprite: drawSprite });
 }
 
 /// Takes some (TODO) callbacks for rendering purposes
@@ -67,12 +32,10 @@ pub extern fn startGame(
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
 //pub fn run_game(render_functions: RenderFunctions) {
-pub fn run_game(get_window_info: &Callback<&RenderInfo>) {
+pub fn run_game(functions: RenderFunctions){
     let x = RenderInfo { size_x: 0, size_y: 0 };
     
-    {
-        get_window_info.call(&x);
-    }
+    (functions.get_window_info)(&x);
 
     println!("{:?}", x);
     /*

@@ -6,6 +6,7 @@ use std::time::{Instant};
 
 use callback::*;
 
+
 #[repr(C)]
 pub struct RenderObject {
     asset: *const c_char,
@@ -26,11 +27,11 @@ pub struct RenderInfo {
     pub size_y: i32,
 }
 
-pub struct RenderFunctions<'a> {
-    pub start_draw: VoidCallback,
-    pub end_draw: VoidCallback, 
-    pub update_window: VoidCallback, 
-    pub get_window_info: Callback<&'a RenderInfo>,
-    pub draw_sprite: Callback<()>, 
+pub struct RenderFunctions {
+    pub start_draw: extern "C" fn(),
+    pub end_draw: extern "C" fn(),
+    pub update_window: extern "C" fn(),
+    pub get_window_info: extern "C" fn(&RenderInfo),
+    pub draw_sprite: extern "C" fn(),
 }
 
