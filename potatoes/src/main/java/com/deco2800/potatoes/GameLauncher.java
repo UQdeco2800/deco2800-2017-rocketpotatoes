@@ -2,9 +2,6 @@ package com.deco2800.potatoes;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.sun.jna.Callback;
-import com.sun.jna.Library;
-import com.sun.jna.Native;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -18,13 +15,7 @@ import org.apache.log4j.Logger;
 public class GameLauncher {
 	private GameLauncher() { }
 
-	public interface RLibrary extends Library {
-		RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
 
-		void startGame(Callback startDraw, Callback endDraw,
-					   Callback updateWindow, Callback getWindowInfo,
-					   Callback drawSprite);
-	}
 
 	/**
 	 * Main function for the game

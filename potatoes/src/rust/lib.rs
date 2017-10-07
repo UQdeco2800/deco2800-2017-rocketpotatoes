@@ -1,4 +1,6 @@
 #![crate_type = "dylib"]
+mod render;
+mod callback;
 
 use std::ffi::{CStr, CString};
 use std::mem;
@@ -6,74 +8,8 @@ use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
 
-/// Non windows callback
-#[cfg(not(windows))]
-pub struct Callback<T> {
-    function: extern "C" fn(T),
-}
-
-/// Windows snowflake callback
-#[cfg(windows)]
-pub struct Callback<T> {
-    function: extern "stdcall" fn(T),
-}
-
-/// Non windows callback
-#[cfg(not(windows))]
-pub struct VoidCallback {
-    function: extern "C" fn(),
-}
-
-/// Windows snowflake callback
-#[cfg(windows)]
-pub struct VoidCallback {
-    function: extern "C" fn(),
-}
-
-impl<T> Callback<T> {
-    /// Calls the internal function with the parameter
-    ///
-    /// Would be nice to have some way to nicely convert between
-    /// Rust -> Native data structures. I.e. I could pass in a rust string
-    /// and it would automagically convert it to a native string
-    pub fn call(&self, param: T) {
-        (self.function)(param);
-    }
-}
-
-impl VoidCallback {
-    /// Calls the internal function
-    pub fn call(&self) {
-        (self.function)();
-    }
-}
-
-
-#[repr(C)]
-pub struct RenderObject {
-    asset: *const c_char,
-}
-
-impl RenderObject {
-    fn new(name: String, x: i32, y: i32, rotation: f32) -> Self {
-        Self {
-            asset: to_ptr(name),
-        }
-    }
-}
-
-impl Drop for RenderObject {
-    fn drop(&mut self) { }
-}
-
-pub struct RenderFunctions {
-    pub start_draw: VoidCallback,
-    pub end_draw: VoidCallback, 
-    pub update_window: VoidCallback, 
-    pub get_window_info: VoidCallback, 
-    pub draw_sprite: Callback<()>, 
-}
-
+use callback::*;
+use render::{RenderFunctions, RenderInfo, RenderObject};
 /// Runs the game (Linux/MacOS specific)
 #[no_mangle]
 #[cfg(not(windows))]
@@ -82,19 +18,25 @@ pub extern fn startGame(
     startDraw: extern "C" fn(),
     endDraw: extern "C" fn(), 
     updateWindow: extern "C" fn(), 
-    getWindowInfo: extern "C" fn(), 
+    getWindowInfo: extern "C" fn(&RenderInfo), 
     drawSprite: extern "C" fn(())) {
 
+    run_game(&Callback { function: getWindowInfo} );
+
+
+    /*
     println!("Running game Linux");
     run_game(RenderFunctions { 
         start_draw: VoidCallback { function: startDraw },
         end_draw: VoidCallback { function: endDraw },
         update_window: VoidCallback { function: updateWindow },
-        get_window_info: VoidCallback { function: getWindowInfo },
+        get_window_info: Callback { function: getWindowInfo },
         draw_sprite: Callback { function: drawSprite },
     });
     println!("Game finished");
+    */
 }
+
 
 /// Runs the game (Windows specific)
 #[no_mangle]
@@ -104,30 +46,47 @@ pub extern fn startGame(
     startDraw: extern "stdcall" fn(),
     endDraw: extern "stdcall" fn(), 
     updateWindow: extern "stdcall" fn(), 
-    getWindowInfo: extern "stdcall" fn(), 
+    getWindowInfo: extern "stdcall" fn(&RenderInfo), 
     drawSprite: extern "stdcall" fn(())) {
 
+    /*
     println!("Running game Linux");
     run_game(RenderFunctions { 
         start_draw: VoidCallback { function: startDraw },
         end_draw: VoidCallback { function: endDraw },
         update_window: VoidCallback { function: updateWindow },
-        get_window_info: VoidCallback { function: getWindowInfo },
+        get_window_info: Callback { function: getWindowInfo },
         draw_sprite: Callback { function: drawSprite },
     });
     println!("Game finished");
+    */
 }
 
 /// Takes some (TODO) callbacks for rendering purposes
 /// since the Rust library is not aware of the OpenGL context and it's rather hard
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
-pub fn run_game(render_functions: RenderFunctions) {
+//pub fn run_game(render_functions: RenderFunctions) {
+pub fn run_game(get_window_info: &Callback<&RenderInfo>) {
+    let x = RenderInfo { size_x: 0, size_y: 0 };
+    
+    {
+        get_window_info.call(&x);
+    }
+
+    println!("{:?}", x);
+    /*
+    let x = RenderInfo { size_x: 0, size_y: 0 };
+    
     render_functions.start_draw.call();
     render_functions.end_draw.call();
     render_functions.update_window.call();
-    render_functions.get_window_info.call();
+    render_functions.get_window_info.call(&x);
     render_functions.draw_sprite.call(());
+    */
+
+    //println!("{:?}", x);
+}
 
     /*
     let timer = Instant::now();
@@ -139,20 +98,3 @@ pub fn run_game(render_functions: RenderFunctions) {
                           elapsed.subsec_nanos() as f64 * 1e-9));
     let y = context.get_view_size()[1] as f64 / 2.0;
     */
-}
-
-/// Converts native string to rust string
-fn to_string(pointer: *const c_char) -> String {
-    let slice = unsafe { CStr::from_ptr(pointer).to_bytes() };
-    str::from_utf8(slice).unwrap().to_string()
-}
-
-/// Converts rust string to native string
-fn to_ptr(string: String) -> *const c_char {
-    let cs = CString::new(string.as_bytes()).unwrap();
-    let ptr = cs.as_ptr();
-    // Don't destroy our string while we still have pointer
-    mem::forget(cs);
-
-    ptr
-}

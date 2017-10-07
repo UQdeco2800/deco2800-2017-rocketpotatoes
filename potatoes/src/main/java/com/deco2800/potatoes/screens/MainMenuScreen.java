@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.GameLauncher;
 import com.deco2800.potatoes.RocketPotatoes;
+import com.deco2800.potatoes.cheats.rust.Rustyfish;
 import com.deco2800.potatoes.gui.MainMenuGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
@@ -108,46 +109,7 @@ public class MainMenuScreen implements Screen {
         
         stage.draw();
 
-        Callback startDraw = new Callback() {
-            @SuppressWarnings("unused")
-            public void run() {
-                System.out.println("Start draw");
-            }
-        };
-
-        Callback endDraw = new Callback() {
-            @SuppressWarnings("unused")
-            public void run() {
-                System.out.println("End draw");
-            }
-        };
-
-        Callback updateWindow = new Callback() {
-            @SuppressWarnings("unused")
-            public void run() {
-                System.out.println("Update window");
-            }
-        };
-
-        Callback getWindowInfo = new Callback() {
-            @SuppressWarnings("unused")
-            public void run() {
-                System.out.println("Get window info");
-            }
-        };
-
-        Callback drawSprite = new Callback() {
-            @SuppressWarnings("unused")
-            public void run() {
-                System.out.println("Draw sprite");
-            }
-        };
-
-        // TODO testing run game
-        GameLauncher.RLibrary.INSTANCE.startGame(
-                startDraw, endDraw,
-                updateWindow, getWindowInfo,
-                drawSprite);
+        Rustyfish.run();
     }
 
     /**
