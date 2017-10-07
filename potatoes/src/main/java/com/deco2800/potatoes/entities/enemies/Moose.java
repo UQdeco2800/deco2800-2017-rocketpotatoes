@@ -143,15 +143,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
 
-		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
+		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
 
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
+		super.onTickMovement();
 
-		this.setPosX(getPosX() + changeX);
-		this.setPosY(getPosY() + changeY);
-
-		updateDirection();
+		super.updateDirection();
 	}
 
 	/**

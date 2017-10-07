@@ -150,7 +150,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 		updateDirection();
 
-		//if no ResourceTree in the world, set goal to player 
+		//if no ResourceTree in the world, set goal to player
 		if (!tgt.isPresent()) {
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			AbstractEntity tgtGet = playerManager.getPlayer();
@@ -202,7 +202,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			this.setPosY(getPosY() + changeY);
 		} else {
 			//otherwise, set resourceTrees and move towards them
-			
+
 			AbstractEntity tgtGet = tgt.get();
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
@@ -247,17 +247,10 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			float deltaY = getPosY() - targetY;
 
 			//sprite direction
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY) + (float) Math.PI);
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.onTickMovement();
+
 			super.updateDirection();
-
-			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
-
-
-			float changeX = (float) (speed * Math.cos(angle));
-			float changeY = (float) (speed * Math.sin(angle));
-
-			this.setPosX(getPosX() + changeX);
-			this.setPosY(getPosY() + changeY);
 		}
 	}
 }
