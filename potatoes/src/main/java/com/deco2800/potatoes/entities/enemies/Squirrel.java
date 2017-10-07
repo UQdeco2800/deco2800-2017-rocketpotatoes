@@ -65,6 +65,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		this.path = null;
 	}
 
+
 	/**
 	 * Squirrel follows it's path.
 	 * Requests a new path whenever it collides with a staticCollideable entity

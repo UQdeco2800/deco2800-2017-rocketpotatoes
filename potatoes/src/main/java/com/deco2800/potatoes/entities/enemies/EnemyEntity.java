@@ -151,16 +151,13 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		}
 	}
 
-	/*Find the most relevant target to go to according to its EnemyTargets
-*
-* This is likely to get EnemyEntity, squirrel is being used for testing aggro at the moment
-* */
+	/*Find the most relevant target to go to according to its EnemyTargets*/
 	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
 		entities = GameManager.get().getWorld().getEntities();
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
 		for (AbstractEntity entity : entities.values()) {
 			for (Class sightTarget : targets.getSightAggroTargets()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {
+				if (entity.getClass().isAssignableFrom(sightTarget)) {	//HOW TO CHECK SUPERCLASS SO WE CAN JUST ADD PLAYER TO TARGETS?
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
 					if (distance < 10) {
 						return entity;
@@ -331,7 +328,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		ParticleType particle =  new BasicParticleType(100000, 500.0f,
 				0.0f, 1024, Color.RED, 5, 5);
-		particle.speed = 0.9f;
+		particle.speed = 0.4f;
 
 		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
@@ -339,8 +336,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		p.addParticleEmitter(1.0f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
 				particle));
 
-		// destroy the enemy
+		// destroy the enemy & it's events
 		GameManager.get().getWorld().removeEntity(this);
+		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 	}
 
 }

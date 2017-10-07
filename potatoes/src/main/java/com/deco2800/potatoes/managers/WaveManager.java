@@ -57,14 +57,12 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
 	public void onTick(long i) {
         if (getActiveWave() != null) {
             getActiveWave().tickAction();
+            System.err.println(getActiveWave());
         } else if (getWaveIndex()+1 < getWaves().size()) {
             //there are still more waves
-            incrementTime();
-            if (getElapsedTime() > timeBetweenWaves) {
-                waveIndex++;
-                activateWave(waves.get(getWaveIndex()));
-                resetTime();
-            }
+            waveIndex++;
+            activateWave(waves.get(getWaveIndex()));
+            resetTime();
         }
     }
 
@@ -76,7 +74,8 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * */
     public EnemyWave getActiveWave() {
         for (EnemyWave wave: waves) {
-            if (wave.getWaveState() == WaveState.ACTIVE) {
+            WaveState waveState = wave.getWaveState();
+            if (waveState == WaveState.ACTIVE) {
                 return wave;
             }
         }
