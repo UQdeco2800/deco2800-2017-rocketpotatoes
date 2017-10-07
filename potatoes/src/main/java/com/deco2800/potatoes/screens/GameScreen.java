@@ -221,10 +221,6 @@ public class GameScreen implements Screen {
 
         // Sets the world to the initial world, forest world
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-		// Creates the object for the repeated background texture
-		// TODO this will need to be changed once proper texture is added
-		GameManager.get().getManager(WorldManager.class).setBackground(new TiledDrawable(textureManager
-				.getTextureRegion("water_tile_1")));
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;

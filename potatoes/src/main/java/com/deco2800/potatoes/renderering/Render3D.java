@@ -7,13 +7,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.math.Affine2;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.collisions.*;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -34,7 +38,9 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -53,6 +59,8 @@ public class Render3D implements Renderer {
 	private ShapeRenderer shapeRenderer;
 
 	private SpriteBatch batch;
+	private SpriteCache cache;
+	private SpriteCacheBatch spriteCacheBatch;
 	private BatchTiledMapRenderer tiledMap;
 	private SortedMap<AbstractEntity, Integer> rendEntities;
 
@@ -75,6 +83,12 @@ public class Render3D implements Renderer {
 		// Created here because constructor is run in tests, TODO should be moved to constructor though
 		if (shapeRenderer == null) {
 			shapeRenderer = new ShapeRenderer();
+		}
+		if (cache == null) {
+			cache = new SpriteCache(5000, true);
+		}
+		if (spriteCacheBatch == null) {
+			spriteCacheBatch = new SpriteCacheBatch();
 		}
 
 		this.batch = batch;
@@ -155,27 +169,47 @@ public class Render3D implements Renderer {
 	/**
 	 * Renders the tiles of the Map	*/
 	private void renderMap() {
+		BatchTiledMapRenderer tileRenderer = getTileRenderer(spriteCacheBatch);
 
-		/* Render the tiles first */
-		batch.begin();
-		BatchTiledMapRenderer tileRenderer = getTileRenderer(batch);
-		tileRenderer.setView(GameManager.get().getManager(CameraManager.class).getCamera());
+		if (!GameManager.get().getManager(WorldManager.class).isWorldCached()) {
+			cache.clear();
 
-		// within the screen, but down rounded to the nearest tile
-		Vector2 waterCoords = new Vector2(
-				tileWidth * (float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1),
-				tileHeight * (float) Math.floor(tileRenderer.getViewBounds().y / tileHeight - 1));
-		// draw with screen corner and width a little bit more than the screen
-		TiledDrawable background = GameManager.get().getManager(WorldManager.class).getBackground();
-		background.draw(batch, waterCoords.x, waterCoords.y, tileRenderer
-						.getViewBounds().width +
-						tileWidth * 4,
-				tileRenderer.getViewBounds().height + tileHeight * 4);
-		background.draw(batch, waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2,
-				tileRenderer.getViewBounds().width + tileWidth * 4,
-				tileRenderer.getViewBounds().height + tileHeight * 4);
-		batch.end();
-		tileRenderer.render();
+
+			spriteCacheBatch.begin();
+			// within the screen, but down rounded to the nearest tile
+			Vector2 waterCoords = new Vector2(
+					tileWidth * ((float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1) - 0.5f *
+							WorldManager.WORLD_SIZE),tileHeight * ((float) Math.floor(tileRenderer.getViewBounds().y /
+					tileHeight - 1) - WorldManager.WORLD_SIZE));
+			// draw with screen corner and width a little bit more than the screen
+			TextureRegionDrawable background = GameManager.get().getWorld().getBackground();
+			spriteCacheBatch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
+			spriteCacheBatch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
+			spriteCacheBatch.end();
+
+			tileRenderer.setView(new Matrix4(), 0, 0, tileWidth * WorldManager.WORLD_SIZE, tileHeight *
+					WorldManager.WORLD_SIZE);
+			tileRenderer.render();
+			GameManager.get().getManager(WorldManager.class).setWorldCached(true);
+
+		}
+
+		cache.setProjectionMatrix(GameManager.get().getManager(CameraManager.class).getCamera().combined);
+		cache.begin();
+		// Blending has to be enabled with cache
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+
+		//Set the shader to blend the time colour
+		GameManager.get().getManager(ShaderManager.class).getShader().setUniformf(ShaderManager
+				.EXTRA_COLOR_ATTRIBUTE, batch.getColor().r, batch.getColor().g, batch.getColor().b, batch.getColor().a);
+		cache.setShader(GameManager.get().getManager(ShaderManager.class).getShader());
+
+		// Render everything in the cache, maybe should be changed to just map later
+		for (int cacheId : spriteCacheBatch.cacheIds) {
+			cache.draw(cacheId);
+		}
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+		cache.end();
 	}
 
 	/**
@@ -343,7 +377,7 @@ public class Render3D implements Renderer {
 			if (!progressValues.showPotatoProgress() && e instanceof GoalPotate) {
 				continue;
 			}
-			
+
 			// Progress Bars for allies [Trees, Portals].
 			if (!progressValues.showAlliesProgress() && !(e instanceof EnemyEntity)
 					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())
@@ -354,7 +388,7 @@ public class Render3D implements Renderer {
 			if (!progressValues.showEnemiesProgress() && (e instanceof EnemyEntity || e instanceof EnemyGate)) {
 				continue;
 			}
-			
+
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
 
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
@@ -562,7 +596,7 @@ public class Render3D implements Renderer {
 
 	/**
 	 * Transforms screen(gui) coordinates to tile coordinates. Reverses tileToScreen.
-	 * 
+	 *
 	 * @param x
 	 *            x coordinate in screen
 	 * @param y
@@ -571,13 +605,13 @@ public class Render3D implements Renderer {
 	 */
 	public static Vector2 screenToTile(float x, float y) {
 		Vector3 world = Render3D.screenToWorldCoordiates(x, y);
-		
+
 		return Render3D.worldPosToTile(world.x, world.y);
 	}
 
 	/**
 	 * Transforms tile coordinates to screen(gui) coordinates. Reverses screenToTile.
-	 * 
+	 *
 	 * @param stage
 	 *            stage that the screen is on
 	 * @param x
@@ -598,7 +632,7 @@ public class Render3D implements Renderer {
 
 	/**
 	 * Converts world coords to screen(gui) coordinates. Reverses ScreenToWorldCoordinates.
-	 * 
+	 *
 	 * @param stage
 	 *            stage that the screen is on
 	 * @param x
@@ -613,7 +647,7 @@ public class Render3D implements Renderer {
 		Vector3 screen = GameManager.get().getManager(CameraManager.class).getCamera()
 				.project(new Vector3(x, y - Gdx.graphics.getHeight() + 1, z));
 		screen.y = -screen.y;
-		
+
 		return screen;
 	}
 
@@ -687,7 +721,7 @@ public class Render3D implements Renderer {
 		projX = x / tileWidth;
 		projY = -(y - tileHeight / 2f) / tileHeight + projX;
 		projX -= projY - projX;
-		
+
 		return new Vector2(projX, projY);
 	}
 
@@ -711,5 +745,107 @@ public class Render3D implements Renderer {
 
 		return new Vector2(worldX, worldY);
 
+	}
+
+	/**
+	 * Hacky class for converting between a SpriteBatch and SpriteCache
+	 */
+	private class SpriteCacheBatch extends SpriteBatch {
+		public List<Integer> cacheIds = new ArrayList<>();
+
+		public SpriteCacheBatch() {
+			// Do nothing
+		}
+
+		@Override
+		public void begin() {
+			cache.beginCache();
+		}
+
+		@Override
+		public void end() {
+			cacheIds.add(cache.endCache());
+		}
+
+		@Override
+		public void setColor(Color tint) {
+			cache.setColor(tint);
+		}
+
+		@Override
+		public void setColor(float r, float g, float b, float a) {
+			cache.setColor(r, g, b, a);
+		}
+
+		@Override
+		public void setColor(float color) {
+			cache.setColor(color);
+		}
+
+		@Override
+		public Color getColor() {
+			return cache.getColor();
+		}
+
+		@Override
+		public void draw(Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
+			cache.add(texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, srcX, srcY, srcWidth,
+					srcHeight, flipX, flipY);
+		}
+
+		@Override
+		public void draw(Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
+			cache.add(texture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, flipX, flipY);
+		}
+
+		@Override
+		public void draw(Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight) {
+			cache.add(texture, x, y, srcX, srcY, srcWidth, srcHeight);
+		}
+
+		@Override
+		public void draw(Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
+			cache.add(new TextureRegion(texture, u, v, u2, v2), x, y, width, height);
+		}
+
+		@Override
+		public void draw(Texture texture, float x, float y) {
+			cache.add(texture, x, y);
+		}
+
+		@Override
+		public void draw(Texture texture, float x, float y, float width, float height) {
+			cache.add(new TextureRegion(texture), x, y, width, height);
+		}
+
+		@Override
+		public void draw(Texture texture, float[] spriteVertices, int offset, int count) {
+			cache.add(texture, spriteVertices, offset, count);
+		}
+
+		@Override
+		public void draw(TextureRegion region, float x, float y) {
+			cache.add(region, x, y);
+		}
+
+		@Override
+		public void draw(TextureRegion region, float x, float y, float width, float height) {
+			cache.add(region, x, y, width, height);
+		}
+
+		@Override
+		public void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation) {
+			cache.add(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+		}
+
+		@Override
+		public void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation, boolean clockwise) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void draw(TextureRegion region, float width, float height, Affine2 transform) {
+			throw new UnsupportedOperationException();
+		}
 	}
 }
