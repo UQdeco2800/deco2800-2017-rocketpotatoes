@@ -275,18 +275,20 @@ public class GameScreen implements Screen {
 			//add an enemy gate to game world
 			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
+            GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
+			/*
 			// Initial player preparation up period
 			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1000)); // pause wave
 			// Waves: sq -> sq + rac -> sq + rac + bear -> sq + rac + bear + moose
 			for (int i = 0; i<10; i++) {
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750, i));
 				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0, 0, 750, i));
 				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1, 1, 750, i));
 				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
 			}
-
+			*/
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
