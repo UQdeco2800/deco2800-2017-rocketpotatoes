@@ -2,6 +2,7 @@ package com.deco2800.potatoes.cheats.rust;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -107,7 +108,10 @@ public class Rustyfish {
         @SuppressWarnings("unused")
         public void run(RenderObject.ByValue obj) {
             TextureManager m = GameManager.get().getManager(TextureManager.class);
-            batch.draw(m.getTexture(obj.asset), obj.x, obj.y);
+            Texture t = m.getTexture(obj.asset);
+            batch.draw(t, obj.x, Gdx.graphics.getHeight() - t.getWidth() - obj.y, t.getWidth() / 2.0f, t.getHeight() / 2.0f,
+                    t.getWidth(), t.getHeight(), 1.0f, 1.0f, obj.rotation,
+                    0, 0, t.getWidth(), t.getHeight(), false, false);
         }
     };
 

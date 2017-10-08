@@ -39,6 +39,7 @@ pub fn run_game(functions: RenderFunctions){
 
     let window_info = RenderInfo { size_x: 0, size_y: 0 };
     let timer = Instant::now();
+    let mut rot = 0.0;
     loop {
 
         // Get input/process resize events etc.
@@ -53,14 +54,16 @@ pub fn run_game(functions: RenderFunctions){
         (functions.start_draw)();
 
         let elapsed = timer.elapsed();
+        let real_time = f64::sin(elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9);
         let width = window_info.size_x as f64;
         let height = window_info.size_y as f64;
         let x = width / 2.0
-            * (1.0 + f64::sin(elapsed.as_secs() as f64 +
-                              elapsed.subsec_nanos() as f64 * 1e-9));
+            * (1.0 + real_time);
         let y = height as f64 / 2.0;
 
-        (functions.draw_sprite)(RenderObject::new("potate".to_string(), x as i32, y as i32, 0.0));
+        (functions.draw_sprite)(RenderObject::new("rustyfish_test".to_string(), 0 as i32, 0 as i32, rot));
+
+        //rot += 3.0;
 
         (functions.end_draw)();
 
