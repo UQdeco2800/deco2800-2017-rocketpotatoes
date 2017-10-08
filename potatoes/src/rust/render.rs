@@ -10,12 +10,18 @@ use util::*;
 #[repr(C)]
 pub struct RenderObject {
     asset: *const c_char,
+    x: i32,
+    y: i32,
+    rotation: f32,
 }
 
 impl RenderObject {
-    fn new(name: String, x: i32, y: i32, rotation: f32) -> Self {
+    pub fn new(name: String, x: i32, y: i32, rotation: f32) -> Self {
         Self {
             asset: to_ptr(name),
+            x: x,
+            y: y,
+            rotation: rotation,
         }
     }
 }
@@ -34,6 +40,6 @@ pub struct RenderFunctions {
     pub clear_window: extern "C" fn(),
     pub flush_window: extern "C" fn(),
     pub get_window_info: extern "C" fn(&RenderInfo),
-    pub draw_sprite: extern "C" fn(),
+    pub draw_sprite: extern "C" fn(RenderObject),
 }
 

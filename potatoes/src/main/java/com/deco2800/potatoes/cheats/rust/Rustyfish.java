@@ -56,7 +56,7 @@ public class Rustyfish {
     private static Callback clearWindow = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClearColor(0, 0.4f, 0.8f, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         }
@@ -95,7 +95,8 @@ public class Rustyfish {
      */
     private static Callback drawSprite = new Callback() {
         @SuppressWarnings("unused")
-        public void run() {
+        public void run(RenderObject.ByValue obj) {
+            System.out.println(obj);
         }
     };
 

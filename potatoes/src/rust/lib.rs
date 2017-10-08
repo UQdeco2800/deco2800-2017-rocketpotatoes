@@ -19,7 +19,7 @@ pub extern fn startGame(
     clearWindow: extern "C" fn(),
     flushWindow: extern "C" fn(),
     getWindowInfo: extern "C" fn(&RenderInfo), 
-    drawSprite: extern "C" fn()) {
+    drawSprite: extern "C" fn(RenderObject)) {
 
     run_game(RenderFunctions { 
         start_draw: startDraw,
@@ -51,6 +51,8 @@ pub fn run_game(functions: RenderFunctions){
         (functions.clear_window)();
 
         (functions.start_draw)();
+
+        (functions.draw_sprite)(RenderObject::new("box".to_string(), 0, 0, 0.0));
 
         (functions.end_draw)();
 
