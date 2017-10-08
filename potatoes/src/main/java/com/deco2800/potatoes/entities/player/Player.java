@@ -380,8 +380,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (direcEnum == 4) {
             setState(IDLE);
             super.setMoveSpeedModifier(0);
-        } else {
-            setState(WALK);
+        } else if (setState(WALK)) {
             super.setMoveAngle(newFacing.getAngleRad());
             super.setMoveSpeedModifier(1);
             facing = newFacing;
