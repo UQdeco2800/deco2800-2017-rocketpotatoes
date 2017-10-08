@@ -78,10 +78,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		boolean result = tree.getUpgradeStats().removeConstructionResources(tree);
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
-			System.out.println("adding tree");
 		} else {
 			GameManager.get().getManager(EventManager.class).unregisterAll(tree);
-			System.out.println("the other thing");
 		}
 		return result;
 	}
@@ -245,5 +243,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return constructionLeft > 0 ? BUILD_PROGRESS_BAR : getHealth() < getMaxHealth() ? PROGRESS_BAR : null;
+	}
+
+	@Override
+	public String toString(){
+		return "Tree: "+this.getTexture();
 	}
 }

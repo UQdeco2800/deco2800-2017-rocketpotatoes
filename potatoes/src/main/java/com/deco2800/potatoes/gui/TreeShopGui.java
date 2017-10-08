@@ -91,7 +91,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 
         initTreeState();
         for (TreeState treeState : treeStates) {
-            System.out.println(treeState.getTreeType());
             items.put(treeState.getTree(), treeColorCode.get(treeState.getTreeType()));
         }
 
@@ -195,7 +194,7 @@ public class TreeShopGui extends Gui implements SceneGui {
      */
     public TreeState getTreeStateByTree(AbstractTree tree) {
         for (TreeState treeState : treeStates) {
-            if (treeState.getTree().equals(tree))
+            if (treeState.getTree().toString().equals(tree.toString()))
                 return treeState;
         }
         return null;

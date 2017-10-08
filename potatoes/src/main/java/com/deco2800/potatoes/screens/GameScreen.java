@@ -375,8 +375,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void tickGame(long timeDelta) {
-		/*System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer
-				().getInventory().toString());*/
 		/*
 		 * broken! window.removeActor(peonButton); boolean somethingSelected = false;
 		 */

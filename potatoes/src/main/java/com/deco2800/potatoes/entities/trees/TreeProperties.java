@@ -60,20 +60,14 @@ public class TreeProperties extends BasicProperties<AbstractTree> {
 	 */
 	public boolean removeConstructionResources(AbstractTree tree) {
 
-
 		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
 
-		System.out.println(player.canAfford(tree));
 		if (!player.canAfford(tree))
 			return false;
 		player.getInventory().subtractInventory(GameManager.get().getManager
 				(GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree)
 				.getCost());
 		return true;
-
-
-		/*return 1 == GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
-				.updateQuantity(UPGRADE_RESOURCE, -getBuildCost());*/
 	}
 
 	/**
