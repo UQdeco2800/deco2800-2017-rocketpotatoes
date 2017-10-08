@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.worlds;
 
+import java.awt.Point;
 import java.util.*;
 
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -31,11 +32,17 @@ import org.slf4j.LoggerFactory;
 public class World {
 	private static final Logger LOGGER = LoggerFactory.getLogger(World.class);
 
+	/**
+	 * Size of the area entites that are in will be put into the same position in the map
+	 */
+	private static final int GRID_SIZE = 5;
+
 	private static final int TILE_WIDTH = 128;
 	private static final int TILE_HEIGHT = 74;
 	private Terrain[][] terrain;
 
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
+	private Map<Point, Map<Integer, AbstractEntity>> entitiesByPosition = new HashMap<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
 	// First 16 index's are reserved for clients
@@ -58,11 +65,20 @@ public class World {
 
 	/**
 	 * Returns a list of entities in this world
+	 * Note that looping through all entities to find a subset of them is rather inefficient in most cases.
 	 *
 	 * @return All Entities in the world
 	 */
+	@Deprecated
 	public Map<Integer, AbstractEntity> getEntities() {
 		return new HashMap<>(this.entities);
+	}
+
+	/**
+	 * Returns the entity associated with the given id
+	 */
+	public AbstractEntity getEntity(int id) {
+		return entities.get(id);
 	}
 
 	/**
@@ -95,7 +111,7 @@ public class World {
 					currentIndex++;
 				} else {
 					// If we're in multiplayer and the master tell other entities.
-					entities.put(currentIndex++, entity);
+					addToMaps(currentIndex++, entity);
 
 					// Tell other clients about this entity. Note that we should always broadcast
 					// master changes AFTER
@@ -110,7 +126,7 @@ public class World {
 						"Clients who aren't master shouldn't be adding entities when in multiplayer!");
 		} else {
 				// Singleplayer behaviour
-				entities.put(currentIndex++, entity);
+				addToMaps(currentIndex++, entity);
 		}
 	}
 
@@ -128,7 +144,7 @@ public class World {
 	public void addEntity(AbstractEntity entity, int id) {
 		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 		if (m.isMultiplayer()) {
-			entities.put(id, entity);
+			addToMaps(id, entity);
 		} else {
 			throw new IllegalStateException("Not in multiplayer, this function should only be used for multiplayer");
 		}
@@ -139,7 +155,7 @@ public class World {
 	 * Removes the entity with the given id from this world.
 	 */
 	public void removeEntity(int id) {
-		entities.remove(id);
+		removeFromMaps(id);
 
 		// Tell the other clients if we're master and in multiplayer.
 		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
@@ -155,7 +171,7 @@ public class World {
 	public void removeEntity(AbstractEntity entity) {
 		for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
 			if (e.getValue() == entity) {
-				entities.remove(e.getKey());
+				removeFromMaps(e.getKey());
 
 				// Tell the other clients if we're master and in multiplayer.
 				MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
@@ -165,7 +181,44 @@ public class World {
 				return;
 			}
 		}
+	}
 
+	/**
+	 * Adds the entity and associated id to all the maps
+	 */
+	private void addToMaps(int id, AbstractEntity entity) {
+		// Check if the nested maps exist and create them if they don't
+		if (!entitiesByPosition.containsKey(getGridPoint(entity))) {
+			entitiesByPosition.put(getGridPoint(entity), new HashMap<>());
+		}
+
+		entitiesByPosition.get(getGridPoint(entity)).put(id, entity);
+		entities.put(id, entity);
+	}
+
+	/**
+	 * Removes the entity associated with the given id from all the maps
+	 */
+	private void removeFromMaps(int id) {
+		AbstractEntity entity = entities.get(id);
+		// Check all the nested maps exist
+		if (entitiesByPosition.containsKey(getGridPoint(entity))) {
+			entitiesByPosition.get(getGridPoint(entity)).remove(id);
+		}
+		entities.remove(id);
+	}
+
+	private Point getGridPoint(AbstractEntity entity) {
+		if (entity == null) {
+			// Quick fix for tests, should be used normally
+			return new Point(0,0);
+		}
+		return getGridPoint((int)entity.getPosX(), (int)entity.getPosY());
+	}
+
+	private Point getGridPoint(int x, int y) {
+		// Rounds x and y to a multiple of GRID_SIZE
+		return new Point(GRID_SIZE * (x / GRID_SIZE), GRID_SIZE * (y / GRID_SIZE));
 	}
 
 	/**
