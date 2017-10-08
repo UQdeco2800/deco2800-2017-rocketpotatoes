@@ -11,7 +11,7 @@ public class Rustyfish {
         RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
 
         void startGame(Callback startDraw, Callback endDraw,
-                       Callback updateWindow, Callback getWindowInfo,
+                       Callback updateWindow, Callback clearWindow, Callback flushWindow, Callback getWindowInfo,
                        Callback drawSprite);
     }
 
@@ -49,6 +49,26 @@ public class Rustyfish {
     };
 
     /**
+     * Clears the window with default black color
+     */
+    private static Callback clearWindow = new Callback() {
+        @SuppressWarnings("unused")
+        public void run() {
+            System.out.println("Clear window");
+        }
+    };
+
+    /**
+     * Flushes the window (swaps backbuffers)
+     */
+    private static Callback flushWindow = new Callback() {
+        @SuppressWarnings("unused")
+        public void run() {
+            System.out.println("Flush window");
+        }
+    };
+
+    /**
      * Get's the window information and places it inside the info object
      */
     private static Callback getWindowInfo = new Callback() {
@@ -77,6 +97,6 @@ public class Rustyfish {
     };
 
     public static void run() {
-        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, getWindowInfo, drawSprite);
+        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, clearWindow, flushWindow, getWindowInfo, drawSprite);
     }
 }

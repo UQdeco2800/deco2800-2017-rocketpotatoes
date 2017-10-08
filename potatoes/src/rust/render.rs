@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
 
-use callback::*;
+use util::*;
 
 
 #[repr(C)]
@@ -31,6 +31,8 @@ pub struct RenderFunctions {
     pub start_draw: extern "C" fn(),
     pub end_draw: extern "C" fn(),
     pub update_window: extern "C" fn(),
+    pub clear_window: extern "C" fn(),
+    pub flush_window: extern "C" fn(),
     pub get_window_info: extern "C" fn(&RenderInfo),
     pub draw_sprite: extern "C" fn(),
 }

@@ -1,6 +1,6 @@
 #![crate_type = "dylib"]
 mod render;
-mod callback;
+mod util;
 
 use std::ffi::{CStr, CString};
 use std::mem;
@@ -9,13 +9,15 @@ use std::str;
 use std::time::{Instant};
 use render::{RenderFunctions, RenderInfo, RenderObject};
 
-/// Runs the game (Linux/MacOS specific)
+// FFI entry point to start the game.
 #[no_mangle]
 #[allow(non_snake_case)]
 pub extern fn startGame(
     startDraw: extern "C" fn(),
     endDraw: extern "C" fn(), 
     updateWindow: extern "C" fn(), 
+    clearWindow: extern "C" fn(),
+    flushWindow: extern "C" fn(),
     getWindowInfo: extern "C" fn(&RenderInfo), 
     drawSprite: extern "C" fn()) {
 
@@ -23,6 +25,8 @@ pub extern fn startGame(
         start_draw: startDraw,
         end_draw: endDraw,
         update_window: updateWindow,
+        clear_window: clearWindow,
+        flush_window: flushWindow,
         get_window_info: getWindowInfo,
         draw_sprite: drawSprite });
 }
@@ -31,24 +35,26 @@ pub extern fn startGame(
 /// since the Rust library is not aware of the OpenGL context and it's rather hard
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
-//pub fn run_game(render_functions: RenderFunctions) {
 pub fn run_game(functions: RenderFunctions){
-    let x = RenderInfo { size_x: 0, size_y: 0 };
-    
-    (functions.get_window_info)(&x);
 
-    println!("{:?}", x);
-    /*
-    let x = RenderInfo { size_x: 0, size_y: 0 };
-    
-    render_functions.start_draw.call();
-    render_functions.end_draw.call();
-    render_functions.update_window.call();
-    render_functions.get_window_info.call(&x);
-    render_functions.draw_sprite.call(());
-    */
+    let window_info = RenderInfo { size_x: 0, size_y: 0 };
+    loop {
+        // Get window statistics (size etc)
+        (functions.get_window_info)(&window_info);
 
-    //println!("{:?}", x);
+        // Get input/process resize events etc.
+        (functions.update_window)();
+
+        // Clear window with default background color
+        (functions.clear_window)();
+
+        (functions.start_draw)();
+        // Do drawing stuff
+        (functions.end_draw)();
+
+        // Flush any render changes etc.
+        (functions.flush_window)();
+    }
 }
 
     /*
