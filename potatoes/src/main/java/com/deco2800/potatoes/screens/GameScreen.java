@@ -69,8 +69,7 @@ public class GameScreen implements Screen {
 
 	private SpriteBatch batch;
 
-	private long lastGameTick = 0;
-	private double tickrate = 10;
+	private double tickrate = 1;
 
 	private int maxShopRange;
 
@@ -501,25 +500,13 @@ public class GameScreen implements Screen {
 		 * We only tick/render the game if we're actually playing. Lets us seperate main
 		 * menu and such from the game
 		 */
+
 		/*
 		 * Tickrate = 100Hz
 		 */
 
 		if (!GameManager.get().isPaused()) {
-			// Stop the first tick lasting years
-			if (lastGameTick != 0) {
-				long timeDelta = TimeUtils.millis() - lastGameTick;
-				if (timeDelta > tickrate) {
-
-					// Tick game, a bit a weird place to have it though.
-					tickGame(timeDelta);
-					lastGameTick = TimeUtils.millis();
-				}
-			} else {
-				lastGameTick = TimeUtils.millis();
-			}
-		} else {
-			lastGameTick = 0;
+			tickGame((int)(delta * 1000 * tickrate));
 		}
 
 		/*
@@ -742,6 +729,9 @@ public class GameScreen implements Screen {
 	}
 
 	public void setTickrate(double tickrate) {
+		if (tickrate < 0) {
+			tickrate = 0;
+		}
 		this.tickrate = tickrate;
 	}
 
