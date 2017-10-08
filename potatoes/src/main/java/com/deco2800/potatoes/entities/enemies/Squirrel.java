@@ -29,7 +29,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
-	private static final String enemyType = "squirrel";
+	private static final String ENEMY_TYPE = "squirrel";
 
 	private static final float SPEED = 0.05f;
 
@@ -60,7 +60,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @param posY The y coordinate the created squirrel will spawn from
 	 */
 	public Squirrel(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.665f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+        super(new Circle2D(posX, posY, 0.332f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		Squirrel.goal = goal;
 		this.path = null;
 	}
@@ -161,7 +161,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * */
 	@Override
 	public String getEnemyType() {
-		return enemyType;
+		return ENEMY_TYPE;
 	}
 
 	/**

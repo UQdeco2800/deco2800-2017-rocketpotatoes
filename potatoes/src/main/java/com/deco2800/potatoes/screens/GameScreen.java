@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
+import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
@@ -31,7 +32,6 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
 
@@ -46,6 +46,7 @@ public class GameScreen implements Screen {
 
 	// References to the 'game' object which handles our screens/
 	private RocketPotatoes game;
+
 	/**
 	 * Set the renderer. 3D is for Isometric worlds 2D is for Side Scrolling worlds
 	 * Check the documentation for each renderer to see how it handles WorldEntity
@@ -64,11 +65,18 @@ public class GameScreen implements Screen {
 	private TextureManager textureManager;
 	private InputManager inputManager;
 	private WaveManager waveManager;
+	private ProgressBarManager progressBarManager;
+
 
 	private long lastGameTick = 0;
 	private double tickrate = 10;
 
 	private int maxShopRange;
+
+	float minimumZoom = 1.0f;
+	float maximumZoom = 4.0f;
+	float zoomSpeed = 0.2f;
+
 	/**
 	 * Start's a multiplayer game
 	 *
@@ -148,6 +156,13 @@ public class GameScreen implements Screen {
 		/* Setup camera */
 		cameraManager = GameManager.get().getManager(CameraManager.class);
 		cameraManager.setCamera(new OrthographicCamera(1920, 1080));
+		cameraManager.getCamera().zoom += 1;
+		
+		/* Setup progress bar manager. */
+		progressBarManager = GameManager.get().getManager(ProgressBarManager.class);
+
+        /* Set up cheat codes. */
+        CheatList.addCheats();
 
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our
@@ -230,7 +245,7 @@ public class GameScreen implements Screen {
 		inputManager = GameManager.get().getManager(InputManager.class);
 		inputManager.addKeyDownListener(new CameraHandler());
 		inputManager.addKeyDownListener(new PauseHandler());
-		inputManager.addScrollListener(new ScrollTester());
+		inputManager.addScrollListener(new ZoomHandler());
 
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
@@ -270,9 +285,10 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
 			//add enemy waves
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 750));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 750));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, 1));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave()); // pause wave
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 900, 2));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 1050, 3));
 
 
 			initialiseResources();
@@ -599,18 +615,27 @@ public class GameScreen implements Screen {
 
 	private class CameraHandler implements KeyDownObserver {
 
+		float newZoom;
+
 		@Override
 		public void notifyKeyDown(int keycode) {
 			OrthographicCamera c = cameraManager.getCamera();
 			int speed = 10;
 
 			if (keycode == Input.Keys.EQUALS) {
-				if (c.zoom > 0.1) {
-					c.zoom -= 0.1;
+				newZoom = c.zoom + zoomSpeed;
+				if (newZoom < maximumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = maximumZoom;
 				}
 			} else if (keycode == Input.Keys.MINUS) {
-				c.zoom += 0.1;
-
+				newZoom = c.zoom + zoomSpeed;
+				if (c.zoom > minimumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = minimumZoom;
+				}
 			} else if (keycode == Input.Keys.UP) {
 				c.translate(0, 1 * speed * c.zoom, 0);
 			} else if (keycode == Input.Keys.DOWN) {
@@ -646,11 +671,29 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private class ScrollTester implements ScrollObserver {
+	private class ZoomHandler implements ScrollObserver {
+
+		float newZoom;
 
 		@Override
 		public void notifyScrolled(int amount) {
-			// System.out.println(amount);
+			OrthographicCamera c = cameraManager.getCamera();
+			if (amount == 1) {
+				newZoom = c.zoom + zoomSpeed * amount;
+				if (newZoom < maximumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = maximumZoom;
+				}
+			}
+			if (amount == -1) {
+				newZoom = c.zoom + zoomSpeed * amount;
+				if (c.zoom > minimumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = minimumZoom;
+				}
+			}
 		}
 
 	}

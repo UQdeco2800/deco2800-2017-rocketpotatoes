@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.deco2800.potatoes.collisions.*;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
@@ -101,7 +103,7 @@ public class Render3D implements Renderer {
 		batch.setColor(Color.WHITE);	// clear shading
 		renderTreeResources();			// rend tree resource count
 		renderMultiplayerName();		// 		mutiplayer names
-		renderProgressBars();			// 		progress bars TODO not centred, offset x by -ve spritewidth?
+		renderProgressBars();			// 		progress bars
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
@@ -325,13 +327,33 @@ public class Render3D implements Renderer {
 	/**
 	 * Renders progress bars above entities */
 	private void renderProgressBars() {
-
+		ProgressBarManager progressValues = GameManager.get().getManager(ProgressBarManager.class);
 		Color currentShade = batch.getColor();
 
 		batch.begin();
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
+			// Progress Bars for players.
+			if (!progressValues.showPlayerProgress() && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+				continue;
+			}
+			// Progress Bar for Goal Potato.
+			if (!progressValues.showPotatoProgress() && e instanceof GoalPotate) {
+				continue;
+			}
+			
+			// Progress Bars for allies [Trees, Portals].
+			if (!progressValues.showAlliesProgress() && !(e instanceof EnemyEntity)
+					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())
+					&& !(e instanceof EnemyGate) && !(e instanceof GoalPotate)) {
+				continue;
+			}
+			// Progress Bars for enemy entities.
+			if (!progressValues.showEnemiesProgress() && (e instanceof EnemyEntity || e instanceof EnemyGate)) {
+				continue;
+			}
+			
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
 
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
@@ -358,7 +380,7 @@ public class Render3D implements Renderer {
 					// x co-ordinate,
 					// finds the overlap length of the bar and moves it half as much left
 					float barX = isoPosition.x
-							- tileWidth * e.getXRenderLength() * (progressBar.getWidthScale() - 1) / 2;
+							- tileWidth * e.getXRenderLength() * (progressBar.getWidthScale()) / 2;
 					// y co-ordinate
 					// If height is specified, use it, otherwise estimate the right height
 					float barY = isoPosition.y + entityTexture.getHeight() / aspect * e.getYRenderLength();

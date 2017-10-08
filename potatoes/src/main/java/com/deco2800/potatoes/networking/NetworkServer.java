@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class NetworkServer {
     // Master will always be the first connection
-    private static int MASTER_ID = 1;
+    private static final int MASTER_ID = 1;
 
     Server server;
     private int tcpPort;
