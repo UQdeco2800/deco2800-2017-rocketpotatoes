@@ -3,6 +3,7 @@ package com.deco2800.potatoes.gui;
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -76,6 +78,8 @@ public class TreeShopGui extends Gui implements SceneGui {
      * Instantiates shop with but doesn't display it yet.
      */
     public TreeShopGui(Stage stage) {
+        InputManager input = GameManager.get().getManager(InputManager.class);
+        input.addKeyDownListener(this::handleKeyDown);
         // Render menu
         this.stage = stage;
         playerManager = GameManager.get().getManager(PlayerManager.class);
@@ -100,6 +104,34 @@ public class TreeShopGui extends Gui implements SceneGui {
         textureManager = GameManager.get().getManager(TextureManager.class);
         container = new WidgetGroup();
         stage.addActor(container);
+    }
+
+    private AbstractTree getTreeBinding(int hotkey){
+        if (items.size()>=hotkey){
+            return (AbstractTree)items.keySet().toArray()[hotkey-1];
+        } else {
+            return null;
+        }
+    }
+
+    private void handleKeyDown(int keycode) {
+        if (!initiated)
+            return;
+
+        // Tree planting hotkey
+        if (keycode > Input.Keys.NUM_0 && keycode < Input.Keys.NUM_9){
+            AbstractTree tree = getTreeBinding(keycode - Input.Keys.NUM_0);
+            if (tree != null) {
+                buyTree(tree.clone());
+                closeShop();
+            }
+        }
+        try {
+
+        } catch (Exception e){
+            // not a valid tree binding
+        }
+
     }
 
     private void initTreeState() {
@@ -346,7 +378,7 @@ public class TreeShopGui extends Gui implements SceneGui {
             // Render Items
             float itemX = guiX - imgSize / 2 + offset.x;
             float itemY = guiY - imgSize / 2 + offset.y;
-            renderTreeImage(itemX, itemY, imgSize, texture, entry);
+            renderTreeImage(itemX, itemY, imgSize, entry, segment+1);
 
             // Add cost
             TreeState treeState = getTreeStateByTree(entry.getKey());
@@ -382,16 +414,23 @@ public class TreeShopGui extends Gui implements SceneGui {
     /**
      * Renders the tree displayed that are available.
      */
-    private void renderTreeImage(float itemX, float itemY, int imgSize, String texture,
-                                 Map.Entry<? extends AbstractEntity, Color> entry) {
+    private void renderTreeImage(float itemX, float itemY, int imgSize,
+                                 Map.Entry<? extends AbstractEntity, Color> entry, int
+                                         number) {
         // Add entity texture image
-        texture = entry.getKey().getTexture();
+        String texture = entry.getKey().getTexture();
         Image treeImg = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(texture))));
 
         treeImg.setPosition(itemX, itemY);
         treeImg.setWidth(imgSize);
         treeImg.setHeight(imgSize);
         container.addActor(treeImg);
+
+        // Add label and name
+        Label treeLbl = new Label(number +": "+texture, skin);
+        treeLbl.setFontScale(0.7f);
+        treeLbl.setPosition(itemX, itemY);
+        container.addActor(treeLbl);
     }
 
     /**
@@ -537,15 +576,23 @@ public class TreeShopGui extends Gui implements SceneGui {
      */
     private void buyTree() {
 
-        if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
-            MultiplayerManager multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
-            AbstractTree newTree;
+        AbstractTree newTree;
+        newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
+        buyTree(newTree);
+    }
 
-            newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
+    /**
+     * Places a tree where the treeShop is positioned
+     */
+    private void buyTree(AbstractTree newTree) {
+
+        if (!WorldUtil.getEntityAtPosition(treeX, treeY).isPresent()) {
+
             newTree.setPosX(treeX + 0.5f);
             newTree.setPosY(treeY + 0.5f);
 
-
+            MultiplayerManager multiplayerManager = GameManager.get().getManager
+                    (MultiplayerManager.class);
             if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
                 AbstractTree.constructTree(newTree);
             } else {
@@ -553,6 +600,7 @@ public class TreeShopGui extends Gui implements SceneGui {
             }
         }
     }
+
 
     @Override
     public Vector2 getTileCoords() {
