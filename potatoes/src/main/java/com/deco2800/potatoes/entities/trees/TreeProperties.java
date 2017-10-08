@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.gui.TreeShopGui;
@@ -59,16 +60,12 @@ public class TreeProperties extends BasicProperties<AbstractTree> {
 	 */
 	public boolean removeConstructionResources(AbstractTree tree) {
 
-		TreeState treeState = GameManager.get().getManager
-				(GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
-
-		try {
-			GameManager.get().getManager(PlayerManager.class).getPlayer()
-					.getInventory().subtractInventory(treeState.getCost());
-			System.out.println("got here");
-		} catch (Exception e) {
+		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		if (!player.canAfford(tree))
 			return false;
-		}
+		player.getInventory().subtractInventory(GameManager.get().getManager
+				(GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree)
+				.getCost());
 
 		return true;
 

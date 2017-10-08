@@ -444,6 +444,36 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
     /**
+     * Returns true if the user can buy this tree
+     */
+    public boolean canAfford(AbstractTree tree){
+        if (tree == null || inventory == null) {
+            return false;
+        }
+
+        try {
+            GameManager.get().getManager
+                    (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        TreeState treeState = GameManager.get().getManager
+                (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
+        if (treeState == null)
+            return false;
+
+        Inventory cost = treeState.getCost();
+        for (Resource resource : cost.getInventoryResources()) {
+            if (inventory.getQuantity(resource) < cost.getQuantity(resource))
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */

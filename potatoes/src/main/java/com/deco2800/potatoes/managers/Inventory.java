@@ -133,7 +133,7 @@ public class Inventory {
 	 */
 	public int getQuantity(Resource resource) {
 		if (!this.getInventoryResources().contains(resource)) {
-			LOGGER.error("Please supply a valid resource");
+			//LOGGER.error("Please supply a valid resource");
 			return 0;
 		}
 		return inventoryMap.get(resource);

@@ -70,6 +70,8 @@ public class TreeShopGui extends Gui implements SceneGui {
     // Maximum number of tile lengths from player where you can plant trees
     final private int MAX_RANGE = 6;
 
+    final private int SHOPRADIUS = 150;
+
     /**
      * Instantiates shop with but doesn't display it yet.
      */
@@ -102,7 +104,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     }
 
     private void initTreeState() {
-        treeStates = new ArrayList<TreeState>();
+        treeStates = new ArrayList<>();
 
         // Seed resource tree
         Inventory seedTreeCost = new Inventory();
@@ -155,6 +157,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
                 "damage");
         treeStates.add(acornTreeState);
+
     }
 
     /**
@@ -204,7 +207,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         if (distance > MAX_RANGE)
             closeShop();
         updateScreenPos();
-        createTreeMenu(shopX, shopY, 110);
+        createTreeMenu(shopX, shopY, SHOPRADIUS);
     }
 
     /**
@@ -326,16 +329,18 @@ public class TreeShopGui extends Gui implements SceneGui {
         int seedSize = 20;
         String texture = "error_box";
         // Draws each subsection of radial menu individually
-        for (Map.Entry<? extends AbstractEntity, Color> entry : items.entrySet()) {
+        for (Map.Entry<? extends AbstractTree, Color> entry : items.entrySet()) {
             Color c = entry.getValue();
             // Show which segment is highlighted by adjusting opacity
             int startAngle = 360 * segment / numSegments;
-            float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ? SELECTED_ALPHA : UNSELECTED_ALPHA;
+            float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ?
+                    SELECTED_ALPHA : UNSELECTED_ALPHA;
             float itemAngle = startAngle + degrees / 2;
 
             // Set color and draw arc
             shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
-            renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees);
+            renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees,
+                    entry.getKey());
 
             Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
 
@@ -345,7 +350,7 @@ public class TreeShopGui extends Gui implements SceneGui {
             renderTreeImage(itemX, itemY, imgSize, texture, entry);
 
             // Add cost
-            TreeState treeState = getTreeStateByTree((AbstractTree) entry.getKey());
+            TreeState treeState = getTreeStateByTree(entry.getKey());
             Inventory cost = treeState.getCost();
             int n = cost.getInventoryResources().size();
             int i = 1;
@@ -367,10 +372,9 @@ public class TreeShopGui extends Gui implements SceneGui {
      * Renders the semi circle areas and colours them accordingly.
      */
     private void renderQuadrantArea(ShapeRenderer shapeRenderer, int startAngle, float guiX, float guiY, int radius,
-                                    int degrees) {
-        // TODO make update with tree cost
+                                    int degrees, AbstractTree tree) {
         // Checks to see if user can afford it
-        if (playerManager.getPlayer().getInventory().getQuantity(new SeedResource()) < 1)
+        if (!playerManager.getPlayer().canAfford(tree))
             shapeRenderer.setColor(new Color(200, 200, 200, 0.6f));
         shapeRenderer.arc(guiX, guiY, (int) (radius * 0.85), startAngle, degrees);
 
@@ -541,6 +545,7 @@ public class TreeShopGui extends Gui implements SceneGui {
             newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
             newTree.setPosX(treeX + 0.5f);
             newTree.setPosY(treeY + 0.5f);
+
 
             if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
                 AbstractTree.constructTree(newTree);
