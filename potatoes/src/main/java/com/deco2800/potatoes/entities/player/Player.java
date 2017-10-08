@@ -38,7 +38,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private boolean holdPosition = false;	// Used to determine if the player should be held in place
 
     protected TimeAnimation currentAnimation;	// The current animation of the player
-    protected PlayerState state;    	// The current states of the player, set to idle by default
+    private PlayerState state;    	// The current states of the player, set to idle by default
 
 
     private boolean keyW = false;
@@ -186,8 +186,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     /**
      * Set the player's state. For example, if the player is walking, then
-     * set the 'walk' state to the player. The state can only be changed when
-     * the player is in idle or is walking. The reason for this is to prevent
+     * set the 'WALK' state to the player. The state can only be changed when
+     * the player is IDLE or is WALK-ing. The reason for this is to prevent
      * situations where the player tries to attack while being hurt.
      *
      * @param newState
@@ -197,22 +197,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
 
-        //check already in state
-        if (state == newState)
-            return true;
+        // Check if the change is the same, if so return true.
+        if (state == newState) return true;
 
-        // only change state if IDLE or WALK-ing
+        // Only change the state if IDLE or WALK-ing
         if (state == IDLE || state == WALK) {
+        		stateChanged(state, newState);
             state = newState;
-
-            // only move on WALK
+            
+            // Only allow moving on WALK
             setMoveSpeedModifier( (state == WALK) ? 1 : 0);
-
             updateSprites();
             return true;
         } else {
-            // state not changed
-            return false;
+            return false; // State not changed
         }
     }
 
@@ -224,6 +222,37 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public PlayerState getState() {
         return this.state;
+    }
+    
+    /**
+     * This method, unlike the set state method, always resets the state to 
+     * IDLE. Use this method to clear that state after being in a state like
+     * ATTACK, INTERACT or DAMAGED.
+     */
+    public void resetState() {
+    		stateChanged(state, IDLE);
+    		state = IDLE;
+    		updateSprites();
+    }
+    
+    /**
+     * This method allows for handling of state changes. For example, if the
+     * player changes to the WALK state, then walking sound effects can start
+     * playing. If the state changes from the WALK state to another state,
+     * then walking sound effects can be stopped.
+     * 
+     * @param from
+     * 			The state that was changed from
+     * @param to
+     * 			The state that was changed to
+     */
+    private void stateChanged(PlayerState from, PlayerState to) {
+    		// Handle changing in and out of WALK
+    		if (to == WALK) {
+    			walk(true);
+    		} else if (from == WALK) {
+    			walk(false);
+    		}
     }
 
     /**
@@ -300,7 +329,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 break;
             case Input.Keys.SHIFT_LEFT:
             		holdPosition = false;
-            		setState( (keyA || keyD || keyS || keyS) ? WALK : IDLE );
+            		setState( (keyA || keyD || keyS || keyW) ? WALK : IDLE );
         			break;
             default:
                 break;

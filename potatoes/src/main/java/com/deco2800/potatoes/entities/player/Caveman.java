@@ -47,14 +47,14 @@ public class Caveman extends Player {
 
     private Void completionHandler() {
 		// Re-enable walking
-		super.state = IDLE;
+		super.resetState();
 		super.updateMovingAndFacing();
 		return null;
 	}
 
 	private Void damagedCompletionHandler() {
 		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		super.state = IDLE;
+		super.resetState();
 		super.updateMovingAndFacing();
 		return null;
 	}
@@ -62,7 +62,7 @@ public class Caveman extends Player {
     @Override
     public void updateSprites() {
 
-    		switch (super.state) {
+    		switch (super.getState()) {
             case IDLE:
 				super.setAnimation(cavemanIdleAnimations.get(super.facing));
 				break;

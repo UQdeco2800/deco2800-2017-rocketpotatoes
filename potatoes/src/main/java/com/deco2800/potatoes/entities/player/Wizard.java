@@ -29,7 +29,7 @@ public class Wizard extends Player {
         super(posX, posY);
         super.setMoveSpeed(0.09f);
         this.facing = Direction.SE;
-        this.state = IDLE;
+        this.resetState();
         //this.currentAnimation = ;
     }
 
@@ -39,14 +39,14 @@ public class Wizard extends Player {
 
     private Void completionHandler() {
         // Re-enable walking
-        super.state = IDLE;
+        super.resetState();
         super.updateMovingAndFacing();
         return null;
     }
 
     private Void damagedCompletionHandler() {
         GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-        super.state = IDLE;
+        super.resetState();
         super.updateMovingAndFacing();
         return null;
     }
