@@ -2,12 +2,17 @@ package com.deco2800.potatoes.cheats.rust;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.TextureManager;
 import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.lwjgl.opengl.Display;
 
 public class Rustyfish {
+
+    private static SpriteBatch batch = new SpriteBatch();
 
     private interface RLibrary extends Library {
         RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
@@ -24,7 +29,7 @@ public class Rustyfish {
     private static Callback startDraw = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-
+            batch.begin();
         }
     };
 
@@ -34,7 +39,7 @@ public class Rustyfish {
     private static Callback endDraw = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-
+            batch.end();
         }
     };
 
@@ -46,7 +51,12 @@ public class Rustyfish {
     private static Callback updateWindow = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            Display.update();
+            Display.update(true);
+            int w = (int)(Display.getWidth() * Display.getPixelScaleFactor());
+            int h = (int)(Display.getHeight() * Display.getPixelScaleFactor());
+            Gdx.gl.glViewport(0, 0, w, h);
+            batch = new SpriteBatch();
+            Gdx.graphics.setTitle("Rustyfish");
         }
     };
 
@@ -96,7 +106,8 @@ public class Rustyfish {
     private static Callback drawSprite = new Callback() {
         @SuppressWarnings("unused")
         public void run(RenderObject.ByValue obj) {
-            System.out.println(obj);
+            TextureManager m = GameManager.get().getManager(TextureManager.class);
+            batch.draw(m.getTexture(obj.asset), obj.x, obj.y);
         }
     };
 

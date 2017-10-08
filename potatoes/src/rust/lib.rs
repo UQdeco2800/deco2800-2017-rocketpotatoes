@@ -38,6 +38,7 @@ pub extern fn startGame(
 pub fn run_game(functions: RenderFunctions){
 
     let window_info = RenderInfo { size_x: 0, size_y: 0 };
+    let timer = Instant::now();
     loop {
 
         // Get input/process resize events etc.
@@ -45,14 +46,21 @@ pub fn run_game(functions: RenderFunctions){
 
         // Get window statistics (size etc)
         (functions.get_window_info)(&window_info);
-        println!("{:?}", window_info);
 
         // Clear window with default background color
         (functions.clear_window)();
 
         (functions.start_draw)();
 
-        (functions.draw_sprite)(RenderObject::new("box".to_string(), 0, 0, 0.0));
+        let elapsed = timer.elapsed();
+        let width = window_info.size_x as f64;
+        let height = window_info.size_y as f64;
+        let x = width / 2.0
+            * (1.0 + f64::sin(elapsed.as_secs() as f64 +
+                              elapsed.subsec_nanos() as f64 * 1e-9));
+        let y = height as f64 / 2.0;
+
+        (functions.draw_sprite)(RenderObject::new("potate".to_string(), x as i32, y as i32, 0.0));
 
         (functions.end_draw)();
 
