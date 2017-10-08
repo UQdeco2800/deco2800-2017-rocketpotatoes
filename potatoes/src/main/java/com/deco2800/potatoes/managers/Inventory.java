@@ -174,8 +174,11 @@ public class Inventory {
 			try {
 				inventoryMap.put(resource, currentAmount + amount);
 				guiManager = GameManager.get().getManager(GuiManager.class);
-				guiManager.getGui(InventoryGui.class).increaseInventory(resource.getTypeName(),
-						currentAmount + amount);
+				//guiManager.getGui(InventoryGui.class).increaseInventory(resource.getTypeName(),
+						//currentAmount + amount);
+				guiManager.getGui(InventoryGui.class).updateInventory(this.getMap());
+				
+				
 			} catch (NullPointerException exception) {
 				// catch exception for tests when the gui isn't initialised
 				result = 0;
