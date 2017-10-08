@@ -35,7 +35,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     protected int respawnTime = 5000; 	// Time until respawn in milliseconds
     private Inventory inventory;
-
+    private boolean holdPosition = false;	// Used to determine if the player should be held in place
 
     protected TimeAnimation currentAnimation;	// The current animation of the player
     protected PlayerState state;    	// The current states of the player, set to idle by default
@@ -251,6 +251,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 keyD = true;
                 updateMovingAndFacing();
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		holdPosition = true;
+            		setState(IDLE);
+            		break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
                 break;
@@ -294,6 +298,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 keyD = false;
                 updateMovingAndFacing();
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		holdPosition = false;
+            		setState( (keyA || keyD || keyS || keyS) ? WALK : IDLE );
+        			break;
             default:
                 break;
         }
@@ -342,7 +350,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             case 3:
                 newFacing = Direction.W;
                 break;
-            //case 4           not moving
+            case 4:
+            		newFacing = facing; // Not moving, keep existing direction
+            		break;
             case 5:
                 newFacing = Direction.E;
                 break;
@@ -356,6 +366,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 newFacing = Direction.SE;
                 break;
         }
+        
+        // If the player position is held, keep in IDLE but allow changing direction for aiming.
+        if (holdPosition) {
+			setState(IDLE);
+			super.setMoveSpeedModifier(0);
+			super.setMoveAngle(newFacing.getAngleRad());
+			facing = newFacing;
+			updateSprites();
+			return;
+        }
 
         if (direcEnum == 4) {
             setState(IDLE);
@@ -366,13 +386,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             super.setMoveSpeedModifier(1);
             facing = newFacing;
         }
-
+        
         updateSprites();
     }
-
-
-
-
 
     // ----------     OnTick     ---------- //
 
