@@ -448,6 +448,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean canAfford(AbstractTree tree){
         if (tree == null || inventory == null) {
+            System.out.println("option b");
             return false;
         }
 
@@ -455,19 +456,25 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             GameManager.get().getManager
                     (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
         } catch (Exception e) {
+            System.out.println("option a");
             return false;
         }
 
 
         TreeState treeState = GameManager.get().getManager
                 (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
-        if (treeState == null)
+        if (treeState == null) {
+            System.out.println("option c");
             return false;
+        }
 
         Inventory cost = treeState.getCost();
         for (Resource resource : cost.getInventoryResources()) {
-            if (inventory.getQuantity(resource) < cost.getQuantity(resource))
+            if (inventory.getQuantity(resource) < cost.getQuantity(resource)){
+                System.out.println("option d");
                 return false;
+            }
+
         }
 
         return true;
