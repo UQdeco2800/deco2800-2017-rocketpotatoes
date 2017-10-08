@@ -39,21 +39,25 @@ pub fn run_game(functions: RenderFunctions){
 
     let window_info = RenderInfo { size_x: 0, size_y: 0 };
     loop {
-        // Get window statistics (size etc)
-        (functions.get_window_info)(&window_info);
 
         // Get input/process resize events etc.
         (functions.update_window)();
+
+        // Get window statistics (size etc)
+        (functions.get_window_info)(&window_info);
+        println!("{:?}", window_info);
 
         // Clear window with default background color
         (functions.clear_window)();
 
         (functions.start_draw)();
-        // Do drawing stuff
+
         (functions.end_draw)();
 
         // Flush any render changes etc.
         (functions.flush_window)();
+
+        std::thread::sleep(std::time::Duration::from_millis(16));
     }
 }
 

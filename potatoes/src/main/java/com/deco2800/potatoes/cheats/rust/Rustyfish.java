@@ -1,9 +1,11 @@
 package com.deco2800.potatoes.cheats.rust;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import org.lwjgl.opengl.Display;
 
 public class Rustyfish {
 
@@ -22,7 +24,7 @@ public class Rustyfish {
     private static Callback startDraw = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            System.out.println("Start draw");
+
         }
     };
 
@@ -32,7 +34,7 @@ public class Rustyfish {
     private static Callback endDraw = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            System.out.println("End draw");
+
         }
     };
 
@@ -44,7 +46,7 @@ public class Rustyfish {
     private static Callback updateWindow = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            System.out.println("Update window");
+            Display.update();
         }
     };
 
@@ -54,7 +56,9 @@ public class Rustyfish {
     private static Callback clearWindow = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            System.out.println("Clear window");
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         }
     };
 
@@ -64,7 +68,7 @@ public class Rustyfish {
     private static Callback flushWindow = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            System.out.println("Flush window");
+            Gdx.gl.glFlush();
         }
     };
 
@@ -77,7 +81,7 @@ public class Rustyfish {
             info.sizeX = Gdx.graphics.getWidth();
             info.sizeY = Gdx.graphics.getHeight();
 
-            System.out.println(info);
+            //System.out.println(info);
         }
     };
 
@@ -92,7 +96,6 @@ public class Rustyfish {
     private static Callback drawSprite = new Callback() {
         @SuppressWarnings("unused")
         public void run() {
-            System.out.println("Draw sprite");
         }
     };
 
