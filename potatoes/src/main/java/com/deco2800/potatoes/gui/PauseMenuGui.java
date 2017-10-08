@@ -238,7 +238,7 @@ public class PauseMenuGui extends Gui {
 		enemyProgressBarCheckBox.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				GameManager.get().getManager(ProgressBarManager.class).toggleEnemyProgress();
+				GameManager.get().getManager(ProgressBarManager.class).toggleEnemiesProgress();
 			}
 		});
 		

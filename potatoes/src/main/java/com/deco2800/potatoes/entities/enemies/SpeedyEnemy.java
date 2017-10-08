@@ -32,7 +32,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
-	private static final transient String enemyType = "raccoon";
+	private static final transient String ENEMY_TYPE = "raccoon";
 
 	private static final EnemyProperties STATS = initStats();
 
@@ -61,7 +61,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 */
 	public SpeedyEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-		SpeedyEnemy.speed = speed;
+		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
 		// resetStats();
@@ -131,7 +131,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @return String of this type of enemy (ie 'raccoon').
 	 * */
 	@Override
-	public String getEnemyType() { return enemyType; }
+	public String getEnemyType() { return ENEMY_TYPE; }
 
 	/**
 	 * Raccoon follows it's path.

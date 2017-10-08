@@ -259,23 +259,13 @@ public class DebugModeGui extends Gui {
                      }
                      
                      if (keycode == Input.Keys.F10) {
-                         double newrate = screen.getTickrate();
-                         if (screen.getTickrate()<10*(2^4)) {
-                             newrate = screen.getTickrate() * 2;
-                         }
-                     
-                         screen.setTickrate(newrate);
-                         gamespeed.setText("Game Speed: "+ 10/newrate +"x");
+                         screen.setTickrate(screen.getTickrate() * 2);
+                         gamespeed.setText("Game Speed: " + 1/screen.getTickrate() + "x");
                      }
                      
                      if (keycode == Input.Keys.F11) {
-                         double newrate = screen.getTickrate();
-                         if (screen.getTickrate()>10) {
-                             newrate = screen.getTickrate()/2;
-                         }
-                         screen.setTickrate(newrate);
-                         gamespeed.setText("Game Speed: "+ 10/newrate +"x");
-                     
+                         screen.setTickrate(screen.getTickrate() / 2);
+                         gamespeed.setText("Game Speed: " + 1/screen.getTickrate() + "x");
                      }
                 }
             }

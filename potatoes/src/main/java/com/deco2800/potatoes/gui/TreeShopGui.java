@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * TreeShopGui is generated when the user clicks on a tile on the map. It can
  * only be positioned on tiles where trees can be planted.
- * 
+ *
  * @author Dion Lao
  *
  */
@@ -66,11 +66,14 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
 	// Opacity value for treeShop subsection when mouse is not hovering over it
-	final private float UNSELECTED_ALPHA = 0.2f;
+	private static final float UNSELECTED_ALPHA = 0.2f;
 	// Opacity value for treeShop subsection when mouse hovers over
-	final private float SELECTED_ALPHA = 0.5f;
+	private static final float SELECTED_ALPHA = 0.5f;
 	// Maximum number of tile lengths from player where you can plant trees
-	final private int MAX_RANGE = 6;
+	private static final int MAX_RANGE = 6;
+
+	// Stored shape renderer for efficient drawing
+	private ShapeRenderer shapeRenderer;
 
 	/**
 	 * Instantiates shop with but doesn't display it yet.
@@ -153,9 +156,6 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Creates menu based on input parameters.
 	 *
-	 * @param items
-	 *            A HashMap with each AbstractEntity as the key and the
-	 *            corresponding color as value
 	 * @param x
 	 *            Center x point
 	 * @param y
@@ -176,7 +176,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	/**
 	 * Renders the shapes and gui elements of treeShop.
-	 * 
+	 *
 	 * @param x
 	 *            x value of center of shop
 	 * @param y
@@ -188,7 +188,9 @@ public class TreeShopGui extends Gui implements SceneGui {
 	private void renderGui(float x, float y, int radius) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		if (shapeRenderer == null) {
+			shapeRenderer = new ShapeRenderer();
+		}
 		shapeRenderer.begin(ShapeType.Filled);
 
 		float guiY = stage.getHeight() - y;
@@ -225,7 +227,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Renders the gui sections that are specific to the different items in the
 	 * menu.
-	 * 
+	 *
 	 */
 	private void renderSubMenus(ShapeRenderer shapeRenderer, float guiX, float guiY, int radius) {
 
@@ -241,13 +243,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 			// Show which segment is highlighted by adjusting opacity
 			int startAngle = 360 * segment / numSegments;
 			float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ? SELECTED_ALPHA : UNSELECTED_ALPHA;
-			float itemAngle = startAngle + degrees / 2;
+			float itemAngle = (float) (startAngle + degrees / 2);
 
 			// Set color and draw arc
 			shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
 			renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees);
 
-			Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
+			Vector2 offset = calculateDisplacement((float) (radius / 2), itemAngle);
 
 			// Render Items
 			float itemX = guiX - imgSize / 2 + offset.x;
@@ -326,7 +328,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Calculates the x and y offset required to place an object at distance r from
 	 * center with angle degrees from right horizontal.
-	 * 
+	 *
 	 * @param d
 	 *            distance from center
 	 * @param degrees
@@ -343,7 +345,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Determines which segment of a circle the mouse is in. This starts counting
 	 * from right hand side counter clockwise.
-	 * 
+	 *
 	 * @param mx
 	 *            mouse point x
 	 * @param my
@@ -367,7 +369,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Calculates the angle in degrees from the right horizontal anti-clockwise
 	 * based on the change in x and y.
-	 * 
+	 *
 	 * @param x
 	 *            Change in x
 	 * @param y
@@ -391,7 +393,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	 * Determines there the mouse is in relation to the treeShop sets the global
 	 * variables depending on what it is hovering over. Also calculates which
 	 * quadrant it is in.
-	 * 
+	 *
 	 * @param x
 	 *            screen x value of mouse click
 	 * @param y
@@ -407,7 +409,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 	/**
 	 * Starts up or closes treeShop depending on where the user has clicked.
-	 * 
+	 *
 	 * @param x
 	 *            screen x value of mouse click
 	 * @param y
@@ -431,7 +433,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 	/**
 	 * Update coordinates for tree planting in tile coordinates. If the distance to
 	 * greater than max, sets to maximum range.
-	 * 
+	 *
 	 */
 	private void setTreeCoords() {
 		treeX = shopTileX;
