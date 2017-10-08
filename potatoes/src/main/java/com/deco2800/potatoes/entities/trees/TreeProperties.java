@@ -57,23 +57,24 @@ public class TreeProperties extends BasicProperties<AbstractTree> {
 	 * @return true if the inventory had the required amount of resources, false if
 	 *         not.
 	 */
-	public boolean removeConstructionResources() {
+	public boolean removeConstructionResources(AbstractTree tree) {
 
-		/*TreeState treeState = ((TreeShopGui)(GameManager.get().getManager
-				(GuiManager.class).getGui(TreeShopGui.class))).getTreeStateByTree(tree);
+		TreeState treeState = GameManager.get().getManager
+				(GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
 
 		try {
-			GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
-					.subtractInventory(treeState.getCost());
+			GameManager.get().getManager(PlayerManager.class).getPlayer()
+					.getInventory().subtractInventory(treeState.getCost());
+			System.out.println("got here");
 		} catch (Exception e) {
 			return false;
 		}
 
-		return true;*/
+		return true;
 
 
-		return 1 == GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
-				.updateQuantity(UPGRADE_RESOURCE, -getBuildCost());
+		/*return 1 == GameManager.get().getManager(PlayerManager.class).getPlayer().getInventory()
+				.updateQuantity(UPGRADE_RESOURCE, -getBuildCost());*/
 	}
 
 	/**

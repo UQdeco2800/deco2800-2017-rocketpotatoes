@@ -85,13 +85,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         treeColorCode.put("damage", Color.RED);
         treeColorCode.put("defense", Color.BLUE);
         items = new LinkedHashMap<AbstractTree, Color>();
-        /*items.put(new ResourceTree(treeX, treeY, new SeedResource(),0 ), Color.RED);
-		items.put(new ResourceTree(treeX, treeY, new FoodResource(),0), Color.BLUE);
-		items.put(new ProjectileTree(treeX, treeY), Color.YELLOW);
-		items.put(new DamageTree(treeX, treeY, new LightningTreeType()),Color.GREEN);
-		items.put(new DamageTree(treeX, treeY, new IceTreeType()),Color.ORANGE);
-		items.put(new DamageTree(treeX, treeY, new FireTreeType()),Color.PURPLE);
-		items.put(new DamageTree(treeX, treeY, new AcornTreeType()),Color.GREEN);*/
+
 
         initTreeState();
         for (TreeState treeState : treeStates) {
@@ -125,8 +119,6 @@ public class TreeShopGui extends Gui implements SceneGui {
                 FoodResource(), 10), foodTreeCost, true, "resource");
         treeStates.add(foodTreeState);
 
-        // Projectile tree
-
         // Lightning tree
         Inventory lightningTreeCost = new Inventory();
         lightningTreeCost.updateQuantity(new CactusThornResource(), 1);
@@ -134,12 +126,35 @@ public class TreeShopGui extends Gui implements SceneGui {
         lightningTreeCost.updateQuantity(new TreasureResource(), 1);
         DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
         TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
-                false, "damage");
+                true, "damage");
         treeStates.add(lightningTreeState);
-        // Ice tree
-        // Fire tree
-        // Acorn tree
 
+        // Ice tree
+        Inventory iceTreeCost = new Inventory();
+        iceTreeCost.updateQuantity(new IceCrystalResource(), 1);
+        iceTreeCost.updateQuantity(new SeedResource(), 4);
+        DamageTree iceTree = new DamageTree(treeX, treeY, new IceTreeType());
+        TreeState iceTreeState = new TreeState(iceTree, iceTreeCost, true, "defense");
+        treeStates.add(iceTreeState);
+
+        // Fire tree
+        Inventory fireTreeCost = new Inventory();
+        fireTreeCost.updateQuantity(new ObsidianResource(), 1);
+        fireTreeCost.updateQuantity(new WoodResource(), 1);
+        fireTreeCost.updateQuantity(new SeedResource(), 6);
+        DamageTree fireTree = new DamageTree(treeX, treeY, new FireTreeType());
+        TreeState fireTreeState = new TreeState(fireTree, fireTreeCost, true, "damage");
+        treeStates.add(fireTreeState);
+
+        // Acorn tree
+        Inventory acornTreeCost = new Inventory();
+        acornTreeCost.updateQuantity(new PineconeResource(), 1);
+        acornTreeCost.updateQuantity(new TumbleweedResource(), 1);
+        acornTreeCost.updateQuantity(new FoodResource(), 3);
+        DamageTree acornTree = new DamageTree(treeX, treeY, new AcornTreeType());
+        TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
+                "damage");
+        treeStates.add(acornTreeState);
     }
 
     /**

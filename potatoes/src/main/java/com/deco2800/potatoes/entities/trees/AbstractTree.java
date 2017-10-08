@@ -75,7 +75,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * @return
 	 */
 	public static boolean constructTree(AbstractTree tree) {
-		boolean result = tree.getUpgradeStats().removeConstructionResources();
+		boolean result = tree.getUpgradeStats().removeConstructionResources(tree);
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
