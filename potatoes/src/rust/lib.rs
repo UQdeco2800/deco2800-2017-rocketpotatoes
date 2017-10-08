@@ -46,7 +46,7 @@ pub fn run_game(functions: CallbackFunctions) {
     loop {
         // UPDATE
         // Get input/process resize events etc.
-        println!("{:?}", (functions.is_space_pressed)());
+        //println!("{:?}", (functions.is_space_pressed)());
 
 
         // DRAW 
@@ -71,7 +71,9 @@ pub fn run_game(functions: CallbackFunctions) {
 
         (functions.draw_sprite)(RenderObject::new("rustyfish_test".to_string(), 0 as i32, 0 as i32, rot));
 
-        //rot += 3.0;
+        if (functions.is_space_pressed)() {
+            rot += 3.0;
+        }
 
         (functions.end_draw)();
 
