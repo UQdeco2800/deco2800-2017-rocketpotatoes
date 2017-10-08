@@ -7,7 +7,8 @@ use std::mem;
 use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
-use render::{RenderFunctions, RenderInfo, RenderObject};
+use render::{RenderInfo, RenderObject};
+use util::CallbackFunctions;
 
 // FFI entry point to start the game.
 #[no_mangle]
@@ -15,16 +16,18 @@ use render::{RenderFunctions, RenderInfo, RenderObject};
 pub extern fn startGame(
     startDraw: extern "C" fn(),
     endDraw: extern "C" fn(), 
-    updateWindow: extern "C" fn(), 
+    updateWindow: extern "C" fn(),
+    isSpacePressed: extern "C" fn() -> bool,
     clearWindow: extern "C" fn(),
     flushWindow: extern "C" fn(),
     getWindowInfo: extern "C" fn(&RenderInfo), 
     drawSprite: extern "C" fn(RenderObject)) {
 
-    run_game(RenderFunctions { 
+    run_game(CallbackFunctions { 
         start_draw: startDraw,
         end_draw: endDraw,
         update_window: updateWindow,
+        is_space_pressed: isSpacePressed,
         clear_window: clearWindow,
         flush_window: flushWindow,
         get_window_info: getWindowInfo,
@@ -35,14 +38,19 @@ pub extern fn startGame(
 /// since the Rust library is not aware of the OpenGL context and it's rather hard
 /// to figure out how to do that. As a result we render to a headless opengl context
 /// and send back the frame to the java side to be drawn to the primary screen.
-pub fn run_game(functions: RenderFunctions){
+pub fn run_game(functions: CallbackFunctions) {
 
     let window_info = RenderInfo { size_x: 0, size_y: 0 };
     let timer = Instant::now();
     let mut rot = 0.0;
     loop {
-
+        // UPDATE
         // Get input/process resize events etc.
+        println!("{:?}", (functions.is_space_pressed)());
+
+
+        // DRAW 
+        // Update window state (e.g. get resize events)
         (functions.update_window)();
 
         // Get window statistics (size etc)

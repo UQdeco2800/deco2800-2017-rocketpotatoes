@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.cheats.rust;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,7 +20,8 @@ public class Rustyfish {
         RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
 
         void startGame(Callback startDraw, Callback endDraw,
-                       Callback updateWindow, Callback clearWindow, Callback flushWindow, Callback getWindowInfo,
+                       Callback updateWindow, Callback isSpacePressed,
+                       Callback clearWindow, Callback flushWindow, Callback getWindowInfo,
                        Callback drawSprite);
     }
 
@@ -51,13 +53,25 @@ public class Rustyfish {
      */
     private static Callback updateWindow = new Callback() {
         @SuppressWarnings("unused")
-        public void run() {
+        public boolean run() {
             Display.update(true);
             int w = (int)(Display.getWidth() * Display.getPixelScaleFactor());
             int h = (int)(Display.getHeight() * Display.getPixelScaleFactor());
             Gdx.gl.glViewport(0, 0, w, h);
             batch = new SpriteBatch();
             Gdx.graphics.setTitle("Rustyfish");
+
+            return true;
+        }
+    };
+
+    /**
+     * Returns true if space is pressed
+     */
+    private static Callback isSpacePressed = new Callback() {
+        @SuppressWarnings("unused")
+        public boolean run() {
+            return Gdx.input.isKeyPressed(Input.Keys.SPACE);
         }
     };
 
@@ -69,7 +83,6 @@ public class Rustyfish {
         public void run() {
             Gdx.gl.glClearColor(0, 0.4f, 0.8f, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         }
     };
 
@@ -116,6 +129,6 @@ public class Rustyfish {
     };
 
     public static void run() {
-        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, clearWindow, flushWindow, getWindowInfo, drawSprite);
+        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow, getWindowInfo, drawSprite);
     }
 }
