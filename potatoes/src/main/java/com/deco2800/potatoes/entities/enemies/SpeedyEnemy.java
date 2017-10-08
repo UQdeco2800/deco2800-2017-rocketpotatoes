@@ -188,18 +188,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			float deltaX = getPosX() - targetX;
 			float deltaY = getPosY() - targetY;
 
+
 			//sprite direction
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY) + (float) Math.PI);
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.onTickMovement();
+
 			super.updateDirection();
-
-			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
-
-
-			float changeX = (float) (speed * Math.cos(angle));
-			float changeY = (float) (speed * Math.sin(angle));
-
-			this.setPosX(getPosX() + changeX);
-			this.setPosY(getPosY() + changeY);
 		} else {
 			//otherwise, set resourceTrees and move towards them
 
