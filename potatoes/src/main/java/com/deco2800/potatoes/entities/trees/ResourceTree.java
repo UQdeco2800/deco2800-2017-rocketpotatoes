@@ -266,4 +266,16 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.gatherEnabled = gatherEnabled;
 	}
 
+	@Override
+	public String getName() {
+		if (this.gatherType instanceof SeedResource) {
+			return "Seed Tree";
+		} else if (this.gatherType instanceof FoodResource) {
+			this.setTexture("food_resource_tree");
+			return "Food Tree";
+		} else {
+			return "Seed Tree";
+		}
+	}
+
 }

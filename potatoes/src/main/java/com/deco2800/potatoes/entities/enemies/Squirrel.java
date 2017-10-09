@@ -1,3 +1,5 @@
+
+
 package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.collisions.Shape2D;
@@ -29,7 +31,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
-	private static final String enemyType = "squirrel";
+	private static final String ENEMY_TYPE = "squirrel";
 
 	private static final float SPEED = 0.05f;
 
@@ -92,7 +94,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * */
 	@Override
 	public String getEnemyType() {
-		return enemyType;
+		return ENEMY_TYPE;
 	}
 
 	/**

@@ -59,7 +59,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 
-	protected int round_number = 0;
+//	private int timer = 0;
+
+
+	protected int roundNum = 0;
 	/**
 	 * Default constructor for serialization
 	 */
@@ -73,7 +76,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * specification of rendering dimensions different to those used for collision.
 	 * For example, could be used to have collision on the trunk of a tree but not
 	 * the leaves/branches.
-	 * 
+	 *
 	 * @param mask
 	 * 			  The collision mask of the entity.
 	 * @param xRenderLength
@@ -102,18 +105,34 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	// Method of creating enemy with round number included
 
    /* public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth,
-                       float speed, Class<?> goal, int round_number) {
+                       float speed, Class<?> goal, int roundNum) {
         super(mask, xRenderLength, yRenderLength, texture, maxHealth);
         getBasicStats().registerEvents(this);
-        this.speed = speed + round_number;
+        this.speed = speed + roundNum;
         this.goal = goal;
-        this.round_number = round_number;
+        this.roundNum = roundNum;
     }*/
 
+//<<<<<<< HEAD
 	public void pathMovement(PathAndTarget pathTarget, AbstractEntity relevantTarget) {
 		Path path = pathTarget.getPath();
 		Shape2D target = pathTarget.getTarget();
-
+/*
+	/**
+	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target,
+	 * otherwise get the closest targeted entity position.
+	 */
+/*	@Override
+	public void onTick(long i) {
+		float goalX = getPosX();
+		float goalY = getPosY();
+		//if goal is player, use playerManager to eet position and move towards target
+		if (goal == Player.class) {
+			//goal = Player.class;
+			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			PathManager pathManager = GameManager.get().getManager(PathManager.class);
+>>>>>>> master
+*/
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 		if (relevantTarget != null) {
 			// check paths
@@ -145,7 +164,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			float deltaY = target.getY() - getPosY();
 
 			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-
 			pathTarget.setPath(path);
 			pathTarget.setTarget(target);
 		}
@@ -234,7 +252,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public Class<?> getGoal() {
 		return this.goal;
 	}
-	
+
 	/**
 	 * Set the enemy's goal to the given entity class
 	 * @param g enemy's new goal(entity class)
@@ -242,7 +260,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void setGoal(Class<?> g) {
 		this.goal = g;
 	}
-	
+
 	/**
 	 * Get the speed of this enemy
 	 * @return the speed of this enemy
@@ -250,7 +268,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public float getSpeed() {
 		return this.speed;
 	}
-	
+
 	/**
 	 * Set this enemy's speed to given speed
 	 * @param s enemy's new speed
@@ -260,16 +278,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
 	 * @param projectile, the projectile shot
 	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
-	
+
 	/**
-	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
 	 * @param effect, the projectile shot
 	 */
 	public void getShot(Effect effect) {
@@ -316,7 +334,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void dyingHandler() {
 		getBasicStats().setDeathAnimation(this);
 	}
-	
+
 	/**
 	 * remove the enemy if it is dead
 	 */

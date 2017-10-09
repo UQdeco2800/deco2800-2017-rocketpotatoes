@@ -41,7 +41,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-	private static final transient String enemyType = "bear";
+	private static final transient String ENEMY_TYPE = "bear";
 
 	/* Define speed, goal and path variables */
 	private static float speed = 0.006f;
@@ -72,7 +72,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	public TankEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 1.414f), 1f, 1f, TEXTURE, HEALTH, speed, goal);
-        this.health = health + (round_number*250);
+        this.health = health + (roundNum*250);
 		//this.speed = getBasicStats().getSpeed();
 		//this.goal = goal;
 		//resetStats();
@@ -235,7 +235,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	@Override
 	public String getEnemyType() {
-		return enemyType;
+		return ENEMY_TYPE;
 	}
 
 	/**
