@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
 /**
@@ -102,13 +104,13 @@ public class InventoryGui extends Gui {
 	 */
 	public void updateInventory(TreeMap<Resource, Integer> map) {
 		inventoryMap = map;
+
 		for (Resource resource : inventoryMap.keySet()){
 			Label resourceLabel = labelMap.get(resource.getTypeName());
 			if (resourceLabel == null) {
 				resourceLabel = new Label("0", skin);
 				resourceLabel.setText(Integer.toString(inventoryMap.get(resource)));
 				labelMap.put(resource.getTypeName(), resourceLabel);
-
 				updateTable(resource.getTypeName());
 			} else {
 				resourceLabel.setText(Integer.toString(inventoryMap.get(resource)));
@@ -150,6 +152,41 @@ public class InventoryGui extends Gui {
 		inventoryTable.add(labelMap.get(resource)).bottom().center().pad(2);
 			
 		inventoryTable.row();
+	}
+
+	public void refreshInventory() {
+
+		inventoryTable.clear();
+
+		Inventory inventory;
+
+		try {
+			inventory = GameManager.get().getManager(PlayerManager.class)
+					.getPlayer().getInventory();
+		} catch(Exception e) {
+			inventory = null;
+		}
+
+		if (inventory == null)
+			return;
+
+		for (Resource resource : inventory.getInventoryResources()) {
+			/* Image linking to display sprite */
+			TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
+			Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion
+					(textureManager.getTexture(resource.getTexture()))));
+
+			Label resourceLabel = new Label(Integer.toString(inventory.getQuantity
+					(resource)), skin);
+
+			resourceImage.setOrigin(50, 50);
+			inventoryTable.add(resourceImage).size(30, 30).pad(2);
+			inventoryTable.add(resourceLabel).bottom()
+					.center().pad(2);
+
+			inventoryTable.row();
+		}
+
 	}
 
 	/**
