@@ -245,6 +245,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 		return constructionLeft > 0 ? BUILD_PROGRESS_BAR : getHealth() < getMaxHealth() ? PROGRESS_BAR : null;
 	}
 
+	public String getName() {
+		return "Abstract Tree";
+	}
+
 	@Override
 	public String toString(){
 		return "Tree: "+this.getTexture();

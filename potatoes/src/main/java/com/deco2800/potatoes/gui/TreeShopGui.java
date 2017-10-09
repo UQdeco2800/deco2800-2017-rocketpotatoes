@@ -285,8 +285,6 @@ public class TreeShopGui extends Gui implements SceneGui {
     /**
      * Creates menu based on input parameters.
      *
-     * @param items  A HashMap with each AbstractEntity as the key and the
-     *               corresponding color as value
      * @param x      Center x point
      * @param y      Center y point
      * @param radius Radius of circle
@@ -415,7 +413,7 @@ public class TreeShopGui extends Gui implements SceneGui {
      * Renders the tree displayed that are available.
      */
     private void renderTreeImage(float itemX, float itemY, int imgSize,
-                                 Map.Entry<? extends AbstractEntity, Color> entry, int
+                                 Map.Entry<? extends AbstractTree, Color> entry, int
                                          number) {
         // Add entity texture image
         String texture = entry.getKey().getTexture();
@@ -427,7 +425,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         container.addActor(treeImg);
 
         // Add label and name
-        Label treeLbl = new Label(number +": "+texture, skin);
+        Label treeLbl = new Label(number +": "+entry.getKey().getName(), skin);
         treeLbl.setFontScale(0.7f);
         treeLbl.setPosition(itemX, itemY);
         container.addActor(treeLbl);
@@ -473,7 +471,7 @@ public class TreeShopGui extends Gui implements SceneGui {
      *
      * @param d       distance from center
      * @param degrees degrees from right horizontal line
-     * @return
+     * @return a Vector2 of the offset
      */
     private Vector2 calculateDisplacement(float d, float degrees) {
         float offsetX = (float) (d * Math.cos(degrees * Math.PI / 180));
@@ -488,8 +486,6 @@ public class TreeShopGui extends Gui implements SceneGui {
      *
      * @param mx mouse point x
      * @param my mouse point y
-     * @return integer corresponding to the segment number the mouse is within or -1
-     * if mouse was not within bounds.
      */
     private void calculateSegment(float mx, float my) {
 
@@ -534,8 +530,8 @@ public class TreeShopGui extends Gui implements SceneGui {
      * @param y screen y value of mouse click
      */
     public void checkMouseOver(int x, int y) {
-        mouseIn = shopShape.contains(x, y) ? true : false;
-        mouseInCancel = cancelShape.contains(x, y) ? true : false;
+        mouseIn = shopShape.contains(x, y);
+        mouseInCancel = cancelShape.contains(x, y);
         if (initiated)
             calculateSegment(x, y);
 
