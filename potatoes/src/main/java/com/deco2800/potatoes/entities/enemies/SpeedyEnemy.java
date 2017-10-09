@@ -185,8 +185,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			targetX = target.getX();
 			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
+			float deltaX = targetX - getPosX();
+			float deltaY = targetY - getPosY();
 
 
 			//sprite direction
@@ -203,14 +203,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			// check paths
 
 			// check collision
-			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
-					// collided with wall
-					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-					target = path.pop();
-					break;
-				}
-			}
+//			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
+//				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
+//					// collided with wall
+//					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
+//					target = path.pop();
+//					break;
+//				}
+//			}
 
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
@@ -237,8 +237,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			targetX = target.getX();
 			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
+			float deltaX = targetX -getPosX();
+			float deltaY = targetY - getPosY();
 
 			//sprite direction
 			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
