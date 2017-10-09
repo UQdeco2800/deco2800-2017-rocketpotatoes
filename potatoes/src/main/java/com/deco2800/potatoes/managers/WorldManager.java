@@ -33,14 +33,21 @@ public class WorldManager extends Manager {
 	public WorldManager() {
 		worlds = new HashMap<>();
 		cells = new HashMap<>();
-		randomGrids = new float[100][][];
-		randomGridEdges = new float[40][][];
-		for (int i = 0; i < randomGrids.length; i++) {
-			randomGrids[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0.42f, 2);
-		}
-		for (int i = 0; i < randomGridEdges.length; i++) {
-			randomGridEdges[i] = GridUtil.smoothDiamondSquareAlgorithm(WORLD_SIZE, 0, 0.5f, 2);
-		}
+	}
+
+	/**
+	 * Returns a random grid that was the output from
+	 * RandomWorldGeneration.smoothDiamondSquareAlgorithm
+	 */
+	public float[][] getRandomGrid() {
+		return GridUtil.smoothDiamondSquareAlgorithm(GridUtil.seedGrid(WORLD_SIZE), 0.42f, 2);
+	}
+
+	/**
+	 * Returns a random grid with the edges pulled to 0
+	 */
+	public float[][] getRandomGridEdge() {
+		return GridUtil.smoothDiamondSquareAlgorithm(GridUtil.seedGrid(WORLD_SIZE), 0, 0.5f, 2);
 	}
 
 	/**
@@ -100,21 +107,6 @@ public class WorldManager extends Manager {
 		// be reloaded, etc.
 		GameManager.get().setWorld(getWorld(key));
 		worldCached = false;
-	}
-
-	/**
-	 * Returns a random grid that was the output from
-	 * RandomWorldGeneration.smoothDiamondSquareAlgorithm
-	 */
-	public float[][] getRandomGrid() {
-		return randomGrids[new Random().nextInt(randomGrids.length)];
-	}
-
-	/**
-	 * Returns a random grid with the edges pulled to 0
-	 */
-	public float[][] getRandomGridEdge() {
-		return randomGridEdges[new Random().nextInt(randomGridEdges.length)];
 	}
 
 	/**

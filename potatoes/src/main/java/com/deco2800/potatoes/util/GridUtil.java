@@ -221,50 +221,46 @@ public class GridUtil {
 	 *            THIS IS VERY SLOW
 	 * @return The random heightmap
 	 */
-	public static float[][] smoothDiamondSquareAlgorithm(int size, float roughness, int iterations) {
-		float[][] result = new float[size][size];
-		// Seed to 0.5
-		for (int x = 0; x < result.length; x++) {
-			for (int y = 0; y < result[x].length; y++) {
-				result[x][y] = 0.5f;
-			}
-		}
+	public static float[][] smoothDiamondSquareAlgorithm(float[][] grid, float roughness, int iterations) {
 		// Normalize and diamond square repeatedly, with the output the seed for the
 		// next iteration
 		for (int i = 0; i < iterations; i++) {
-			normalize(diamondSquareAlgorithm(result, size, roughness, roughness));
+			normalize(diamondSquareAlgorithm(grid, grid.length, roughness, roughness));
 		}
 		// For some reason the result sometimes isn't normalized
-		normalize(result);
-		return result;
+		normalize(grid);
+		return grid;
 	}
 
 	/**
 	 * The edge parameter determines the edge of the grid. The grid will be less
 	 * noisy than without an edge, due to the way seeding works.
 	 * 
-	 * @see smoothDiamondSquareAlgorithm(size, roughness, iterations)
+	 * @see smoothDiamondSquareAlgorithm(grid, roughness, iterations)
 	 */
-	public static float[][] smoothDiamondSquareAlgorithm(int size, float edge, float roughness, int iterations) {
-		float[][] result = new float[size][size];
-		// Seed to 0.5
-		for (int x = 0; x < result.length; x++) {
-			for (int y = 0; y < result[x].length; y++) {
-				result[x][y] = 0.5f;
-			}
-		}
+	public static float[][] smoothDiamondSquareAlgorithm(float[][] grid, float edge, float roughness, int iterations) {
 		// Normalize and diamond square repeatedly, with the output the seed for the
 		// next iteration
 		for (int i = 0; i < iterations; i++) {
-			setEdges(result, edge);
-			normalize(diamondSquareAlgorithm(result, size, roughness, roughness));
+			setEdges(grid, edge);
+			normalize(diamondSquareAlgorithm(grid, grid.length, roughness, roughness));
 		}
 		// For some reason the result sometimes isn't normalized
-		normalize(result);
-		setEdges(result, edge);
+		normalize(grid);
+		setEdges(grid, edge);
+		return grid;
+	}
+
+	public static float[][] seedGrid(int size) {
+		float[][] result = new float[size][size];
+		for (int x = 0; x < result.length; x++) {
+			for (int y = 0; y < result[x].length; y++) {
+				result[x][y] = (float)Math.random();
+			}
+		}
 		return result;
 	}
-	
+
 	private static void setEdges(float[][] grid, float edge) {
 		for (int x = 0; x < grid.length; x++) {
 			grid[x][0] = edge;
