@@ -351,25 +351,25 @@ public class GridUtil {
 		JPanel panel = new JPanel();
 
 		JTextField roughnessText = new JTextField();
-		roughnessText.setText("0.5");
+		roughnessText.setText("0.42");
 		roughnessText.setInputVerifier(verifer);
 		JTextField iterationsText = new JTextField();
 		iterationsText.setText("2");
 		iterationsText.setInputVerifier(verifer);
 		JTextField heightText = new JTextField();
-		heightText.setText("0.5");
+		heightText.setText("0.4");
 		heightText.setInputVerifier(verifer);
 		JTextField waterText = new JTextField();
-		waterText.setText("0.5");
+		waterText.setText("0.7");
 		waterText.setInputVerifier(verifer);
 		JTextField heightDirtEdge = new JTextField();
 		heightDirtEdge.setText("0.5");
 		heightDirtEdge.setInputVerifier(verifer);
 		JTextField waterDirtEdge = new JTextField();
-		waterDirtEdge.setText("0.5");
+		waterDirtEdge.setText("0.8");
 		waterDirtEdge.setInputVerifier(verifer);
 		JTextField grassText = new JTextField();
-		grassText.setText("0.5");
+		grassText.setText("0.6");
 		grassText.setInputVerifier(verifer);
 
 		JButton button = new JButton();
@@ -413,7 +413,7 @@ public class GridUtil {
 
 	private static void getImage(int SIZE, BufferedImage image, float roughness, int iterations, double[] vals) {
 		float[][] height = smoothDiamondSquareAlgorithm(SIZE, roughness, iterations);
-		float[][] water = smoothDiamondSquareAlgorithm(SIZE, roughness, iterations);
+		float[][] water = smoothDiamondSquareAlgorithm(SIZE, 0, roughness, iterations);
 		float[][] grass = smoothDiamondSquareAlgorithm(SIZE, roughness, iterations);
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
