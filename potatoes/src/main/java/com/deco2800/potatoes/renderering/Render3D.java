@@ -223,8 +223,8 @@ public class Render3D implements Renderer {
 				GameManager.get().getManager(InputManager.class).getMouseY());
 		Vector2 tileCoords = Render3D.worldPosToTile(coords.x, coords.y);
 
-		float tileX = Math.round(tileCoords.x);
-		float tileY = Math.round(tileCoords.y) - 1;
+		float tileX = (int) tileCoords.x;
+		float tileY = (int) tileCoords.y;
 
 		//find terrain at tile
 		Terrain terrain = world.getTerrain((int)tileX, (int)tileY);
@@ -239,7 +239,7 @@ public class Render3D implements Renderer {
 		if (!("void".equals(terrainText) || "water_tile_1".equals(terrainText))) {
 
 			//make box using game coords
-			Box2D cursor = new Box2D(tileX + 0.5f, tileY + 0.5f, 1, 1);
+			Box2D cursor = new Box2D(tileX+ 1 , tileY, 1, 1);
 
 			// start drawing
 			Gdx.gl.glEnable(GL20.GL_BLEND);
