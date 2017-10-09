@@ -99,4 +99,5 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 
 		return result;
 	}
+
 }
