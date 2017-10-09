@@ -2,6 +2,7 @@ package com.deco2800.potatoes.worlds;
 
 import java.awt.Point;
 import java.util.*;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,14 +36,15 @@ public class World {
 	/**
 	 * Size of the area entites that are in will be put into the same position in the map
 	 */
-	private static final int GRID_SIZE = 5;
+	private static final int GRID_SIZE = 2;
 
 	private static final int TILE_WIDTH = 128;
 	private static final int TILE_HEIGHT = 74;
 	private Terrain[][] terrain;
 
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
-	private Map<Point, Map<Integer, AbstractEntity>> entitiesByPosition = new HashMap<>();
+	private Map<Point, Set<Integer>> entitiesByPosition = new HashMap<>();
+	private Map<Integer, Point> entityPositions = new HashMap<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
 	// First 16 index's are reserved for clients
@@ -184,15 +186,91 @@ public class World {
 	}
 
 	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @param maxDistance
+	 * @return
+	 */
+	public Collection<AbstractEntity> getEntitiesWithinDistance(float x, float y, double maxDistance) {
+		List<AbstractEntity> result = new ArrayList<>();
+		for (Point p : getGridPointsByDistance(x, y, maxDistance * maxDistance)) {
+			for (Integer id : entitiesByPosition.get(p)) {
+				if (entities.containsKey(id) && entities.get(id).distance(x, y) < maxDistance) {
+					result.add(entities.get(id));
+				}
+			}
+		}
+		result.sort((o1, o2) -> Float.compare(o1.distance(x, y), o2.distance(x, y)));
+		return result;
+	}
+
+
+	/**
+	 * Gets the approximate closest entity of the given type to the given position, approximately within the the
+	 * given maximum distance.
+	 * @param x The x coordinate to measure the distance from
+	 * @param y The y coordinate to measure the distance from
+	 * @param maxDistance The maximum distance to check
+	 * @param type The type of entity to check for, {@link AbstractEntity} the closest general entity
+	 * @return
+	 */
+	public Optional<AbstractEntity> getClosestEntity(float x, float y, double maxDistance, Class<?> type) {
+		AbstractEntity result = null;
+		double distance = maxDistance;
+		for (Point p : getGridPointsByDistance(x, y, maxDistance * maxDistance)) {
+			for (Integer id : entitiesByPosition.get(p)) {
+				AbstractEntity entity = entities.get(id);
+				if (entity != null && entity.distance(x, y) < distance && (AbstractEntity.class.equals(type) || type
+						.isInstance(entity))) {
+					result = entity;
+					distance = entity.distance(x, y);
+				}
+			}
+		}
+		return Optional.ofNullable(result);
+	}
+
+	private Collection<Point> getGridPointsByDistance(float x, float y, double maxDistanceSq) {
+		List<Point> result = new ArrayList<>();
+		// Just add points that have associated entities
+		result.addAll(entitiesByPosition.keySet());
+		result.removeIf(p -> p.distanceSq(x, y) > maxDistanceSq);
+		// Sort by distance to (x, y)
+		result.sort(Comparator.comparingDouble(p -> p.distanceSq(x, y)));
+		return result;
+	}
+
+	/**
+	 * Could be updated to be run from {@link AbstractEntity#setPosition(float, float)}
+	 */
+	public void updatePositions() {
+		for (Entry<Integer, AbstractEntity> entry : entities.entrySet()) {
+			if (!entry.getValue().isStatic()) {
+				if (entitiesByPosition.containsKey(getGridPoint(entry.getValue())) && !entitiesByPosition.get
+						(getGridPoint(entry.getValue())).contains(entry.getKey())) {
+					// Remove and re-add to entitiesByPosition
+					entitiesByPosition.get(getGridPoint(entry.getValue())).remove(entry.getKey());
+					if (!entitiesByPosition.containsKey(getGridPoint(entry.getValue()))) {
+						entitiesByPosition.put(getGridPoint(entry.getValue()), new TreeSet<>());
+					}
+					entitiesByPosition.get(getGridPoint(entry.getValue())).add(entry.getKey());
+				}
+			}
+		}
+	}
+
+	/**
 	 * Adds the entity and associated id to all the maps
 	 */
 	private void addToMaps(int id, AbstractEntity entity) {
 		// Check if the nested maps exist and create them if they don't
 		if (!entitiesByPosition.containsKey(getGridPoint(entity))) {
-			entitiesByPosition.put(getGridPoint(entity), new HashMap<>());
+			entitiesByPosition.put(getGridPoint(entity), new TreeSet<>());
 		}
 
-		entitiesByPosition.get(getGridPoint(entity)).put(id, entity);
+		entitiesByPosition.get(getGridPoint(entity)).add(id);
+		entityPositions.put(id, getGridPoint(entity));
 		entities.put(id, entity);
 	}
 
@@ -216,9 +294,9 @@ public class World {
 		return getGridPoint((int)entity.getPosX(), (int)entity.getPosY());
 	}
 
-	private Point getGridPoint(int x, int y) {
+	private Point getGridPoint(float x, float y) {
 		// Rounds x and y to a multiple of GRID_SIZE
-		return new Point(GRID_SIZE * (x / GRID_SIZE), GRID_SIZE * (y / GRID_SIZE));
+		return new Point(GRID_SIZE * (int)(0.5 + x / GRID_SIZE), GRID_SIZE * (int)(0.5 + y / GRID_SIZE));
 	}
 
 	/**
