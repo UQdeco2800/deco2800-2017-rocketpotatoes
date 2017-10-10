@@ -21,10 +21,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-	private static final transient String enemyType = "moose";
+	private static final transient String ENEMY_TYPE = "moose";
 	private static final EnemyProperties STATS = initStats();
 
-	private static final float moose_size = 1.5f;
+	private static final float MOOSE_SIZE = 1.5f;
 
 	private static float speed = 0.04f;
 	private static Class<?> goal = GoalPotate.class;
@@ -52,7 +52,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * @param posY The y coordinate the created squirrel will spawn from
 	 */
 	public Moose(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.849f), moose_size, moose_size, TEXTURE_LEFT, HEALTH, speed, goal);
+        super(new Circle2D(posX, posY, 0.849f), MOOSE_SIZE, MOOSE_SIZE, TEXTURE_LEFT, HEALTH, speed, goal);
 		Moose.speed = speed;
 		Moose.goal = goal;
 		this.path = null;
@@ -72,7 +72,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * @return String of this type of enemy (ie 'moose').
 	 * */
 	@Override
-	public String getEnemyType() { return enemyType; }
+	public String getEnemyType() { return ENEMY_TYPE; }
 
 	/**
 	 *	@return the current Direction of moose
@@ -143,15 +143,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		float deltaX = getPosX() - targetX;
 		float deltaY = getPosY() - targetY;
 
-		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
+		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
 
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
+		super.onTickMovement();
 
-		this.setPosX(getPosX() + changeX);
-		this.setPosY(getPosY() + changeY);
-
-		updateDirection();
+		super.updateDirection();
 	}
 
 	/**

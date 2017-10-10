@@ -86,8 +86,13 @@ public class MultiplayerManager extends Manager {
      * @throws IOException
      */
     public void createHost(int port) throws IllegalStateException, IllegalArgumentException, IOException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+        if (!isValidPort(port)) {
+          throw new IllegalArgumentException("Invalid port: " + port);
+        }
+
+        if (client != null) {
+           throw new IllegalStateException("Client already exists!");
+         }
 
         master = true;
         serverPort = port;
@@ -106,17 +111,23 @@ public class MultiplayerManager extends Manager {
      * @throws IOException
      * @throws IllegalArgumentException
      */
-    public void joinGame(String name, String IP, int port) throws IOException, IllegalArgumentException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (!isValidIP(IP)) { throw new IllegalArgumentException("Invalid IP: " + IP); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+    public void joinGame(String name, String inIP, int port) throws IOException, IllegalArgumentException {
+        if (!isValidPort(port)) {
+           throw new IllegalArgumentException("Invalid port: " + port);
+         }
+        if (!isValidIP(inIP)) {
+           throw new IllegalArgumentException("Invalid IP: " + inIP);
+         }
+        if (client != null) {
+           throw new IllegalStateException("Client already exists!");
+         }
 
         // TODO move away from ALL tcp
         clientPort = port;
         multiplayer = true;
-        ip = IP;
+        ip = inIP;
         client = new NetworkClient();
-        client.connect(name, IP, port, port);
+        client.connect(name, inIP, port, port);
 
         while (!isClientReady());
     }
@@ -125,8 +136,12 @@ public class MultiplayerManager extends Manager {
     *
     */
     public List<InetAddress> discoverHosts(int port) throws IOException, IllegalArgumentException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+        if (!isValidPort(port)) {
+           throw new IllegalArgumentException("Invalid port: " + port);
+          }
+        if (client != null) {
+           throw new IllegalStateException("Client already exists!");
+         }
 
         clientPort = port;
         client = new NetworkClient();

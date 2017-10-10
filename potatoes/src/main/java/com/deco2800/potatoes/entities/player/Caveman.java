@@ -36,7 +36,7 @@ public class Caveman extends Player {
 
 		super.setYRenderOffset(9);
     }
-    
+
     /* Caveman Animations */
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
@@ -44,7 +44,7 @@ public class Caveman extends Player {
     private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, this::completionHandler);
     private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, this::completionHandler);
     private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, this::completionHandler);
-    
+
     private Void completionHandler() {
 		// Re-enable walking
 		super.state = IDLE;
@@ -58,7 +58,7 @@ public class Caveman extends Player {
 		super.updateMovingAndFacing();
 		return null;
 	}
-    
+
     @Override
     public void updateSprites() {
 
@@ -86,7 +86,7 @@ public class Caveman extends Player {
 				break;
             }
     }
-    
+
     @Override
     public void attack() {
 		super.attack();
@@ -104,8 +104,9 @@ public class Caveman extends Player {
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.
-			if (!target.isPresent())
+			if (!target.isPresent()){
 				return;
+      }
 
 				float targetPosX = target.get().getPosX();
 				float targetPosY = target.get().getPosY();
@@ -146,7 +147,7 @@ public class Caveman extends Player {
 
 		}
     }
-    
+
     /* Custom walk sound handling */
 	private int stepNumber = 1;	// Used for playing left and right foot steps
 	private boolean alternateSound = false;	// Used for playing alternate sounds
@@ -157,13 +158,15 @@ public class Caveman extends Player {
 		} else {
 			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
 		}
-		
+
 		stepNumber++;
-		if (stepNumber == 3) { stepNumber = 1; }
+		if (stepNumber == 3) {
+       stepNumber = 1;
+     }
 		alternateSound = new Random().nextBoolean();
 		return null;
 	}
-    
+
     @Override
 	protected void walk(boolean active) {
 		super.walk(active);
@@ -175,7 +178,7 @@ public class Caveman extends Player {
 			GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
 		}
 	}
-    
+
     @Override
     public void interact() {
     		super.interact();

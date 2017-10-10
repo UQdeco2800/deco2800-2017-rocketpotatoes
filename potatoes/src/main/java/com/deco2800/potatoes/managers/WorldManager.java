@@ -7,7 +7,6 @@ import java.util.Random;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.GridUtil;
 import com.deco2800.potatoes.worlds.World;
@@ -18,13 +17,14 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  * Manager for worlds. Stores and generates all the worlds.
  */
 public class WorldManager extends Manager {
-	private static final int WORLD_SIZE = 50;
+	public static final int WORLD_SIZE = 50;
 
 	private Map<WorldType, World> worlds;
 	private Map<String, Cell> cells;
 	private float[][][] randomGrids;
 	private float[][][] randomGridEdges;
-	private TiledDrawable background;
+
+	private boolean worldCached = false;
 
 	/**
 	 * Initializes the world manager and generates random grids to use for
@@ -99,6 +99,7 @@ public class WorldManager extends Manager {
 		// GameManager.setWorld will probably need to be updated. Some managers need to
 		// be reloaded, etc.
 		GameManager.get().setWorld(getWorld(key));
+		worldCached = false;
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class WorldManager extends Manager {
 	public float[][] getRandomGrid() {
 		return randomGrids[new Random().nextInt(randomGrids.length)];
 	}
-	
+
 	/**
 	 * Returns a random grid with the edges pulled to 0
 	 */
@@ -137,21 +138,16 @@ public class WorldManager extends Manager {
 				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
 			}
 		}
+		world.setBackground(worldType.getTerrain().getWater());
 		world.setTerrain(terrain);
 		return world;
 	}
 
-	/**
-	 * Returns the background for beyond the edges of the map
-	 */
-	public TiledDrawable getBackground() {
-		return background;
+	public boolean isWorldCached() {
+		return worldCached;
 	}
 
-	/**
-	 * Sets the background for beyond the edges of the map
-	 */
-	public void setBackground(TiledDrawable background) {
-		this.background = background;
+	public void setWorldCached(boolean worldCached) {
+		this.worldCached = worldCached;
 	}
 }

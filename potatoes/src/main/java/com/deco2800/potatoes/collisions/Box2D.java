@@ -26,7 +26,7 @@ public class Box2D extends Shape2D {
 
     private float xLength;
     private float yLength;
-    private static final String textureStr = "BOX_HIGHLIGHT";
+    private static final String TEXTURE_STRING = "BOX_HIGHLIGHT";
 
     private Vector3 c1;//corners during screen render
     private Vector3 c2;
@@ -171,10 +171,10 @@ public class Box2D extends Shape2D {
 
         // Check dist's are large enough that no collision could occur
         if (distX >= (this.xLength + other.getXLength())/2) {
-        	return false; 
+        	return false;
         }
         if (distY >= (this.yLength + other.getYLength())/2) {
-        	return false; 
+        	return false;
         }
 
         return true;
@@ -379,7 +379,7 @@ public class Box2D extends Shape2D {
      */
     @Override
     public void renderHighlight(SpriteBatch batch) {
-        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(TEXTURE_STRING);
 
         Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
 
