@@ -37,6 +37,9 @@ public class MooseTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        moose1 = null;
+        mooseEmpty = null;
+        playerTest = null;
     }
 
     /*

@@ -33,6 +33,9 @@ public class MeleeAttackEventTest extends BaseTest {
     @After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	eventEmpty = null;
+    	testEvent = null;
+    	testMeleeEnemy = null;
     }
 
     /*
