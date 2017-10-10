@@ -40,25 +40,11 @@ public class Caveman extends Player {
     /* Caveman Animations */
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, this::completionHandler);
-
-    private Void completionHandler() {
-		// Re-enable walking
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-	}
-
-	private Void damagedCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-	}
-
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, super::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
+	
     @Override
     public void updateSprites() {
 

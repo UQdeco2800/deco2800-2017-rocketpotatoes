@@ -206,6 +206,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         }
     }
 
+    public Void completionHandler() {
+        // Re-enable walking
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
+
+    public Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
+
     /**
      * Returns the current state of the player.
      *

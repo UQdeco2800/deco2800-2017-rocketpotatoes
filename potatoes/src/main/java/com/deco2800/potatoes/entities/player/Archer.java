@@ -37,24 +37,11 @@ public class Archer extends Player {
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
     private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
-    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, super::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, super::completionHandler);
     
-    private Void completionHandler() {
-		// Re-enable walking
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-    }
-    
-    private Void damagedCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-    }
-    
+
     @Override
     public void updateSprites() {
     		super.updateSprites();

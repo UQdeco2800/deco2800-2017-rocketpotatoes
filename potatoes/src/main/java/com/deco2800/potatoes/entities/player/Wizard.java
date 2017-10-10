@@ -34,22 +34,9 @@ public class Wizard extends Player {
     }
 
     private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", IDLE, 1, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", IDLE, 1, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, super::damagedCompletionHandler);
 
-    private Void completionHandler() {
-        // Re-enable walking
-        super.state = IDLE;
-        super.updateMovingAndFacing();
-        return null;
-    }
-
-    private Void damagedCompletionHandler() {
-        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-        super.state = IDLE;
-        super.updateMovingAndFacing();
-        return null;
-    }
 
     @Override
     public void updateSprites() {
