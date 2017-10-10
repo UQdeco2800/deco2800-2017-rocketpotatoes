@@ -2,7 +2,7 @@ package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.graphics.Color;
 
-/** 
+/**
  * In game time system
  */
 public class GameTimeManager extends Manager implements TickableManager {
@@ -13,7 +13,7 @@ public class GameTimeManager extends Manager implements TickableManager {
 
 		private Color color;
 		private int time;
-		
+
 		TimeColour(int colourCode, int time) {
 			color = new Color(colourCode);
 			this.time = time;
@@ -32,9 +32,9 @@ public class GameTimeManager extends Manager implements TickableManager {
 		return new Color(c1).lerp(c2, 0.5f);
 	}
 
-	private static final int timeScale = 10000;
+	private static final int TIME_SCALE = 10000;
 
-	private int currentTime = 3 * timeScale;
+	private int currentTime = 3 * TIME_SCALE;
 	private int currentDay = 0;
 
 	// Empty constructor exists by default
@@ -43,7 +43,7 @@ public class GameTimeManager extends Manager implements TickableManager {
 	 * @return the current in game time
 	 */
 	public float getCurrentTime() {
-		return (float) currentTime / timeScale;
+		return (float) currentTime / TIME_SCALE;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class GameTimeManager extends Manager implements TickableManager {
 	 * @param currentTime
 	 */
 	public void setCurrentTime(int currentTime) {
-		setUnscaledTime(currentTime * timeScale);
+		setUnscaledTime(currentTime * TIME_SCALE);
 	}
 
 	private void setUnscaledTime(int currentTime) {
@@ -94,8 +94,8 @@ public class GameTimeManager extends Manager implements TickableManager {
 	 * Rolling over into next day
 	 */
 	public void nextDay() {
-		currentDay += currentTime / (24 * timeScale);
-		currentTime %= 24 * timeScale;
+		currentDay += currentTime / (24 * TIME_SCALE);
+		currentTime %= 24 * TIME_SCALE;
 	}
 
 	/**

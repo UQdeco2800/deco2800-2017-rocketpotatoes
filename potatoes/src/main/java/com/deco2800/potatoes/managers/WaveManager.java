@@ -4,6 +4,7 @@ import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wave manager acts as a controller for the games waves of enemies. It's primary
@@ -43,7 +44,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      *
      * @return ArrayList of all EnemyWaves known to manager
      * */
-    public ArrayList<EnemyWave> getWaves() { return waves; }
+    public List<EnemyWave> getWaves() { return waves; }
 
     /**
      * Every game tick check if there is an active wave and if so tell it
@@ -103,12 +104,8 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * @return true if all waves given to WaveManager have been completed
      */
     public boolean areWavesCompleted() {
-        if (getWaveIndex()+1 < getWaves().size()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+        return !(getWaveIndex()+1 < getWaves().size());
+    };
 
     /**
      * Get the position of currently active or (if no current active waves) the last active
