@@ -14,14 +14,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
@@ -347,54 +358,58 @@ public class GridUtil {
 
 		JPanel panel = new JPanel();
 
+		List<Entry<String, JTextField>> options = new ArrayList<>();
+
 		JTextField roughnessText = new JTextField();
 		roughnessText.setText("0.42");
-		roughnessText.setInputVerifier(verifer);
+
 		JTextField iterationsText = new JTextField();
 		iterationsText.setText("2");
-		iterationsText.setInputVerifier(verifer);
+
 		JTextField heightText = new JTextField();
 		heightText.setText("0.4");
-		heightText.setInputVerifier(verifer);
+		options.add(new SimpleEntry<>("Water", heightText));
+
 		JTextField waterText = new JTextField();
 		waterText.setText("0.7");
-		waterText.setInputVerifier(verifer);
+		options.add(new SimpleEntry<>("Edge Water", waterText));
+
 		JTextField heightDirtEdge = new JTextField();
 		heightDirtEdge.setText("0.5");
-		heightDirtEdge.setInputVerifier(verifer);
+		options.add(new SimpleEntry<>("Height dirt edge", heightDirtEdge));
+
 		JTextField waterDirtEdge = new JTextField();
 		waterDirtEdge.setText("0.8");
-		waterDirtEdge.setInputVerifier(verifer);
+		options.add(new SimpleEntry<>("Edge Water Dirt Edge", waterDirtEdge));
+
 		JTextField grassText = new JTextField();
 		grassText.setText("0.6");
-		grassText.setInputVerifier(verifer);
+		options.add(new SimpleEntry<>("Grass", grassText));
 
 		JButton button = new JButton();
 		button.setText("Go!");
 		button.addActionListener(e -> {
+			double[] others = new double[options.size()];
+			for (int i = 0; i < options.size(); i++) {
+				others[i] = Double.parseDouble(options.get(i).getValue().getText());
+			}
 			getImage(SIZE, image, (float)Double.parseDouble(roughnessText.getText()), (int)Double.parseDouble
-							(iterationsText.getText()),
-					new double[] {Double.parseDouble(heightText.getText()), Double.parseDouble(waterText.getText()),
-							Double.parseDouble(heightDirtEdge.getText()), Double.parseDouble(waterDirtEdge.getText()),
-							Double.parseDouble(grassText.getText())});
+							(iterationsText.getText()), others);
 			canvas.repaint();
 		});
 
-
-		panel.add(new JLabel("Roughness:"));
+		roughnessText.setInputVerifier(verifer);
+		panel.add(new JLabel("Roughness"));
 		panel.add(roughnessText);
-		panel.add(new JLabel("Iterations (rounded to integer):"));
+		iterationsText.setInputVerifier(verifer);
+		panel.add(new JLabel("Iterations(integer)"));
 		panel.add(iterationsText);
-		panel.add(new JLabel("Height:"));
-		panel.add(heightText);
-		panel.add(new JLabel("Water:"));
-		panel.add(waterText);
-		panel.add(new JLabel("Height Dirt Edge:"));
-		panel.add(heightDirtEdge);
-		panel.add(new JLabel("Water Dirt Edge:"));
-		panel.add(waterDirtEdge);
-		panel.add(new JLabel("Grass:"));
-		panel.add(grassText);
+
+		for (Entry<String, JTextField> entry : options) {
+			entry.getValue().setInputVerifier(verifer);
+			panel.add(new JLabel(entry.getKey()));
+			panel.add(entry.getValue());
+		}
 
 		canvas.setPreferredSize(new Dimension(SIZE * 4 + 200, SIZE * 4 + 10));
 		button.setPreferredSize(new Dimension(100, 50));
