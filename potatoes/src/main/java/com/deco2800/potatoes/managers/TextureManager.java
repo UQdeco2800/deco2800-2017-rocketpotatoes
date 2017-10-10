@@ -111,6 +111,7 @@ public class TextureManager extends Manager {
         saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
         saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
+        saveTexture("menuButtonPlaceholder", "resources/placeholderassets/menuButtonPlaceholder.png");
 
         // Tutorial
         saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");
