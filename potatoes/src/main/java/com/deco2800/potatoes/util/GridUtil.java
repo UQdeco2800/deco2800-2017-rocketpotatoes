@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -383,11 +384,7 @@ public class GridUtil {
 			canvas.repaint();
 		});
 
-		frame.setLayout(new GridLayout(2,1));
-		panel.setLayout(new GridLayout(8,2));
 
-		frame.add(canvas);
-		
 		panel.add(new JLabel("Roughness:"));
 		panel.add(roughnessText);
 		panel.add(new JLabel("Iterations (rounded to integer):"));
@@ -402,9 +399,19 @@ public class GridUtil {
 		panel.add(waterDirtEdge);
 		panel.add(new JLabel("Grass:"));
 		panel.add(grassText);
-		panel.add(button);
 
-		frame.add(panel);
+		canvas.setPreferredSize(new Dimension(SIZE * 4 + 200, SIZE * 4 + 10));
+		button.setPreferredSize(new Dimension(100, 50));
+		panel.setLayout(new GridLayout(8,2));
+		frame.setLayout(new BorderLayout());
+
+		frame.add(canvas, BorderLayout.PAGE_START);
+
+		JScrollPane scroller = new JScrollPane(panel);
+
+		//scroller.add(panel);
+		frame.add(scroller, BorderLayout.CENTER);
+		frame.add(button, BorderLayout.PAGE_END);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
