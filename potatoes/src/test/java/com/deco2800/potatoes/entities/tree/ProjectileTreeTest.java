@@ -28,6 +28,7 @@ public class ProjectileTreeTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	testTree = null;
     }
 
 	@Test
