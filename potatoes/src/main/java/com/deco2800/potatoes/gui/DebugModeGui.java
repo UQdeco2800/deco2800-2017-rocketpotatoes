@@ -248,12 +248,12 @@ public class DebugModeGui extends Gui {
                      }
                      
                      if (keycode == Input.Keys.F8) {
-                         Terrain g = new Terrain("ground_1", 1, false);
+                         Terrain g = new Terrain("mud_tile_1", 1, false);
                          GameManager.get().getWorld().setTile((int)coords2.y, (int)coords2.x,g);
                      }
                      
                      if (keycode == Input.Keys.F9) {
-                         Terrain w = new Terrain("w1", 0, false);
+                         Terrain w = new Terrain("water_tile_1", 0, false);
                          GameManager.get().getWorld().setTile((int)coords2.y, (int)coords2.x,w);
                      
                      }
@@ -312,6 +312,7 @@ public class DebugModeGui extends Gui {
      */
     public void playerImmortal(){
         screen.menuBlipSound();
+        immortalButton.setText("Player is already Immortal");
         GameManager.get().getManager(PlayerManager.class).getPlayer().heal(200);
         GameManager.get().getManager(PlayerManager.class).getPlayer().addDamageScaling(0);
     }
@@ -326,6 +327,7 @@ public class DebugModeGui extends Gui {
                 ((MortalEntity) ent).addDamageScaling(0);
             }
         }
+
     }
 
     /**
