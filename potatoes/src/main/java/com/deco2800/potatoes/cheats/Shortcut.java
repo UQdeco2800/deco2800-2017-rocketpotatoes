@@ -5,10 +5,10 @@ import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.gui.DebugModeGui;
 
 /**
- * UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, A, B, ENTER
- * Konami cheat code to turn on debug (god) mode.
+ * SELECT (Right Shift Key).
+ * Temporary shortcut for convenience to toggle debug (god) mode.
  */
-public class Konami implements CheatExecution {
+public class Shortcut implements CheatExecution {
     @Override
     public void run() {
         GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).toggle();
