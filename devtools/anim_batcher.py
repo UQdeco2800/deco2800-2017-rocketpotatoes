@@ -141,7 +141,7 @@ def setup_light(light):
     light.data.type = "SUN"
     light.data.energy = 1.3
 
-def fit_model_in_frame():
+def fit_model_in_frame(model_string):
     """ Arrange the camera such that the model stays in fram as it rotates"""
     # duplicate a model for all possible model positions
     for i in range(0, INTERVALS):
@@ -149,7 +149,7 @@ def fit_model_in_frame():
         bpy.context.object.rotation_euler[2] = 2 * pi * i / INTERVALS
 
     # align camara to fit all models
-    bpy.ops.object.select_pattern(pattern="Model.*")
+    bpy.ops.object.select_pattern(pattern=model_string + ".*")
     bpy.ops.view3d.camera_to_view_selected()
     bpy.ops.object.delete()
 
@@ -212,24 +212,47 @@ def render_batch(model):
         RENDER.filepath = output_name + "%03d.png" % i
         bpy.ops.render.render(write_still=True)
 
+def render_animated_batch(model):
+    '''
+    Rotate around the model, rendering a number of angles as specified by
+    INTERVALS
+    '''
+    output_name = get_output_name()
+    for frame in range(SCENE.frame_start, SCENE.frame_end):
+        bpy.context.scene.frame_current = frame
+        bpy.context.scene.frame_set(frame)
+
+        for i in range(0, INTERVALS):
+            model.rotation_euler[2] = 2 * pi * i / INTERVALS
+            RENDER.filepath = output_name + "F%03dP%03d.png" % (frame, i)
+            bpy.ops.render.render(write_still=True)
 
 def main():
-    #camera = OBJECTS["Camera"]
-    #light = OBJECTS["Lamp"]
+    camera = OBJECTS["Camera"]
+    light = OBJECTS["Lamp"]
     #model = import_model()
 
-    model = OBJECTS["Wizard"]
+    #centre_model(model)
+    setup_camera(camera)
+    setup_light(light)
+
+    for obj in bpy.data.objects:
+        obj.select = False
+
+    model = OBJECTS["Model"]
     model.select = True
     for x in model.children:
         x.select = True
 
 
+    blob = [] # all the models of all the frames 
+
     for i in range(SCENE.frame_start, SCENE.frame_end):
+        # move frame along
         bpy.context.scene.frame_current = i
         bpy.context.scene.frame_set(i)
-        print(OBJECTS["Hat"].location)
-        bpy.ops.object.duplicate()
 
+        bpy.ops.object.duplicate()
         duped_model = bpy.context.selected_objects[0]
 
         # remove frame data from duplicated model
@@ -245,15 +268,37 @@ def main():
             base_child = model.children[x]
             dupe_child = duped_model.children[x]
 
+            blob.append(dupe_child)
+
             dupe_child.location = base_child.location
             dupe_child.rotation_euler = base_child.rotation_euler
 
+    # merge together
+    for x in blob:
+        x.select = True
 
-    #centre_model(model)
-    #setup_camera(camera)
-    #setup_light(light)
-    #fit_model_in_frame()
+    # merge all the newly imported models into one supermodel
+    selected = bpy.context.selected_objects
+    SCENE.objects.active = merged =  selected.pop()
+    bpy.ops.object.join()
 
-    #render_batch(model)
+    merged.name = "Merged"
+    merged.select = True
+    SCENE.objects.active = merged
+
+    fit_model_in_frame("Merged")
+
+    # delete the animation merge
+    for obj in bpy.data.objects:
+        obj.select = False
+
+    merged.select = True
+    for x in OBJECTS:
+        if "Model." in x.name:
+            x.select = True
+    bpy.ops.object.delete()
+
+    render_batch(OBJECTS["Model"])
+    #render_animated_batch(OBJECTS["Model"])
 
 main()
