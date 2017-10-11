@@ -191,16 +191,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
 
-
-        if(state == DEATH){
-          return false;
-        }
         //check already in state
         if (state == newState)
             return true;
 
         // only change state if IDLE or WALK-ing
-        if (state == IDLE || state == WALK) {
+        if (state == IDLE || state == WALK || state == DEATH) {
             state = newState;
 
             // only move on WALK
@@ -229,7 +225,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * @param keycode The key pressed
      */
     public void handleKeyDown(int keycode) {
-
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = true;
@@ -276,6 +276,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public void handleKeyUp(int keycode) {
 
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = false;
@@ -513,6 +518,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     @Override
     public void deathHandler() {
         LOGGER.info(this + " is dead.");
+        // set state to death
+        this.state = DEATH;
+        // reset all movement
+        keyW = false;
+        keyA = false;
+        keyS = false;
+        keyD = false;
+        // reset to default speed
+        this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
         // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
