@@ -17,10 +17,11 @@ public class RenderObject extends Structure implements Closeable {
     public int x;
     public int y;
     public float rotation;
+    public float scale;
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("asset", "x", "y", "rotation");
+        return Arrays.asList("asset", "x", "y", "rotation", "scale");
     }
 
     @Override

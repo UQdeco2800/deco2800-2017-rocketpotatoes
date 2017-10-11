@@ -12,15 +12,17 @@ pub struct RenderObject {
     x: i32,
     y: i32,
     rotation: f32,
+    scale: f32,
 }
 
 impl RenderObject {
-    pub fn new(name: String, x: i32, y: i32, rotation: f32) -> Self {
+    pub fn new(name: String, x: i32, y: i32, rotation: f32, scale: f32) -> Self {
         Self {
             asset: to_ptr(name),
             x: x,
             y: y,
             rotation: rotation,
+            scale: scale,
         }
     }
 }

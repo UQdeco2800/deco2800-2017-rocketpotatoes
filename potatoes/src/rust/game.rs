@@ -1,4 +1,4 @@
-use render::{RenderInfo}; 
+use render::{RenderInfo, RenderObject}; 
 use util::CallbackFunctions;
 
 /// GameState machine!
@@ -71,7 +71,11 @@ impl Game {
 
     /// Updates the position of all the fishables (and spawns new ones if required)
     fn update_fishables(&mut self, delta_time: f64) {
-
+        // TODO delta
+        for f in self.fishables.iter_mut() {
+            f.position.0 += f.velocity.0;
+            f.position.0 += f.velocity.1;
+        }
     }
 
     /// Return's an index of a fishable if the line is colliding with it
@@ -81,10 +85,19 @@ impl Game {
 
     pub fn update(&mut self, delta_time: f64, callbacks: &CallbackFunctions) {
 
+
         // Always update our fishables!
         self.update_fishables(delta_time);
         match self.state {
             GameState::Start => {
+                self.fishables.push(Fishable {
+                    position: (60, 60),
+                    size: (30, 30),
+                    velocity: (5, 0),
+                    category: FishableType::Turbofish,
+                });
+
+                self.start_falling();
             },
 
             GameState::Falling => {
@@ -126,17 +139,9 @@ impl Game {
     }
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
-        /*
-        let elapsed = timer.elapsed();
-        let real_time = f64::sin(elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9);
-        let width = window_info.size_x as f64;
-        let height = window_info.size_y as f64;
-        let x = width / 2.0
-            * (1.0 + real_time);
-        let y = height as f64 / 2.0;
-        */
-
-        //(functions.draw_sprite)(RenderObject::new("rustyfish_test".to_string(), 0 as i32, 0 as i32, 0));
-
+        for f in self.fishables.iter() {
+            (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
+                                                      f.position.0, f.position.1, 0.0, 0.5));
+        }
     }
 }

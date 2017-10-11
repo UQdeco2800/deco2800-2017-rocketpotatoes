@@ -123,7 +123,7 @@ public class Rustyfish {
             TextureManager m = GameManager.get().getManager(TextureManager.class);
             Texture t = m.getTexture(obj.asset);
             batch.draw(t, obj.x, Gdx.graphics.getHeight() - t.getWidth() - obj.y, t.getWidth() / 2.0f, t.getHeight() / 2.0f,
-                    t.getWidth(), t.getHeight(), 1.0f, 1.0f, obj.rotation,
+                    t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
                     0, 0, t.getWidth(), t.getHeight(), false, false);
         }
     };

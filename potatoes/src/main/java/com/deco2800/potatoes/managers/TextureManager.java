@@ -330,7 +330,7 @@ public class TextureManager extends Manager {
         saveTexture("CIRCLE_HIGHLIGHT", "resources/collisionmasks/Circle2D_highlight.png");
         saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
 
-        saveTexture("rustyfish_test", "resources/placeholderassets/wood.png");
+        saveTexture("turbofish", "resources/rustyfish/turbofish.png");
 
     }
 
