@@ -1,4 +1,4 @@
-use render::{RenderInfo, RenderObject}; 
+use render::{RenderInfo, RenderObject, Color}; 
 use util::CallbackFunctions;
 
 extern crate rand;
@@ -173,7 +173,7 @@ impl Game {
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, 0.25, f.velocity.0 < 0, false));
+                                                      f.position.0, f.position.1, 0.0, 0.25, f.velocity.0 < 0, false, Color::Yellow));
         }
     }
 }

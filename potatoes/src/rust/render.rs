@@ -6,6 +6,15 @@ use std::time::{Instant};
 
 use util::*;
 
+pub enum Color {
+    Black = 0,
+    Red = 1,
+    Blue = 2,
+    Green = 3,
+    Yellow = 4,
+    Orange = 5,
+}
+
 /// Object representing something to render
 ///
 /// Note: booleans are treated as i32 since rust bool != java bool (I think?)
@@ -18,10 +27,11 @@ pub struct RenderObject {
     scale: f32,
     flip_x: i32,
     flip_y: i32,
+    col: i32,
 }
 
 impl RenderObject {
-    pub fn new(name: String, x: i32, y: i32, rotation: f32, scale: f32, flip_x: bool, flip_y: bool) -> Self {
+    pub fn new(name: String, x: i32, y: i32, rotation: f32, scale: f32, flip_x: bool, flip_y: bool, col: Color) -> Self {
         Self {
             asset: to_ptr(name),
             x: x,
@@ -30,6 +40,7 @@ impl RenderObject {
             scale: scale,
             flip_x: flip_x as i32,
             flip_y: flip_y as i32,
+            col: col as i32,
         }
     }
 }
