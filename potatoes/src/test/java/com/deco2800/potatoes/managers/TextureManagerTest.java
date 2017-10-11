@@ -5,9 +5,7 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -23,39 +21,21 @@ public class TextureManagerTest {
 	private static class GdxTestApplication extends ApplicationAdapter {
 		
 	}
-
-	TextureManager textureManager;
-	Texture texture;
-	HeadlessApplicationConfiguration configuration;
-
-	@Before
-	public void setUp() {
-		textureManager = GameManager.get().getManager(TextureManager.class);
-		configuration = new HeadlessApplicationConfiguration();
-
-	}
-
-	@After
-	public void tearDown() {
-		GameManager.get().clearManagers();
-		texture = null;
-		configuration = null;
-	}
-
+	
 	@Test
     public void loadTexture() {
-
-		textureManager = new TextureManager();
-		new HeadlessApplication(new GdxTestApplication(), configuration);
+		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
+		new HeadlessApplication(new GdxTestApplication(), conf);
 		Gdx.gl = mock(GL20.class);
-		texture = textureManager.getTexture("undefined");
+		
 		TextureManager.loadTextures();
     }
 	
 	@Test
 	public void getTextureTest() {
-
-        TextureManager.saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
+		TextureManager textureManager = new TextureManager();
+		Texture texture = textureManager.getTexture("undefined");
+        textureManager.saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
 		texture = textureManager.getTexture("healthbar");
 		Assert.assertNotNull("healthbar sprite should have been saved", texture);
 	}
