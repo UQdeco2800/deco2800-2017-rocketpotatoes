@@ -18,7 +18,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
  * items need to be a type of resource that a player can collect and store in
  * inventory. ResourceEntities appear on the map and get added to a player's
  * inventory when collided with.
- * 
+ *
  * @author Dion, Jordan
  */
 public class ResourceEntity extends AbstractEntity implements Tickable {
@@ -38,12 +38,12 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	/*
 	 *  The radius of which a collision can be detected
 	 */
-	private final float change = (float) 0.2;
+	private static final float CHANGE = (float) 0.2;
 	/*
 	 * The array of calculatePositions where a collision needs to be checked
 	 */
-	private final float[][] positions = { { change, 0 }, { change, change }, { 0, change }, { -change, change },
-			{ -change, 0 }, { -change, -change }, { 0, -change }, { -change, -change } };
+	private static final float[][] POSITIONS = { { CHANGE, 0 }, { CHANGE, CHANGE }, { 0, CHANGE }, { -CHANGE, CHANGE },
+			{ -CHANGE, 0 }, { -CHANGE, -CHANGE }, { 0, -CHANGE }, { -CHANGE, -CHANGE } };
 
 	/**
 	 * Default constructor which sets the ResourceEntity to an ordinary Resource at
@@ -59,9 +59,9 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 * Instantiates a ResourceEntity of a particular type of resource at a particular
 	 * position. It requires resource is not null because the name component of it
 	 * is input in the constructor.
-	 * 
+	 *
 	 * @require resource is not null
-	 * 
+	 *
 	 * @param posX
 	 *            The x-coordinate of the entity.
 	 * @param posY
@@ -79,7 +79,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 
 	/**
 	 * Sets the current resource quantity to a certain positive amount.
-	 * 
+	 *
 	 * @param quantity
 	 * 				The new amount to add to an inventory when a resource is
 	 * 				collected.
@@ -90,14 +90,14 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 		} else {
 			this.quantity = quantity;
 		}
-		
+
 	}
 
 	/**
 	 * Returns the amount of this resource that is stored in this entity. So this
 	 * will be the number of extra resource that will be added to the player's
 	 * inventory when picked up.
-	 * 
+	 *
 	 * @return quantity
 	 * 				The amount to be added to an inventory.
 	 */
@@ -129,8 +129,8 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 			}
 			// Player detected
 			for (int i = 0; i < 8; i++) {
-				newPos.setX(xPos + positions[i][0]);
-				newPos.setY(yPos + positions[i][1]);
+				newPos.setX(xPos + POSITIONS[i][0]);
+				newPos.setY(yPos + POSITIONS[i][1]);
 				// Player next to this resource
 				if (newPos.overlaps(entity.getMask())) {
 					collided = true;
@@ -138,7 +138,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 				}
 			}
 		}
-		
+
 		// remove from game world and add to inventory if a player has collided with
 		// this resource
 		if (collided) {
@@ -159,7 +159,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 * Returns the resource type that this entity is of. The type of resource
 	 * determines the sprite image and what the player can do with the item when
 	 * collected.
-	 * 
+	 *
 	 * @return resourceType
 	 * 				The type of resource: food, seed etc.
 	 */
@@ -171,7 +171,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 	 * Sets the resource type to a certain resource. Often called when
 	 * ResourceEntity is instantiated with the default constructor and resource
 	 * needs to be changed from default.
-	 * 
+	 *
 	 * @param resource
 	 * 				The new type of the resource: food, seed etc.
 	 */
@@ -185,7 +185,7 @@ public class ResourceEntity extends AbstractEntity implements Tickable {
 
 	/**
 	 * Returns the string representation of the resource.
-	 * 
+	 *
 	 * @return string The string representation of the resource.
 	 */
 	@Override

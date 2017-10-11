@@ -140,6 +140,18 @@ public class DamageTree extends AbstractTree implements Tickable {
         return damageTreeType;
     }
 
+    @Override
+    public String getName(){
+        if(damageTreeType instanceof IceTreeType){
+            return "Ice Tree";
+        }else if(damageTreeType instanceof AcornTreeType){
+            return "Acorn Tree";
+        } else if(damageTreeType instanceof FireTreeType){
+            return "Fire Tree";
+        } else {
+            return "Lightning Tree";
+        }
 
+    }
 
 }

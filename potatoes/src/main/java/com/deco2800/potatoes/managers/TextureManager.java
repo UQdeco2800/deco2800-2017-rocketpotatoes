@@ -112,6 +112,16 @@ public class TextureManager extends Manager {
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
         saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
 
+        // Tutorial
+        saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");
+        saveTexture("tutorial2", "resources/menu/tutorial/Tutorial2.png");
+        saveTexture("tutorial3", "resources/menu/tutorial/Tutorial3.png");
+        saveTexture("tutorial4", "resources/menu/tutorial/Tutorial4.png");
+        saveTexture("tutorial5", "resources/menu/tutorial/Tutorial5.png");
+        saveTexture("tutorial6", "resources/menu/tutorial/Tutorial6.png");
+        saveTexture("tutorial7", "resources/menu/tutorial/Tutorial7.png");
+        saveTexture("controls", "resources/menu/tutorial/Controls.png");
+
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
             saveTexture("basictree_grow" + i, "resources/trees/Grow" + i + ".png");

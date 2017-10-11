@@ -3,9 +3,7 @@ package com.deco2800.potatoes.entities.health;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
@@ -26,6 +24,8 @@ public class RespawnEventTest {
 		// create a test world of size 50 by 50
 		World testWorld = new TestWorld();
 		GameManager.get().setWorld(testWorld);
+		GameManager.get().addManager(new SoundManager());
+		GameManager.get().addManager(new GuiManager());
 		// set the test world to forest world terrain
 		WorldType worldType = new WorldType(new TerrainType(null, new Terrain("grass", 1, true),
 				new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)), null);
@@ -43,6 +43,8 @@ public class RespawnEventTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	testEvent = null;
+    	player = null;
     }
 	
 	@Test

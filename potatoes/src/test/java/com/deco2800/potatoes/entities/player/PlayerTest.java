@@ -49,6 +49,8 @@ public class PlayerTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	player = null;
+    	movingPlayer = null;
     }
 	
 	/**
