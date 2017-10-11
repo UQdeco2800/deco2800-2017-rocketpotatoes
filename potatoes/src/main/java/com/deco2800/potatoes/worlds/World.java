@@ -1,20 +1,27 @@
 package com.deco2800.potatoes.worlds;
 
+import java.awt.Point;
 import java.util.*;
 
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Manager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * World is the Game World
@@ -23,11 +30,19 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  * items.
  */
 public class World {
+	private static final Logger LOGGER = LoggerFactory.getLogger(World.class);
+
+	/**
+	 * Size of the area entites that are in will be put into the same position in the map
+	 */
+	private static final int GRID_SIZE = 5;
+
 	private static final int TILE_WIDTH = 128;
 	private static final int TILE_HEIGHT = 74;
 	private Terrain[][] terrain;
-	
+
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
+	private Map<Point, Map<Integer, AbstractEntity>> entitiesByPosition = new HashMap<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
 	// First 16 index's are reserved for clients
@@ -39,24 +54,38 @@ public class World {
 	// Store managers for this world
 	private Set<Manager> managers = new HashSet<>();
 
+	private Drawable background;
+	private Terrain backgroundTerrain;
+
 	public World() {
 		map = new TiledMap();
 		map.getProperties().put("tilewidth", TILE_WIDTH);
 		map.getProperties().put("tileheight", TILE_HEIGHT);
+		terrain = new Terrain[WorldManager.WORLD_SIZE][WorldManager.WORLD_SIZE];
+		backgroundTerrain = new Terrain("", 0.5f, true);
 	}
 
 	/**
 	 * Returns a list of entities in this world
-	 * 
+	 * Note that looping through all entities to find a subset of them is rather inefficient in most cases.
+	 *
 	 * @return All Entities in the world
 	 */
+	@Deprecated
 	public Map<Integer, AbstractEntity> getEntities() {
 		return new HashMap<>(this.entities);
 	}
 
 	/**
+	 * Returns the entity associated with the given id
+	 */
+	public AbstractEntity getEntity(int id) {
+		return entities.get(id);
+	}
+
+	/**
 	 * Returns the current map for this world
-	 * 
+	 *
 	 * @return Map object for this world
 	 */
 	public TiledMap getMap() {
@@ -70,7 +99,7 @@ public class World {
 	 *
 	 * For multiplayer, this should only be called by the master client. TODO way to
 	 * for perform client side prediction.
-	 * 
+	 *
 	 * @param entity
 	 */
 	public void addEntity(AbstractEntity entity) {
@@ -84,7 +113,7 @@ public class World {
 					currentIndex++;
 				} else {
 					// If we're in multiplayer and the master tell other entities.
-					entities.put(currentIndex++, entity);
+					addToMaps(currentIndex++, entity);
 
 					// Tell other clients about this entity. Note that we should always broadcast
 					// master changes AFTER
@@ -99,7 +128,7 @@ public class World {
 						"Clients who aren't master shouldn't be adding entities when in multiplayer!");
 		} else {
 				// Singleplayer behaviour
-				entities.put(currentIndex++, entity);
+				addToMaps(currentIndex++, entity);
 		}
 	}
 
@@ -110,14 +139,14 @@ public class World {
 	 * This function should probably only be called for multiplayer purposes, where
 	 * entity id's must sync across clients. As such this will throw an error if
 	 * you're not in multiplayer
-	 * 
+	 *
 	 * @param entity
 	 * @param id
 	 */
 	public void addEntity(AbstractEntity entity, int id) {
 		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
 		if (m.isMultiplayer()) {
-			entities.put(id, entity);
+			addToMaps(id, entity);
 		} else {
 			throw new IllegalStateException("Not in multiplayer, this function should only be used for multiplayer");
 		}
@@ -128,7 +157,7 @@ public class World {
 	 * Removes the entity with the given id from this world.
 	 */
 	public void removeEntity(int id) {
-		entities.remove(id);
+		removeFromMaps(id);
 
 		// Tell the other clients if we're master and in multiplayer.
 		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
@@ -144,7 +173,7 @@ public class World {
 	public void removeEntity(AbstractEntity entity) {
 		for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
 			if (e.getValue() == entity) {
-				entities.remove(e.getKey());
+				removeFromMaps(e.getKey());
 
 				// Tell the other clients if we're master and in multiplayer.
 				MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
@@ -154,23 +183,63 @@ public class World {
 				return;
 			}
 		}
+	}
 
+	/**
+	 * Adds the entity and associated id to all the maps
+	 */
+	private void addToMaps(int id, AbstractEntity entity) {
+		// Check if the nested maps exist and create them if they don't
+		if (!entitiesByPosition.containsKey(getGridPoint(entity))) {
+			entitiesByPosition.put(getGridPoint(entity), new HashMap<>());
+		}
+
+		entitiesByPosition.get(getGridPoint(entity)).put(id, entity);
+		entities.put(id, entity);
+	}
+
+	/**
+	 * Removes the entity associated with the given id from all the maps
+	 */
+	private void removeFromMaps(int id) {
+		AbstractEntity entity = entities.get(id);
+		// Check all the nested maps exist
+		if (entitiesByPosition.containsKey(getGridPoint(entity))) {
+			entitiesByPosition.get(getGridPoint(entity)).remove(id);
+		}
+		entities.remove(id);
+	}
+
+	private Point getGridPoint(AbstractEntity entity) {
+		if (entity == null) {
+			// Quick fix for tests, should be used normally
+			return new Point(0,0);
+		}
+		return getGridPoint((int)entity.getPosX(), (int)entity.getPosY());
+	}
+
+	private Point getGridPoint(int x, int y) {
+		// Rounds x and y to a multiple of GRID_SIZE
+		return new Point(GRID_SIZE * (x / GRID_SIZE), GRID_SIZE * (y / GRID_SIZE));
 	}
 
 	/**
 	 * Sets the tile int the current world at coordinated x and y to the type of the
 	 * terrain given. No idea if this currently works
-	 * 
+	 *
 	 * @param x
 	 * @param y
 	 * @param tile
 	 */
 	public void setTile(int x, int y, Terrain tile) {
-		terrain[x][y] = tile;
-		Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile.getTexture());
-		((TiledMapTileLayer) map.getLayers().get(0)).setCell(x, y, cell);
+		if (!tile.equals(terrain[x][y])) {
+			GameManager.get().getManager(WorldManager.class).setWorldCached(false);
+			terrain[x][y] = tile;
+			Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile.getTexture());
+			((TiledMapTileLayer) map.getLayers().get(0)).setCell(x, y, cell);
+		}
 	}
-	
+
 	/**
 	 * Deselects all entities.
 	 */
@@ -242,7 +311,7 @@ public class World {
 			return terrain[y][x];
 		else
 			// Makes sure terrain finding doesn't crash
-			return new Terrain("void", 0, false);
+			return backgroundTerrain;
 	}
 
 	/**
@@ -258,5 +327,31 @@ public class World {
 	 */
 	public Set<Manager> getManagers() {
 		return managers;
+	}
+
+	/**
+	 * Returns the background for beyond the edges of the map
+	 */
+	public TextureRegionDrawable getBackground() {
+		return (TextureRegionDrawable) background;
+	}
+
+	/**
+	 * Sets the background for beyond the edges of the map
+	 */
+	public void setBackground(Terrain terrain) {
+		// TODO fix tests so they don't throw null pointer error here
+		try {
+			backgroundTerrain = terrain;
+			TextureRegion textureRegion = new TextureRegion(GameManager.get().getManager(TextureManager.class)
+					.getTextureRegion(terrain.getTexture()));
+			textureRegion.setRegionHeight(textureRegion.getRegionHeight() * WorldManager.WORLD_SIZE * 2);
+			textureRegion.setRegionWidth(textureRegion.getRegionWidth() * WorldManager.WORLD_SIZE * 2);
+			textureRegion.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+			background = new TextureRegionDrawable(textureRegion);
+		} catch (NullPointerException e) {
+			background = new TextureRegionDrawable();
+			LOGGER.info(e.getMessage());
+		}
 	}
 }

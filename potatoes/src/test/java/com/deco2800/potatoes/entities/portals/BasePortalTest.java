@@ -24,6 +24,7 @@ public class BasePortalTest{
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	testPortal = null;
     }
 
 	private class TestWorld extends World {

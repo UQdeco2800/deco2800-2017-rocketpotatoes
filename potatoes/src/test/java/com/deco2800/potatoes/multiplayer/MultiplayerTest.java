@@ -1,10 +1,13 @@
 package com.deco2800.potatoes.multiplayer;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.networking.Network;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.EndPoint;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.reflections.Reflections;
 
@@ -16,47 +19,59 @@ import static org.junit.Assert.fail;
 
 public class MultiplayerTest {
 
+    MultiplayerManager multiplayerManager;
+
+    @Before
+    public void setUp() {
+        multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
+    }
+
+    @After
+    public void tearDown() {
+        GameManager.get().clearManagers();
+    }
+
     @Test
     public void testInit() {
-        MultiplayerManager m = new MultiplayerManager();
-        assertEquals("", m.getIP());
-        assertEquals(-1, m.getID());
-        assertEquals(-1, m.getClientPort());
-        assertEquals(-1, m.getServerPort());
-        assertEquals(false, m.isMultiplayer());
-        assertEquals(false, m.isMaster());
-        assertEquals(true, m.isClientReady());
+
+        assertEquals("", multiplayerManager.getIP());
+        assertEquals(-1, multiplayerManager.getID());
+        assertEquals(-1, multiplayerManager.getClientPort());
+        assertEquals(-1, multiplayerManager.getServerPort());
+        assertEquals(false, multiplayerManager.isMultiplayer());
+        assertEquals(false, multiplayerManager.isMaster());
+        assertEquals(true, multiplayerManager.isClientReady());
 
         // Might not work well as a test? What if port 1337 is occupied?
         // TODO this test sometimes throws a NullPointerException in the client thread when it tries to create a player
         try {
-            m.createHost(1337);
-            while (!m.isServerReady());
-            m.joinGame("Test", "127.0.0.1", 1337);
+            multiplayerManager.createHost(1337);
+            while (!multiplayerManager.isServerReady());
+            multiplayerManager.joinGame("Test", "127.0.0.1", 1337);
         }
         catch (IOException ex) {
             System.out.println("Failed to start test server");
             fail();
         }
 
-        while(!m.isClientReady());
+        while(!multiplayerManager.isClientReady());
 
-        assertEquals("127.0.0.1", m.getIP());
-        assertEquals(1, m.getID());
-        assertEquals(1337, m.getClientPort());
-        assertEquals(1337, m.getServerPort());
-        assertEquals(true, m.isMultiplayer());
-        assertEquals(true, m.isMaster());
+        assertEquals("127.0.0.1", multiplayerManager.getIP());
+        assertEquals(1, multiplayerManager.getID());
+        assertEquals(1337, multiplayerManager.getClientPort());
+        assertEquals(1337, multiplayerManager.getServerPort());
+        assertEquals(true, multiplayerManager.isMultiplayer());
+        assertEquals(true, multiplayerManager.isMaster());
 
-        m.shutdownMultiplayer();
+        multiplayerManager.shutdownMultiplayer();
 
-        assertEquals("", m.getIP());
-        assertEquals(-1, m.getID());
-        assertEquals(-1, m.getClientPort());
-        assertEquals(-1, m.getServerPort());
-        assertEquals(false, m.isMultiplayer());
-        assertEquals(false, m.isMaster());
-        assertEquals(true, m.isClientReady());
+        assertEquals("", multiplayerManager.getIP());
+        assertEquals(-1, multiplayerManager.getID());
+        assertEquals(-1, multiplayerManager.getClientPort());
+        assertEquals(-1, multiplayerManager.getServerPort());
+        assertEquals(false, multiplayerManager.isMultiplayer());
+        assertEquals(false, multiplayerManager.isMaster());
+        assertEquals(true, multiplayerManager.isClientReady());
 
         // TODO test protocols
     }

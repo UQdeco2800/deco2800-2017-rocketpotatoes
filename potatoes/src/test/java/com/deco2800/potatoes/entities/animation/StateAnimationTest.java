@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.animation;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,5 +39,11 @@ public class StateAnimationTest {
 		assertEquals("Below minimum value was not last frame", "2", animation.getFrame());
 		index = 8 * (frames.length - 1);
 		assertEquals("Above maximum value was not first frame", "0", animation.getFrame());
+	}
+
+	@After
+	public void tearDown() {
+		animation = null;
+
 	}
 }

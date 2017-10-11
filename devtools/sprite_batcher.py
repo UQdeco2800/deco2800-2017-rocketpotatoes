@@ -1,11 +1,10 @@
 '''
 This script should be called from within blender, or from the command line
 like so:
-    blender -b -P sprit_batcher.py -- input_model.3ds
+    blender -b -P sprit_batcher.py -- input_model.3ds output
 
-Note that 'output name' doesn't have a .png or anything on the end, that's
+Note that 'output' doesn't have a .png or anything on the end, that's
 handled within the script.
-All output files are put in a directory 'blender-output' for convenience.
 
 If you're using a POSIX machine (e.g Mac, Linux) you can also call the helper
 script '3ds_to_sheet' to automatically combine all the sprites onto one sheet.
@@ -19,12 +18,21 @@ from sys import argv
 from os import path
 import ntpath
 
+import tkinter
+from tkinter import filedialog
+tkinter.Tk().withdraw()
+
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
 # Options
 INTERVALS = 8 # The number of angles around the model to render
-MODEL_FILE = '' # The Model file, used if running this through blender
+
+# You'll probably want to leave these blank and just use the provided file
+# choosers. These are only here for legacy purposes.
+MODEL_FILE = '' # The 3D model's file
+OUTPUT_DIR = '' # Where the resulting sprites will be put
+
 # Ambient occlusion means concave corners are darker than other parts
 AMBIENT_OCCLUSION = False
 SHADOWS = True
@@ -32,7 +40,6 @@ SHADOWS = True
 OBJECTS = bpy.data.objects # A list of all the objects in the scene
 SCENE = bpy.context.scene # the actual scene itself
 RENDER = SCENE.render # The data object associated with rendering
-
 
 
 def get_distance(object1, object2):
@@ -55,11 +62,14 @@ def get_arg(number):
 def import_model():
     '''import the model specified in the cli, or use a pre-loaded model'''
 
-    model_file = get_arg(1) or MODEL_FILE
+    model_file = get_arg(1) or MODEL_FILE \
+            or filedialog.askopenfilename(filetypes=(("3DS file", "*.3ds"),
+                ("All Files", ".*")), title="Select the 3D model to import")
 
     # import the given model file, if specified on the command line
     if OBJECTS.get("Model"):
         model = OBJECTS["Model"]
+        model.select = True
 
     elif model_file:
         bpy.ops.import_scene.autodesk_3ds(filepath=model_file)
@@ -85,12 +95,12 @@ def import_model():
     return model
 
 def get_output_name():
-    if get_arg(2):
-        return path.splitext(get_arg(2))[0]
-    if get_arg(1):
-        return path.splitext(get_arg(1))[0]
-    else:
-        return "model-out"
+    output = get_arg(2) \
+            or filedialog.asksaveasfilename(filetypes=(("PNG image", "*.png"),
+                ("All Files", ".*")), title="Select the sprite base name") \
+            or "blender-output/model-out"
+
+    return path.splitext(output)[0]
 
 def centre_model(model):
     '''centre the model & its origin'''
@@ -196,10 +206,10 @@ def render_batch(model):
     Rotate around the model, rendering a number of angles as specified by
     INTERVALS
     '''
+    output_name = get_output_name()
     for i in range(0, INTERVALS):
         model.rotation_euler[2] = 2 * pi * i / INTERVALS
-        RENDER.filepath = "blender-output/" + get_output_name() \
-                + "%03d.png" % i
+        RENDER.filepath = output_name + "%03d.png" % i
         bpy.ops.render.render(write_still=True)
 
 

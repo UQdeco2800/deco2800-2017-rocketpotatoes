@@ -2,6 +2,7 @@ package com.deco2800.potatoes.managers;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +14,13 @@ public class ProgressBarManagerTest extends BaseTest {
 
 	@Before
 	public void setUp() {
-		progressBarManger = new ProgressBarManager();
+		progressBarManger = GameManager.get().getManager(ProgressBarManager.class);
+	}
+
+	@After
+	public void tearDown() {
+
+		GameManager.get().clearManagers();
 	}
 
 	@Test

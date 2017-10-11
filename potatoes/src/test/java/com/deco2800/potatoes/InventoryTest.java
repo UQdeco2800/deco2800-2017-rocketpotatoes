@@ -14,7 +14,7 @@ import com.deco2800.potatoes.exceptions.InvalidResourceException;
 /**
  * Tests for the inventory class
  * 
- * @author Dion
+ * @author Dion Lao
  *
  */
 public class InventoryTest {

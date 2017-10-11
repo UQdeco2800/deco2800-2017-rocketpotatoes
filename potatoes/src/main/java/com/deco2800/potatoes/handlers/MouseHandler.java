@@ -56,8 +56,6 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		treeShop.initShop(originX,originY);
 	}
 
-	
-
 	@Override
 	public void notifyTouchDown(int screenX, int screenY, int pointer, int button) {
 		originX = screenX;

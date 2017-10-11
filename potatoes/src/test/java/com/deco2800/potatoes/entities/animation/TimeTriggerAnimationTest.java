@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.function.Supplier;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,4 +41,9 @@ public class TimeTriggerAnimationTest {
 		verify(action, times(0)).get();
 	}
 
+	@After
+	public void tearDown() {
+		action = null;
+		animation = null;
+	}
 }
