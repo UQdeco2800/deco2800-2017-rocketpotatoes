@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.tree;
 
 
 import com.deco2800.potatoes.entities.trees.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +24,15 @@ public class DamageTreeTest {
         fireTreeDamageTree = new DamageTree(1, 0, new FireTreeType());
         nullTypeDamageTree = new DamageTree(2, 0, null);
 
+    }
+
+    @After
+    public void tearDown() {
+        defaultDamageTree = null;
+        iceTreeDamageTree = null;
+        acornTreeDamageTree = null;
+        fireTreeDamageTree = null;
+        nullTypeDamageTree = null;
     }
 
     /* Test getDmageTreeType method */

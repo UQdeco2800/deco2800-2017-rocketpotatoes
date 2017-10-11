@@ -26,5 +26,8 @@ public class CheatList {
                 Key.A, 
                 Key.B, 
                 Key.START);
+
+
+        manager.addCheatCode(new Shortcut(), Key.SELECT);
     }
 }

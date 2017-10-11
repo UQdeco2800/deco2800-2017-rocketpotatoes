@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,12 +30,21 @@ public class EventManagerTest {
 			public void onTick(long time) {
 			}
 		};
-		eventManager = new EventManager();
+		eventManager = GameManager.get().getManager(EventManager.class);
 		events = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			events.add(new TestTimeEvent<>());
 			eventManager.registerEvent(i < 3 ? tickable1 : tickable2, events.get(i));
 		}
+	}
+
+	@After
+	public void tearDown() {
+
+		GameManager.get().clearManagers();
+		events.clear();
+		tickable1 = null;
+		tickable2 = null;
 	}
 
 	@Test

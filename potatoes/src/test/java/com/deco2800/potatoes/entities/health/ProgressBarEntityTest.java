@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.health;
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,6 +30,11 @@ public class ProgressBarEntityTest {
 		assertEquals("getHeight() bad init", progressBarEntity.getHeight(), 50);
 		assertEquals("getWidthScale() bad init", progressBarEntity.getWidthScale(), 1, 0f);
 
+	}
+
+	@After
+	public void tearDown() {
+		progressBarEntity = null;
 	}
 
 	@Test
