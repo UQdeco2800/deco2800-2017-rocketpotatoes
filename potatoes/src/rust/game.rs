@@ -1,6 +1,9 @@
 use render::{RenderInfo, RenderObject}; 
 use util::CallbackFunctions;
 
+extern crate rand;
+use self::rand::distributions::{IndependentSample, Range};
+
 /// GameState machine!
 ///
 /// Start - press space to start playing
@@ -76,6 +79,17 @@ impl Game {
             f.position.0 += f.velocity.0;
             f.position.0 += f.velocity.1;
         }
+
+        let y_range = Range::new(10, 1000);
+        let mut rng = rand::thread_rng();
+        if self.fishables.len() < 100 {
+            self.fishables.push(Fishable {
+                position: (0, y_range.ind_sample(&mut rng)),
+                size: (30, 30),
+                velocity: (2, 0),
+                category: FishableType::Turbofish,
+            });
+        }
     }
 
     /// Return's an index of a fishable if the line is colliding with it
@@ -90,12 +104,6 @@ impl Game {
         self.update_fishables(delta_time);
         match self.state {
             GameState::Start => {
-                self.fishables.push(Fishable {
-                    position: (60, 60),
-                    size: (30, 30),
-                    velocity: (5, 0),
-                    category: FishableType::Turbofish,
-                });
 
                 self.start_falling();
             },
@@ -141,7 +149,7 @@ impl Game {
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, 0.5));
+                                                      f.position.0, f.position.1, 0.0, 0.25));
         }
     }
 }

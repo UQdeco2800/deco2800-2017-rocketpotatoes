@@ -9,3 +9,4 @@ path = "src/rust/lib.rs"
 crate-type = ["dylib"]
 
 [dependencies]
+rand = "0.3"
