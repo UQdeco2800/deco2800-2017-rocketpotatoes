@@ -6,6 +6,7 @@ use std::time::{Instant};
 
 use util::*;
 
+#[derive(Debug)]
 pub enum Color {
     Black = 0,
     Red = 1,
@@ -31,7 +32,7 @@ pub struct RenderObject {
 }
 
 impl RenderObject {
-    pub fn new(name: String, x: i32, y: i32, rotation: f32, scale: f32, flip_x: bool, flip_y: bool, col: Color) -> Self {
+    pub fn new(name: String, x: i32, y: i32, rotation: f32, scale: f32, flip_x: bool, flip_y: bool, col: i32) -> Self {
         Self {
             asset: to_ptr(name),
             x: x,
@@ -40,7 +41,7 @@ impl RenderObject {
             scale: scale,
             flip_x: flip_x as i32,
             flip_y: flip_y as i32,
-            col: col as i32,
+            col: col,
         }
     }
 }

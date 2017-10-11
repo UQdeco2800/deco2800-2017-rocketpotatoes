@@ -32,6 +32,7 @@ struct Fishable {
     size: (i32, i32),
     velocity: (i32, i32),
     category: FishableType,
+    color: i32,
 }
 
 
@@ -88,11 +89,12 @@ impl Game {
         self.fishables.retain(|ref f| (f.position.0 >= -3000) && (f.position.0 <= 4000));
 
 
-        // Make new
+        // TODO fix this gross
         let y_range = Range::new(10, 1000);
         let x_range = Range::new(-1000, 1000);
         let dir_range = Range::new(0, 2);
         let speed_range = Range::new(1, 6);
+        let color_range = Range::new(1, 6);
         let mut rng = rand::thread_rng();
         if self.fishables.len() < 50 {
             let velocity: (i32, i32);
@@ -112,6 +114,7 @@ impl Game {
                 size: (0, 30),
                 velocity: velocity,
                 category: FishableType::Turbofish,
+                color: color_range.ind_sample(&mut rng),
             });
         }
     }
@@ -173,7 +176,9 @@ impl Game {
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, 0.25, f.velocity.0 < 0, false, Color::Yellow));
+                                                      f.position.0, f.position.1, 0.0, 0.25, 
+                                                      f.velocity.0 < 0, false, 
+                                                      f.color));
         }
     }
 }
