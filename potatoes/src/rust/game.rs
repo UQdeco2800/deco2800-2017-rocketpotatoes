@@ -12,13 +12,13 @@ const turbofish_height: i32 = 86;
 /// Start - press space to start playing
 /// Falling - line is falling (player is not holding space)
 /// Reeling - line is reeling up (player is holding space)
-/// Caught(i32) - something is caught, reel it in (the caught index is stored with in)
+/// Caught(usize) - something is caught, reel it in (the caught index is stored with in)
 #[derive(Debug)]
 enum GameState {
     Start,
     Falling,
     Reeling,
-    Caught(i32),
+    Caught(Fishable),
 }
 
 /// Different types of things you can fish out. Have different behaviour and look
@@ -41,6 +41,7 @@ struct Fishable {
 
 pub struct Game {
     state: GameState,
+    line_x: i32,
     line_depth: i32,
     fall_rate: i32,
     fishables: Vec<Fishable>,
@@ -50,6 +51,7 @@ impl Game {
     pub fn new() -> Self {
         Self {
             state: GameState::Start, 
+            line_x: 0,
             line_depth: 200,
             fall_rate: 0,
             fishables: Vec::new(),
@@ -69,8 +71,8 @@ impl Game {
     }
 
     /// Switches to the caught state with the given fishable index
-    fn start_caught(&mut self, index: i32) {
-        self.state = GameState::Caught(index);
+    fn start_caught(&mut self, index: usize) {
+        self.state = GameState::Caught(self.fishables.swap_remove(index));
         self.fall_rate = -3;
     }
 
@@ -122,31 +124,37 @@ impl Game {
         }
     }
 
-    /// Return's an index of a fishable if the line is colliding with it
-    fn check_collisions(&self) -> Option<i32> {
+    /// Moves a fishable out if one is collided with
+    fn check_collisions(&self) -> Option<usize> {
+        let p = (self.line_x, self.line_depth);
+
+        for f in self.fishables.iter().enumerate() {
+            let tl = f.1.position;
+            let br = (tl.0 + (turbofish_width as f32 * f.1.scale) as i32, tl.1 + (turbofish_height as f32 * f.1.scale) as i32);
+
+            // Return index if point inside collider
+            if p.0 >= tl.0 && p.1 >= tl.1 && p.0 <= br.0 && p.1 <= br.1 {
+                return Some(f.0);
+            }
+        }
+
         None
     }
 
     pub fn update(&mut self, delta_time: f64, callbacks: &CallbackFunctions) {
+        let window_info = RenderInfo { size_x: 0, size_y: 0 };
+        (callbacks.get_window_info)(&window_info);
+        self.line_x = window_info.size_x / 2;
 
-
-        // Always update our fishables!
-        //self.update_fishables(delta_time);
+        self.update_fishables(delta_time);
+        self.update_depth(delta_time);
+        
         match self.state {
             GameState::Start => {
-
-            self.fishables.push(Fishable {
-                position: (100, 100),
-                scale: 0.5,
-                velocity: (0, 0),
-                category: FishableType::Turbofish,
-                color: 1,
-            });
                 self.start_falling();
             },
 
             GameState::Falling => {
-                self.update_depth(delta_time);
 
                 match self.check_collisions() {
                     Some(index) => {
@@ -161,7 +169,6 @@ impl Game {
             },
 
             GameState::Reeling => {
-                self.update_depth(delta_time);
 
                 match self.check_collisions() {
                     Some(index) => {
@@ -175,17 +182,20 @@ impl Game {
                 }
             },
 
-            GameState::Caught(index) => {
-                self.update_depth(delta_time);
-
-                // Check depth <= 0 TODO
+            GameState::Caught(ref mut fish) => {
+                fish.position = (self.line_x, self.line_depth);
             },
+        }
+
+        if self.line_depth < 0 {
+            self.start_falling();
         }
     }
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
-        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 0), (window_info.size_x / 2, self.line_depth)));
+        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, -10), (window_info.size_x / 2, self.line_depth)));
 
+        /*
         // Debug drawing collisions
         for f in self.fishables.iter() {
             let tl = f.position;
@@ -198,9 +208,21 @@ impl Game {
             (callbacks.draw_line)(RenderLine::new(bl, br));
             (callbacks.draw_line)(RenderLine::new(tr, br));
         }
-
+        */
 
         (callbacks.start_draw)();
+
+        match self.state {
+            GameState::Caught(ref f) => {
+                (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
+                                                          f.position.0, f.position.1, 0.0, f.scale, 
+                                                          f.velocity.0 < 0, false, 
+                                                          f.color));
+            },
+
+            _ => { },
+        }
+
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
                                                       f.position.0, f.position.1, 0.0, f.scale, 
