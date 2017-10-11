@@ -19,10 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -107,8 +105,10 @@ public class TreeShopGui extends Gui implements SceneGui {
     }
 
     private AbstractTree getTreeBinding(int hotkey){
-        if (items.size()>=hotkey){
-            return (AbstractTree)items.keySet().toArray()[hotkey-1];
+        if (items.size() >= hotkey){
+            System.out.println(items.size()-hotkey+1);
+            System.out.println("Size: "+items.size());
+            return (AbstractTree)items.keySet().toArray()[items.size() - hotkey];
         } else {
             return null;
         }
@@ -376,7 +376,7 @@ public class TreeShopGui extends Gui implements SceneGui {
             // Render Items
             float itemX = guiX - imgSize / 2 + offset.x;
             float itemY = guiY - imgSize / 2 + offset.y;
-            renderTreeImage(itemX, itemY, imgSize, entry, segment+1);
+            renderTreeImage(itemX, itemY, imgSize, entry, numSegments - segment);
 
             // Add cost
             TreeState treeState = getTreeStateByTree(entry.getKey());
@@ -544,17 +544,19 @@ public class TreeShopGui extends Gui implements SceneGui {
      * @param y screen y value of mouse click
      */
     public void initShop(int x, int y) {
-        if (initiated && mouseIn) {
-            if (mouseInCancel)
-                closeShop();
-            else {
-                buyTree();
-                initiated = false;
+        if (!GameManager.get().isPaused()) {
+            if (initiated && mouseIn) {
+                if (mouseInCancel)
+                    closeShop();
+                else {
+                    buyTree();
+                    initiated = false;
+                }
+            } else if (plantable) {
+                updateTilePos(x, y);
+                initiated = true;
+                setTreeCoords();
             }
-        } else if (plantable) {
-            updateTilePos(x, y);
-            initiated = true;
-            setTreeCoords();
         }
     }
 
