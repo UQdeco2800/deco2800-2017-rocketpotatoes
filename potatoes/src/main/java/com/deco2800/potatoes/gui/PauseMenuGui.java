@@ -79,6 +79,10 @@ public class PauseMenuGui extends Gui {
 	private CheckBox alliesProgressBarCheckBox;
 	private CheckBox enemyProgressBarCheckBox;
 	private CheckBox potatoProgressBarCheckBox;
+	
+	// padding for top and bottom of buttons
+    private final int paddingVertical = 5;
+    private final int paddingHorizontal = 10;
 
     // State indicator
     private enum States {
@@ -187,7 +191,12 @@ public class PauseMenuGui extends Gui {
         optionsEffectsVolumeSlider.setValue(screen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(screen.getMusicVolume());
         optionsButtonGroup.space(20);
-
+        
+        // Add padding to button
+        optionsBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        helpBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        slideBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        
         setupListeners();
 
         resetGui(stage);
