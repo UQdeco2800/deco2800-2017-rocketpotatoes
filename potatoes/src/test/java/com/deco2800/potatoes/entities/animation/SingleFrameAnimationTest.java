@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.animation;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,4 +31,8 @@ public class SingleFrameAnimationTest {
 		assertArrayEquals("Frames was not just animation", new Animation[] { animation }, animation.getFrames());
 	}
 
+	@After
+	public void tearDown() {
+		animation = null;
+	}
 }

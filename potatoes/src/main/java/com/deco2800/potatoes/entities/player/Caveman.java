@@ -30,7 +30,8 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
 
     	super(posX, posY);
-		super.setMoveSpeed(0.08f);
+    	this.defaultSpeed = 0.08f;
+        super.setMoveSpeed(defaultSpeed);
 
 		updateSprites();
 
@@ -104,8 +105,9 @@ public class Caveman extends Player {
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.
-			if (!target.isPresent())
+			if (!target.isPresent()){
 				return;
+      }
 
 				float targetPosX = target.get().getPosX();
 				float targetPosY = target.get().getPosY();

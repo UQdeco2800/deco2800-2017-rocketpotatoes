@@ -41,6 +41,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
 
+    private static int doublePressSpeed = 300;    // double keypressed in ms
+    protected float defaultSpeed;    // the default speeds of each player
+    protected long[] lastPressed = {0, 0, 0, 0};    // the last time WASD was pressed.
 
     private boolean keyW = false;
     private boolean keyA = false;
@@ -192,7 +195,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return true;
 
         // only change state if IDLE or WALK-ing
-        if (state == IDLE || state == WALK) {
+        if (state == IDLE || state == WALK || state == DEATH) {
             state = newState;
 
             // only move on WALK
@@ -221,22 +224,30 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * @param keycode The key pressed
      */
     public void handleKeyDown(int keycode) {
-
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = true;
+                checkDoublePress(0);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.S:
                 keyS = true;
+                checkDoublePress(1);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.A:
                 keyA = true;
+                checkDoublePress(2);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.D:
                 keyD = true;
+                checkDoublePress(3);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.T:
@@ -264,6 +275,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public void handleKeyUp(int keycode) {
 
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = false;
@@ -347,6 +363,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (direcEnum == 4) {
             setState(IDLE);
             super.setMoveSpeedModifier(0);
+            this.setMoveSpeed(defaultSpeed);
         } else {
             setState(WALK);
             super.setMoveAngle(newFacing.getAngleRad());
@@ -355,6 +372,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         }
 
         updateSprites();
+    }
+
+    private void checkDoublePress(int wasd) {
+        if ((System.currentTimeMillis() - lastPressed[wasd]) < doublePressSpeed) {
+            this.setMoveSpeed(defaultSpeed * 2);
+        } else {
+            lastPressed[wasd] =  System.currentTimeMillis();
+        }
     }
 
 
@@ -492,6 +517,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     @Override
     public void deathHandler() {
         LOGGER.info(this + " is dead.");
+        // set state to death
+        this.state = DEATH;
+        // reset all movement
+        keyW = false;
+        keyA = false;
+        keyS = false;
+        keyD = false;
+        // reset to default speed
+        this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
         // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
