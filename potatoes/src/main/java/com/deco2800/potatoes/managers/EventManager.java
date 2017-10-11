@@ -82,7 +82,6 @@ public class EventManager extends Manager implements TickableManager, ForWorld {
 			if(eventPair.tickable instanceof Player){
 				Gui respawnGui =GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class);
 				((RespawnGui)respawnGui).setCount(eventPair.event.getProgress());
-
 			}
 			if (eventPair.event.isCompleted()) {
 				finishedEvents.add(eventPair);

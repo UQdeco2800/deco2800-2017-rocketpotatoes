@@ -187,6 +187,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
 
+
+        if(state == DEATH){
+          return false;
+        }
         //check already in state
         if (state == newState)
             return true;
