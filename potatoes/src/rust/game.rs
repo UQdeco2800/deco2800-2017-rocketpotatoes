@@ -131,10 +131,17 @@ impl Game {
 
 
         // Always update our fishables!
-        self.update_fishables(delta_time);
+        //self.update_fishables(delta_time);
         match self.state {
             GameState::Start => {
 
+            self.fishables.push(Fishable {
+                position: (100, 100),
+                scale: 0.5,
+                velocity: (0, 0),
+                category: FishableType::Turbofish,
+                color: 1,
+            });
                 self.start_falling();
             },
 
@@ -178,6 +185,20 @@ impl Game {
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 0), (window_info.size_x / 2, self.line_depth)));
+
+        // Debug drawing collisions
+        for f in self.fishables.iter() {
+            let tl = f.position;
+            let tr = (tl.0 + (turbofish_width as f32 * f.scale) as i32, tl.1);
+            let bl = (tl.0, tl.1 + (turbofish_height as f32 * f.scale) as i32);
+            let br = (tl.0 + (turbofish_width as f32 * f.scale) as i32, tl.1 + (turbofish_height as f32 * f.scale) as i32);
+
+            (callbacks.draw_line)(RenderLine::new(tl, tr));
+            (callbacks.draw_line)(RenderLine::new(tl, bl));
+            (callbacks.draw_line)(RenderLine::new(bl, br));
+            (callbacks.draw_line)(RenderLine::new(tr, br));
+        }
+
 
         (callbacks.start_draw)();
         for f in self.fishables.iter() {

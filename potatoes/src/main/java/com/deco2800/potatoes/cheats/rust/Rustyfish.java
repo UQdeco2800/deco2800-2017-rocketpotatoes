@@ -17,6 +17,7 @@ import org.lwjgl.opengl.Display;
 public class Rustyfish {
 
     private static SpriteBatch batch = new SpriteBatch();
+    private static ShapeRenderer sr = new ShapeRenderer();
 
     private interface RLibrary extends Library {
         RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
@@ -61,6 +62,7 @@ public class Rustyfish {
             int h = (int)(Display.getHeight() * Display.getPixelScaleFactor());
             Gdx.gl.glViewport(0, 0, w, h);
             batch = new SpriteBatch();
+            sr = new ShapeRenderer();
             Gdx.graphics.setTitle("Rustyfish");
 
             return true;
@@ -149,7 +151,9 @@ public class Rustyfish {
                     break;
             }
 
-            batch.draw(t, obj.x, Gdx.graphics.getHeight() - t.getWidth() - obj.y, t.getWidth() / 2.0f, t.getHeight() / 2.0f,
+            batch.draw(t,
+                    obj.x, Gdx.graphics.getHeight() - t.getHeight() * obj.scale - obj.y,
+                    0, 0,
                     t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
                     0, 0, t.getWidth(), t.getHeight(), obj.flipX != 0, obj.flipY != 0);
         }
@@ -158,12 +162,12 @@ public class Rustyfish {
     private static Callback drawLine = new Callback() {
         @SuppressWarnings("unused")
         public void run(RenderLine.ByValue obj) {
-            ShapeRenderer sr = new ShapeRenderer();
+
             sr.setColor(Color.WHITE);
 
-            Gdx.gl.glLineWidth(3);
+            Gdx.gl.glLineWidth(1);
             sr.begin(ShapeRenderer.ShapeType.Line);
-            sr.line(obj.srcX, Gdx.graphics.getHeight() - obj.srcY, obj.dstX, Gdx.graphics.getHeight() - obj.dstY);
+            sr.line(obj.srcX, Gdx.graphics.getHeight() - 3 - obj.srcY, obj.dstX, Gdx.graphics.getHeight() - 3 - obj.dstY);
             sr.end();
         }
     };
