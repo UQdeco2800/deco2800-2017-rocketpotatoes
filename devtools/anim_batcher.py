@@ -224,7 +224,7 @@ def render_animated_batch(model):
 
         for i in range(0, INTERVALS):
             model.rotation_euler[2] = 2 * pi * i / INTERVALS
-            RENDER.filepath = output_name + "F%03dP%03d.png" % (frame, i)
+            RENDER.filepath = output_name + "P%02dF%02d.png" % (i, frame)
             bpy.ops.render.render(write_still=True)
 
 def main():
@@ -298,7 +298,6 @@ def main():
             x.select = True
     bpy.ops.object.delete()
 
-    render_batch(OBJECTS["Model"])
-    #render_animated_batch(OBJECTS["Model"])
+    render_animated_batch(model)
 
 main()
