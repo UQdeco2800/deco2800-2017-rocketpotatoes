@@ -3,7 +3,7 @@ use std::mem;
 use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
-use render::{RenderInfo, RenderObject};
+use render::{RenderInfo, RenderLine, RenderObject};
 
 pub struct CallbackFunctions {
     pub start_draw: extern "C" fn(),
@@ -14,6 +14,7 @@ pub struct CallbackFunctions {
     pub flush_window: extern "C" fn(),
     pub get_window_info: extern "C" fn(&RenderInfo),
     pub draw_sprite: extern "C" fn(RenderObject),
+    pub draw_line: extern "C" fn(RenderLine),
 }
 
 

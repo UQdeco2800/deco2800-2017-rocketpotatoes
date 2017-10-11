@@ -8,7 +8,7 @@ use std::mem;
 use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
-use render::{RenderInfo, RenderObject};
+use render::{RenderInfo, RenderLine, RenderObject};
 use util::CallbackFunctions;
 use game::Game;
 
@@ -23,7 +23,8 @@ pub extern fn startGame(
     clearWindow: extern "C" fn(),
     flushWindow: extern "C" fn(),
     getWindowInfo: extern "C" fn(&RenderInfo), 
-    drawSprite: extern "C" fn(RenderObject)) {
+    drawSprite: extern "C" fn(RenderObject),
+    drawLine: extern "C" fn(RenderLine)) {
 
     run_game(CallbackFunctions { 
         start_draw: startDraw,
@@ -33,7 +34,8 @@ pub extern fn startGame(
         clear_window: clearWindow,
         flush_window: flushWindow,
         get_window_info: getWindowInfo,
-        draw_sprite: drawSprite });
+        draw_sprite: drawSprite,
+        draw_line: drawLine});
 }
 
 /// Takes some (TODO) callbacks for rendering purposes
@@ -63,9 +65,7 @@ pub fn run_game(functions: CallbackFunctions) {
         // Clear window with default background color
         (functions.clear_window)();
 
-        (functions.start_draw)();
         game.draw(delta, &window_info, &functions);
-        (functions.end_draw)();
 
         // Flush any render changes etc.
         (functions.flush_window)();

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.sun.jna.Callback;
@@ -23,7 +24,7 @@ public class Rustyfish {
         void startGame(Callback startDraw, Callback endDraw,
                        Callback updateWindow, Callback isSpacePressed,
                        Callback clearWindow, Callback flushWindow, Callback getWindowInfo,
-                       Callback drawSprite);
+                       Callback drawSprite, Callback drawLine);
     }
 
 
@@ -154,7 +155,20 @@ public class Rustyfish {
         }
     };
 
+    private static Callback drawLine = new Callback() {
+        @SuppressWarnings("unused")
+        public void run(RenderLine.ByValue obj) {
+            ShapeRenderer sr = new ShapeRenderer();
+            sr.setColor(Color.WHITE);
+
+            Gdx.gl.glLineWidth(3);
+            sr.begin(ShapeRenderer.ShapeType.Line);
+            sr.line(obj.srcX, Gdx.graphics.getHeight() - obj.srcY, obj.dstX, Gdx.graphics.getHeight() - obj.dstY);
+            sr.end();
+        }
+    };
+
     public static void run() {
-        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow, getWindowInfo, drawSprite);
+        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow, getWindowInfo, drawSprite, drawLine);
     }
 }

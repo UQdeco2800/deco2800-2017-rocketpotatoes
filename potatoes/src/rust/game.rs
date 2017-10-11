@@ -1,4 +1,4 @@
-use render::{RenderInfo, RenderObject, Color}; 
+use render::{RenderInfo, RenderObject, RenderLine, Color}; 
 use util::CallbackFunctions;
 
 extern crate rand;
@@ -47,7 +47,7 @@ impl Game {
     pub fn new() -> Self {
         Self {
             state: GameState::Start, 
-            line_depth: 0,
+            line_depth: 200,
             fall_rate: 0,
             fishables: Vec::new(),
         }
@@ -56,24 +56,24 @@ impl Game {
     /// Change state to playing
     fn start_falling(&mut self) {
         self.state = GameState::Falling;
-        self.fall_rate = 5;
+        self.fall_rate = 3;
     }
 
     /// Switches to the reeling state
     fn start_reeling(&mut self) {
         self.state = GameState::Reeling;
-        self.fall_rate = -5;
+        self.fall_rate = -3;
     }
 
     /// Switches to the caught state with the given fishable index
     fn start_caught(&mut self, index: i32) {
         self.state = GameState::Caught(index);
-        self.fall_rate = -5;
+        self.fall_rate = -3;
     }
 
     /// Updates the position the line's depth
     fn update_depth(&mut self, delta_time: f64) {
-        self.line_depth = (((self.line_depth + self.fall_rate) as f64) * delta_time) as i32;
+        self.line_depth = self.line_depth + self.fall_rate;
     }
 
     /// Updates the position of all the fishables (and spawns new ones if required)
@@ -132,7 +132,7 @@ impl Game {
         match self.state {
             GameState::Start => {
 
-                //self.start_falling();
+                self.start_falling();
             },
 
             GameState::Falling => {
@@ -174,11 +174,15 @@ impl Game {
     }
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
+        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 0), (window_info.size_x / 2, self.line_depth)));
+
+        (callbacks.start_draw)();
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
                                                       f.position.0, f.position.1, 0.0, 0.25, 
                                                       f.velocity.0 < 0, false, 
                                                       f.color));
         }
+        (callbacks.end_draw)();
     }
 }

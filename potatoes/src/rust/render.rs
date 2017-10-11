@@ -16,6 +16,25 @@ pub enum Color {
     Orange = 5,
 }
 
+#[repr(C)]
+pub struct RenderLine {
+    src_x: i32,
+    src_y: i32,
+    dst_x: i32,
+    dst_y: i32,
+}
+
+impl RenderLine {
+    pub fn new(src: (i32, i32), dst: (i32, i32)) -> Self {
+        Self {
+            src_x: src.0,
+            src_y: src.1,
+            dst_x: dst.0,
+            dst_y: dst.1,
+        }
+    }
+}
+
 /// Object representing something to render
 ///
 /// Note: booleans are treated as i32 since rust bool != java bool (I think?)
