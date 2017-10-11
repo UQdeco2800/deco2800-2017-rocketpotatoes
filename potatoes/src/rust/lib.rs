@@ -1,6 +1,7 @@
 #![crate_type = "dylib"]
 mod render;
 mod util;
+mod game;
 
 use std::ffi::{CStr, CString};
 use std::mem;
@@ -9,6 +10,7 @@ use std::str;
 use std::time::{Instant};
 use render::{RenderInfo, RenderObject};
 use util::CallbackFunctions;
+use game::Game;
 
 // FFI entry point to start the game.
 #[no_mangle]
@@ -42,39 +44,27 @@ pub fn run_game(functions: CallbackFunctions) {
 
     let window_info = RenderInfo { size_x: 0, size_y: 0 };
     let timer = Instant::now();
-    let mut rot = 0.0;
+    let mut game = Game::new();
+    let mut prev_time: f64 = 0.0;
+
     loop {
-        // UPDATE
-        // Get input/process resize events etc.
-        //println!("{:?}", (functions.is_space_pressed)());
+        let elapsed = timer.elapsed();
+        let real_time = f64::sin(elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9);
+        let delta = real_time - prev_time;
+        prev_time = real_time;
 
+        // Update state TODO split callbacks into categories?
+        game.update(delta, &functions);
 
-        // DRAW 
         // Update window state (e.g. get resize events)
         (functions.update_window)();
-
         // Get window statistics (size etc)
         (functions.get_window_info)(&window_info);
-
         // Clear window with default background color
         (functions.clear_window)();
 
         (functions.start_draw)();
-
-        let elapsed = timer.elapsed();
-        let real_time = f64::sin(elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9);
-        let width = window_info.size_x as f64;
-        let height = window_info.size_y as f64;
-        let x = width / 2.0
-            * (1.0 + real_time);
-        let y = height as f64 / 2.0;
-
-        (functions.draw_sprite)(RenderObject::new("rustyfish_test".to_string(), 0 as i32, 0 as i32, rot));
-
-        if (functions.is_space_pressed)() {
-            rot += 3.0;
-        }
-
+        game.draw(delta, &window_info, &functions);
         (functions.end_draw)();
 
         // Flush any render changes etc.
@@ -83,14 +73,3 @@ pub fn run_game(functions: CallbackFunctions) {
         std::thread::sleep(std::time::Duration::from_millis(16));
     }
 }
-
-    /*
-    let timer = Instant::now();
-    let width = 100.0;
-    let height = 100.0;
-    let elapsed = timer.elapsed();
-    let x = (context.get_view_size()[0] as f64 - width) / 2.0
-        * (1.0 + f64::sin(elapsed.as_secs() as f64 +
-                          elapsed.subsec_nanos() as f64 * 1e-9));
-    let y = context.get_view_size()[1] as f64 / 2.0;
-    */
