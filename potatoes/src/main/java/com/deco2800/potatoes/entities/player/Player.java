@@ -511,7 +511,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             }
 
         }
-
         return true;
     }
 
