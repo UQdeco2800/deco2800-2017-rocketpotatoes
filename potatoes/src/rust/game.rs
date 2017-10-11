@@ -183,7 +183,7 @@ impl Game {
             },
 
             GameState::Caught(ref mut fish) => {
-                fish.position = (self.line_x, self.line_depth);
+                fish.position.1 = self.line_depth;
             },
         }
 
