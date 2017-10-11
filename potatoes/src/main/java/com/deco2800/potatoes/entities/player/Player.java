@@ -41,6 +41,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
 
+    private static int doublePressSpeed = 300;    // double keypressed in ms
+    protected float defaultSpeed;    // the default speeds of each player
+    protected long[] lastPressed = {0, 0, 0, 0};    // the last time WASD was pressed.
+
 
     private boolean keyW = false;
     private boolean keyA = false;
@@ -229,18 +233,22 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         switch (keycode) {
             case Input.Keys.W:
                 keyW = true;
+                checkDoublePress(0);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.S:
                 keyS = true;
+                checkDoublePress(1);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.A:
                 keyA = true;
+                checkDoublePress(2);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.D:
                 keyD = true;
+                checkDoublePress(3);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.T:
@@ -351,6 +359,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (direcEnum == 4) {
             setState(IDLE);
             super.setMoveSpeedModifier(0);
+            this.setMoveSpeed(defaultSpeed);
         } else {
             setState(WALK);
             super.setMoveAngle(newFacing.getAngleRad());
@@ -359,6 +368,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         }
 
         updateSprites();
+    }
+    
+    private void checkDoublePress(int wasd) {
+        if ((System.currentTimeMillis() - lastPressed[wasd]) < doublePressSpeed) {
+            this.setMoveSpeed(defaultSpeed * 2);
+        } else {
+            lastPressed[wasd] =  System.currentTimeMillis();
+        }
     }
 
 

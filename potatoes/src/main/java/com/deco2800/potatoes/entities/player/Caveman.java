@@ -30,7 +30,8 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
 
     	super(posX, posY);
-		super.setMoveSpeed(0.08f);
+    	this.defaultSpeed = 0.08f;
+        super.setMoveSpeed(defaultSpeed);
 
 		updateSprites();
 
