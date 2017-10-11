@@ -235,7 +235,8 @@ public class World {
 		List<Point> result = new ArrayList<>();
 		// Just add points that have associated entities
 		result.addAll(entitiesByPosition.keySet());
-		result.removeIf(p -> p.distanceSq(x, y) > maxDistanceSq);
+		// Add grid size to distance to make sure (some) tiles that are partially within are kept
+		result.removeIf(p -> p.distanceSq(x, y) > maxDistanceSq + GRID_SIZE);
 		// Sort by distance to (x, y)
 		result.sort(Comparator.comparingDouble(p -> p.distanceSq(x, y)));
 		return result;
