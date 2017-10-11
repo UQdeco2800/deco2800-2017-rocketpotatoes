@@ -6,6 +6,9 @@ use std::time::{Instant};
 
 use util::*;
 
+/// Object representing something to render
+///
+/// Note: booleans are treated as i32 since rust bool != java bool (I think?)
 #[repr(C)]
 pub struct RenderObject {
     asset: *const c_char,
@@ -13,8 +16,8 @@ pub struct RenderObject {
     y: i32,
     rotation: f32,
     scale: f32,
-    flip_x: bool,
-    flip_y: bool,
+    flip_x: i32,
+    flip_y: i32,
 }
 
 impl RenderObject {
@@ -25,8 +28,8 @@ impl RenderObject {
             y: y,
             rotation: rotation,
             scale: scale,
-            flip_x: flip_y,
-            flip_y: flip_x,
+            flip_x: flip_x as i32,
+            flip_y: flip_y as i32,
         }
     }
 }

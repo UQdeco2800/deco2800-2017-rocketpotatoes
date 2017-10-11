@@ -10,6 +10,7 @@ use self::rand::distributions::{IndependentSample, Range};
 /// Falling - line is falling (player is not holding space)
 /// Reeling - line is reeling up (player is holding space)
 /// Caught(i32) - something is caught, reel it in (the caught index is stored with in)
+#[derive(Debug)]
 enum GameState {
     Start,
     Falling,
@@ -18,12 +19,14 @@ enum GameState {
 }
 
 /// Different types of things you can fish out. Have different behaviour and look
+#[derive(Debug)]
 enum FishableType {
     Turbofish,
     Rustcrab,
 }
 
 /// Represents a single object that can be fished out of the water
+#[derive(Debug)]
 struct Fishable {
     position: (i32, i32),
     size: (i32, i32),
@@ -90,19 +93,20 @@ impl Game {
         let y_range = Range::new(10, 1000);
         let x_range = Range::new(-1000, 1000);
         let dir_range = Range::new(0, 2);
+        let speed_range = Range::new(1, 6);
         let mut rng = rand::thread_rng();
-        if self.fishables.len() < 100 {
+        if self.fishables.len() < 50 {
             let velocity: (i32, i32);
             let position: (i32, i32);
             if dir_range.ind_sample(&mut rng) == 0 {
                 position = (-1500 + x_range.ind_sample(&mut rng)
                             , y_range.ind_sample(&mut rng));
-                velocity = (2, 0);
+                velocity = (speed_range.ind_sample(&mut rng), 0);
             }
             else {
                 position = (3000 + x_range.ind_sample(&mut rng)
                             , y_range.ind_sample(&mut rng));
-                velocity = (-2, 0);
+                velocity = (-speed_range.ind_sample(&mut rng), 0);
             }
             self.fishables.push(Fishable {
                 position: position,
@@ -126,7 +130,7 @@ impl Game {
         match self.state {
             GameState::Start => {
 
-                self.start_falling();
+                //self.start_falling();
             },
 
             GameState::Falling => {
@@ -169,8 +173,10 @@ impl Game {
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         for f in self.fishables.iter() {
+            let dir = f.velocity.0 <= 0;
+            println!("{}", dir);
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, 0.25, f.velocity.0 < 0, false));
+                                                      f.position.0, f.position.1, 0.0, 0.25, dir, false));
         }
     }
 }

@@ -18,8 +18,8 @@ public class RenderObject extends Structure implements Closeable {
     public int y;
     public float rotation;
     public float scale;
-    public boolean flipX;
-    public boolean flipY;
+    public int flipX;
+    public int flipY;
 
 
     @Override

@@ -124,7 +124,7 @@ public class Rustyfish {
             Texture t = m.getTexture(obj.asset);
             batch.draw(t, obj.x, Gdx.graphics.getHeight() - t.getWidth() - obj.y, t.getWidth() / 2.0f, t.getHeight() / 2.0f,
                     t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
-                    0, 0, t.getWidth(), t.getHeight(), obj.flipX, obj.flipY);
+                    0, 0, t.getWidth(), t.getHeight(), obj.flipX != 0, obj.flipY != 0);
         }
     };
 
