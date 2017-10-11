@@ -4,6 +4,9 @@ use util::CallbackFunctions;
 extern crate rand;
 use self::rand::distributions::{IndependentSample, Range};
 
+const turbofish_width: i32 = 274;
+const turbofish_height: i32 = 86;
+
 /// GameState machine!
 ///
 /// Start - press space to start playing
@@ -29,7 +32,7 @@ enum FishableType {
 #[derive(Debug)]
 struct Fishable {
     position: (i32, i32),
-    size: (i32, i32),
+    scale: f32,
     velocity: (i32, i32),
     category: FishableType,
     color: i32,
@@ -111,7 +114,7 @@ impl Game {
             }
             self.fishables.push(Fishable {
                 position: position,
-                size: (0, 30),
+                scale: 0.25,
                 velocity: velocity,
                 category: FishableType::Turbofish,
                 color: color_range.ind_sample(&mut rng),
@@ -179,7 +182,7 @@ impl Game {
         (callbacks.start_draw)();
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, 0.25, 
+                                                      f.position.0, f.position.1, 0.0, f.scale, 
                                                       f.velocity.0 < 0, false, 
                                                       f.color));
         }
