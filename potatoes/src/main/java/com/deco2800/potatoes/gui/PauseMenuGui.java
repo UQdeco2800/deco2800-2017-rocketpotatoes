@@ -192,7 +192,6 @@ public class PauseMenuGui extends Gui {
 
         resetGui(stage);
 
-        table.setBackground(pauseMenuDrawable);
         table.add(pauseButtonGroup);
         table.setVisible(false);
         table.setWidth(500);

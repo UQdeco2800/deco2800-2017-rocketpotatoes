@@ -331,7 +331,7 @@ public class GameScreen implements Screen {
 	private void initialiseResources() {
 
 		SeedResource seedResource = new SeedResource();
-		FoodResource foodResource = new FoodResource();
+		PineconeResource pineconeResource = new PineconeResource();
 		WoodResource woodResource = new WoodResource();
 		TumbleweedResource tumbleweedResource = new TumbleweedResource();
 		CactusThornResource cactusThornResource = new CactusThornResource();
@@ -352,7 +352,7 @@ public class GameScreen implements Screen {
 
 
 		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 20.5f, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, pineconeResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 16.5f, woodResource));
 
 		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 20.5f, tumbleweedResource));

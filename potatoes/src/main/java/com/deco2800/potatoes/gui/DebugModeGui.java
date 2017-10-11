@@ -338,7 +338,6 @@ public class DebugModeGui extends Gui {
         rsc.add(new CoalResource());
         rsc.add(new CactusThornResource());
         rsc.add(new FishMeatResource());
-        rsc.add(new FoodResource());
         rsc.add(new IceCrystalResource());
         rsc.add(new ObsidianResource());
         rsc.add(new PearlResource());
