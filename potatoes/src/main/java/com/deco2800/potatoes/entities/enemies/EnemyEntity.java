@@ -110,26 +110,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
         this.roundNum = roundNum;
     }*/
 
-//<<<<<<< HEAD
+
 	public void pathMovement(PathAndTarget pathTarget, AbstractEntity relevantTarget) {
 		Path path = pathTarget.getPath();
 		Shape2D target = pathTarget.getTarget();
-/*
-	/**
-	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target,
-	 * otherwise get the closest targeted entity position.
-	 */
-/*	@Override
-	public void onTick(long i) {
-		float goalX = getPosX();
-		float goalY = getPosY();
-		//if goal is player, use playerManager to eet position and move towards target
-		if (goal == Player.class) {
-			//goal = Player.class;
-			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			PathManager pathManager = GameManager.get().getManager(PathManager.class);
->>>>>>> master
-*/
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
 		if (relevantTarget != null) {
 			// check paths
@@ -343,7 +327,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		ParticleType particle =  new BasicParticleType(100000, 500.0f,
 				0.0f, 1024, Color.RED, 5, 5);
-		particle.speed = 0.4f;
+		particle.speed = 0.9f;
 
 		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");

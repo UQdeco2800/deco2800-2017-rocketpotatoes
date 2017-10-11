@@ -462,6 +462,7 @@ public class GameScreen implements Screen {
 	/**
 	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
+	/*Wave GUI won't be accurate until we've settled on implementation - currently it's displaying 'pause' waves as waves*/
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
@@ -470,7 +471,7 @@ public class GameScreen implements Screen {
 		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();

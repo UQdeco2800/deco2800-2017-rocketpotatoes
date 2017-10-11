@@ -1,8 +1,10 @@
-package com.deco2800.potatoes.entities.enemies;
+package com.deco2800.potatoes.entities.enemies.enemyactions;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.MeleeAttack;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;

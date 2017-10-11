@@ -10,6 +10,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
 import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.Projectile;

@@ -5,6 +5,7 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
@@ -12,14 +13,9 @@ import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.util.WorldUtil;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
