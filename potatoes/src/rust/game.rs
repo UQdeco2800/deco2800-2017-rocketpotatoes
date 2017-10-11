@@ -85,8 +85,7 @@ impl Game {
 
 
         // Delete those outside bounds TODO better bounds
-        self.fishables.retain(|ref f| 
-                              (f.position.0 >= -3000) && (f.position.0 <= 4000));
+        self.fishables.retain(|ref f| (f.position.0 >= -3000) && (f.position.0 <= 4000));
 
 
         // Make new
@@ -173,10 +172,8 @@ impl Game {
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         for f in self.fishables.iter() {
-            let dir = f.velocity.0 <= 0;
-            println!("{}", dir);
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, 0.25, dir, false));
+                                                      f.position.0, f.position.1, 0.0, 0.25, f.velocity.0 < 0, false));
         }
     }
 }
