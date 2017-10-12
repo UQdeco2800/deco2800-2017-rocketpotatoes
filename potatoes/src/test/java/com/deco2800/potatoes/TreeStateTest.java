@@ -27,6 +27,13 @@ public class TreeStateTest {
         testTree = new ResourceTree();
     }
 
+    @After
+    public void tearDown() {
+        treeState = null;
+        testTree = null;
+        cost = null;
+    }
+
     @Test
     public void testInit(){
         // With empty constructor
