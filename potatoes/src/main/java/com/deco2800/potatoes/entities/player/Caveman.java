@@ -30,7 +30,8 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
 
     	super(posX, posY);
-		super.setMoveSpeed(0.08f);
+    	this.defaultSpeed = 0.08f;
+        super.setMoveSpeed(defaultSpeed);
 
 		updateSprites();
 
@@ -44,11 +45,11 @@ public class Caveman extends Player {
     private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
     private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
     private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
-	
+
     @Override
     public void updateSprites() {
 
-    		switch (super.state) {
+    		switch (super.getState()) {
             case IDLE:
 				super.setAnimation(cavemanIdleAnimations.get(super.facing));
 				break;
@@ -76,7 +77,7 @@ public class Caveman extends Player {
     @Override
     public void attack() {
 		super.attack();
-
+		setMoveSpeedModifier(0);
 
 		// TODO Stop walking for attacking
 		if (setState(ATTACK)) {
@@ -90,8 +91,9 @@ public class Caveman extends Player {
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.
-			if (!target.isPresent())
+			if (!target.isPresent()){
 				return;
+			}
 
 				float targetPosX = target.get().getPosX();
 				float targetPosY = target.get().getPosY();

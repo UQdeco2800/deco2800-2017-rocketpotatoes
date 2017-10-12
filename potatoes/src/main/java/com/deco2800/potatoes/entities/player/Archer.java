@@ -29,9 +29,10 @@ public class Archer extends Player {
      */
     public Archer(float posX, float posY) {
     		super(posX, posY);
-    		super.setMoveSpeed(0.07f);
+    		this.defaultSpeed = 0.07f;
+            super.setMoveSpeed(defaultSpeed);
     		this.facing = Direction.SE;
-        this.state = IDLE;
+        this.resetState();
         //this.currentAnimation = ;
     }
     
@@ -40,6 +41,7 @@ public class Archer extends Player {
     private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, super::completionHandler);
     private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, super::damagedCompletionHandler);
     private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, super::completionHandler);
+
     
 
     @Override

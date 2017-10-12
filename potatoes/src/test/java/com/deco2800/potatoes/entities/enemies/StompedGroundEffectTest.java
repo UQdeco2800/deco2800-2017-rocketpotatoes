@@ -35,6 +35,8 @@ public class StompedGroundEffectTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        stomp1 = null;
+        stompEmpty = null;
     }
 
     /*

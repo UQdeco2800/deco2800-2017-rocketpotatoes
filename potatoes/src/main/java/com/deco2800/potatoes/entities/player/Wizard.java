@@ -27,16 +27,17 @@ public class Wizard extends Player {
 
     public Wizard(float posX, float posY) {
         super(posX, posY);
-        super.setMoveSpeed(0.09f);
+        this.defaultSpeed = 0.09f;
+        super.setMoveSpeed(defaultSpeed);
         this.facing = Direction.SE;
-        this.state = IDLE;
+        this.resetState();
         //this.currentAnimation = ;
     }
 
     private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
     private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", IDLE, 1, 200, super::completionHandler);
     private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, super::damagedCompletionHandler);
-
+    
 
     @Override
     public void updateSprites() {

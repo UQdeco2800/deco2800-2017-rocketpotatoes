@@ -63,14 +63,6 @@ public class MinimumSpanningTreeTest {
 
     }
 
-    @Test
-    public void leakTest() {
 
-        int rounds = 100;
-
-        for (int i = 0; i < rounds; i++) {
-
-        }
-    }
 
 }

@@ -54,6 +54,11 @@ public class EnemyEntityTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        squirrelEmpty = null;
+        tank1 = null;
+        resourceTree = null;
+        goalPotato = null;
+        playerTest = null;
     }
 
     @Test

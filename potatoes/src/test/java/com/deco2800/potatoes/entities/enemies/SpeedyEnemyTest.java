@@ -39,6 +39,12 @@ public class SpeedyEnemyTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        speedyEmpty = null;
+        speedy1 = null;
+        seed = null;
+        resourceTree = null;
+        playerTest = null;
+        goalPotatoTest = null;
     }
 
     /*

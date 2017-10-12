@@ -26,7 +26,8 @@ import java.util.function.Supplier;
  * <p>
  *
  * @author leggy, petercondoleon
- *         <p>
+ *
+ * <p>
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
@@ -37,11 +38,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
-
+    private boolean holdPosition = false;	// Used to determine if the player should be held in place
 
     protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
 
+    private static int doublePressSpeed = 300;    // double keypressed in ms
+    protected float defaultSpeed;    // the default speed of each player
+    protected long[] lastPressed = {0, 0, 0, 0};    // the last time WASD was pressed.
 
     private boolean keyW = false;
     private boolean keyA = false;
@@ -62,8 +66,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return super.toString().toLowerCase();
         }
     }
-
-    ;
 
     // make usage of PlayerState less verbose for use in this class and subclasses
     static final PlayerState IDLE = PlayerState.IDLE;
@@ -91,6 +93,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public Player(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.4f), 1f, 1f, "player_right", HEALTH);
+        this.defaultSpeed = 0.08f;
         this.facing = Direction.SE;
         this.state = IDLE;
         this.setMoveSpeedModifier(0);
@@ -151,35 +154,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return "";
         }
     }
-
-    /**
-     * A method for damaging the player's health. Allows the damaged
-     * state to be enabled and respective animations to play.
-     *
-     * @param amount The amount of damage to deal to the player.
-     */
-    @Override
-    public boolean damage(float amount) {
-        if (state != DAMAGED) {
-            setState(DAMAGED);
-            this.updateSprites();
-        }
-        return super.damage(amount);
-    }
-
-    @Override
-    public ProgressBar getProgressBar() {
-        return PROGRESS_BAR;
-    }
-
-
+    
     // ----------     Input handling / Movement setup     ---------- //
 
 
     /**
      * Set the player's state. For example, if the player is walking, then
-     * set the 'walk' state to the player. The state can only be changed when
-     * the player is in idle or is walking. The reason for this is to prevent
+     * set the 'WALK' state to the player. The state can only be changed when
+     * the player is IDLE or is WALK-ing. The reason for this is to prevent
      * situations where the player tries to attack while being hurt.
      *
      * @param newState The state to set.
@@ -187,23 +169,18 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * if the state was successfully set. False otherwise.
      */
     public boolean setState(PlayerState newState) {
-
-        //check already in state
-        if (state == newState)
-            return true;
-
-        // only change state if IDLE or WALK-ing
-        if (state == IDLE || state == WALK) {
-            state = newState;
-
-            // only move on WALK
-            setMoveSpeedModifier((state == WALK) ? 1 : 0);
-
+        // Check if the change is the same, if so return true.
+        if (state == newState) return true;
+		//Only change the state if IDLE or WALK-ing
+        if (state == IDLE || state == WALK || state == DEATH) {
+        		stateChanged(state, newState);
+        		state = newState;
+            // Only allow moving on WALK
+            setMoveSpeedModifier((newState == WALK) ? 1 : 0);
             updateSprites();
             return true;
         } else {
-            // state not changed
-            return false;
+            return false; // State not changed
         }
     }
 
@@ -229,6 +206,37 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public PlayerState getState() {
         return this.state;
     }
+    
+    /**
+     * This method, unlike the set state method, always resets the state to 
+     * IDLE. Use this method to clear that state after being in a state like
+     * ATTACK, INTERACT or DAMAGED.
+     */
+    public void resetState() {
+    		stateChanged(state, IDLE);
+    		state = IDLE;
+    		updateSprites();
+    }
+    
+    /**
+     * This method allows for handling of state changes. For example, if the
+     * player changes to the WALK state, then walking sound effects can start
+     * playing. If the state changes from the WALK state to another state,
+     * then walking sound effects can be stopped.
+     * 
+     * @param from
+     * 			The state that was changed from
+     * @param to
+     * 			The state that was changed to
+     */
+    private void stateChanged(PlayerState from, PlayerState to) {
+    		// Handle changing in and out of WALK
+    		if (to == WALK) {
+    			walk(true);
+    		} else if (from == WALK) {
+    			walk(false);
+    		}
+    }
 
     /**
      * Handle movement when keyboard keys are pressed down
@@ -236,24 +244,36 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * @param keycode The key pressed
      */
     public void handleKeyDown(int keycode) {
-
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = true;
+                checkDoublePress(0);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.S:
                 keyS = true;
+                checkDoublePress(1);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.A:
                 keyA = true;
+                checkDoublePress(2);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.D:
                 keyD = true;
+                checkDoublePress(3);
                 updateMovingAndFacing();
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		holdPosition = true;
+            		setState(IDLE);
+            		break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
                 break;
@@ -279,6 +299,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public void handleKeyUp(int keycode) {
 
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = false;
@@ -296,6 +321,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 keyD = false;
                 updateMovingAndFacing();
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		holdPosition = false;
+            		setState( (keyA || keyD || keyS || keyW) ? WALK : IDLE );
+        			break;
             default:
                 break;
         }
@@ -344,7 +373,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             case 3:
                 newFacing = Direction.W;
                 break;
-            //case 4           not moving
+            case 4:
+            		newFacing = facing; // Not moving, keep existing direction
+            		break;
             case 5:
                 newFacing = Direction.E;
                 break;
@@ -358,20 +389,40 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 newFacing = Direction.SE;
                 break;
         }
-
+        
+        // Firstly, if the player position is held, keep in IDLE but allow changing direction for aiming.
+        if (holdPosition) {
+			setState(IDLE);
+			super.setMoveSpeedModifier(0);
+			super.setMoveSpeed(defaultSpeed);
+			super.setMoveAngle(newFacing.getAngleRad());
+			facing = newFacing;
+			updateSprites();
+			return;
+        }
+        
         if (direcEnum == 4) {
             setState(IDLE);
+            super.setMoveSpeed(defaultSpeed);
             super.setMoveSpeedModifier(0);
         } else {
-            setState(WALK);
-            super.setMoveAngle(newFacing.getAngleRad());
-            super.setMoveSpeedModifier(1);
-            facing = newFacing;
+        		if (setState(WALK)) {
+        			super.setMoveAngle(newFacing.getAngleRad());
+                super.setMoveSpeedModifier(1);
+                facing = newFacing;
+        		}
         }
-
+        
         updateSprites();
     }
-
+    
+    private void checkDoublePress(int wasd) {
+        if ((System.currentTimeMillis() - lastPressed[wasd]) < doublePressSpeed) {
+            this.setMoveSpeed(defaultSpeed * 2);
+        } else {
+            lastPressed[wasd] =  System.currentTimeMillis();
+        }
+    }
 
     // ----------     OnTick     ---------- //
 
@@ -399,12 +450,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
         //TODO getting terrainModifier should be easier as multiple entities will use it
         //TODO is not using terrainModifier
-        if (state != IDLE) {
+        if (state == WALK) {
             super.setMoveSpeedModifier(terrainModifier);
         }
         super.onTickMovement();
-
-
     }
 
 
@@ -449,6 +498,38 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
     /**
+     * Returns true if the user can buy this tree
+     */
+    public boolean canAfford(AbstractTree tree){
+        if (tree == null || inventory == null) {
+            return false;
+        }
+
+        try {
+            GameManager.get().getManager
+                    (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        TreeState treeState = GameManager.get().getManager
+                (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
+        if (treeState == null) {
+            return false;
+        }
+
+        Inventory cost = treeState.getCost();
+        for (Resource resource : cost.getInventoryResources()) {
+            if (inventory.getQuantity(resource) < cost.getQuantity(resource)){
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    /**
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */
@@ -474,6 +555,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     @Override
     public void deathHandler() {
         LOGGER.info(this + " is dead.");
+        // set state to death
+        this.state = DEATH;
+        // reset all movement
+        keyW = false;
+        keyA = false;
+        keyS = false;
+        keyD = false;
+        // reset to default speed
+        this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
         // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
@@ -489,6 +579,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 
     // ----------     Abstract Methods     ---------- //
+    
+    /**
+     * A method for damaging the player's health. Allows the damaged
+     * state to be enabled and respective animations to play.
+     *
+     * @param amount The amount of damage to deal to the player.
+     */
+    @Override
+    public boolean damage(float amount) {
+        if (state != DAMAGED) {
+            setState(DAMAGED);
+            this.updateSprites();
+        }
+        return super.damage(amount);
+    }
+
+    @Override
+    public ProgressBar getProgressBar() {
+        return PROGRESS_BAR;
+    }
 
     /**
      * A method for making the player attack based on the direction it

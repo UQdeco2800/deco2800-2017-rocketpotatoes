@@ -27,7 +27,12 @@ public class WorldManagerTest {
 		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
 		new HeadlessApplication(new GdxTestApplication(), conf);
 		Gdx.gl = mock(GL20.class);
-		worldManager = new WorldManager();
+		worldManager = GameManager.get().getManager(WorldManager.class);
+	}
+
+	@After
+	public void tearDown() {
+		GameManager.get().clearManagers();
 	}
 
 	@Test
