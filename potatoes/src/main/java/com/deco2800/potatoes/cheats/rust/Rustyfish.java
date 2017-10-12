@@ -14,6 +14,10 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.lwjgl.opengl.Display;
 
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.*;
+
 public class Rustyfish {
 
     private static SpriteBatch batch = new SpriteBatch();
@@ -25,7 +29,31 @@ public class Rustyfish {
         void startGame(Callback startDraw, Callback endDraw,
                        Callback updateWindow, Callback isSpacePressed,
                        Callback clearWindow, Callback flushWindow, Callback getWindowInfo,
-                       Callback drawSprite, Callback drawLine);
+                       Callback drawSprite, Callback drawLine, Callback drawRectangle);
+    }
+
+    private static Color getColor(int color) {
+        switch (color) {
+            case -1:
+                return Color.WHITE;
+            case 0:
+                return Color.BLACK;
+            case 1:
+                return Color.RED;
+            case 2:
+                return Color.BLUE;
+            case 3:
+                return new Color(0, 0, 0.8f, 1.0f);
+            case 4:
+                return Color.GREEN;
+            case 5:
+                return Color.YELLOW;
+            case 6:
+                return Color.ORANGE;
+
+            default:
+                return new Color();
+        }
     }
 
 
@@ -127,32 +155,7 @@ public class Rustyfish {
             TextureManager m = GameManager.get().getManager(TextureManager.class);
             Texture t = m.getTexture(obj.asset);
 
-            switch (obj.color) {
-                case -1:
-                    batch.setColor(Color.WHITE);
-                    break;
-                case 0:
-                    batch.setColor(Color.BLACK);
-                    break;
-                case 1:
-                    batch.setColor(Color.RED);
-                    break;
-                case 2:
-                    batch.setColor(Color.BLUE);
-                    break;
-                case 3:
-                    batch.setColor(Color.GREEN);
-                    break;
-                case 4:
-                    batch.setColor(Color.YELLOW);
-                    break;
-                case 5:
-                    batch.setColor(Color.ORANGE);
-                    break;
-
-                default:
-                    break;
-            }
+            batch.setColor(getColor(obj.color));
 
             batch.draw(t,
                     obj.x, Gdx.graphics.getHeight() - t.getHeight() * obj.scale - obj.y,
@@ -175,7 +178,24 @@ public class Rustyfish {
         }
     };
 
+    private static Callback drawRectangle = new Callback() {
+        @SuppressWarnings("unused")
+        public void run(RenderRectangle.ByValue obj) {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            Color c = getColor(obj.color);
+            c.a = obj.alpha;
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.rect(obj.x, Gdx.graphics.getHeight() - obj.h - obj.y, obj.w, obj.h, c, c, c, c);
+            sr.end();
+
+            glDisable(GL_BLEND);
+        }
+    };
+
     public static void run() {
-        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow, getWindowInfo, drawSprite, drawLine);
+        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
+                getWindowInfo, drawSprite, drawLine, drawRectangle);
     }
 }

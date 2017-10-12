@@ -11,9 +11,33 @@ pub enum Color {
     Black = 0,
     Red = 1,
     Blue = 2,
-    Green = 3,
-    Yellow = 4,
-    Orange = 5,
+    LightBlue = 3,
+    Green = 4,
+    Yellow = 5,
+    Orange = 6,
+}
+
+#[repr(C)]
+pub struct RenderRectangle {
+    x: i32,
+    y: i32,
+    w: i32,
+    h: i32,
+    color: i32,
+    alpha: f32,
+}
+
+impl RenderRectangle {
+    pub fn new(p: (i32, i32), size: (i32, i32), color: i32, alpha: f32) -> Self {
+        Self {
+            x: p.0,
+            y: p.1,
+            w: size.0,
+            h: size.1,
+            color: color,
+            alpha: alpha,
+        }
+    }
 }
 
 #[repr(C)]

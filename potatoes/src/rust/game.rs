@@ -1,5 +1,7 @@
-use render::{RenderInfo, RenderObject, RenderLine, Color}; 
+use render::{RenderInfo, RenderLine, RenderRectangle, RenderObject};
 use util::CallbackFunctions;
+
+use std::time::Instant;
 
 extern crate rand;
 use self::rand::distributions::{IndependentSample, Range};
@@ -43,8 +45,10 @@ pub struct Game {
     state: GameState,
     line_x: i32,
     line_depth: i32,
+    water_level: i32,
     fall_rate: i32,
     fishables: Vec<Fishable>,
+    time: Instant,
 }
 
 impl Game {
@@ -53,8 +57,10 @@ impl Game {
             state: GameState::Start, 
             line_x: 0,
             line_depth: 50,
+            water_level: 200,
             fall_rate: 0,
             fishables: Vec::new(),
+            time: Instant::now(),
         }
     }
 
@@ -146,6 +152,11 @@ impl Game {
         (callbacks.get_window_info)(&window_info);
         self.line_x = window_info.size_x / 2;
 
+        // Update water level
+        let elapsed = self.time.elapsed();
+        let real_time = f64::sin(elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9);
+        self.water_level = 200 + (10.0 * f64::sin(0.5 * real_time))as i32;
+
         self.update_fishables(delta_time);
         self.update_depth(delta_time);
         
@@ -193,6 +204,7 @@ impl Game {
     }
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
+        // Draw line
         (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 50), (window_info.size_x / 2, self.line_depth)));
 
         /*
@@ -210,10 +222,9 @@ impl Game {
         }
         */
 
-        (callbacks.start_draw)();
 
-        // Draw background
-        // (callbacks.draw_rectangle)(RenderRectangle
+        // Normal sprite drawing
+        (callbacks.start_draw)();
 
         // Draw fisherman
         let b_scale = 0.3;
@@ -242,5 +253,11 @@ impl Game {
                                                       f.color));
         }
         (callbacks.end_draw)();
+
+        // Draw water
+        (callbacks.draw_rectangle)(RenderRectangle::new((0, self.water_level), (window_info.size_x, window_info.size_y), 3, 0.3));
+
+        // Draw water seam
+        (callbacks.draw_rectangle)(RenderRectangle::new((0, self.water_level), (window_info.size_x, 3), -1, 1.0));
     }
 }

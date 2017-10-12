@@ -8,7 +8,7 @@ use std::mem;
 use std::os::raw::c_char;
 use std::str;
 use std::time::{Instant};
-use render::{RenderInfo, RenderLine, RenderObject};
+use render::{RenderInfo, RenderLine, RenderRectangle, RenderObject};
 use util::CallbackFunctions;
 use game::Game;
 
@@ -24,7 +24,8 @@ pub extern fn startGame(
     flushWindow: extern "C" fn(),
     getWindowInfo: extern "C" fn(&RenderInfo), 
     drawSprite: extern "C" fn(RenderObject),
-    drawLine: extern "C" fn(RenderLine)) {
+    drawLine: extern "C" fn(RenderLine),
+    drawRectangle: extern "C" fn(RenderRectangle)) {
 
     run_game(CallbackFunctions { 
         start_draw: startDraw,
@@ -35,7 +36,8 @@ pub extern fn startGame(
         flush_window: flushWindow,
         get_window_info: getWindowInfo,
         draw_sprite: drawSprite,
-        draw_line: drawLine});
+        draw_line: drawLine,
+        draw_rectangle: drawRectangle});
 }
 
 /// Takes some (TODO) callbacks for rendering purposes
