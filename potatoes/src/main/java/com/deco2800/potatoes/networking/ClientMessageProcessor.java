@@ -69,8 +69,6 @@ public class ClientMessageProcessor {
      */
     private static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
 
-        //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
-
         client.setID(m.getId());
     }
 
@@ -127,7 +125,6 @@ public class ClientMessageProcessor {
 
 
         if (client.getID() == m.getId()) {
-            System.out.println("[CLIENT]: IT'S ME!");
             // Give the player manager me
             GameManager.get().getManager(PlayerManager.class).setPlayer(p);
 

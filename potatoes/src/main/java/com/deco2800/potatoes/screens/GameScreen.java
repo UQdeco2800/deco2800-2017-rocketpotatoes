@@ -8,22 +8,17 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.*;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.AcornTreeType;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.FireTreeType;
-import com.deco2800.potatoes.entities.trees.IceTreeType;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -383,9 +378,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void tickGame(long timeDelta) {
-		/*
-		 * broken! window.removeActor(peonButton); boolean somethingSelected = false;
-		 */
 
 		// Tick our player
 		if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
@@ -398,11 +390,6 @@ public class GameScreen implements Screen {
 				((Tickable) e).onTick(timeDelta);
 
 			}
-
-			/*
-			 * broken! if (e instanceof Selectable) { if (((Selectable) e).isSelected()) {
-			 * peonButton = ((Selectable) e).getButton(); somethingSelected = true; } }
-			 */
 
 		}
 
@@ -424,13 +411,8 @@ public class GameScreen implements Screen {
 		// Broadcast our player updating pos TODO only when needed.
 		multiplayerManager.broadcastPlayerUpdatePosition();
 
-		/*
-		 * broken! if (!somethingSelected) { peonButton = uiPeonButton; }
-		 * window.add(peonButton);
-		 */
-
-		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
+
 		// Ticks all tickable managers, currently events, waves, particles
 		GameManager.get().onTick(timeDelta);
     }
