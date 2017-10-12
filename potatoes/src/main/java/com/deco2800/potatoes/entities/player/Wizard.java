@@ -3,7 +3,10 @@ package com.deco2800.potatoes.entities.player;
 import java.util.Map;
 import java.util.Optional;
 
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
@@ -31,7 +34,7 @@ public class Wizard extends Player {
         super.setMoveSpeed(defaultSpeed);
         this.facing = Direction.SE;
         this.resetState();
-        //this.currentAnimation = ;
+        this.setShadow(shadow);
     }
 
     private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
@@ -51,6 +54,12 @@ public class Wizard extends Player {
         super.updateMovingAndFacing();
         return null;
     }
+    
+    private float hoverTime = 0;	 // A value used to determine the height of the hover
+    private static final float HOVER_SPEED = 0.1f; // Rate at which wizard hovers
+    private static final float HOVER_HEIGHT = 7.5f; // Max height at which wizard hovers
+    
+    Circle2D shadow = new Circle2D(getPosX(), getPosY(), 0.4f); // Wizard shadow
 
     @Override
     public void updateSprites() {
@@ -127,6 +136,22 @@ public class Wizard extends Player {
             }
         }
     }
+    
+    private void hoverAnimation() {
+    	// Update shadow position
+		shadow.setY(getPosY() + 0.25f);
+		shadow.setX(getPosX() - 0.25f);
+		
+		if (getMoveSpeed() == defaultSpeed) {
+			this.setYRenderOffset((float) (HOVER_HEIGHT*Math.sin(hoverTime)));
+    		hoverTime += HOVER_SPEED;
+    		shadow.setRadius((float) (0.4 - 0.1*Math.sin(hoverTime)));
+		} else {
+			this.setYRenderOffset((float) (HOVER_HEIGHT/1.5*Math.sin(hoverTime)));
+    		hoverTime += HOVER_SPEED*1.5;
+    		shadow.setRadius((float) (0.4 - 0.1*Math.sin(hoverTime)));
+		}
+    }
 
     @Override
     public void interact() {
@@ -135,6 +160,12 @@ public class Wizard extends Player {
             // Wizard interacts
             GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
         }
+    }
+    
+    @Override
+    public void onTick(long arg0) {
+    		super.onTick(arg0);
+    		hoverAnimation();
     }
 
 }
