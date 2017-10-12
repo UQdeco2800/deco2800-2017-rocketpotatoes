@@ -21,7 +21,7 @@ public class Network {
 
         // Kyro magic (with overhead) to automatically register and initialize (without requiring default constructors)
         k.setRegistrationRequired(false);
-        k.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        ((Kryo.DefaultInstantiatorStrategy) k.getInstantiatorStrategy()).setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
     }
 
     // Define our custom types/containers for serialization here

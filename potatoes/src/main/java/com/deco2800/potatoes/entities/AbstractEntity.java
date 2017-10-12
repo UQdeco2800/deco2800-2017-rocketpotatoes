@@ -772,14 +772,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	@Override
 	public int compareTo(AbstractEntity o) {
 		float cartX = this.collisionMask.getX();
-		float cartY = 0;
-		try {
-			cartY = GameManager.get().getWorld().getLength() - this.collisionMask.getY();
-		}
-		catch (Exception e) {
-			System.out.println("ay");
-		}
-
+		float cartY = GameManager.get().getWorld().getLength() - this.collisionMask.getY();
 		float isoX = (cartX - cartY) / 2.0f;
 		float isoY = (cartX + cartY) / 2.0f;
 

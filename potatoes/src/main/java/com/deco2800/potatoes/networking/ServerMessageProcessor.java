@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.esotericsoftware.kryonet.Connection;
@@ -88,10 +87,7 @@ public class ServerMessageProcessor {
                     Network.HostEntityCreationMessage create = new Network.HostEntityCreationMessage();
                     create.setEntity(e.getValue());
                     create.setId(e.getKey());
-
-                    if (e.getValue() instanceof Player) {
-                        server.server.sendToTCP(c.getID(), create);
-                    }
+                    server.server.sendToTCP(c.getID(), create);
                 }
             }
         }

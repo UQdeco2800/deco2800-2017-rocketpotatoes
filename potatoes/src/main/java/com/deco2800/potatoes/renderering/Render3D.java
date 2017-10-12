@@ -285,10 +285,15 @@ public class Render3D implements Renderer {
 				continue;
 
 			// get texture
-			Texture tex;
+			Texture tex = null;
 			if (e instanceof Animated) {
 				// TODO Animations should probably be changed to TextureRegion for performance
-				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
+				try {
+					tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
+				}
+				catch (Exception exp) {
+					System.out.println(0);
+				}
 			} else {
 				tex = texMan.getTexture(e.getTexture());
 			}

@@ -213,7 +213,6 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void entityUpdatePositionMessage(NetworkClient client, Network.HostEntityUpdatePositionMessage m) {
-
         GameManager.get().getWorld().getEntities().get(m.getId()).setPosX(m.getX());
         GameManager.get().getWorld().getEntities().get(m.getId()).setPosY(m.getY());
     }

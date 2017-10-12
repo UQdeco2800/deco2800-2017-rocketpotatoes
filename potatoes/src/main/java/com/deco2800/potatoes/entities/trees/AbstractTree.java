@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.collisions.Circle2D;
@@ -16,6 +13,9 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
