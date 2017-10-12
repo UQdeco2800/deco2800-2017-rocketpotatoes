@@ -262,6 +262,21 @@ public class TextureManager extends Manager {
         		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
         		String textureNameDamaged = "wizard_damaged_" + direction.name() + "_1";
         		saveTexture(textureNameDamaged, "resources/player/wizard/damaged/" + textureNameDamaged + ".png");
+        		
+        		for (int i=1; i<=4; i++) {
+        			String textureNameAttack = "wizard_attack_" + direction.name() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/wizard/attack/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=6; i++) {
+        			String textureNameAttack = "wizard_interact_" + direction.name() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/wizard/interact/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=17; i++) {
+        			String textureNameDeath = "wizard_death_" + direction.name() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/wizard/death/" + textureNameDeath + ".png");
+        		}
 
         }
 

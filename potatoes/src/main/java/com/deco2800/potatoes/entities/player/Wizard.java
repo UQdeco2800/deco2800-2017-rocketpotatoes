@@ -38,8 +38,10 @@ public class Wizard extends Player {
     }
 
     private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", IDLE, 1, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200, this::completionHandler);
     private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation("wizard", INTERACT, 6, 450, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation("wizard", DEATH, 17, 1700, this::completionHandler);
 
     private Void completionHandler() {
         // Re-enable walking
@@ -73,6 +75,12 @@ public class Wizard extends Player {
                 break;
             case ATTACK:
                 super.setAnimation(wizardAttackAnimations.get(super.facing));
+                break;
+            case INTERACT:
+                super.setAnimation(wizardInteractAnimations.get(super.facing));
+                break;
+            case DEATH:
+                super.setAnimation(wizardDeathAnimations.get(super.facing));
                 break;
             default:
                 super.setAnimation(wizardIdleAnimations.get(super.facing));

@@ -183,7 +183,6 @@ public class Caveman extends Player {
     @Override
     public void interact() {
     		super.interact();
-
 	    	if (super.setState(INTERACT)) {
 	    		// Caveman interacts
 	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
