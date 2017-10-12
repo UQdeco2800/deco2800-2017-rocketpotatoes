@@ -49,5 +49,8 @@ public class TreeStateTest {
         assert(treeState.isUnlocked() == true);
         assert(treeState.getTreeType().equals("resource"));
 
+        treeState.unlock();
+        treeState.setUnlock(true);
+        treeState.hashCode();
     }
 }
