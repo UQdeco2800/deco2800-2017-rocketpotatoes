@@ -52,7 +52,7 @@ impl Game {
         Self {
             state: GameState::Start, 
             line_x: 0,
-            line_depth: 200,
+            line_depth: 50,
             fall_rate: 0,
             fishables: Vec::new(),
         }
@@ -95,7 +95,7 @@ impl Game {
 
 
         // TODO fix this gross
-        let y_range = Range::new(10, 1000);
+        let y_range = Range::new(400, 1000);
         let x_range = Range::new(-1000, 1000);
         let dir_range = Range::new(0, 2);
         let speed_range = Range::new(1, 6);
@@ -187,13 +187,13 @@ impl Game {
             },
         }
 
-        if self.line_depth < 0 {
+        if self.line_depth < 50 {
             self.start_falling();
         }
     }
 
     pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
-        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, -10), (window_info.size_x / 2, self.line_depth)));
+        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 50), (window_info.size_x / 2, self.line_depth)));
 
         /*
         // Debug drawing collisions
@@ -212,6 +212,17 @@ impl Game {
 
         (callbacks.start_draw)();
 
+        // Draw background
+        // (callbacks.draw_rectangle)(RenderRectangle
+
+        // Draw fisherman
+        let b_scale = 0.3;
+        (callbacks.draw_sprite)(RenderObject::new("boatman".to_string(), 
+                                                  (window_info.size_x / 2) - (928 as f32 * b_scale) as i32, 50, 0.0, b_scale,
+                                                  false, false, 
+                                                  -1));
+
+        // Draw caught
         match self.state {
             GameState::Caught(ref f) => {
                 (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
@@ -223,6 +234,7 @@ impl Game {
             _ => { },
         }
 
+        // Draw others
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
                                                       f.position.0, f.position.1, 0.0, f.scale, 

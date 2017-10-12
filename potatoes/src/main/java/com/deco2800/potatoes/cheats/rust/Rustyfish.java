@@ -128,6 +128,9 @@ public class Rustyfish {
             Texture t = m.getTexture(obj.asset);
 
             switch (obj.color) {
+                case -1:
+                    batch.setColor(Color.WHITE);
+                    break;
                 case 0:
                     batch.setColor(Color.BLACK);
                     break;
