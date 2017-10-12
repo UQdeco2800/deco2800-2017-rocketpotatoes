@@ -33,16 +33,23 @@ public class Archer extends Player {
             super.setMoveSpeed(defaultSpeed);
     		this.facing = Direction.SE;
         this.resetState();
-        //this.currentAnimation = ;
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
     private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
     private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, super::completionHandler);
-    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, super::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, this::damagedCompletionHandler);
     private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, super::completionHandler);
 
-    
+    /**
+     * Custom damaged handling for the archer
+     */
+    public Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
 
     @Override
     public void updateSprites() {
@@ -70,7 +77,7 @@ public class Archer extends Player {
     }
     
     @Override
-    public void attack() {
+    protected void attack() {
 	    super.attack();
 
     		if (this.setState(ATTACK)) {
@@ -126,7 +133,11 @@ public class Archer extends Player {
 		}
     }
     
-
+    @Override
+    protected void interact() {
+	    	super.interact();
+	    	// Custom interaction code here
+    }
 
 
 

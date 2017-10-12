@@ -128,6 +128,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
         return animations;
     }
+    
+    /**
+     * Generic completion handler for execution when the player 
+     * exits a state other than walk or idle.
+     */
+    protected Void completionHandler() {
+        this.resetState();
+        this.updateMovingAndFacing();
+        return null;
+    }
 
     /**
      * Sets the specified animation to be the player's current animation.
@@ -183,21 +193,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return false; // State not changed
         }
     }
-
-    public Void completionHandler() {
-        // Re-enable walking
-        state = IDLE;
-        updateMovingAndFacing();
-        return null;
-    }
-
-    public Void damagedCompletionHandler() {
-        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-        state = IDLE;
-        updateMovingAndFacing();
-        return null;
-    }
-
+    
     /**
      * Returns the current state of the player.
      *
@@ -606,7 +602,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void attack() {
-        // Override in subclasses to allow attacking.
+        // Override in subclasses to allow custom attacking.
     }
 
     /**
@@ -615,10 +611,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void interact() {
-        if (this.setState(INTERACT)) {
-            // Archer interacts
-            GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-        }
+   		// Override in subclasses to allow custom interacting.
+	    	if (this.setState(INTERACT)) {
+	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
+	    	}
     }
 
     /**
@@ -630,31 +626,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      *               if the player stops walking.
      */
     protected void walk(boolean active) {
-        if (active) {
-            // Archer starts walking
-            GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
-        } else {
-            // Archer stops walking
-            GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
-        }
-    }
-
-    /* Custom walk sound handling */
-    private int stepNumber = 1;	// Used for playing left and right foot steps
-    private boolean alternateSound = false;	// Used for playing alternate sounds
-    private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
-    private Void walkHandler() {
-        if (alternateSound) {
-            GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
-        } else {
-            GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
-        }
-
-        stepNumber++;
-        if (stepNumber == 3)
-            stepNumber = 1;
-        alternateSound = new Random().nextBoolean();
-        return null;
+    		// Override in subclasses to allow handling of custom walking.
     }
 
     /**
