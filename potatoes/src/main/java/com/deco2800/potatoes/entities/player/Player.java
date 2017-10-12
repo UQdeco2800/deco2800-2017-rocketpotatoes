@@ -14,6 +14,7 @@ import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.entities.TimeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,9 @@ import java.util.function.Supplier;
 /**
  * Entity for the playable character.
  * <p>
+ *
  * @author leggy, petercondoleon
+ *
  * <p>
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar {
@@ -33,13 +36,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 
 
-    protected int respawnTime = 5000; 	// Time until respawn in milliseconds
+    protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
+    private boolean holdPosition = false;	// Used to determine if the player should be held in place
 
+    protected TimeAnimation currentAnimation;    // The current animation of the player
+    protected PlayerState state;        // The current states of the player, set to idle by default
 
-    protected TimeAnimation currentAnimation;	// The current animation of the player
-    protected PlayerState state;    	// The current states of the player, set to idle by default
-
+    private static int doublePressSpeed = 300;    // double keypressed in ms
+    protected float defaultSpeed;    // the default speed of each player
+    protected long[] lastPressed = {0, 0, 0, 0};    // the last time WASD was pressed.
 
     private boolean keyW = false;
     private boolean keyA = false;
@@ -47,18 +53,19 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private boolean keyD = false;
 
 
-
     //TODO change this. -> super. in as many locations as possible
 
     // ----------     PlayerState class     ---------- //
 
     /* The states a player may take */
-    public enum PlayerState { IDLE, WALK, ATTACK, DAMAGED, DEATH, INTERACT;
-    		@Override
-    		public String toString() {
-    			return super.toString().toLowerCase();
-    		}
-    };
+    public enum PlayerState {
+        IDLE, WALK, ATTACK, DAMAGED, DEATH, INTERACT;
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
+    }
 
     // make usage of PlayerState less verbose for use in this class and subclasses
     static final PlayerState IDLE = PlayerState.IDLE;
@@ -67,8 +74,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     static final PlayerState DAMAGED = PlayerState.DAMAGED;
     static final PlayerState DEATH = PlayerState.DEATH;
     static final PlayerState INTERACT = PlayerState.INTERACT;
-
-
 
 
     // ----------     Initialisation     ---------- //
@@ -88,15 +93,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public Player(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.4f), 1f, 1f, "player_right", HEALTH);
+        this.defaultSpeed = 0.08f;
         this.facing = Direction.SE;
         this.state = IDLE;
         this.setMoveSpeedModifier(0);
         this.setStatic(false);
         this.setSolid(true);
-        addResources();	//Initialise the inventory with the valid resources
+        addResources();    //Initialise the inventory with the valid resources
     }
-
-
 
 
     // ----------     Texture / Animation     ---------- //
@@ -105,36 +109,40 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Creates a map of player directions with player state animations. Uses
      * direction as a key to receive the respective animation.
      *
-     * @param playerType
-     * 			A string representing the type of player.
-     * @param state
-     * 			The state of the player.
-     * @param frameCount
-     * 			The number of frames in the animation.
-     * @param animationTime
-     * 			The time per animation cycle.
-     * @return
-     * 		A map of directions with animations for the specified state.
+     * @param playerType    A string representing the type of player.
+     * @param state         The state of the player.
+     * @param frameCount    The number of frames in the animation.
+     * @param animationTime The time per animation cycle.
+     * @return A map of directions with animations for the specified state.
      */
     public static Map<Direction, TimeAnimation> makePlayerAnimation(String playerType,
-            PlayerState state, int frameCount, int animationTime, Supplier<Void> completionHandler) {
+                                                                    PlayerState state, int frameCount, int animationTime, Supplier<Void> completionHandler) {
         Map<Direction, TimeAnimation> animations = new HashMap<>();
         for (Direction direction : Direction.values()) {
             String[] frames = new String[frameCount];
-            for (int i=1; i<=frameCount; i++) {
-                frames[i-1] = playerType + "_" + state.toString() + "_" + direction.name() + "_" + i;
+            for (int i = 1; i <= frameCount; i++) {
+                frames[i - 1] = playerType + "_" + state.toString() + "_" + direction.name() + "_" + i;
             }
             animations.put(direction, new TimeTriggerAnimation(animationTime, frames, completionHandler));
         }
 
         return animations;
     }
+    
+    /**
+     * Generic completion handler for execution when the player 
+     * exits a state other than walk or idle.
+     */
+    protected Void completionHandler() {
+        this.resetState();
+        this.updateMovingAndFacing();
+        return null;
+    }
 
     /**
      * Sets the specified animation to be the player's current animation.
      *
-     * @param animation
-     * 			The time animation to be set to the player.
+     * @param animation The time animation to be set to the player.
      */
     public void setAnimation(TimeAnimation animation) {
 
@@ -156,101 +164,112 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return "";
         }
     }
-
-    /**
-     * A method for damaging the player's health. Allows the damaged
-     * state to be enabled and respective animations to play.
-     *
-     * @param amount
-     * 			The amount of damage to deal to the player.
-     */
-    @Override
-    public boolean damage(float amount) {
-        if (state != DAMAGED) {
-            setState(DAMAGED);
-            this.updateSprites();
-        }
-        return super.damage(amount);
-    }
-
-    @Override
-    public ProgressBar getProgressBar() {
-        return PROGRESS_BAR;
-    }
-
-
-
-
+    
     // ----------     Input handling / Movement setup     ---------- //
 
 
     /**
      * Set the player's state. For example, if the player is walking, then
-     * set the 'walk' state to the player. The state can only be changed when
-     * the player is in idle or is walking. The reason for this is to prevent
+     * set the 'WALK' state to the player. The state can only be changed when
+     * the player is IDLE or is WALK-ing. The reason for this is to prevent
      * situations where the player tries to attack while being hurt.
      *
-     * @param newState
-     * 			The state to set.
+     * @param newState The state to set.
      * @return true
-     * 			if the state was successfully set. False otherwise.
+     * if the state was successfully set. False otherwise.
      */
     public boolean setState(PlayerState newState) {
-
-        //check already in state
-        if (state == newState)
-            return true;
-
-        // only change state if IDLE or WALK-ing
-        if (state == IDLE || state == WALK) {
-            state = newState;
-
-            // only move on WALK
-            setMoveSpeedModifier( (state == WALK) ? 1 : 0);
-
+        // Check if the change is the same, if so return true.
+        if (state == newState) return true;
+		//Only change the state if IDLE or WALK-ing
+        if (state == IDLE || state == WALK || state == DEATH) {
+        		stateChanged(state, newState);
+        		state = newState;
+            // Only allow moving on WALK
+            setMoveSpeedModifier((newState == WALK) ? 1 : 0);
             updateSprites();
             return true;
         } else {
-            // state not changed
-            return false;
+            return false; // State not changed
         }
     }
-
+    
     /**
      * Returns the current state of the player.
      *
-     * @return
-     * 		The current state of the player.
+     * @return The current state of the player.
      */
     public PlayerState getState() {
         return this.state;
+    }
+    
+    /**
+     * This method, unlike the set state method, always resets the state to 
+     * IDLE. Use this method to clear that state after being in a state like
+     * ATTACK, INTERACT or DAMAGED.
+     */
+    public void resetState() {
+    		stateChanged(state, IDLE);
+    		state = IDLE;
+    		updateSprites();
+    }
+    
+    /**
+     * This method allows for handling of state changes. For example, if the
+     * player changes to the WALK state, then walking sound effects can start
+     * playing. If the state changes from the WALK state to another state,
+     * then walking sound effects can be stopped.
+     * 
+     * @param from
+     * 			The state that was changed from
+     * @param to
+     * 			The state that was changed to
+     */
+    private void stateChanged(PlayerState from, PlayerState to) {
+    		// Handle changing in and out of WALK
+    		if (to == WALK) {
+    			walk(true);
+    		} else if (from == WALK) {
+    			walk(false);
+    		}
     }
 
     /**
      * Handle movement when keyboard keys are pressed down
      *
-     * @param keycode
-     * 			The key pressed
+     * @param keycode The key pressed
      */
     public void handleKeyDown(int keycode) {
-
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = true;
+                checkDoublePress(0);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.S:
                 keyS = true;
+                checkDoublePress(1);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.A:
                 keyA = true;
+                checkDoublePress(2);
                 updateMovingAndFacing();
                 break;
             case Input.Keys.D:
                 keyD = true;
+                checkDoublePress(3);
                 updateMovingAndFacing();
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		holdPosition = true;
+            		setState(IDLE);
+            		break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
                 break;
@@ -272,11 +291,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     /**
      * Handle movement when keyboard keys are released
      *
-     * @param keycode
-     * 			The key that was released
+     * @param keycode The key that was released
      */
     public void handleKeyUp(int keycode) {
 
+    	// stop input if player is dead.
+        if (state == DEATH) {
+            return;
+        }
+    	
         switch (keycode) {
             case Input.Keys.W:
                 keyW = false;
@@ -294,6 +317,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 keyD = false;
                 updateMovingAndFacing();
                 break;
+            case Input.Keys.SHIFT_LEFT:
+            		holdPosition = false;
+            		setState( (keyA || keyD || keyS || keyW) ? WALK : IDLE );
+        			break;
             default:
                 break;
         }
@@ -314,9 +341,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
         // vertical keys
         if (keyW && !keyS) {
-            direcEnum-=3;
+            direcEnum -= 3;
         } else if (!keyW && keyS) {
-            direcEnum+=3;
+            direcEnum += 3;
         }
 
         // at this point direcEnum = 1 or 4 or 7, North or Middle or South
@@ -342,7 +369,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             case 3:
                 newFacing = Direction.W;
                 break;
-            //case 4           not moving
+            case 4:
+            		newFacing = facing; // Not moving, keep existing direction
+            		break;
             case 5:
                 newFacing = Direction.E;
                 break;
@@ -356,23 +385,40 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 newFacing = Direction.SE;
                 break;
         }
-
+        
+        // Firstly, if the player position is held, keep in IDLE but allow changing direction for aiming.
+        if (holdPosition) {
+			setState(IDLE);
+			super.setMoveSpeedModifier(0);
+			super.setMoveSpeed(defaultSpeed);
+			super.setMoveAngle(newFacing.getAngleRad());
+			facing = newFacing;
+			updateSprites();
+			return;
+        }
+        
         if (direcEnum == 4) {
             setState(IDLE);
+            super.setMoveSpeed(defaultSpeed);
             super.setMoveSpeedModifier(0);
         } else {
-            setState(WALK);
-            super.setMoveAngle(newFacing.getAngleRad());
-            super.setMoveSpeedModifier(1);
-            facing = newFacing;
+        		if (setState(WALK)) {
+        			super.setMoveAngle(newFacing.getAngleRad());
+                super.setMoveSpeedModifier(1);
+                facing = newFacing;
+        		}
         }
-
+        
         updateSprites();
     }
-
-
-
-
+    
+    private void checkDoublePress(int wasd) {
+        if ((System.currentTimeMillis() - lastPressed[wasd]) < doublePressSpeed) {
+            this.setMoveSpeed(defaultSpeed * 2);
+        } else {
+            lastPressed[wasd] =  System.currentTimeMillis();
+        }
+    }
 
     // ----------     OnTick     ---------- //
 
@@ -385,22 +431,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         float myY = super.getPosY();
         float length = GameManager.get().getWorld().getLength();
         float width = GameManager.get().getWorld().getWidth();
-
         float terrainModifier = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX, width - 1)), Math.round(Math.min(myY, length - 1)))
+                .getTerrain(Math.round(Math.min(myX-1, width - 1)), Math.round(Math.min(myY, length - 1)))
                 .getMoveScale();
+        float moveDist = getMoveSpeed() * terrainModifier;
+        float newX = moveDist * (float) Math.cos(this.getMoveAngle());
+        float newY = moveDist * (float) Math.sin(this.getMoveAngle());
+        float terrainModifierCheck = GameManager.get().getWorld()
+                .getTerrain(Math.round(Math.min(myX-1 + newX, width - 1)), Math.round(Math.min(myY + newY, length - 1)))
+                .getMoveScale();
+        if (terrainModifierCheck <= 0) {
+            terrainModifier = 0;
+        }
 
         //TODO getting terrainModifier should be easier as multiple entities will use it
         //TODO is not using terrainModifier
-
-        //super.moveSpeedModifier = terrainModifier;
+        if (state == WALK) {
+            super.setMoveSpeedModifier(terrainModifier);
+        }
         super.onTickMovement();
-
-
-
     }
-
-
 
 
     // ----------     Inventory Management     ---------- //
@@ -410,14 +460,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     private void addResources() {
 
-    	HashSet<Resource> startingResources = new HashSet<Resource>();
-    	startingResources.add(new SeedResource());
+        HashSet<Resource> startingResources = new HashSet<Resource>();
+        startingResources.add(new SeedResource());
         this.inventory = new Inventory(startingResources);
     }
 
     /**
      * Returns the player inventory.
-     *
+     * <p>
      * Returns the inventory specific to the player.
      */
     public Inventory getInventory() {
@@ -444,6 +494,38 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
     /**
+     * Returns true if the user can buy this tree
+     */
+    public boolean canAfford(AbstractTree tree){
+        if (tree == null || inventory == null) {
+            return false;
+        }
+
+        try {
+            GameManager.get().getManager
+                    (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
+        } catch (Exception e) {
+            return false;
+        }
+
+
+        TreeState treeState = GameManager.get().getManager
+                (GuiManager.class).getGui(TreeShopGui.class).getTreeStateByTree(tree);
+        if (treeState == null) {
+            return false;
+        }
+
+        Inventory cost = treeState.getCost();
+        for (Resource resource : cost.getInventoryResources()) {
+            if (inventory.getQuantity(resource) < cost.getQuantity(resource)){
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    /**
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */
@@ -464,13 +546,20 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
 
-
-
     // ----------     Death     ---------- //
 
     @Override
     public void deathHandler() {
         LOGGER.info(this + " is dead.");
+        // set state to death
+        this.state = DEATH;
+        // reset all movement
+        keyW = false;
+        keyA = false;
+        keyS = false;
+        keyD = false;
+        // reset to default speed
+        this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
         // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
@@ -485,9 +574,27 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
 
-
-
     // ----------     Abstract Methods     ---------- //
+    
+    /**
+     * A method for damaging the player's health. Allows the damaged
+     * state to be enabled and respective animations to play.
+     *
+     * @param amount The amount of damage to deal to the player.
+     */
+    @Override
+    public boolean damage(float amount) {
+        if (state != DAMAGED) {
+            setState(DAMAGED);
+            this.updateSprites();
+        }
+        return super.damage(amount);
+    }
+
+    @Override
+    public ProgressBar getProgressBar() {
+        return PROGRESS_BAR;
+    }
 
     /**
      * A method for making the player attack based on the direction it
@@ -495,7 +602,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void attack() {
-        // Override in subclasses to allow attacking.
+        // Override in subclasses to allow custom attacking.
     }
 
     /**
@@ -504,7 +611,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void interact() {
-        // Override in subclasses to allow interacting.
+   		// Override in subclasses to allow custom interacting.
+	    	if (this.setState(INTERACT)) {
+	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
+	    	}
     }
 
     /**
@@ -512,12 +622,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * exiting the walk state. The method is automatically called every time
      * this transition occurs.
      *
-     * @param active
-     * 			True if the player starts walking and false
-     * 			if the player stops walking.
+     * @param active True if the player starts walking and false
+     *               if the player stops walking.
      */
     protected void walk(boolean active) {
-        // Override in subclasses to allow handling of walking.
+    		// Override in subclasses to allow handling of custom walking.
     }
 
     /**
@@ -527,8 +636,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public void updateSprites() {
         // Override in subclasses to update the sprite based on state and direciton.
     }
-
-
 
 
     // ----------     Generic Object Methods    ---------- //

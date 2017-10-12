@@ -18,8 +18,9 @@ import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.worlds.World;
+import org.junit.After;
 import org.junit.Test;
-
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 
@@ -54,6 +55,15 @@ public class ProjectileTest {
 
     private class TestWorld extends World {
 
+    }
+
+    @After
+    public void tearDown() {
+        GameManager.get().clearManagers();
+        testProjectile = null;
+        testPlayerProjectile = null;
+        testBallisticProjectile = null;
+        testHomingProjectile = null;
     }
 
     @Test
@@ -195,6 +205,10 @@ public class ProjectileTest {
         testProjectile = new Projectile(targetClass.getClass(), startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
         testProjectile.rotationAngle();
         testProjectile.onTick(2);
+        ProjectileTexture.ROCKET.textures();
+        ProjectileTexture.CHILLI.textures();
+        ProjectileTexture.LEAVES.textures();
+        ProjectileTexture.ACORN.textures();
     }
 
 

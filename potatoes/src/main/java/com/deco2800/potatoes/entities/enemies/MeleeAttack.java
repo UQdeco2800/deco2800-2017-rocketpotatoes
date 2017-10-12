@@ -9,8 +9,8 @@ import com.deco2800.potatoes.collisions.Circle2D;
  */
 public class MeleeAttack extends Effect {
 
-	private static final float effect_width = 1f;
-	private static final float effect_height = 1f;
+	private static final float EFFECT_WIDTH = 1f;
+	private static final float EFFECT_HEIGHT = 1f;
 
 	/**
 	 * Empty constructor for serialization

@@ -4,13 +4,27 @@ import java.util.*;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.managers.GameManager;
-
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
+
+/**
+ * Object to manage methods for creating a minimum spanning tree.
+ */
+
+
+
 public class MinimumSpanningTree {
+    /**
+     * MinimumSpanningTree takes {@code Point2D} as vertices to a weighted graph in the form of an adjacency matrix.
+     * It uses the Prim–Dijkstra algorithm to return a MST in the form of an {@code HashMap} of {@code Point2D} leading
+     * back to goal {@code Point2D}.
+     */
 
     //------------------ Nested Vertex Class --------------------
 
+    /**
+     * Vertex is a container class for {@code Point2D}.
+     */
     public static class Vertex {
 
         private Point2D entry;
@@ -76,7 +90,7 @@ public class MinimumSpanningTree {
     public class VertexPriority implements Comparator<Vertex> {
 
         /**
-         * Compares its two arguments for order.  Returns a negative integer,
+         * Compares {@code Vertex} for order.  Returns a negative integer,
          * zero, or a positive integer as the first argument is less than, equal
          * to, or greater than the second.
          *
@@ -182,7 +196,6 @@ public class MinimumSpanningTree {
      *
      * @param goal The target position of the MST.
      * @param start The position of entity calling the MST.
-     * @param obstacles List of Lines as boarder of static entities on the map.
      */
     public void addStartGoal(Point2D goal, Point2D start) {
 
@@ -216,6 +229,7 @@ public class MinimumSpanningTree {
             }
         }
     }
+
     /**
      * Populate the weighted adjacency matrix with the distance between vertices. If a line between each vertex pair
      * is intersected by a line contained in list obstacles, then the edge weight is inflated to ensure that that edge
@@ -257,8 +271,7 @@ public class MinimumSpanningTree {
     }
 
     /**
-     * Takes a {@code Line} object and tests it against a list of Lines to check in any intersect.
-     * @param edge Line object tested.
+     * Takes a {@code Line} object and tests it against a list of Lines to check if any intersect.
      * @return true in edge intersects with any lines in obstacles; false otherwise.
      */
     public boolean checkLineClash(Line line) {
@@ -275,7 +288,13 @@ public class MinimumSpanningTree {
         return output;
     }
 
-
+    /**
+     * Place entry in adjacency matrix.
+     * @param entry
+     * @param row
+     * @param col
+     * @throws IndexOutOfBoundsException
+     */
     public void putGraphEntry(float entry, int row, int col) throws IndexOutOfBoundsException {
 
         if (row < 0 || row > this.getSize() || col < 0 || col > this.getSize()) {
@@ -284,6 +303,13 @@ public class MinimumSpanningTree {
         this.graph[row][col] = entry;
     }
 
+    /**
+     * 
+     * @param row
+     * @param col
+     * @return
+     * @throws IndexOutOfBoundsException
+     */
     public float getGraphEntry(int row, int col) throws IndexOutOfBoundsException {
 
         if (row < 0 || row > this.getSize() || col < 0 || col > this.getSize()) {

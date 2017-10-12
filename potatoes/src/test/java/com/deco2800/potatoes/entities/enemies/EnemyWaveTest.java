@@ -33,6 +33,7 @@ public class EnemyWaveTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	firstWave = null;
     }
 	
 	@Test

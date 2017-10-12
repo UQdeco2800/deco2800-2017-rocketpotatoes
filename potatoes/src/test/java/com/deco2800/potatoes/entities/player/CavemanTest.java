@@ -27,6 +27,7 @@ public class CavemanTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	caveman = null;
     }
 	
 	/**
