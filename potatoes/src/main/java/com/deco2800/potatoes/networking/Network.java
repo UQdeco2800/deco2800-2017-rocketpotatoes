@@ -1,18 +1,10 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
-import com.deco2800.potatoes.entities.trees.TreeProperties;
-import com.deco2800.potatoes.managers.Inventory;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
-import org.reflections.Reflections;
-
-import java.util.*;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 public class Network {
 
@@ -26,8 +18,10 @@ public class Network {
      */
     public static void register(EndPoint endPoint) {
         Kryo k = endPoint.getKryo();
+        k.setRegistrationRequired(false);
+        k.setInstantiatorStrategy(new StdInstantiatorStrategy());
 
-        /* Message types */
+        /*
         k.register(ClientConnectionRegisterMessage.class);
         k.register(ClientPlayerUpdatePositionMessage.class);
         k.register(ClientBuildOrderMessage.class);
@@ -61,10 +55,6 @@ public class Network {
         k.register(String[].class);
         k.register(Class.class);
 
-        /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
-         * actions? Requires as much abstraction as possible with regards to custom behaviour, shouldn't be too tedious
-         */
-
         Reflections reflections = new Reflections("com.deco2800");
 
         Set<Class<? extends AbstractEntity>> entities =
@@ -79,6 +69,7 @@ public class Network {
             // Auto register entities!
             k.register(c);
         }
+        */
 
 
     }

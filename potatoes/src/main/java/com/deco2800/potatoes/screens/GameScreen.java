@@ -12,13 +12,14 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.entities.trees.AcornTreeType;
+import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.FireTreeType;
+import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -278,22 +279,22 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
+			//GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
+			//GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add an enemy gate to game world
-			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
+			//GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
 			//add enemy waves
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, 1));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave()); // pause wave
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 900, 2));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 1050, 3));
+			//GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, 1));
+			//GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave()); // pause wave
+			//GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 900, 2));
+			//GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 1050, 3));
 
 
-			initialiseResources();
-			initialisePortal();
-			addDamageTree();
+			//initialiseResources();
+			//initialisePortal();
+			//addDamageTree();
 
 
 			if (!multiplayerManager.isMultiplayer()) {

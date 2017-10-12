@@ -51,7 +51,7 @@ public class ClientMessageProcessor {
                 entityUpdatePositionMessage(client, (Network.HostEntityUpdatePositionMessage) object);
             }
             else if (object instanceof Network.HostEntityUpdateProgressMessage) {
-                entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
+                //entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
             }
             else if (object instanceof Network.HostChatMessage) {
                 chatMessage(client, (Network.HostChatMessage) object);

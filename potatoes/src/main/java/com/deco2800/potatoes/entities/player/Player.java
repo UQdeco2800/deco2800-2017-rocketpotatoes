@@ -8,17 +8,22 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.health.*;
-import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.gui.PauseMenuGui;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.entities.TimeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -160,7 +165,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (currentAnimation != null) {
             return currentAnimation.getFrame();
         } else {
-            LOGGER.warn("Rendered player without texture.");
+            //LOGGER.warn("Rendered player without texture.");
             return "";
         }
     }
