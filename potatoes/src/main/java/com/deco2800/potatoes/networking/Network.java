@@ -18,60 +18,10 @@ public class Network {
      */
     public static void register(EndPoint endPoint) {
         Kryo k = endPoint.getKryo();
+
+        // Kyro magic (with overhead) to automatically register and initialize (without requiring default constructors)
         k.setRegistrationRequired(false);
         k.setInstantiatorStrategy(new StdInstantiatorStrategy());
-
-        /*
-        k.register(ClientConnectionRegisterMessage.class);
-        k.register(ClientPlayerUpdatePositionMessage.class);
-        k.register(ClientBuildOrderMessage.class);
-
-        k.register(HostPlayerDisconnectedMessage.class);
-        k.register(HostDisconnectMessage.class);
-        k.register(HostPlayReadyMessage.class);
-        k.register(HostNewPlayerMessage.class);
-        k.register(HostConnectionConfirmMessage.class);
-        k.register(HostEntityCreationMessage.class);
-        k.register(HostEntityDestroyMessage.class);
-        k.register(HostEntityUpdatePositionMessage.class);
-        k.register(HostEntityUpdateProgressMessage.class);
-        k.register(HostExistingPlayerMessage.class);
-
-        k.register(ClientChatMessage.class);
-        k.register(HostChatMessage.class);
-        // Register member variables here:
-
-        k.register(java.util.Optional.class);
-        k.register(LinkedList.class);
-        k.register(TreeProjectileShootEvent.class);
-        k.register(TreeProperties.class);
-        k.register(Resource.class);
-        k.register(FoodResource.class);
-        k.register(SeedResource.class);
-        k.register(Inventory.class);
-        k.register(TreeMap.class);
-        k.register(float[][].class);
-        k.register(float[].class);
-        k.register(String[].class);
-        k.register(Class.class);
-
-        Reflections reflections = new Reflections("com.deco2800");
-
-        Set<Class<? extends AbstractEntity>> entities =
-                reflections.getSubTypesOf(com.deco2800.potatoes.entities.AbstractEntity.class);
-
-        // Order matters so let's order them
-        TreeSet<Class<? extends AbstractEntity>> sorted = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
-
-        sorted.addAll(entities);
-
-        for (Class c : sorted) {
-            // Auto register entities!
-            k.register(c);
-        }
-        */
-
-
     }
 
     // Define our custom types/containers for serialization here

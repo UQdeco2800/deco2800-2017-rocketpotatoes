@@ -118,7 +118,7 @@ public class NetworkServer {
         message.setY(entity.getPosY());
 
         // Tell everyone except the master.
-        server.sendToAllExceptUDP(MASTER_ID, message);
+        server.sendToAllExceptTCP(MASTER_ID, message);
     }
 
     public void broadcastEntityUpdateProgress(int id) {
@@ -131,7 +131,7 @@ public class NetworkServer {
             message.setProgress(e.getProgress());
 
             // Tell everyone except the master.
-            server.sendToAllExceptUDP(MASTER_ID, message);
+            server.sendToAllExceptTCP(MASTER_ID, message);
         }
         else {
             throw new IllegalArgumentException("Entity doesn't implement HasProgress!");
