@@ -32,19 +32,27 @@ public class Caveman extends Player {
     	super(posX, posY);
     	this.defaultSpeed = 0.08f;
         super.setMoveSpeed(defaultSpeed);
-
 		updateSprites();
-
 		super.setYRenderOffset(9);
     }
 
     /* Caveman Animations */
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, super::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
     private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
     private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
     private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
+    
+    /**
+     * Custom damaged handling for the caveman
+     */
+    protected Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
 
     @Override
     public void updateSprites() {
@@ -75,7 +83,7 @@ public class Caveman extends Player {
     }
 
     @Override
-    public void attack() {
+    protected void attack() {
 		super.attack();
 		setMoveSpeedModifier(0);
 
@@ -134,6 +142,42 @@ public class Caveman extends Player {
 
 		}
     }
+    
+    /* Custom walk sound handling */
+	private int stepNumber = 1;	// Used for playing left and right foot steps
+	private boolean alternateSound = false;	// Used for playing alternate sounds
+	private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
+	private Void walkHandler() {
+		if (alternateSound) {
+			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
+		} else {
+			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
+		}
 
+		stepNumber++;
+		if (stepNumber == 3) {
+       stepNumber = 1;
+     }
+		alternateSound = new Random().nextBoolean();
+		return null;
+	}
+
+    @Override
+	protected void walk(boolean active) {
+		super.walk(active);
+		if (active) {
+			// Caveman starts walking
+			GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
+		} else {
+			// Caveman stops walking
+			GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
+		}
+	}
+
+    @Override
+    protected void interact() {
+    		super.interact();
+    		// Custom interaction code here
+    }
 
 }
