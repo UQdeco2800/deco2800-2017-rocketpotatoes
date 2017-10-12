@@ -51,6 +51,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
+		//Empty constructor for serialization
 	}
 
 	/***
@@ -113,10 +114,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		double interactRange = 2f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					((ResourceTree) entitiy).gather(-1);
-				}
+			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange &&((ResourceTree) entitiy).getGatherCount() > 0) {
+				((ResourceTree) entitiy).gather(-1);
 			}
 		}
 	}
