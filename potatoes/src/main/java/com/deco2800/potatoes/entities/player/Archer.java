@@ -124,44 +124,8 @@ public class Archer extends Player {
 		}
     }
     
-    /* Custom walk sound handling */
-	private int stepNumber = 1;	// Used for playing left and right foot steps
-	private boolean alternateSound = false;	// Used for playing alternate sounds
-	private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
-	private Void walkHandler() {
-		if (alternateSound) {
-			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
-		} else {
-			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
-		}
-		
-		stepNumber++;
-		if (stepNumber == 3)
-			stepNumber = 1;
-		alternateSound = new Random().nextBoolean();
-		return null;
-	}
-    
-    @Override
-	protected void walk(boolean active) {
-		super.walk(active);
-		if (active) {
-			// Archer starts walking
-			GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
-		} else {
-			// Archer stops walking
-			GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
-		}
-	}
-    
-    @Override
-    public void interact() {
-    		super.interact();
 
-	    	if (this.setState(INTERACT)) {
-	    		// Archer interacts
-	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-	    	}
-    }
+
+
 
 }

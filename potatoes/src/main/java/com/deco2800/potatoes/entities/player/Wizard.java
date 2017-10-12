@@ -113,14 +113,6 @@ public class Wizard extends Player {
             }
         }
     }
-
-    @Override
-    public void interact() {
-        super.interact();
-        if (this.setState(INTERACT)) {
-            // Wizard interacts
-            GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-        }
-    }
+    
 
 }

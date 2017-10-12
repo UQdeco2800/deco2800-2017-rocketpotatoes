@@ -14,6 +14,7 @@ import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.entities.TimeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -504,7 +505,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void interact() {
-        // Override in subclasses to allow interacting.
+        if (this.setState(INTERACT)) {
+            // Archer interacts
+            GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
+        }
     }
 
     /**
@@ -516,7 +520,31 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      *               if the player stops walking.
      */
     protected void walk(boolean active) {
-        // Override in subclasses to allow handling of walking.
+        if (active) {
+            // Archer starts walking
+            GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
+        } else {
+            // Archer stops walking
+            GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
+        }
+    }
+
+    /* Custom walk sound handling */
+    private int stepNumber = 1;	// Used for playing left and right foot steps
+    private boolean alternateSound = false;	// Used for playing alternate sounds
+    private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
+    private Void walkHandler() {
+        if (alternateSound) {
+            GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
+        } else {
+            GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
+        }
+
+        stepNumber++;
+        if (stepNumber == 3)
+            stepNumber = 1;
+        alternateSound = new Random().nextBoolean();
+        return null;
     }
 
     /**
