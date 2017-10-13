@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.effects.Effect.EffectTexture;
 
 
 
@@ -22,14 +23,14 @@ public class DamageTree extends AbstractTree implements Tickable {
 			        "ice_tree5",
 			        "ice_tree6",
 			        "ice_tree7",
-    }));
+    }), EffectTexture.LIGHTNING_ICE);
 	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1",
             x -> AnimationFactory.createSimpleTimeAnimation(100,
                     new String[] {
                             "acorn_tree1",
                             "acorn_tree2",
                             "acorn_tree3",
-                    }));
+                    }), EffectTexture.LIGHTNING_FORREST);
 	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1",
 			x -> AnimationFactory.createSimpleTimeAnimation(500,
 					new String[] {
@@ -42,7 +43,7 @@ public class DamageTree extends AbstractTree implements Tickable {
             "lightning_tree7",
             "lightning_tree8",
             "lightning_tree9",
-    }));
+    }), EffectTexture.LIGHTNING_WATER);
 	
 	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree",
             x->AnimationFactory.createSimpleTimeAnimation(500,new String[]{
@@ -51,8 +52,9 @@ public class DamageTree extends AbstractTree implements Tickable {
 			       "fire_tree3",
 			       "fire_tree4",
 			 
-			 }));
+			 }), EffectTexture.LIGHTNING_FIRE);
     private DamageTreeType damageTreeType;
+    
     /**
      * Static field to store information about upgrades
      */
@@ -116,7 +118,8 @@ public class DamageTree extends AbstractTree implements Tickable {
     /**
      * Static method to create the list of upgrades
      */
-	private static List<TreeProperties> generateTree(String texture, Function<AbstractTree, Animation> animation) {
+	private static List<TreeProperties> generateTree(String texture, Function<AbstractTree,
+			Animation> animation, EffectTexture attackTexture) {
 		List<TreeProperties> result = new LinkedList<>();
 		/*
 		 * UpgradeStats(Health, Shooting Time, Shooting Range, Construction/Upgrade
@@ -124,7 +127,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 		 */
 
 			result.add(new PropertiesBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-					.setBuildCost(1).setAnimation(animation).addEvent(new LightningShootEvent(250))
+					.setBuildCost(1).setAnimation(animation).addEvent(new LightningShootEvent(250, attackTexture))
 					.createTreeStatistics());
 
 

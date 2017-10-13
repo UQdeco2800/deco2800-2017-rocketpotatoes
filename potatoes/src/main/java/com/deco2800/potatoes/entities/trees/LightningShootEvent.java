@@ -5,6 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.effects.Effect.EffectTexture;
 import com.deco2800.potatoes.entities.effects.LightningEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.managers.GameManager;
@@ -15,11 +16,15 @@ import com.deco2800.potatoes.util.WorldUtil;
  * lightning targets all enemies with range of the tree
  */
 public class LightningShootEvent extends TimeEvent<AbstractTree> {
+	
+	private EffectTexture attackTexture;
 
 	/**
 	 * Creates a lightning shoot event with the specified damage and delay
 	 */
-	public LightningShootEvent(int shootDelay) {
+	public LightningShootEvent(int shootDelay, EffectTexture texture) {
+		this.attackTexture = texture;
+		
 		setDoReset(true);
 		setResetAmount(shootDelay);
 		reset();
@@ -38,7 +43,8 @@ public class LightningShootEvent extends TimeEvent<AbstractTree> {
 				GameManager.get().getWorld()
 						.addEntity(new LightningEffect(target.getClass(),
 								new Vector3(param.getPosX(), param.getPosY(), param.getPosZ()),
-								new Vector3(target.getPosX(), target.getPosY(), target.getPosZ()), 0.05f, 1));
+								new Vector3(target.getPosX(), target.getPosY(), target.getPosZ()),
+								0.05f, 1, attackTexture));
 				targetCount++;
 			}
 		}
@@ -46,6 +52,6 @@ public class LightningShootEvent extends TimeEvent<AbstractTree> {
 
 	@Override
 	public TimeEvent<AbstractTree> copy() {
-		return new LightningShootEvent(getResetAmount());
+		return new LightningShootEvent(getResetAmount(), attackTexture);
 	}
 }

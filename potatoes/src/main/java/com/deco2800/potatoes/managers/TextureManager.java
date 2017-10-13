@@ -88,7 +88,13 @@ public class TextureManager extends Manager {
         for (int i = 1; i < 5; i++) {
             saveTexture("leaves" + i, "resources/Projectiles/leaves" + i + ".png");
         }
-        saveTexture("lightning", "resources/projectiles/lightning.png");
+        
+        // Tree Attack Textures
+        saveTexture("lightningDesert", "resources/projectiles/lightningDesert.png");
+        saveTexture("lightningFire", "resources/projectiles/lightningFire.png");
+        saveTexture("lightningForrest", "resources/projectiles/lightningForrest.png");
+        saveTexture("lightningIce", "resources/projectiles/lightningIce.png");
+        saveTexture("lightningWater", "resources/projectiles/lightningWater.png");
 
         // Particles
         saveTexture("snowflake", "resources/particles/snowflake.png");
