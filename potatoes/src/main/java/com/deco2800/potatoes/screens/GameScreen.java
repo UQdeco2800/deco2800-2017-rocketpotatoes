@@ -494,7 +494,7 @@ public class GameScreen implements Screen {
 		 * Tickrate = 100Hz
 		 */
 
-		if (!GameManager.get().isPaused()) {
+		if (!GameManager.get().isPaused() || multiplayerManager.isMultiplayer()) {
 			tickGame((int)(delta * 1000 * tickrate));
 		}
 
