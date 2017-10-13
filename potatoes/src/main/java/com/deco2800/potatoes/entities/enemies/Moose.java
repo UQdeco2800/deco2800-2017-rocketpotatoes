@@ -6,6 +6,7 @@ import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWave;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.enemies.enemyactions.Channel;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
@@ -162,8 +163,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		*/
 
 		AbstractEntity relevantTarget = mostRelevantTarget(targets);
-		pathMovement(pathTarget, relevantTarget);
-		super.onTickMovement();
+		if (getMoving() == true) {
+			pathMovement(pathTarget, relevantTarget);
+			super.onTickMovement();
+		}
 		super.updateDirection();
 	}
 
@@ -191,10 +194,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * @return
 	 */
 	private static EnemyProperties initStats() {
+		HealingWave healingWave = new HealingWave(3500, GoalPotate.class, 8f, 80f);
+
 		EnemyProperties result = new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class))
-				.addEvent(new HealingWave(3500, GoalPotate.class, 8f, 80f))
+				.addEvent(new Channel(50, 1000, healingWave))
+				.addEvent(healingWave)
 				.createEnemyStatistics();
 
 		return result;

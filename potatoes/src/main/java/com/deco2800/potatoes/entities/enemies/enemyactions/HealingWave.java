@@ -23,7 +23,7 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
     private float waveRadius;
 
     public HealingWave() {
-        // Blank comment
+        // Blank comment for sonar
     }
 
     public HealingWave(int rate, Class target, float waveRadius, float healAmount) {
@@ -38,6 +38,7 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
 
     /*Should we turn this into an effect?*/
     public void action(EnemyEntity enemy) {
+        enemy.setMoving(true);
         float distanceToEnemy;
         //System.err.println("I'm a moose an i want to heal");
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();

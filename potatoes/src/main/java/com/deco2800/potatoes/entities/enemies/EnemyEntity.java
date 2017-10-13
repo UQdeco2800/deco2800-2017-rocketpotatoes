@@ -53,6 +53,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Shape2D targetPos = null;
 	private Class<?> goal;
 	private Map<Integer, AbstractEntity> entities;
+	private boolean moving;
+	private int channelTimer;
 
 	private static final SoundManager enemySoundManager = new SoundManager();
 
@@ -175,8 +177,12 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return null;
 	}
 
+	public void setMoving(boolean move) { this.moving = move; }	//
+
+	public boolean getMoving() { return this.moving; }
+
 	/**
-	 * Updates the direction of the player based on change in position.
+	 * Updates the direction of the enemy based on change in position.
 	 */
 	public void updateDirection() {
 		// if not moving don't update
@@ -257,6 +263,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void setSpeed(Float s) {
 		this.speed = s;
 	}
+
+	public int getChannelTimer() { return this.channelTimer; }
+
+	public void setChannellingTimer(int channelTime) { this.channelTimer = channelTime; }
 
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
