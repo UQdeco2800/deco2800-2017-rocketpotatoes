@@ -63,9 +63,10 @@ public class ServerMessageProcessor {
         // Set connection name
         c.name = m.getName();
 
-        // Tell the new client their id
+        // Tell the new client their id and seed
         Network.HostConnectionConfirmMessage cResponse = new Network.HostConnectionConfirmMessage();
         cResponse.setId((byte) c.getID());
+        cResponse.setSeed(GameManager.get().getSeed());
         server.server.sendToTCP(c.getID(), cResponse);
 
         // Tell the client of all the other clients in order

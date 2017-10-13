@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.util;
 
+import com.deco2800.potatoes.managers.GameManager;
+
 import java.awt.Point;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -179,14 +181,14 @@ public class GridUtil {
 			for (int x = size; x < result.length; x += size) {
 				for (int y = size; y < result[0].length; y += size) {
 					// Confusingly named diamond step
-					sampleStep(result, SQUARE_SAMPLES, x, y, size, (float) (rough * Math.random()));
+					sampleStep(result, SQUARE_SAMPLES, x, y, size, (float) (rough * GameManager.get().getRandom().nextDouble()));
 				}
 			}
 			for (int x = 0; x < result.length - size; x += size) {
 				for (int y = 0; y < result[0].length - size; y += size) {
 					// Square step
-					sampleStep(result, DIAMOND_SAMPLES, x + size, y, size, (float) (rough * (Math.random() * 2 - 1)));
-					sampleStep(result, DIAMOND_SAMPLES, x, y + size, size, (float) (rough * (Math.random() * 2 - 1)));
+					sampleStep(result, DIAMOND_SAMPLES, x + size, y, size, (float) (rough * (GameManager.get().getRandom().nextDouble() * 2 - 1)));
+					sampleStep(result, DIAMOND_SAMPLES, x, y + size, size, (float) (rough * (GameManager.get().getRandom().nextDouble() * 2 - 1)));
 				}
 			}
 			// Reduce variance and size
@@ -195,12 +197,12 @@ public class GridUtil {
 		}
 		// Hacky fix, reiterate over edges
 		for (int x = 0; x < result.length; x++) {
-			sampleStep(result, DIAMOND_SAMPLES, x, 0, 1, (float) (rough * Math.random()));
-			sampleStep(result, DIAMOND_SAMPLES, x, result.length - 1, 1, (float) (rough * Math.random()));
+			sampleStep(result, DIAMOND_SAMPLES, x, 0, 1, (float) (rough * GameManager.get().getRandom().nextDouble()));
+			sampleStep(result, DIAMOND_SAMPLES, x, result.length - 1, 1, (float) (rough * GameManager.get().getRandom().nextDouble()));
 		}
 		for (int y = 0; y < result.length; y++) {
-			sampleStep(result, DIAMOND_SAMPLES, 0, y, 1, (float) (rough * Math.random()));
-			sampleStep(result, DIAMOND_SAMPLES, result.length - 1, y, 1, (float) (rough * Math.random()));
+			sampleStep(result, DIAMOND_SAMPLES, 0, y, 1, (float) (rough * GameManager.get().getRandom().nextDouble()));
+			sampleStep(result, DIAMOND_SAMPLES, result.length - 1, y, 1, (float) (rough * GameManager.get().getRandom().nextDouble()));
 		}
 		return result;
 	}
@@ -255,7 +257,7 @@ public class GridUtil {
 		float[][] result = new float[size][size];
 		for (int x = 0; x < result.length; x++) {
 			for (int y = 0; y < result[x].length; y++) {
-				result[x][y] = (float)Math.random();
+				result[x][y] = (float) GameManager.get().getRandom().nextDouble();
 			}
 		}
 		return result;

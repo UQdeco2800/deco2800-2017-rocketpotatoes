@@ -3,9 +3,8 @@ package com.deco2800.potatoes.networking;
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.worlds.WorldType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,8 +67,14 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
-
         client.setID(m.getId());
+        GameManager.get().setSeed(m.getSeed());
+
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+
+		/* Move camera to center */
+        GameManager.get().getManager(CameraManager.class).getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
+        GameManager.get().getManager(CameraManager.class).getCamera().position.y = 0;
     }
 
     /**
@@ -81,7 +86,6 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
-
         client.disconnect();
     }
 

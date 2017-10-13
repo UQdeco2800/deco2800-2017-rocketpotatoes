@@ -118,9 +118,10 @@ public class Network {
     }
 
 
-    /* Message confirming connection, gives the client their id */
+    /* Message confirming connection, gives the client their id and the seed */
     public static class HostConnectionConfirmMessage {
         private int id;
+        private long seed;
 
         public int getId() {
             return id;
@@ -128,6 +129,14 @@ public class Network {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public long getSeed() {
+            return seed;
+        }
+
+        public void setSeed(long seed) {
+            this.seed = seed;
         }
     }
 

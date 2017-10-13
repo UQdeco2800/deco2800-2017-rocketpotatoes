@@ -112,6 +112,15 @@ public class GameScreen implements Screen {
 	public GameScreen(RocketPotatoes game) {
 		this.game = game;
 		setupGame();
+
+		// Make world sp style
+		// Sets the world to the initial world, forest world
+		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+
+		/* Move camera to center */
+		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
+		cameraManager.getCamera().position.y = 0;
+
 		initializeGame();
 	}
 
@@ -214,12 +223,6 @@ public class GameScreen implements Screen {
 		/* Setup inputs */
 		setupInputHandling();
 
-        // Sets the world to the initial world, forest world
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-
-		/* Move camera to center */
-		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
-		cameraManager.getCamera().position.y = 0;
 
 		/*
 		 * Create a new render batch. At this stage we only want one but perhaps we need

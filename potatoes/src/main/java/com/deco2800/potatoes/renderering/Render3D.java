@@ -17,13 +17,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.deco2800.potatoes.collisions.*;
-import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Shape2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.GoalPotate;
+import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.EnemyGate;
-import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -38,12 +39,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -182,9 +178,9 @@ public class Render3D implements Renderer {
 							WorldManager.WORLD_SIZE),tileHeight * ((float) Math.floor(tileRenderer.getViewBounds().y /
 					tileHeight - 1) - WorldManager.WORLD_SIZE));
 			// draw with screen corner and width a little bit more than the screen
-			TextureRegionDrawable background = GameManager.get().getWorld().getBackground();
-			spriteCacheBatch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
-			spriteCacheBatch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
+			//TextureRegionDrawable background = GameManager.get().getWorld().getBackground();
+			//spriteCacheBatch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
+			//spriteCacheBatch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
 			spriteCacheBatch.end();
 
 			tileRenderer.setView(new Matrix4(), 0, 0, tileWidth * WorldManager.WORLD_SIZE, tileHeight *
