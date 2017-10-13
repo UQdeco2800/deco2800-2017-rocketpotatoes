@@ -67,9 +67,9 @@ public class GameScreen implements Screen {
 	private WaveManager waveManager;
 	private ProgressBarManager progressBarManager;
 
+	private SpriteBatch batch;
 
-	private long lastGameTick = 0;
-	private double tickrate = 10;
+	private double tickrate = 1;
 
 	private int maxShopRange;
 
@@ -214,20 +214,25 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
+		
+		// Make our TutorialGui
+		guiManager.addGui(new TutorialGui(guiManager.getStage(), this));
         
 		/* Setup inputs */
 		setupInputHandling();
 
         // Sets the world to the initial world, forest world
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-		// Creates the object for the repeated background texture
-		// TODO this will need to be changed once proper texture is added
-		GameManager.get().getManager(WorldManager.class).setBackground(new TiledDrawable(textureManager
-				.getTextureRegion("water_tile_1")));
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
 		cameraManager.getCamera().position.y = 0;
+
+		/*
+		 * Create a new render batch. At this stage we only want one but perhaps we need
+		 * more for HUDs etc
+		 */
+		batch = new SpriteBatch();
 	}
 
 	private void setupInputHandling() {
@@ -284,13 +289,20 @@ public class GameScreen implements Screen {
 			//add an enemy gate to game world
 			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
-			//add enemy waves
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, 1));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave()); // pause wave
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 900, 2));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 1050, 3));
-
-
+            GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
+			/*
+			// Initial player preparation up period
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1000)); // pause wave
+			// Waves: sq -> sq + rac -> sq + rac + bear -> sq + rac + bear + moose
+			for (int i = 0; i<10; i++) {
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0, 0, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1, 1, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
+			}
+			*/
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
@@ -311,6 +323,9 @@ public class GameScreen implements Screen {
 			}
 			GameManager.get().getManager(ParticleManager.class);
 		}
+		
+		//show the tutorial menu
+		guiManager.getGui(TutorialGui.class).show();
 	}
 
 	private void addDamageTree() {
@@ -323,7 +338,7 @@ public class GameScreen implements Screen {
 	private void initialiseResources() {
 
 		SeedResource seedResource = new SeedResource();
-		FoodResource foodResource = new FoodResource();
+		PineconeResource pineconeResource = new PineconeResource();
 		WoodResource woodResource = new WoodResource();
 		TumbleweedResource tumbleweedResource = new TumbleweedResource();
 		CactusThornResource cactusThornResource = new CactusThornResource();
@@ -344,7 +359,7 @@ public class GameScreen implements Screen {
 
 
 		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 20.5f, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, pineconeResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 16.5f, woodResource));
 
 		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 20.5f, tumbleweedResource));
@@ -447,30 +462,30 @@ public class GameScreen implements Screen {
 	/**
 	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
+	/*Wave GUI won't be accurate until we've settled on implementation - currently it's displaying 'pause' waves as waves*/
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
-		int timeToNextWave;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
 		Gui waveGUI = guiManager.getGui(WavesGui.class);
 		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				if (activeWave.isPauseWave()) {
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+				} else {
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				}
 				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
 					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
 					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
-				} else {
-					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
@@ -498,32 +513,14 @@ public class GameScreen implements Screen {
 		 * We only tick/render the game if we're actually playing. Lets us seperate main
 		 * menu and such from the game
 		 */
+
 		/*
 		 * Tickrate = 100Hz
 		 */
 
 		if (!GameManager.get().isPaused()) {
-			// Stop the first tick lasting years
-			if (lastGameTick != 0) {
-				long timeDelta = TimeUtils.millis() - lastGameTick;
-				if (timeDelta > tickrate) {
-
-					// Tick game, a bit a weird place to have it though.
-					tickGame(timeDelta);
-					lastGameTick = TimeUtils.millis();
-				}
-			} else {
-				lastGameTick = TimeUtils.millis();
-			}
-		} else {
-			lastGameTick = 0;
+			tickGame((int)(delta * 1000 * tickrate));
 		}
-
-		/*
-		 * Create a new render batch. At this stage we only want one but perhaps we need
-		 * more for HUDs etc
-		 */
-		SpriteBatch batch = new SpriteBatch();
 
 		/*
 		 * Update the input handlers
@@ -548,7 +545,6 @@ public class GameScreen implements Screen {
 		updateRespawnGUI();
 		renderGUI(batch);
 
-		batch.dispose();
 	}
 
 	/**
@@ -746,6 +742,9 @@ public class GameScreen implements Screen {
 	}
 
 	public void setTickrate(double tickrate) {
+		if (tickrate < 0) {
+			tickrate = 0;
+		}
 		this.tickrate = tickrate;
 	}
 

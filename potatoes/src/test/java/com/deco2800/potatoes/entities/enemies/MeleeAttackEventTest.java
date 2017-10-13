@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
@@ -33,6 +34,9 @@ public class MeleeAttackEventTest extends BaseTest {
     @After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	eventEmpty = null;
+    	testEvent = null;
+    	testMeleeEnemy = null;
     }
 
     /*

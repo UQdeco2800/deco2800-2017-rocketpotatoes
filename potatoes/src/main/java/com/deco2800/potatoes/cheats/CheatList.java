@@ -37,5 +37,7 @@ public class CheatList {
                 Key.LEFT,
                 Key.RIGHT,
                 Key.DOWN);
+
+        manager.addCheatCode(new Shortcut(), Key.SELECT);
     }
 }

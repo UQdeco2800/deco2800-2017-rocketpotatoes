@@ -30,39 +30,34 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
 
     	super(posX, posY);
-		super.setMoveSpeed(0.08f);
-
+    	this.defaultSpeed = 0.08f;
+        super.setMoveSpeed(defaultSpeed);
 		updateSprites();
-
 		super.setYRenderOffset(9);
     }
-    
+
     /* Caveman Animations */
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
     private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, this::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
     
-    private Void completionHandler() {
-		// Re-enable walking
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-	}
+    /**
+     * Custom damaged handling for the caveman
+     */
+    protected Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
 
-	private Void damagedCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-	}
-    
     @Override
     public void updateSprites() {
 
-    		switch (super.state) {
+    		switch (super.getState()) {
             case IDLE:
 				super.setAnimation(cavemanIdleAnimations.get(super.facing));
 				break;
@@ -86,11 +81,11 @@ public class Caveman extends Player {
 				break;
             }
     }
-    
-    @Override
-    public void attack() {
-		super.attack();
 
+    @Override
+    protected void attack() {
+		super.attack();
+		setMoveSpeedModifier(0);
 
 		// TODO Stop walking for attacking
 		if (setState(ATTACK)) {
@@ -104,8 +99,9 @@ public class Caveman extends Player {
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.
-			if (!target.isPresent())
+			if (!target.isPresent()){
 				return;
+			}
 
 				float targetPosX = target.get().getPosX();
 				float targetPosY = target.get().getPosY();
@@ -157,13 +153,15 @@ public class Caveman extends Player {
 		} else {
 			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
 		}
-		
+
 		stepNumber++;
-		if (stepNumber == 3) { stepNumber = 1; }
+		if (stepNumber == 3) {
+       stepNumber = 1;
+     }
 		alternateSound = new Random().nextBoolean();
 		return null;
 	}
-    
+
     @Override
 	protected void walk(boolean active) {
 		super.walk(active);
@@ -175,15 +173,11 @@ public class Caveman extends Player {
 			GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
 		}
 	}
-    
-    @Override
-    public void interact() {
-    		super.interact();
 
-	    	if (super.setState(INTERACT)) {
-	    		// Caveman interacts
-	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-	    	}
+    @Override
+    protected void interact() {
+    		super.interact();
+    		// Custom interaction code here
     }
 
 }

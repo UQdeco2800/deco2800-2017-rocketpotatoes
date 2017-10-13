@@ -228,7 +228,9 @@ public class Network {
 
     /* Message indicating our player moved */
     public static class ClientPlayerUpdatePositionMessage {
-        private float x, y;
+        private float x;
+
+        private float y;
 
         public float getX() {
             return x;
@@ -262,7 +264,10 @@ public class Network {
 
     /* Message from the host indicating a new position of an entity */
     public static class HostEntityUpdatePositionMessage {
-        private float x, y;
+        private float x;
+
+        private float y;
+        
         private int id;
 
         public int getId() {
