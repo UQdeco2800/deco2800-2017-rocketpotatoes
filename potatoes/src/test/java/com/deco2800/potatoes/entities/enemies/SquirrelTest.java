@@ -76,6 +76,7 @@ public class SquirrelTest extends BaseTest {
     public void onTickTest() {
         GameManager.get().getWorld().addEntity(new EnemyGate(0,0));
         GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
+        GameManager.get().getWorld().addEntity(new ProjectileTree(10, 10));
         GameManager.get().getWorld().addEntity(squirrel1);
         GameManager.get().getWorld().addEntity(squirrel2);
         playerTest = new Player(3, 3);

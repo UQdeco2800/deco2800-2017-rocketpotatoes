@@ -93,9 +93,9 @@ public class EnemyEntityTest extends BaseTest {
     public void onTickTestPlayer() {
         tank1 = new TankEnemy(7, 7);
         playerTest = new Player(1, 1);
-        //ProjectileTree projectileTree = new ProjectileTree(10, 10);
+        ProjectileTree projectileTree = new ProjectileTree(10, 10);
         GameManager.get().getWorld().addEntity(playerTest);
-        //GameManager.get().getWorld().addEntity(projectileTree);
+        GameManager.get().getWorld().addEntity(projectileTree);
         GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         tank1.onTick(1);
         playerTest = new Player(7, 7);
