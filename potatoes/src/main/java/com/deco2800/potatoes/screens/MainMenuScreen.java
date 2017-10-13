@@ -108,8 +108,6 @@ public class MainMenuScreen implements Screen {
         stage.getBatch().end();
         
         stage.draw();
-
-        Rustyfish.run();
     }
 
     /**

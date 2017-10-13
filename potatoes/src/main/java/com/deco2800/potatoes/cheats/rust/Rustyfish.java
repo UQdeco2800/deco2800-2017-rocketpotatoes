@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.deco2800.potatoes.cheats.CheatExecution;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.sun.jna.Callback;
@@ -18,7 +19,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.*;
 
-public class Rustyfish {
+public class Rustyfish implements CheatExecution {
 
     private static SpriteBatch batch = new SpriteBatch();
     private static ShapeRenderer sr = new ShapeRenderer();
@@ -142,12 +143,7 @@ public class Rustyfish {
     };
 
     /**
-     * Draw's a given sprite with
-     *
-     * name
-     * x
-     * y
-     * etc... TODO
+     * Draw's a given sprite
      */
     private static Callback drawSprite = new Callback() {
         @SuppressWarnings("unused")
@@ -194,13 +190,17 @@ public class Rustyfish {
         }
     };
 
-    public static void run() {
+    /**
+     * Runs game!
+     */
+    @Override
+    public void run() {
         try {
             Native.loadLibrary("rustyfish", RLibrary.class).startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
                     getWindowInfo, drawSprite, drawLine, drawRectangle);
         }
         catch (UnsatisfiedLinkError ex) {
-            // Ignore failure, don't start game.
+            // Ignore failure, don't start game!
         }
     }
 }
