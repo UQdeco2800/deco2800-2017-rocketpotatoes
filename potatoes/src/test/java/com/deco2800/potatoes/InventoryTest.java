@@ -38,6 +38,18 @@ public class InventoryTest {
 		validInventory = new Inventory(validResources);
 	}
 
+	@After
+	public void tearDown() {
+
+		validResources.clear();
+		validResources = null;
+		seed1 = null;
+		food1 = null;
+		nonResource = null;
+		validInventory = null;
+
+	}
+
 	@Test(expected = InvalidResourceException.class)
 	public void testNullResourceInstantiation() throws InvalidResourceException {
 		Inventory items = new Inventory(null);

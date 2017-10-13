@@ -4,6 +4,7 @@ import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.trees.DamageTreeType;
 import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.entities.trees.LightningTreeType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +25,14 @@ public class DamgeTest {
         LightningTree=new LightningTreeType();
         testResource=new Resource();
     }
+
+    @After
+    public void tearDown() {
+        IceTree = null;
+        LightningTree = null;
+        testResource = null;
+    }
+
     @Test
     public void getTypeNameTest(){
         assertEquals(IceTree.getTypeName(),"IceTree");

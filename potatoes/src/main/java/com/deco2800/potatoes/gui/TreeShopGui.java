@@ -60,6 +60,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     private WidgetGroup container;
     private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
     private ArrayList<TreeState> treeStates;
+    private ArrayList<TreeState> unlockedTreeStates;
     private HashMap<String, Color> treeColorCode;
 
 
@@ -92,6 +93,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 
         initTreeState();
+        refreshTreeStates();
         for (TreeState treeState : treeStates) {
             items.put(treeState.getTree(), treeColorCode.get(treeState.getTreeType()));
         }
@@ -104,11 +106,23 @@ public class TreeShopGui extends Gui implements SceneGui {
         stage.addActor(container);
     }
 
+    /**
+     * Updates the list of unlocked tree states
+     */
+    private void refreshTreeStates() {
+        unlockedTreeStates = new ArrayList<>();
+        if (treeStates != null){
+            for (TreeState treeState : treeStates) {
+                if (treeState.isUnlocked())
+                    unlockedTreeStates.add(treeState);
+            }
+        }
+
+    }
+
     private AbstractTree getTreeBinding(int hotkey){
-        if (items.size() >= hotkey){
-            System.out.println(items.size()-hotkey+1);
-            System.out.println("Size: "+items.size());
-            return (AbstractTree)items.keySet().toArray()[items.size() - hotkey];
+        if (unlockedTreeStates.size() >= hotkey){
+            return unlockedTreeStates.get(unlockedTreeStates.size() - hotkey).getTree();
         } else {
             return null;
         }
@@ -147,7 +161,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         // Food resource tree
         Inventory foodTreeCost = new Inventory();
         foodTreeCost.updateQuantity(new SeedResource(), 1);
-        foodTreeCost.updateQuantity(new FoodResource(), 1);
+        //foodTreeCost.updateQuantity(new FoodResource(), 1);
         TreeState foodTreeState = new TreeState(new ResourceTree(treeX, treeY, new
                 FoodResource(), 10), foodTreeCost, true, "resource");
         treeStates.add(foodTreeState);
@@ -159,7 +173,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         lightningTreeCost.updateQuantity(new TreasureResource(), 1);
         DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
         TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
-                false, "damage");
+                true, "damage");
         treeStates.add(lightningTreeState);
 
         // Ice tree
@@ -184,7 +198,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         Inventory acornTreeCost = new Inventory();
         acornTreeCost.updateQuantity(new PineconeResource(), 1);
         acornTreeCost.updateQuantity(new TumbleweedResource(), 1);
-        acornTreeCost.updateQuantity(new FoodResource(), 3);
+        acornTreeCost.updateQuantity(new SeedResource(), 3);
         DamageTree acornTree = new DamageTree(treeX, treeY, new AcornTreeType());
         TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
                 "damage");
@@ -346,22 +360,14 @@ public class TreeShopGui extends Gui implements SceneGui {
         container.addActor(cross);
     }
 
-    private int numUnlockedTrees(){
-        int num = 0;
-        for (Map.Entry<? extends AbstractTree, Color> entry : items.entrySet()) {
-            if (getTreeStateByTree(entry.getKey()).isUnlocked()){
-                num ++;
-            }
-        }
-        return num;
-    }
-
     /**
      * Renders the gui sections that are specific to the different items in the
      * menu.
      */
     private void renderSubMenus(ShapeRenderer shapeRenderer, float guiX, float guiY, int radius) {
-        int numSegments = numUnlockedTrees();
+        int numSegments = unlockedTreeStates.size();
+        if (numSegments == 0)
+            return;
         int segment = 0;
         int degrees = 360 / numSegments;
         int imgSize = 60;
@@ -400,10 +406,9 @@ public class TreeShopGui extends Gui implements SceneGui {
                             resource.getTexture(), cost.getQuantity(resource));
                     i++;
                 }
+                segment++;
             }
-            segment++;
         }
-
     }
 
     /**
@@ -498,7 +503,7 @@ public class TreeShopGui extends Gui implements SceneGui {
      */
     private void calculateSegment(float mx, float my) {
 
-        float n = items.size();
+        float n = unlockedTreeStates.size();
         float x = shopShape.x;
         float y = shopShape.y;
 
@@ -584,7 +589,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     private void buyTree() {
 
         AbstractTree newTree;
-        newTree = ((AbstractTree) items.keySet().toArray()[selectedSegment]).clone();
+        newTree = unlockedTreeStates.get(selectedSegment).getTree().clone();
         buyTree(newTree);
     }
 

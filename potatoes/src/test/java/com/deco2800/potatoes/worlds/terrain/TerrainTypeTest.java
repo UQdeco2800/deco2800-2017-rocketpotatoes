@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.worlds.terrain;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 
@@ -30,6 +31,19 @@ public class TerrainTypeTest {
                 null, new Terrain("c", 0, false));
         t9 = new TerrainType(null, new Terrain("a", 1, true),
                 new Terrain("b", 1, false), null);
+    }
+
+    @After
+    public void tearDown() {
+        t1 = null;
+        t2 = null;
+        t3 = null;
+        t4 = null;
+        t5 = null;
+        t6 = null;
+        t7 = null;
+        t8 = null;
+        t9 = null;
     }
 
     @Test
