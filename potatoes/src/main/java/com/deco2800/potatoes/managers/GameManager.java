@@ -156,10 +156,10 @@ public class GameManager implements TickableManager {
 	}
 
 	/**
-	 * Deletes all existing managers. Used to reset the game
+	 * Resets the entire game state
 	 */
-	public void clearManagers() {
-		managers.clear();
+	public static void resetState() {
+		instance = null;
 	}
 
 	/**

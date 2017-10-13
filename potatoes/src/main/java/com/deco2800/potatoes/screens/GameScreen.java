@@ -577,7 +577,8 @@ public class GameScreen implements Screen {
 	}
 
 	public void exitToMenu() {
-		GameManager.get().clearManagers();
+		GameManager.get().getManager(MultiplayerManager.class).shutdownMultiplayer();
+		GameManager.resetState();
 		game.setScreen(new MainMenuScreen(game));
 		dispose();
 	}

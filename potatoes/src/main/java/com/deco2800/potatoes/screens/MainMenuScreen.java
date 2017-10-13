@@ -50,6 +50,7 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(RocketPotatoes game) {
         this.game = game;
+
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         // TODO config?
@@ -212,7 +213,7 @@ public class MainMenuScreen implements Screen {
      * Finds a running server.
      */
     public static Array<String> findHostAddress() {
-        Array<String> ipStrings = new Array<String>();;
+        Array<String> ipStrings = new Array<String>();
         try {
             List<InetAddress> ips = GameManager.get().getManager(MultiplayerManager.class).discoverHosts(1337);
             for (InetAddress a: ips) {
