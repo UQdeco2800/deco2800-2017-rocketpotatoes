@@ -42,7 +42,6 @@ task rustyfish(type: RustBuild) {
     group 'rusty'
     description 'Builds the project as a Rust crate.'
     release = true
-
 }
 
 task copyRustyfish(type: Copy) {
@@ -51,5 +50,4 @@ task copyRustyfish(type: Copy) {
     include 'librustyfish.so'
 }
 
-compileJava.finalizedBy(rustyfish)
 rustyfish.finalizedBy(copyRustyfish)

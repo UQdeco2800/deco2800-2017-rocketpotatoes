@@ -24,7 +24,7 @@ public class Rustyfish {
     private static ShapeRenderer sr = new ShapeRenderer();
 
     private interface RLibrary extends Library {
-        RLibrary INSTANCE = (RLibrary) Native.loadLibrary("rustyfish", RLibrary.class);
+        RLibrary INSTANCE = null;
 
         void startGame(Callback startDraw, Callback endDraw,
                        Callback updateWindow, Callback isSpacePressed,
@@ -195,7 +195,12 @@ public class Rustyfish {
     };
 
     public static void run() {
-        RLibrary.INSTANCE.startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
-                getWindowInfo, drawSprite, drawLine, drawRectangle);
+        try {
+            Native.loadLibrary("rustyfish", RLibrary.class).startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
+                    getWindowInfo, drawSprite, drawLine, drawRectangle);
+        }
+        catch (UnsatisfiedLinkError ex) {
+            // Ignore failure, don't start game.
+        }
     }
 }
