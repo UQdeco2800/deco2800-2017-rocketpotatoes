@@ -97,11 +97,13 @@ public class TextureManager extends Manager {
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
         saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
-        saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
-        saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
-        saveTexture("savePauseMenu", "resources/menu/savePauseMenu.png");
-        saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
-        saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
+        saveTexture("resumePauseMenu", "resources/menu/pauseMenu/resumePauseMenu.png");
+        saveTexture("optionsPauseMenu", "resources/menu/pauseMenu/optionsPauseMenu.png");
+        saveTexture("savePauseMenu", "resources/menu/pauseMenu/savePauseMenu.png");
+        saveTexture("exitPauseMenu", "resources/menu/pauseMenu/exitPauseMenu.png");
+        saveTexture("tutorialPauseMenu", "resources/menu/pauseMenu/tutorialPauseMenu.png");
+        saveTexture("backgroundOptionsMenu", "resources/menu/pauseMenu/backgroundOptionsMenu.png");
+
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
         saveTexture("optionsMainMenu", "resources/menu/optionsMainMenu.png");
         saveTexture("exitMainMenu", "resources/menu/exitMainMenu.png");
@@ -112,6 +114,14 @@ public class TextureManager extends Manager {
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
         saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
         saveTexture("menuButtonPlaceholder", "resources/placeholderassets/menuButtonPlaceholder.png");
+
+        // Tutorial Title Buttons
+        saveTexture("initialGameplayButton", "resources/menu/tutorial/initialGameplayButton.png");
+        saveTexture("treesButton", "resources/menu/tutorial/treesButton.png");
+        saveTexture("enemiesButton", "resources/menu/tutorial/enemiesButton.png");
+        saveTexture("healthButton", "resources/menu/tutorial/healthButton.png");
+        saveTexture("portalsButton", "resources/menu/tutorial/portalsButton.png");
+        saveTexture("controlsButton", "resources/menu/tutorial/controlsButton.png");
 
         // Tutorial
         saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");

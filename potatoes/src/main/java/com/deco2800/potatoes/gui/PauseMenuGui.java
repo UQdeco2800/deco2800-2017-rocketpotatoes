@@ -35,7 +35,7 @@ public class PauseMenuGui extends Gui {
     private Drawable optionsDrawable;
     private Drawable saveDrawable;
     private Drawable exitDrawable;
-    private Drawable pauseMenuDrawable;
+
     private VerticalGroup pauseButtonGroup;
     private ImageButton resumeButton;
     private ImageButton optionsButton;
@@ -66,12 +66,14 @@ public class PauseMenuGui extends Gui {
 
     // Options
     private VerticalGroup optionsButtonGroup;
-    private Label optionsMenuLabel;
+
     private Label optionsEffectsVolumeLabel;
     private Slider optionsEffectsVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
     private TextButton optionsBackButton;
+    private Drawable optionsBackgroundDrawable;
+
     
     // Progress bar
 	private Label progressBarLabel;
@@ -109,16 +111,16 @@ public class PauseMenuGui extends Gui {
         optionsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsPauseMenu")));
         saveDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("savePauseMenu")));
         exitDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("exitPauseMenu")));
-        helpDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
-        pauseMenuDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backgroundPauseMenu")));
+        helpDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("tutorialPauseMenu")));
+
         
         // Help drawables
-        initialGameplayDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
-        treesDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
-        enemiesDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
-        healthDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
-        portalsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
-        controlsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("menuButtonPlaceholder")));
+        initialGameplayDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("initialGameplayButton")));
+        treesDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("treesButton")));
+        enemiesDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("enemiesButton")));
+        healthDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("healthButton")));
+        portalsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("portalsButton")));
+        controlsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("controlsButton")));
         
         // Pause State
         resumeButton = new ImageButton(resumeDrawable);
@@ -146,12 +148,12 @@ public class PauseMenuGui extends Gui {
         pauseButtonGroup.space(30);
 
         // Options State
-        optionsMenuLabel = new Label("Options", uiSkin);
         optionsEffectsVolumeLabel = new Label("SFX Volume", uiSkin);
         optionsEffectsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsBackButton = new TextButton("Back", uiSkin);
+        optionsBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backgroundOptionsMenu")));
         
         // Help button group
 		helpButtonGroup = new VerticalGroup();
@@ -176,7 +178,6 @@ public class PauseMenuGui extends Gui {
 		enemyProgressBarCheckBox.setChecked(true);
 		
         optionsButtonGroup = new VerticalGroup();
-        optionsButtonGroup.addActor(optionsMenuLabel);
         optionsButtonGroup.addActor(optionsEffectsVolumeLabel);
         optionsButtonGroup.addActor(optionsEffectsVolumeSlider);
         optionsButtonGroup.addActor(optionsMusicVolumeLabel);
@@ -407,10 +408,12 @@ public class PauseMenuGui extends Gui {
 
     private void resetGui(Stage stage) {
         table.reset();
-        table.setWidth(500);
-        table.setHeight(450);
+        table.setWidth(400);
+        table.setHeight(600);
         table.center();
         table.setPosition(stage.getWidth()/2,stage.getHeight()/2, center);
+        table.background((Drawable) null);
+
 
         switch (state) {
             case PAUSE:
@@ -418,6 +421,7 @@ public class PauseMenuGui extends Gui {
                 break;
             case OPTIONS:
                 table.add(optionsButtonGroup).expandX().center();
+                table.background(optionsBackgroundDrawable);
                 break;
             case HELP:
             	table.add(helpButtonGroup).expandX().center();;
