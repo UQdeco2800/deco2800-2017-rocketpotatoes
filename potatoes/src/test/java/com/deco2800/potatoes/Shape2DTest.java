@@ -8,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
+import java.util.Optional;
 
 public class Shape2DTest {
 
@@ -405,6 +406,29 @@ public class Shape2DTest {
 
         //touching covered by collisionLineToBox
 
+    }
+
+    /**
+     * Tests a single shape intersects its own bounding box. Ideally this should be extended to
+     * ensure that there aren't any points in the shape that are not inside the bounding box, but
+     * without effectively duplicating the body of the getBoundingBox() method, this cannot be 
+     * easily tested.
+     *
+     * @param shape
+     *          The shape being tested.
+     */
+    private void testSingleBoundingBox(Shape2D shape) {
+        Optional<Box2D> box = shape.getBoundingBox();
+        if (box.isPresent()) {
+            assertTrue(box.get().overlaps(shape));
+        }
+    }
+
+    @Test
+    public void testBoundingBoxes() {
+        testSingleBoundingBox(new Point2D(0, -5));
+        testSingleBoundingBox(new Circle2D(3, 6, 9));
+        testSingleBoundingBox(new Box2D(5, 5, 2, 2));
     }
 
 }
