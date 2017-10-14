@@ -11,6 +11,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
@@ -554,4 +555,8 @@ public class Box2D extends Shape2D {
         return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength ;
     }
 
+    @Override
+    public Optional<Box2D> getBoundingBox() {
+        return Optional.of(this.copy());
+    }
 }
