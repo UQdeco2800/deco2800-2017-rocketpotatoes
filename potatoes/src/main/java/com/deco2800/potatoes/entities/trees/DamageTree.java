@@ -8,16 +8,24 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
-import com.deco2800.potatoes.managers.TextureManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DamageTree.class);
-//    private static Map<String,String[]> tempMap=new HashMap<String,String[]>();
+    /**
+     * A map include ALL TREE'S ANIMATION
+     */
     private static Map<String,String[]> treeStatus = new HashMap<String, String[]>();
+    /**
+     * A map include tree status
+     */
     private static Map<String,String > status=new HashMap<String,String>();
+    /**
+     * setup all tree animation inculding damaging , death ,attacking and normal status
+     */
     static {
 
         status.put("ice_tree","ice_tree-normal");
@@ -119,23 +127,26 @@ public class DamageTree extends AbstractTree implements Tickable {
 
 
     }
-//    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",x->AnimationFactory.createSimpleTimeAnimation(100,new String[]{
-//
-//    }) );
-    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation("ice_tree")
-);
-	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1",
-            animation("acorn_tree1"));
-	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1",
-            animation("lightning_tree1"));
-	
-	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree",
-            animation("fire_tree"));
-
-    private DamageTreeType damageTreeType;
+    /**
+     * Static generating ice tree
+     */
+    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation());
+    /**
+     * Static generating acorn tree
+     */
+	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation());
+    /**
+     * Static generating lightning tree
+     */
+	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation());
+    /**
+     * Static generating fire tree
+     */
+	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation());
     /**
      * Static field to store information about upgrades
      */
+    private DamageTreeType damageTreeType;
 
 
     /**
@@ -200,24 +211,15 @@ public class DamageTree extends AbstractTree implements Tickable {
         return LIGHTNING_TREE_STATS;
     }
 
-//    public static Map<String,Array> animation(String texture, String status){
-//        Map<String,String[] > temp=new HashMap<String,String[]>();
-//        for(Map.Entry<String, Map<String,String[]>> entry : treeStatus.entrySet()){
-//            if(entry.getKey()==texture){
-//                temp.put(entry.getKey(),entry.getValue().get(status)) ;
-//            }
-//// entry.getKey(),entry.getValue().get(status)
-//        }
-//        return temp;
-//
-//    };
-public static Map<String,Function<AbstractTree, Animation>> animation(String texture){
+    /**
+     *The class will refresh cureent tree status
+     * @return a map that contain the tree status and lambda function
+     */
+    public static Map<String,Function<AbstractTree, Animation>> animation(){
     Map<String,Function<AbstractTree, Animation> > temp=new HashMap<String,Function<AbstractTree, Animation>>();
     for(Map.Entry<String, String[]> entry : treeStatus.entrySet()){
 
-            LOGGER.warn(entry.getKey()+":::"+Arrays.toString(entry.getValue()));
             temp.put(entry.getKey(),x->AnimationFactory.createSimpleTimeAnimation(100,entry.getValue())) ;
-// entry.getKey(),entry.getValue().get(status)
     }
     return temp;
 
