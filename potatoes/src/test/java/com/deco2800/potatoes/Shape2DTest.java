@@ -8,7 +8,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class Shape2DTest {
 
@@ -429,6 +432,50 @@ public class Shape2DTest {
         testSingleBoundingBox(new Point2D(0, -5));
         testSingleBoundingBox(new Circle2D(3, 6, 9));
         testSingleBoundingBox(new Box2D(5, 5, 2, 2));
+    }
+
+    private void testSingleSurroundingBox(Stream<Shape2D> shapes) {
+        List<Shape2D> shapeList = shapes.collect(Collectors.toList());
+
+        Box2D surrounds = Box2D.surrounding(shapeList.stream()).get();
+        assertTrue(shapeList.stream().allMatch(shape -> surrounds.distance(shape) <= 0));
+    }
+
+
+
+    @Test
+    public void testSurroundingBoxes() {
+        // make sure it works building a box around 2 points
+        testSingleSurroundingBox(Stream.of(
+                    new Point2D(0, -5),
+                    new Point2D(5, 0)));
+
+        // make sure it works building a box that contains circles in it
+        testSingleSurroundingBox(Stream.of(
+                    new Circle2D(2.5f, 2.5f, 7),
+                    new Circle2D(2.5f, 12, 3),
+                    new Circle2D(12, 2.5f, 3)));
+
+        // boxes around more boxes... boxception
+        testSingleSurroundingBox(Stream.of(
+                    new Box2D(3, 1, 4, 1),
+                    new Box2D(5, 9, 2, 6),
+                    new Box2D(5, 3, 5, 8),
+                    new Box2D(9, 7, 9, 3)));
+
+        // mix and match it up
+        testSingleSurroundingBox(Stream.of(
+                    new Box2D(3, 1, 4, 1),
+                    new Box2D(5, 9, 2, 6),
+                    new Box2D(5, 3, 5, 8),
+                    new Circle2D(2.5f, 2.5f, 7),
+                    new Circle2D(2.5f, 12, 3),
+                    new Point2D(0, -5)));
+
+        // make sure that it doesn't try to create boxes where boxes can't be made
+        assertFalse(Box2D.surrounding(Stream.of(new Point2D(0, 0))).isPresent());
+        assertFalse(Box2D.surrounding(Stream.of(new Point2D(0, 0), new Point2D(0, 5))).isPresent());
+        assertFalse(Box2D.surrounding(Stream.of(new Point2D(0, 0), new Point2D(5, 0))).isPresent());
     }
 
 }
