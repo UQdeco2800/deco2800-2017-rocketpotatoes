@@ -286,8 +286,17 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
-			//add an enemy gate to game world
-			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
+			//add enemy gates to game world
+			//bottom-left
+			GameManager.get().getWorld().addEntity(new EnemyGate(6.5f, 6.5f));
+			//bottom-right
+			GameManager.get().getWorld().addEntity(new EnemyGate(9f, 42f));
+			//top-left
+			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 6.5f));
+			//top-right
+			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 42f));
+			
+			
 
             GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
