@@ -109,10 +109,11 @@ public class RTree<Key> {
      * @return
      *          The key that is closest to the position.
      */
-    public Key findClosest(Shape2D position) {
-        // TODO -- this
-        return null;
-    }
+    // NOT YET IMPLEMENTED
+    // public Key findClosest(Shape2D position) {
+    //     // TODO -- this
+    //     return null;
+    // }
 
     /**
      * Finds the keys within the RTree that overlap the given position (by the Shape2D overlaps
