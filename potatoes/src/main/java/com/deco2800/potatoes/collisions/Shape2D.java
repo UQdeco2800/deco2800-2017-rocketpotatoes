@@ -2,6 +2,7 @@ package com.deco2800.potatoes.collisions;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import java.util.Optional;
 
 public abstract class Shape2D {
 
@@ -151,5 +152,14 @@ public abstract class Shape2D {
 	 */
 	public abstract void renderHighlight(SpriteBatch batch);
 
+    /**
+     * Gets the bounding box of this shape. All of the shape must be inside the box, and the box
+     * should be minised in size to not waste space.
+     *
+     * @return
+     *          The bounding box of the shape. If the shape is too small to have a bounding box,
+     *          Optional.empty can be returned instead.
+     */
+    public abstract Optional<Box2D> getBoundingBox();
 
 }
