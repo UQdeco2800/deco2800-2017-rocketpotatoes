@@ -64,7 +64,7 @@ public class Box2D extends Shape2D {
      * @return The box, if it is possible to create one from the internals, otherwise nothing.
      */
     public static Optional<Box2D> surrounding(Stream<Shape2D> internals) {
-        List<Point2D> points = internals.flatMap(shape -> {
+        List<Point2D> points = internals.filter(shape -> shape != null).flatMap(shape -> {
             Optional<Box2D> bounds = shape.getBoundingBox();
             if (bounds.isPresent()) {
                 float x = bounds.get().x;
@@ -598,7 +598,7 @@ public class Box2D extends Shape2D {
      */
     @Override
     public String toString() {
-        return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength ;
+        return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength;
     }
 
     @Override
