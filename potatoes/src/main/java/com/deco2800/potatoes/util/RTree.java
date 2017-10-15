@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class RTree<Key> {
     // Lookup table from keys to shapes.
     private Map<Key, Shape2D> forwardLookup;
     // Root node of the RTree itself.
-    private Block root;
+    private Block<Key> root;
 
     /**
      * Creates an empty RTree.
@@ -109,11 +110,9 @@ public class RTree<Key> {
      * @return
      *          The key that is closest to the position.
      */
-    // NOT YET IMPLEMENTED
-    // public Key findClosest(Shape2D position) {
-    //     // TODO -- this
-    //     return null;
-    // }
+    public Key findClosest(Shape2D position) {
+        return root.findClosest(position);
+    }
 
     /**
      * Finds the keys within the RTree that overlap the given position (by the Shape2D overlaps
@@ -441,6 +440,44 @@ public class RTree<Key> {
                     .filter(child -> child.minimumBoundingRectangle.overlaps(position))
                     .forEach(child -> child.addAllOverlapping(position, output));
             }
+        }
+
+        /**
+         * Finds the key that is closest to a given position. It is assumed that this method is
+         * only called on the root node.
+         *
+         * @param position
+         *              The position whos nearest neighbour is being found.
+         * @return
+         *              The key of the nearest neighbour. Null if the RTree is empty.
+         */
+        public Key findClosest(Shape2D position) {
+            if (isLeaf && leafChildren.size() == 0) {
+                return null;
+            }
+
+            Key output = null;
+            float currentDistance = Float.MAX_VALUE;
+            PriorityQueue<Block> queue = new PriorityQueue<>(Comparator.comparingDouble(
+                        child -> child.minimumBoundingRectangle.distance(position)));
+            queue.addAll(children);
+
+            while (queue.peek().minimumBoundingRectangle.distance(position) < currentDistance) {
+                Block<Key> head = queue.poll();
+
+                if (head.isLeaf) {
+                    for (Bucket<Key> bucket: head.leafChildren) {
+                        if (bucket.getPosition().distance(position) < currentDistance) {
+                            currentDistance = bucket.getPosition().distance(position);
+                            output = bucket.getKey();
+                        }
+                    }
+                } else {
+                    queue.addAll(head.children);
+                }
+            }
+
+            return output;
         }
     }
 
