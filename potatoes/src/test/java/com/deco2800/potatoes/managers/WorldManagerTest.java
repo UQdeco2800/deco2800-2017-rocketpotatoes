@@ -67,6 +67,10 @@ public class WorldManagerTest {
 	public void testCachedWorld() {
 		World w1 = worldManager.getWorld(WorldType.FOREST_WORLD);
 		worldManager.isWorldCached();
+		GameManager gm = GameManager.get();
+		gm.getMainWorld();
+		gm.isPaused();
+		gm.setPaused(false);
 	}
 
 }

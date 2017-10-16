@@ -481,6 +481,9 @@ public class Shape2DTest {
     @Test
     public void testGetAngle() {
         new Box2D(5, 5, 2, 2).getAngle(new Box2D(1, 2, 3, 4));
+        new Circle2D(2.5f, 12, 3).toString();
+        new Point2D(5, 0).toString();
+        new Point2D(5, 0).copy();
     }
 
 }

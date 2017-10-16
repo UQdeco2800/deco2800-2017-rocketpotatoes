@@ -89,7 +89,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		float goalY = getPosY();
 		//if goal is player, use playerManager to eet position and move towards target
 		if (goal == Player.class) {
-			//goal = Player.class;
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
@@ -167,7 +166,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 				}
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
-					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
+					if (entity instanceof StompedGroundEffect) {
 						collidedTankEffect = true;
 						stompedGroundTextureString = entity.getTexture();
 					}
