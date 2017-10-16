@@ -58,6 +58,21 @@ public class MinimumSpanningTree {
             return this.getAddress() == other.getAddress();
         }
 
+
+        /**
+         * InteliJ generated Hashcode Function to meet sonar requirements
+         */
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + java.util.Arrays.deepHashCode(graph);
+            result = 31 * result + size;
+            result = 31 * result + (vertexList != null ? vertexList.hashCode() : 0);
+            result = 31 * result + (cloud != null ? cloud.hashCode() : 0);
+            result = 31 * result + (outside != null ? outside.hashCode() : 0);
+            return result;
+        }
+
         public Point2D getEntry() {
             return entry;
         }
@@ -85,20 +100,6 @@ public class MinimumSpanningTree {
         public void setLeastEdgeAddress(int leastEdgeAddress) {
             this.leastEdgeAddress = leastEdgeAddress;
         }
-    }
-
-    /**
-     * InteliJ generated Hashcode Function to meet sonar requirements
-     */
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + java.util.Arrays.deepHashCode(graph);
-        result = 31 * result + size;
-        result = 31 * result + (vertexList != null ? vertexList.hashCode() : 0);
-        result = 31 * result + (cloud != null ? cloud.hashCode() : 0);
-        result = 31 * result + (outside != null ? outside.hashCode() : 0);
-        return result;
     }
 
     public class VertexPriority implements Comparator<Vertex> {
