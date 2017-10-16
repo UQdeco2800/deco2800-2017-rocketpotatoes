@@ -177,21 +177,21 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		}
 
 
-		if (this instanceof TankEnemy) {
-			if (timer % 100 == 0 && !collided) {
-				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
-				GameManager.get().getWorld().addEntity(
-						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
-			}
-			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
-					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			} else if (!collidedTankEffect) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			}
+		
+		if (timer % 100 == 0 && !collided) {
+			GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
+			GameManager.get().getWorld().addEntity(
+					new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
 		}
+		if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
+				stompedGroundTextureString.equals("DamagedGroundTemp3")) {
+			GameManager.get().getWorld().addEntity(
+					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
+		} else if (!collidedTankEffect) {
+			GameManager.get().getWorld().addEntity(
+					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
+		}
+		
 
 		if (!collided) {
 			setPosX(getPosX() + changeX);

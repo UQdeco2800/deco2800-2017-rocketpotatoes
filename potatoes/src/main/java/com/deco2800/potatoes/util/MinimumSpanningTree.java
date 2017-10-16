@@ -57,13 +57,14 @@ public class MinimumSpanningTree {
             // Check address
             return this.getAddress() == other.getAddress();
         }
-
+        
+        @Override
         public int hashCode() {
             int result = super.hashCode();
             result = 31 * result + (entry != null ? entry.hashCode() : 0);
             result = 31 * result + address;
             result = 31 * result + leastEdgeAddress;
-            result = 31 * result + (leastEdge != +0.0f ? Float.floatToIntBits(leastEdge) : 0);
+            result = 31 * result + (leastEdge <= -0.001f||leastEdge >= +0.001f ? Float.floatToIntBits(leastEdge) : 0);
             return result;
         }
 
@@ -145,7 +146,7 @@ public class MinimumSpanningTree {
     }
 
 
-    public void addVertex(Point2D entry, int address) throws IndexOutOfBoundsException {
+    public void addVertex(Point2D entry, int address) {
 
         // Check address is valid.
         if (address < 0 || address > this.getSize()) {
@@ -154,7 +155,7 @@ public class MinimumSpanningTree {
         this.getVertexList().add(new Vertex(entry, address));
     }
 
-    public void insertVertex(Point2D entry, int address) throws IndexOutOfBoundsException {
+    public void insertVertex(Point2D entry, int address) {
 
         // Check address is valid.
         if (address < 0 || address > this.getSize()) {
@@ -304,7 +305,7 @@ public class MinimumSpanningTree {
      * @param col
      * @throws IndexOutOfBoundsException
      */
-    public void putGraphEntry(float entry, int row, int col) throws IndexOutOfBoundsException {
+    public void putGraphEntry(float entry, int row, int col) {
 
         if (row < 0 || row > this.getSize() || col < 0 || col > this.getSize()) {
             throw new IndexOutOfBoundsException();
@@ -319,7 +320,7 @@ public class MinimumSpanningTree {
      * @return
      * @throws IndexOutOfBoundsException
      */
-    public float getGraphEntry(int row, int col) throws IndexOutOfBoundsException {
+    public float getGraphEntry(int row, int col) {
 
         if (row < 0 || row > this.getSize() || col < 0 || col > this.getSize()) {
             throw new IndexOutOfBoundsException();
