@@ -106,5 +106,9 @@ public class WaveManagerTest {
     public void extraTest() {
         testWaveOne = new EnemyWave(1,2,3,4,5,6);
         testWaveOne = new EnemyWave(6) ;
+        wm.regularGame(2);
+        wm.onTick(1);
+        wm.onTick(1);
+        wm.onTick(1);
     }
 }
