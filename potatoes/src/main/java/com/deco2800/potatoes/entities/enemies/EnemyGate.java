@@ -13,7 +13,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 public class EnemyGate extends MortalEntity implements HasProgressBar {
 	
 	//the current texture is just a placeholder, designers needed 
-	private static final transient String TEXTURE = "enemyGate";
+	private static final transient String TEXTURE = "enemyCave";
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
