@@ -76,7 +76,10 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 */
 	private static EnemyProperties initStats() {
 		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
-				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE).createEnemyStatistics();
+				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
+				.addEvent(new StealingEvent(ATTACK_SPEED,ResourceTree.class))
+				.createEnemyStatistics();
+
 		// result.addEvent(new MeleeAttackEvent(500));
 		return result;
 	}
@@ -143,7 +146,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public void onTick(long i) {
 		//raccoon steals resources from resourceTrees
-		stealResources();
+		//stealResources();
 		//found closest goal to the enemy
 		Optional<AbstractEntity> tgt = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
 
