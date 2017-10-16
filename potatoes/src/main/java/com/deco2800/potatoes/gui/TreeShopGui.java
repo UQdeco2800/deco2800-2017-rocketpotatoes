@@ -365,8 +365,6 @@ public class TreeShopGui extends Gui implements SceneGui {
      * menu.
      */
     private void renderSubMenus(ShapeRenderer shapeRenderer, float guiX, float guiY, int radius) {
-
-
         int numSegments = unlockedTreeStates.size();
         if (numSegments == 0)
             return;
@@ -411,7 +409,6 @@ public class TreeShopGui extends Gui implements SceneGui {
                 segment++;
             }
         }
-
     }
 
     /**

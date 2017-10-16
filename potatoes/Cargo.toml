@@ -1,0 +1,12 @@
+[package]
+name = "rustyfish"
+version = "0.1.0"
+authors = ["Tom Richardson <tgrkzus@gmail.com>"]
+
+[lib]
+name = "rustyfish"
+path = "src/rust/lib.rs"
+crate-type = ["dylib"]
+
+[dependencies]
+rand = "0.3"

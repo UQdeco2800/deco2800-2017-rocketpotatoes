@@ -289,13 +289,20 @@ public class GameScreen implements Screen {
 			//add an enemy gate to game world
 			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
-			//add enemy waves
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0,0, 750, 1));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave()); // pause wave
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0,0, 900, 2));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1,1, 1050, 3));
-
-
+            GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
+			/*
+			// Initial player preparation up period
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1000)); // pause wave
+			// Waves: sq -> sq + rac -> sq + rac + bear -> sq + rac + bear + moose
+			for (int i = 0; i<10; i++) {
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0, 0, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1, 1, 750, i));
+				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
+			}
+			*/
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
@@ -455,30 +462,30 @@ public class GameScreen implements Screen {
 	/**
 	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
+	/*Wave GUI won't be accurate until we've settled on implementation - currently it's displaying 'pause' waves as waves*/
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
-		int timeToNextWave;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
 		Gui waveGUI = guiManager.getGui(WavesGui.class);
 		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
-				((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				if (activeWave.isPauseWave()) {
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+				} else {
+					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+				}
 				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
 					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
 					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
-				} else {
-					timeToNextWave = GameManager.get().getManager(WaveManager.class).getTimeBeforeNextWave();
-					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
-					((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToNextWave / 75);
 				}
 			}
 		}
@@ -532,7 +539,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-			renderer.render(batch);
+		renderer.render(batch);
 
 		updateWaveGUI();
 		updateRespawnGUI();
