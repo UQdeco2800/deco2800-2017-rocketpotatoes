@@ -25,10 +25,11 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 public class WorldType {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorldType.class);
 
-	private static final String GROUND = "mud_tile_1";
-	private static final String WATER = "water_tile_1";
-	private static final String GRASS = "grass_tile_1";
+	protected static final String GROUND = "mud_tile_1";
+	protected static final String WATER = "water_tile_1";
+	protected static final String GRASS = "grass_tile_1";
 	private static final Point PORTAL_POS = new Point(10, 10);
+	/**
 	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
 			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("forest"));
 	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 0.5f, true),
@@ -39,25 +40,26 @@ public class WorldType {
 			new Terrain(GROUND, 0.5f, false), new Terrain(WATER, 0, false)), defaultEntities("volcano"));
 	public static final WorldType OCEAN_WORLD = new WorldType(new TerrainType(null, new Terrain(WATER, 1, true),
 			new Terrain(GROUND, 1, false), new Terrain(GRASS, 0, false)), defaultEntities("sea"));
+			**/
 
 	private final TerrainType terrain;
 	// List of suppliers because creating the entities early can cause problems
 	private final List<Supplier<AbstractEntity>> entities;
-	private List<Point> clearSpots;
+	protected List<Point> clearSpots;
 	private float landAmount = 0.3f;
 
 	/**
 	 * @param terrain
 	 *            the terrain type
 	 */
+	
 	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
 		this.terrain = terrain;
 		this.entities = entities;
 		clearSpots = clearPoints();
-
 	}
 
-	private static List<Point> clearPoints() {
+	protected static List<Point> clearPoints() {
 		List<Point> clearPoints = new ArrayList<>();
 		// player spot
 		clearPoints.add(new Point(5, 10));
@@ -72,7 +74,7 @@ public class WorldType {
 		return clearPoints;
 	}
 
-	private static List<Supplier<AbstractEntity>> defaultEntities(String worldType) {
+	protected static List<Supplier<AbstractEntity>> defaultEntities(String worldType) {
 		List<Supplier<AbstractEntity>> result = new ArrayList<>();
 		result.add(() -> new AbstractPortal(PORTAL_POS.x, PORTAL_POS.y, worldType + "_portal"));
 		return result;
