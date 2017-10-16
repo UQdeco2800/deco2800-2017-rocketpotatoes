@@ -182,11 +182,9 @@ public class MinimumSpanningTree {
             temp = this.getGraphEntry(i, i);
             address = i;
             for (int j = 0; j < this.getSize(); j++) {
-                if (cloud.containsKey(j)) {
-                   if (temp > getGraphEntry(i, j)) {
-                       temp = getGraphEntry(i, j);
-                       address = j;
-                   }
+                if (cloud.containsKey(j) && temp > getGraphEntry(i, j)) {
+                   temp = getGraphEntry(i, j);
+                   address = j;
                 }
             }
             this.vertexList.get(i).setLeastEdge(temp);
