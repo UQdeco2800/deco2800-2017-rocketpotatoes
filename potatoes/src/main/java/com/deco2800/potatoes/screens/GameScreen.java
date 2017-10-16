@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
+import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
@@ -31,7 +32,6 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
 
@@ -46,6 +46,7 @@ public class GameScreen implements Screen {
 
 	// References to the 'game' object which handles our screens/
 	private RocketPotatoes game;
+
 	/**
 	 * Set the renderer. 3D is for Isometric worlds 2D is for Side Scrolling worlds
 	 * Check the documentation for each renderer to see how it handles WorldEntity
@@ -66,11 +67,16 @@ public class GameScreen implements Screen {
 	private WaveManager waveManager;
 	private ProgressBarManager progressBarManager;
 
+	private SpriteBatch batch;
 
-	private long lastGameTick = 0;
-	private double tickrate = 10;
+	private double tickrate = 1;
 
 	private int maxShopRange;
+
+	float minimumZoom = 1.0f;
+	float maximumZoom = 4.0f;
+	float zoomSpeed = 0.2f;
+
 	/**
 	 * Start's a multiplayer game
 	 *
@@ -155,6 +161,9 @@ public class GameScreen implements Screen {
 		/* Setup progress bar manager. */
 		progressBarManager = GameManager.get().getManager(ProgressBarManager.class);
 
+        /* Set up cheat codes. */
+        CheatList.addCheats();
+
 		/**
 		 * GuiManager, which contains all our Gui specific properties/logic. Creates our
 		 * stage etc.
@@ -205,20 +214,25 @@ public class GameScreen implements Screen {
 		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
+		
+		// Make our TutorialGui
+		guiManager.addGui(new TutorialGui(guiManager.getStage(), this));
         
 		/* Setup inputs */
 		setupInputHandling();
 
         // Sets the world to the initial world, forest world
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-		// Creates the object for the repeated background texture
-		// TODO this will need to be changed once proper texture is added
-		GameManager.get().getManager(WorldManager.class).setBackground(new TiledDrawable(textureManager
-				.getTextureRegion("water_tile_1")));
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
 		cameraManager.getCamera().position.y = 0;
+
+		/*
+		 * Create a new render batch. At this stage we only want one but perhaps we need
+		 * more for HUDs etc
+		 */
+		batch = new SpriteBatch();
 	}
 
 	private void setupInputHandling() {
@@ -236,7 +250,7 @@ public class GameScreen implements Screen {
 		inputManager = GameManager.get().getManager(InputManager.class);
 		inputManager.addKeyDownListener(new CameraHandler());
 		inputManager.addKeyDownListener(new PauseHandler());
-		inputManager.addScrollListener(new ScrollTester());
+		inputManager.addScrollListener(new ZoomHandler());
 
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
@@ -272,8 +286,17 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
-			//add an enemy gate to game world
-			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
+			//add enemy gates to game world
+			//bottom-left
+			GameManager.get().getWorld().addEntity(new EnemyGate(6.5f, 6.5f));
+			//bottom-right
+			GameManager.get().getWorld().addEntity(new EnemyGate(9f, 42f));
+			//top-left
+			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 6.5f));
+			//top-right
+			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 42f));
+			
+			
 
             GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
@@ -309,6 +332,9 @@ public class GameScreen implements Screen {
 			}
 			GameManager.get().getManager(ParticleManager.class);
 		}
+		
+		//show the tutorial menu
+		guiManager.getGui(TutorialGui.class).show();
 	}
 
 	private void addDamageTree() {
@@ -321,7 +347,7 @@ public class GameScreen implements Screen {
 	private void initialiseResources() {
 
 		SeedResource seedResource = new SeedResource();
-		FoodResource foodResource = new FoodResource();
+		PineconeResource pineconeResource = new PineconeResource();
 		WoodResource woodResource = new WoodResource();
 		TumbleweedResource tumbleweedResource = new TumbleweedResource();
 		CactusThornResource cactusThornResource = new CactusThornResource();
@@ -342,7 +368,7 @@ public class GameScreen implements Screen {
 
 
 		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 20.5f, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, foodResource));
+		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, pineconeResource));
 		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 16.5f, woodResource));
 
 		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 20.5f, tumbleweedResource));
@@ -445,6 +471,7 @@ public class GameScreen implements Screen {
 	/**
 	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
+	/*Wave GUI won't be accurate until we've settled on implementation - currently it's displaying 'pause' waves as waves*/
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
@@ -453,7 +480,7 @@ public class GameScreen implements Screen {
 		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1) + "/" + totalWaves);
+			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
@@ -495,32 +522,14 @@ public class GameScreen implements Screen {
 		 * We only tick/render the game if we're actually playing. Lets us seperate main
 		 * menu and such from the game
 		 */
+
 		/*
 		 * Tickrate = 100Hz
 		 */
 
 		if (!GameManager.get().isPaused()) {
-			// Stop the first tick lasting years
-			if (lastGameTick != 0) {
-				long timeDelta = TimeUtils.millis() - lastGameTick;
-				if (timeDelta > tickrate) {
-
-					// Tick game, a bit a weird place to have it though.
-					tickGame(timeDelta);
-					lastGameTick = TimeUtils.millis();
-				}
-			} else {
-				lastGameTick = TimeUtils.millis();
-			}
-		} else {
-			lastGameTick = 0;
+			tickGame((int)(delta * 1000 * tickrate));
 		}
-
-		/*
-		 * Create a new render batch. At this stage we only want one but perhaps we need
-		 * more for HUDs etc
-		 */
-		SpriteBatch batch = new SpriteBatch();
 
 		/*
 		 * Update the input handlers
@@ -539,13 +548,12 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-			renderer.render(batch);
+		renderer.render(batch);
 
 		updateWaveGUI();
 		updateRespawnGUI();
 		renderGUI(batch);
 
-		batch.dispose();
 	}
 
 	/**
@@ -612,18 +620,27 @@ public class GameScreen implements Screen {
 
 	private class CameraHandler implements KeyDownObserver {
 
+		float newZoom;
+
 		@Override
 		public void notifyKeyDown(int keycode) {
 			OrthographicCamera c = cameraManager.getCamera();
 			int speed = 10;
 
 			if (keycode == Input.Keys.EQUALS) {
-				if (c.zoom > 0.1) {
-					c.zoom -= 0.1;
+				newZoom = c.zoom + zoomSpeed;
+				if (newZoom < maximumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = maximumZoom;
 				}
 			} else if (keycode == Input.Keys.MINUS) {
-				c.zoom += 0.1;
-
+				newZoom = c.zoom + zoomSpeed;
+				if (c.zoom > minimumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = minimumZoom;
+				}
 			} else if (keycode == Input.Keys.UP) {
 				c.translate(0, 1 * speed * c.zoom, 0);
 			} else if (keycode == Input.Keys.DOWN) {
@@ -659,11 +676,29 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private class ScrollTester implements ScrollObserver {
+	private class ZoomHandler implements ScrollObserver {
+
+		float newZoom;
 
 		@Override
 		public void notifyScrolled(int amount) {
-			// System.out.println(amount);
+			OrthographicCamera c = cameraManager.getCamera();
+			if (amount == 1) {
+				newZoom = c.zoom + zoomSpeed * amount;
+				if (newZoom < maximumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = maximumZoom;
+				}
+			}
+			if (amount == -1) {
+				newZoom = c.zoom + zoomSpeed * amount;
+				if (c.zoom > minimumZoom) {
+					c.zoom = newZoom;
+				} else {
+					c.zoom = minimumZoom;
+				}
+			}
 		}
 
 	}
@@ -716,6 +751,9 @@ public class GameScreen implements Screen {
 	}
 
 	public void setTickrate(double tickrate) {
+		if (tickrate < 0) {
+			tickrate = 0;
+		}
 		this.tickrate = tickrate;
 	}
 

@@ -32,7 +32,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
-	private static final transient String enemyType = "raccoon";
+	private static final transient String ENEMY_TYPE = "raccoon";
 
 	private static final EnemyProperties STATS = initStats();
 
@@ -51,6 +51,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
+		//Empty constructor for serialization
 	}
 
 	/***
@@ -61,7 +62,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 */
 	public SpeedyEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
-		SpeedyEnemy.speed = speed + ((speed*round_number)/2);
+		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
 		// resetStats();
@@ -116,10 +117,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		double interactRange = 2f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					((ResourceTree) entitiy).gather(-1);
-				}
+			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange &&((ResourceTree) entitiy).getGatherCount() > 0) {
+				((ResourceTree) entitiy).gather(-1);
 			}
 		}
 	}
@@ -134,7 +133,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @return String of this type of enemy (ie 'raccoon').
 	 * */
 	@Override
-	public String getEnemyType() { return enemyType; }
+	public String getEnemyType() { return ENEMY_TYPE; }
 
 	/**
 	 * Raccoon follows it's path.
@@ -153,7 +152,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 		updateDirection();
 
-		//if no ResourceTree in the world, set goal to player 
+		//if no ResourceTree in the world, set goal to player
 		if (!tgt.isPresent()) {
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			AbstractEntity tgtGet = playerManager.getPlayer();
@@ -188,38 +187,32 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			targetX = target.getX();
 			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
+			float deltaX = targetX - getPosX();
+			float deltaY = targetY - getPosY();
+
 
 			//sprite direction
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY) + (float) Math.PI);
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.onTickMovement();
+
 			super.updateDirection();
-
-			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
-
-
-			float changeX = (float) (speed * Math.cos(angle));
-			float changeY = (float) (speed * Math.sin(angle));
-
-			this.setPosX(getPosX() + changeX);
-			this.setPosY(getPosY() + changeY);
 		} else {
 			//otherwise, set resourceTrees and move towards them
-			
+
 			AbstractEntity tgtGet = tgt.get();
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
 			// check paths
 
 			// check collision
-			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
-					// collided with wall
-					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-					target = path.pop();
-					break;
-				}
-			}
+//			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
+//				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
+//					// collided with wall
+//					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
+//					target = path.pop();
+//					break;
+//				}
+//			}
 
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
@@ -246,21 +239,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			targetX = target.getX();
 			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
+			float deltaX = targetX -getPosX();
+			float deltaY = targetY - getPosY();
 
 			//sprite direction
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY) + (float) Math.PI);
+			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.onTickMovement();
+
 			super.updateDirection();
-
-			float angle = (float) Math.atan2(deltaY, deltaX) + (float) Math.PI;
-
-
-			float changeX = (float) (speed * Math.cos(angle));
-			float changeY = (float) (speed * Math.sin(angle));
-
-			this.setPosX(getPosX() + changeX);
-			this.setPosY(getPosY() + changeY);
 		}
 	}
 }

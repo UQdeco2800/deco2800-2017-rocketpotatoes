@@ -12,6 +12,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A point class that implements Shape2D.
@@ -24,7 +25,7 @@ import java.util.Objects;
  */
 public class Point2D extends Shape2D {
 
-    private static final String textureStr = "POINT_HIGHLIGHT";
+    private static final String TEXTURE_STRING = "POINT_HIGHLIGHT";
 
     /**
      * Default constructor for the purposes of serialization.
@@ -35,7 +36,7 @@ public class Point2D extends Shape2D {
 
     /**
      * Constructs a new point at a given location.
-     * 
+     *
      * @param x
      *              The X coordinate of the point.
      * @param y
@@ -153,7 +154,7 @@ public class Point2D extends Shape2D {
     @Override
     public void renderHighlight(SpriteBatch batch) {
 
-        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(TEXTURE_STRING);
 
         Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
 
@@ -189,5 +190,10 @@ public class Point2D extends Shape2D {
     @Override
     public String toString() {
         return this.x + ", " + this.y;
+    }
+
+    @Override
+    public Optional<Box2D> getBoundingBox() {
+        return Optional.empty();
     }
 }

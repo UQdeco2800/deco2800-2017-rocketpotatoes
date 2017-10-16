@@ -1,18 +1,39 @@
 package com.deco2800.potatoes.multiplayer;
 
 
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.networking.ClientMessageProcessor;
 import com.deco2800.potatoes.networking.Network;
 import com.deco2800.potatoes.networking.NetworkClient;
 import com.esotericsoftware.kryonet.Client;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class ClientMessageProcessorTest {
+
+    PlayerManager playerManager;
+    Player player;
+
+    @Before
+    public void setUp() {
+        playerManager = GameManager.get().getManager(PlayerManager.class);
+        player = new Player();
+        playerManager.setPlayer(player);
+
+    }
+
+    @After
+    public void tearDown() {
+        GameManager.get().clearManagers();
+        player = null;
+    }
+
     @Test
     public void testConnectionConfirmMessage() {
         NetworkClient nc = new NetworkClient();
@@ -57,7 +78,7 @@ public class ClientMessageProcessorTest {
         ClientMessageProcessor.processMessage(nc, m);
         assertEquals("me", nc.getClients().get(2));
         assertNotEquals(null,
-                GameManager.get().getManager(PlayerManager.class).getPlayer());
+                playerManager.getPlayer());
     }
 
     @Test

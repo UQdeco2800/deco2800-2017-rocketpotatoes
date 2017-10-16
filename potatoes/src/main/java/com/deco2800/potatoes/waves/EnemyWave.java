@@ -158,21 +158,21 @@ public class EnemyWave {
      * Add a squirrel to the world
      */
     private void addSquirrel() {
-        GameManager.get().getWorld().addEntity(new Squirrel(24, 24));
+        GameManager.get().getWorld().addEntity(new Squirrel(6.5f, 6.5f));
     }
 
     /**
      * Add a tank (bear) enemy to the world
      */
     private void addTank() {
-        GameManager.get().getWorld().addEntity(new TankEnemy(24, 24));
+        GameManager.get().getWorld().addEntity(new TankEnemy(42f, 6.5f));
     }
 
     /**
      * Add a speedy (raccoon) enemy to the world
      */
     private void addSpeedy() {
-        GameManager.get().getWorld().addEntity(new SpeedyEnemy(24, 24));
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(9f, 42f));
 
     }
 
@@ -180,7 +180,7 @@ public class EnemyWave {
      * Add a moose to the world
      */
     private void addMoose() {
-        GameManager.get().getWorld().addEntity(new Moose(24, 24));
+        GameManager.get().getWorld().addEntity(new Moose(42f, 42f));
     }
 
     /**

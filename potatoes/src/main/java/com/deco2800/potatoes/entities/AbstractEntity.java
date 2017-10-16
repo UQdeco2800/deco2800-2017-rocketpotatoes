@@ -750,9 +750,16 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 			}
 
 		}
-
-		setPosX(nextPos.getX());
-		setPosY(nextPos.getY());
+		float length = GameManager.get().getWorld().getLength();
+		float width = GameManager.get().getWorld().getWidth();
+		float terrainModifierCheck = 0.1f;
+		terrainModifierCheck = GameManager.get().getWorld()
+				.getTerrain(Math.round(Math.min(nextPos.getX()-1 , width - 1)), Math.round(Math.min(nextPos.getY(), length - 1)))
+				.getMoveScale();
+		if (terrainModifierCheck>0) {
+			setPosX(Math.max(Math.min(nextPos.getX(), width), 0));
+			setPosY(Math.max(Math.min(nextPos.getY(), length), 0));
+		}
 	}
 
 

@@ -17,7 +17,7 @@ public class ResourceTreeTest {
 	
 	Resource seedResource;
 	Resource foodResource;
-	
+	HashSet<Resource> resources;
 	Inventory emptyInventory;	
 	Inventory usedInventory;
 	
@@ -31,7 +31,7 @@ public class ResourceTreeTest {
 		
 		emptyInventory = new Inventory();
 		
-		HashSet<Resource> resources = new HashSet<Resource>();
+		resources = new HashSet<>();
 		seedResource = new SeedResource();
 		foodResource = new FoodResource();
 		resources.add(seedResource);
@@ -40,7 +40,21 @@ public class ResourceTreeTest {
 		usedInventory.updateQuantity(seedResource, 5);
 		usedInventory.updateQuantity(foodResource, 2);
 	}
-	
+
+	@After
+	public void tearDown() {
+
+		defaultResourceTree = null;
+		customResourceTree = null;
+		nullTypeResourceTree = null;
+		emptyInventory = null;
+		resources = null;
+		seedResource = null;
+		foodResource = null;
+		usedInventory = null;
+
+	}
+
 	/* Test initialising the resource tree */
 	@Test
 	public void initTest() {

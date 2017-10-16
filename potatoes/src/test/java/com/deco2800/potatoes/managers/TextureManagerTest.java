@@ -5,7 +5,9 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -21,7 +23,21 @@ public class TextureManagerTest {
 	private static class GdxTestApplication extends ApplicationAdapter {
 		
 	}
-	
+
+	TextureManager textureManager;
+	Texture texture;
+
+	@Before
+	public void setUp() {
+
+	}
+
+	@After
+	public void tearDown() {
+		textureManager = null;
+		texture = null;
+	}
+
 	@Test
     public void loadTexture() {
 		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
@@ -29,12 +45,14 @@ public class TextureManagerTest {
 		Gdx.gl = mock(GL20.class);
 		
 		TextureManager.loadTextures();
+
     }
 	
 	@Test
 	public void getTextureTest() {
-		TextureManager textureManager = new TextureManager();
-		Texture texture = textureManager.getTexture("undefined");
+
+		textureManager = new TextureManager();
+		texture = textureManager.getTexture("undefined");
         textureManager.saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
 		texture = textureManager.getTexture("healthbar");
 		Assert.assertNotNull("healthbar sprite should have been saved", texture);

@@ -43,6 +43,10 @@ public class SquirrelTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        squirrel1 = null;
+        squirrel2 = null;
+        squirrelEmpty = null;
+        playerTest = null;
     }
 
     /*

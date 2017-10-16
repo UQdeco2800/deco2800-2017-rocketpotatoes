@@ -12,6 +12,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
 import java.util.Objects;
+import java.util.Optional;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 /**
@@ -25,7 +26,7 @@ import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 public class Circle2D extends Shape2D {
 
     private float radius;
-    private static final String textureStr = "CIRCLE_HIGHLIGHT";
+    private static final String TEXTURE_STRING = "CIRCLE_HIGHLIGHT";
 
 
     /**
@@ -155,7 +156,7 @@ public class Circle2D extends Shape2D {
      */
     @Override
     public void renderHighlight(SpriteBatch batch) {
-        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(TEXTURE_STRING);
 
         Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
 
@@ -236,5 +237,10 @@ public class Circle2D extends Shape2D {
     @Override
     public String toString() {
         return this.x + ", " + this.y + ", " + this.radius;
+    }
+
+    @Override
+    public Optional<Box2D> getBoundingBox() {
+        return Optional.of(new Box2D(x, y, radius * 2, radius * 2));
     }
 }

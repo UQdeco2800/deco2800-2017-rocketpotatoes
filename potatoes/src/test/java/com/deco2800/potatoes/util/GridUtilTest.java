@@ -60,7 +60,7 @@ public class GridUtilTest {
 	@Test
 	public void testSmoothDiamondSquareAlgorithm() {
 		// Really just testing it terminates without errors
-		float[][] result = GridUtil.smoothDiamondSquareAlgorithm(10, 0.6f, 3);
+		float[][] result = GridUtil.smoothDiamondSquareAlgorithm(GridUtil.seedGrid(10), 0.6f, 3);
 		assertEquals("X size was not correct", 10, result.length);
 		assertEquals("Y size was not correct", 10, result[0].length);
 	}

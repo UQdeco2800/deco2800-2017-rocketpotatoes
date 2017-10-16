@@ -63,7 +63,7 @@ public class TextureManager extends Manager {
         saveTexture("ring", "resources/placeholderassets/ring.png");
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
         saveTexture("highlight_tile_invalid", "resources/tiles/highlight_tile_invalid.png");
-        saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
+        saveTexture("tankBear", "resources/enemies/bear/bear_SW.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
         saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
@@ -111,6 +111,17 @@ public class TextureManager extends Manager {
         saveTexture("clientMainMenu", "resources/menu/clientMainMenu.png");
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
         saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
+        saveTexture("menuButtonPlaceholder", "resources/placeholderassets/menuButtonPlaceholder.png");
+
+        // Tutorial
+        saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");
+        saveTexture("tutorial2", "resources/menu/tutorial/Tutorial2.png");
+        saveTexture("tutorial3", "resources/menu/tutorial/Tutorial3.png");
+        saveTexture("tutorial4", "resources/menu/tutorial/Tutorial4.png");
+        saveTexture("tutorial5", "resources/menu/tutorial/Tutorial5.png");
+        saveTexture("tutorial6", "resources/menu/tutorial/Tutorial6.png");
+        saveTexture("tutorial7", "resources/menu/tutorial/Tutorial7.png");
+        saveTexture("controls", "resources/menu/tutorial/Controls.png");
 
         // Tree growing animation, should maybe be moved to TextureRegion later
         for (int i = 1; i < 8; i++) {
@@ -212,7 +223,6 @@ public class TextureManager extends Manager {
 
         //Resources
         saveTexture("seed", "resources/resourceEntities/seed.png");
-        saveTexture("food", "resources/resourceEntities/food.png");
         saveTexture("wood", "resources/resourceEntities/wood.png");
 
         saveTexture("tumbleweed", "resources/resourceEntities/tumbleweed.png");
@@ -226,7 +236,7 @@ public class TextureManager extends Manager {
         saveTexture("coal", "resources/resourceEntities/coal.png");
         saveTexture("bones", "resources/resourceEntities/bones.png");
         saveTexture("obsidian", "resources/resourceEntities/obsidian.png");
-
+        saveTexture("pinecone", "resources/resourceEntities/pinecone.png");
         saveTexture("fishMeat", "resources/resourceEntities/fishMeat.png");
         saveTexture("pearl", "resources/resourceEntities/pearl.png");
         saveTexture("treasure", "resources/resourceEntities/treasure.png");
@@ -252,6 +262,21 @@ public class TextureManager extends Manager {
         		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
         		String textureNameDamaged = "wizard_damaged_" + direction.name() + "_1";
         		saveTexture(textureNameDamaged, "resources/player/wizard/damaged/" + textureNameDamaged + ".png");
+        		
+        		for (int i=1; i<=4; i++) {
+        			String textureNameAttack = "wizard_attack_" + direction.name() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/wizard/attack/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=6; i++) {
+        			String textureNameAttack = "wizard_interact_" + direction.name() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/wizard/interact/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=17; i++) {
+        			String textureNameDeath = "wizard_death_" + direction.name() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/wizard/death/" + textureNameDeath + ".png");
+        		}
 
         }
 
@@ -329,6 +354,9 @@ public class TextureManager extends Manager {
         saveTexture("POINT_HIGHLIGHT", "resources/collisionmasks/Point2D_highlight.png");
         saveTexture("CIRCLE_HIGHLIGHT", "resources/collisionmasks/Circle2D_highlight.png");
         saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
+
+        saveTexture("turbofish", "resources/rustyfish/turbofish.png");
+        saveTexture("boatman", "resources/rustyfish/boatman.png");
 
     }
 
