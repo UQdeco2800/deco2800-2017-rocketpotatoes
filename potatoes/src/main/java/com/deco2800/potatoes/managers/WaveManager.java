@@ -1,5 +1,7 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.enemies.EnemyGate;
+import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
@@ -83,7 +85,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
             waveIndex++;
             activateWave(waves.get(waveIndex));
             resetTime();
-        } else if (!isCampaign) { // no active wave, not campaign, make new wave
+        } else if (!isCampaign && WorldUtil.getClosestEntityOfClass(EnemyGate.class, 10, 10).isPresent()) { // no active wave, not campaign, make new wave
             generateNextWave();
         }
     }
