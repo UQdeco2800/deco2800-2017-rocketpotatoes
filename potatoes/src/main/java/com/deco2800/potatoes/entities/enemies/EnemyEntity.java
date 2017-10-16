@@ -53,7 +53,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Shape2D targetPos = null;
 	private Class<?> goal;
 	private Map<Integer, AbstractEntity> entities;
-	private boolean moving;
+	private boolean moving = true;
 	private int channelTimer;
 
 	private static final SoundManager enemySoundManager = new SoundManager();
