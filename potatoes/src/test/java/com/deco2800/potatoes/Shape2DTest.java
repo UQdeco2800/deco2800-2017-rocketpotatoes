@@ -478,4 +478,9 @@ public class Shape2DTest {
         assertFalse(Box2D.surrounding(Stream.of(new Point2D(0, 0), new Point2D(5, 0))).isPresent());
     }
 
+    @Test
+    public void testGetAngle() {
+        new Box2D(5, 5, 2, 2).getAngle(new Box2D(1, 2, 3, 4));
+    }
+
 }
