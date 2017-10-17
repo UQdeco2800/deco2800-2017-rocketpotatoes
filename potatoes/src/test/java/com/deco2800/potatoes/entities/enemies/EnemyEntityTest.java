@@ -45,6 +45,7 @@ public class EnemyEntityTest extends BaseTest {
     GoalPotate goalPotato;
     Player playerTest;
 
+
     @Before
     public void setUp() throws Exception {
         squirrelEmpty = new Squirrel();
@@ -168,4 +169,9 @@ public class EnemyEntityTest extends BaseTest {
         tank1.deathHandler();
     }
 
+//    @Test
+//    public void delayTest(){
+//        tank1 = new TankEnemy(7, 7);
+//        Assert.assertEquals(tank1.delay(10,tank1.getEnemyType().length),0);
+//    }
 }

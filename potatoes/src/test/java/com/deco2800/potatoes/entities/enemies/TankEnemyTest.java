@@ -42,7 +42,12 @@ public class TankEnemyTest extends BaseTest {
 	@Test
 	public void emptyConstructor() {
 		assertEquals(true, tankEmpty.getDirection() == null);
-		assertEquals("bear", tankEmpty.getEnemyType());
+
+		for (String data:tankEmpty.getEnemyType()) {
+			assertEquals("bear_walk", data);
+
+		}
+
 		assertEquals(Color.PURPLE, tank1.getProgressBar().getColours().get(0));
 		assertEquals(Color.RED, tank1.getProgressBar().getColours().get(1));
 		assertEquals(Color.ORANGE, tank1.getProgressBar().getColours().get(2));
