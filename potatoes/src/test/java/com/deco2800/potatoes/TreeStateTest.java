@@ -52,5 +52,11 @@ public class TreeStateTest {
         treeState.unlock();
         treeState.setUnlock(true);
         treeState.hashCode();
+        treeState.setTree(testTree);
+        treeState.setCost(cost);
+        treeState.setTreeType("");
+        
+        treeState = new TreeState(null, cost, true, "resource");
+        treeState = new TreeState(testTree, null, true, "resource");
     }
 }

@@ -58,6 +58,15 @@ public class MinimumSpanningTree {
             return this.getAddress() == other.getAddress();
         }
 
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + (entry != null ? entry.hashCode() : 0);
+            result = 31 * result + address;
+            result = 31 * result + leastEdgeAddress;
+            result = 31 * result + (leastEdge != +0.0f ? Float.floatToIntBits(leastEdge) : 0);
+            return result;
+        }
+
         public Point2D getEntry() {
             return entry;
         }

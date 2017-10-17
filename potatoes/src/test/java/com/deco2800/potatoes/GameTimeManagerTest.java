@@ -38,6 +38,8 @@ public class GameTimeManagerTest {
         gameTimeManager.resetCurrentDay(1);
         gameTimeManager.onTick(1);
         gameTimeManager.getColour();
+        gameTimeManager.nightTime();
+        gameTimeManager.resetCurrentTime(2);
     }
 
 }
