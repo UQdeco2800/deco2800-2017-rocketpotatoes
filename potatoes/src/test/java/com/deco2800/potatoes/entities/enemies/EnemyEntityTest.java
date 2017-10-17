@@ -12,12 +12,9 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
-
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
-
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -148,13 +145,13 @@ public class EnemyEntityTest extends BaseTest {
     @Test
     public void getProgressRatioTest() {
         tank1 = new TankEnemy(7, 7);
-        Assert.assertTrue("Ratio was not 1", tank1.getProgressRatio() == 1);
+        Assert.assertTrue("Ratio was not 1", tank1.getProgressRatio() == 1.0);
     }
 
     @Test
     public void getMaxProgressTest() {
         tank1 = new TankEnemy(7, 7);
-        Assert.assertTrue("Ratio was not 1", tank1.getMaxProgress() == 1000);
+        Assert.assertTrue("Ratio was not 1", tank1.getMaxProgress() == 1500);
     }
 
     @Test

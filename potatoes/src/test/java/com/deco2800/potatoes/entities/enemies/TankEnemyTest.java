@@ -44,7 +44,7 @@ public class TankEnemyTest extends BaseTest {
 		assertEquals(true, tankEmpty.getDirection() == null);
 
 		for (String data:tankEmpty.getEnemyType()) {
-			assertEquals("bear_walk", data);
+			assertEquals("bear", data);
 
 		}
 
