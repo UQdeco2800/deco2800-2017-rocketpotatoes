@@ -9,17 +9,12 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.animation.Animation;
-import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
-import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.gui.GameOverGui;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Stack;
 
 
 /**
@@ -345,6 +340,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
     public Direction getFacing() {
         return this.facing;
     }
+
+
 
 
 

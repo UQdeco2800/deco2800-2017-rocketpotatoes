@@ -33,29 +33,29 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-//	private static final transient String[] ENEMY_TYPE = new String[]{
-//
-//		"bear_walk",
-//		"bear_walk",
-//		"bear_walk",
-//		"bear_walk",
-//		"bear_walk",
-//		"bear_walk",
-//		"bear_walk",
-//		"bear_walk",
-//
-//
-//
-//	};
+	private static final transient String[] ENEMY_TYPE = new String[]{
+
+		"bear_walk",
+		"bear_walk",
+		"bear_walk",
+		"bear_walk",
+		"bear_walk",
+		"bear_walk",
+		"bear_walk",
+		"bear_walk",
+
+
+
+	};
 //	private static final transient String ENEMY_TYPE = "bear";
-private static final transient String[] ENEMY_TYPE = new String[]{
-
-		"raccoon",
-
-
-
-
-};
+//private static final transient String[] ENEMY_TYPE = new String[]{
+//
+//		"raccoon",
+//
+//
+//
+//
+//};
 
 
 

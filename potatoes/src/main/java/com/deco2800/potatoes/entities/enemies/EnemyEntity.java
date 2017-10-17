@@ -11,7 +11,6 @@ import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
 
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(EnemyEntity.class);
 
 	private float speed;
 	private Shape2D targetPos = null;
@@ -46,6 +45,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 	private static int count=0;
+	private static String perviousTexutre="";
 	protected int roundNum = 0;
 	/**
 	 * Default constructor for serialization
@@ -187,27 +187,31 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateSprites() {
 		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-		this.setTexture(type[0] + direction);
-		count++;
-		LOGGER.warn("count:::"+count);
 
-
-
-		if(type.length ==1){
-			LOGGER.warn("{length==1}tank texture::"+type[0] + direction);
+		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
-		}else {
-			for (int i=1;i<type.length;i++){
-				LOGGER.warn("tank texture::"+type[i] + direction+"_"+i);
-
-				this.setTexture(type[i] + direction+"_"+i);
-			}
-
+		} else {
+			this.setTexture(type[delay(10, type.length)] + direction + "_" + (delay(10, type.length) + 1));
 		}
 
-
 	}
+	/**
+	 * the purpose of method is make a time delay for next texture
+	 * @param time i guest just millisecond
+	 * @param Framesize the texture array size
+	 * @return Int the index of texture
+	 */
+	public int delay(int time,int Framesize){
 
+		count++;
+
+		if((count/time)>=(Framesize-1))
+			count=0;
+
+		return Math.round((count/time));
+
+
+	};
 	/***
 	 * Abstract method requiring extending classes to return a string corresponding
 	 * to their enemy type. Useful for selecting sprites.
