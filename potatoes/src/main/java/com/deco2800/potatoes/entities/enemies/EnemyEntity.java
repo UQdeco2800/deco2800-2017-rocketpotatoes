@@ -44,7 +44,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
-	private static int count=0;
+	private int count=0;
 	private static String perviousTexutre="";
 	protected int roundNum = 0;
 	/**
@@ -191,7 +191,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-			this.setTexture(type[delay(10, type.length)]+"_"+enemyStatus + direction + "_" + (delay(10, type.length) + 1));
+			this.setTexture(type[delay(5, type.length)]+"_"+enemyStatus + direction + "_" + (delay(5, type.length) + 1));
 		}
 
 	}
