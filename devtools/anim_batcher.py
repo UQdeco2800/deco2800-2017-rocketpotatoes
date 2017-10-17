@@ -230,7 +230,12 @@ def render_animated_batch(model):
 def main():
     camera = OBJECTS["Camera"]
     light = OBJECTS["Lamp"]
-    #model = import_model()
+
+    model = OBJECTS["Model"]
+    model.select = True
+
+    bpy.context.scene.frame_current = 0
+    bpy.context.scene.frame_set(0)
 
     #centre_model(model)
     setup_camera(camera)
@@ -244,13 +249,20 @@ def main():
     for x in model.children:
         x.select = True
 
+    SCENE.objects.active = model # required to interact with model's keyframes
 
-    blob = [] # all the models of all the frames 
+    for i in range(SCENE.frame_start, SCENE.frame_end):
+        # ensure model can be rotated later by clearing its rotation keyframes
+        bpy.context.active_object.keyframe_delete('rotation_euler', frame=i)
+
+    blob = [] # all the models of all the frames, in one big blob
 
     for i in range(SCENE.frame_start, SCENE.frame_end):
         # move frame along
         bpy.context.scene.frame_current = i
         bpy.context.scene.frame_set(i)
+
+
 
         bpy.ops.object.duplicate()
         duped_model = bpy.context.selected_objects[0]
