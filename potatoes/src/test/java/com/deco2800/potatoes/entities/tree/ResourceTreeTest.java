@@ -143,5 +143,9 @@ public class ResourceTreeTest {
 		assertTrue(customResourceTree.getGatherCount() == 0); // All resources should be removed from tree
 		assertTrue(usedInventory.getQuantity(foodResource) == testAmount + initalAmount); // All resources should be added to inventory
 	}
+	@Test
+	public void stringTest() {
+		defaultResourceTree.getName();
+	}
 	
 }

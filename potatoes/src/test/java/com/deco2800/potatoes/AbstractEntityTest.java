@@ -111,5 +111,16 @@ public class AbstractEntityTest {
 		original.getYRenderOffset();
 		original.getShadow();
         original.distance(9,9);
+		original.hasShadow();
+		original.isSolid();
+		original.setMass(9);
+		original.getMass();
+	}
+	@Test
+	public void moveTest() {
+		TestableAbstractEntity original = new TestableAbstractEntity(1, 2, 3, 4, "texture");
+		original.setStatic(true);
+		original.setMoveTowards(5,6);
+		original.onTickMovement();
 	}
 }

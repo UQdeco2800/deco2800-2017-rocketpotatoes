@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.worlds.terrain;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 
@@ -32,6 +33,19 @@ public class TerrainTypeTest {
                 new Terrain("b", 1, false), null);
     }
 
+    @After
+    public void tearDown() {
+        t1 = null;
+        t2 = null;
+        t3 = null;
+        t4 = null;
+        t5 = null;
+        t6 = null;
+        t7 = null;
+        t8 = null;
+        t9 = null;
+    }
+
     @Test
     public void equalsTests() {
     	assertFalse(t1.equals(null));
@@ -49,5 +63,6 @@ public class TerrainTypeTest {
         assertFalse(t8.equals(t1));
         assertFalse(t9.equals(t1));
         assertFalse(t1.equals(new Object()));
+        t1.getSlopes();
     }
 }

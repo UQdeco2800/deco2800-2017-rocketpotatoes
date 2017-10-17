@@ -6,6 +6,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.Before;
@@ -25,6 +26,12 @@ public class WorldTest extends BaseTest {
 	@Before
 	public void setup() {
 		world = new World();
+	}
+
+	@After
+	public void tearDown() {
+		world = null;
+		test = null;
 	}
 
 	@Test

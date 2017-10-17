@@ -28,6 +28,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
 	public static final int DEFAULT_GATHER_CAPACITY = 32; // Default gather capacity, must be > 0
+	public static final String FOOD_TREE_TEXTURE = "food_resource_tree";
+	public static final String SEED_TREE_TEXTURE = "seed_resource_tree";
 
 	/**
 	 * Default constructor for serialization
@@ -52,7 +54,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
 		this.gatherType = new SeedResource();
 		this.resetStats();
-		this.setTexture("food_resource_tree");
+		this.setTexture(FOOD_TREE_TEXTURE);
 	}
 
 	/**
@@ -89,14 +91,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
 		if (this.gatherType instanceof SeedResource) {
-			// TODO hard coded currently but needs to be fixed
-			this.setTexture("seed_resource_tree");
+			this.setTexture(SEED_TREE_TEXTURE);
 			return getSeedTreeStats();
 		} else if (this.gatherType instanceof FoodResource) {
-			this.setTexture("food_resource_tree");
+			this.setTexture(FOOD_TREE_TEXTURE);
 			return getFoodTreeStats();
 		} else {
-			this.setTexture("seed_resource_tree");
+			this.setTexture(SEED_TREE_TEXTURE);
 			return getSeedTreeStats();
 		}
 	}
@@ -110,7 +111,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = "seed_resource_tree";
+		String texture = SEED_TREE_TEXTURE;
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
@@ -133,7 +134,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = "food_resource_tree";
+		String texture = FOOD_TREE_TEXTURE;
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
@@ -271,7 +272,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		if (this.gatherType instanceof SeedResource) {
 			return "Seed Tree";
 		} else if (this.gatherType instanceof FoodResource) {
-			this.setTexture("food_resource_tree");
+			this.setTexture(FOOD_TREE_TEXTURE);
 			return "Food Tree";
 		} else {
 			return "Seed Tree";

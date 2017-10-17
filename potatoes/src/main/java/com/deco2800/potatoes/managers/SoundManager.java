@@ -33,8 +33,14 @@ public class SoundManager extends Manager {
 	 */
 	public void playSound(String soundString) {
 		LOGGER.info("Playing sound effect");
-		Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + soundString));
-		sound.play(effectsVolume);
+		try {
+			Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/" + soundString));
+			sound.play(effectsVolume);
+		}
+		catch (NullPointerException ex) {
+			LOGGER.warn("Failed to play sound effect");
+			// Sound doesn't exist, or we have no sound device (i.e. on jenkins)
+		}
 	}
 
 	/**

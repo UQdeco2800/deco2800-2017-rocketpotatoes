@@ -27,6 +27,13 @@ public class TreeStateTest {
         testTree = new ResourceTree();
     }
 
+    @After
+    public void tearDown() {
+        treeState = null;
+        testTree = null;
+        cost = null;
+    }
+
     @Test
     public void testInit(){
         // With empty constructor
@@ -42,5 +49,14 @@ public class TreeStateTest {
         assert(treeState.isUnlocked() == true);
         assert(treeState.getTreeType().equals("resource"));
 
+        treeState.unlock();
+        treeState.setUnlock(true);
+        treeState.hashCode();
+        treeState.setTree(testTree);
+        treeState.setCost(cost);
+        treeState.setTreeType("");
+        
+        treeState = new TreeState(null, cost, true, "resource");
+        treeState = new TreeState(testTree, null, true, "resource");
     }
 }
