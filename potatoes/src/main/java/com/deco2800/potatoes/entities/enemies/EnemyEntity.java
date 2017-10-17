@@ -187,11 +187,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateSprites() {
 		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-
+		String enemyStatus="walk";
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-			this.setTexture(type[delay(10, type.length)] + direction + "_" + (delay(10, type.length) + 1));
+			this.setTexture(type[delay(10, type.length)]+"_"+enemyStatus + direction + "_" + (delay(10, type.length) + 1));
 		}
 
 	}
