@@ -381,14 +381,14 @@ public class TreeShopGui extends Gui implements SceneGui {
                 int startAngle = 360 * segment / numSegments;
                 float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ?
                         SELECTED_ALPHA : UNSELECTED_ALPHA;
-                float itemAngle = startAngle + degrees / 2;
+                float itemAngle = startAngle + (float) degrees / 2;
 
                 // Set color and draw arc
                 shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
                 renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees,
                         entry.getKey());
 
-                Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
+                Vector2 offset = calculateDisplacement((float)radius / 2, itemAngle);
 
                 // Render Items
                 float itemX = guiX - imgSize / 2 + offset.x;
@@ -401,7 +401,7 @@ public class TreeShopGui extends Gui implements SceneGui {
                 int n = cost.getInventoryResources().size();
                 int i = 1;
                 for (Resource resource : cost.getInventoryResources()) {
-                    float costAngle = startAngle + degrees * i / (n + 1);
+                    float costAngle = startAngle + (float) degrees * i / (n + 1);
                     renderCostGui(offset, radius, costAngle, guiX, guiY, seedSize,
                             resource.getTexture(), cost.getQuantity(resource));
                     i++;
