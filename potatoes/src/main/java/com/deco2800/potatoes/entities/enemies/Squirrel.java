@@ -27,7 +27,11 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
-	private static final String ENEMY_TYPE = "squirrel";
+	private static final String[] ENEMY_TYPE = new String[]{
+			"squirrel"
+
+	};
+//	private static final String ENEMY_TYPE = "squirrel";
 
 	private static final float SPEED = 0.05f;
 
@@ -89,7 +93,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @return String of this type of enemy (ie 'squirrel').
 	 * */
 	@Override
-	public String getEnemyType() {
+	public String[] getEnemyType() {
 		return ENEMY_TYPE;
 	}
 

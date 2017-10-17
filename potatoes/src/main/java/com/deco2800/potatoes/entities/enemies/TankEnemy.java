@@ -1,27 +1,26 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.*;
-
+import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
-import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.util.Path;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.util.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A stronger but slower enemy type, only attacks towers/trees
@@ -34,8 +33,29 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-	private static final transient String ENEMY_TYPE = "bear";
+//	private static final transient String[] ENEMY_TYPE = new String[]{
+//
+//		"bear_walk",
+//		"bear_walk",
+//		"bear_walk",
+//		"bear_walk",
+//		"bear_walk",
+//		"bear_walk",
+//		"bear_walk",
+//		"bear_walk",
+//
+//
+//
+//	};
+//	private static final transient String ENEMY_TYPE = "bear";
+private static final transient String[] ENEMY_TYPE = new String[]{
 
+		"raccoon",
+
+
+
+
+};
 
 
 
@@ -271,7 +291,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * @return String of this type of enemy (ie 'bear').
 	 */
 	@Override
-	public String getEnemyType() {
+	public String[] getEnemyType() {
 		return ENEMY_TYPE;
 	}
 

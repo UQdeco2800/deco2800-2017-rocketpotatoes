@@ -28,7 +28,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-	private static final transient String ENEMY_TYPE = "moose";
+//	private static final transient String ENEMY_TYPE = "moose";
+	private static final transient String[] ENEMY_TYPE = new String[]{
+			"moose"
+
+	};
 	private static final EnemyProperties STATS = initStats();
 
 	private static final float MOOSE_SIZE = 1.5f;
@@ -79,7 +83,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * @return String of this type of enemy (ie 'moose').
 	 */
 	@Override
-	public String getEnemyType() {
+	public String[] getEnemyType() {
 		return ENEMY_TYPE;
 	}
 
@@ -175,7 +179,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s at (%d, %d)", getEnemyType(), (int) getPosX(), (int) getPosY());
+		return String.format("%s at (%d, %d)", getEnemyType()[0], (int) getPosX(), (int) getPosY());
 	}
 
 	/***

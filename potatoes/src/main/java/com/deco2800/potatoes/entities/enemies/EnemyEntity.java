@@ -1,46 +1,31 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.*;
-
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
-import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
-import com.deco2800.potatoes.entities.player.Wizard;
-import com.deco2800.potatoes.entities.portals.BasePortal;
-
-import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.util.Path;
-
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
 import com.deco2800.potatoes.renderering.particles.types.ParticleType;
-
+import com.deco2800.potatoes.util.Path;
+import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
-
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.ParticleManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-
-
-import com.deco2800.potatoes.util.WorldUtil;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An abstract class for the basic functionality of enemy entities which extend from it
@@ -60,7 +45,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
-
+	private static int count=0;
 	protected int roundNum = 0;
 	/**
 	 * Default constructor for serialization
@@ -200,9 +185,27 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * Updates the player sprite based on it's state and direction.
 	 */
 	public void updateSprites() {
-		String type = getEnemyType();
+		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-		this.setTexture(type + direction);
+		this.setTexture(type[0] + direction);
+		count++;
+		LOGGER.warn("count:::"+count);
+
+
+
+		if(type.length ==1){
+			LOGGER.warn("{length==1}tank texture::"+type[0] + direction);
+			this.setTexture(type[0] + direction);
+		}else {
+			for (int i=1;i<type.length;i++){
+				LOGGER.warn("tank texture::"+type[i] + direction+"_"+i);
+
+				this.setTexture(type[i] + direction+"_"+i);
+			}
+
+		}
+
+
 	}
 
 	/***
@@ -211,7 +214,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return String corresponding to enemy type (e.g. squirrel)
 	 */
-	public abstract String getEnemyType();
+	public abstract String[] getEnemyType();
 
 	/**
 	 * Registers the list of events given with the event manager and unregisters all

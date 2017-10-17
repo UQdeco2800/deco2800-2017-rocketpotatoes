@@ -1,17 +1,10 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import com.deco2800.potatoes.entities.Direction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -21,6 +14,13 @@ import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * A speedy raccoon enemy that steals resources from resource trees.
@@ -32,7 +32,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
-	private static final transient String ENEMY_TYPE = "raccoon";
+//	private static final transient String ENEMY_TYPE = "raccoon";
+	private static final transient String[] ENEMY_TYPE = new String[]{
+
+		"raccoon"
+};
 
 	private static final EnemyProperties STATS = initStats();
 
@@ -133,7 +137,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @return String of this type of enemy (ie 'raccoon').
 	 * */
 	@Override
-	public String getEnemyType() { return ENEMY_TYPE; }
+	public String[] getEnemyType() { return ENEMY_TYPE; }
 
 	/**
 	 * Raccoon follows it's path.
