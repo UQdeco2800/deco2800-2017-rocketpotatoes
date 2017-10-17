@@ -30,7 +30,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyProperties STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
-	private static final transient float HEALTH = 1000;
+	private static final transient float HEALTH = 1500;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final transient String[] ENEMY_TYPE = new String[]{
@@ -43,8 +43,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		"bear_walk",
 		"bear_walk",
 		"bear_walk",
-
-
 
 	};
 //	private static final transient String ENEMY_TYPE = "bear";
@@ -92,7 +90,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * @param posY The y-coordinate of the Tank Enemy.
 	 */
 	public TankEnemy(float posX, float posY) {
-        super(new Circle2D(posX, posY, 1.414f), 1f, 1f, TEXTURE, HEALTH, speed, goal);
+        super(new Circle2D(posX, posY, 1.414f), 2f, 2f, TEXTURE, HEALTH, speed, goal);
         this.health = health + (roundNum*250);
 		//this.speed = getBasicStats().getSpeed();
 		//this.goal = goal;
