@@ -359,7 +359,23 @@ public class TextureManager extends Manager {
         saveTexture("turbofish", "resources/rustyfish/turbofish.png");
         saveTexture("boatman", "resources/rustyfish/boatman.png");
 
+
+        //bear walk texture
+        for(int i =1;i<9;i++){
+            saveTexture("bear_walk_E_"+i,"resources/enemies/bear/walk/bear_walk_E_"+i+".png");
+            saveTexture("bear_walk_N_"+i,"resources/enemies/bear/walk/bear_walk_N_"+i+".png");
+            saveTexture("bear_walk_NE_"+i,"resources/enemies/bear/walk/bear_walk_NE_"+i+".png");
+            saveTexture("bear_walk_NW_"+i,"resources/enemies/bear/walk/bear_walk_NW_"+i+".png");
+            saveTexture("bear_walk_S_"+i,"resources/enemies/bear/walk/bear_walk_S_"+i+".png");
+            saveTexture("bear_walk_SE_"+i,"resources/enemies/bear/walk/bear_walk_SE_"+i+".png");
+            saveTexture("bear_walk_SW_"+i,"resources/enemies/bear/walk/bear_walk_SW_"+i+".png");
+            saveTexture("bear_walk_W_"+i,"resources/enemies/bear/walk/bear_walk_W_"+i+".png");
+        }
+
+
     }
+
+
 
     /**
      * Gets a texture object for a given string id
