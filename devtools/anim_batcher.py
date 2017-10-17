@@ -237,7 +237,7 @@ def main():
     bpy.context.scene.frame_current = 0
     bpy.context.scene.frame_set(0)
 
-    #centre_model(model)
+    centre_model(model)
     setup_camera(camera)
     setup_light(light)
 
