@@ -114,6 +114,7 @@ public class DebugModeGui extends Gui {
         // adding actors
         debugButtonGroup = new VerticalGroup();
         debugButtonGroup.addActor(debugOn);
+        debugButtonGroup.addActor(exitButton);
         debugButtonGroup.addActor(speedtoggle);
         debugButtonGroup.addActor(gamespeed);
         debugButtonGroup.addActor(immortalButton);
@@ -130,7 +131,6 @@ public class DebugModeGui extends Gui {
         debugButtonGroup.addActor(f7);
         debugButtonGroup.addActor(f8);
         debugButtonGroup.addActor(f9);
-        debugButtonGroup.addActor(exitButton);
         table.add(debugButtonGroup);
 
         setupListeners();
