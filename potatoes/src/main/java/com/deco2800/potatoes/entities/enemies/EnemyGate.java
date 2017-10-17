@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -13,7 +14,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 public class EnemyGate extends MortalEntity implements HasProgressBar {
 	
 	//the current texture is just a placeholder, designers needed 
-	private static final transient String TEXTURE = "enemyCave";
+	private static final transient String TEXTURE = "enemyCave_SE";
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 2);
 
@@ -31,7 +32,7 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	 * @param posY y coordinate to place gate
 	 */
 	public EnemyGate(float posX, float posY) {
-        super(new Box2D(posX, posY, 1f, 1f), 1f, 1f, TEXTURE, 1000f);
+        super(new Circle2D(posX, posY, 1.3f), 1.6f, 1.6f, TEXTURE, 1000f);
         this.setSolid( false );
         this.setStatic( true );
 	}
