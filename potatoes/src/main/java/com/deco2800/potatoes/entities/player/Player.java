@@ -330,7 +330,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Sets the direction of the player based on a current WASD keys pressed.
      */
     void updateMovingAndFacing() {
-        Direction newFacing = null;
+        Direction newFacing;
 
         //TODO releasing keys while travelling diagonal, not working, returning to cardinal directions
 
