@@ -77,7 +77,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-		AbstractEntity relevantTarget = mostRelevantTarget(targets);
+		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
 		pathMovement(pathTarget, relevantTarget);
 		super.onTickMovement();
 		super.updateDirection();

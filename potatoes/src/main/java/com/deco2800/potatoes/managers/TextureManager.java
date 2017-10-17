@@ -164,7 +164,7 @@ public class TextureManager extends Manager {
         //damage tree:acorn
 
 
-        //Enemies
+        //enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
         saveTexture("swipe2", "resources/enemies/swipe2.png");
         saveTexture("swipe3", "resources/enemies/swipe3.png");

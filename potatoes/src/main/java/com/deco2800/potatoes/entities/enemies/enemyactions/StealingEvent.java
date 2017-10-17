@@ -1,8 +1,9 @@
-package com.deco2800.potatoes.entities.enemies;
+package com.deco2800.potatoes.entities.enemies.enemyactions;
 
-import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -58,28 +59,28 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
             return;
         }
 
-
+        /*Might not need to loop through all enemies -- just work with the target1.get()????*/
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-        for (AbstractEntity entitiy : entities) {
-            if (entitiy instanceof ResourceTree) {
-                if (((ResourceTree) entitiy).getGatherCount() > 0) {
-                    ((ResourceTree) entitiy).gather(-1);
+        for (AbstractEntity entity : entities) {
+            if (entity instanceof ResourceTree) {
+                if (target1.get().equals(entity)) {
+                    if (((ResourceTree) entity).getGatherCount() > 0) {
+                        ((ResourceTree) entity).gather(-1);
+                    } else {
+                        //resource tree has 0 or less resources - tell raccoon its a good boy and move on.
+                        if (enemy instanceof SpeedyEnemy) {
+                            System.err.println("I'm adding " + entity.toString() + " to my visited trees");
+                            ((SpeedyEnemy) enemy).addTreeToVisited((ResourceTree) entity);
+                        }
+                    }
                 }
             }
         }
-
-            // GameManager.get().getWorld()
-            //  .addEntity(new MeleeAttack(target,
-            // new Vector3(enemy.getPosX() + 0.5f, enemy.getPosY() + 0.5f, enemy.getPosZ()),
-            // new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()), 1, 4));
-
 		/*Stop attacking if dead (deathHandler of mortal entity will eventually unregister the event).*/
-            if (enemy.isDead()) {
-                GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
-                setDoReset(false);
-
-            }
-
+        if (enemy.isDead()) {
+            GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
+            setDoReset(false);
+        }
     }
 
     /**

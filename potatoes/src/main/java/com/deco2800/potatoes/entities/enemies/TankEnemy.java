@@ -11,13 +11,13 @@ import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.util.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,9 +58,8 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 
 	/* Define speed, goal and path variables */
-	private static float speed = 0.006f;
+	private static float speed = 0.01f;
 	private static Class<?> goal = AbstractTree.class;
-
 
 	private Path path = null;
 	private Shape2D target = null;
@@ -72,7 +71,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 	private int timer = 0;
 	private Shape2D targetPos = null;
-
 
 	private Direction currentDirection; // The direction the enemy faces
 
@@ -167,7 +165,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 /*
 		/*
 		 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
-		 *     -> Enemies of the same type, projectiles, resources.
+		 *     -> enemies of the same type, projectiles, resources.
 		 */
 /*		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		boolean collided = false;
@@ -223,7 +221,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 	@Override
 	public void onTick(long i) {
-		AbstractEntity relevantTarget = mostRelevantTarget(targets);
+		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
 		if (getMoving() == true) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
@@ -240,9 +238,18 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, AbstractTree.class)).createEnemyStatistics();
+				//.addEvent(new MeleeAttackEvent(ATTACK_SPEED, AbstractTree.class))
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class))
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
+				.createEnemyStatistics();
 	}
 
+	/***
+	 * Initialize the targets of this enemy. Target priority is in order of listing and sightAggro > mainTargets
+	 * provided the sightAggro target is within a close enough radius of the enemy; otherwise mainTargets > sightAggro.
+	 *
+	 * @return EnemyTargets class which holds mainTarget, sightAggroTargets and damageAggroTargets arrays.
+	 */
 	private static EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		ArrayList<Class> mainTargets = new ArrayList<>();

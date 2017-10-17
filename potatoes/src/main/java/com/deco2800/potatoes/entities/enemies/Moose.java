@@ -166,7 +166,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		super.updateDirection();
 		*/
 
-		AbstractEntity relevantTarget = mostRelevantTarget(targets);
+		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
 		if (getMoving() == true) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
