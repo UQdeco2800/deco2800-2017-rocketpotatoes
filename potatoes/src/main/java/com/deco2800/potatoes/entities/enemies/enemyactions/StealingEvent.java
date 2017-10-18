@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * A melee attack from enemy to a target
+ * A stealing event from speedy enemy to a target
  *
  **/
 public class StealingEvent extends TimeEvent<EnemyEntity> {
@@ -29,7 +29,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
     }
 
     /**
-     * Constructor for melee attack event, set up to repeat an attack according to
+     * Constructor for stealing event, set up to repeat an attack according to
      * attackSpeed
      *
      * @param attackSpeed
@@ -45,7 +45,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
 
     /**
      * Creates action as per TimeEvent shoots a projectile at small range to
-     * simulate melee attack
+     * simulate stealing
      *
      * @param enemy
      *            The enemy that this melee attack belongs to
