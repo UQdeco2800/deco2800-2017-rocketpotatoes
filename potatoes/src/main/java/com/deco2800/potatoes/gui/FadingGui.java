@@ -56,12 +56,10 @@ public class FadingGui extends Gui implements Tickable{
                 0.0f, 1024, Color.RED, 5, 5);
         particle.speed = 0.9f;
 
-        Vector2 pos = Render3D.worldToScreenCoordinates(x,y, 0);
+        Vector2 pos = Render3D.worldToScreenCoordinates(x,y, 1);
         int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
         int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-        p.addParticleEmitter(1.0f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
-                particle));
-
+        p.addParticleEmitter(5.0f, new ParticleEmitter(10, 10,particle));
 
         container.add(unlockedLabel);
         container.row();
