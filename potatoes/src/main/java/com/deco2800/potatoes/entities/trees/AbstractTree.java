@@ -15,6 +15,7 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.gui.FadingGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 
@@ -79,12 +80,18 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 				if (!treeState.isUnlocked()) {
 					treeState.unlock();
 					System.out.println("Unlocked: " +this.getName());
+					showUnlockedMenu(treeState);
 					treeShop.refreshTreeStates();
 				}
 			}
 
 		}
 
+	}
+
+	private void showUnlockedMenu(TreeState treeState) {
+		GuiManager guiManager = GameManager.get().getManager(GuiManager.class);
+		guiManager.addFadingGui(new FadingGui(treeState, 200,guiManager.getStage()));
 	}
 
 	/**
