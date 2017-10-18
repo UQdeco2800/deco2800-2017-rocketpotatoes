@@ -179,7 +179,7 @@ public class EnemyWave {
      * Add a tank (bear) enemy to the world
      */
     private void addTank() {
-        GameManager.get().getWorld().addEntity(new TankEnemy(GameManager.get().getWorld().getLength()/2, 46f));
+        GameManager.get().getWorld().addEntity(new TankEnemy(GameManager.get().getWorld().getLength()/2, 42f));
         totalAmount++;
     }
 

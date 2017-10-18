@@ -292,7 +292,7 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(gateW);
 			//gateW.clearPath();
 			//E
-			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 46f,"enemyCave_W" );
+			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 42f,"enemyCave_W" );
 			GameManager.get().getWorld().addEntity(gateE);
 			//gateE.clearPath();
 			//S
@@ -300,7 +300,7 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(gateS);
 			//gateS.clearPath();
 			//N
-			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_W");
+			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_WS");
 			GameManager.get().getWorld().addEntity(gateN);
 			//gateN.clearPath();
 			

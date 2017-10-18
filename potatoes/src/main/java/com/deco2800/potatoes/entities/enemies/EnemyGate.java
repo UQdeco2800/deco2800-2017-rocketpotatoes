@@ -53,14 +53,14 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 		float mapMiddleY = GameManager.get().getWorld().getWidth()/2;
 		if (posX <= mapMiddleX){
 			if (posY <= mapMiddleY) {
-				for(int x = (int)posX-2; x <= mapMiddleX; x++) {
-					for (int y = (int)posY-2;y <= mapMiddleY; y++) {
+				for(int x = (int)posX-3; x <= mapMiddleX; x++) {
+					for (int y = (int)posY-3;y <= mapMiddleY; y++) {
 						GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
 					}
 				}
 			} else {
 				for(int x = (int)posX-2; x <= mapMiddleX; x++) {
-					for (int y = (int)mapMiddleY; y <= posY+2; y++) {
+					for (int y = (int)mapMiddleY; y <= posY+1; y++) {
 						GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
 						}
 				}	
