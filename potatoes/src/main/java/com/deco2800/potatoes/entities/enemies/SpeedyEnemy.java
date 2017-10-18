@@ -27,7 +27,6 @@ import com.deco2800.potatoes.util.WorldUtil;
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
@@ -65,7 +64,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
-		// resetStats();
 	}
 
 	/***
@@ -77,7 +75,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static EnemyProperties initStats() {
 		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE).createEnemyStatistics();
-		// result.addEvent(new MeleeAttackEvent(500));
 		return result;
 	}
 

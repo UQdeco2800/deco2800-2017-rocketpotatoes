@@ -71,7 +71,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * Creates a copy of this tree as it was when it was just created
 	 */
 	@Override
-	public ProjectileTree clone() {
+	public ProjectileTree createCopy() {
 		return new ProjectileTree(this.getPosX(), this.getPosY(), this.reloadTime, this.range, this.maxHealth);
 	}
 

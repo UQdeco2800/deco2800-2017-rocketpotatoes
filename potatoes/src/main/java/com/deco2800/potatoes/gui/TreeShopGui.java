@@ -67,9 +67,9 @@ public class TreeShopGui extends Gui implements SceneGui {
     // Opacity value for treeShop subsection when mouse is not hovering over it
     private final float UNSELECTED_ALPHA = 0.2f;
     // Opacity value for treeShop subsection when mouse hovers over
-    private final float SELECTED_ALPHA = 0.5f;
+    private static final float SELECTED_ALPHA = 0.5f;
     // Maximum number of tile lengths from player where you can plant trees
-    private final int MAX_RANGE = 6;
+    private static final int MAX_RANGE = 6;
 
      private int SHOPRADIUS = 150;
 
@@ -136,7 +136,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         if (keycode > Input.Keys.NUM_0 && keycode < Input.Keys.NUM_9){
             AbstractTree tree = getTreeBinding(keycode - Input.Keys.NUM_0);
             if (tree != null) {
-                buyTree(tree.clone());
+                buyTree(tree.createCopy());
                 closeShop();
             }
         }
@@ -225,7 +225,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     }
 
     /**
-     * Returns a clone of treeStates.
+     * Returns a createCopy of treeStates.
      */
     public ArrayList<TreeState> getTreeStates() {
         ArrayList<TreeState> clone = new ArrayList<TreeState>();
@@ -602,7 +602,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     private void buyTree() {
 
         AbstractTree newTree;
-        newTree = unlockedTreeStates.get(selectedSegment).getTree().clone();
+        newTree = unlockedTreeStates.get(selectedSegment).getTree().createCopy();
         buyTree(newTree);
     }
 

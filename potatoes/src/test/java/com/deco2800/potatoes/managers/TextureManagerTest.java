@@ -38,6 +38,7 @@ public class TextureManagerTest {
 		texture = null;
 	}
 
+	
 	@Test
     public void loadTexture() {
 		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
@@ -45,12 +46,10 @@ public class TextureManagerTest {
 		Gdx.gl = mock(GL20.class);
 		
 		TextureManager.loadTextures();
-
     }
 	
 	@Test
 	public void getTextureTest() {
-
 		textureManager = new TextureManager();
 		texture = textureManager.getTexture("undefined");
         textureManager.saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");

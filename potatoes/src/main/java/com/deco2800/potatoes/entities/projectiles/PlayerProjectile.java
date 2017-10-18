@@ -97,14 +97,12 @@ public class PlayerProjectile extends Projectile {
         if ("DIRECTIONAL".equalsIgnoreCase(shootingStyle.toString())) {
             if (directions.equalsIgnoreCase("w")) {
                 setTargetPosition(pPosX - 5, pPosY - 5, 0);
-                // setTargetPosition(TargetPosX, TargetPosY, posZ);
                 updatePosition();
                 setPosition();
             } else if (directions.equalsIgnoreCase("e")) {
                 setTargetPosition(pPosX + 5, pPosY + 5, 0);
                 updatePosition();
                 setPosition();
-                // setTargetPosition(TargetPosX, TargetPosY, posZ);
             } else if ("n".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX + 15, pPosY - 15, 0);
                 updatePosition();

@@ -148,7 +148,8 @@ public class GameManager implements TickableManager {
 	 */
 	@Override
 	public void onTick(long i) {
-		for (Manager m : managers) {
+		for (int index = 0; index < managers.size(); index++) {
+			Manager m = managers.get(index);
 			if (m instanceof TickableManager) {
 				((TickableManager) m).onTick(i);
 			}
