@@ -68,6 +68,9 @@ public class TextureManager extends Manager {
         saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
         saveTexture("enemyCave_SE", "resources/enemies/enemyCave_SE.png");
         saveTexture("enemyCave_S", "resources/enemies/enemyCave_S.png");
+        saveTexture("enemyCave_N", "resources/enemies/enemyCave_N.png");
+        saveTexture("enemyCave_W", "resources/enemies/enemyCave_W.png");
+        saveTexture("enemyCave_E", "resources/enemies/enemyCave_E.png");
         saveTexture("enemyCave_SW", "resources/enemies/enemyCave_SW.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");

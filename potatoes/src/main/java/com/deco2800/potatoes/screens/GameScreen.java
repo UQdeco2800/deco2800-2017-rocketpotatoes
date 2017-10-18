@@ -287,18 +287,22 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add enemy gates to game world
-			//bottom-left
-			EnemyGate gatebl = new EnemyGate(6.5f, 6.5f, "enemyCave_SE");
-			GameManager.get().getWorld().addEntity(gatebl);
-			//bottom-right
-			EnemyGate gatebr = new EnemyGate(9f, 42f,"enemyCave_SW" );
-			GameManager.get().getWorld().addEntity(gatebr);
-			//top-left
-			EnemyGate gatetl = new EnemyGate(42f, 6.5f, "enemyCave_SE");
-			GameManager.get().getWorld().addEntity(gatetl);
-			//top-right
-			EnemyGate gatetr = new EnemyGate(42f, 42f, "enemyCave_S");
-			GameManager.get().getWorld().addEntity(gatetr);
+			//W
+			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength()/2, 6.5f, "enemyCave_SE");
+			GameManager.get().getWorld().addEntity(gateW);
+			//gateW.clearPath();
+			//E
+			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 46f,"enemyCave_W" );
+			GameManager.get().getWorld().addEntity(gateE);
+			//gateE.clearPath();
+			//S
+			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength()/2 , "enemyCave_E");
+			GameManager.get().getWorld().addEntity(gateS);
+			//gateS.clearPath();
+			//N
+			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_W");
+			GameManager.get().getWorld().addEntity(gateN);
+			//gateN.clearPath();
 			
 			
 			

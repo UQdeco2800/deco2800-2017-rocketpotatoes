@@ -46,16 +46,40 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	/**
 	 * Clear path from enemy gate to middle of map
 	 */
-	private void clearPath(float posX, float posY) {
+	public void clearPath(float posX, float posY) {
 //		float posX = this.getPosX();
 //		float posY = this.getPosY();
 		float mapMiddleX = GameManager.get().getWorld().getLength()/2;
 		float mapMiddleY = GameManager.get().getWorld().getWidth()/2;
-		for(int x = (int)posX; x < mapMiddleX; x++) {
-			for (int y = (int)posY;y < mapMiddleY; y++) {
-				GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
+		if (posX <= mapMiddleX){
+			if (posY <= mapMiddleY) {
+				for(int x = (int)posX-2; x <= mapMiddleX; x++) {
+					for (int y = (int)posY-2;y <= mapMiddleY; y++) {
+						GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
+					}
+				}
+			} else {
+				for(int x = (int)posX-2; x <= mapMiddleX; x++) {
+					for (int y = (int)mapMiddleY; y <= posY+2; y++) {
+						GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
+						}
+				}	
 			}
-		}
+		} else {
+			if (posY <= mapMiddleY) {
+				for(int x = (int)mapMiddleX; x <= posX+2; x++) {
+					for (int y = (int)posY-2;y <= mapMiddleY; y++) {
+						GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
+					}
+				}
+			} else {
+				for(int x = (int)mapMiddleX; x <= posX+2; x++) {
+					for (int y = (int)mapMiddleY; y <= posY+2; y++) {
+						GameManager.get().getWorld().setTile(x, y, new Terrain(GRASS, 1, true));
+						}
+				}	
+			}	
+		}	
 	}
 	
 	@Override
