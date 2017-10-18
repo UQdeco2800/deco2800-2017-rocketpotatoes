@@ -39,6 +39,7 @@ public class SoundManagerTest extends BaseTest {
         //assertTrue(m.musicPlaying());
         soundManager.stopMusic();
         assertFalse(soundManager.musicPlaying());
+        soundManager.playMusic(null);
     }
 
     @Test

@@ -125,9 +125,8 @@ public class MainMenuGui extends Gui {
 
         startButtonGroup = new Table();
         startCharacterSelectTable = new Table();
-        startCharacterSelectTable.add(startCharacterImage);
-        startCharacterSelectTable.row();
-        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth).height(buttonHeight/2).space(buttonSpacing);
+        startCharacterSelectTable.add(startCharacterImage).size(125, 125);
+        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth - 50).height(buttonHeight/2);
         startButtonGroup.add(startCharacterSelectTable);
         startButtonGroup.add(singleplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
         startButtonGroup.add(multiplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
@@ -418,7 +417,7 @@ public class MainMenuGui extends Gui {
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight()/2);
-        root.setPosition(0, 0);
+        root.setPosition(0, -45);
 
         switch (state) {
             case PRIMARY:

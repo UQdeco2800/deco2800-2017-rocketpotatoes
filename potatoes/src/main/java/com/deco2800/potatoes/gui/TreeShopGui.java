@@ -65,13 +65,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 
     // Opacity value for treeShop subsection when mouse is not hovering over it
-    final private float UNSELECTED_ALPHA = 0.2f;
+    private final float UNSELECTED_ALPHA = 0.2f;
     // Opacity value for treeShop subsection when mouse hovers over
-    final private float SELECTED_ALPHA = 0.5f;
+    private final float SELECTED_ALPHA = 0.5f;
     // Maximum number of tile lengths from player where you can plant trees
-    final private int MAX_RANGE = 6;
+    private final int MAX_RANGE = 6;
 
-    final private int SHOPRADIUS = 150;
+     private int SHOPRADIUS = 150;
 
     /**
      * Instantiates shop with but doesn't display it yet.
@@ -136,7 +136,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         if (keycode > Input.Keys.NUM_0 && keycode < Input.Keys.NUM_9){
             AbstractTree tree = getTreeBinding(keycode - Input.Keys.NUM_0);
             if (tree != null) {
-                buyTree(tree.clone());
+                buyTree(tree.createCopy());
                 closeShop();
             }
         }
@@ -225,7 +225,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     }
 
     /**
-     * Returns a clone of treeStates.
+     * Returns a createCopy of treeStates.
      */
     public ArrayList<TreeState> getTreeStates() {
         ArrayList<TreeState> clone = new ArrayList<TreeState>();
@@ -365,8 +365,6 @@ public class TreeShopGui extends Gui implements SceneGui {
      * menu.
      */
     private void renderSubMenus(ShapeRenderer shapeRenderer, float guiX, float guiY, int radius) {
-
-
         int numSegments = unlockedTreeStates.size();
         if (numSegments == 0)
             return;
@@ -383,14 +381,14 @@ public class TreeShopGui extends Gui implements SceneGui {
                 int startAngle = 360 * segment / numSegments;
                 float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ?
                         SELECTED_ALPHA : UNSELECTED_ALPHA;
-                float itemAngle = startAngle + degrees / 2;
+                float itemAngle = startAngle + (float) degrees / 2;
 
                 // Set color and draw arc
                 shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
                 renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees,
                         entry.getKey());
 
-                Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
+                Vector2 offset = calculateDisplacement((float)radius / 2, itemAngle);
 
                 // Render Items
                 float itemX = guiX - imgSize / 2 + offset.x;
@@ -403,7 +401,7 @@ public class TreeShopGui extends Gui implements SceneGui {
                 int n = cost.getInventoryResources().size();
                 int i = 1;
                 for (Resource resource : cost.getInventoryResources()) {
-                    float costAngle = startAngle + degrees * i / (n + 1);
+                    float costAngle = startAngle + (float) degrees * i / (n + 1);
                     renderCostGui(offset, radius, costAngle, guiX, guiY, seedSize,
                             resource.getTexture(), cost.getQuantity(resource));
                     i++;
@@ -411,7 +409,6 @@ public class TreeShopGui extends Gui implements SceneGui {
                 segment++;
             }
         }
-
     }
 
     /**
@@ -592,7 +589,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     private void buyTree() {
 
         AbstractTree newTree;
-        newTree = unlockedTreeStates.get(selectedSegment).getTree().clone();
+        newTree = unlockedTreeStates.get(selectedSegment).getTree().createCopy();
         buyTree(newTree);
     }
 

@@ -63,7 +63,7 @@ public class TextureManager extends Manager {
         saveTexture("ring", "resources/placeholderassets/ring.png");
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
         saveTexture("highlight_tile_invalid", "resources/tiles/highlight_tile_invalid.png");
-        saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
+        saveTexture("tankBear", "resources/enemies/bear/bear_SW.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
         saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
@@ -103,11 +103,13 @@ public class TextureManager extends Manager {
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
         saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
-        saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
-        saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
-        saveTexture("savePauseMenu", "resources/menu/savePauseMenu.png");
-        saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
-        saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
+        saveTexture("resumePauseMenu", "resources/menu/pauseMenu/resumePauseMenu.png");
+        saveTexture("optionsPauseMenu", "resources/menu/pauseMenu/optionsPauseMenu.png");
+        saveTexture("savePauseMenu", "resources/menu/pauseMenu/savePauseMenu.png");
+        saveTexture("exitPauseMenu", "resources/menu/pauseMenu/exitPauseMenu.png");
+        saveTexture("tutorialPauseMenu", "resources/menu/pauseMenu/tutorialPauseMenu.png");
+        saveTexture("backgroundOptionsMenu", "resources/menu/pauseMenu/backgroundOptionsMenu.png");
+
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
         saveTexture("optionsMainMenu", "resources/menu/optionsMainMenu.png");
         saveTexture("exitMainMenu", "resources/menu/exitMainMenu.png");
@@ -118,6 +120,15 @@ public class TextureManager extends Manager {
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
         saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
         saveTexture("menuButtonPlaceholder", "resources/placeholderassets/menuButtonPlaceholder.png");
+
+        // Tutorial Title Buttons
+        saveTexture("initialGameplayButton", "resources/menu/tutorial/initialGameplayButton.png");
+        saveTexture("treesButton", "resources/menu/tutorial/treesButton.png");
+        saveTexture("enemiesButton", "resources/menu/tutorial/enemiesButton.png");
+        saveTexture("healthButton", "resources/menu/tutorial/healthButton.png");
+        saveTexture("portalsButton", "resources/menu/tutorial/portalsButton.png");
+        saveTexture("controlsButton", "resources/menu/tutorial/controlsButton.png");
+        saveTexture("optionsBackButton", "resources/menu/pauseMenu/optionsBackButton.png");
 
         // Tutorial
         saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");
@@ -360,6 +371,9 @@ public class TextureManager extends Manager {
         saveTexture("POINT_HIGHLIGHT", "resources/collisionmasks/Point2D_highlight.png");
         saveTexture("CIRCLE_HIGHLIGHT", "resources/collisionmasks/Circle2D_highlight.png");
         saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
+
+        saveTexture("turbofish", "resources/rustyfish/turbofish.png");
+        saveTexture("boatman", "resources/rustyfish/boatman.png");
 
     }
 

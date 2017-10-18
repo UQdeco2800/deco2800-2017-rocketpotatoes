@@ -63,14 +63,14 @@ public class TreeState {
      * Returns the tree type.
      */
     public AbstractTree getTree() {
-        return (this.tree == null) ? null : this.tree.clone();
+        return (this.tree == null) ? null : this.tree.createCopy();
     }
 
     /**
      * Sets the tree entity.
      */
     public void setTree(AbstractTree tree) {
-        this.tree = tree.clone();
+        this.tree = tree.createCopy();
     }
 
     /**
@@ -133,5 +133,9 @@ public class TreeState {
     @Override
     public int hashCode() {
         return tree.hashCode();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        return tree.equals(obj);
     }
 }
