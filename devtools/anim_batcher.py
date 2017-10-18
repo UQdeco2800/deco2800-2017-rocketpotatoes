@@ -18,9 +18,13 @@ from sys import argv
 from os import path
 import ntpath
 
-import tkinter
-from tkinter import filedialog
-tkinter.Tk().withdraw()
+try:
+    import tkinter
+    from tkinter import filedialog
+    tkinter.Tk().withdraw()
+    TKINTER = True
+except ImportError:
+    TKINTER = False
 
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
