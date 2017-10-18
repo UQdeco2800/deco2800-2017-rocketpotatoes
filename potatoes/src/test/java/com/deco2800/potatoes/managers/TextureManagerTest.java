@@ -41,24 +41,20 @@ public class TextureManagerTest {
 	
 	@Test
     public void loadTexture() {
-		/*
 		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
 		new HeadlessApplication(new GdxTestApplication(), conf);
 		Gdx.gl = mock(GL20.class);
 		
 		TextureManager.loadTextures();
-		*/
     }
 	
 	@Test
 	public void getTextureTest() {
-		/*
 		textureManager = new TextureManager();
 		texture = textureManager.getTexture("undefined");
         textureManager.saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
 		texture = textureManager.getTexture("healthbar");
 		Assert.assertNotNull("healthbar sprite should have been saved", texture);
-		*/
 	}
 	
 }
