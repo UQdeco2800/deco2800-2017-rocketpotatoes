@@ -14,6 +14,7 @@ public class EnemyWave {
     private int waveTime = 0;   //Spawn rate (100 = 1 second)
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
+    private static int totalAmount = 0;
     private int round_number;
     private boolean isPauseWave;
 
@@ -155,10 +156,23 @@ public class EnemyWave {
     public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
 
     /**
+     * 
+     * @return total amount of enemies in this wave
+     */
+    public static int getTotalEnemies() {
+    	return totalAmount;
+    }
+    
+    public static void reduceTotalEnemiesByOne(){
+    	totalAmount--;	
+    }
+    
+    /**
      * Add a squirrel to the world
      */
     private void addSquirrel() {
         GameManager.get().getWorld().addEntity(new Squirrel(6.5f, 6.5f));
+        totalAmount++;
     }
 
     /**
@@ -166,6 +180,7 @@ public class EnemyWave {
      */
     private void addTank() {
         GameManager.get().getWorld().addEntity(new TankEnemy(42f, 6.5f));
+        totalAmount++;
     }
 
     /**
@@ -173,6 +188,7 @@ public class EnemyWave {
      */
     private void addSpeedy() {
         GameManager.get().getWorld().addEntity(new SpeedyEnemy(9f, 42f));
+        totalAmount++;
 
     }
 
@@ -181,6 +197,7 @@ public class EnemyWave {
      */
     private void addMoose() {
         GameManager.get().getWorld().addEntity(new Moose(42f, 42f));
+        totalAmount++;
     }
 
     /**

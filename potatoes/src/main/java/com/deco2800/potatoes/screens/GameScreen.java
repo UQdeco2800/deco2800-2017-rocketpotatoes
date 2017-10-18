@@ -288,13 +288,21 @@ public class GameScreen implements Screen {
 
 			//add enemy gates to game world
 			//bottom-left
-			GameManager.get().getWorld().addEntity(new EnemyGate(6.5f, 6.5f));
+			EnemyGate gatebl = new EnemyGate(6.5f, 6.5f, "enemyCave_SE");
+			GameManager.get().getWorld().addEntity(gatebl);
 			//bottom-right
-			GameManager.get().getWorld().addEntity(new EnemyGate(9f, 42f));
+			EnemyGate gatebr = new EnemyGate(9f, 42f,"enemyCave_SW" );
+			GameManager.get().getWorld().addEntity(gatebr);
 			//top-left
-			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 6.5f));
+			EnemyGate gatetl = new EnemyGate(42f, 6.5f, "enemyCave_SE");
+			GameManager.get().getWorld().addEntity(gatetl);
 			//top-right
-			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 42f));
+			EnemyGate gatetr = new EnemyGate(42f, 42f, "enemyCave_S");
+			GameManager.get().getWorld().addEntity(gatetr);
+			
+			
+			
+			
 			
 			
 
@@ -476,10 +484,13 @@ public class GameScreen implements Screen {
 		int timeToWaveEnd;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
+		int totalEnemies = GameManager.get().getManager(
+				WaveManager.class).getActiveWave().getTotalEnemies();//total enemies in game
 		Gui waveGUI = guiManager.getGui(WavesGui.class);
 		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+			//int totalEnemies = activeWave.getTotalEnemies();
 			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
@@ -490,6 +501,7 @@ public class GameScreen implements Screen {
 					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
 				}
 				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(""+totalEnemies);
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
