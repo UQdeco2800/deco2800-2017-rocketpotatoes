@@ -5,16 +5,10 @@ import java.util.*;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
-import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
-import com.deco2800.potatoes.entities.player.Wizard;
-import com.deco2800.potatoes.entities.portals.BasePortal;
 
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.util.Path;
@@ -32,11 +26,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.ParticleManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 
 
@@ -55,8 +47,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Map<Integer, AbstractEntity> entities;
 	private boolean moving;
 	private int channelTimer;
-
-	private static final SoundManager enemySoundManager = new SoundManager();
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);

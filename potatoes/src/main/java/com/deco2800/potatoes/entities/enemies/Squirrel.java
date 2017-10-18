@@ -144,8 +144,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		EnemyTargets targets = new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
-		return targets;
+		return new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
 	}
 
 	/***

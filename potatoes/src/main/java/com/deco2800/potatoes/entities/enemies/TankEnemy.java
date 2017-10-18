@@ -71,9 +71,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public TankEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 1.414f), 1f, 1f, TEXTURE, HEALTH, speed, goal);
         this.health = health + (roundNum*250);
-		//this.speed = getBasicStats().getSpeed();
-		//this.goal = goal;
-		//resetStats();
 	}
 
 	/**

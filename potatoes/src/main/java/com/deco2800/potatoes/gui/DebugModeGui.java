@@ -23,8 +23,6 @@ import com.deco2800.potatoes.screens.GameScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +37,6 @@ import static com.badlogic.gdx.utils.Align.left;
  *@author Tze Lok Cheng
  */
 public class DebugModeGui extends Gui {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DebugModeGui.class);
 
     private GameScreen screen;
     private Stage stage;
@@ -151,8 +148,6 @@ public class DebugModeGui extends Gui {
         table.left();
         table.setPosition(0,stage.getHeight()/2, left);
         table.add(debugButtonGroup);
-        //table.setDebug(true);
-
     }
 
     /**
@@ -363,7 +358,6 @@ public class DebugModeGui extends Gui {
      */
     public void removeEntities(){
         Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
-        //LOGGER.info("Map: {}", entitiesMap.values().toString());
 
         //Excludes the player
         for (AbstractEntity ent: entitiesMap.values()){
