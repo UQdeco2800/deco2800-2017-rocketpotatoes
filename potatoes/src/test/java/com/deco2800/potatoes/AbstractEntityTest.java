@@ -25,14 +25,34 @@ public class AbstractEntityTest {
                 float yRenderLength, String texture) {
             super(new Box2D(posX, posY, xLength, yLength), xRenderLength, yRenderLength, texture);
 		}
+		public TestableAbstractEntity(boolean isSolid, boolean isStatic, float xRenderLength,
+									  float yRenderLength, float xRenderOffset, float yRenderOffset, String texture){
+			super(new Box2D(1, 1, 1, 1), isSolid, isStatic, new Box2D(1, 1, 1, 1), xRenderLength,
+			 yRenderLength, xRenderOffset, yRenderOffset, texture);
+		}
+		public TestableAbstractEntity(boolean isSolid, boolean isStatic, boolean hasShadow ,float xRenderLength,
+									  float yRenderLength, float xRenderOffset, float yRenderOffset, String texture){
+			super(new Box2D(1, 1, 1, 1), isSolid, isStatic, hasShadow, xRenderLength,
+					yRenderLength, xRenderOffset, yRenderOffset, texture);
+		}
+
 
 	}
 
 	TestableAbstractEntity abstractEntity;
+	TestableAbstractEntity abstractEntity2;
+	TestableAbstractEntity abstractEntity3;
+	TestableAbstractEntity abstractEntity4;
 
 	@Before
 	public void setUp() throws Exception {
 		abstractEntity = new TestableAbstractEntity(1, 2, 4, 5, "texture");
+		abstractEntity2 = new TestableAbstractEntity(1, 2, 4, 5, 4,
+				5, "texture");
+		abstractEntity3 = new TestableAbstractEntity(true, true, 4, 5,
+				4,5, "texture");
+		abstractEntity4 = new TestableAbstractEntity(true, true, false,4, 
+				5, 4,5, "texture");
 	}
 
 	//Common to all initialisation test
@@ -115,6 +135,7 @@ public class AbstractEntityTest {
 		original.isSolid();
 		original.setMass(9);
 		original.getMass();
+		abstractEntity4.setMass();
 	}
 	@Test
 	public void moveTest() {
@@ -122,5 +143,6 @@ public class AbstractEntityTest {
 		original.setStatic(true);
 		original.setMoveTowards(5,6);
 		original.onTickMovement();
+		original.setMoveTowards(new Box2D(1, 1, 1, 1));
 	}
 }
