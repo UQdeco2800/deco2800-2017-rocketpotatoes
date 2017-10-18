@@ -24,7 +24,7 @@ public class EnemyGateTest extends BaseTest {
     @Before
     public void setup() throws Exception {
         enemyGateEmpty = new EnemyGate();
-        enemyGate1 = new EnemyGate(0, 0);
+        enemyGate1 = new EnemyGate(0, 0, "enemyCave_SE");
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
