@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.GridUtil;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
@@ -68,7 +69,7 @@ public class WorldManager extends Manager {
 	 */
 	private void addDefaultEntities(World world, WorldType key) {
 		// Temporary, entities are already added to forest world in game screen
-		if (key != WorldType.FOREST_WORLD) {
+		if (key != ForestWorld.get()) {
 			for (AbstractEntity entity : key.getEntities()) {
 				world.addEntity(entity);
 			}

@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 
 import java.util.Collection;
@@ -35,7 +36,7 @@ public class LargeFootstepEffectTest extends BaseTest {
     public void setUp() throws Exception {
         footStepEmpty = new LargeFootstepEffect();
         footStep1 = new LargeFootstepEffect(MortalEntity.class, 0, 0, 1, 1);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
         GameManager.get().addManager(sound1);
     }
 

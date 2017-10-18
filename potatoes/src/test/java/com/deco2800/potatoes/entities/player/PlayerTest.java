@@ -6,6 +6,7 @@ import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class PlayerTest {
 		OrthographicCamera camera = new OrthographicCamera();
         GameManager.get().addManager(m);
         GameManager.get().addManager(worldManager);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
         
         cameraManager.setCamera(camera);
         

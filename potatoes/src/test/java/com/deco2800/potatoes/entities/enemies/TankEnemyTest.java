@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,7 +27,7 @@ public class TankEnemyTest extends BaseTest {
 	public void setup() throws Exception {
 		tankEmpty = new TankEnemy();
 		tank1 = new TankEnemy(0, 0);
-		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+		GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
 	}
 
 	@After

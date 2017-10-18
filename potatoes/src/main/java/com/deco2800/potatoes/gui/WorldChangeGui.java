@@ -10,6 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.deco2800.potatoes.worlds.DesertWorld;
+import com.deco2800.potatoes.worlds.IceWorld;
+import com.deco2800.potatoes.worlds.OceanWorld;
+import com.deco2800.potatoes.worlds.VolcanoWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 
 /**
@@ -125,7 +130,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 4
-                changeWorld(WorldType.OCEAN_WORLD);
+                changeWorld(OceanWorld.get());
                 
                 LOGGER.info("Teleported to world 4");
             }
@@ -137,7 +142,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 3
-                changeWorld(WorldType.VOLCANO_WORLD);
+                changeWorld(VolcanoWorld.get());
                 
                 LOGGER.info("Teleported to world 3");
             }
@@ -150,7 +155,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 2
-                changeWorld(WorldType.ICE_WORLD);
+                changeWorld(IceWorld.get());
                 
                 LOGGER.info("Teleported to world 2");
             }
@@ -162,7 +167,7 @@ public class WorldChangeGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //change to world 1
-                changeWorld(WorldType.DESERT_WORLD);
+                changeWorld(DesertWorld.get());
                 
                 LOGGER.info("Teleported to world 1");
             }

@@ -20,6 +20,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 
 public class Render3DTest extends BaseTest {
@@ -29,7 +30,7 @@ public class Render3DTest extends BaseTest {
 	@Before
 	public void setUp() throws Exception {
 		GameManager.get().getManager(CameraManager.class).setCamera(new OrthographicCamera());
-		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+		GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
 	}
 
 	@After

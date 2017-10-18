@@ -5,6 +5,7 @@ import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class MeleeAttackTest extends BaseTest {
 
     @Before
     public void setup() throws Exception {
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
     }
 
     @After
