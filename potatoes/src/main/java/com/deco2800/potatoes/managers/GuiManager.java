@@ -67,8 +67,11 @@ public class GuiManager extends Manager {
 
     public void tickFadingGuis(long tick) {
         for (FadingGui gui : fadingGui) {
-            if (gui != null)
-                gui.onTick(tick);
+            if (gui.getTimer() < 0) {
+                fadingGui.remove(gui);
+                return;
+            }
+            gui.onTick(tick);
         }
     }
 

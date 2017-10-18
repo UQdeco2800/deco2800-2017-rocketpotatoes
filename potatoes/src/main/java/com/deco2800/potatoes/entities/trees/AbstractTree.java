@@ -79,14 +79,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 			if (treeState != null) {
 				if (!treeState.isUnlocked()) {
 					treeState.unlock();
-					System.out.println("Unlocked: " +this.getName());
 					showUnlockedMenu(treeState);
 					treeShop.refreshTreeStates();
 				}
 			}
-
 		}
-
 	}
 
 	private void showUnlockedMenu(TreeState treeState) {

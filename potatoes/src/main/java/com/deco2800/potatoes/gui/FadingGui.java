@@ -39,6 +39,10 @@ public class FadingGui extends Gui implements Tickable{
 
     }
 
+    public int getTimer() {
+        return timer;
+    }
+
     private void initializeGui(Stage stage){
         TextureManager textureManager = GameManager.get().getManager(TextureManager
                 .class);
