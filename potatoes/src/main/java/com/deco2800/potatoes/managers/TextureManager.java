@@ -77,24 +77,24 @@ public class TextureManager extends Manager {
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
-            saveTexture("aoe" + i, "resources/projectiles/aoe" + i + ".png");
-            saveTexture("rocket" + i, "resources/projectiles/rocket" + i + ".png");
-            saveTexture("explosion" + i, "resources/projectiles/explosion" + i + ".png");
-            saveTexture("chilli" + i, "resources/projectiles/chilliproj" + i + ".png");
+            saveTexture("aoe" + i, "resources/Projectiles/aoe" + i + ".png");
+            saveTexture("rocket" + i, "resources/Projectiles/rocket" + i + ".png");
+            saveTexture("explosion" + i, "resources/Projectiles/explosion" + i + ".png");
+            saveTexture("chilli" + i, "resources/Projectiles/chilliproj" + i + ".png");
         }
         for (int i = 1; i < 6; i++) {
-        	saveTexture("start" + i, "resources/projectiles/start" + i + ".png");
+        	saveTexture("start" + i, "resources/Projectiles/start" + i + ".png");
         }
         for (int i = 1; i < 5; i++) {
-            saveTexture("leaves" + i, "resources/projectiles/leaves" + i + ".png");
+            saveTexture("leaves" + i, "resources/Projectiles/leaves" + i + ".png");
         }
         
         // Tree Attack Textures
-        saveTexture("lightningDesert", "resources/projectiles/lightningDesert.png");
-        saveTexture("lightningFire", "resources/projectiles/lightningFire.png");
-        saveTexture("lightningForrest", "resources/projectiles/lightningForrest.png");
-        saveTexture("lightningIce", "resources/projectiles/lightningIce.png");
-        saveTexture("lightningWater", "resources/projectiles/lightningWater.png");
+        saveTexture("lightningDesert", "resources/Projectiles/lightningDesert.png");
+        saveTexture("lightningFire", "resources/Projectiles/lightningFire.png");
+        saveTexture("lightningForrest", "resources/Projectiles/lightningForrest.png");
+        saveTexture("lightningIce", "resources/Projectiles/lightningIce.png");
+        saveTexture("lightningWater", "resources/Projectiles/lightningWater.png");
 
         // Particles
         saveTexture("snowflake", "resources/particles/snowflake.png");
