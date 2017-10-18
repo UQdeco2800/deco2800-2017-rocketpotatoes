@@ -75,7 +75,8 @@ public class RTree<Key> {
      */
     public void move(Key k, Shape2D newPosition) {
         // TODO -- this
-        forwardLookup.put(k, newPosition);
+        remove(k);
+        insert(k, newPosition);
     }
 
     /**

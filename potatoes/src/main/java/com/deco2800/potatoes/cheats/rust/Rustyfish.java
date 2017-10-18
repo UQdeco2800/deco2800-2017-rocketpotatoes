@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Logger;
 import com.deco2800.potatoes.cheats.CheatExecution;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -14,13 +15,15 @@ import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.lwjgl.opengl.Display;
+import org.slf4j.LoggerFactory;
+
 
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Rustyfish implements CheatExecution {
-
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Rustyfish.class);
     private static SpriteBatch batch = new SpriteBatch();
     private static ShapeRenderer sr = new ShapeRenderer();
 
@@ -81,7 +84,6 @@ public class Rustyfish implements CheatExecution {
     /**
      * Updates the window, checking for resize events, key events etc.
      *
-     * Places key information inside STRUCT TODO
      */
     private static Callback updateWindow = new Callback() {
         @SuppressWarnings("unused")
@@ -137,8 +139,6 @@ public class Rustyfish implements CheatExecution {
         public void run(RenderInfo.ByReference info) {
             info.setSizeX(Gdx.graphics.getWidth());
             info.setSizeY(Gdx.graphics.getHeight());
-
-            //System.out.println(info);
         }
     };
 
@@ -201,6 +201,8 @@ public class Rustyfish implements CheatExecution {
         }
         catch (UnsatisfiedLinkError ex) {
             // Ignore failure, don't start game!
+            LOGGER.error("Unsatified Link Error occured",ex);
+            System.exit(-1);
         }
     }
 }
