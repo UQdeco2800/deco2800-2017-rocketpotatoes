@@ -33,6 +33,7 @@ public class PauseMenuGui extends Gui {
     private Skin uiSkin;
     private Drawable resumeDrawable;
     private Drawable optionsDrawable;
+    private Drawable optionsBackDrawable;
     private Drawable saveDrawable;
     private Drawable exitDrawable;
 
@@ -71,7 +72,7 @@ public class PauseMenuGui extends Gui {
     private Slider optionsEffectsVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
-    private TextButton optionsBackButton;
+    private ImageButton optionsBackButton;
     private Drawable optionsBackgroundDrawable;
 
     
@@ -109,6 +110,7 @@ public class PauseMenuGui extends Gui {
         // Make drawables from textures
         resumeDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("resumePauseMenu")));
         optionsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsPauseMenu")));
+        optionsBackDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsBackButton")));
         saveDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("savePauseMenu")));
         exitDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("exitPauseMenu")));
         helpDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("tutorialPauseMenu")));
@@ -152,7 +154,7 @@ public class PauseMenuGui extends Gui {
         optionsEffectsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
-        optionsBackButton = new TextButton("Back", uiSkin);
+        optionsBackButton = new ImageButton(optionsBackDrawable);
         optionsBackgroundDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backgroundOptionsMenu")));
         
         // Help button group
@@ -168,13 +170,13 @@ public class PauseMenuGui extends Gui {
         
         // progress bar options
 		progressBarLabel = new Label("Progress Bars", uiSkin);
-		playerProgressBarCheckBox = new CheckBox("Show Player Progress Bar", uiSkin);
+		playerProgressBarCheckBox = new CheckBox(" Show Player Progress Bar", uiSkin);
 		playerProgressBarCheckBox.setChecked(true);
-		potatoProgressBarCheckBox = new CheckBox("Show Goal Potato Progress Bar", uiSkin);
+		potatoProgressBarCheckBox = new CheckBox(" Show Goal Potato Progress Bar", uiSkin);
 		potatoProgressBarCheckBox.setChecked(true);
-		alliesProgressBarCheckBox = new CheckBox("Show Allies Progress Bar", uiSkin);
+		alliesProgressBarCheckBox = new CheckBox(" Show Allies Progress Bar", uiSkin);
 		alliesProgressBarCheckBox.setChecked(true);
-		enemyProgressBarCheckBox = new CheckBox("Show Enemy Progress Bar", uiSkin);
+		enemyProgressBarCheckBox = new CheckBox(" Show Enemy Progress Bar", uiSkin);
 		enemyProgressBarCheckBox.setChecked(true);
 		
         optionsButtonGroup = new VerticalGroup();
@@ -187,14 +189,11 @@ public class PauseMenuGui extends Gui {
 		optionsButtonGroup.addActor(potatoProgressBarCheckBox);
 		optionsButtonGroup.addActor(alliesProgressBarCheckBox);
 		optionsButtonGroup.addActor(enemyProgressBarCheckBox);
-		optionsButtonGroup.addActor(optionsBackButton);
-        optionsButtonGroup.addActor(optionsBackButton);
         optionsEffectsVolumeSlider.setValue(screen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(screen.getMusicVolume());
         optionsButtonGroup.space(20);
         
-        // Add padding to button
-        optionsBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        // Add padding to buttons
         helpBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
         slideBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
         
@@ -420,7 +419,9 @@ public class PauseMenuGui extends Gui {
                 table.add(pauseButtonGroup).expandX().center();
                 break;
             case OPTIONS:
-                table.add(optionsButtonGroup).expandX().center();
+                table.add(optionsButtonGroup).expandX().center().padTop(50);
+                table.row();
+                table.add(optionsBackButton).expandX().center().padTop(15);
                 table.background(optionsBackgroundDrawable);
                 break;
             case HELP:

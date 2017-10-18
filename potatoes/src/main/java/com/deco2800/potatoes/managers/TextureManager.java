@@ -122,6 +122,7 @@ public class TextureManager extends Manager {
         saveTexture("healthButton", "resources/menu/tutorial/healthButton.png");
         saveTexture("portalsButton", "resources/menu/tutorial/portalsButton.png");
         saveTexture("controlsButton", "resources/menu/tutorial/controlsButton.png");
+        saveTexture("optionsBackButton", "resources/menu/pauseMenu/optionsBackButton.png");
 
         // Tutorial
         saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");
