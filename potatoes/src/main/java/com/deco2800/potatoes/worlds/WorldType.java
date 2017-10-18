@@ -29,18 +29,6 @@ public class WorldType {
 	protected static final String WATER = "water_tile_1";
 	protected static final String GRASS = "grass_tile_1";
 	private static final Point PORTAL_POS = new Point(10, 10);
-	/**
-	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
-			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("forest"));
-	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 0.5f, true),
-			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("desert"));
-	public static final WorldType ICE_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
-			new Terrain(GROUND, 1, false), new Terrain(WATER, 2f, false)), defaultEntities("iceland"));
-	public static final WorldType VOLCANO_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
-			new Terrain(GROUND, 0.5f, false), new Terrain(WATER, 0, false)), defaultEntities("volcano"));
-	public static final WorldType OCEAN_WORLD = new WorldType(new TerrainType(null, new Terrain(WATER, 1, true),
-			new Terrain(GROUND, 1, false), new Terrain(GRASS, 0, false)), defaultEntities("sea"));
-			**/
 
 	private final TerrainType terrain;
 	// List of suppliers because creating the entities early can cause problems
@@ -52,7 +40,6 @@ public class WorldType {
 	 * @param terrain
 	 *            the terrain type
 	 */
-	
 	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
 		this.terrain = terrain;
 		this.entities = entities;
@@ -88,7 +75,7 @@ public class WorldType {
 	}
 
 	/**
-	 * Returns the list of entites that should start in a world of this type
+	 * Returns the list of entities that should start in a world of this type
 	 */
 	public List<AbstractEntity> getEntities() {
 		List<AbstractEntity> result = new ArrayList<>();

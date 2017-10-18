@@ -14,7 +14,7 @@ public class ForestWorld extends WorldType {
 	private static final ForestWorld instance = new ForestWorld(forestTerrain, forestEntities);
 	
 	private ForestWorld(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
-		super(terrain, entities);
+		super(forestTerrain, forestEntities);
 	}
 
 	/**

@@ -1,7 +1,26 @@
 package com.deco2800.potatoes.worlds;
 
+import java.util.List;
+import java.util.function.Supplier;
+
+import com.deco2800.potatoes.worlds.terrain.Terrain;
+import com.deco2800.potatoes.worlds.terrain.TerrainType;
+import com.deco2800.potatoes.entities.AbstractEntity;
+
 public class DesertWorld extends WorldType {
+	private static final TerrainType desertTerrain = new TerrainType(null, new Terrain(GRASS, 1, true), new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false));
+	private static final List<Supplier<AbstractEntity>> desertEntities = defaultEntities("desert");
+
+	private static final DesertWorld instance = new DesertWorld(desertTerrain, desertEntities);
 	
-	private final TerrainType desertTerrain = new WorldType(new TerrainType(null, new Terrain(GRASS, 0.5f, true), new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false));
-	private 
+	private DesertWorld(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
+		super(desertTerrain, desertEntities);
+	}
+
+	/**
+	 * Returns the singleton instance for this world type
+	 */
+	public static DesertWorld get() {
+		return instance;
+	}
 }
