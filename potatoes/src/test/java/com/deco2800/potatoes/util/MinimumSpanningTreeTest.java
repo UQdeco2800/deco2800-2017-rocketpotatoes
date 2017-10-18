@@ -43,6 +43,8 @@ public class MinimumSpanningTreeTest {
         for (int i = 0; i < numberOfNodes; i++) {
             tree.addVertex(nodes.get(i), i);
         }
+
+        new MinimumSpanningTree.Vertex(nodes.get(0), 0).hashCode();
         // Add weights to graph
         for (int i = 0; i < numberOfNodes; i++) {
             for (int j = 0; j < numberOfNodes; j++) {

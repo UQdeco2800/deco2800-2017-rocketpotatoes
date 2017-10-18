@@ -63,7 +63,7 @@ public class TextureManager extends Manager {
         saveTexture("ring", "resources/placeholderassets/ring.png");
         saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
         saveTexture("highlight_tile_invalid", "resources/tiles/highlight_tile_invalid.png");
-        saveTexture("tankBear", "resources/placeholderassets/tankBear.png");
+        saveTexture("tankBear", "resources/enemies/bear/bear_SW.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
         saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
@@ -273,6 +273,21 @@ public class TextureManager extends Manager {
         		saveTexture(textureNameIdle, "resources/player/wizard/idle/" + textureNameIdle + ".png");
         		String textureNameDamaged = "wizard_damaged_" + direction.name() + "_1";
         		saveTexture(textureNameDamaged, "resources/player/wizard/damaged/" + textureNameDamaged + ".png");
+        		
+        		for (int i=1; i<=4; i++) {
+        			String textureNameAttack = "wizard_attack_" + direction.name() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/wizard/attack/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=6; i++) {
+        			String textureNameAttack = "wizard_interact_" + direction.name() + "_" + i;
+        			saveTexture(textureNameAttack, "resources/player/wizard/interact/" + textureNameAttack + ".png");
+        		}
+        		
+        		for (int i=1; i<=17; i++) {
+        			String textureNameDeath = "wizard_death_" + direction.name() + "_" + i;
+        			saveTexture(textureNameDeath, "resources/player/wizard/death/" + textureNameDeath + ".png");
+        		}
 
         }
 
@@ -350,6 +365,9 @@ public class TextureManager extends Manager {
         saveTexture("POINT_HIGHLIGHT", "resources/collisionmasks/Point2D_highlight.png");
         saveTexture("CIRCLE_HIGHLIGHT", "resources/collisionmasks/Circle2D_highlight.png");
         saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
+
+        saveTexture("turbofish", "resources/rustyfish/turbofish.png");
+        saveTexture("boatman", "resources/rustyfish/boatman.png");
 
     }
 

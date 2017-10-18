@@ -291,5 +291,16 @@ public class Inventory {
 		}
 		return true;
 	}
+	/**
+	 * InteliJ generated Hashcode Function to meet sonar requirements
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (guiManager != null ? guiManager.hashCode() : 0);
+		result = 31 * result + (inventoryMap != null ? inventoryMap.hashCode() : 0);
+		return result;
+	}
+
 
 }

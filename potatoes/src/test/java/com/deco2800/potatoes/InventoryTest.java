@@ -38,6 +38,18 @@ public class InventoryTest {
 		validInventory = new Inventory(validResources);
 	}
 
+	@After
+	public void tearDown() {
+
+		validResources.clear();
+		validResources = null;
+		seed1 = null;
+		food1 = null;
+		nonResource = null;
+		validInventory = null;
+
+	}
+
 	@Test(expected = InvalidResourceException.class)
 	public void testNullResourceInstantiation() throws InvalidResourceException {
 		Inventory items = new Inventory(null);
@@ -233,6 +245,7 @@ public class InventoryTest {
 		inventory.addInventoryResource(new FoodResource());
 		inventory.updateQuantity(new FoodResource(), 5);
 		assert(inventory.toString().equals("food count = 5"+System.getProperty("line.separator")+"seed count = 2"+System.getProperty("line.separator")));
+		inventory.hashCode();
 		
 	}
 	

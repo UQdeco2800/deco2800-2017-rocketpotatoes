@@ -77,14 +77,7 @@ public class ChatGui extends Gui {
         minButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                if (cState == chatStates.HIDDEN) {
-                    cState = chatStates.CHAT;
-                    resetGui(stage);
-                } else {
-                    cState = chatStates.HIDDEN;
-                    resetGui(stage);
-                }
-                hidden = !hidden;
+                toggleChat();
             }
         });
 
@@ -118,6 +111,7 @@ public class ChatGui extends Gui {
 
         resetGui(stage);
         stage.addActor(table);
+        toggleChat();
     }
 
     /**
@@ -181,6 +175,17 @@ public class ChatGui extends Gui {
             table.left().bottom();
             minButton.setText("Show Chat");
         }
+    }
+
+    public void toggleChat(){
+        if (cState == chatStates.HIDDEN) {
+            cState = chatStates.CHAT;
+            resetGui(stage);
+        } else {
+            cState = chatStates.HIDDEN;
+            resetGui(stage);
+        }
+        hidden = !hidden;
     }
 
     /**

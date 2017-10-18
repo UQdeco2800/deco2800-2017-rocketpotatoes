@@ -15,12 +15,13 @@ public class EnemyWave {
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
     private int round_number;
+    private boolean isPauseWave;
 
     public enum WaveState {
-        WAITING, ACTIVE, PAUSED, FINISHED
+        WAITING, ACTIVE, PAUSE, FINISHED
     }
 
-    WaveState waveState = WaveState.WAITING;
+    private WaveState waveState = WaveState.WAITING;
 
     /**
      * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
@@ -48,11 +49,12 @@ public class EnemyWave {
     }
 
     /**
-     * Pause wave consturctor, no enemies.
+     * Pause wave constructor, no enemies.
      */
-    public EnemyWave() {
+    public EnemyWave(int waveLength) {
         this.enemyRatios = calculateEnemyRatios(0,0,0,0);
-        this.waveLength = 500;
+        this.waveLength = waveLength;
+        this.isPauseWave = true;
     }
 
     /**
@@ -104,17 +106,20 @@ public class EnemyWave {
      * Currently do nothing unless in ACTIVE state.
      *
      */
-    public void tickAction(){
+    public void tickAction() {
         switch (getWaveState()) {
 /*            case WAITING:
                 //Do nothing
+                break;*/
+            case PAUSE:
+                /*setCurrentWaveTime(elapsedWaveTime() + 1);
+                if (elapsedWaveTime() > getWaveLength()) {
+                    setWaveState(WaveState.FINISHED);
+                }*/
                 break;
-            case PAUSED:
-                //Pausing not yet implemented
-                break;
-*/            case ACTIVE:
+            case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
-                if (elapsedWaveTime()>getWaveLength()) {
+                if (elapsedWaveTime() > getWaveLength()) {
                     setWaveState(WaveState.FINISHED);
                 } else if (elapsedWaveTime() % spawnRate == 0) {
                     spawnEnemyToRatio(getEnemyRatios());
@@ -124,8 +129,14 @@ public class EnemyWave {
  /*           case FINISHED:
                 //Handling finished state
                 break;
-   */     }
+   */
+        }
     }
+
+    /**
+     * @return if the wave is a 'pause' wave
+     */
+    public boolean isPauseWave() { return this.isPauseWave; }
 
     /**
      * @return the time elapsed since wave started in 0.001 seconds

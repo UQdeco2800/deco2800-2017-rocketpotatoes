@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
@@ -51,6 +52,7 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			} while (hasCollisions(param, (int) newPosX, (int) newPosY));
 			
 			// sets the location of the player to respawn
+			((Player) param).setState(PlayerState.IDLE);
 			param.setPosition(newPosX, newPosY);
 
 			try {

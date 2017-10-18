@@ -12,6 +12,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A point class that implements Shape2D.
@@ -189,5 +190,10 @@ public class Point2D extends Shape2D {
     @Override
     public String toString() {
         return this.x + ", " + this.y;
+    }
+
+    @Override
+    public Optional<Box2D> getBoundingBox() {
+        return Optional.empty();
     }
 }

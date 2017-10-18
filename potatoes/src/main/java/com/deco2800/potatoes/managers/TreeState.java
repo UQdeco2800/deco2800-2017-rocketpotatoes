@@ -134,4 +134,8 @@ public class TreeState {
     public int hashCode() {
         return tree.hashCode();
     }
+    @Override
+    public boolean equals(Object obj) {
+        return tree.equals(obj);
+    }
 }
