@@ -18,9 +18,13 @@ from sys import argv
 from os import path
 import ntpath
 
-import tkinter
-from tkinter import filedialog
-tkinter.Tk().withdraw()
+try:
+    import tkinter
+    from tkinter import filedialog
+    tkinter.Tk().withdraw()
+    TKINTER = True
+except ImportError:
+    TKINTER = False
 
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
@@ -95,9 +99,13 @@ def import_model():
     return model
 
 def get_output_name():
-    output = get_arg(2) \
-            or filedialog.asksaveasfilename(filetypes=(("PNG image", "*.png"),
-                ("All Files", ".*")), title="Select the sprite base name") \
+    if TKINTER:
+        output = get_arg(2) \
+                or filedialog.asksaveasfilename(filetypes=(("PNG image", "*.png"),
+                   ("All Files", ".*")), title="Select the sprite base name") \
+                or "blender-output/model-out"
+    else:
+        output = get_arg(2) \
             or "blender-output/model-out"
 
     return path.splitext(output)[0]
@@ -253,7 +261,10 @@ def main():
 
     for i in range(SCENE.frame_start, SCENE.frame_end):
         # ensure model can be rotated later by clearing its rotation keyframes
-        bpy.context.active_object.keyframe_delete('rotation_euler', frame=i)
+        try:
+            bpy.context.active_object.keyframe_delete('rotation_euler', frame=i)
+        except RuntimeError:
+            pass
 
     blob = [] # all the models of all the frames, in one big blob
 

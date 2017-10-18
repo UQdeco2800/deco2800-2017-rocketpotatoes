@@ -37,8 +37,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyProperties STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
-	private static final transient String TEXTURE_LEFT = "tankBear";
-	private static final transient String TEXTURE_RIGHT = "tankBear";
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
@@ -48,7 +46,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static float speed = 0.006f;
 	private static Class<?> goal = AbstractTree.class;
 	private Path path = null;
-	private Shape2D target = null;
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
@@ -177,7 +174,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		}
 
 
-		
+
 		if (timer % 100 == 0 && !collided) {
 			GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
 			GameManager.get().getWorld().addEntity(
@@ -191,7 +188,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 			GameManager.get().getWorld().addEntity(
 					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
 		}
-		
+
 
 		if (!collided) {
 			setPosX(getPosX() + changeX);
