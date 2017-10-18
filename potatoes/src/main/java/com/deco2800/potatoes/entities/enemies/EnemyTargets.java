@@ -6,12 +6,11 @@ import java.util.ArrayList;
 
 public class EnemyTargets {
 
-    private static ArrayList<Class> mainTargets;
-    private static ArrayList<Class> sightAggroTargets;
-    private static ArrayList<Class> damageAggroTargets;
+    private ArrayList<Class> mainTargets;
+    private ArrayList<Class> sightAggroTargets;
+    private ArrayList<Class> damageAggroTargets;
 
-    public EnemyTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightAggroTargets,
-                        ArrayList<Class> damageAggroTargets) {
+    public EnemyTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightAggroTargets) {
         this.mainTargets = mainTargets;
         this.sightAggroTargets = sightAggroTargets;
         this.damageAggroTargets = damageAggroTargets;

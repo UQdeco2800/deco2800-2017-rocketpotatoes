@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
 
@@ -42,7 +43,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private Path path = null;
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
-	private static EnemyTargets targets = initTargets();
+	private EnemyTargets targets = initTargets();
 
 	private int ticksSinceRandom = 0;
 	private static final int MAX_WAIT = 200;
@@ -219,7 +220,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return STATS;
 	}
 
-	private static EnemyTargets initTargets() {
+	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		ArrayList<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(BasePortal.class);
@@ -239,7 +240,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		EnemyTargets targets = new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
+		targets = new EnemyTargets(mainTargets, sightAggroTargets);
 		return targets;
 	}
 }

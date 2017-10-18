@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.waves;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;

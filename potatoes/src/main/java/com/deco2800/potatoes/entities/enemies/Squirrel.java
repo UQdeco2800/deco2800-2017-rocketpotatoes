@@ -37,7 +37,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private static Class<?> goal = Player.class;
 
-	private static EnemyTargets targets = initTargets();
+	private EnemyTargets targets = initTargets();
 
 	private Path path = null;
 	private Shape2D target = null;
@@ -128,7 +128,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				.createEnemyStatistics();
 	}
 
-	private static EnemyTargets initTargets() {
+	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		ArrayList<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(BasePortal.class);
@@ -148,8 +148,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		EnemyTargets targets = new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
-		return targets;
+		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 
 	/***

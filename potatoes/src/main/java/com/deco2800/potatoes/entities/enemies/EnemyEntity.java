@@ -22,6 +22,7 @@ import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Map<Integer, AbstractEntity> entities;
 	private boolean moving = true;
 	private int channelTimer;
+
+	public EnemyTargets targets;
 
 	private static final SoundManager enemySoundManager = new SoundManager();
 
@@ -141,8 +144,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
 		entities = GameManager.get().getWorld().getEntities();
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
-		for (AbstractEntity entity : entities.values()) {
-			for (Class sightTarget : targets.getSightAggroTargets()) {
+		for (Class sightTarget : targets.getSightAggroTargets()) {
+			for (AbstractEntity entity : entities.values()) {
 				if (entity.getClass().isAssignableFrom(sightTarget)) {	//HOW TO CHECK SUPERCLASS SO WE CAN JUST ADD PLAYER TO TARGETS?
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
 					if (distance < 10) {
@@ -152,8 +155,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			}
 		}
 		/*If no aggro, return 'ultimate' target*/
-		for (AbstractEntity entity : entities.values()) {
-			for (Class mainTarget : targets.getMainTargets()) {
+		for (Class mainTarget : targets.getMainTargets()) {
+			for (AbstractEntity entity : entities.values()) {
 				if (entity.getClass().isAssignableFrom(mainTarget)) {
 					return entity;
 				}
@@ -211,7 +214,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return Math.round((count/time));
 
 
-	};
+	}
+
+	/***
+	 * Initialise an enemy with a particular set of targets/goals
+	 */
+	public EnemyTargets intializeTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightTargets) {
+		this.targets = new EnemyTargets(mainTargets, sightTargets);
+		return this.targets;
+	}
+
 	/***
 	 * Abstract method requiring extending classes to return a string corresponding
 	 * to their enemy type. Useful for selecting sprites.
