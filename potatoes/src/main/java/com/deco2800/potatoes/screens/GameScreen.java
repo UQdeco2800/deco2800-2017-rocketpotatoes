@@ -407,7 +407,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(14.5f, 17.5f, 100));
+		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 100));
 	}
 
 	private void tickGame(long timeDelta) {
