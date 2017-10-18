@@ -355,6 +355,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		// destroy the enemy & it's events
 		GameManager.get().getWorld().removeEntity(this);
 		GameManager.get().getManager(EventManager.class).unregisterAll(this);
+		GameManager.get().getManager(WaveManager.class).getActiveWave().reduceTotalEnemiesByOne();
 	}
 
 }
