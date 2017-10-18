@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.effects.Effect.EffectTexture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class DamageTree extends AbstractTree implements Tickable {
         status.put("acorn_tree1","acorn_tree1-death");
         status.put("lightning_tree1","lightning_tree1-normal");
         status.put("fire_tree","fire_tree-normal");
+        status.put("cactusTree", "cactusTree-normal");
 
 
         treeStatus.put("ice_tree-death",new String[]{
@@ -123,27 +125,34 @@ public class DamageTree extends AbstractTree implements Tickable {
                 "lightning_tree9",
         });
 
-
+        treeStatus.put("cactusTree-normal",new String[]{
+                "cactusTree"
+        });
 
 
     }
     /**
      * Static generating ice tree
      */
-    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation());
+    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), EffectTexture.LIGHTNING_ICE);
     /**
      * Static generating acorn tree
      */
-	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation());
+	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), EffectTexture.LIGHTNING_FORREST);
     /**
      * Static generating lightning tree
      */
-	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation());
+	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation(), EffectTexture.LIGHTNING_WATER);
     /**
      * Static generating fire tree
      */
-	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation());
-    /**
+	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(), EffectTexture.LIGHTNING_FIRE);
+	 /**
+     * Static generating cactus tree
+     */
+	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), EffectTexture.LIGHTNING_DESERT);
+    
+	/**
      * Static field to store information about upgrades
      */
     private DamageTreeType damageTreeType;
@@ -205,6 +214,11 @@ public class DamageTree extends AbstractTree implements Tickable {
 
             this.setTexture("fire_tree");
             return FIRE_TREE_STATS;
+        } else if(damageTreeType instanceof CactusTreeType){
+
+
+            this.setTexture("cactusTree");
+            return CACTUS_TREE_STATS;
         }
 
         this.setTexture("lightning_tree1");
@@ -229,7 +243,9 @@ public class DamageTree extends AbstractTree implements Tickable {
      * Static method to create the list of upgrades
      * Function<AbstractTree, Animation> animation
      */
-	private static List<TreeProperties> generateTree(String texture,Map<String,Function<AbstractTree, Animation>> animation ) {
+	private static List<TreeProperties> generateTree(String texture,Map<String,Function<AbstractTree, Animation>> animation,
+			EffectTexture attackTexture) {
+
 		List<TreeProperties> result = new LinkedList<>();
 
 		/*
@@ -238,10 +254,8 @@ public class DamageTree extends AbstractTree implements Tickable {
 		 */
 
 			result.add(new PropertiesBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-					.setBuildCost(1).setAnimation(animation.get(status.get(texture))).addEvent(new LightningShootEvent(250))
+					.setBuildCost(1).setAnimation(animation.get(status.get(texture))).addEvent(new LightningShootEvent(250, attackTexture))
 					.createTreeStatistics());
-
-
 
 		return result;
 	}
@@ -262,6 +276,8 @@ public class DamageTree extends AbstractTree implements Tickable {
             return "Acorn Tree";
         } else if(damageTreeType instanceof FireTreeType){
             return "Fire Tree";
+        } else if(damageTreeType instanceof CactusTreeType){
+            return "Cactus Tree";
         } else {
             return "Lightning Tree";
         }

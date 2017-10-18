@@ -81,7 +81,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * Constructs a new AbstractEntity with specific render lengths. Allows
 	 * specification of rendering dimensions different to those used for collision.
 	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches. 
+	 * the leaves/branches.
 	 *
 	 * @param mask
 	 *            The collision mask used by the entity.
@@ -576,7 +576,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		float dy = (float) (dist * Math.sin(theta));
 		float length = GameManager.get().getWorld().getLength();
 		float width = GameManager.get().getWorld().getWidth();
-		float terrainModifierCheck = 0.1f;
+		float terrainModifierCheck;
 
 
 		terrainModifierCheck = GameManager.get().getWorld()
@@ -716,7 +716,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	private void moveAndPush(Map<Integer, AbstractEntity> entities){
 		float length = GameManager.get().getWorld().getLength();
 		float width = GameManager.get().getWorld().getWidth();
-		float terrainModifierCheck = 0.1f;
+		float terrainModifierCheck;
 		float movDist = moveSpeed * moveSpeedModifier;
 
 		//set next pos

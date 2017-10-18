@@ -77,10 +77,10 @@ public class TextureManager extends Manager {
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
-            saveTexture("aoe" + i, "resources/projectiles/aoe" + i + ".png");
-            saveTexture("rocket" + i, "resources/projectiles/rocket" + i + ".png");
-            saveTexture("explosion" + i, "resources/projectiles/explosion" + i + ".png");
-            saveTexture("chilli" + i, "resources/projectiles/chilliproj" + i + ".png");
+            saveTexture("aoe" + i, "resources/Projectiles/aoe" + i + ".png");
+            saveTexture("rocket" + i, "resources/Projectiles/rocket" + i + ".png");
+            saveTexture("explosion" + i, "resources/Projectiles/explosion" + i + ".png");
+            saveTexture("chilli" + i, "resources/Projectiles/chilliproj" + i + ".png");
         }
         for (int i = 1; i < 6; i++) {
         	saveTexture("start" + i, "resources/Projectiles/start" + i + ".png");
@@ -88,7 +88,13 @@ public class TextureManager extends Manager {
         for (int i = 1; i < 5; i++) {
             saveTexture("leaves" + i, "resources/Projectiles/leaves" + i + ".png");
         }
-        saveTexture("lightning", "resources/projectiles/lightning.png");
+        
+        // Tree Attack Textures
+        saveTexture("lightningDesert", "resources/Projectiles/lightningDesert.png");
+        saveTexture("lightningFire", "resources/Projectiles/lightningFire.png");
+        saveTexture("lightningForrest", "resources/Projectiles/lightningForrest.png");
+        saveTexture("lightningIce", "resources/Projectiles/lightningIce.png");
+        saveTexture("lightningWater", "resources/Projectiles/lightningWater.png");
 
         // Particles
         saveTexture("snowflake", "resources/particles/snowflake.png");
@@ -167,6 +173,9 @@ public class TextureManager extends Manager {
             saveTexture("acorn_tree_dead"+i, "resources/trees/acornDead"+i+".png");
 
         }
+        
+        saveTexture("cactusTree", "resources/trees/cactusTree.png");
+        saveTexture("defenseTree", "resources/trees/defenseTree.png");
         //damage tree:ice
 
         //damage tree:acorn

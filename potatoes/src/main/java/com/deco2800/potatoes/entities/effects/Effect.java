@@ -49,10 +49,34 @@ public abstract class Effect extends AbstractEntity implements Tickable {
                 return new String[]{"start1", "start2", "start3", "start4", "start5"};
             }
         },
-        LIGHTNING {
+        LIGHTNING_DESERT {
             @Override
 			public String[] textures() {
-                return new String[]{"lightning"};
+                return new String[]{"lightningDesert"};
+            }
+        },
+        LIGHTNING_FIRE {
+            @Override
+			public String[] textures() {
+                return new String[]{"lightningFire"};
+            }
+        },
+        LIGHTNING_FORREST {
+            @Override
+			public String[] textures() {
+                return new String[]{"lightningForrest"};
+            }
+        },
+        LIGHTNING_ICE {
+            @Override
+			public String[] textures() {
+                return new String[]{"lightningIce"};
+            }
+        },
+        LIGHTNING_WATER {
+            @Override
+			public String[] textures() {
+                return new String[]{"lightningWater"};
             }
         },
         LAZER {
