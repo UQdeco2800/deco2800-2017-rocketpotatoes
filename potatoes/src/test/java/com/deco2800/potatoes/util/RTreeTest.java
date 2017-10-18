@@ -219,4 +219,24 @@ public class RTreeTest {
             }
         }
     }
+
+    // relies on findOverlapping and insert
+    @Test
+    public void removeFromTree() {
+        RTree<Integer> tree = new RTree<>();
+
+        for (int x = -5; x < 5; ++x) {
+            for (int y = -5; y < 5; ++y) {
+                tree.insert(10 * x + y, new Point2D(x, y));
+            }
+        }
+
+        Shape2D filter = new Box2D(0, 0, 3, 3);
+        for (Integer key: tree.findOverlapping(filter)) {
+            tree.remove(key);
+        }
+
+        System.out.println(tree.findOverlapping(filter));
+        assertTrue(tree.findOverlapping(filter).size() == 0);
+    }
 }
