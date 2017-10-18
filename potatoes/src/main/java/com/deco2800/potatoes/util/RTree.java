@@ -484,8 +484,6 @@ public class RTree<Key> {
             } else {
                 Block toBeMaybeJoined = null;
                 for (Block child: children) {
-                    System.out.println(child.minimumBoundingRectangle);
-                    System.out.println(child.minimumBoundingRectangle.overlaps(b.getPosition()));
                     if (child.minimumBoundingRectangle.overlaps(b.getPosition())
                             && child.remove(b)) {
                         // child has overflown
