@@ -182,7 +182,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     }
 
     @Override
-    public DamageTree clone() {
+    public DamageTree createCopy() {
     	return new DamageTree(this.getPosX(), this.getPosY(), this.getDamageTreeType());
     }
 

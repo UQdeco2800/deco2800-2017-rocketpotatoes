@@ -136,7 +136,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         if (keycode > Input.Keys.NUM_0 && keycode < Input.Keys.NUM_9){
             AbstractTree tree = getTreeBinding(keycode - Input.Keys.NUM_0);
             if (tree != null) {
-                buyTree(tree.clone());
+                buyTree(tree.createCopy());
                 closeShop();
             }
         }
@@ -225,7 +225,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     }
 
     /**
-     * Returns a clone of treeStates.
+     * Returns a createCopy of treeStates.
      */
     public ArrayList<TreeState> getTreeStates() {
         ArrayList<TreeState> clone = new ArrayList<TreeState>();
@@ -589,7 +589,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     private void buyTree() {
 
         AbstractTree newTree;
-        newTree = unlockedTreeStates.get(selectedSegment).getTree().clone();
+        newTree = unlockedTreeStates.get(selectedSegment).getTree().createCopy();
         buyTree(newTree);
     }
 

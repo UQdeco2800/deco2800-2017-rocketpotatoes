@@ -84,7 +84,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	}
 	
 	@Override
-	public ResourceTree clone() {
+	public ResourceTree createCopy() {
 		return new ResourceTree(this.getPosX(), this.getPosY(), this.gatherType, this.gatherCapacity);
 	}
 
