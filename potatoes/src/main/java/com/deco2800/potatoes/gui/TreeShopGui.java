@@ -65,13 +65,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 
     // Opacity value for treeShop subsection when mouse is not hovering over it
-    final private float UNSELECTED_ALPHA = 0.2f;
+    private final float UNSELECTED_ALPHA = 0.2f;
     // Opacity value for treeShop subsection when mouse hovers over
-    final private float SELECTED_ALPHA = 0.5f;
+    private final float SELECTED_ALPHA = 0.5f;
     // Maximum number of tile lengths from player where you can plant trees
-    final private int MAX_RANGE = 6;
+    private final int MAX_RANGE = 6;
 
-    final private int SHOPRADIUS = 150;
+     private int SHOPRADIUS = 150;
 
     /**
      * Instantiates shop with but doesn't display it yet.
