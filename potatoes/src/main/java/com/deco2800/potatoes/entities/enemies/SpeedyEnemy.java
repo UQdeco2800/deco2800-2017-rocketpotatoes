@@ -38,7 +38,6 @@ import java.util.Optional;
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
@@ -85,8 +84,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
-
-		// resetStats();
 	}
 
 	/***

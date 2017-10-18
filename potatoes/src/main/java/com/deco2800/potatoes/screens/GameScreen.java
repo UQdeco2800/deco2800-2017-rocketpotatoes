@@ -20,7 +20,9 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.AcornTreeType;
+import com.deco2800.potatoes.entities.trees.CactusTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.DefenseTree;
 import com.deco2800.potatoes.entities.trees.FireTreeType;
 import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
@@ -354,6 +356,9 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(12.5f, 11.5f, new CactusTreeType()));
+		
+		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
 	}
 
 	private void initialiseResources() {

@@ -205,6 +205,8 @@ public class MortalEntityTest {
 		assertEquals(100, mortalEntity.getProgress());
 		assertFalse("Health should be set to 23.4f", mortalEntity.setHealth(23.4f));
 		assertEquals("Progress should equal 23 and be an integer", 23, mortalEntity.getProgress());
+		mortalEntity.showProgress();
+		
 	}
 
 	@Test

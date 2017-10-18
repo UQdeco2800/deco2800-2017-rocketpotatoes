@@ -171,4 +171,13 @@ public class EnemyEntityTest extends BaseTest {
 //        tank1 = new TankEnemy(7, 7);
 //        Assert.assertEquals(tank1.delay(10,tank1.getEnemyType().length),0);
 //    }
+
+    @Test
+    public void channelTest() {
+        tank1 = new TankEnemy(7, 7);
+        tank1.getChannelTimer();
+        tank1.setChannellingTimer(3);
+        tank1.getProgressBar();
+    }
+
 }

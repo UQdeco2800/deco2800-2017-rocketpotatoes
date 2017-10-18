@@ -10,11 +10,9 @@ import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.health.*;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.entities.TimeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -330,7 +328,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Sets the direction of the player based on a current WASD keys pressed.
      */
     void updateMovingAndFacing() {
-        Direction newFacing = null;
+        Direction newFacing;
 
         //TODO releasing keys while travelling diagonal, not working, returning to cardinal directions
 

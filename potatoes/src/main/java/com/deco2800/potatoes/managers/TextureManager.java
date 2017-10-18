@@ -84,10 +84,10 @@ public class TextureManager extends Manager {
 
         // Projectiles
         for (int i = 1; i < 4; i++) {
-            saveTexture("aoe" + i, "resources/projectiles/aoe" + i + ".png");
-            saveTexture("rocket" + i, "resources/projectiles/rocket" + i + ".png");
-            saveTexture("explosion" + i, "resources/projectiles/explosion" + i + ".png");
-            saveTexture("chilli" + i, "resources/projectiles/chilliproj" + i + ".png");
+            saveTexture("aoe" + i, "resources/Projectiles/aoe" + i + ".png");
+            saveTexture("rocket" + i, "resources/Projectiles/rocket" + i + ".png");
+            saveTexture("explosion" + i, "resources/Projectiles/explosion" + i + ".png");
+            saveTexture("chilli" + i, "resources/Projectiles/chilliproj" + i + ".png");
         }
         for (int i = 1; i < 6; i++) {
         	saveTexture("start" + i, "resources/Projectiles/start" + i + ".png");
@@ -95,7 +95,13 @@ public class TextureManager extends Manager {
         for (int i = 1; i < 5; i++) {
             saveTexture("leaves" + i, "resources/Projectiles/leaves" + i + ".png");
         }
-        saveTexture("lightning", "resources/projectiles/lightning.png");
+        
+        // Tree Attack Textures
+        saveTexture("lightningDesert", "resources/Projectiles/lightningDesert.png");
+        saveTexture("lightningFire", "resources/Projectiles/lightningFire.png");
+        saveTexture("lightningForrest", "resources/Projectiles/lightningForrest.png");
+        saveTexture("lightningIce", "resources/Projectiles/lightningIce.png");
+        saveTexture("lightningWater", "resources/Projectiles/lightningWater.png");
 
         // Particles
         saveTexture("snowflake", "resources/particles/snowflake.png");
@@ -104,11 +110,13 @@ public class TextureManager extends Manager {
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
         saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
-        saveTexture("resumePauseMenu", "resources/menu/resumePauseMenu.png");
-        saveTexture("optionsPauseMenu", "resources/menu/optionsPauseMenu.png");
-        saveTexture("savePauseMenu", "resources/menu/savePauseMenu.png");
-        saveTexture("exitPauseMenu", "resources/menu/exitPauseMenu.png");
-        saveTexture("backgroundPauseMenu", "resources/menu/backgroundPauseMenu.png");
+        saveTexture("resumePauseMenu", "resources/menu/pauseMenu/resumePauseMenu.png");
+        saveTexture("optionsPauseMenu", "resources/menu/pauseMenu/optionsPauseMenu.png");
+        saveTexture("savePauseMenu", "resources/menu/pauseMenu/savePauseMenu.png");
+        saveTexture("exitPauseMenu", "resources/menu/pauseMenu/exitPauseMenu.png");
+        saveTexture("tutorialPauseMenu", "resources/menu/pauseMenu/tutorialPauseMenu.png");
+        saveTexture("backgroundOptionsMenu", "resources/menu/pauseMenu/backgroundOptionsMenu.png");
+
         saveTexture("startMainMenu", "resources/menu/startMainMenu.png");
         saveTexture("optionsMainMenu", "resources/menu/optionsMainMenu.png");
         saveTexture("exitMainMenu", "resources/menu/exitMainMenu.png");
@@ -119,6 +127,15 @@ public class TextureManager extends Manager {
         saveTexture("hostMainMenu", "resources/menu/hostMainMenu.png");
         saveTexture("connectMainMenu", "resources/menu/connectMainMenu.png");
         saveTexture("menuButtonPlaceholder", "resources/placeholderassets/menuButtonPlaceholder.png");
+
+        // Tutorial Title Buttons
+        saveTexture("initialGameplayButton", "resources/menu/tutorial/initialGameplayButton.png");
+        saveTexture("treesButton", "resources/menu/tutorial/treesButton.png");
+        saveTexture("enemiesButton", "resources/menu/tutorial/enemiesButton.png");
+        saveTexture("healthButton", "resources/menu/tutorial/healthButton.png");
+        saveTexture("portalsButton", "resources/menu/tutorial/portalsButton.png");
+        saveTexture("controlsButton", "resources/menu/tutorial/controlsButton.png");
+        saveTexture("optionsBackButton", "resources/menu/pauseMenu/optionsBackButton.png");
 
         // Tutorial
         saveTexture("tutorial1", "resources/menu/tutorial/Tutorial1.png");
@@ -163,6 +180,9 @@ public class TextureManager extends Manager {
             saveTexture("acorn_tree_dead"+i, "resources/trees/acornDead"+i+".png");
 
         }
+        
+        saveTexture("cactusTree", "resources/trees/cactusTree.png");
+        saveTexture("defenseTree", "resources/trees/defenseTree.png");
         //damage tree:ice
 
         //damage tree:acorn
@@ -185,14 +205,14 @@ public class TextureManager extends Manager {
         saveTexture("Healing2", "resources/enemies/Healing2.png");
         saveTexture("Healing3", "resources/enemies/Healing3.png");
         //Squirrel
-        saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
-        saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");
-        saveTexture("squirrel_NE", "resources/enemies/squirrel/squirrel_NE.png");
-        saveTexture("squirrel_NW", "resources/enemies/squirrel/squirrel_NW.png");
-        saveTexture("squirrel_S", "resources/enemies/squirrel/squirrel_S.png");
-        saveTexture("squirrel_SE", "resources/enemies/squirrel/squirrel_SE.png");
-        saveTexture("squirrel_SW", "resources/enemies/squirrel/squirrel_SW.png");
-        saveTexture("squirrel_W", "resources/enemies/squirrel/squirrel_W.png");
+        saveTexture("squirrel_E", "resources/enemies/squirrel/idle/squirrel_E.png");
+        saveTexture("squirrel_N", "resources/enemies/squirrel/idle/squirrel_N.png");
+        saveTexture("squirrel_NE", "resources/enemies/squirrel/idle/squirrel_NE.png");
+        saveTexture("squirrel_NW", "resources/enemies/squirrel/idle/squirrel_NW.png");
+        saveTexture("squirrel_S", "resources/enemies/squirrel/idle/squirrel_S.png");
+        saveTexture("squirrel_SE", "resources/enemies/squirrel/idle/squirrel_SE.png");
+        saveTexture("squirrel_SW", "resources/enemies/squirrel/idle/squirrel_SW.png");
+        saveTexture("squirrel_W", "resources/enemies/squirrel/idle/squirrel_W.png");
         //Raccoon
         saveTexture("raccoon_E", "resources/enemies/raccoon/raccoon_E.png");
         saveTexture("raccoon_N", "resources/enemies/raccoon/raccoon_N.png");

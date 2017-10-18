@@ -168,7 +168,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		*/
 
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
-		if (getMoving() == true) {
+		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
 		}
@@ -240,7 +240,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		targets = new EnemyTargets(mainTargets, sightAggroTargets);
-		return targets;
+		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 }

@@ -25,7 +25,6 @@ public class StompedGroundEffect extends Effect {
 	private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
 	private int timer = 0;
 
-	private static final SoundManager soundManager = new SoundManager();
 
 	/**
 	 * Empty constructor. Used for serialisation purposes
