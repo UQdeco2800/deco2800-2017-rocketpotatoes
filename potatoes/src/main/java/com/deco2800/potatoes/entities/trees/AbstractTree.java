@@ -14,8 +14,9 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.managers.*;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -32,6 +33,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private static final List<Color> BUILD_COLOURS = Arrays.asList(Color.YELLOW);
 	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("progress_bar", BUILD_COLOURS, 60, 1);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
+	private static final int unlockRange = 2;
 
 	/**
 	 * Default constructor for serialization
@@ -64,7 +66,25 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public void onTick(long time) {
-		// Nothing here now
+		// Check if player is close enough to unlock it
+		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		float distance = playerManager.distanceFromPlayer(this.getPosX(), this
+				.getPosY());
+		if (distance < unlockRange && playerManager!=null) {
+			TreeShopGui treeShop = GameManager.get().getManager(GuiManager.class)
+					.getGui(TreeShopGui.class);
+			TreeState treeState = treeShop.getTreeStateByName(this.getName());
+
+			if (treeState != null) {
+				if (!treeState.isUnlocked()) {
+					treeState.unlock();
+					System.out.println("Unlocked: " +this.getName());
+					treeShop.refreshTreeStates();
+				}
+			}
+
+		}
+
 	}
 
 	/**

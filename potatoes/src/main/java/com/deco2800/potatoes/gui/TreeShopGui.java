@@ -109,7 +109,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     /**
      * Updates the list of unlocked tree states
      */
-    private void refreshTreeStates() {
+    public void refreshTreeStates() {
         unlockedTreeStates = new ArrayList<>();
         if (treeStates != null){
             for (TreeState treeState : treeStates) {
@@ -173,7 +173,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         lightningTreeCost.updateQuantity(new TreasureResource(), 1);
         DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
         TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
-                true, "damage");
+                false, "damage");
         treeStates.add(lightningTreeState);
 
         // Ice tree
@@ -242,6 +242,19 @@ public class TreeShopGui extends Gui implements SceneGui {
     public TreeState getTreeStateByTree(AbstractTree tree) {
         for (TreeState treeState : treeStates) {
             if (treeState.getTree().toString().equals(tree.toString()))
+                return treeState;
+        }
+        return null;
+    }
+
+    /**
+     * Returns TreeState with name treeName
+     * @param treeName name of tree
+     * @return treeState with name treeName
+     */
+    public TreeState getTreeStateByName(String treeName) {
+        for (TreeState treeState : treeStates) {
+            if (treeState.getTree().getName().equals(treeName))
                 return treeState;
         }
         return null;
