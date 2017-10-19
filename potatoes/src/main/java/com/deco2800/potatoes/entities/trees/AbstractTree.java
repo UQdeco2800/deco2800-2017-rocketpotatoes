@@ -68,21 +68,30 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void onTick(long time) {
 		// Check if player is close enough to unlock it
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		float distance = playerManager.distanceFromPlayer(this.getPosX(), this
-				.getPosY());
-		if (distance < unlockRange && playerManager!=null) {
-			TreeShopGui treeShop = GameManager.get().getManager(GuiManager.class)
-					.getGui(TreeShopGui.class);
-			TreeState treeState = treeShop.getTreeStateByName(this.getName());
+		if (playerManager != null) {
+			if (playerManager.getPlayer() != null) {
+				float distance = playerManager.distanceFromPlayer(this.getPosX(), this
+						.getPosY());
+				if (distance < unlockRange) {
+					TreeShopGui treeShop = GameManager.get().getManager(GuiManager.class)
+							.getGui(TreeShopGui.class);
+					if (treeShop!= null) {
+						TreeState treeState = treeShop.getTreeStateByName(this.getName());
 
-			if (treeState != null) {
-				if (!treeState.isUnlocked()) {
-					treeState.unlock();
-					showUnlockedMenu(treeState);
-					treeShop.refreshTreeStates();
+						if (treeState != null) {
+							if (!treeState.isUnlocked()) {
+								treeState.unlock();
+								showUnlockedMenu(treeState);
+								treeShop.refreshTreeStates();
+							}
+						}
+					}
+
 				}
 			}
+
 		}
+
 	}
 
 	private void showUnlockedMenu(TreeState treeState) {
