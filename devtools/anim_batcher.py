@@ -228,6 +228,8 @@ def render_animated_batch(model):
     Rotate around the model, rendering a number of angles as specified by
     INTERVALS
     '''
+    direction = ['_S_', '_SE_', '_E_', '_NE_', '_N_', '_NW_', '_W_', '_SW_']
+
     output_name = get_output_name()
     for frame in range(SCENE.frame_start, SCENE.frame_end):
         bpy.context.scene.frame_current = frame
@@ -235,7 +237,7 @@ def render_animated_batch(model):
 
         for i in range(0, INTERVALS):
             model.rotation_euler[2] = 2 * pi * i / INTERVALS
-            RENDER.filepath = output_name + "P%02dF%02d.png" % (i, frame)
+            RENDER.filepath = output_name + direction[i] + "%d.png" % frame
             bpy.ops.render.render(write_still=True)
 
 def main():
