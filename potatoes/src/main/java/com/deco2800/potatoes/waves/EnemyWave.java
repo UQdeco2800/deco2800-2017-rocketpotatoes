@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.waves;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -14,6 +15,7 @@ public class EnemyWave {
     private int waveTime = 0;   //Spawn rate (100 = 1 second)
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
+    private static int totalAmount = 0;
     private int round_number;
     private boolean isPauseWave;
 
@@ -155,24 +157,39 @@ public class EnemyWave {
     public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
 
     /**
+     * 
+     * @return total amount of enemies in this wave
+     */
+    public static int getTotalEnemies() {
+    	return totalAmount;
+    }
+    
+    public static void reduceTotalEnemiesByOne(){
+    	totalAmount--;	
+    }
+    
+    /**
      * Add a squirrel to the world
      */
     private void addSquirrel() {
-        GameManager.get().getWorld().addEntity(new Squirrel(6.5f, 6.5f));
+        GameManager.get().getWorld().addEntity(new Squirrel(GameManager.get().getWorld().getLength()/2, 6.5f));
+        totalAmount++;
     }
 
     /**
      * Add a tank (bear) enemy to the world
      */
     private void addTank() {
-        GameManager.get().getWorld().addEntity(new TankEnemy(42f, 6.5f));
+        GameManager.get().getWorld().addEntity(new TankEnemy(GameManager.get().getWorld().getLength()/2, 42f));
+        totalAmount++;
     }
 
     /**
      * Add a speedy (raccoon) enemy to the world
      */
     private void addSpeedy() {
-        GameManager.get().getWorld().addEntity(new SpeedyEnemy(9f, 42f));
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(6.5f, GameManager.get().getWorld().getLength()/2));
+        totalAmount++;
 
     }
 
@@ -180,7 +197,8 @@ public class EnemyWave {
      * Add a moose to the world
      */
     private void addMoose() {
-        GameManager.get().getWorld().addEntity(new Moose(42f, 42f));
+        GameManager.get().getWorld().addEntity(new Moose(42f, GameManager.get().getWorld().getLength()/2));
+        totalAmount++;
     }
 
     /**

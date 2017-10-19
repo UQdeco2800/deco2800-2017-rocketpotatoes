@@ -54,9 +54,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 //
 //
 //};
-
-
-
 	/* Define speed, goal and path variables */
 	private static float speed = 0.01f;
 	private static Class<?> goal = AbstractTree.class;
@@ -64,7 +61,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private Path path = null;
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
-	private static EnemyTargets targets = initTargets();
+	private EnemyTargets targets = initTargets();
 
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
@@ -90,9 +87,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public TankEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 1.414f), 2f, 2f, TEXTURE, HEALTH, speed, goal);
         this.health = health + (roundNum*250);
-		//this.speed = getBasicStats().getSpeed();
-		//this.goal = goal;
-		//resetStats();
 	}
 
 	/**
@@ -105,7 +99,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		float goalY = getPosY();
 		//if goal is player, use playerManager to eet position and move towards target
 		if (goal == Player.class) {
-			//goal = Player.class;
 			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
@@ -183,7 +176,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 				}
 				if (entity instanceof Effect || entity instanceof ResourceEntity) {
-					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
+					if (entity instanceof StompedGroundEffect) {
 						collidedTankEffect = true;
 						stompedGroundTextureString = entity.getTexture();
 					}
@@ -194,21 +187,21 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		}
 
 
-		if (this instanceof TankEnemy) {
-			if (timer % 100 == 0 && !collided) {
-				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
-				GameManager.get().getWorld().addEntity(
-						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
-			}
-			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
-					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			} else if (!collidedTankEffect) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			}
+
+		if (timer % 100 == 0 && !collided) {
+			GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
+			GameManager.get().getWorld().addEntity(
+					new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
 		}
+		if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
+				stompedGroundTextureString.equals("DamagedGroundTemp3")) {
+			GameManager.get().getWorld().addEntity(
+					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
+		} else if (!collidedTankEffect) {
+			GameManager.get().getWorld().addEntity(
+					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
+		}
+
 
 		if (!collided) {
 			setPosX(getPosX() + changeX);
@@ -250,7 +243,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 *
 	 * @return EnemyTargets class which holds mainTarget, sightAggroTargets and damageAggroTargets arrays.
 	 */
-	private static EnemyTargets initTargets() {
+	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		ArrayList<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(BasePortal.class);
@@ -270,8 +263,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		EnemyTargets targets = new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
-		return targets;
+		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 
 	/**

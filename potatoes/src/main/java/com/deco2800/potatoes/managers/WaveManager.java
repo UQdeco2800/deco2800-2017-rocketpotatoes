@@ -48,7 +48,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         if (!(EASY <= difficulty && difficulty <= HARD)) {
             throw new IndexOutOfBoundsException("Difficult is not defined in range!");
         }
-        addWave(new EnemyWave(1000)); // pause wave to bootstrap startup
+        addWave(new EnemyWave(1500)); // pause wave to bootstrap startup
     }
 
     /**

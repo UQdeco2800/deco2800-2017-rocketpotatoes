@@ -48,6 +48,6 @@ public class Channel extends TimeEvent<EnemyEntity> {
      */
     @Override
     public String toString() {
-        return String.format("Healing wave with %d rate, %f radius, %f heal amount", this.duration);
+        return String.format("Channel with %d duration", this.duration);
     }
 }

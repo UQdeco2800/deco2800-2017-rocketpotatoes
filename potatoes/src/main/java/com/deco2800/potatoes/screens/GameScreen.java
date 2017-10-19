@@ -20,7 +20,9 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.AcornTreeType;
+import com.deco2800.potatoes.entities.trees.CactusTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
+import com.deco2800.potatoes.entities.trees.DefenseTree;
 import com.deco2800.potatoes.entities.trees.FireTreeType;
 import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
@@ -287,14 +289,26 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add enemy gates to game world
-			//bottom-left
-			GameManager.get().getWorld().addEntity(new EnemyGate(6.5f, 6.5f));
-			//bottom-right
-			GameManager.get().getWorld().addEntity(new EnemyGate(9f, 42f));
-			//top-left
-			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 6.5f));
-			//top-right
-			GameManager.get().getWorld().addEntity(new EnemyGate(42f, 42f));
+			//W
+			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength()/2, 6.5f, "enemyCave_SE");
+			GameManager.get().getWorld().addEntity(gateW);
+			//gateW.clearPath();
+			//E
+			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 42f,"enemyCave_W" );
+			GameManager.get().getWorld().addEntity(gateE);
+			//gateE.clearPath();
+			//S
+			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength()/2 , "enemyCave_E");
+			GameManager.get().getWorld().addEntity(gateS);
+			//gateS.clearPath();
+			//N
+			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_WS");
+			GameManager.get().getWorld().addEntity(gateN);
+			//gateN.clearPath();
+			
+			
+			
+			
 			
 			
 
@@ -342,6 +356,9 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));
+		GameManager.get().getWorld().addEntity(new DamageTree(12.5f, 11.5f, new CactusTreeType()));
+		
+		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
 	}
 
 	private void initialiseResources() {
@@ -395,7 +412,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(14.5f, 17.5f, 100));
+		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 100));
 	}
 
 	private void tickGame(long timeDelta) {
@@ -476,10 +493,13 @@ public class GameScreen implements Screen {
 		int timeToWaveEnd;
 		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
 		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
+		int totalEnemies = GameManager.get().getManager(
+				WaveManager.class).getActiveWave().getTotalEnemies();//total enemies in game
 		Gui waveGUI = guiManager.getGui(WavesGui.class);
 		if (waveGUI instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+			//int totalEnemies = activeWave.getTotalEnemies();
 			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
@@ -490,6 +510,7 @@ public class GameScreen implements Screen {
 					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
 				}
 				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
+				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(""+totalEnemies);
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {

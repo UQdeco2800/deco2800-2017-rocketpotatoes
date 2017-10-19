@@ -70,7 +70,7 @@ public class PlayerProjectile extends Projectile {
 
     @Override
     public void onTick(long time) {
-        if (shootingStyle.toString().equalsIgnoreCase("HOMING")) {
+        if ("HOMING".equalsIgnoreCase(shootingStyle.toString())) {
             Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x, targetPos.y);
             if (targetEntity.isPresent()) {
                 setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
@@ -94,38 +94,36 @@ public class PlayerProjectile extends Projectile {
         /**
          * Shoots enemies base on the player directions
          */
-        if (shootingStyle.toString().equalsIgnoreCase("DIRECTIONAL")) {
+        if ("DIRECTIONAL".equalsIgnoreCase(shootingStyle.toString())) {
             if (directions.equalsIgnoreCase("w")) {
                 setTargetPosition(pPosX - 5, pPosY - 5, 0);
-                // setTargetPosition(TargetPosX, TargetPosY, posZ);
                 updatePosition();
                 setPosition();
             } else if (directions.equalsIgnoreCase("e")) {
                 setTargetPosition(pPosX + 5, pPosY + 5, 0);
                 updatePosition();
                 setPosition();
-                // setTargetPosition(TargetPosX, TargetPosY, posZ);
-            } else if (directions.equalsIgnoreCase("n")) {
+            } else if ("n".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX + 15, pPosY - 15, 0);
                 updatePosition();
                 setPosition();
-            } else if (directions.equalsIgnoreCase("s")) {
+            } else if ("s".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX - 15, pPosY + 15, 0);
                 updatePosition();
                 setPosition();
-            } else if (directions.equalsIgnoreCase("ne")) {
+            } else if ("ne".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX + 15, pPosY + 1, 0);
                 updatePosition();
                 setPosition();
-            } else if (directions.equalsIgnoreCase("nw")) {
+            } else if ("nw".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX - 15, pPosY - 200, 0);
                 updatePosition();
                 setPosition();
-            } else if (directions.equalsIgnoreCase("se")) {
+            } else if ("se".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX + 20, pPosY + 200, 0);
                 updatePosition();
                 setPosition();
-            } else if (directions.equalsIgnoreCase("sw")) {
+            } else if ("sw".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX - 200, pPosY - 20, 0);
                 updatePosition();
                 setPosition();

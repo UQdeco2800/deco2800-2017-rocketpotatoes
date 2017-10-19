@@ -101,4 +101,14 @@ public class WaveManagerTest {
         //Time before waves is set to 800
         Assert.assertEquals("Time before next wave not correct", 800-0, wm.getTimeBeforeNextWave());
     }
+
+    @Test
+    public void extraTest() {
+        testWaveOne = new EnemyWave(1,2,3,4,5,6);
+        testWaveOne = new EnemyWave(6) ;
+        wm.regularGame(2);
+        wm.onTick(1);
+        wm.onTick(1);
+        wm.onTick(1);
+    }
 }

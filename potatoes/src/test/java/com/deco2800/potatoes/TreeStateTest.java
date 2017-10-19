@@ -44,7 +44,7 @@ public class TreeStateTest {
 
         // With full constructor
         treeState = new TreeState(testTree, cost, true, "resource");
-        assert(treeState.getTree().equals(testTree.clone()));
+        assert(treeState.getTree().equals(testTree.createCopy()));
         assert(treeState.getCost().equals(cost));
         assert(treeState.isUnlocked() == true);
         assert(treeState.getTreeType().equals("resource"));
@@ -52,5 +52,11 @@ public class TreeStateTest {
         treeState.unlock();
         treeState.setUnlock(true);
         treeState.hashCode();
+        treeState.setTree(testTree);
+        treeState.setCost(cost);
+        treeState.setTreeType("");
+        
+        treeState = new TreeState(null, cost, true, "resource");
+        treeState = new TreeState(testTree, null, true, "resource");
     }
 }

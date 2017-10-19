@@ -59,8 +59,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	/**
 	 * Creates a copy of this object as it was when it was first created.
 	 */
-	@Override
-	public abstract AbstractTree clone();
+	public abstract AbstractTree createCopy();
 
 	@Override
 	public void onTick(long time) {

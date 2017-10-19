@@ -63,5 +63,14 @@ public class WorldManagerTest {
 		assertFalse("Deleting world resulted in the same world returned",
 				w2 == worldManager.getWorld(WorldType.DESERT_WORLD));
 	}
+	@Test
+	public void testCachedWorld() {
+		World w1 = worldManager.getWorld(WorldType.FOREST_WORLD);
+		worldManager.isWorldCached();
+		GameManager gm = GameManager.get();
+		gm.getMainWorld();
+		gm.isPaused();
+		gm.setPaused(false);
+	}
 
 }

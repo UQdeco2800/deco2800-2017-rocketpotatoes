@@ -38,7 +38,6 @@ import java.util.Optional;
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
@@ -57,7 +56,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private Path path = null;
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
-	private static EnemyTargets targets = initTargets();
+	private EnemyTargets targets = initTargets();
 	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees(); //is there a better data structure for this
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
@@ -85,8 +84,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
-
-		// resetStats();
 	}
 
 	/***
@@ -214,7 +211,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 
-	private static EnemyTargets initTargets() {
+	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		ArrayList<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(ResourceTree.class);
@@ -231,8 +228,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		EnemyTargets targets = new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
-		return targets;
+		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 
 
