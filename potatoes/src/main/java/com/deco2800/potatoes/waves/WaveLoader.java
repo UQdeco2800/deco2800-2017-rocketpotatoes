@@ -9,12 +9,12 @@ public class WaveLoader {
 
     public EnemyWave createwavefromline(String line){
 
-        int squirrelRate = 0;
-        int speedyRate = 0;
-        int tankRate = 0;
-        int mooseRate = 0;
-        int waveLength = 0;
-        int round_number = 0;
+        int squirrelRate;
+        int speedyRate;
+        int tankRate;
+        int mooseRate;
+        int waveLength;
+        int round_number;
 
         // Extract value for each variable from string
         String[] WaveArray = line.split(", ");

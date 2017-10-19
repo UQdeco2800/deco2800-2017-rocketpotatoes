@@ -51,5 +51,12 @@ public class DamageTreeTest {
         nullTypeDamageTree.getName();
 
     }
+    @Test
+    public void otherTreesTest() {
+        DefenseTree dTree = new DefenseTree(1,2);
+        dTree.createCopy();
+        dTree.getAllUpgradeStats();
+        CactusTreeType cac = new CactusTreeType();
+    }
 
 }

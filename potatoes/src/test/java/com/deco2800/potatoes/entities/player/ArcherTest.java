@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
+import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
  * JUnit tests for validating the Player class
@@ -22,6 +23,9 @@ public class ArcherTest {
 	@Before
 	public void setup() {
 		caveman = new Archer(0, 0);
+		PlayerManager m = new PlayerManager();
+		m.setPlayer(caveman);
+		GameManager.get().addManager(m);
 	}
 	
 	@After
@@ -55,14 +59,20 @@ public class ArcherTest {
 		caveman.walk(false);
 		caveman.setState(Player.PlayerState.WALK);
 		caveman.updateSprites();
+		caveman.onTick(2);
 		caveman.setState(Player.PlayerState.ATTACK);
 		caveman.updateSprites();
+		caveman.onTick(2);
 		caveman.setState(Player.PlayerState.DAMAGED);
 		caveman.updateSprites();
+		caveman.onTick(2);
 		caveman.setState(Player.PlayerState.DEATH);
 		caveman.updateSprites();
 		caveman.setState(Player.PlayerState.INTERACT);
 		caveman.updateSprites();
+		caveman.onTick(2);
+		caveman.interact();
+		caveman.attack();
 
 	}
 }
