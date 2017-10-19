@@ -1,5 +1,13 @@
 package com.deco2800.potatoes.waves;
 
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.WaveManager;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 public class WaveLoader {
 
     private String filename;
@@ -27,6 +35,26 @@ public class WaveLoader {
         
         EnemyWave returnWave = new EnemyWave(squirrelRate, speedyRate, tankRate, mooseRate, waveLength, round_number);
         return returnWave;
+    }
+
+    public void LoadWave(){
+
+        File f = new File(filename);
+
+        try {
+            BufferedReader b = new BufferedReader(new FileReader(f));
+            String readline = "";
+
+            while ((readline = b.readLine()) != null){
+            GameManager.get().getManager(WaveManager.class).addWave(createwavefromline(readline));
+            }
+        } catch (java.io.IOException e) {
+            System.out.println("Error reading file");
+        }
+
+
+
+
     }
 
 }

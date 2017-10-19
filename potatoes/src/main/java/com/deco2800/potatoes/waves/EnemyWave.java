@@ -64,7 +64,7 @@ public class EnemyWave {
      *
      * @return an array of floats representing the ratio of enemy rates provided
      * */
-    private float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
+    public float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
         float total = squirrelRate + speedyRate + tankRate + mooseRate;
         // Ratios are the total spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
         float squirrelRatio = squirrelRate/total;
