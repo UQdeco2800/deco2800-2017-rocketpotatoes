@@ -43,6 +43,8 @@ public class RespawnEventTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	testEvent = null;
+    	player = null;
     }
 	
 	@Test

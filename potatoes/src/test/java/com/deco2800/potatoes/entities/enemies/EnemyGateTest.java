@@ -31,6 +31,8 @@ public class EnemyGateTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        enemyGate1 = null;
+        enemyGateEmpty = null;
     }
 
     /*

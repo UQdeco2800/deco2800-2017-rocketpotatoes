@@ -23,8 +23,6 @@ import com.deco2800.potatoes.screens.GameScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +37,6 @@ import static com.badlogic.gdx.utils.Align.left;
  *@author Tze Lok Cheng
  */
 public class DebugModeGui extends Gui {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DebugModeGui.class);
 
     private GameScreen screen;
     private Stage stage;
@@ -114,6 +111,7 @@ public class DebugModeGui extends Gui {
         // adding actors
         debugButtonGroup = new VerticalGroup();
         debugButtonGroup.addActor(debugOn);
+        debugButtonGroup.addActor(exitButton);
         debugButtonGroup.addActor(speedtoggle);
         debugButtonGroup.addActor(gamespeed);
         debugButtonGroup.addActor(immortalButton);
@@ -130,7 +128,6 @@ public class DebugModeGui extends Gui {
         debugButtonGroup.addActor(f7);
         debugButtonGroup.addActor(f8);
         debugButtonGroup.addActor(f9);
-        debugButtonGroup.addActor(exitButton);
         table.add(debugButtonGroup);
 
         setupListeners();
@@ -151,8 +148,6 @@ public class DebugModeGui extends Gui {
         table.left();
         table.setPosition(0,stage.getHeight()/2, left);
         table.add(debugButtonGroup);
-        //table.setDebug(true);
-
     }
 
     /**
@@ -248,12 +243,12 @@ public class DebugModeGui extends Gui {
                      }
                      
                      if (keycode == Input.Keys.F8) {
-                         Terrain g = new Terrain("ground_1", 1, false);
+                         Terrain g = new Terrain("mud_tile_1", 1, false);
                          GameManager.get().getWorld().setTile((int)coords2.y, (int)coords2.x,g);
                      }
                      
                      if (keycode == Input.Keys.F9) {
-                         Terrain w = new Terrain("w1", 0, false);
+                         Terrain w = new Terrain("water_tile_1", 0, false);
                          GameManager.get().getWorld().setTile((int)coords2.y, (int)coords2.x,w);
                      
                      }
@@ -312,6 +307,7 @@ public class DebugModeGui extends Gui {
      */
     public void playerImmortal(){
         screen.menuBlipSound();
+        immortalButton.setText("Player is already Immortal");
         GameManager.get().getManager(PlayerManager.class).getPlayer().heal(200);
         GameManager.get().getManager(PlayerManager.class).getPlayer().addDamageScaling(0);
     }
@@ -326,6 +322,7 @@ public class DebugModeGui extends Gui {
                 ((MortalEntity) ent).addDamageScaling(0);
             }
         }
+
     }
 
     /**
@@ -338,7 +335,6 @@ public class DebugModeGui extends Gui {
         rsc.add(new CoalResource());
         rsc.add(new CactusThornResource());
         rsc.add(new FishMeatResource());
-        rsc.add(new FoodResource());
         rsc.add(new IceCrystalResource());
         rsc.add(new ObsidianResource());
         rsc.add(new PearlResource());
@@ -362,7 +358,6 @@ public class DebugModeGui extends Gui {
      */
     public void removeEntities(){
         Map<Integer, AbstractEntity> entitiesMap = GameManager.get().getWorld().getEntities();
-        //LOGGER.info("Map: {}", entitiesMap.values().toString());
 
         //Excludes the player
         for (AbstractEntity ent: entitiesMap.values()){

@@ -60,7 +60,6 @@ public class GameMenuGui extends Gui {
 		*   Note: this is left to right order
 		* */
         window.add(pauseMenuButton);
-        //window.add(selectButton);
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen

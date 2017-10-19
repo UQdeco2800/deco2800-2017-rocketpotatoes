@@ -30,13 +30,20 @@ public class PathManagerTest {
 
     }
 
+    TestableBlockingEntity blockingEntity;
+    PathManager pathManager;
+    Path path;
+    GameManager gameManager;
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+
+        pathManager = GameManager.get().getManager(PathManager.class);
         World mockWorld = mock(World.class);
         when(mockWorld.getLength()).thenReturn(100);
         when(mockWorld.getWidth()).thenReturn(100);
         // Create generic entity to block paths.
-        TestableBlockingEntity blockingEntity = new TestableBlockingEntity(
+        blockingEntity = new TestableBlockingEntity(
                 50f,
                 50f,
                 30f,
@@ -47,49 +54,53 @@ public class PathManagerTest {
         HashMap<Integer, AbstractEntity> entityHashMap = new HashMap<>();
         entityHashMap.put(0, blockingEntity);
         when(mockWorld.getEntities()).thenReturn(entityHashMap);
-        GameManager gm = GameManager.get();
-        gm.setWorld(mockWorld);
+        gameManager = GameManager.get();
+        gameManager.setWorld(mockWorld);
     }
 
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        path = null;
+        gameManager = null;
     }
 
     @Test
     public void reachesGoal() {
-        PathManager m = new PathManager();
+
         Point2D start = new Point2D(0, 0);
         Point2D finish = new Point2D(2, 2);
 
-        Path p = m.generatePath(start, finish);
+        path = pathManager.generatePath(start, finish);
 
 
-        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
+        assertThat("Finish is not the last point of path",
+                finish.equals(path.goal()), is(equalTo(true)));
 
     }
 
     @Test
     public void obstacleCheck() {
-        PathManager m = new PathManager();
+
         Point2D start = new Point2D(50, 10);
         Point2D finish = new Point2D(50, 90);
 
-        Path p = m.generatePath(start, finish);
+        path = pathManager.generatePath(start, finish);
 
 
-        assertThat("Finish is not the last point of path", finish.equals(p.goal()), is(equalTo(true)));
+        assertThat("Finish is not the last point of path",
+                finish.equals(path.goal()), is(equalTo(true)));
     }
     @Test
     public void pathTest() {
-        PathManager m = new PathManager();
+
         Point2D start = new Point2D(50, 10);
         Point2D finish = new Point2D(50, 90);
 
-        Path p = m.generatePath(start, finish);
-        p.getNodes();
-        p.getAngle();
-        p.setAngle(2);
+        path = pathManager.generatePath(start, finish);
+        path.getNodes();
+        path.getAngle();
+        path.setAngle(2);
     }
 
 }

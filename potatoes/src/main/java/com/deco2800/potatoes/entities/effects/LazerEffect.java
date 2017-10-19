@@ -36,8 +36,6 @@ public class LazerEffect extends Effect {
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
-//		ExplosionEffect expEffect = new ExplosionEffect(targetClass, newPos.getX(), newPos.getY(), 0, damage, range);
-//		GameManager.get().getWorld().addEntity(expEffect);
 
 	}
 

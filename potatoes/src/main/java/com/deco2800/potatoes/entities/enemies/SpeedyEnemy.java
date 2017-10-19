@@ -27,7 +27,6 @@ import com.deco2800.potatoes.util.WorldUtil;
  */
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpeedyEnemy.class);
 	private static final transient String TEXTURE = "speedyRaccoon";
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
@@ -51,6 +50,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
+		//Empty constructor for serialization
 	}
 
 	/***
@@ -64,7 +64,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
-		// resetStats();
 	}
 
 	/***
@@ -76,7 +75,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static EnemyProperties initStats() {
 		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE).createEnemyStatistics();
-		// result.addEvent(new MeleeAttackEvent(500));
 		return result;
 	}
 
@@ -113,10 +111,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		double interactRange = 2f;
 		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
 		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange) {
-				if (((ResourceTree) entitiy).getGatherCount() > 0) {
-					((ResourceTree) entitiy).gather(-1);
-				}
+			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange &&((ResourceTree) entitiy).getGatherCount() > 0) {
+				((ResourceTree) entitiy).gather(-1);
 			}
 		}
 	}
@@ -185,8 +181,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			targetX = target.getX();
 			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
+			float deltaX = targetX - getPosX();
+			float deltaY = targetY - getPosY();
 
 
 			//sprite direction
@@ -203,14 +199,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			// check paths
 
 			// check collision
-			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
-					// collided with wall
-					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-					target = path.pop();
-					break;
-				}
-			}
+//			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
+//				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
+//					// collided with wall
+//					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
+//					target = path.pop();
+//					break;
+//				}
+//			}
 
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
@@ -237,8 +233,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			targetX = target.getX();
 			targetY = target.getY();
 
-			float deltaX = getPosX() - targetX;
-			float deltaY = getPosY() - targetY;
+			float deltaX = targetX -getPosX();
+			float deltaY = targetY - getPosY();
 
 			//sprite direction
 			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));

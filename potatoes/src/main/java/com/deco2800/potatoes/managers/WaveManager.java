@@ -1,9 +1,12 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.enemies.EnemyGate;
+import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,8 +18,13 @@ import java.util.List;
  * @author craig
  */
 public class WaveManager extends Manager implements TickableManager, ForWorld {
+    public static final int EASY = 1, MEDIUM = 2, HARD = 3;
 
-    private ArrayList<EnemyWave> waves;
+    // Default is that there will be no campaign and the difficulty will be medium
+    private boolean isCampaign = false;
+    private int difficulty = MEDIUM;
+
+    private LinkedList<EnemyWave> waves;
     private int waveIndex = 0;
     private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
@@ -25,7 +33,22 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * Create a new instance of WaveManager
      */
     public WaveManager() {
-        waves = new ArrayList<>();
+        // most of the time waves are created on the fly, history should be preserved though
+        // LinedList offers better performance for this, will be slower when loading campaigns initially
+        waves = new LinkedList<EnemyWave>();
+    }
+
+    /**
+     * Start a regular game where waves are randomly generated based off difficulty.
+     * @param difficulty one of the difficults given in this class,
+     *                   EASY, MEDIUM or HARD.
+     */
+    public void regularGame(int difficulty) {
+        isCampaign = false;
+        if (!(EASY <= difficulty && difficulty <= HARD)) {
+            throw new IndexOutOfBoundsException("Difficult is not defined in range!");
+        }
+        addWave(new EnemyWave(1000)); // pause wave to bootstrap startup
     }
 
     /**
@@ -55,16 +78,41 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      */
     @Override
 	public void onTick(long i) {
-        if (getActiveWave() != null) {
+        if (getActiveWave() != null) { // active wave
             getActiveWave().tickAction();
-        } else if (getWaveIndex()+1 < getWaves().size()) {
+        } else if (waveIndex < waves.size() - 1) {
             //there are still more waves
-            incrementTime();
-            if (getElapsedTime() > timeBetweenWaves) {
-                waveIndex++;
-                activateWave(waves.get(getWaveIndex()));
-                resetTime();
-            }
+            waveIndex++;
+            activateWave(waves.get(waveIndex));
+            resetTime();
+        } else if (!isCampaign && WorldUtil.getClosestEntityOfClass(EnemyGate.class, 10, 10).isPresent()) { // no active wave, not campaign, make new wave
+            generateNextWave();
+        }
+    }
+
+    /**
+     * Creates next wave based off the wave number, difficulty previous wave in set.
+     */
+    private void generateNextWave() {
+        int roundTime = 750 + waveIndex * 75;
+        int spawnRates = 1  + (waveIndex % 4) * difficulty;
+        switch (waveIndex % 4) {
+            case 0:
+                addWave(new EnemyWave(spawnRates, 0, 0, 0, roundTime, waveIndex));
+                break;
+            case 1:
+                addWave(new EnemyWave(0, spawnRates, 0, 0, roundTime, waveIndex));
+                break;
+            case 2:
+                addWave(new EnemyWave(600 + waveIndex * 75)); // pause wave
+                break;
+            case 3:
+                addWave(new EnemyWave(spawnRates, spawnRates, spawnRates, spawnRates, roundTime,
+                        waveIndex));
+                break;
+            default: // this should not be reached
+                addWave(new EnemyWave(1500)); // pause wave
+                break;
         }
     }
 
@@ -76,7 +124,8 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * */
     public EnemyWave getActiveWave() {
         for (EnemyWave wave: waves) {
-            if (wave.getWaveState() == WaveState.ACTIVE) {
+            WaveState waveState = wave.getWaveState();
+            if (waveState == WaveState.ACTIVE) {
                 return wave;
             }
         }

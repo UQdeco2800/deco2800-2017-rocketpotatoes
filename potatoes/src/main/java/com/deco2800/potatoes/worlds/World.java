@@ -63,6 +63,8 @@ public class World {
 		map = new TiledMap();
 		map.getProperties().put("tilewidth", TILE_WIDTH);
 		map.getProperties().put("tileheight", TILE_HEIGHT);
+		terrain = new Terrain[WorldManager.WORLD_SIZE][WorldManager.WORLD_SIZE];
+		backgroundTerrain = new Terrain("", 0.5f, true);
 	}
 
 	/**

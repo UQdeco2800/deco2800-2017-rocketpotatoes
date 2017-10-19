@@ -18,7 +18,13 @@ import org.slf4j.LoggerFactory;
 
 import static com.badlogic.gdx.utils.Align.center;
 
-public class GameOverGui extends Gui { 
+/**
+ * Game over screen Gui
+ * A screen that displays after the goal potato has been destroyed.
+ *
+ *@author Goh Zen Hao
+ */
+public class GameOverGui extends Gui {
 	private GameScreen screen;
 //	private GameOverScreen gameOverScreen;
 
@@ -41,7 +47,7 @@ public class GameOverGui extends Gui {
     	this.stage = stage;
     	this.screen = screen;
 
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));        
+        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
 //        gameOverLabel = new Label("GAME OVER",uiSkin);
@@ -50,13 +56,13 @@ public class GameOverGui extends Gui {
         exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exitMainMenu")));
         startButton = new ImageButton(startDrawable);
         exitButton = new ImageButton(exitDrawable);
-        
+
         primaryButtons = new VerticalGroup();
         primaryButtons.addActor(startButton);
         primaryButtons.addActor(exitButton);
 
         setupListeners();
-        
+
         table.setBackground(new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("gameOverScreen"))));
         table.add(primaryButtons);
         table.setVisible(false);

@@ -13,6 +13,12 @@ import org.slf4j.LoggerFactory;
 
 import static com.badlogic.gdx.utils.Align.center;
 
+/**
+ * Respawn Gui
+ * A text that shows the timer left until the player respawns
+ *
+ *@author Goh Zen Hao
+ */
 public class RespawnGui extends Gui{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RespawnGui.class);
@@ -29,7 +35,6 @@ public class RespawnGui extends Gui{
 
     private int count = 1;
 
-    private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 
     public RespawnGui(Stage stage, GameScreen screen) {
 

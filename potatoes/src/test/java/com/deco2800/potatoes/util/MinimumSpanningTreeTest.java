@@ -57,20 +57,13 @@ public class MinimumSpanningTreeTest {
                         nodes.get(j).getY()
                 );
                 tree.putGraphEntry(line.getDistance(), i, j);
+                tree.hashCode();
 
             }
         }
 
     }
 
-    @Test
-    public void leakTest() {
 
-        int rounds = 100;
-
-        for (int i = 0; i < rounds; i++) {
-
-        }
-    }
 
 }

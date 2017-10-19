@@ -33,6 +33,7 @@ public class EnemyWaveTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	firstWave = null;
     }
 	
 	@Test
@@ -142,7 +143,7 @@ public class EnemyWaveTest {
 
 	@Test
 	public void setWaveStateTest() {
-		firstWave.setWaveState(WaveState.PAUSED);
-		Assert.assertEquals("wave state was not set correctly", WaveState.PAUSED,firstWave.getWaveState() );
+		firstWave.setWaveState(WaveState.PAUSE);
+		Assert.assertEquals("wave state was not set correctly", WaveState.PAUSE,firstWave.getWaveState() );
 	}
 }

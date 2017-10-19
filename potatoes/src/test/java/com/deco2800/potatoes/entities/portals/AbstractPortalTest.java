@@ -30,6 +30,7 @@ public class AbstractPortalTest{
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	testPortal = null;
     }
 	
 	@Test

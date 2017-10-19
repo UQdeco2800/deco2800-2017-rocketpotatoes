@@ -3,6 +3,7 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.deco2800.potatoes.managers.TreeState;
 
 /**
  * WavesGui provides a gui displaying the status of the enemy waves
@@ -34,6 +35,7 @@ public class WavesGui extends Gui {
         // Make buttons & labels
         waveStatusLabel = new Label("Time until wave ends", uiSkin);
         waveTimeLabel = new Label("0", uiSkin);
+
 
         //window
         window.add(waveStatusLabel);

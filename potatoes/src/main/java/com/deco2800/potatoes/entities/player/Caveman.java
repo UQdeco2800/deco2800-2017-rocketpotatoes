@@ -30,10 +30,9 @@ public class Caveman extends Player {
     public Caveman(float posX, float posY) {
 
     	super(posX, posY);
-		super.setMoveSpeed(0.08f);
-
+    	this.defaultSpeed = 0.08f;
+        super.setMoveSpeed(defaultSpeed);
 		updateSprites();
-
 		super.setYRenderOffset(9);
     }
 
@@ -41,28 +40,24 @@ public class Caveman extends Player {
     private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
     private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
     private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, this::completionHandler);
-
-    private Void completionHandler() {
-		// Re-enable walking
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-	}
-
-	private Void damagedCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-	}
+    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
+    
+    /**
+     * Custom damaged handling for the caveman
+     */
+    protected Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
 
     @Override
     public void updateSprites() {
 
-    		switch (super.state) {
+    		switch (super.getState()) {
             case IDLE:
 				super.setAnimation(cavemanIdleAnimations.get(super.facing));
 				break;
@@ -88,9 +83,9 @@ public class Caveman extends Player {
     }
 
     @Override
-    public void attack() {
+    protected void attack() {
 		super.attack();
-
+		setMoveSpeedModifier(0);
 
 		// TODO Stop walking for attacking
 		if (setState(ATTACK)) {
@@ -100,12 +95,13 @@ public class Caveman extends Player {
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-			Optional<AbstractEntity> target = null;
+			Optional<AbstractEntity> target;
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.
-			if (!target.isPresent())
+			if (!target.isPresent()){
 				return;
+			}
 
 				float targetPosX = target.get().getPosX();
 				float targetPosY = target.get().getPosY();
@@ -146,7 +142,7 @@ public class Caveman extends Player {
 
 		}
     }
-
+    
     /* Custom walk sound handling */
 	private int stepNumber = 1;	// Used for playing left and right foot steps
 	private boolean alternateSound = false;	// Used for playing alternate sounds
@@ -179,13 +175,9 @@ public class Caveman extends Player {
 	}
 
     @Override
-    public void interact() {
+    protected void interact() {
     		super.interact();
-
-	    	if (super.setState(INTERACT)) {
-	    		// Caveman interacts
-	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-	    	}
+    		// Custom interaction code here
     }
 
 }

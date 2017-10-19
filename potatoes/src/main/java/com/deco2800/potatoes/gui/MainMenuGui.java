@@ -40,6 +40,8 @@ public class MainMenuGui extends Gui {
     private TextButton exitButton;
 
     private Table startButtonGroup;
+    private Table startCharacterSelectTable;
+    private Image startCharacterImage;
     private SelectBox<String> startCharacterSelect;
     private TextButton singleplayerButton;
     private TextButton multiplayerButton;
@@ -114,14 +116,18 @@ public class MainMenuGui extends Gui {
         primaryButtons.add(exitButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
 
         // Start state
+        startCharacterImage = new Image(new TextureRegion(textureManager.getTexture("caveman_idle_SW_1")));
         startCharacterSelect = new SelectBox<String>(uiSkin);
-        startCharacterSelect.setItems(PlayerType.names());
+        startCharacterSelect.setItems(capitalisePlayerTypes(PlayerType.names()));
         singleplayerButton = new TextButton("Singleplayer", uiSkin);
         multiplayerButton = new TextButton("Multiplayer", uiSkin);
         startBackButton = new TextButton("Back", uiSkin);
 
         startButtonGroup = new Table();
-        startButtonGroup.add(startCharacterSelect).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        startCharacterSelectTable = new Table();
+        startCharacterSelectTable.add(startCharacterImage).size(125, 125);
+        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth - 50).height(buttonHeight/2);
+        startButtonGroup.add(startCharacterSelectTable);
         startButtonGroup.add(singleplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
         startButtonGroup.add(multiplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
         startButtonGroup.add(startBackButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
@@ -248,6 +254,7 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 GameManager.get().getManager(PlayerManager.class).setPlayerType(PlayerType.valueOf(startCharacterSelect.getSelected().toUpperCase()));
+                startCharacterImage.setDrawable(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(startCharacterSelect.getSelected().toLowerCase()+"_idle_SW_1"))));
             }
         });
 
@@ -410,7 +417,7 @@ public class MainMenuGui extends Gui {
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight()/2);
-        root.setPosition(0, 0);
+        root.setPosition(0, -45);
 
         switch (state) {
             case PRIMARY:
@@ -455,4 +462,15 @@ public class MainMenuGui extends Gui {
     public void addSingleplayerStartListener(EventListener e) {
         singleplayerButton.addListener(e);
     }
+
+    public static Array<String> capitalisePlayerTypes (Array<String> playerTypes) {
+        Array<String> capitalisedPayerTypes = new Array<> ();
+        for (String lowerCaseName : playerTypes) {
+            String tempStr = lowerCaseName.substring(0, 1).toUpperCase();
+            String nameCapitalised = tempStr + lowerCaseName.substring(1);
+            capitalisedPayerTypes.add(nameCapitalised);
+        }
+        return capitalisedPayerTypes;
+    }
+
 }

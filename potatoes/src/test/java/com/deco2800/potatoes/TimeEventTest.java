@@ -44,6 +44,8 @@ public class TimeEventTest {
 		event.setDoReset(true);
 		event.setResetAmount(100);
 		event.setProgress(30);
+		event.isDoReset();
+		event.isDoReset();
 		event.reset();
 		assertEquals("Event progress is not at the reset amount after reset", event.getProgress(), 100);
 		event.decreaseProgress(100, null);
@@ -59,6 +61,7 @@ public class TimeEventTest {
 		event.setProgress(1);
 		event.decreaseProgress(1, null);
 		assertEquals("Action has not been called after resetting", event.getActionCount(), 1);
+		event.copy();
 	}
 
 }

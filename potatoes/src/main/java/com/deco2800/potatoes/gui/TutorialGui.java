@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
@@ -47,6 +48,10 @@ public class TutorialGui extends Gui {
     		"tutorial4", "tutorial5", "tutorial6", "tutorial7"};
     // Current slide being displayed
     private int position;
+    
+    // padding for top and bottom of buttons
+    private static final int paddingVertical = 5;
+    private static final int paddingHorizontal = 10;
 
     public TutorialGui(Stage stage, GameScreen screen) {
         this.screen = screen;
@@ -65,10 +70,14 @@ public class TutorialGui extends Gui {
         backButton = new TextButton("Previous", uiSkin);
         skipButton = new TextButton("Skip", uiSkin);
         nextButton = new TextButton("Next", uiSkin);
+        
+        //set padding of buttons
+        backButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        skipButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        nextButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
 
         // Add actors
         tutorialButtonGroup = new HorizontalGroup();
-        tutorialButtonGroup.addActor(backButton);
         tutorialButtonGroup.addActor(skipButton);
         tutorialButtonGroup.addActor(nextButton);
         tutorialButtonGroup.space(100);
@@ -85,7 +94,7 @@ public class TutorialGui extends Gui {
 
     private void setupListeners() {
 
-        /* Listener for the resume button. */
+        /* Listener for the skip button. */
         skipButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -95,10 +104,18 @@ public class TutorialGui extends Gui {
             }
         });
 
-        /* Listener for the options button. */
+        /* Listener for the back button. */
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+            	// deal with special positions
+            	if (position == 1) {
+            		tutorialButtonGroup.removeActor(backButton);
+            	} else if (position == slides.length - 1) {
+            		nextButton.setText("Next");
+            	}
+            	
+            	// change slide
                 if (position != 0) {
                 	position--;
                 	resetGui(stage);
@@ -108,13 +125,28 @@ public class TutorialGui extends Gui {
             }
         });
 
-        /* Listener for the save button. */
+        /* Listener for the next button. */
         nextButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event, Actor actor) {            	
+            	//check if the tutorial has reached it's end
                 if (position == slides.length - 1) {
                 	hide();
                 } else {
+                	// deal with requirements for specific positions
+                	if (position == slides.length - 2) {
+                		nextButton.setText("Finsihed");
+                	} else if (position == 0) {
+                		// remove buttons so they are in the right order
+                		tutorialButtonGroup.removeActor(skipButton);
+                		tutorialButtonGroup.removeActor(nextButton);
+                		
+                		// add buttons back in in the right order
+                		tutorialButtonGroup.addActor(backButton);
+                        tutorialButtonGroup.addActor(skipButton);
+                        tutorialButtonGroup.addActor(nextButton);
+                	}
+                	
                 	// Increment position
                     position++;
                 	resetGui(stage);

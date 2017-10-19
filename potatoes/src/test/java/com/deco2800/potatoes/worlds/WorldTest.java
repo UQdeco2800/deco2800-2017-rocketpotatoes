@@ -3,6 +3,8 @@ package com.deco2800.potatoes.worlds;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
+import com.deco2800.potatoes.util.WorldUtil;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.Before;
@@ -35,6 +37,12 @@ public class WorldTest extends BaseTest {
 		testEntities[7].setPosition(2, 1);
 		testEntities[8].setPosition(2, 3);
 		testEntities[9].setPosition(10, 10);
+	}
+
+	@After
+	public void tearDown() {
+		world = null;
+		test = null;
 	}
 
 	@Test

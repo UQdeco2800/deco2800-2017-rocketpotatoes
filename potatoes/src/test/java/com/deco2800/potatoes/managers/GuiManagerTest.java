@@ -1,28 +1,45 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.gui.Gui;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class GuiManagerTest {
+
+    GuiManager guiManager;
+    Gui gui;
+
+    @Before
+    public void setUp() {
+        guiManager = GameManager.get().getManager(GuiManager.class);
+    }
+
+    @After
+    public void tearDown() {
+
+        GameManager.get().clearManagers();
+        gui = null;
+    }
+
     @Test
     public void testGuiAssignment() {
-        GuiManager m = new GuiManager();
 
         // Expect null with no gui
-        assertEquals(null, m.getGui(Gui.class));
+        assertEquals(null, guiManager.getGui(Gui.class));
 
-        Gui g = new Gui();
-        m.addGui(g);
+        gui = new Gui();
+        guiManager.addGui(gui);
 
-        assertEquals(g, m.getGui(Gui.class));
+        assertEquals(gui, guiManager.getGui(Gui.class));
     }
 
     @Test
     public void testStage() {
-        GuiManager m = new GuiManager();
-        assertEquals(null, m.getStage());
+
+        assertEquals(null, guiManager.getStage());
 
         // TODO test we can set the stage (problems with gdx)
     }

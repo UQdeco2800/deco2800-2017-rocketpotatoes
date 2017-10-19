@@ -42,6 +42,8 @@ public class LargeFootstepEffectTest extends BaseTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        footStep1 = null;
+        footStepEmpty = null;
     }
 
     /*

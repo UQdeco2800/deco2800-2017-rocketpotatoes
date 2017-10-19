@@ -1,18 +1,19 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.World;
+import com.deco2800.potatoes.waves.EnemyWave.WaveState;
+
+import static org.mockito.Mockito.mock;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import com.deco2800.potatoes.waves.EnemyWave.WaveState;
-import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 
-import static org.mockito.Mockito.mock;
+
 
 public class WaveManagerTest {
 
@@ -20,15 +21,26 @@ public class WaveManagerTest {
     EnemyWave testWaveOne = new EnemyWave(1,1,1,1,750);
     EnemyWave testWaveTwo = new EnemyWave(2,1,1,2,750);
     World mockWorld;
+    GameManager gm;
 
     @Before
     public void setUp() throws Exception {
         mockWorld = mock(World.class);
-        GameManager gm = GameManager.get();
+        gm = GameManager.get();
         gm.setWorld(mockWorld);
-        wm = new WaveManager();
+        wm = gm.getManager(WaveManager.class);
         wm.addWave(testWaveOne);
         wm.addWave(testWaveTwo);
+    }
+
+    @After
+    public void tearDown() {
+
+        mockWorld = null;
+        gm.clearManagers();
+        gm = null;
+        testWaveOne = null;
+        testWaveTwo = null;
     }
 
     @Test
@@ -88,5 +100,15 @@ public class WaveManagerTest {
     public void getTimeBeforeNextWaveTest() {
         //Time before waves is set to 800
         Assert.assertEquals("Time before next wave not correct", 800-0, wm.getTimeBeforeNextWave());
+    }
+
+    @Test
+    public void extraTest() {
+        testWaveOne = new EnemyWave(1,2,3,4,5,6);
+        testWaveOne = new EnemyWave(6) ;
+        wm.regularGame(2);
+        wm.onTick(1);
+        wm.onTick(1);
+        wm.onTick(1);
     }
 }

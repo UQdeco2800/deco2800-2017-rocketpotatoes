@@ -1,8 +1,10 @@
 package com.deco2800.potatoes;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.*;
 
 public class ResourceTest {
@@ -45,7 +47,28 @@ public class ResourceTest {
 		tumbleweed = new TumbleweedResource();
 		wood = new WoodResource();
 	}
-	
+
+	@After
+	public void tearDown() {
+		resource = null;
+		food = null;
+		seed = null;
+		bones = null;
+		cactusThorn = null;
+		coal = null;
+		fishMeat = null;
+		iceCrystal = null;
+		obsidian = null;
+		pearl = null;
+		pinecone = null;
+		pricklyPear = null;
+		sealSkin = null;
+		snowBall = null;
+		treasure = null;
+		tumbleweed = null;
+		wood = null;
+	}
+
 	@Test
 	public void testResourceEntityCreation() {
 		// Position at (0,0,0) with empty constructer
@@ -196,9 +219,8 @@ public class ResourceTest {
 		entity.setResourceType(new SeedResource());
 		assert(entity.getType().toString().equals("seed"));
 	}
-//	@Test
-//	public void tickTest(){
-//		ResourceEntity foodEntity = new ResourceEntity(1,2,new FoodResource());
-//		foodEntity.onTick(1);
-//	}
+	@Test
+	public void tickTest(){
+		resource.equals(new Player());
+	}
 }

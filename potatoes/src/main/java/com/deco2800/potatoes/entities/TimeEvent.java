@@ -18,7 +18,6 @@ public abstract class TimeEvent<T> {
 	}
 
 	public static <T> TimeEvent<T> createWithFunction(int resetAmount, boolean doReset, Consumer<T> action) {
-		Consumer<T> actionOrNothing = action == null ? x -> {return;} : action;
 		TimeEvent<T> result =  new TimeEvent<T>() {
 			@Override
 			public void action(T param) {

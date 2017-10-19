@@ -16,6 +16,7 @@ public class GoalPotateTest {
 		test3.collidesWith(test2);
 		test.getMask();
         test.toString();
+        test.getProgressBar();
 	}
 }
 

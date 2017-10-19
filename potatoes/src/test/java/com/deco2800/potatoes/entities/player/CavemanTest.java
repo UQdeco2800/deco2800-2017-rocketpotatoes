@@ -27,6 +27,7 @@ public class CavemanTest {
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
+    	caveman = null;
     }
 	
 	/**
@@ -50,9 +51,18 @@ public class CavemanTest {
 	@Test
 	public void extraTest() {
 		caveman.updateSprites();
-		//caveman.interact();
 		caveman.walk(true);
 		caveman.walk(false);
-//		caveman.attack();
+		caveman.setState(Player.PlayerState.WALK);
+		caveman.updateSprites();
+		caveman.setState(Player.PlayerState.ATTACK);
+		caveman.updateSprites();
+		caveman.setState(Player.PlayerState.DAMAGED);
+		caveman.updateSprites();
+		caveman.setState(Player.PlayerState.DEATH);
+		caveman.updateSprites();
+		caveman.setState(Player.PlayerState.INTERACT);
+		caveman.updateSprites();
+		
 	}
 }
