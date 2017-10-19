@@ -2,13 +2,13 @@ package com.deco2800.potatoes.entities.enemies.enemyactions;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
-
 import java.util.Collection;
 import java.util.Optional;
 
@@ -18,7 +18,7 @@ import java.util.Optional;
  **/
 public class StealingEvent extends TimeEvent<EnemyEntity> {
 
-    private float range = 1.5f;
+    private float range = 1.0f;
     private Class target;
 
     /**
@@ -54,33 +54,30 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
     public void action(EnemyEntity enemy) {
         Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(target, enemy.getPosX(), enemy.getPosY());
 
+		/*Stop event if dead (deathHandler of mortal entity will eventually unregister the event).*/
+        if (enemy.isDead()) {
+            GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
+            setDoReset(false);
+        }
+
         // no target exists or target is out of range
         if (!target1.isPresent() || enemy.distanceTo(target1.get()) > range) {
             return;
         }
 
-        /*Might not need to loop through all enemies -- just work with the target1.get()????*/
-        Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-        for (AbstractEntity entity : entities) {
-            if (entity instanceof ResourceTree) {
-                if (target1.get().equals(entity)) {
-                    if (((ResourceTree) entity).getGatherCount() > 0) {
-                        ((ResourceTree) entity).gather(-1);
-                        enemy.setMoving(false);
-                    } else {
-                        //resource tree has 0 or less resources - tell raccoon its a good boy and move on.
-                        if (enemy instanceof SpeedyEnemy) {
-                            ((SpeedyEnemy) enemy).addTreeToVisited((ResourceTree) entity);
-                            enemy.setMoving(true);
-                        }
-                    }
+        if (target1.get() instanceof ResourceTree) {
+            ResourceTree foundTree = (ResourceTree) target1.get();
+            if (foundTree.getGatherCount() > 0) {
+                foundTree.gather(-1);
+                enemy.setDirectionToCoords(foundTree.getPosX(), foundTree.getPosY());
+                enemy.setMoving(false);
+            } else {
+                //resource tree has 0 or less resources - tell raccoon its a good boy and move on.
+                if (enemy instanceof SpeedyEnemy) {
+                    ((SpeedyEnemy) enemy).addTreeToVisited(foundTree);
+                    enemy.setMoving(true);
                 }
             }
-        }
-		/*Stop attacking if dead (deathHandler of mortal entity will eventually unregister the event).*/
-        if (enemy.isDead()) {
-            GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
-            setDoReset(false);
         }
     }
 

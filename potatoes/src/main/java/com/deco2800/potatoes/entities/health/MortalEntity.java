@@ -334,15 +334,10 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	@Override
 	public void onTick(long time) {
-
 	}
 
     public Direction getFacing() {
         return this.facing;
     }
-
-
-
-
 
 }

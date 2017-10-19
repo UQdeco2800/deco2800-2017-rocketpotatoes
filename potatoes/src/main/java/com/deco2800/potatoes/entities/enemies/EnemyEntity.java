@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -37,6 +38,9 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.ParticleManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
+
+import static com.deco2800.potatoes.entities.Direction.getFromRad;
+import static com.deco2800.potatoes.entities.Direction.getRadFromCoords;
 
 /**
  * An abstract class for the basic functionality of enemy entities which extend from it
@@ -145,7 +149,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			float deltaX = target.getX() - getPosX();
 			float deltaY = target.getY() - getPosY();
 
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.setMoveAngle(getRadFromCoords(deltaX, deltaY));
 			pathTarget.setPath(path);
 			pathTarget.setTarget(target);
 		}
@@ -157,7 +161,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
 		for (Class sightTarget : targets.getSightAggroTargets()) {
 			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {	//HOW TO CHECK SUPERCLASS SO WE CAN JUST ADD PLAYER TO TARGETS?
+				if (entity.getClass().isAssignableFrom(sightTarget)) {
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
 					if (distance < 10) {
 						return entity;
@@ -190,8 +194,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		}
 
 		// set facing Direction based on movement angle
-		this.facing = Direction.getFromRad(super.getMoveAngle());
+		this.facing = getFromRad(super.getMoveAngle());
 
+		this.updateSprites();
+	}
+
+	/***
+	 * Sets the direction of enemy to face a set of coordinates
+	 */
+	public void setDirectionToCoords(float xVector, float yVector) {
+		this.facing = getFromRad( getRadFromCoords( xVector-this.getPosX(), yVector-this.getPosY()) );
 		this.updateSprites();
 	}
 
@@ -225,14 +237,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return Math.round((count/time));
 
 
-	}
-
-	/***
-	 * Initialise an enemy with a particular set of targets/goals
-	 */
-	public EnemyTargets intializeTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightTargets) {
-		this.targets = new EnemyTargets(mainTargets, sightTargets);
-		return this.targets;
 	}
 
 	/***

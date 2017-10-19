@@ -203,11 +203,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public void onTick(long i) {
 		AbstractEntity relevantTarget = mostRelevantTarget(targets);
-		if (getMoving() == true) {
+		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
+			super.updateDirection();
 		}
-		super.updateDirection();
 	}
 
 
