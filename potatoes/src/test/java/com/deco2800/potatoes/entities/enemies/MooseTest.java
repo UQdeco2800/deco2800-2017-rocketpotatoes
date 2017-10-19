@@ -79,5 +79,6 @@ public class MooseTest extends BaseTest {
         GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         GameManager.get().getWorld().addEntity(playerTest);
         moose1.onTick(1);
+        moose1.getProgressBar();
     }
 }

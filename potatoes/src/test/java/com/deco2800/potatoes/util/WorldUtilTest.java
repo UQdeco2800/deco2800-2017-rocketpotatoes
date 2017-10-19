@@ -22,6 +22,8 @@ public class WorldUtilTest {
 
         WorldUtil.closestEntityToPosition(0f, 0f, 2f);
         assertEquals(t1, WorldUtil.closestEntityToPosition(0f, 0f, 2f).get());
+        WorldUtil.getEntityAtPosition(1f,1f);
+        WorldUtil.getEntityAtPosition(1f,0f);
     }
     
     @After

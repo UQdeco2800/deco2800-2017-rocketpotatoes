@@ -140,7 +140,7 @@ public class Wizard extends Player {
             }
         }
     }
-    
+
     private void hoverAnimation() {
     	// Update shadow position
 		shadow.setY(getPosY() + 0.25f);
