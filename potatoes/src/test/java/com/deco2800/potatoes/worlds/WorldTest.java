@@ -44,6 +44,7 @@ public class WorldTest extends BaseTest {
 	@Test
 	public void entityTest() {
 		world.addEntity(test);
+		world.getEntity(0);
 		world.removeEntity(0);
 		execption.expect(IllegalStateException.class);
 		world.addEntity(test, 0);
@@ -56,6 +57,7 @@ public class WorldTest extends BaseTest {
 		world.addEntity(test);
 		world.addEntity(test);
 		world.deSelectAll();
+		world.getBackground();
 	}
 
 	@Test
