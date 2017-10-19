@@ -142,12 +142,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);
 
-		/*Not yet implemented - concept: if enemy is attacked by these, then enemy aggros to these*/
-		ArrayList<Class> damageAggroTargets = new ArrayList<>();
-		damageAggroTargets.add(Archer.class);
-		damageAggroTargets.add(Caveman.class);
-		damageAggroTargets.add(Wizard.class);
-
 		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 

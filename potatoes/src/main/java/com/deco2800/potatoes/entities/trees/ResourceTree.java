@@ -55,6 +55,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.gatherType = new SeedResource();
 		this.resetStats();
 		this.setTexture(FOOD_TREE_TEXTURE);
+		/*setSolid must be false for raccoons to be able to move between different targets*/
+		this.setSolid(false);
 	}
 
 	/**

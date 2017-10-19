@@ -32,13 +32,13 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
      * Constructor for stealing event, set up to repeat an attack according to
      * attackSpeed
      *
-     * @param attackSpeed
-     *            the delay between shots
+     * @param eventRate
+     *            the delay between thefts
      *
      */
-    public StealingEvent(int attackSpeed, Class target) {
+    public StealingEvent(int eventRate, Class target) {
         setDoReset(true);
-        setResetAmount(attackSpeed);
+        setResetAmount(eventRate);
         this.target = target;
         reset();
     }
@@ -66,11 +66,12 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
                 if (target1.get().equals(entity)) {
                     if (((ResourceTree) entity).getGatherCount() > 0) {
                         ((ResourceTree) entity).gather(-1);
+                        enemy.setMoving(false);
                     } else {
                         //resource tree has 0 or less resources - tell raccoon its a good boy and move on.
                         if (enemy instanceof SpeedyEnemy) {
-                            System.err.println("I'm adding " + entity.toString() + " to my visited trees");
                             ((SpeedyEnemy) enemy).addTreeToVisited((ResourceTree) entity);
+                            enemy.setMoving(true);
                         }
                     }
                 }
