@@ -206,6 +206,15 @@ public class TextureManager extends Manager {
         saveTexture("squirrel_SE", "resources/enemies/squirrel/idle/squirrel_SE.png");
         saveTexture("squirrel_SW", "resources/enemies/squirrel/idle/squirrel_SW.png");
         saveTexture("squirrel_W", "resources/enemies/squirrel/idle/squirrel_W.png");
+        //Raccoon
+        saveTexture("raccoon_E", "resources/enemies/raccoon/raccoon_E.png");
+        saveTexture("raccoon_N", "resources/enemies/raccoon/raccoon_N.png");
+        saveTexture("raccoon_NE", "resources/enemies/raccoon/raccoon_NE.png");
+        saveTexture("raccoon_NW", "resources/enemies/raccoon/raccoon_NW.png");
+        saveTexture("raccoon_S", "resources/enemies/raccoon/raccoon_S.png");
+        saveTexture("raccoon_SE", "resources/enemies/raccoon/raccoon_SE.png");
+        saveTexture("raccoon_SW", "resources/enemies/raccoon/raccoon_SW.png");
+        saveTexture("raccoon_W", "resources/enemies/raccoon/raccoon_W.png");
         //Bear
         saveTexture("bear_E", "resources/enemies/bear/bear_E.png");
         saveTexture("bear_N", "resources/enemies/bear/bear_N.png");
