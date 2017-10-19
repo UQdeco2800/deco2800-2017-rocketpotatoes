@@ -23,6 +23,7 @@ public class ProjectileTreeTest {
 		GameManager.get().setWorld(new TestWorld());
 		testTree = new ProjectileTree(10, 10, RELOAD, RANGE, HEALTH);
 		GameManager.get().getWorld().addEntity(testTree);
+		testTree.createCopy();
 	}
 	
 	@After
@@ -54,6 +55,10 @@ public class ProjectileTreeTest {
 		testTree.getProgress();
 		testTree.showProgress();
 		testTree.setProgress(10);
+		testTree.showProgress();
+		testTree.setProgress(-1);
+		testTree.showProgress();
+		testTree.getProgressRatio();
 	}
 
 	@Test
@@ -91,8 +96,12 @@ public class ProjectileTreeTest {
 		testTree.getProgressRatio();
 		testTree.getMaxProgress();
 		testTree.getProgressBar();
+		testTree.setProgress(3);
+		testTree.getProgressBar();
 		testTree.getTexture();
+		testTree.getName();
 		testTree.dyingHandler();
+		
 	}
 
 	private class TestWorld extends World {
