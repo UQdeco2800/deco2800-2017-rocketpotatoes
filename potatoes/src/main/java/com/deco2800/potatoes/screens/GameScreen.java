@@ -466,9 +466,8 @@ public class GameScreen implements Screen {
 		cameraManager.centerOnTarget(timeDelta);
 		// Ticks all tickable managers, currently events, waves, particles
 		GameManager.get().onTick(timeDelta);
-		/******Not Working properly, causes game stop ticking********/
-		//guiManager.tickFadingGuis(timeDelta);
-		/**********************************************************/
+		
+		guiManager.tickFadingGuis(timeDelta);
 
     }
 
