@@ -84,8 +84,8 @@ public class PauseMenuGui extends Gui {
 	private CheckBox potatoProgressBarCheckBox;
 	
 	// padding for top and bottom of buttons
-    private final int paddingVertical = 5;
-    private final int paddingHorizontal = 10;
+    private static final int paddingVertical = 5;
+    private static final int paddingHorizontal = 10;
 
     // State indicator
     private enum States {

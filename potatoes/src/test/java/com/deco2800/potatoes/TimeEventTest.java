@@ -61,6 +61,7 @@ public class TimeEventTest {
 		event.setProgress(1);
 		event.decreaseProgress(1, null);
 		assertEquals("Action has not been called after resetting", event.getActionCount(), 1);
+		event.copy();
 	}
 
 }

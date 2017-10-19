@@ -24,16 +24,4 @@ public class EnemyTargets {
 
     public List<Class> getDamageAggroTargets() { return damageAggroTargets; }
 
-
-    /*public void addMainTarget(AbstractEntity mainTarget) {
-        mainTargets.add(mainTarget);
-    }
-
-    public ArrayList<AbstractEntity> getAggroableTargets() {
-        return aggroableTargets;
-    }
-
-    public void addAggroableTargets(AbstractEntity aggroableTarget) {
-        aggroableTargets.add(aggroableTarget);
-    }*/
 }

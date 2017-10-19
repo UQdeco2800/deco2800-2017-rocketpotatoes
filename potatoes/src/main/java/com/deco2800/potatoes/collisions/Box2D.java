@@ -80,7 +80,7 @@ public class Box2D extends Shape2D {
             }
         }).collect(Collectors.toList());
 
-        if (points.size() == 0) {
+        if (points.isEmpty()) {
             return Optional.empty();
         }
 

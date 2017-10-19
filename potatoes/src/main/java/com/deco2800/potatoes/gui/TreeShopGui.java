@@ -67,9 +67,9 @@ public class TreeShopGui extends Gui implements SceneGui {
     // Opacity value for treeShop subsection when mouse is not hovering over it
     private final float UNSELECTED_ALPHA = 0.2f;
     // Opacity value for treeShop subsection when mouse hovers over
-    private final float SELECTED_ALPHA = 0.5f;
+    private static final float SELECTED_ALPHA = 0.5f;
     // Maximum number of tile lengths from player where you can plant trees
-    private final int MAX_RANGE = 6;
+    private static final int MAX_RANGE = 6;
 
      private int SHOPRADIUS = 150;
 
@@ -109,7 +109,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     /**
      * Updates the list of unlocked tree states
      */
-    private void refreshTreeStates() {
+    public void refreshTreeStates() {
         unlockedTreeStates = new ArrayList<>();
         if (treeStates != null){
             for (TreeState treeState : treeStates) {
@@ -173,7 +173,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         lightningTreeCost.updateQuantity(new TreasureResource(), 1);
         DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
         TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
-                true, "damage");
+                false, "damage");
         treeStates.add(lightningTreeState);
 
         // Ice tree
@@ -242,6 +242,19 @@ public class TreeShopGui extends Gui implements SceneGui {
     public TreeState getTreeStateByTree(AbstractTree tree) {
         for (TreeState treeState : treeStates) {
             if (treeState.getTree().toString().equals(tree.toString()))
+                return treeState;
+        }
+        return null;
+    }
+
+    /**
+     * Returns TreeState with name treeName
+     * @param treeName name of tree
+     * @return treeState with name treeName
+     */
+    public TreeState getTreeStateByName(String treeName) {
+        for (TreeState treeState : treeStates) {
+            if (treeState.getTree().getName().equals(treeName))
                 return treeState;
         }
         return null;

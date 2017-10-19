@@ -444,7 +444,8 @@ public class GameScreen implements Screen {
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
 		// Ticks all tickable managers, currently events, waves, particles
-		GameManager.get().onTick(timeDelta);
+		guiManager.tickFadingGuis(timeDelta);
+
     }
 
 	private void renderGUI(SpriteBatch batch) {

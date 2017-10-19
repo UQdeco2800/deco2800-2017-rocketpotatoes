@@ -10,11 +10,9 @@ import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.health.*;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.entities.trees.*;
-import com.deco2800.potatoes.gui.PauseMenuGui;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.entities.TimeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,7 +17,7 @@ public class DamageTreeTest {
 
     @Before
     public void setup() {
-
+        defaultDamageTree = new DamageTree();
         defaultDamageTree = new DamageTree(0, 0);
         iceTreeDamageTree = new DamageTree(1, 0, new IceTreeType());
         acornTreeDamageTree = new DamageTree(1, 0, new AcornTreeType());
@@ -43,6 +43,12 @@ public class DamageTreeTest {
         assertTrue(fireTreeDamageTree.getDamageTreeType() instanceof FireTreeType);
         assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTreeType);
         assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTreeType);
+        defaultDamageTree.createCopy();
+        defaultDamageTree.getName();
+        iceTreeDamageTree.getName();
+        acornTreeDamageTree.getName();
+        fireTreeDamageTree.getName();
+        nullTypeDamageTree.getName();
 
     }
 

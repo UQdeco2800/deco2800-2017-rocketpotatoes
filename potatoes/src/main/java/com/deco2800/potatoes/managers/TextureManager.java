@@ -198,14 +198,14 @@ public class TextureManager extends Manager {
         saveTexture("Healing2", "resources/enemies/Healing2.png");
         saveTexture("Healing3", "resources/enemies/Healing3.png");
         //Squirrel
-        saveTexture("squirrel_E", "resources/enemies/squirrel/squirrel_E.png");
-        saveTexture("squirrel_N", "resources/enemies/squirrel/squirrel_N.png");
-        saveTexture("squirrel_NE", "resources/enemies/squirrel/squirrel_NE.png");
-        saveTexture("squirrel_NW", "resources/enemies/squirrel/squirrel_NW.png");
-        saveTexture("squirrel_S", "resources/enemies/squirrel/squirrel_S.png");
-        saveTexture("squirrel_SE", "resources/enemies/squirrel/squirrel_SE.png");
-        saveTexture("squirrel_SW", "resources/enemies/squirrel/squirrel_SW.png");
-        saveTexture("squirrel_W", "resources/enemies/squirrel/squirrel_W.png");
+        saveTexture("squirrel_E", "resources/enemies/squirrel/idle/squirrel_E.png");
+        saveTexture("squirrel_N", "resources/enemies/squirrel/idle/squirrel_N.png");
+        saveTexture("squirrel_NE", "resources/enemies/squirrel/idle/squirrel_NE.png");
+        saveTexture("squirrel_NW", "resources/enemies/squirrel/idle/squirrel_NW.png");
+        saveTexture("squirrel_S", "resources/enemies/squirrel/idle/squirrel_S.png");
+        saveTexture("squirrel_SE", "resources/enemies/squirrel/idle/squirrel_SE.png");
+        saveTexture("squirrel_SW", "resources/enemies/squirrel/idle/squirrel_SW.png");
+        saveTexture("squirrel_W", "resources/enemies/squirrel/idle/squirrel_W.png");
         //Raccoon
         saveTexture("raccoon_E", "resources/enemies/raccoon/raccoon_E.png");
         saveTexture("raccoon_N", "resources/enemies/raccoon/raccoon_N.png");
@@ -215,7 +215,7 @@ public class TextureManager extends Manager {
         saveTexture("raccoon_SE", "resources/enemies/raccoon/raccoon_SE.png");
         saveTexture("raccoon_SW", "resources/enemies/raccoon/raccoon_SW.png");
         saveTexture("raccoon_W", "resources/enemies/raccoon/raccoon_W.png");
-        //Bear -- all placeholders
+        //Bear
         saveTexture("bear_E", "resources/enemies/bear/bear_E.png");
         saveTexture("bear_N", "resources/enemies/bear/bear_N.png");
         saveTexture("bear_NE", "resources/enemies/bear/bear_NE.png");
