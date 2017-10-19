@@ -110,9 +110,12 @@ def get_output_name():
 
     return path.splitext(output)[0]
 
+def centre_origin():
+    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='BOUNDS')
+
 def centre_model(model):
     '''centre the model & its origin'''
-    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='BOUNDS')
+    centre_origin()
     model.location = [0, 0, 0]
     model.rotation_euler = [0, 0, 0]
 
@@ -245,7 +248,7 @@ def main():
     bpy.context.scene.frame_current = 0
     bpy.context.scene.frame_set(0)
 
-    centre_model(model)
+    centre_origin()
     setup_camera(camera)
     setup_light(light)
 
@@ -272,8 +275,6 @@ def main():
         # move frame along
         bpy.context.scene.frame_current = i
         bpy.context.scene.frame_set(i)
-
-
 
         bpy.ops.object.duplicate()
         duped_model = bpy.context.selected_objects[0]
@@ -302,7 +303,7 @@ def main():
 
     # merge all the newly imported models into one supermodel
     selected = bpy.context.selected_objects
-    SCENE.objects.active = merged =  selected.pop()
+    SCENE.objects.active = merged = selected.pop()
     bpy.ops.object.join()
 
     merged.name = "Merged"
