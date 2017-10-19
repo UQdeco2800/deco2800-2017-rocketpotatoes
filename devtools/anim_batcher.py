@@ -276,8 +276,6 @@ def main():
         bpy.context.scene.frame_current = i
         bpy.context.scene.frame_set(i)
 
-
-
         bpy.ops.object.duplicate()
         duped_model = bpy.context.selected_objects[0]
 
@@ -305,7 +303,7 @@ def main():
 
     # merge all the newly imported models into one supermodel
     selected = bpy.context.selected_objects
-    SCENE.objects.active = merged =  selected.pop()
+    SCENE.objects.active = merged = selected.pop()
     bpy.ops.object.join()
 
     merged.name = "Merged"
