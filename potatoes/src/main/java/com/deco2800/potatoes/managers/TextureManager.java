@@ -40,9 +40,6 @@ public class TextureManager extends Manager {
         saveTexture("w1", "resources/placeholderassets/w1.png");
         saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
-        saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
-        saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
-        saveTexture("pine_resource_tree", "resources/placeholderassets/tower.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -82,6 +79,14 @@ public class TextureManager extends Manager {
         
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
+        // Seed Resource Tree Sprites
+        saveTexture("seed_resource_tree", "resources/resourceTrees/seedTree.png"); // Default Sprite
+        
+        // Food Resource Tree Sprites
+        saveTexture("food_resource_tree", "resources/resourceTrees/foodTree.png"); // Default Sprite
+        
+        // Pine Resource Tree Sprites
+        saveTexture("pine_resource_tree", "resources/resourceTrees/pineTree.png"); // Default Sprite
 
 
         // Projectiles TODO: fix
