@@ -45,7 +45,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
-//	private static final transient String ENEMY_TYPE = "raccoon";
 	private static final transient String[] ENEMY_TYPE = new String[]{
 
 		"raccoon"
@@ -60,13 +59,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 	private EnemyTargets targets = initTargets();
-	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees(); //is there a better data structure for this
+	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees();
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
-	private Direction currentDirection; // The direction the enemy faces
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	/**
@@ -93,12 +91,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
 	 * enemy.
 	 *
-	 * @return
+	 * @return this enemy's initialized targets.
 	 */
 	private static EnemyProperties initStats() {
 		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
-				.addEvent(new StealingEvent(1000,ResourceTree.class))
+				.addEvent(new StealingEvent(1000))
 				.addEvent(new MeleeAttackEvent(500, BasePortal.class))
 				.addEvent(new MeleeAttackEvent(500, Player.class))
 				.createEnemyStatistics();
@@ -180,12 +178,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return null;
 	}
 
-
-	/**
-	 *	@return the current Direction of raccoon
-	 * */
-	public Direction getDirection() { return currentDirection; }
-
 	/**
 	 * @return String of this type of enemy (ie 'raccoon').
 	 * */
@@ -202,6 +194,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		}
 	}
 
+	/**
+	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
+	 * relevant target.
+	 *
+	 * @return
+	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		LinkedList<Class> mainTargets = new LinkedList<>();

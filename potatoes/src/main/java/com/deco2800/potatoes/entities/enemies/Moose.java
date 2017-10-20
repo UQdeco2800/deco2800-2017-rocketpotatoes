@@ -26,11 +26,9 @@ import java.util.LinkedList;
 public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
-	private static final transient String TEXTURE_RIGHT = "pronograde";
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
-//	private static final transient String ENEMY_TYPE = "moose";
 	private static final transient String[] ENEMY_TYPE = new String[]{
 			"moose"
 
@@ -46,12 +44,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 	private EnemyTargets targets = initTargets();
 
-	private int ticksSinceRandom = 0;
-	private static final int MAX_WAIT = 200;
-
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
-
-	private Direction currentDirection; // The direction the enemy faces
 
 	/**
 	 * Empty constructor for serialization
@@ -87,14 +80,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	@Override
 	public String[] getEnemyType() {
 		return ENEMY_TYPE;
-	}
-
-	/**
-	 * @return the current Direction of moose
-	 */
-	//@Override
-	public Direction getDirection() {
-		return currentDirection;
 	}
 
 	/**
@@ -138,15 +123,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * @return
 	 */
 	private static EnemyProperties initStats() {
-		HealingWave healingWave = new HealingWave(3500, GoalPotate.class, 8f, 80f);
-
+		HealingWave healingWave = new HealingWave(3500, 8f, 80f);
 		EnemyProperties result = new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, GoalPotate.class))
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
 				.addEvent(new Channel(50, 1000, healingWave))
 				.addEvent(healingWave)
 				.createEnemyStatistics();
-
 		return result;
 	}
 
@@ -159,6 +142,12 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return STATS;
 	}
 
+	/**
+	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
+	 * relevant target.
+	 *
+	 * @return this enemy's initialized targets.
+	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		LinkedList<Class> mainTargets = new LinkedList<>();

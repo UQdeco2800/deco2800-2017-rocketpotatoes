@@ -237,11 +237,11 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 				.createEnemyStatistics();
 	}
 
-	/***
-	 * Initialize the targets of this enemy. Target priority is in order of listing and sightAggro > mainTargets
-	 * provided the sightAggro target is within a close enough radius of the enemy; otherwise mainTargets > sightAggro.
+	/**
+	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
+	 * relevant target.
 	 *
-	 * @return EnemyTargets class which holds mainTarget, sightAggroTargets and damageAggroTargets arrays.
+	 * @return this enemy's initialized targets.
 	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/

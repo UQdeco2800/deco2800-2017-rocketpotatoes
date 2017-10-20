@@ -3,29 +3,52 @@ package com.deco2800.potatoes.entities.enemies.enemyactions;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 
+/**
+ * A channelling time event that represents an enemy 'charging up' before performing another TimeEvent action
+ *
+ * @author: craig
+ */
 public class Channel extends TimeEvent<EnemyEntity> {
-
     private float duration;
     private int rate;
     private TimeEvent<EnemyEntity> channeledEvent;
 
+    /**
+     * Default constructor for serialization
+     */
     public Channel() {
         //Blank comment for sonar
     }
 
-    public Channel(int rate, float duration, TimeEvent<EnemyEntity> channeledEvent) {
+    /**
+     * Constructs a new channel TimeEvent.
+     *
+     * @param eventRate
+     *          The rate at which this TimeEvent occurs in terms of number of ticks
+     * @param channelDuration
+     *          The length of time of the channelling before the channeledEvent
+     * @param channeledEvent
+     *          The TimeEvent to occur on completion of channelling
+     */
+    public Channel(int eventRate, float channelDuration, TimeEvent<EnemyEntity> channeledEvent) {
         setDoReset(true);
-        setResetAmount(rate);
-        this.duration = duration;
-        this.rate = rate;
+        setResetAmount(eventRate);
+        this.duration = channelDuration;
+        this.rate = eventRate;
         this.channeledEvent = channeledEvent;
     }
 
+    /**
+     * The channelling (pausing in place) action
+     *
+     * @param enemy
+     *          The enemy this channelling event belongs to
+     */
     public void action(EnemyEntity enemy) {
-        float channellingStart = getChanneledEvent().getProgress() - duration;
-        if (enemy.getChannelTimer() % getChanneledEvent().getProgress() > channellingStart) {
+        float channellingStart = channeledEvent.getProgress() - duration;
+        if (enemy.getChannelTimer() % channeledEvent.getProgress() > channellingStart) {
             enemy.setMoving(false);
-            //animation??
+            //animation would go here.
         } else {
             enemy.setMoving(true);
         }
@@ -40,7 +63,7 @@ public class Channel extends TimeEvent<EnemyEntity> {
      */
     @Override
     public TimeEvent<EnemyEntity> copy() {
-        return new Channel(this.rate, this.duration, getChanneledEvent());
+        return new Channel(this.rate, this.duration, channeledEvent);
     }
 
     /**

@@ -2,24 +2,22 @@ package com.deco2800.potatoes.entities.enemies.enemyactions;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
-import java.util.Collection;
 import java.util.Optional;
 
 /**
- * A stealing event from speedy enemy to a target
+ * A stealing TimeEvent which, when belonging to an enemy, allows the enemy to steal from resource trees.
  *
+ * @author: tl & craig
  **/
 public class StealingEvent extends TimeEvent<EnemyEntity> {
 
-    private float range = 1.0f;
-    private Class target;
+    private float range = .8f;
 
     /**
      * Default constructor for serialization
@@ -29,30 +27,30 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
     }
 
     /**
-     * Constructor for stealing event, set up to repeat an attack according to
-     * attackSpeed
+     * Constructor for stealing event which when held by an enemy will cause it to steal resources
+     * from a resource tree if within range. The event repeats every eventRate number of game ticks
      *
      * @param eventRate
-     *            the delay between thefts
-     *
+     *            the number of ticks between thefts
      */
-    public StealingEvent(int eventRate, Class target) {
+    public StealingEvent(int eventRate) {
         setDoReset(true);
         setResetAmount(eventRate);
-        this.target = target;
         reset();
     }
 
     /**
-     * Creates action as per TimeEvent shoots a projectile at small range to
-     * simulate stealing
+     * The stealing action to occur when this event is triggered. The closest resource tree to the event's enemy
+     * is searched for and if it is present and within a close enough range, will cause the enemy to stop, face the
+     * tree and remove 1 unit of resources. The enemy repeats this until the tree has no more resources and moves
+     * on.
      *
      * @param enemy
      *            The enemy that this melee attack belongs to
      */
     @Override
     public void action(EnemyEntity enemy) {
-        Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(target, enemy.getPosX(), enemy.getPosY());
+        Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(ResourceTree.class, enemy.getPosX(), enemy.getPosY());
 
 		/*Stop event if dead (deathHandler of mortal entity will eventually unregister the event).*/
         if (enemy.isDead()) {
@@ -61,12 +59,12 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
         }
 
         // no target exists or target is out of range
-        if (!target1.isPresent() || enemy.distanceTo(target1.get()) > range) {
+        if (!target.isPresent() || enemy.distanceTo(target.get()) > range) {
             return;
         }
 
-        if (target1.get() instanceof ResourceTree) {
-            ResourceTree foundTree = (ResourceTree) target1.get();
+        if (target.get() instanceof ResourceTree) {
+            ResourceTree foundTree = (ResourceTree) target.get();
             if (foundTree.getGatherCount() > 0) {
                 foundTree.gather(-1);
                 enemy.setDirectionToCoords(foundTree.getPosX(), foundTree.getPosY());
@@ -86,7 +84,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
      */
     @Override
     public TimeEvent<EnemyEntity> copy() {
-        return new StealingEvent(getResetAmount(), this.target);
+        return new StealingEvent(getResetAmount());
     }
 
     /**

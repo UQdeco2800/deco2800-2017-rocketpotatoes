@@ -51,7 +51,6 @@ public class SpeedyEnemyTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(true, speedyEmpty.getDirection() == null);
         for (String data:speedyEmpty.getEnemyType()) {
             assertEquals("raccoon", data);
 
