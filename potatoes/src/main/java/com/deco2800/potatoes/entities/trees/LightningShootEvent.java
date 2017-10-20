@@ -24,7 +24,6 @@ public class LightningShootEvent extends TimeEvent<AbstractTree> {
 	 */
 	public LightningShootEvent(int shootDelay, EffectTexture texture) {
 		this.attackTexture = texture;
-		
 		setDoReset(true);
 		setResetAmount(shootDelay);
 		reset();
