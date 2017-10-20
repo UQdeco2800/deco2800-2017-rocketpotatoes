@@ -70,17 +70,17 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * Default constructor for the purposes of serialization
 	 */
 	public AbstractEntity() {
-        this(new Point2D(0, 0), 0, 0, "");
+		this(new Point2D(0, 0), 0, 0, "");
 	}
 
 	/**
 	 * Constructs a new AbstractEntity with specific render lengths. Allows
 	 * specification of rendering dimensions different to those used for collision.
 	 * For example, could be used to have collision on the trunk of a tree but not
-	 * the leaves/branches. 
-	 * 
-     * @param mask
-     *            The collision mask used by the entity.
+	 * the leaves/branches.
+	 *
+	 * @param mask
+	 *            The collision mask used by the entity.
 	 * @param xRenderLength
 	 *            The length of the entity, in x. Used in collision detection.
 	 * @param yRenderLength
@@ -88,11 +88,11 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * @param texture
 	 *            The id of the texture for this entity.
 	 */
-    public AbstractEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture) {
+	public AbstractEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture) {
 		this.collisionMask = mask;
 		this.shadow = mask;
 
-    		this.xRenderLength = xRenderLength;
+		this.xRenderLength = xRenderLength;
 		this.yRenderLength = yRenderLength;
 
 		this.texture = texture;
@@ -123,7 +123,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            The id of the texture for this entity.
 	 */
 	public AbstractEntity(Shape2D mask, boolean isSolid, boolean isStatic, boolean hasShadow,
-		  float xRenderLength, float yRenderLength, float xRenderOffset, float yRenderOffset, String texture) {
+						  float xRenderLength, float yRenderLength, float xRenderOffset, float yRenderOffset, String texture) {
 		this.collisionMask = mask;
 		this.isSolid = isSolid;
 		this.isStatic = isStatic;
@@ -163,7 +163,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *            The id of the texture for this entity.
 	 */
 	public AbstractEntity(Shape2D mask, boolean isSolid, boolean isStatic, Shape2D shadow,
-			  float xRenderLength, float yRenderLength, float xRenderOffset, float yRenderOffset, String texture) {
+						  float xRenderLength, float yRenderLength, float xRenderOffset, float yRenderOffset, String texture) {
 		this.collisionMask = mask;
 		this.isSolid = isSolid;
 		this.isStatic = isStatic;
@@ -186,7 +186,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	/**
 	 * Get the X coordinate of this AbstractEntity. This may have a bug, please
 	 * check before using.
-	 * 
+	 *
 	 * @return The X coordinate.
 	 */
 	@Override
@@ -196,7 +196,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	/**
 	 * Get the Y coordinate of this AbstractEntity.
-	 * 
+	 *
 	 * @return The Y coordinate.
 	 */
 	@Override
@@ -244,7 +244,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 
 
-    // ----------     Rendering  Texture   ---------- //
+	// ----------     Rendering  Texture   ---------- //
 
 	@Override
 	public float getXRenderLength() {
@@ -298,7 +298,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	/**
 	 * Gives the string for the texture of this entity. This does not mean the
 	 * texture is currently registered
-	 * 
+	 *
 	 * @return texture string
 	 */
 	@Override
@@ -309,7 +309,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	/**
 	 * Sets the texture string for this entity. Check the texture is registered with
 	 * the TextureRegister
-	 * 
+	 *
 	 * @param texture
 	 *            String texture id
 	 */
@@ -570,8 +570,18 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	public void moveVector(float theta, float dist) {
 		float dx = (float) (dist * Math.cos(theta));
 		float dy = (float) (dist * Math.sin(theta));
-		setPosX(getPosX() + dx);
-		setPosY(getPosY() + dy);
+		float length = GameManager.get().getWorld().getLength();
+		float width = GameManager.get().getWorld().getWidth();
+		float terrainModifierCheck;
+
+
+		terrainModifierCheck = GameManager.get().getWorld()
+				.getTerrain(Math.round(Math.min(getPosX() + dx-1 , width - 1)), Math.round(Math.min(getPosY() + dy, length - 1)))
+				.getMoveScale();
+		if (terrainModifierCheck>0) {
+			setPosX(Math.max(Math.min(getPosX() + dx, width), 0));
+			setPosY(Math.max(Math.min(getPosY() + dy, length), 0));
+		}
 	}
 
 
@@ -589,7 +599,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 *
 	 * Moves without collision if !isSolid
 	 * Exits running if isStatic
- 	 */
+	 */
 	public void onTickMovement() {
 
 
@@ -700,7 +710,9 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * @param entities 	The entities to check collision against
 	 */
 	private void moveAndPush(Map<Integer, AbstractEntity> entities){
-
+		float length = GameManager.get().getWorld().getLength();
+		float width = GameManager.get().getWorld().getWidth();
+		float terrainModifierCheck;
 		float movDist = moveSpeed * moveSpeedModifier;
 
 		//set next pos
@@ -734,6 +746,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 					// move backwards until not in collision
 					nextPos.moveVector(moveAngle + (float) Math.PI, remainDist - MIN_DIST);
+					return;
 				} else {
 
 					// push nextPos against e
@@ -742,13 +755,12 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 					nextPos.moveVector(angle, remainDist * (1 - massRatio));
 					e.moveVector(angle + (float) Math.PI, remainDist * massRatio);
+					return;
 				}
 			}
 
 		}
-		float length = GameManager.get().getWorld().getLength();
-		float width = GameManager.get().getWorld().getWidth();
-		float terrainModifierCheck = 0.1f;
+
 		terrainModifierCheck = GameManager.get().getWorld()
 				.getTerrain(Math.round(Math.min(nextPos.getX()-1 , width - 1)), Math.round(Math.min(nextPos.getY(), length - 1)))
 				.getMoveScale();
@@ -765,7 +777,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 	/**
 	 * Allows sorting of WorldEntities for Isometric rendering
-	 * 
+	 *
 	 * @param o
 	 * @return
 	 */

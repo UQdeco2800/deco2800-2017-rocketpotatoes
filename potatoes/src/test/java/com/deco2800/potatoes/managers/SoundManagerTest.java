@@ -39,6 +39,7 @@ public class SoundManagerTest extends BaseTest {
         //assertTrue(m.musicPlaying());
         soundManager.stopMusic();
         assertFalse(soundManager.musicPlaying());
+        soundManager.playMusic(null);
     }
 
     @Test
@@ -50,6 +51,15 @@ public class SoundManagerTest extends BaseTest {
         soundManager.setMusicVolume(0.4f);
         assertEquals(0.6f, soundManager.getEffectsVolume(),0.01f);
         assertEquals(0.4f, soundManager.getMusicVolume(),0.01f);
+    }
+    @Test
+    public void extraTest() {
+        soundManager.stopMusic();
+        soundManager.setMusicVolume(6);
+        String soundString = "menu_blip.wav";
+        soundManager.playMusic(soundString);
+        soundManager.playMusic(soundString);
+        soundManager.playSound("fail");
     }
 
 }

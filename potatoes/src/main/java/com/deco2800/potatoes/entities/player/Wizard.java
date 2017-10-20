@@ -95,7 +95,7 @@ public class Wizard extends Player {
             float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
             float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-            Optional<AbstractEntity> target = null;
+            Optional<AbstractEntity> target;
             target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
             if (target.isPresent()) {
@@ -140,7 +140,7 @@ public class Wizard extends Player {
             }
         }
     }
-    
+
     private void hoverAnimation() {
     	// Update shadow position
 		shadow.setY(getPosY() + 0.25f);

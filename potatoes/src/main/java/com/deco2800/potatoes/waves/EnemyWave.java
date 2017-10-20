@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.waves;
 
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -14,13 +15,15 @@ public class EnemyWave {
     private int waveTime = 0;   //Spawn rate (100 = 1 second)
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
+    private static int totalAmount = 0;
     private int round_number;
+    private boolean isPauseWave;
 
     public enum WaveState {
-        WAITING, ACTIVE, PAUSED, FINISHED
+        WAITING, ACTIVE, PAUSE, FINISHED
     }
 
-    WaveState waveState = WaveState.WAITING;
+    private WaveState waveState = WaveState.WAITING;
 
     /**
      * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
@@ -48,11 +51,12 @@ public class EnemyWave {
     }
 
     /**
-     * Pause wave consturctor, no enemies.
+     * Pause wave constructor, no enemies.
      */
-    public EnemyWave() {
+    public EnemyWave(int waveLength) {
         this.enemyRatios = calculateEnemyRatios(0,0,0,0);
-        this.waveLength = 500;
+        this.waveLength = waveLength;
+        this.isPauseWave = true;
     }
 
     /**
@@ -62,7 +66,7 @@ public class EnemyWave {
      *
      * @return an array of floats representing the ratio of enemy rates provided
      * */
-    private float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
+    public float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
         float total = squirrelRate + speedyRate + tankRate + mooseRate;
         // Ratios are the total spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
         float squirrelRatio = squirrelRate/total;
@@ -104,17 +108,20 @@ public class EnemyWave {
      * Currently do nothing unless in ACTIVE state.
      *
      */
-    public void tickAction(){
+    public void tickAction() {
         switch (getWaveState()) {
 /*            case WAITING:
                 //Do nothing
+                break;*/
+            case PAUSE:
+                /*setCurrentWaveTime(elapsedWaveTime() + 1);
+                if (elapsedWaveTime() > getWaveLength()) {
+                    setWaveState(WaveState.FINISHED);
+                }*/
                 break;
-            case PAUSED:
-                //Pausing not yet implemented
-                break;
-*/            case ACTIVE:
+            case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
-                if (elapsedWaveTime()>getWaveLength()) {
+                if (elapsedWaveTime() > getWaveLength()) {
                     setWaveState(WaveState.FINISHED);
                 } else if (elapsedWaveTime() % spawnRate == 0) {
                     spawnEnemyToRatio(getEnemyRatios());
@@ -124,8 +131,14 @@ public class EnemyWave {
  /*           case FINISHED:
                 //Handling finished state
                 break;
-   */     }
+   */
+        }
     }
+
+    /**
+     * @return if the wave is a 'pause' wave
+     */
+    public boolean isPauseWave() { return this.isPauseWave; }
 
     /**
      * @return the time elapsed since wave started in 0.001 seconds
@@ -144,24 +157,39 @@ public class EnemyWave {
     public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
 
     /**
+     * 
+     * @return total amount of enemies in this wave
+     */
+    public static int getTotalEnemies() {
+    	return totalAmount;
+    }
+    
+    public static void reduceTotalEnemiesByOne(){
+    	totalAmount--;	
+    }
+    
+    /**
      * Add a squirrel to the world
      */
     private void addSquirrel() {
-        GameManager.get().getWorld().addEntity(new Squirrel(24, 24));
+        GameManager.get().getWorld().addEntity(new Squirrel(GameManager.get().getWorld().getLength()/2, 6.5f));
+        totalAmount++;
     }
 
     /**
      * Add a tank (bear) enemy to the world
      */
     private void addTank() {
-        GameManager.get().getWorld().addEntity(new TankEnemy(24, 24));
+        GameManager.get().getWorld().addEntity(new TankEnemy(GameManager.get().getWorld().getLength()/2, 42f));
+        totalAmount++;
     }
 
     /**
      * Add a speedy (raccoon) enemy to the world
      */
     private void addSpeedy() {
-        GameManager.get().getWorld().addEntity(new SpeedyEnemy(24, 24));
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(6.5f, GameManager.get().getWorld().getLength()/2));
+        totalAmount++;
 
     }
 
@@ -169,7 +197,8 @@ public class EnemyWave {
      * Add a moose to the world
      */
     private void addMoose() {
-        GameManager.get().getWorld().addEntity(new Moose(24, 24));
+        GameManager.get().getWorld().addEntity(new Moose(42f, GameManager.get().getWorld().getLength()/2));
+        totalAmount++;
     }
 
     /**

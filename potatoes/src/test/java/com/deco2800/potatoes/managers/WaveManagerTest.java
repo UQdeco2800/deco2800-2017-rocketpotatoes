@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.waves.EnemyWave;
+import com.deco2800.potatoes.waves.WaveLoader;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 public class WaveManagerTest {
 
     WaveManager wm;
+    WaveLoader wl;
     EnemyWave testWaveOne = new EnemyWave(1,1,1,1,750);
     EnemyWave testWaveTwo = new EnemyWave(2,1,1,2,750);
     World mockWorld;
@@ -100,5 +102,21 @@ public class WaveManagerTest {
     public void getTimeBeforeNextWaveTest() {
         //Time before waves is set to 800
         Assert.assertEquals("Time before next wave not correct", 800-0, wm.getTimeBeforeNextWave());
+    }
+
+    @Test
+    public void extraTest() {
+        testWaveOne = new EnemyWave(1,2,3,4,5,6);
+        testWaveOne = new EnemyWave(6) ;
+        wm.regularGame(2);
+        wm.onTick(1);
+        wm.onTick(1);
+        wm.onTick(1);
+    }
+
+    @Test
+    public void loaderTest() {
+        wl = new WaveLoader("filename");
+        wl.createwavefromline("1, 2, 3, 4, 5, 6, 7");
     }
 }

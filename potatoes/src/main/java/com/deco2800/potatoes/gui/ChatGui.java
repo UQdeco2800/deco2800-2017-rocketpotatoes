@@ -77,14 +77,7 @@ public class ChatGui extends Gui {
         minButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                if (cState == chatStates.HIDDEN) {
-                    cState = chatStates.CHAT;
-                    resetGui(stage);
-                } else {
-                    cState = chatStates.HIDDEN;
-                    resetGui(stage);
-                }
-                hidden = !hidden;
+                toggleChat();
             }
         });
 
@@ -108,16 +101,16 @@ public class ChatGui extends Gui {
         GameManager.get().getManager(InputManager.class).addKeyDownListener(new KeyDownObserver() {
             @Override
             public void notifyKeyDown(int keycode) {
-                if (!hidden) {
-                    if (keycode == Input.Keys.ENTER) {
-                        stage.setKeyboardFocus(textField);
-                    }
+                if (!hidden && keycode == Input.Keys.ENTER) {
+                    stage.setKeyboardFocus(textField);
+
                 }
             }
         });
 
         resetGui(stage);
         stage.addActor(table);
+        toggleChat();
     }
 
     /**
@@ -183,6 +176,17 @@ public class ChatGui extends Gui {
         }
     }
 
+    public void toggleChat(){
+        if (cState == chatStates.HIDDEN) {
+            cState = chatStates.CHAT;
+            resetGui(stage);
+        } else {
+            cState = chatStates.HIDDEN;
+            resetGui(stage);
+        }
+        hidden = !hidden;
+    }
+
     /**
      * Add's a message to the chat box.
      *
@@ -214,7 +218,6 @@ public class ChatGui extends Gui {
                 m.broadcastMessage(textField.getText());
             }
 
-            //addMessage("Button", textField.getText(), Color.WHITE);
             textField.setText("");
 
             // Reset keyboard focus to game window

@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import com.deco2800.potatoes.entities.player.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,13 +43,23 @@ public class TankEnemyTest extends BaseTest {
 	@Test
 	public void emptyConstructor() {
 		assertEquals(true, tankEmpty.getDirection() == null);
-		assertEquals("bear", tankEmpty.getEnemyType());
+
+		for (String data:tankEmpty.getEnemyType()) {
+			assertEquals("bear", data);
+
+		}
+
 		assertEquals(Color.PURPLE, tank1.getProgressBar().getColours().get(0));
 		assertEquals(Color.RED, tank1.getProgressBar().getColours().get(1));
 		assertEquals(Color.ORANGE, tank1.getProgressBar().getColours().get(2));
 		assertEquals(Color.YELLOW, tank1.getProgressBar().getColours().get(3));
 	}
-
+	@Test
+	public void bearTickTest(){
+		tank1.onTick(4);
+		tank1.setGoal(Player.class);
+		tank1.onTick(4);
+	}
 	/*
 	 * Test the toString method
 	 */

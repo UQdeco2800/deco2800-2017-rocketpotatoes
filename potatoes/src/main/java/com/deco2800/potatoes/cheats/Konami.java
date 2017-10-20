@@ -14,5 +14,3 @@ public class Konami implements CheatExecution {
         GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).toggle();
     }
 }
-
-

@@ -95,7 +95,7 @@ public class Caveman extends Player {
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-			Optional<AbstractEntity> target = null;
+			Optional<AbstractEntity> target;
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.

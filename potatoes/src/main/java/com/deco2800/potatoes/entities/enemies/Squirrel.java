@@ -5,6 +5,7 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
@@ -12,14 +13,9 @@ import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
-import com.deco2800.potatoes.util.WorldUtil;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
@@ -31,17 +27,21 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
-	private static final String ENEMY_TYPE = "squirrel";
+	private static final String[] ENEMY_TYPE = new String[]{
+			"squirrel"
+
+	};
+//	private static final String ENEMY_TYPE = "squirrel";
 
 	private static final float SPEED = 0.05f;
 
 	private static Class<?> goal = Player.class;
 
-	private static EnemyTargets targets = initTargets();
-	private Map<Integer, AbstractEntity> entities;
+	private EnemyTargets targets = initTargets();
 
 	private Path path = null;
 	private Shape2D target = null;
+	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
@@ -77,79 +77,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-
-		AbstractEntity relevantTarget = mostRelevantTarget();
-
-		if (relevantTarget != null) {
-			// check paths
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
-			}
-
-			//check if last node in path matches player
-			if (!path.goal().overlaps(relevantTarget.getMask())) {
-				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
-			}
-
-			//check if close enough to target
-			if (target != null && target.overlaps(this.getMask())) {
-				target = null;
-			}
-
-			//check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
-
-
-			if (target == null) {
-				target = relevantTarget.getMask();
-			}
-
-
-
-			float deltaX = target.getX() - getPosX();
-			float deltaY = target.getY() - getPosY();
-
-
-
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-			super.onTickMovement();
-
-			super.updateDirection();
-		}
-	}
-
-	/*Find the most relevant target to go to according to its EnemyTargets
-	*
-	* This is likely to get EnemyEntity, squirrel is being used for testing aggro at the moment
-	* */
-	private AbstractEntity mostRelevantTarget() {
-		entities = GameManager.get().getWorld().getEntities();
-		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
-		for (AbstractEntity entity : entities.values()) {
-			for (Class sightTarget : targets.getSightAggroTargets()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {
-					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-					if (distance < 10) {
-						return entity;
-					}
-				}
-			}
-		}
-		/*If no aggro, return 'ultimate' target*/
-		for (AbstractEntity entity : entities.values()) {
-			for (Class mainTarget : targets.getMainTargets()) {
-				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					return entity;
-				}
-			}
-		}
-		return null;
+		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
+		pathMovement(pathTarget, relevantTarget);
+		super.onTickMovement();
+		super.updateDirection();
 	}
 
 	/**
@@ -162,7 +93,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @return String of this type of enemy (ie 'squirrel').
 	 * */
 	@Override
-	public String getEnemyType() {
+	public String[] getEnemyType() {
 		return ENEMY_TYPE;
 	}
 
@@ -171,7 +102,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s at (%d, %d)", getEnemyType(), (int) getPosX(), (int) getPosY());
+		return String.format("%s at (%d, %d)", getEnemyType()[0], (int) getPosX(), (int) getPosY());
 	}
 
 	/***
@@ -192,10 +123,12 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
-				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class)).createEnemyStatistics();
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class))
+				.createEnemyStatistics();
 	}
 
-	private static EnemyTargets initTargets() {
+	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
 		ArrayList<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(BasePortal.class);
@@ -215,8 +148,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		damageAggroTargets.add(Caveman.class);
 		damageAggroTargets.add(Wizard.class);
 
-		EnemyTargets targets = new EnemyTargets(mainTargets, sightAggroTargets, damageAggroTargets);
-		return targets;
+		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 
 	/***

@@ -63,5 +63,6 @@ public class TerrainTypeTest {
         assertFalse(t8.equals(t1));
         assertFalse(t9.equals(t1));
         assertFalse(t1.equals(new Object()));
+        t1.getSlopes();
     }
 }

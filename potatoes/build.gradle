@@ -20,6 +20,7 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+
 apply plugin: 'org.flywaydb.flyway'
 buildscript {
     repositories {
@@ -36,3 +37,17 @@ task(run, dependsOn: "classes", type: JavaExec) {
     main = "com.deco2800.potatoes.GameLauncher"
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task rustyfish(type: RustBuild) {
+    group 'rusty'
+    description 'Builds the project as a Rust crate.'
+    release = true
+}
+
+task copyRustyfish(type: Copy) {
+    from 'target/release/'
+    into "build/classes/main"
+    include 'librustyfish.so'
+}
+
+rustyfish.finalizedBy(copyRustyfish)

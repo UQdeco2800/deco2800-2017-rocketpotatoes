@@ -176,5 +176,17 @@ public class PlayerTest {
 		player.getProgressBar();
         player.getTexture();
 	}
-
+	@Test
+	public void directionTest2() {
+		Direction.SE.getAngleDeg();
+		Direction.getFromCoords(1.2f,1.3f);
+		Direction.getFromDeg(1.2f);
+		Direction.getFromRad(1.178097f);
+		Direction.getFromRad(1.963495f);
+		Direction.getFromRad(2.75f);
+		Direction.getFromRad(3.534292f);
+		Direction.getFromRad(4.32f);
+		Direction.getFromRad(5.105088f);
+		Direction.getFromRad(5.9f);
+	}
 }

@@ -57,6 +57,7 @@ public class MinimumSpanningTreeTest {
                         nodes.get(j).getY()
                 );
                 tree.putGraphEntry(line.getDistance(), i, j);
+                tree.hashCode();
 
             }
         }

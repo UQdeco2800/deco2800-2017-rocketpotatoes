@@ -65,7 +65,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 		ACORN {
 			@Override
 			public String[] textures() {
-
 				return new String[] { "acorn1" };
 
 			}
@@ -103,9 +102,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		else
 			this.targetClass = MortalEntity.class;
 
-		if (projectileTexture != null){
-			this.projectileTexture = projectileTexture;
-		} 
+		this.projectileTexture = projectileTexture;
 		this.maxRange = this.range = range;
 		this.damage = damage;
 		this.startEffect = startEffect;
