@@ -1,23 +1,25 @@
 package com.deco2800.potatoes.worlds;
 
 import com.deco2800.potatoes.BaseTest;
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-import com.deco2800.potatoes.util.WorldUtil;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
 public class WorldTest extends BaseTest {
-	World world;
-	TestEntity test;
-	TestEntity[] testEntities;
+	private World world;
+	private TestEntity test;
+	private TestEntity[] testEntities;
 	@Rule
 	public ExpectedException execption = ExpectedException.none();
 
@@ -89,9 +91,9 @@ public class WorldTest extends BaseTest {
 		for (TestEntity e : testEntities) {
 			world.addEntity(e);
 		}
-		assertTrue("Closest entity was not as expected", world.getClosestEntity(1, 1, 0.1, TestEntity.class).get()
+		assertTrue("Closest entity was not as expected", world.getClosestEntity(1, 1, TestEntity.class).get()
 				== testEntities[3]);
-		assertTrue("Closest entity was not as expected", world.getClosestEntity(15, 12, 10, TestEntity.class).get()
+		assertTrue("Closest entity was not as expected", world.getClosestEntity(15, 12, TestEntity.class).get()
 				== testEntities[9]);
 	}
 
@@ -100,7 +102,11 @@ public class WorldTest extends BaseTest {
 		for (TestEntity e : testEntities) {
 			world.addEntity(e);
 		}
-		Collection<AbstractEntity> entities = world.getEntitiesWithinDistance(1, 1, Math.sqrt(1 + 1));
+		Iterator<AbstractEntity> entitiesIterator = world.getEntitiesWithinDistance(1, 1, (float)Math.sqrt(1 + 1));
+		Set<AbstractEntity> entities = new HashSet<>();
+		while (entitiesIterator.hasNext()) {
+			entities.add(entitiesIterator.next());
+		}
 		assertEquals(5, entities.size());
 		assertTrue(entities.contains(testEntities[0]));
 		assertTrue(entities.contains(testEntities[1]));
@@ -110,6 +116,13 @@ public class WorldTest extends BaseTest {
 	}
 
 	private class TestEntity extends AbstractEntity {
+		public TestEntity() {
+			super(new Box2D(0, 0, 0.01f, 0.01f), 0, 0, "");
+		}
 
+		@Override
+		public boolean isSolid() {
+			return true;
+		}
 	}
 }

@@ -12,6 +12,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.managers.GameManager;
@@ -20,6 +23,7 @@ import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Renderable;
+import com.deco2800.potatoes.util.RTree;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +47,7 @@ public class World {
 	private Terrain[][] terrain;
 
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
-	private Map<Point, Set<Integer>> entitiesByPosition = new HashMap<>();
-	private Map<Integer, Point> entityPositions = new HashMap<>();
+	private RTree<Integer> entitiesRtree = new RTree<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
 	// First 16 index's are reserved for clients
@@ -194,17 +197,8 @@ public class World {
 	 * @param maxDistance
 	 * @return
 	 */
-	public Collection<AbstractEntity> getEntitiesWithinDistance(float x, float y, double maxDistance) {
-		List<AbstractEntity> result = new ArrayList<>();
-		for (Point p : getGridPointsByDistance(x, y, maxDistance * maxDistance)) {
-			for (Integer id : entitiesByPosition.get(p)) {
-				if (entities.containsKey(id) && entities.get(id).distance(x, y) < maxDistance) {
-					result.add(entities.get(id));
-				}
-			}
-		}
-		result.sort((o1, o2) -> Float.compare(o1.distance(x, y), o2.distance(x, y)));
-		return result;
+	public Iterator<AbstractEntity> getEntitiesWithinDistance(float x, float y, float maxDistance) {
+		return entitiesRtree.findOverlapping(new Circle2D(x, y, maxDistance)).stream().map((id) -> entities.get(id)).iterator();
 	}
 
 
@@ -213,35 +207,11 @@ public class World {
 	 * given maximum distance.
 	 * @param x The x coordinate to measure the distance from
 	 * @param y The y coordinate to measure the distance from
-	 * @param maxDistance The maximum distance to check
 	 * @param type The type of entity to check for, {@link AbstractEntity} the closest general entity
-	 * @return
+	 * @return The closest entity
 	 */
-	public Optional<AbstractEntity> getClosestEntity(float x, float y, double maxDistance, Class<?> type) {
-		AbstractEntity result = null;
-		double distance = maxDistance;
-		for (Point p : getGridPointsByDistance(x, y, maxDistance * maxDistance)) {
-			for (Integer id : entitiesByPosition.get(p)) {
-				AbstractEntity entity = entities.get(id);
-				if (entity != null && entity.distance(x, y) < distance && (AbstractEntity.class.equals(type) || type
-						.isInstance(entity))) {
-					result = entity;
-					distance = entity.distance(x, y);
-				}
-			}
-		}
-		return Optional.ofNullable(result);
-	}
-
-	private Collection<Point> getGridPointsByDistance(float x, float y, double maxDistanceSq) {
-		List<Point> result = new ArrayList<>();
-		// Just add points that have associated entities
-		result.addAll(entitiesByPosition.keySet());
-		// Add grid size to distance to make sure (some) tiles that are partially within are kept
-		result.removeIf(p -> p.distanceSq(x, y) > maxDistanceSq + GRID_SIZE);
-		// Sort by distance to (x, y)
-		result.sort(Comparator.comparingDouble(p -> p.distanceSq(x, y)));
-		return result;
+	public Optional<AbstractEntity> getClosestEntity(float x, float y, Class<?> type) {
+		return Optional.ofNullable(entities.get(entitiesRtree.findClosest(new Point2D(x, y), (id) -> type.isAssignableFrom(entities.get(id).getClass()))));
 	}
 
 	/**
@@ -249,16 +219,9 @@ public class World {
 	 */
 	public void updatePositions() {
 		for (Entry<Integer, AbstractEntity> entry : entities.entrySet()) {
-			if (!entry.getValue().isStatic()) {
-				if (entitiesByPosition.containsKey(getGridPoint(entry.getValue())) && !entitiesByPosition.get
-						(getGridPoint(entry.getValue())).contains(entry.getKey())) {
-					// Remove and re-add to entitiesByPosition
-					entitiesByPosition.get(getGridPoint(entry.getValue())).remove(entry.getKey());
-					if (!entitiesByPosition.containsKey(getGridPoint(entry.getValue()))) {
-						entitiesByPosition.put(getGridPoint(entry.getValue()), new TreeSet<>());
-					}
-					entitiesByPosition.get(getGridPoint(entry.getValue())).add(entry.getKey());
-				}
+			// TODO check move speed, could be wrong
+			if (!entry.getValue().isStatic() && entry.getValue().getMoveSpeed() > 0) {
+				entitiesRtree.move(entry.getKey(), entry.getValue().getMask());
 			}
 		}
 	}
@@ -267,13 +230,7 @@ public class World {
 	 * Adds the entity and associated id to all the maps
 	 */
 	private void addToMaps(int id, AbstractEntity entity) {
-		// Check if the nested maps exist and create them if they don't
-		if (!entitiesByPosition.containsKey(getGridPoint(entity))) {
-			entitiesByPosition.put(getGridPoint(entity), new TreeSet<>());
-		}
-
-		entitiesByPosition.get(getGridPoint(entity)).add(id);
-		entityPositions.put(id, getGridPoint(entity));
+		if (entity.isSolid()) entitiesRtree.insert(id, entity.getMask());
 		entities.put(id, entity);
 	}
 
@@ -281,11 +238,7 @@ public class World {
 	 * Removes the entity associated with the given id from all the maps
 	 */
 	private void removeFromMaps(int id) {
-		AbstractEntity entity = entities.get(id);
-		// Check all the nested maps exist
-		if (entitiesByPosition.containsKey(getGridPoint(entity))) {
-			entitiesByPosition.get(getGridPoint(entity)).remove(id);
-		}
+		entitiesRtree.remove(id);
 		entities.remove(id);
 	}
 
