@@ -34,8 +34,7 @@ public class DefenseTree extends AbstractTree {
 	
 	@Override
 	public AbstractTree createCopy() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DefenseTree(this.getPosX(), this.getPosY());
 	}
 
 	@Override
@@ -46,6 +45,11 @@ public class DefenseTree extends AbstractTree {
 				.setBuildCost(1).setTexture(TEXTURE).createTreeStatistics());
 
 		return result;
+	}
+	
+	@Override
+	public String getName() {
+		return "Defense Tree";
 	}
 
 }
