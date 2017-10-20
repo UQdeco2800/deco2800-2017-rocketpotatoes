@@ -2,9 +2,7 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import com.deco2800.potatoes.entities.PropertiesBuilder;
-import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.PineconeResource;
 
 public class PineTree extends ResourceTree {
