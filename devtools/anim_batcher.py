@@ -8,15 +8,28 @@ for a detailed explanation on its use.
 '''
 from math import pi
 
+from sys import argv
 from sys import path as syspath
 import os.path
 
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
-script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
+# get the python script directory so we can import modules
+
+# find the python script from the blender command line
+for x in argv:
+    if ".py" in x:
+        script_dir = os.path.dirname(x)
+        break
+
+if not script_dir:
+    # get the python script dir from the text editor window
+    script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
+
 syspath.append(script_dir)
 from batcher_common import *
+
 
 # Options
 INTERVALS = 8 # The number of angles around the model to render
@@ -40,7 +53,7 @@ def render_intervals(model, intervals):
     Rotate around the model, rendering a number of angles as specified by
     intervals
     '''
-    output_name = get_output_name()
+    output_name = get_output_name(1)
     for frame in range(SCENE.frame_start, SCENE.frame_end):
         bpy.context.scene.frame_current = frame
         bpy.context.scene.frame_set(frame)
@@ -51,12 +64,14 @@ def render_intervals(model, intervals):
             bpy.ops.render.render(write_still=True)
 
 
-def render_compass_points(model, output_name=get_output_name()):
+def render_compass_points(model):
     '''
     Rotate around the model, rendering a number of angles as specified by
     len(direction)
     '''
     direction = ['_S_', '_SE_', '_E_', '_NE_', '_N_', '_NW_', '_W_', '_SW_']
+
+    output_name = get_output_name(1)
 
     for frame in range(SCENE.frame_start, SCENE.frame_end):
         bpy.context.scene.frame_current = frame
@@ -72,6 +87,10 @@ def main():
     camera = OBJECTS["Camera"]
     light = OBJECTS["Lamp"]
 
+    if "Model" not in OBJECTS:
+        raise Exception("No parent model found. You either haven't done the" \
+                + " preparation on the wiki, or you forgot to include the" \
+                + " blender file when running from the command line")
     model = OBJECTS["Model"]
     model.select = True
 

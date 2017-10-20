@@ -11,12 +11,20 @@ for a detailed explanation on its use.
 
 from math import pi
 
+from sys import argv
 from sys import path as syspath
 import os.path
 
 import bpy
 
-script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
+for x in argv:
+    if ".py" in x:
+        script_dir = os.path.dirname(x)
+        break
+
+if not script_dir:
+    script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
+
 syspath.append(script_dir)
 from batcher_common import *
 
@@ -39,11 +47,15 @@ RENDER = SCENE.render # The data object associated with rendering
 def import_model():
     '''import the model specified in the cli, or use a pre-loaded model'''
 
-    model_file = get_arg(1) or MODEL_FILE \
-            or filedialog.askopenfilename(filetypes=(("3DS file", "*.3ds"),
-                ("All Files", ".*")), title="Select the 3D model to import")
+    model_file = get_arg(1)
+    if (not model_file) and TKINTER:
+        model_file = filedialog.askopenfilename(filetypes=(("3DS file", "*.3ds"),
+            ("All Files", ".*")), title="Select the 3D model to import")
 
-    # import the given model file, if specified on the command line
+    if not model_file:
+        if 'export_name' in SCENE:
+            model_file = MODEL_FILE
+
     if OBJECTS.get("Model"):
         model = OBJECTS["Model"]
         model.select = True
@@ -77,7 +89,7 @@ def render_intervals(model, intervals):
     Rotate around the model, rendering a number of angles as specified by
     INTERVALS
     '''
-    output_name = get_output_name()
+    output_name = get_output_name(2)
     for i in range(0, intervals):
         model.rotation_euler[2] = 2 * pi * i / intervals
         RENDER.filepath = output_name + "%03d.png" % i
@@ -91,7 +103,7 @@ def render_compass_points(model):
     '''
     direction = ['_S', '_SE', '_E', '_NE', '_N', '_NW', '_W', '_SW']
 
-    output_name = get_output_name()
+    output_name = get_output_name(2)
     for i in range(0, len(direction)):
         model.rotation_euler[2] = 2 * pi * i / len(direction)
         RENDER.filepath = output_name + direction[i]
