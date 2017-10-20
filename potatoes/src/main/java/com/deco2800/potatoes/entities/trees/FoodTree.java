@@ -53,6 +53,11 @@ public class FoodTree extends ResourceTree {
 	}
 	
 	@Override
+	public ResourceTree createCopy() {
+		return new FoodTree(this.getPosX(), this.getPosY());
+	}
+	
+	@Override
 	public String getName() {
 		return "Food Tree";
 	}

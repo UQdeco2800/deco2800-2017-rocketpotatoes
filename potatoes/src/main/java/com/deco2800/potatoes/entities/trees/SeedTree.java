@@ -56,6 +56,11 @@ public class SeedTree extends ResourceTree {
 	}
 	
 	@Override
+	public ResourceTree createCopy() {
+		return new SeedTree(this.getPosX(), this.getPosY());
+	}
+	
+	@Override
 	public String getName() {
 		return "Seed Tree";
 	}

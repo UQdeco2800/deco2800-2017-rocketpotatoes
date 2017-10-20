@@ -155,7 +155,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         Inventory seedTreeCost = new Inventory();
         seedTreeCost.updateQuantity(new SeedResource(), 1);
         TreeState seedTreeState = new TreeState(new SeedTree(treeX, treeY), 
-        		seedTreeCost, false, "resource");
+        		seedTreeCost, true, "resource");
         treeStates.add(seedTreeState);
 
         // Food resource tree

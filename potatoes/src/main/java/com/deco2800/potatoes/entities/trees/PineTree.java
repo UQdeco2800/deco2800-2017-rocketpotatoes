@@ -53,6 +53,11 @@ public class PineTree extends ResourceTree {
 	}
 	
 	@Override
+	public ResourceTree createCopy() {
+		return new PineTree(this.getPosX(), this.getPosY());
+	}
+	
+	@Override
 	public String getName() {
 		return "Pine Tree";
 	}

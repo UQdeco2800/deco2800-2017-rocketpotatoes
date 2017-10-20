@@ -21,7 +21,7 @@ public class ResourceTreeTest {
 	Inventory emptyInventory;	
 	Inventory usedInventory;
 	
-	int testAmount = ResourceTree.DEFAULT_GATHER_CAPACITY/2; // Use a value less than the default
+	int testAmount = 16; // Use a value less than the default
 	
 	@Before
 	public void setup() {
@@ -64,9 +64,9 @@ public class ResourceTreeTest {
 		assertTrue(nullTypeResourceTree.getGatherType() instanceof SeedResource); // Defaults to SeedResource
 		
 		// Gather capcity tests
-		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY); // Defaults
+		assertTrue(defaultResourceTree.getGatherCapacity() == 32); // Defaults
 		assertTrue(customResourceTree.getGatherCapacity() == 100); // Set to 100
-		assertTrue(nullTypeResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY); // Defaults
+		assertTrue(nullTypeResourceTree.getGatherCapacity() == 32); // Defaults
 	}
 	
 	/* Test setting the gather capacity of the resource tree */
@@ -78,11 +78,11 @@ public class ResourceTreeTest {
 		
 		// Setting to 0
 		defaultResourceTree.setGatherCapacity(0);
-		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY);
+		assertTrue(defaultResourceTree.getGatherCapacity() == 32);
 		
 		// Setting to negative number
 		defaultResourceTree.setGatherCapacity(-50);
-		assertTrue(defaultResourceTree.getGatherCapacity() == ResourceTree.DEFAULT_GATHER_CAPACITY);
+		assertTrue(defaultResourceTree.getGatherCapacity() == 32);
 	}
 	
 	/* Test adding resources to the Resource Tree */

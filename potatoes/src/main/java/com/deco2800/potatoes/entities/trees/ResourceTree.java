@@ -27,9 +27,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private Resource gatherType; // Type of resource gathered by the tree
 	private boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
-	public static final int DEFAULT_GATHER_CAPACITY = 32; // Default gather capacity, must be > 0
-	public static final String FOOD_TREE_TEXTURE = "food_resource_tree";
-	public static final String SEED_TREE_TEXTURE = "seed_resource_tree";
 
 	/**
 	 * Default constructor for serialization
@@ -51,10 +48,10 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public ResourceTree(float posX, float posY) {
 		super(posX, posY, 1f, 1f);
 		this.gatherCount = 0;
-		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
+		this.setGatherCapacity(32); // Use a default value of 32
 		this.gatherType = new SeedResource();
 		this.resetStats();
-		this.setTexture(FOOD_TREE_TEXTURE);
+		this.setTexture("seed_resource_tree");
 	}
 
 	/**
@@ -90,17 +87,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
-//		if (this.gatherType instanceof SeedResource) {
-//			this.setTexture(SEED_TREE_TEXTURE);
-//			return getSeedTreeStats();
-//		} else if (this.gatherType instanceof FoodResource) {
-//			this.setTexture(FOOD_TREE_TEXTURE);
-//			return getFoodTreeStats();
-//		} else {
-//			this.setTexture(SEED_TREE_TEXTURE);
-//			return getSeedTreeStats();
-//		}
-		this.setTexture(SEED_TREE_TEXTURE);
+		this.setTexture("seed_resource_tree");
 		return getSeedTreeStats();
 	}
 
@@ -113,35 +100,12 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = SEED_TREE_TEXTURE;
+		String texture = "seed_resource_tree";
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(30).setBuildTime(1500).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
-
-		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
-			result.add(statisticsBuilder.createTreeStatistics());
-		}
-		return result;
-	}
-
-	/**
-	 * Stats for a resource tree that gathers food
-	 * 
-	 * @return the list of upgrade stats for a food resource tree
-	 */
-	private static List<TreeProperties> getFoodTreeStats() {
-		List<TreeProperties> result = new LinkedList<>();
-		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
-
-		String texture = FOOD_TREE_TEXTURE;
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(15).setBuildTime(6500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
 
 		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
@@ -201,8 +165,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 			this.gatherCapacity = capacity;
 		} else {
 			LOGGER.warn("Attempted to set resource tree capacity to invalid capacity: " + capacity + ". Defaulting to "
-					+ DEFAULT_GATHER_CAPACITY);
-			this.gatherCapacity = DEFAULT_GATHER_CAPACITY;
+					+ "32");
+			this.gatherCapacity = 32;
 		}
 	}
 
