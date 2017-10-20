@@ -24,8 +24,11 @@ import com.deco2800.potatoes.entities.trees.CactusTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.DefenseTree;
 import com.deco2800.potatoes.entities.trees.FireTreeType;
+import com.deco2800.potatoes.entities.trees.FoodTree;
 import com.deco2800.potatoes.entities.trees.IceTreeType;
+import com.deco2800.potatoes.entities.trees.PineTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.SeedTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -329,6 +332,7 @@ public class GameScreen implements Screen {
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
+			addResourceTrees();
 
 
 			if (!multiplayerManager.isMultiplayer()) {
@@ -349,6 +353,12 @@ public class GameScreen implements Screen {
 		
 		//show the tutorial menu
 		guiManager.getGui(TutorialGui.class).show();
+	}
+	
+	private void addResourceTrees() {
+		GameManager.get().getWorld().addEntity(new SeedTree(20f, 20f));
+		GameManager.get().getWorld().addEntity(new FoodTree(22f, 20f));
+		GameManager.get().getWorld().addEntity(new PineTree(24f, 20f));
 	}
 
 	private void addDamageTree() {

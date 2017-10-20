@@ -42,6 +42,7 @@ public class TextureManager extends Manager {
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
         saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
         saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
+        saveTexture("pine_resource_tree", "resources/placeholderassets/tower.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");

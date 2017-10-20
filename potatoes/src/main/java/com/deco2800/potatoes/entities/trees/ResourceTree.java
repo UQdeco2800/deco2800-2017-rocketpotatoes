@@ -90,16 +90,18 @@ public class ResourceTree extends AbstractTree implements Tickable {
 
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
-		if (this.gatherType instanceof SeedResource) {
-			this.setTexture(SEED_TREE_TEXTURE);
-			return getSeedTreeStats();
-		} else if (this.gatherType instanceof FoodResource) {
-			this.setTexture(FOOD_TREE_TEXTURE);
-			return getFoodTreeStats();
-		} else {
-			this.setTexture(SEED_TREE_TEXTURE);
-			return getSeedTreeStats();
-		}
+//		if (this.gatherType instanceof SeedResource) {
+//			this.setTexture(SEED_TREE_TEXTURE);
+//			return getSeedTreeStats();
+//		} else if (this.gatherType instanceof FoodResource) {
+//			this.setTexture(FOOD_TREE_TEXTURE);
+//			return getFoodTreeStats();
+//		} else {
+//			this.setTexture(SEED_TREE_TEXTURE);
+//			return getSeedTreeStats();
+//		}
+		this.setTexture(SEED_TREE_TEXTURE);
+		return getSeedTreeStats();
 	}
 
 	/**
@@ -269,14 +271,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 
 	@Override
 	public String getName() {
-		if (this.gatherType instanceof SeedResource) {
-			return "Seed Tree";
-		} else if (this.gatherType instanceof FoodResource) {
-			this.setTexture(FOOD_TREE_TEXTURE);
-			return "Food Tree";
-		} else {
-			return "Seed Tree";
-		}
+		return "Resource Tree";
 	}
 
 }
