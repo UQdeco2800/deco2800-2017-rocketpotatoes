@@ -16,6 +16,7 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.util.Path;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
@@ -130,14 +131,14 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
+		LinkedList<Class> mainTargets = new LinkedList<>();
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
 		mainTargets.add(Caveman.class);
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
+		LinkedList<Class> sightAggroTargets = new LinkedList<>();
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);

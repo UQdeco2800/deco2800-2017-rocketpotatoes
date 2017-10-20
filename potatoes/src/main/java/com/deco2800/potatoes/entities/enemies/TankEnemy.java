@@ -18,7 +18,7 @@ import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.util.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -245,23 +245,17 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
+		LinkedList<Class> mainTargets = new LinkedList<>();
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
 		mainTargets.add(Caveman.class);
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
+		LinkedList<Class> sightAggroTargets = new LinkedList<>();
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);
-
-		/*Not yet implemented - concept: if enemy is attacked by these, then enemy aggros to these*/
-		ArrayList<Class> damageAggroTargets = new ArrayList<>();
-		damageAggroTargets.add(Archer.class);
-		damageAggroTargets.add(Caveman.class);
-		damageAggroTargets.add(Wizard.class);
 
 		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}

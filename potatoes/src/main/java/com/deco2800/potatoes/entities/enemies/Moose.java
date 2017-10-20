@@ -18,6 +18,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
@@ -105,68 +106,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-/*		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-		boolean changeLocation = false;
-		if (++ticksSinceRandom == MAX_WAIT || target == null) {
-			ticksSinceRandom = 0;
-			changeLocation = true;
-			randomTarget();
-		}
-		// check paths
-
-		//check collision
-		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-			if (entity.isSolid() && getMask().overlaps(entity.getMask())) {
-				//collided with wall
-				randomTarget();
-				//break;
-			} else if (entity instanceof EnemyEntity && entity.getMask().overlaps(getMask())) {
-				EnemyEntity enemy = (EnemyEntity) entity;
-				//heal enemy if within range
-				enemy.heal(0.1f);
-			}
-		}
-
-		// check that we actually have a path
-		if (path == null || path.isEmpty()) {
-			path = pathManager.generatePath(getMask(), target);
-		}
-
-		//check if close enough to target
-		if (target != null && playerManager.getPlayer().getMask().overlaps(getMask())) {
-			target = playerManager.getPlayer().getMask();
-			playerManager.getPlayer().damage(0.4f);
-		} else {
-			target = null;
-		}
-
-		//check if the path has another node
-		if (target == null && !path.isEmpty()) {
-			target = path.pop();
-		}
-
-		float targetX;
-		float targetY;
-
-
-		if (target == null) {
-			target = playerManager.getPlayer().getMask();
-		}
-
-		targetX = target.getX();
-		targetY = target.getY();
-
-		float deltaX = targetX -getPosX();
-		float deltaY = targetY -getPosY();
-
-		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-
-		super.onTickMovement();
-
-		super.updateDirection();
-		*/
-
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
 		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
@@ -222,23 +161,17 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
+		LinkedList<Class> mainTargets = new LinkedList<>();
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
 		mainTargets.add(Caveman.class);
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
+		LinkedList<Class> sightAggroTargets = new LinkedList<>();
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);
-
-		/*Not yet implemented - concept: if enemy is attacked by these, then enemy aggros to these*/
-		ArrayList<Class> damageAggroTargets = new ArrayList<>();
-		damageAggroTargets.add(Archer.class);
-		damageAggroTargets.add(Caveman.class);
-		damageAggroTargets.add(Wizard.class);
 
 		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}

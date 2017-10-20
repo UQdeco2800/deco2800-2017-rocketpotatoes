@@ -3,10 +3,13 @@ package com.deco2800.potatoes.entities.enemies;
 
 import java.util.*;
 
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.deco2800.potatoes.entities.Direction;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.StealingEvent;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import org.slf4j.Logger;
@@ -96,6 +99,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
 				.addEvent(new StealingEvent(1000,ResourceTree.class))
+				.addEvent(new MeleeAttackEvent(500, BasePortal.class))
+				.addEvent(new MeleeAttackEvent(500, Player.class))
 				.createEnemyStatistics();
 		return result;
 	}
@@ -124,19 +129,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESSBAR;
-	}
-
-	/**
-	 * Steal resources from ResourceTrees if within range
-	 */
-	public void stealResources() {
-		double interactRange = 2f;
-		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange &&((ResourceTree) entitiy).getGatherCount() > 0) {
-				((ResourceTree) entitiy).gather(-1);
-			}
-		}
 	}
 
 	public void addTreeToVisited(ResourceTree tree) {
@@ -210,10 +202,9 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		}
 	}
 
-
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
+		LinkedList<Class> mainTargets = new LinkedList<>();
 		mainTargets.add(ResourceTree.class);
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
@@ -221,7 +212,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
+		LinkedList<Class> sightAggroTargets = new LinkedList<>();
 		//sightAggroTargets.add(ResourceTree.class);
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);

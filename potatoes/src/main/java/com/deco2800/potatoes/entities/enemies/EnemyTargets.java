@@ -1,15 +1,15 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class EnemyTargets {
 
-    private ArrayList<Class> mainTargets;
-    private ArrayList<Class> sightAggroTargets;
-    private ArrayList<Class> damageAggroTargets;
+    private LinkedList<Class> mainTargets;
+    private LinkedList<Class> sightAggroTargets;
+    private LinkedList<Class> damageAggroTargets;
 
-    public EnemyTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightAggroTargets) {
+    public EnemyTargets(LinkedList<Class> mainTargets, LinkedList<Class> sightAggroTargets) {
         this.mainTargets = mainTargets;
         this.sightAggroTargets = sightAggroTargets;
         this.damageAggroTargets = damageAggroTargets;
