@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -35,6 +36,7 @@ public class Network {
      * should be the first message between a client and host */
     public static class ClientConnectionRegisterMessage {
         private String name;
+        private Player player;
 
         public String getName() {
             return name;
@@ -42,6 +44,14 @@ public class Network {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public void setPlayer(Player player) {
+            this.player = player;
         }
     }
 
@@ -77,6 +87,7 @@ public class Network {
     public static class HostNewPlayerMessage {
         private String name;
         private int id;
+        private Player player;
 
         public String getName() {
             return name;
@@ -92,6 +103,14 @@ public class Network {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public void setPlayer(Player player) {
+            this.player = player;
         }
     }
 

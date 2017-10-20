@@ -1,12 +1,7 @@
 package com.deco2800.potatoes.entities.player;
 
-import java.util.Map;
-import java.util.Optional;
-
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
@@ -18,8 +13,14 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class Wizard extends Player {
 
+    public Wizard() {
+        this(0, 0);
+    }
 
     /**
      * Creates a new Archer instance.
@@ -37,11 +38,11 @@ public class Wizard extends Player {
         this.setShadow(shadow);
     }
 
-    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation("wizard", INTERACT, 6, 450, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation("wizard", DEATH, 17, 1700, this::completionHandler);
+    private transient Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
+    private transient Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200, this::completionHandler);
+    private transient Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private transient Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation("wizard", INTERACT, 6, 450, this::completionHandler);
+    private transient Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation("wizard", DEATH, 17, 1700, this::completionHandler);
     
     /**
      * Custom damaged handling for the wizard
@@ -53,11 +54,11 @@ public class Wizard extends Player {
         return null;
     }
     
-    private float hoverTime = 0;	 // A value used to determine the height of the hover
-    private static final float HOVER_SPEED = 0.1f; // Rate at which wizard hovers
-    private static final float HOVER_HEIGHT = 7.5f; // Max height at which wizard hovers
-    
-    Circle2D shadow = new Circle2D(getPosX(), getPosY(), 0.4f); // Wizard shadow
+    private transient float hoverTime = 0;	 // A value used to determine the height of the hover
+    private transient static final float HOVER_SPEED = 0.1f; // Rate at which wizard hovers
+    private transient static final float HOVER_HEIGHT = 7.5f; // Max height at which wizard hovers
+
+    transient Circle2D shadow = new Circle2D(getPosX(), getPosY(), 0.4f); // Wizard shadow
 
     @Override
     public void updateSprites() {

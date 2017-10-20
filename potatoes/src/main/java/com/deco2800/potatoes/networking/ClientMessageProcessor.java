@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.gui.ChatGui;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.worlds.WorldType;
@@ -117,11 +116,8 @@ public class ClientMessageProcessor {
     private static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
         client.getClients().set(m.getId(), m.getName());
 
-        // Make the player
-        Player p = new Player(10 + m.getId(), 10 + m.getId());
-
         try {
-            GameManager.get().getWorld().addEntity(p, m.getId());
+            GameManager.get().getWorld().addEntity(m.getPlayer(), m.getId());
 
         } catch (Exception ex) {
             // Throws when we try run this in a test, this is a hacky fix for now!
@@ -130,7 +126,7 @@ public class ClientMessageProcessor {
 
         if (client.getID() == m.getId()) {
             // Give the player manager me
-            GameManager.get().getManager(PlayerManager.class).setPlayer(p);
+            GameManager.get().getManager(PlayerManager.class).setPlayer(m.getPlayer());
 
         } else {
             client.sendSystemMessage("New Player Joined:" + m.getName() + "(" + m.getId() + ")");

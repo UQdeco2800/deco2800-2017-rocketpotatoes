@@ -66,9 +66,10 @@ public class NetworkClient {
      * @param IP ip to connect to
      * @param tcpPort tcp port to use
      * @param udpPort udp port to use
+     * @param player player to start with
      * @throws IOException when connection fails
      */
-    public void connect(String name, String IP, int tcpPort, int udpPort) throws IOException {
+    public void connect(String name, String IP, int tcpPort, int udpPort, Player player) throws IOException {
         this.IP = IP;
         this.name = name;
         this.tcpPort = tcpPort;
@@ -112,6 +113,7 @@ public class NetworkClient {
         // Send initial connection info
         Network.ClientConnectionRegisterMessage cr = new Network.ClientConnectionRegisterMessage();
         cr.setName(name);
+        cr.setPlayer(player);
 
         client.sendTCP(cr);
     }

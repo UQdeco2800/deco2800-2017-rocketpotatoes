@@ -106,12 +106,13 @@ public class MultiplayerManager extends Manager {
     /**
      * Join's the given IP and port, with the given name (which is then stored in the manager).
      * @param name
-     * @param IP - String representing an IP, in the format (255.255.255.255),
-     * @param port - port number in range of 1024-65565 (or 0 for any port) ?? TODO 0 port
+     * @param inIP - String representing an IP, in the format (255.255.255.255),
+     * @param port - port number in range of 1024-65565 (or 0 for any port)
+     * @param player - player to use in the game
      * @throws IOException
      * @throws IllegalArgumentException
      */
-    public void joinGame(String name, String inIP, int port) throws IOException, IllegalArgumentException {
+    public void joinGame(String name, String inIP, int port, Player player) throws IOException, IllegalArgumentException {
         if (!isValidPort(port)) {
            throw new IllegalArgumentException("Invalid port: " + port);
          }
@@ -127,7 +128,7 @@ public class MultiplayerManager extends Manager {
         multiplayer = true;
         ip = inIP;
         client = new NetworkClient();
-        client.connect(name, inIP, port, port);
+        client.connect(name, inIP, port, port, player);
 
         while (!isClientReady());
     }

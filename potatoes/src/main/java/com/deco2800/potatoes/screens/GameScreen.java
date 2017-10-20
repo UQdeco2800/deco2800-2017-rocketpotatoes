@@ -13,7 +13,6 @@ import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.resources.*;
@@ -90,14 +89,14 @@ public class GameScreen implements Screen {
 			throws IllegalStateException, IllegalArgumentException, IOException {
 		this.game = game;
 		setupGame();
-		
+		GameManager.get().getManager(PlayerManager.class).setPlayer(10, 5);
 		// setup multiplayer
 		if (isHost) {
 			multiplayerManager.createHost(port);
 			// Loopback for host's connection to itself
-			multiplayerManager.joinGame(name, "127.0.0.1", port);
+			multiplayerManager.joinGame(name, "127.0.0.1", port, GameManager.get().getManager(PlayerManager.class).getPlayer());
 		} else {
-			multiplayerManager.joinGame(name, IP, port);
+			multiplayerManager.joinGame(name, IP, port, GameManager.get().getManager(PlayerManager.class).getPlayer());
 		}
 
 		initializeGame();
@@ -264,10 +263,6 @@ public class GameScreen implements Screen {
 	/**
 	 * Initializes everything needed to actually play the game Can be used to
 	 * `reset` the state of the game
-	 *
-	 * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <->
-	 * Paused. With every state having TODO it's own menu(s), initialization etc.
-	 * And when we setup custom transition logic.
 	 */
 	private void initializeGame() {
 
@@ -281,6 +276,8 @@ public class GameScreen implements Screen {
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
 			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
+
+			/*
 			//GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add an enemy gate to game world
@@ -314,40 +311,14 @@ public class GameScreen implements Screen {
 			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_WS");
 			GameManager.get().getWorld().addEntity(gateN);
 			//gateN.clearPath();
-			
-			
-			
-			
-			
-			
 
             GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
-			/*
-			// Initial player preparation up period
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1000)); // pause wave
-			// Waves: sq -> sq + rac -> sq + rac + bear -> sq + rac + bear + moose
-			for (int i = 0; i<10; i++) {
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0, 0, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1, 1, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-			}
-			*/
 			initialiseResources();
 			initialisePortal();
 			addDamageTree();
-
+			*/
 
 			if (!multiplayerManager.isMultiplayer()) {
-			/*
-			 * TODO bug! currently reseting the game while having a key held down will then
-			 * notify the new player with the keyUp TODO event, which will result it in
-			 * moving without pressing a key. This is something a bit difficult to fix as
-			 * TODO so I'm just going to leave it for now since fixing it is a bit of a
-			 * hassle
-			 */
 
 				// Make our player
 				playerManager.setPlayer(5.5f, 10.5f);
@@ -433,7 +404,7 @@ public class GameScreen implements Screen {
 
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			if (e instanceof Tickable &&(!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
+			if (e instanceof Tickable && (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
 				((Tickable) e).onTick(timeDelta);
 
 			}
@@ -459,13 +430,13 @@ public class GameScreen implements Screen {
 		multiplayerManager.broadcastPlayerUpdatePosition();
 
 		cameraManager.centerOnTarget(timeDelta);
-
 		// Ticks all tickable managers, currently events, waves, particles
 		GameManager.get().onTick(timeDelta);
-		
+
+
 		guiManager.tickFadingGuis(timeDelta);
 
-    }
+	}
 
 	private void renderGUI(SpriteBatch batch) {
 

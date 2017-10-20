@@ -38,14 +38,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+    private static final transient ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 
 
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
     private boolean holdPosition = false;	// Used to determine if the player should be held in place
 
-    protected TimeAnimation currentAnimation;    // The current animation of the player
+    protected transient TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
 
     private static int doublePressSpeed = 300;    // double keypressed in ms
@@ -73,12 +73,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
     // make usage of PlayerState less verbose for use in this class and subclasses
-    static final PlayerState IDLE = PlayerState.IDLE;
-    static final PlayerState WALK = PlayerState.WALK;
-    static final PlayerState ATTACK = PlayerState.ATTACK;
-    static final PlayerState DAMAGED = PlayerState.DAMAGED;
-    static final PlayerState DEATH = PlayerState.DEATH;
-    static final PlayerState INTERACT = PlayerState.INTERACT;
+    static transient final PlayerState IDLE = PlayerState.IDLE;
+    static transient final PlayerState WALK = PlayerState.WALK;
+    static transient final PlayerState ATTACK = PlayerState.ATTACK;
+    static transient final PlayerState DAMAGED = PlayerState.DAMAGED;
+    static transient final PlayerState DEATH = PlayerState.DEATH;
+    static transient final PlayerState INTERACT = PlayerState.INTERACT;
 
 
     // ----------     Initialisation     ---------- //
@@ -87,7 +87,14 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Default constructor for the purposes of serialization
      */
     public Player() {
-        this(0, 0);
+        super(new Circle2D(0, 0, 0.4f), 1f, 1f, "player_right", HEALTH);
+        this.defaultSpeed = 0.08f;
+        this.facing = Direction.SE;
+        this.state = IDLE;
+        this.setMoveSpeedModifier(0);
+        this.setStatic(false);
+        this.setSolid(true);
+        addResources();    //Initialise the inventory with the valid resources
     }
 
     /**

@@ -97,6 +97,8 @@ public class ServerMessageProcessor {
         Network.HostNewPlayerMessage response = new Network.HostNewPlayerMessage();
         response.setId((byte) c.getID());
         response.setName(m.getName());
+        response.setPlayer(m.getPlayer());
+
         server.server.sendToAllTCP(response);
 
         // Finally tell the client they are ready to play
