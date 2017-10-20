@@ -34,6 +34,7 @@ public class DamageTree extends AbstractTree implements Tickable {
         status.put("lightning_tree1","lightning_tree1-normal");
         status.put("fire_tree","fire_tree-normal");
         status.put("cactusTree", "cactusTree-normal");
+        status.put("coralTree", "coralTree-normal");
 
 
         treeStatus.put("ice_tree-death",new String[]{
@@ -128,6 +129,10 @@ public class DamageTree extends AbstractTree implements Tickable {
         treeStatus.put("cactusTree-normal",new String[]{
                 "cactusTree"
         });
+        
+        treeStatus.put("coralTree-normal",new String[]{
+                "coralsTree"
+        });
 
 
     }
@@ -151,7 +156,10 @@ public class DamageTree extends AbstractTree implements Tickable {
      * Static generating cactus tree
      */
 	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), EffectTexture.LIGHTNING_DESERT);
-    
+	/**
+     * Static generating coral tree
+     */
+	private static final List<TreeProperties> CORAL_TREE_STATS=generateTree("coralTree", animation(), EffectTexture.LIGHTNING_DESERT);
 	/**
      * Static field to store information about upgrades
      */
@@ -219,6 +227,11 @@ public class DamageTree extends AbstractTree implements Tickable {
 
             this.setTexture("cactusTree");
             return CACTUS_TREE_STATS;
+        }else if(damageTreeType instanceof CoralTreeType){
+
+
+            this.setTexture("coralTree");
+            return CORAL_TREE_STATS;
         }
 
         this.setTexture("lightning_tree1");
@@ -278,6 +291,8 @@ public class DamageTree extends AbstractTree implements Tickable {
             return "Fire Tree";
         } else if(damageTreeType instanceof CactusTreeType){
             return "Cactus Tree";
+        } else if(damageTreeType instanceof CoralTreeType){
+            return "Coral Tree";            
         } else {
             return "Lightning Tree";
         }

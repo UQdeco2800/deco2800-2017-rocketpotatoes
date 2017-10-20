@@ -14,6 +14,8 @@ public class DamageTreeTest {
     DamageTree acornTreeDamageTree;
     DamageTree nullTypeDamageTree;
     DamageTree fireTreeDamageTree;
+    DamageTree cactusTreeDamageTree;
+    DamageTree coralTreeDamageTree;
 
     @Before
     public void setup() {
@@ -22,6 +24,8 @@ public class DamageTreeTest {
         iceTreeDamageTree = new DamageTree(1, 0, new IceTreeType());
         acornTreeDamageTree = new DamageTree(1, 0, new AcornTreeType());
         fireTreeDamageTree = new DamageTree(1, 0, new FireTreeType());
+        cactusTreeDamageTree = new DamageTree(1, 0, new CactusTreeType());
+        coralTreeDamageTree = new DamageTree(1, 0, new CoralTreeType());
         nullTypeDamageTree = new DamageTree(2, 0, null);
 
     }
@@ -32,6 +36,8 @@ public class DamageTreeTest {
         iceTreeDamageTree = null;
         acornTreeDamageTree = null;
         fireTreeDamageTree = null;
+        cactusTreeDamageTree = null;
+        coralTreeDamageTree = null;
         nullTypeDamageTree = null;
     }
 
@@ -43,11 +49,15 @@ public class DamageTreeTest {
         assertTrue(fireTreeDamageTree.getDamageTreeType() instanceof FireTreeType);
         assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTreeType);
         assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTreeType);
+        assertTrue(cactusTreeDamageTree.getDamageTreeType() instanceof CactusTreeType);
+        assertTrue(coralTreeDamageTree.getDamageTreeType() instanceof CoralTreeType);
         defaultDamageTree.createCopy();
         defaultDamageTree.getName();
         iceTreeDamageTree.getName();
         acornTreeDamageTree.getName();
         fireTreeDamageTree.getName();
+        cactusTreeDamageTree.getName();
+        coralTreeDamageTree.getName();
         nullTypeDamageTree.getName();
 
     }
