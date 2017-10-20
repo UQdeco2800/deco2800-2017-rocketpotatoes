@@ -287,8 +287,9 @@ public class Render3D implements Renderer {
 				try {
 					tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
 				}
-				catch (Exception exp) {
-					System.out.println(0);
+				catch (NullPointerException exp) {
+					// Fallback on texture
+					tex = texMan.getTexture(e.getTexture());
 				}
 			} else {
 				tex = texMan.getTexture(e.getTexture());

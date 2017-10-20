@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.worlds;
 
-import java.awt.Point;
-import java.util.*;
-
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -13,15 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.Manager;
-import com.deco2800.potatoes.managers.MultiplayerManager;
-import com.deco2800.potatoes.managers.TextureManager;
-import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.util.*;
 
 /**
  * World is the Game World
