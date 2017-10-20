@@ -8,8 +8,6 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 
 /**
  * A tree that shoots projectiles using the ProjectileShootEvent
@@ -90,13 +88,13 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
 
 		result.add(new PropertiesBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(3000,  BallisticProjectile.class,ProjectileTexture.ROCKET))
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(3000))
 				.createTreeStatistics());
 		result.add(new PropertiesBuilder<AbstractTree>().setHealth(20).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(2500,  BallisticProjectile.class,ProjectileTexture.ROCKET))
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(2500))
 				.createTreeStatistics());
 		result.add(new PropertiesBuilder<AbstractTree>().setHealth(30).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(1500,  BallisticProjectile.class,ProjectileTexture.ROCKET))
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(1500))
 				.createTreeStatistics());
 
 		return result;
