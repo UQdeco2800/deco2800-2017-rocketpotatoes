@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 public class DamageTreeTest {
 
     DamageTree defaultDamageTree;
+    DamageTree valueDamageTree;
     DamageTree iceTreeDamageTree;
     DamageTree acornTreeDamageTree;
     DamageTree nullTypeDamageTree;
@@ -21,6 +22,7 @@ public class DamageTreeTest {
     public void setup() {
         defaultDamageTree = new DamageTree();
         defaultDamageTree = new DamageTree(0, 0);
+        valueDamageTree = new DamageTree(0, 0, new LightningTreeType(), 1, 1);
         iceTreeDamageTree = new DamageTree(1, 0, new IceTreeType());
         acornTreeDamageTree = new DamageTree(1, 0, new AcornTreeType());
         fireTreeDamageTree = new DamageTree(1, 0, new FireTreeType());
@@ -48,6 +50,7 @@ public class DamageTreeTest {
         assertTrue(acornTreeDamageTree.getDamageTreeType() instanceof AcornTreeType);
         assertTrue(fireTreeDamageTree.getDamageTreeType() instanceof FireTreeType);
         assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTreeType);
+        assertTrue(valueDamageTree.getDamageTreeType() instanceof LightningTreeType);
         assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTreeType);
         assertTrue(cactusTreeDamageTree.getDamageTreeType() instanceof CactusTreeType);
         assertTrue(coralTreeDamageTree.getDamageTreeType() instanceof CoralTreeType);

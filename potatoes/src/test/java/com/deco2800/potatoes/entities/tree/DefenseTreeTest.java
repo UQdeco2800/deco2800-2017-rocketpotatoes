@@ -29,4 +29,9 @@ public class DefenseTreeTest {
 		defenseTree.getTexture();
 	}
 	
+	@Test
+	public void copyTest() {
+		defenseTree.createCopy();
+	}
+	
 }
