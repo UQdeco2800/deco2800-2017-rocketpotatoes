@@ -57,8 +57,9 @@ public class OrbProjectile extends Projectile {
 			} else {
 				canRemove = false;
 			}
+			super.onTick(time);
 		}
-		super.onTick(time);
+		
 	}
 
 	@Override
