@@ -132,7 +132,10 @@ public class BasicParticleType extends ParticleType {
                         count++;
                     }
                 }
-                if (compareFloat(this.cycleDelta, 0.0f)) { break; }
+                if (compareFloat(this.cycleDelta, 0.0f))
+                {
+                    break;
+                }
             }
         }
     }

@@ -69,8 +69,6 @@ public class ClientMessageProcessor {
      */
     private static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
 
-        //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
-
         client.setID(m.getId());
     }
 

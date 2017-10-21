@@ -85,7 +85,7 @@ public class MultiplayerManager extends Manager {
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    public void createHost(int port) throws IllegalStateException, IllegalArgumentException, IOException {
+    public void createHost(int port) throws IOException {
         if (!isValidPort(port)) {
           throw new IllegalArgumentException("Invalid port: " + port);
         }
@@ -111,7 +111,7 @@ public class MultiplayerManager extends Manager {
      * @throws IOException
      * @throws IllegalArgumentException
      */
-    public void joinGame(String name, String inIP, int port) throws IOException, IllegalArgumentException {
+    public void joinGame(String name, String inIP, int port) throws IOException {
         if (!isValidPort(port)) {
            throw new IllegalArgumentException("Invalid port: " + port);
          }
@@ -135,7 +135,7 @@ public class MultiplayerManager extends Manager {
     /** Broadcasts a UDP message on the LAN to discover a running server.
     *
     */
-    public List<InetAddress> discoverHosts(int port) throws IOException, IllegalArgumentException {
+    public List<InetAddress> discoverHosts(int port) throws IOException {
         if (!isValidPort(port)) {
            throw new IllegalArgumentException("Invalid port: " + port);
           }
@@ -305,7 +305,7 @@ public class MultiplayerManager extends Manager {
             return client.getClients();
         }
         else {
-            return null;
+            return new ArrayList<>();
         }
     }
 
