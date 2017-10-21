@@ -1,14 +1,12 @@
 package com.deco2800.potatoes.entities.projectiles;
 
+import java.util.Optional;
+
 import com.badlogic.gdx.math.Vector3;
-
 import com.deco2800.potatoes.entities.AbstractEntity;
-
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
-
-import java.util.Optional;
 
 public class PlayerProjectile extends Projectile {
 	protected float pPosX;
@@ -18,6 +16,8 @@ public class PlayerProjectile extends Projectile {
 	protected String directions;
 	protected PlayerShootMethod shootingStyle;
 
+	public Projectile projectile;
+
 	public enum PlayerShootMethod {
 		DIRECTIONAL {
 
@@ -26,6 +26,9 @@ public class PlayerProjectile extends Projectile {
 
 		},
 		BALLISTIC {
+
+		},
+		ORB {
 
 		}
 
@@ -61,8 +64,17 @@ public class PlayerProjectile extends Projectile {
 	public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String directions,
 			PlayerShootMethod shootingStyle) {
-		super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
-
+		if (shootingStyle == PlayerShootMethod.HOMING) {
+			projectile = new HomingProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
+					startEffect, endEffect);
+		} else if (shootingStyle == PlayerShootMethod.ORB) {
+			projectile = new OrbProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
+					startEffect, endEffect);
+		} else {
+			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
+					startEffect, endEffect);
+		}
+		GameManager.get().getWorld().addEntity(projectile);
 		this.pPosX = startPos.x;
 		this.pPosY = startPos.y;
 		this.tPosX = targetPos.x;
@@ -74,18 +86,23 @@ public class PlayerProjectile extends Projectile {
 
 	@Override
 	public void onTick(long time) {
-		if ("HOMING".equalsIgnoreCase(shootingStyle.toString())) {
-			Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
-					targetPos.y);
-			if (targetEntity.isPresent()) {
-				setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(),
-						targetEntity.get().getPosZ());
-			} else {
-				GameManager.get().getWorld().removeEntity(this);
-			}
-			updatePosition();
-		}
-		super.onTick(time);
+		// if ("HOMING".equalsIgnoreCase(shootingStyle.toString())) {
+		// Optional<AbstractEntity> targetEntity =
+		// WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
+		// targetPos.y);
+		// if (targetEntity.isPresent()) {
+		// projectile.setTargetPosition(targetEntity.get().getPosX(),
+		// targetEntity.get().getPosY(),
+		// targetEntity.get().getPosZ());
+		// } else {
+		// GameManager.get().getWorld().removeEntity(projectile);
+		// GameManager.get().getWorld().removeEntity(this);
+		// }
+		// projectile.updatePosition();
+		// }
+		// if (shootingStyle == PlayerShootMethod.ORB) {
+		// ((OrbProjectile)projectile).
+		//// }
 	}
 
 	/**
@@ -100,47 +117,48 @@ public class PlayerProjectile extends Projectile {
 		/**
 		 * Shoots enemies base on the player direction
 		 */
-		if ("DIRECTIONAL".equalsIgnoreCase(shootingStyle.toString())) {
+		if ("DIRECTIONAL".equalsIgnoreCase(shootingStyle.toString())
+				|| "ORB".equalsIgnoreCase(shootingStyle.toString())) {
 			switch (directions.toLowerCase()) {
 			case "west":
-				setTargetPosition(pPosX - 5, pPosY - 5, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "east":
-				setTargetPosition(pPosX + 5, pPosY + 5, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "north":
-				setTargetPosition(pPosX + 15, pPosY - 15, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "south":
-				setTargetPosition(pPosX - 15, pPosY + 15, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "north-east":
-				setTargetPosition(pPosX + 15, pPosY + 1, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "north-west":
-				setTargetPosition(pPosX - 15, pPosY - 200, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "south-east":
-				setTargetPosition(pPosX + 20, pPosY + 200, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			case "south-west":
-				setTargetPosition(pPosX - 200, pPosY - 20, 0);
-				updatePosition();
-				setPosition();
+				projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
+				projectile.updatePosition();
+				projectile.setPosition();
 				break;
 			}
 		}

@@ -32,6 +32,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 	protected Class<?> targetClass;
 	protected boolean rangeReached;
+	protected boolean canRemove = true;
 	protected float maxRange;
 	protected float range;
 	protected float damage;
@@ -66,7 +67,12 @@ public class Projectile extends AbstractEntity implements Tickable {
 			@Override
 			public String[] textures() {
 				return new String[] { "acorn1" };
-
+			}
+		},
+		ORB {
+			@Override
+			public String[] textures() {
+				return new String[] { "orb1" };
 			}
 		};
 
@@ -83,14 +89,19 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 * Creates a new projectile. A projectile is the vehicle used to deliver damage
 	 * to a target over a distance
 	 *
-	 * @param targetClass       the targets class
+	 * @param targetClass
+	 *            the targets class
 	 * @param startPos
 	 * @param targetPos
 	 * @param range
-	 * @param damage            damage of projectile
-	 * @param projectileTexture the texture set to use for animations. Use ProjectileTexture._
-	 * @param startEffect       the effect to play at the start of the projectile being fired
-	 * @param endEffect         the effect to be played if a collision occurs
+	 * @param damage
+	 *            damage of projectile
+	 * @param projectileTexture
+	 *            the texture set to use for animations. Use ProjectileTexture._
+	 * @param startEffect
+	 *            the effect to play at the start of the projectile being fired
+	 * @param endEffect
+	 *            the effect to be played if a collision occurs
 	 */
 	public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
@@ -111,8 +122,8 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
 
-
-        // TODO -- look at the other constructor -- this block of code is commented out there
+		// TODO -- look at the other constructor -- this block of code is commented out
+		// there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
 		updatePosition();
 		setPosition();
@@ -149,7 +160,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		setPosX(getPosX() + change.x);
 		setPosY(getPosY() + change.y);
 
-		if (range < SPEED || rangeReached) {
+		if ((range < SPEED || rangeReached) && canRemove) {
 			GameManager.get().getWorld().removeEntity(this);
 		} else {
 			range -= SPEED;
@@ -252,7 +263,19 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public Effect getEndEffect() {
 		return endEffect;
 	}
-	
 
+	/**
+	 * Returns Target Pos X
+	 */
+	public float getTargetPosX() {
+		return targetPos.x;
+	}
+
+	/**
+	 * Returns Target Pos Y
+	 */
+	public float getTargetPosY() {
+		return targetPos.y;
+	}
 
 }
