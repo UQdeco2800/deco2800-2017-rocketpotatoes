@@ -26,7 +26,6 @@ public class FoodResourceTreeTests {
 	public void setup() {
 		foodTree = new FoodTree(0, 0);
 		emptyInventory = new Inventory();
-		
 		resources = new HashSet<>();
 		seedResource = new SeedResource();
 		foodResource = new FoodResource();
@@ -39,7 +38,6 @@ public class FoodResourceTreeTests {
 
 	@After
 	public void tearDown() {
-
 		foodTree = null;
 		emptyInventory = null;
 		resources = null;
@@ -53,7 +51,7 @@ public class FoodResourceTreeTests {
 	 */
 	@Test
 	public void statsTest() {
-		foodTree.getFoodTreeStats();
+		FoodTree.getFoodTreeStats();
 	}
 	
 	/**

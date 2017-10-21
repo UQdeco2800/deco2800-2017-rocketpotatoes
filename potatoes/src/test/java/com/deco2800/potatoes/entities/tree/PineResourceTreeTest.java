@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.tree;
 
 import java.util.HashSet;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,11 +9,11 @@ import org.junit.Test;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.SeedTree;
+import com.deco2800.potatoes.entities.trees.PineTree;
 import com.deco2800.potatoes.managers.Inventory;
 
-public class SeedResourceTreeTest {
-	SeedTree seedTree;
+public class PineResourceTreeTest {
+	PineTree pineTree;
 	
 	Resource seedResource;
 	Resource foodResource;
@@ -24,7 +25,7 @@ public class SeedResourceTreeTest {
 	
 	@Before
 	public void setup() {
-		seedTree = new SeedTree(0, 0);
+		pineTree = new PineTree(0, 0);
 		emptyInventory = new Inventory();
 		resources = new HashSet<>();
 		seedResource = new SeedResource();
@@ -38,7 +39,7 @@ public class SeedResourceTreeTest {
 
 	@After
 	public void tearDown() {
-		seedTree = null;
+		pineTree = null;
 		emptyInventory = null;
 		resources = null;
 		seedResource = null;
@@ -51,7 +52,7 @@ public class SeedResourceTreeTest {
 	 */
 	@Test
 	public void statsTest() {
-		SeedTree.getSeedTreeStats();
+		PineTree.getPineTreeStats();
 	}
 	
 	/**
@@ -59,7 +60,7 @@ public class SeedResourceTreeTest {
 	 */
 	@Test
 	public void updateAnimation() {
-		seedTree.updateAnimations();
+		pineTree.updateAnimations();
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public class SeedResourceTreeTest {
 	 */
 	@Test
 	public void copyTest() {
-		seedTree.createCopy();
+		pineTree.createCopy();
 	}
 	
 	/**
@@ -75,6 +76,6 @@ public class SeedResourceTreeTest {
 	 */
 	@Test
 	public void stringTest() {
-		seedTree.getName();
+		pineTree.getName();
 	}
 }
