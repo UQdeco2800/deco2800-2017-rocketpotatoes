@@ -82,12 +82,12 @@ public class TextureManager extends Manager {
         /* Seed Resource Tree Sprites */
         saveTexture("seed_resource_tree", "resources/resourceTrees/seedTree.png"); // Default Sprite
         
-        // Grow Animation
+        // Seed Grow Animation
         for (int i = 1; i < 44; i++) {
         		saveTexture("seedtree_grow_" + i, "resources/resourceTrees/seed/grow/seedtree_grow_" + String.format("%04d", i) + ".png");
         }
         
-        // Produce Animation
+        // Seed Produce Animation
         for (int i = 1; i < 32; i++) {
         		saveTexture("seedtree_produce_" + i, "resources/resourceTrees/seed/produce/seedtree_produce_" + String.format("%04d", i) + ".png");
         }
@@ -95,18 +95,23 @@ public class TextureManager extends Manager {
         /* Food Resource Tree Sprites */
         saveTexture("food_resource_tree", "resources/resourceTrees/foodTree.png"); // Default Sprite
         
-        // Grow Animation
+        // Food Grow Animation
         for (int i = 1; i < 51; i++) {
         		saveTexture("foodtree_grow_" + i, "resources/resourceTrees/food/grow/foodtree_grow_" + String.format("%04d", i) + ".png");
         }
         
-        // Produce Animation
+        // Food Produce Animation
         for (int i = 1; i < 36; i++) {
         		saveTexture("foodtree_produce_" + i, "resources/resourceTrees/food/produce/foodtree_produce_" + String.format("%04d", i) + ".png");
         }
         
         /* Pine Resource Tree Sprites */
         saveTexture("pine_resource_tree", "resources/resourceTrees/pineTree.png"); // Default Sprite
+        
+        // Pine Grow Animation
+        for (int i = 1; i < 44; i++) {
+    			saveTexture("pinetree_grow_" + i, "resources/resourceTrees/pine/grow/pinetree_grow_" + String.format("%04d", i) + ".png");
+        }
 
 
         // Projectiles TODO: fix
