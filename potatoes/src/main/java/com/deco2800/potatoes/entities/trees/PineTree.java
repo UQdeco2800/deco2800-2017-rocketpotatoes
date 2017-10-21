@@ -21,9 +21,15 @@ public class PineTree extends ResourceTree {
 	private static final transient int GATHER_RATE = 9000;	// Time interval of gathering resources
 	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
 	
+	/* Pine Tree Animations */
 	private static final transient String[] GROW_ANIMATION = makeFrames("pinetree", "grow", 43, 1);
-	//private TimeAnimation produceAnimation = makeResourceTreeAnimation("pinetree", "produce", 31, 6000, this::finishedProduce);
-	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("pine_resource_tree");
+	private static final transient String[] PRODUCE_ANIMATION = makeFrames("pinetree", "produce", 35, 1);
+	
+	private static Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
+			GROW_ANIMATION, () -> (float) x.getConstructionLeft());
+	
+	private static Function<ResourceTree, Animation> produceAnimation = x -> AnimationFactory.createSimpleStateAnimation(GATHER_CAPACITY, 0,
+			PRODUCE_ANIMATION, () -> (float) GATHER_CAPACITY-x.getGatherCount());
 	
 	/**
 	 * Constructor for creating a food resource tree
@@ -38,15 +44,6 @@ public class PineTree extends ResourceTree {
 		this.defaultTexture = "pine_resource_tree";
 		this.resetStats();
 	}
-    
-    /**
-     * Custom animation handling for the pine resource tree
-     */
-    private Void finishedProduce() {
-        System.out.println("Finished Produce");
-        this.setAnimation(defaultAnimation);
-        return null;
-    }
 	
 	/**
 	 * Stats for a resource tree that gathers food
@@ -57,9 +54,6 @@ public class PineTree extends ResourceTree {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 		
-		Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
-				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
-		
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(HEALTH).setBuildTime(BUILD_TIME).setBuildCost(BUILD_COST)
 				.setTexture("pine_resource_tree").addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
 
@@ -67,6 +61,12 @@ public class PineTree extends ResourceTree {
 			result.add(statisticsBuilder.createTreeStatistics());
 		}
 		return result;
+	}
+	
+	@Override
+	public void updateAnimations() {
+		super.updateAnimations();
+		this.setAnimation(produceAnimation.apply(this));
 	}
 	
 	@Override
