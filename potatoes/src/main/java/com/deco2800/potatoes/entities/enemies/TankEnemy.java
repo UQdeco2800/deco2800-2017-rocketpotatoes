@@ -23,20 +23,21 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A stronger but slower enemy type, only attacks towers/trees
+ * A stronger but slower enemy type, only attacks towers/trees.
+ *
+ * @author Team 11
  */
 public class TankEnemy extends EnemyEntity implements Tickable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyProperties STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
-	private static final transient float HEALTH = 1000;
+	private static final transient float HEALTH = 2000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 	private long sTime=0;
 	private float phealth =getHealth();
 	private static final transient String[] ENEMY_TYPE = new String[]{
-
 		"bear",
 		"bear",
 		"bear",
@@ -45,19 +46,10 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		"bear",
 		"bear",
 		"bear",
-
 	};
-//	private static final transient String ENEMY_TYPE = "bear";
-//private static final transient String[] ENEMY_TYPE = new String[]{
-//
-//		"raccoon",
-//
-//
-//
-//
-//};
+
 	/* Define speed, goal and path variables */
-	private static float speed = 0.01f;
+	private static float speed = 0.008f;
 	private static Class<?> goal = AbstractTree.class;
 
 	private Path path = null;
@@ -70,7 +62,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
 	private int timer = 0;
 	private Shape2D targetPos = null;
-
 
 	/**
 	 * Empty constructor for serialization
@@ -94,7 +85,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target,
 	 * otherwise get the closest targeted entity position.
 	 */
-//	@Override
 /*	public void onTick(long i) {
 		float goalX = getPosX();
 		float goalY = getPosY();
@@ -212,7 +202,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		super.updateDirection();
 	}
 */
-
 	/***
 	 * Actions to be performed on every tick of the game
 	 *
@@ -229,35 +218,32 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		super.updateDirection();
 	}
 	/**
-	 * set the enemy state
+	 * Set the enemy state
 	 */
 	public void enemyState(){
-
+		//Check if attacking
 		if(isAttacking()){
 			sTime = System.currentTimeMillis();
 			setEnemyStatus("attack");
 			phealth=getHealth();
 
 		}
-
+		//Check if walking
 		if((System.currentTimeMillis()-sTime)/1000.0>3){
 			setEnemyStatus("walk");
 		}
-
 	}
 
 	/**
-	 * set the enemy state
-	 * @return the state of enemy is the being attacking
+	 * Determine if the tank is currently attacking.
+	 *
+	 * @return true if the tank is attacking
 	 */
 	public boolean isAttacking(){
-
 		if(phealth!=getHealth()){
 			return true;
 		}
 		return false;
-
-
 	};
 
 	/**
@@ -334,5 +320,4 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESS_BAR;
 	}
-
 }
