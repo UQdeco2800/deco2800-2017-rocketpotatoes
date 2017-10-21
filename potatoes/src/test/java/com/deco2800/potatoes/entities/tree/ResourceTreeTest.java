@@ -55,7 +55,9 @@ public class ResourceTreeTest {
 
 	}
 
-	/* Test initialising the resource tree */
+	/**  
+	 * Test initialising the resource tree
+	 */
 	@Test
 	public void initTest() {
 		// Resource type tests
@@ -69,7 +71,9 @@ public class ResourceTreeTest {
 		assertTrue(nullTypeResourceTree.getGatherCapacity() == 32); // Defaults
 	}
 	
-	/* Test setting the gather capacity of the resource tree */
+	/**
+	 *  Test setting the gather capacity of the resource tree 
+	 */
 	@Test
 	public void capacityTest() {
 		// Setting to a general number
@@ -85,7 +89,9 @@ public class ResourceTreeTest {
 		assertTrue(defaultResourceTree.getGatherCapacity() == 32);
 	}
 	
-	/* Test adding resources to the Resource Tree */
+	/** 
+	 * Test adding resources to the Resource Tree 
+	 */
 	@Test
 	public void addTest() {
 		// Count should be zero by default
@@ -111,7 +117,9 @@ public class ResourceTreeTest {
 		
 	}
 	
-	/* Test toggling gather status */
+	/**
+	 *  Test toggling gather status 
+	 */
 	@Test
 	public void gatherStatusTest() {
 		assertTrue(defaultResourceTree.isGatherEnabled());
@@ -121,7 +129,9 @@ public class ResourceTreeTest {
 		assertTrue(defaultResourceTree.isGatherEnabled());
 	}
 	
-	/* Test transferring resources to an inventory */
+	/** 
+	 * Test transferring resources to an inventory 
+	 */
 	@Test
 	public void inventoryTransferTest() {
 		/* Test for default case */
@@ -143,9 +153,32 @@ public class ResourceTreeTest {
 		assertTrue(customResourceTree.getGatherCount() == 0); // All resources should be removed from tree
 		assertTrue(usedInventory.getQuantity(foodResource) == testAmount + initalAmount); // All resources should be added to inventory
 	}
+	
+	/**
+	 * Test getting the name
+	 */
 	@Test
 	public void stringTest() {
 		defaultResourceTree.getName();
+	}
+	
+	/**
+	 * Test making an array of frames for resource tree animations
+	 */
+	@Test
+	public void makeFramesTest() {
+		String[] testFrames = ResourceTree.makeFrames("type", "state", 10, 1);
+		assertTrue(testFrames[0].equals("type_state_1"));
+		assertTrue(testFrames[5].equals("type_state_6"));
+		assertTrue(testFrames[9].equals("type_state_10"));
+	}
+	
+	/**
+	 * Test updating animations
+	 */
+	@Test
+	public void updateAnimation() {
+		defaultResourceTree.updateAnimations();
 	}
 	
 }
