@@ -60,8 +60,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 
-    protected PlayerProjectile.PlayerShootMethod shootMethod=PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
+    protected PlayerProjectile.PlayerShootMethod shootMethod=PlayerProjectile.PlayerShootMethod.MOUSE;
     protected Class<?> projectileType=BallisticProjectile.class;
+    protected Projectile projectile = null;
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
     private boolean holdPosition = false;	// Used to determine if the player should be held in place
@@ -630,7 +631,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     protected void attack() {
         // Override in subclasses to allow custom attacking.
     	if (this.setState(ATTACK)) {
-    		Projectile p = null;
 			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
@@ -707,11 +707,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 //			}
 			Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
 			Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
-			p = new PlayerProjectile(!target.isPresent()?EnemyEntity.class:target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
+			projectile = new PlayerProjectile(!target.isPresent()?EnemyEntity.class:target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
 					null, null, super.facing.toString(), shootMethod,
 					projectileType);
 
-			GameManager.get().getWorld().addEntity(p);
+			GameManager.get().getWorld().addEntity(projectile);
 
 			
 		}

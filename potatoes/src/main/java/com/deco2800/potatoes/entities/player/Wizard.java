@@ -21,7 +21,6 @@ import com.deco2800.potatoes.util.WorldUtil;
 
 public class Wizard extends Player {
 
-	PlayerProjectile pp;
 	private boolean isCharging = false;
 
 	/**
@@ -35,6 +34,7 @@ public class Wizard extends Player {
 
 	public Wizard(float posX, float posY) {
 		super(posX, posY);
+		this.projectileType = OrbProjectile.class;
 		this.defaultSpeed = 0.09f;
 		super.setMoveSpeed(defaultSpeed);
 		this.facing = Direction.SE;
@@ -116,7 +116,7 @@ public class Wizard extends Player {
 	@Override
 	protected void attack() {
 		super.attack();
-		
+
 	}
 
 	private void hoverAnimation() {
@@ -138,7 +138,6 @@ public class Wizard extends Player {
 	@Override
 	protected void interact() {
 		super.interact();
-		// Custom interaction code here
 	}
 
 	@Override
@@ -146,15 +145,15 @@ public class Wizard extends Player {
 		super.onTick(arg0);
 
 		hoverAnimation();
-		
-		if (pp != null && OrbProjectile.class.isAssignableFrom(pp.getClass())) {
+
+		if (projectile != null && OrbProjectile.class.isAssignableFrom(projectileType)) {
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 			if (isCharging) {
-				((OrbProjectile) pp.projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
+				((OrbProjectile) ((PlayerProjectile) projectile).projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
 			} else {
-				((OrbProjectile) pp.projectile).fire();
+				((OrbProjectile) ((PlayerProjectile) projectile).projectile).fire();
 			}
 		}
 	}

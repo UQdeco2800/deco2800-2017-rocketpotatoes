@@ -50,26 +50,15 @@ public class OrbProjectile extends Projectile {
 
 	@Override
 	public void onTick(long time) {
-//		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
-//				targetPos.y);
-//		if (targetEntity.isPresent()) {
-//			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
-//		} else {
-//			GameManager.get().getWorld().removeEntity(this);
-//		}
 		if (canFire) {
-
-			//updatePosition();
-
 			// dont remove until range reached
 			if (range < SPEED) {
 				canRemove = true;
 			} else {
 				canRemove = false;
-			}
-			super.onTick(time);
-			
+			}	
 		}
+		super.onTick(time);
 	}
 
 	@Override

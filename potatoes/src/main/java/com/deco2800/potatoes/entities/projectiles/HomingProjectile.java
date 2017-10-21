@@ -55,9 +55,7 @@ public class HomingProjectile extends Projectile {
 				targetPos.lerp(new Vector3(targetEntity.get().getPosX(), targetEntity.get().getPosY(),
 						targetEntity.get().getPosZ()), 0.05f);
 				setTargetPosition(targetPos.x,targetPos.y,targetPos.z);
-			} else {
-				GameManager.get().getWorld().removeEntity(this);
-			}
+			} 
 		}
 		super.onTick(time);
 
