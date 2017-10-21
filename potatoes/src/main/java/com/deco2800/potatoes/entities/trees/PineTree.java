@@ -7,8 +7,6 @@ import com.deco2800.potatoes.entities.resources.PineconeResource;
 
 public class PineTree extends ResourceTree {
 	
-	public static final String PINE_TREE_TEXTURE = "pine_resource_tree";
-	
 	/**
 	 * Constructor for creating a food resource tree
 	 * 
@@ -19,6 +17,7 @@ public class PineTree extends ResourceTree {
 	 */
 	public PineTree(float posX, float posY) {
 		super(posX, posY, new PineconeResource(), 12); // Set resource to pine and capacity to 12
+		this.defaultTexture = "pine_resource_tree";
 	}
 	
 	/**
@@ -30,7 +29,7 @@ public class PineTree extends ResourceTree {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = PINE_TREE_TEXTURE;
+		String texture = "pine_resource_tree";
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(20).setBuildTime(5000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
@@ -46,7 +45,7 @@ public class PineTree extends ResourceTree {
 	
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
-		this.setTexture(PINE_TREE_TEXTURE);
+		this.setTexture("pine_resource_tree");
 		return getPineTreeStats();
 	}
 	

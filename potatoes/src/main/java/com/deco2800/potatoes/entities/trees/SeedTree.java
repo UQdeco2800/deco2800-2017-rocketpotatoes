@@ -7,9 +7,6 @@ import com.deco2800.potatoes.entities.resources.SeedResource;
 
 public class SeedTree extends ResourceTree {
 	
-	public static final String SEED_TREE_TEXTURE = "seed_resource_tree";
-	
-	
 	/**
 	 * Constructor for creating a seed resource tree
 	 * 
@@ -20,6 +17,7 @@ public class SeedTree extends ResourceTree {
 	 */
 	public SeedTree(float posX, float posY) {
 		super(posX, posY, new SeedResource(), 10); // Set resource to seed and capacity to 10
+		this.defaultTexture = "seed_resource_tree";
 	}
 	
 	
@@ -32,7 +30,7 @@ public class SeedTree extends ResourceTree {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = SEED_TREE_TEXTURE;
+		String texture = "seed_resource_tree";
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
@@ -48,7 +46,7 @@ public class SeedTree extends ResourceTree {
 	
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
-		this.setTexture(SEED_TREE_TEXTURE);
+		this.setTexture("seed_resource_tree");
 		return getSeedTreeStats();
 	}
 	

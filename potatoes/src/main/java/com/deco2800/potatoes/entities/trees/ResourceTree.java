@@ -5,10 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 
 /**
@@ -24,6 +29,9 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private Resource gatherType; // Type of resource gathered by the tree
 	private boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
+	
+	public String defaultTexture; // The standard texture to default to
+	private TimeAnimation currentAnimation;
 
 	/**
 	 * Default constructor for serialization
@@ -234,5 +242,32 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public String getName() {
 		return "Resource Tree";
 	}
+	
+	/* Animation */
+	
+	/**
+     * Sets the specified animation to be the resource tree's current animation.
+     *
+     * @param animation The time animation to be set to the resource tree.
+     */
+    public void setAnimation(TimeAnimation animation) {
+
+        EventManager em = GameManager.get().getManager(EventManager.class);
+
+        em.unregisterEvent(this, this.currentAnimation);
+        currentAnimation = animation;
+        em.registerEvent(this, currentAnimation);
+
+        LOGGER.info("Resource Tree changed animation");
+    }
+
+    @Override
+    public String getTexture() {
+        if (currentAnimation != null) {
+            return currentAnimation.getFrame();
+        } else {
+            return defaultTexture;
+        }
+    }
 
 }

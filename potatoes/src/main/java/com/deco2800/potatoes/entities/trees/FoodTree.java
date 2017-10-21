@@ -7,8 +7,6 @@ import com.deco2800.potatoes.entities.resources.FoodResource;
 
 public class FoodTree extends ResourceTree {
 	
-	public static final String FOOD_TREE_TEXTURE = "food_resource_tree";
-	
 	/**
 	 * Constructor for creating a food resource tree
 	 * 
@@ -19,6 +17,7 @@ public class FoodTree extends ResourceTree {
 	 */
 	public FoodTree(float posX, float posY) {
 		super(posX, posY, new FoodResource(), 8); // Set resource to food and capacity to 8
+		this.defaultTexture = "food_resource_tree";
 	}
 	
 	/**
@@ -30,7 +29,7 @@ public class FoodTree extends ResourceTree {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = FOOD_TREE_TEXTURE;
+		String texture = "food_resource_tree";
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
@@ -46,7 +45,7 @@ public class FoodTree extends ResourceTree {
 	
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
-		this.setTexture(FOOD_TREE_TEXTURE);
+		this.setTexture("food_resource_tree");
 		return getFoodTreeStats();
 	}
 	
