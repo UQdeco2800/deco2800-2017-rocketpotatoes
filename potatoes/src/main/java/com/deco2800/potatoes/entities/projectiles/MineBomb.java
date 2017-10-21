@@ -14,12 +14,7 @@ public class MineBomb extends Projectile {
 	protected float tPosY;
 	protected String directions;
 	protected Class<?> shootObjectClass;
-	protected PlayerShootMethod shootingStyle;
 	public Projectile projectile;
-
-	public enum PlayerShootMethod {
-		DIRECTIONAL, CLOSEST, MOUSE
-	}
 
 	public MineBomb() {
 		// Blank comment to please the lord Sonar
@@ -50,108 +45,16 @@ public class MineBomb extends Projectile {
 
 	public MineBomb(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
                     ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String directions,
-                    PlayerShootMethod shootingStyle, Class<?> shootObjectClass) {
-		this.shootObjectClass=shootObjectClass;
-		if (BallisticProjectile.class.isAssignableFrom(shootObjectClass)) {
-			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
-					startEffect, endEffect);
-		} else if (OrbProjectile.class.isAssignableFrom(shootObjectClass)) {
-			projectile = new OrbProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
-					startEffect, endEffect);
-		} // else if (BombProjectile.class.isAssignableFrom(shootObjectClass)) {
-			// projectile = new BombProjectile(targetClass, startPos, targetPos, range,
-			// damage, projectileTexture,
-			// startEffect, endEffect);
-			// }
-		else if (HomingProjectile.class.isAssignableFrom(shootObjectClass)) {
-			projectile = new HomingProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
-					startEffect, endEffect);
-		} else {
-			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
-					startEffect, endEffect);
-		}
-		GameManager.get().getWorld().addEntity(projectile);
-		this.pPosX = startPos.x;
-		this.pPosY = startPos.y;
-		this.tPosX = targetPos.x;
-		this.tPosY = targetPos.y;
-		this.directions = directions;
-		this.shootingStyle = shootingStyle;
-		ShootingStyle(shootingStyle);
+                    Class<?> shootObjectClass) {
+
 	}
 
 	@Override
 	public void onTick(long time) {
-		// if ("HOMING".equalsIgnoreCase(shootingStyle.toString())) {
-		// Optional<AbstractEntity> targetEntity =
-		// WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
-		// targetPos.y);
-		// if (targetEntity.isPresent()) {
-		// projectile.setTargetPosition(targetEntity.get().getPosX(),
-		// targetEntity.get().getPosY(),
-		// targetEntity.get().getPosZ());
-		// } else {
-		// GameManager.get().getWorld().removeEntity(projectile);
-		// GameManager.get().getWorld().removeEntity(this);
-		// }
-		// projectile.updatePosition();
-		// }
-		// if (shootingStyle == PlayerShootMethod.ORB) {
-		// ((OrbProjectile)projectile).
-		//// }
-		//System.out.println("second");
+
 	}
 
-	/**
-	 * Returns selected shooting styles
-	 */
-	public MineBomb.PlayerShootMethod getPlayerShootMethod() {
-		return shootingStyle;
-	}
 
-	public void ShootingStyle(PlayerShootMethod shootingStyle) {
-
-		/**
-		 * Shoots enemies base on the player direction
-		 */
-		if (shootingStyle == PlayerShootMethod.DIRECTIONAL) {
-			switch (directions.toLowerCase()) {
-			case "west":
-				projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
-				break;
-			case "east":
-				projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
-				break;
-			case "north":
-				projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
-				break;
-			case "south":
-				projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
-				break;
-			case "north-east":
-				projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
-				break;
-			case "north-west":
-				projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
-				break;
-			case "south-east":
-				projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
-				break;
-			case "south-west":
-				projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
-				break;
-			}
-		}
-		if (shootingStyle == PlayerShootMethod.MOUSE) {
-
-			Vector2 mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
-					GameManager.get().getManager(InputManager.class).getMouseY());
-			if(HomingProjectile.class.isAssignableFrom(shootObjectClass)) {
-				((HomingProjectile)projectile).setHomingDelay(10);
-			}
-			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
-		}
-	}
 
 	/**
 	 * Returns Target Pos X
