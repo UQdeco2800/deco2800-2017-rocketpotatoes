@@ -1,16 +1,23 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.effects.Effect.EffectTexture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.deco2800.potatoes.entities.effects.LightningEffect;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
@@ -139,27 +146,28 @@ public class DamageTree extends AbstractTree implements Tickable {
     /**
      * Static generating ice tree
      */
-    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), EffectTexture.LIGHTNING_ICE);
+    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), LightningEffect.class,EffectTexture.LIGHTNING_ICE);
     /**
      * Static generating acorn tree
      */
-	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), EffectTexture.LIGHTNING_FORREST);
+	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), LightningEffect.class,EffectTexture.LIGHTNING_FORREST);
     /**
      * Static generating lightning tree
      */
-	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation(), EffectTexture.LIGHTNING_WATER);
+	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation(),  LightningEffect.class,EffectTexture.LIGHTNING_WATER);
     /**
      * Static generating fire tree
      */
-	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(), EffectTexture.LIGHTNING_FIRE);
+	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(),  LightningEffect.class,EffectTexture.LIGHTNING_FIRE);
 	 /**
      * Static generating cactus tree
      */
-	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), EffectTexture.LIGHTNING_DESERT);
+	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), LightningEffect.class,EffectTexture.LIGHTNING_DESERT);
 	/**
      * Static generating coral tree
      */
-	private static final List<TreeProperties> CORAL_TREE_STATS=generateTree("coralTree", animation(), EffectTexture.LIGHTNING_DESERT);
+	private static final List<TreeProperties> CORAL_TREE_STATS=generateTree("coralTree", animation(), LightningEffect.class,EffectTexture.LIGHTNING_WATER);
+
 	/**
      * Static field to store information about upgrades
      */
@@ -257,7 +265,7 @@ public class DamageTree extends AbstractTree implements Tickable {
      * Function<AbstractTree, Animation> animation
      */
 	private static List<TreeProperties> generateTree(String texture,Map<String,Function<AbstractTree, Animation>> animation,
-			EffectTexture attackTexture) {
+			Class<? extends AbstractEntity> fireObjectClass, Enum<?> fireObjectType) {
 
 		List<TreeProperties> result = new LinkedList<>();
 
@@ -267,7 +275,7 @@ public class DamageTree extends AbstractTree implements Tickable {
 		 */
 
 			result.add(new PropertiesBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-					.setBuildCost(1).setAnimation(animation.get(status.get(texture))).addEvent(new LightningShootEvent(250, attackTexture))
+					.setBuildCost(1).setAnimation(animation.get(status.get(texture))).addEvent(new TreeProjectileShootEvent(250, fireObjectClass,fireObjectType))
 					.createTreeStatistics());
 
 		return result;

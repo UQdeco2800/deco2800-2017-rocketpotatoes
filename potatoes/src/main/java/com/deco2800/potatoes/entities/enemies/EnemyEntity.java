@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.*;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
@@ -38,6 +39,9 @@ import com.deco2800.potatoes.managers.ParticleManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
+import static com.deco2800.potatoes.entities.Direction.getFromRad;
+import static com.deco2800.potatoes.entities.Direction.getRadFromCoords;
+
 /**
  * An abstract class for the basic functionality of enemy entities which extend from it
  */
@@ -46,15 +50,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(EnemyEntity.class);
 
 	private float speed;
-	private Shape2D targetPos = null;
 	private Class<?> goal;
 	private Map<Integer, AbstractEntity> entities;
 	private boolean moving = true;
 	private int channelTimer;
-
 	public EnemyTargets targets;
-
-	private static final SoundManager enemySoundManager = new SoundManager();
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
@@ -70,7 +70,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Constructs a new AbstractEntity with specific render lengths. Allows
+	 * Constructs a new EnemyEntity with specific render lengths. Allows
 	 * specification of rendering dimensions different to those used for collision.
 	 * For example, could be used to have collision on the trunk of a tree but not
 	 * the leaves/branches.
@@ -111,21 +111,27 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
         this.roundNum = roundNum;
     }*/
 
-
-	public void pathMovement(PathAndTarget pathTarget, AbstractEntity relevantTarget) {
+	/***
+	 * Update the enemy's target that it is moving to and the path that it is following to do so with
+	 * a provided goal AbstractEntity
+	 *
+	 * @param pathTarget data class containing enemy's current path and target
+	 * @param goalEntity the entity the enemy's path and target are to be set to
+	 */
+	public void pathMovement(PathAndTarget pathTarget, AbstractEntity goalEntity) {
 		Path path = pathTarget.getPath();
 		Shape2D target = pathTarget.getTarget();
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-		if (relevantTarget != null) {
+		if (goalEntity != null) {
 			// check paths
 			// check that we actually have a path
 			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
+				path = pathManager.generatePath(this.getMask(), goalEntity.getMask());
 			}
 
 			//check if last node in path matches player
-			if (!path.goal().overlaps(relevantTarget.getMask())) {
-				path = pathManager.generatePath(this.getMask(), relevantTarget.getMask());
+			if (!path.goal().overlaps(goalEntity.getMask())) {
+				path = pathManager.generatePath(this.getMask(), goalEntity.getMask());
 			}
 
 			//check if close enough to target
@@ -139,25 +145,31 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			}
 
 			if (target == null) {
-				target = relevantTarget.getMask();
+				target = goalEntity.getMask();
 			}
 
 			float deltaX = target.getX() - getPosX();
 			float deltaY = target.getY() - getPosY();
 
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+			super.setMoveAngle(getRadFromCoords(deltaX, deltaY));
 			pathTarget.setPath(path);
 			pathTarget.setTarget(target);
 		}
 	}
 
-	/*Find the most relevant target to go to according to its EnemyTargets*/
+	/***
+	 * Determine an enemy's most relevant target according to its main entity and 'sight aggro' (entities that
+	 * if close enough to an enemy cause the enemy to preferentially move to it) entity targets.
+	 *
+	 * @param targets data class containing this enemy's main and sight aggro targets
+	 * @return the most relevant entity if one exists, if no entity is found null is returned
+	 */
 	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
 		entities = GameManager.get().getWorld().getEntities();
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
 		for (Class sightTarget : targets.getSightAggroTargets()) {
 			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {	//HOW TO CHECK SUPERCLASS SO WE CAN JUST ADD PLAYER TO TARGETS?
+				if (entity.getClass().isAssignableFrom(sightTarget)) {
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
 					if (distance < 10) {
 						return entity;
@@ -176,8 +188,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return null;
 	}
 
-	public void setMoving(boolean move) { this.moving = move; }	//
+	/**
+	 * Flag whether this enemy should be allowed to move or not
+	 *
+	 * @param move
+	 */
+	public void setMoving(boolean move) { this.moving = move; }
 
+	/**
+	 * @return whether this enemy is allowed to move or not
+	 */
 	public boolean getMoving() { return this.moving; }
 
 	/**
@@ -188,10 +208,19 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (super.getMoveSpeedModifier() == 0) {
 			return;    // Not moving
 		}
-
 		// set facing Direction based on movement angle
-		this.facing = Direction.getFromRad(super.getMoveAngle());
+		this.facing = getFromRad(super.getMoveAngle());
+		this.updateSprites();
+	}
 
+	/***
+	 * Sets the direction of enemy to face a set of x, y coordinates
+	 *
+	 * @param xCoord x coordinate
+	 * @param yCoord y coordinate
+	 */
+	public void setDirectionToCoords(float xCoord, float yCoord) {
+		this.facing = getFromRad( getRadFromCoords( xCoord-this.getPosX(), yCoord-this.getPosY()) );
 		this.updateSprites();
 	}
 
@@ -201,7 +230,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateSprites() {
 		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-		String enemyStatus="walk";
+		String enemyStatus = "walk";
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
@@ -216,23 +245,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @return Int the index of texture
 	 */
 	public int delay(int time,int Framesize){
-
 		count++;
-
 		if((count/time)>=(Framesize-1))
 			count=0;
-
 		return Math.round((count/time));
-
-
-	}
-
-	/***
-	 * Initialise an enemy with a particular set of targets/goals
-	 */
-	public EnemyTargets intializeTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightTargets) {
-		this.targets = new EnemyTargets(mainTargets, sightTargets);
-		return this.targets;
 	}
 
 	/***
@@ -294,8 +310,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		this.speed = s;
 	}
 
+	/***
+	 * Get the current value of the enemy's channel timer.
+	 *
+	 * The channel timer acts as an internal clock of enemy that can be used to see for how
+	 * long an enemy has been in a channelling state for.
+	 *
+	 * @return channelTimer
+	 */
 	public int getChannelTimer() { return this.channelTimer; }
 
+	/**
+	 * Set the value of the enemy's channel timer
+	 *
+	 * @param channelTime
+	 */
 	public void setChannellingTimer(int channelTime) { this.channelTimer = channelTime; }
 
 	/**
@@ -345,19 +374,32 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return (int) getMaxHealth();
 	}
 
+	/**
+	 * Apply damage to this enemy and if a 'being damaged' animation exists for it, trigger
+	 * the animation.
+	 *
+	 * @param amount - the amount of health to subtract
+	 * @return
+	 */
 	@Override
 	public boolean damage(float amount) {
 		getBasicStats().setDamageAnimation(this);
 		return super.damage(amount);
 	}
 
+	/**
+	 * Trigger death animation of enemy if enemy has one
+	 */
 	@Override
 	public void dyingHandler() {
 		getBasicStats().setDeathAnimation(this);
 	}
 
 	/**
-	 * remove the enemy if it is dead
+	 * Trigger actions upon the death of this enemy, these being:
+	 * 	- create particle blood splatter effect
+	 * 	- remove enemy
+	 * 	- remove it's events
 	 */
 	@Override
 	public void deathHandler() {
