@@ -408,7 +408,16 @@ public class TextureManager extends Manager {
             saveTexture("bear_attack_SW_"+i,"resources/enemies/bear/attack/bear_attack_SW_"+i+".png");
             saveTexture("bear_attack_W_"+i,"resources/enemies/bear/attack/bear_attack_W_"+i+".png");
         }
-
+        for(int i =1;i<7;i++){
+            saveTexture("bear_death_E_"+i,"resources/enemies/bear/death/bear_death_E_"+i+".png");
+            saveTexture("bear_death_N_"+i,"resources/enemies/bear/death/bear_death_N_"+i+".png");
+            saveTexture("bear_death_NE_"+i,"resources/enemies/bear/death/bear_death_NE_"+i+".png");
+            saveTexture("bear_death_NW_"+i,"resources/enemies/bear/death/bear_death_NW_"+i+".png");
+            saveTexture("bear_death_S_"+i,"resources/enemies/bear/death/bear_death_S_"+i+".png");
+            saveTexture("bear_death_SE_"+i,"resources/enemies/bear/death/bear_death_SE_"+i+".png");
+            saveTexture("bear_death_SW_"+i,"resources/enemies/bear/death/bear_death_SW_"+i+".png");
+            saveTexture("bear_death_W_"+i,"resources/enemies/bear/death/bear_death_W_"+i+".png");
+        }
 
     }
 
