@@ -1,12 +1,9 @@
 package com.deco2800.potatoes.entities.projectiles;
 
-import java.util.Optional;
-
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.managers.InputManager;
 
 public class PlayerProjectile extends Projectile {
 	protected float pPosX;
@@ -15,7 +12,7 @@ public class PlayerProjectile extends Projectile {
 	protected float tPosY;
 	protected String directions;
 	protected PlayerShootMethod shootingStyle;
-
+	InputManager im;
 	public Projectile projectile;
 
 	public enum PlayerShootMethod {
@@ -177,6 +174,10 @@ public class PlayerProjectile extends Projectile {
 	 */
 	public float getTargetPosY() {
 		return tPosY;
+	}
+
+	public void setInputManager(InputManager im) {
+		this.im = im;
 	}
 
 }

@@ -13,6 +13,8 @@ import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.observers.MouseMovedObserver;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -14,8 +15,10 @@ import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Wizard extends Player {
@@ -109,7 +112,9 @@ public class Wizard extends Player {
 		case Input.Keys.SPACE:
 			isCharging = false;
 		}
+		
 	}
+	
 
 	@Override
 	protected void attack() {
@@ -195,12 +200,14 @@ public class Wizard extends Player {
 	@Override
 	public void onTick(long arg0) {
 		super.onTick(arg0);
+		//System.out.println(new Vector2(GameManager.get().getManager(InputManager.class).getMouseX(),GameManager.get().getManager(InputManager.class).getMouseY()));
+		System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX());
+		System.out.println(Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),GameManager.get().getManager(InputManager.class).getMouseY()));
 		hoverAnimation();
 		if (pp != null) {
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-
 			if (isCharging) {
 				((OrbProjectile) pp.projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
 			} else {
