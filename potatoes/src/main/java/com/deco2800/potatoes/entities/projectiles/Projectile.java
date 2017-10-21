@@ -4,8 +4,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -24,6 +24,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected Vector3 change = new Vector3();
 	protected Vector2 delta = new Vector2();
 
+	protected static float shadowRadius = 0.4f;
 	protected static float xRenderLength = 1.4f;
 	protected static float yRenderLength = 1.4f;
 	protected static float xLength = 0.4f;
@@ -105,7 +106,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
-		super(new Box2D(startPos.x, startPos.y, xLength + 1f, yLength + 1f), xRenderLength, yRenderLength,
+		super(new Circle2D(startPos.x, startPos.y, getShadowRadius()), xRenderLength, yRenderLength,
 				projectileTexture.textures()[0]);
 
 		if (targetClass != null)
@@ -114,7 +115,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 			this.targetClass = MortalEntity.class;
 
 		this.projectileTexture = projectileTexture;
-		this.maxRange = this.range = range*3;
+		this.maxRange = this.range = range * 3;
 		this.damage = damage;
 		this.startEffect = startEffect;
 		this.endEffect = endEffect;
@@ -125,16 +126,16 @@ public class Projectile extends AbstractEntity implements Tickable {
 		// TODO -- look at the other constructor -- this block of code is commented out
 		// there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
-		//updateHeading();
+		// updateHeading();
 		setPosition();
 	}
-	
+
 	/**
 	 * Initialize heading. Used if heading changes
 	 */
 	protected void updateHeading() {
 		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
-		
+
 		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
 		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
 		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
@@ -154,7 +155,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		targetPos.set(xPos, yPos, zPos);
 		updateHeading();
 	}
-	
+
 	/**
 	 * Each frame the position is set/updated
 	 */
@@ -278,6 +279,24 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	public float getTargetPosY() {
 		return targetPos.y;
+	}
+
+	/**
+	 * Set shadow radius
+	 * 
+	 * @param radius
+	 */
+	public void setShadowRadius(float radius) {
+		shadowRadius = radius;
+	}
+
+	/**
+	 * Returns shadow radius
+	 * 
+	 * @return shadow radius
+	 */
+	public static float getShadowRadius() {
+		return shadowRadius;
 	}
 
 }

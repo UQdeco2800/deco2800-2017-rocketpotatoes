@@ -56,7 +56,7 @@ public class OrbProjectile extends Projectile {
 				canRemove = true;
 			} else {
 				canRemove = false;
-			}	
+			}
 		}
 		super.onTick(time);
 	}
@@ -86,6 +86,10 @@ public class OrbProjectile extends Projectile {
 
 	public void fire() {
 		canFire = true;
+	}
+
+	public static float getShadowRadius() {
+		return shadowRadius;
 	}
 
 }

@@ -12,10 +12,7 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class PlayerProjectile extends Projectile {
-	protected float pPosX;
-	protected float pPosY;
-	protected float tPosX;
-	protected float tPosY;
+	protected Vector3 startPos;
 	protected String directions;
 	protected Class<?> shootObjectClass;
 	protected PlayerShootMethod shootingStyle;
@@ -55,7 +52,7 @@ public class PlayerProjectile extends Projectile {
 	public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String directions,
 			PlayerShootMethod shootingStyle, Class<?> shootObjectClass) {
-		this.shootObjectClass=shootObjectClass;
+		this.shootObjectClass = shootObjectClass;
 		if (BallisticProjectile.class.isAssignableFrom(shootObjectClass)) {
 			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
 					startEffect, endEffect);
@@ -75,10 +72,8 @@ public class PlayerProjectile extends Projectile {
 					startEffect, endEffect);
 		}
 		GameManager.get().getWorld().addEntity(projectile);
-		this.pPosX = startPos.x;
-		this.pPosY = startPos.y;
-		this.tPosX = targetPos.x;
-		this.tPosY = targetPos.y;
+		this.startPos = startPos;
+
 		this.directions = directions;
 		this.shootingStyle = shootingStyle;
 		ShootingStyle(shootingStyle);
@@ -103,7 +98,7 @@ public class PlayerProjectile extends Projectile {
 		// if (shootingStyle == PlayerShootMethod.ORB) {
 		// ((OrbProjectile)projectile).
 		//// }
-		//System.out.println("second");
+		// System.out.println("second");
 	}
 
 	/**
@@ -121,54 +116,40 @@ public class PlayerProjectile extends Projectile {
 		if (shootingStyle == PlayerShootMethod.DIRECTIONAL) {
 			switch (directions.toLowerCase()) {
 			case "west":
-				projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
+				projectile.setTargetPosition(startPos.x - 5, startPos.y - 5, 0);
 				break;
 			case "east":
-				projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
+				projectile.setTargetPosition(startPos.x + 5, startPos.y + 5, 0);
 				break;
 			case "north":
-				projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
+				projectile.setTargetPosition(startPos.x + 15, startPos.y - 15, 0);
 				break;
 			case "south":
-				projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
+				projectile.setTargetPosition(startPos.x - 15, startPos.y + 15, 0);
 				break;
 			case "north-east":
-				projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
+				projectile.setTargetPosition(startPos.x + 15, startPos.y + 1, 0);
 				break;
 			case "north-west":
-				projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
+				projectile.setTargetPosition(startPos.x - 15, startPos.y - 200, 0);
 				break;
 			case "south-east":
-				projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
+				projectile.setTargetPosition(startPos.x + 20, startPos.y + 200, 0);
 				break;
 			case "south-west":
-				projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
+				projectile.setTargetPosition(startPos.x - 200, startPos.y - 20, 0);
 				break;
 			}
 		}
 		if (shootingStyle == PlayerShootMethod.MOUSE) {
-			
+
 			Vector2 mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
 					GameManager.get().getManager(InputManager.class).getMouseY());
-			if(HomingProjectile.class.isAssignableFrom(shootObjectClass)) {
-				((HomingProjectile)projectile).setHomingDelay(10);
+			if (HomingProjectile.class.isAssignableFrom(shootObjectClass)) {
+				((HomingProjectile) projectile).setHomingDelay(10);
 			}
 			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
 		}
-	}
-
-	/**
-	 * Returns Target Pos X
-	 */
-	public float getTargetPosX() {
-		return tPosX;
-	}
-
-	/**
-	 * Returns Target Pos Y
-	 */
-	public float getTargetPosY() {
-		return tPosY;
 	}
 
 }
