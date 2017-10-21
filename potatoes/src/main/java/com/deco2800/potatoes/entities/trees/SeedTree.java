@@ -14,12 +14,14 @@ import com.deco2800.potatoes.entities.resources.SeedResource;
 public class SeedTree extends ResourceTree {
 	
 	/* Stats for the seed resource tree */
-	private static final transient int HEALTH = 8;
-	private static final transient int BUILD_TIME = 5000;
-	private static final transient int BUILD_COST = 1;
-	private static final transient int GATHER_CAPACITY = 8;
-	private static final transient String[] GROW_ANIMATION = getFrames();
+	private static final transient int HEALTH = 8;			// The health of the tree
+	private static final transient int BUILD_TIME = 7500;	// Time taken to build the tree
+	private static final transient int BUILD_COST = 1;		// Cost of building the tree
+	private static final transient int GATHER_CAPACITY = 8;	// Max resource capacity of the tree
+	private static final transient int GATHER_RATE = 10000;	// Time interval of gathering resources
+	private static final transient int GATHER_AMOUNT = 2;	// Amount of resources obtained per gather
 	
+	private static final transient String[] GROW_ANIMATION = getFrames();
 	private TimeAnimation produceAnimation = makeResourceTreeAnimation("seedtree", "produce", 31, 6000, this::finishedProduce);
 	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("seed_resource_tree");
 	
@@ -58,7 +60,7 @@ public class SeedTree extends ResourceTree {
     /**
      * Custom animation handling for the seed resource tree
      */
-    protected Void finishedProduce() {
+    private Void finishedProduce() {
         System.out.println("Finished Produce");
         this.setAnimation(defaultAnimation);
         return null;
@@ -78,7 +80,7 @@ public class SeedTree extends ResourceTree {
 
 		String texture = "seed_resource_tree";
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(HEALTH).setBuildTime(BUILD_TIME).setBuildCost(BUILD_COST)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)).setAnimation(growAnimation));
+				.setTexture(texture).addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
 
 		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());

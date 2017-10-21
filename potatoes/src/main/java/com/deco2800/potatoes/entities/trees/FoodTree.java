@@ -2,10 +2,28 @@ package com.deco2800.potatoes.entities.trees;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+
 import com.deco2800.potatoes.entities.PropertiesBuilder;
+import com.deco2800.potatoes.entities.animation.Animation;
+import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
+import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 
 public class FoodTree extends ResourceTree {
+	
+	/* Stats for the seed resource tree */
+	private static final transient int HEALTH = 5;			// The health of the tree
+	private static final transient int BUILD_TIME = 10000;	// Time taken to build the tree
+	private static final transient int BUILD_COST = 1;		// Cost of building the tree
+	private static final transient int GATHER_CAPACITY = 4;	// Max resource capacity of the tree
+	private static final transient int GATHER_RATE = 15000;	// Time interval of gathering resources
+	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
+	
+	private static final transient String[] GROW_ANIMATION = getFrames();
+	private TimeAnimation produceAnimation = makeResourceTreeAnimation("foodtree", "produce", 35, 6000, this::finishedProduce);
+	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("food_resource_tree");
 	
 	/**
 	 * Constructor for creating a food resource tree
@@ -16,9 +34,29 @@ public class FoodTree extends ResourceTree {
 	 *            The y-coordinate.
 	 */
 	public FoodTree(float posX, float posY) {
-		super(posX, posY, new FoodResource(), 8); // Set resource to food and capacity to 8
+		super(posX, posY, new FoodResource(), GATHER_CAPACITY); // Set resource to food and capacity to 8
 		this.defaultTexture = "food_resource_tree";
 	}
+	
+	/**
+     * Creates an array of frames for the grow animation
+     */
+    private static String[] getFrames() {
+		String[] frames = new String[50];
+		for (int i = 1; i <= 50; i++) {
+			frames[i - 1] = "foodtree" + "_" + "grow" + "_" + i;
+		}
+		return frames;
+    }
+    
+    /**
+     * Custom animation handling for the seed resource tree
+     */
+    private Void finishedProduce() {
+        System.out.println("Finished Produce");
+        this.setAnimation(defaultAnimation);
+        return null;
+    }
 	
 	/**
 	 * Stats for a resource tree that gathers food
@@ -28,14 +66,12 @@ public class FoodTree extends ResourceTree {
 	private static List<TreeProperties> getFoodTreeStats() {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
-
-		String texture = "food_resource_tree";
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(15).setBuildTime(6500).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
+		
+		Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
+				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
+		
+		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(HEALTH).setBuildTime(BUILD_TIME).setBuildCost(BUILD_COST)
+				.setTexture("food_resource_tree").addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
 
 		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());
