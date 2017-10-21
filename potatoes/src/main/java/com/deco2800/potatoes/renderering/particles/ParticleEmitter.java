@@ -11,8 +11,7 @@ import java.util.List;
 
 public class ParticleEmitter {
     // Emitter parameters
-    private float originX;
-    private float originY;
+    private float originX, originY;
 
     // Particle types (defines the settings of the particles we create)
     private List<ParticleType> particleTypes;

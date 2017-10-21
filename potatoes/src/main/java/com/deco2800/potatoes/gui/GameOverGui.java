@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
+//import com.deco2800.potatoes.screens.GameOverScreen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import static com.badlogic.gdx.utils.Align.center;
  */
 public class GameOverGui extends Gui {
 	private GameScreen screen;
+//	private GameOverScreen gameOverScreen;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameOverGui.class);
 
@@ -48,6 +50,7 @@ public class GameOverGui extends Gui {
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
+//        gameOverLabel = new Label("GAME OVER",uiSkin);
         // Make drawables from textures
         startDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("startMainMenu")));
         exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exitMainMenu")));

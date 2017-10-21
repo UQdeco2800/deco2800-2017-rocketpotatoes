@@ -54,6 +54,8 @@ public class Render3D implements Renderer {
 
 	BitmapFont font;
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Render3D.class);
+
 	private ShapeRenderer shapeRenderer;
 
 	private SpriteBatch batch;

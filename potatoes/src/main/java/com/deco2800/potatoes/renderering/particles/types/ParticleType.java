@@ -9,10 +9,8 @@ import java.util.List;
 
 public abstract class ParticleType {
     public Color color;
-    public int sizeX;
-    public int sizeY;
-    public int number;
-    public int rate;
+    public int sizeX, sizeY;
+    public int number, rate;
     public float lifeTime;
     public float cycleDelta;
     public float currentCycleTime;

@@ -47,9 +47,10 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
-                    if (r instanceof Selectable && ((Selectable) r).isSelected()) {
-                        // Did this ever work?
-
+                    if (r instanceof Selectable) {
+                        if (((Selectable) r).isSelected()) {
+                            // Did this ever work?
+                        }
                     }
                 }
             }
