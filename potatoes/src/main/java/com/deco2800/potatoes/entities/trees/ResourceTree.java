@@ -1,15 +1,23 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import javax.security.auth.x500.X500Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.animation.AnimationFactory;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
+import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
+import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.EventManager;
@@ -245,29 +253,22 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/* Animation */
 	
-	/**
-     * Sets the specified animation to be the resource tree's current animation.
+    /**
+     * Creates a time animation based on frames provided for a resource tree
      *
-     * @param animation The time animation to be set to the resource tree.
+     * @param treeType    A string representing the type of resource tree.
+     * @param treeState    A string representing the state of the tree.
+     * @param frameCount    The number of frames in the animation.
+     * @param animationTime The time per animation cycle.
+     * @param completionHandler The closure to execute upon completion.
+     * @return Time animation for the specified resource tree
      */
-    public void setAnimation(TimeAnimation animation) {
-
-        EventManager em = GameManager.get().getManager(EventManager.class);
-
-        em.unregisterEvent(this, this.currentAnimation);
-        currentAnimation = animation;
-        em.registerEvent(this, currentAnimation);
-
-        LOGGER.info("Resource Tree changed animation");
-    }
-
-    @Override
-    public String getTexture() {
-        if (currentAnimation != null) {
-            return currentAnimation.getFrame();
-        } else {
-            return defaultTexture;
+    public static TimeAnimation makeResourceTreeAnimation(String treeType, String treeState, int frameCount, int animationTime, Supplier<Void> completionHandler) {
+    		String[] frames = new String[frameCount];
+    		for (int i = 1; i <= frameCount; i++) {
+            frames[i - 1] = treeType + "_" + treeState + "_" + i;
         }
+    		return new TimeTriggerAnimation(animationTime, frames, completionHandler);
     }
 
 }
