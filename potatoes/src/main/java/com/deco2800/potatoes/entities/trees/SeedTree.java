@@ -28,8 +28,8 @@ public class SeedTree extends ResourceTree {
 	private static Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
 			GROW_ANIMATION, () -> (float) x.getConstructionLeft());
 	
-	private static Function<ResourceTree, Animation> produceAnimation = x -> AnimationFactory.createSimpleStateAnimation(12, 0,
-			PRODUCE_ANIMATION, () -> (float) 12-x.getGatherCount());
+	private static Function<ResourceTree, Animation> produceAnimation = x -> AnimationFactory.createSimpleStateAnimation(GATHER_CAPACITY, 0,
+			PRODUCE_ANIMATION, () -> (float) GATHER_CAPACITY-x.getGatherCount());
 	
 	/**
 	 * Constructor for creating a seed resource tree

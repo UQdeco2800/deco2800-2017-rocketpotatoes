@@ -17,13 +17,19 @@ public class FoodTree extends ResourceTree {
 	private static final transient int HEALTH = 5;			// The health of the tree
 	private static final transient int BUILD_TIME = 10000;	// Time taken to build the tree
 	private static final transient int BUILD_COST = 1;		// Cost of building the tree
-	private static final transient int GATHER_CAPACITY = 4;	// Max resource capacity of the tree
+	private static final transient int GATHER_CAPACITY = 6;	// Max resource capacity of the tree
 	private static final transient int GATHER_RATE = 15000;	// Time interval of gathering resources
-	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
+	private static final transient int GATHER_AMOUNT = 2;	// Amount of resources obtained per gather
 	
+	/* Food Tree Animations */
 	private static final transient String[] GROW_ANIMATION = makeFrames("foodtree", "grow", 50, 1);
-	//private TimeAnimation produceAnimation = makeResourceTreeAnimation("foodtree", "produce", 35, 6000, this::finishedProduce);
-	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("food_resource_tree");
+	private static final transient String[] PRODUCE_ANIMATION = makeFrames("foodtree", "produce", 35, 1);
+	
+	private static Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
+			GROW_ANIMATION, () -> (float) x.getConstructionLeft());
+	
+	private static Function<ResourceTree, Animation> produceAnimation = x -> AnimationFactory.createSimpleStateAnimation(GATHER_CAPACITY, 0,
+			PRODUCE_ANIMATION, () -> (float) GATHER_CAPACITY-x.getGatherCount());
 	
 	/**
 	 * Constructor for creating a food resource tree
@@ -38,15 +44,6 @@ public class FoodTree extends ResourceTree {
 		this.defaultTexture = "food_resource_tree";
 		this.resetStats();
 	}
-    
-    /**
-     * Custom animation handling for the food resource tree
-     */
-    private Void finishedProduce() {
-        System.out.println("Finished Produce");
-        this.setAnimation(defaultAnimation);
-        return null;
-    }
 	
 	/**
 	 * Stats for a resource tree that gathers food
@@ -57,9 +54,6 @@ public class FoodTree extends ResourceTree {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 		
-		Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
-				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
-		
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(HEALTH).setBuildTime(BUILD_TIME).setBuildCost(BUILD_COST)
 				.setTexture("food_resource_tree").addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
 
@@ -67,6 +61,12 @@ public class FoodTree extends ResourceTree {
 			result.add(statisticsBuilder.createTreeStatistics());
 		}
 		return result;
+	}
+	
+	@Override
+	public void updateAnimations() {
+		super.updateAnimations();
+		this.setAnimation(produceAnimation.apply(this));
 	}
 	
 	@Override
