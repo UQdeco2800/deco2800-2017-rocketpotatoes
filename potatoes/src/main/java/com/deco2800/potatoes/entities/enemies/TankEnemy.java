@@ -33,6 +33,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
+	private long sTime=0;
 	private float phealth =getHealth();
 	private static final transient String[] ENEMY_TYPE = new String[]{
 
@@ -224,24 +225,28 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		super.updateDirection();
 	}
 
+
 	public void enemyState(){
 
 		if(isAttacking()){
+
+			sTime = System.currentTimeMillis();
 			setEnemyStatus("attack");
+			phealth=getHealth();
 
-		}else{
+		}
+
+		if((System.currentTimeMillis()-sTime)/1000.0>3){
 			setEnemyStatus("walk");
-
 		}
 
 	}
 
-
 	public boolean isAttacking(){
+
 		if(phealth!=getHealth()){
 			return true;
 		}
-		phealth=getHealth();
 		return false;
 
 
