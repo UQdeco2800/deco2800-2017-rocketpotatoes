@@ -76,18 +76,20 @@ public class TextureManager extends Manager {
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
-
-
+        saveTexture("acorn1", "resources/Projectiles/acorn1.png");
+        saveTexture("leaves1", "resources/Projectiles/leaves1.png");
+        
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
 
 
-        // Projectiles
+        // Projectiles TODO: fix
         for (int i = 1; i < 4; i++) {
             saveTexture("aoe" + i, "resources/Projectiles/aoe" + i + ".png");
             saveTexture("rocket" + i, "resources/Projectiles/rocket" + i + ".png");
             saveTexture("explosion" + i, "resources/Projectiles/explosion" + i + ".png");
             saveTexture("chilli" + i, "resources/Projectiles/chilliproj" + i + ".png");
+            
         }
         for (int i = 1; i < 6; i++) {
         	saveTexture("start" + i, "resources/Projectiles/start" + i + ".png");
