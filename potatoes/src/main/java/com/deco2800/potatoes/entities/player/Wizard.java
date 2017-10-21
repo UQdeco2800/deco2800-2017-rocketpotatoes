@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
@@ -112,9 +113,8 @@ public class Wizard extends Player {
 		case Input.Keys.SPACE:
 			isCharging = false;
 		}
-		
+
 	}
-	
 
 	@Override
 	protected void attack() {
@@ -167,7 +167,8 @@ public class Wizard extends Player {
 				Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 
 				pp = new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
-						null, null, super.facing.toString(), PlayerProjectile.PlayerShootMethod.ORB);
+						null, null, super.facing.toString(), PlayerProjectile.PlayerShootMethod.MOUSE,
+						OrbProjectile.class);
 
 				GameManager.get().getWorld().addEntity(pp);
 
@@ -200,10 +201,9 @@ public class Wizard extends Player {
 	@Override
 	public void onTick(long arg0) {
 		super.onTick(arg0);
-		//System.out.println(new Vector2(GameManager.get().getManager(InputManager.class).getMouseX(),GameManager.get().getManager(InputManager.class).getMouseY()));
-		System.out.println(GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX());
-		System.out.println(Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),GameManager.get().getManager(InputManager.class).getMouseY()));
+
 		hoverAnimation();
+		
 		if (pp != null) {
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();

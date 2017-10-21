@@ -59,7 +59,7 @@ public class OrbProjectile extends Projectile {
 //		}
 		if (canFire) {
 
-			updatePosition();
+			//updatePosition();
 
 			// dont remove until range reached
 			if (range < SPEED) {
@@ -67,8 +67,8 @@ public class OrbProjectile extends Projectile {
 			} else {
 				canRemove = false;
 			}
-
 			super.onTick(time);
+			
 		}
 	}
 

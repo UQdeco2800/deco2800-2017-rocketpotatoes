@@ -1,9 +1,15 @@
 package com.deco2800.potatoes.entities.projectiles;
 
+import java.util.Optional;
+
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 public class PlayerProjectile extends Projectile {
 	protected float pPosX;
@@ -12,23 +18,10 @@ public class PlayerProjectile extends Projectile {
 	protected float tPosY;
 	protected String directions;
 	protected PlayerShootMethod shootingStyle;
-	InputManager im;
 	public Projectile projectile;
 
 	public enum PlayerShootMethod {
-		DIRECTIONAL {
-
-		},
-		HOMING {
-
-		},
-		BALLISTIC {
-
-		},
-		ORB {
-
-		}
-
+		DIRECTIONAL, CLOSEST, MOUSE
 	}
 
 	public PlayerProjectile() {
@@ -60,12 +53,20 @@ public class PlayerProjectile extends Projectile {
 
 	public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String directions,
-			PlayerShootMethod shootingStyle) {
-		if (shootingStyle == PlayerShootMethod.HOMING) {
-			projectile = new HomingProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
+			PlayerShootMethod shootingStyle, Class<?> shootObjectClass) {
+		if (BallisticProjectile.class.isAssignableFrom(shootObjectClass)) {
+			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
 					startEffect, endEffect);
-		} else if (shootingStyle == PlayerShootMethod.ORB) {
+		} else if (OrbProjectile.class.isAssignableFrom(shootObjectClass)) {
 			projectile = new OrbProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
+					startEffect, endEffect);
+		} // else if (BombProjectile.class.isAssignableFrom(shootObjectClass)) {
+			// projectile = new BombProjectile(targetClass, startPos, targetPos, range,
+			// damage, projectileTexture,
+			// startEffect, endEffect);
+			// }
+		else if (HomingProjectile.class.isAssignableFrom(shootObjectClass)) {
+			projectile = new HomingProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
 					startEffect, endEffect);
 		} else {
 			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
@@ -114,50 +115,54 @@ public class PlayerProjectile extends Projectile {
 		/**
 		 * Shoots enemies base on the player direction
 		 */
-		if ("DIRECTIONAL".equalsIgnoreCase(shootingStyle.toString())
-				|| "ORB".equalsIgnoreCase(shootingStyle.toString())) {
+		if (shootingStyle == PlayerShootMethod.DIRECTIONAL) {
 			switch (directions.toLowerCase()) {
 			case "west":
 				projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "east":
 				projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "north":
 				projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "south":
 				projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "north-east":
 				projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "north-west":
 				projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "south-east":
 				projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			case "south-west":
 				projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
-				projectile.updatePosition();
-				projectile.setPosition();
+				//projectile.updatePosition();
+				//projectile.setPosition();
 				break;
 			}
+		}
+		if (shootingStyle == PlayerShootMethod.MOUSE) {
+			Vector2 mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
+					GameManager.get().getManager(InputManager.class).getMouseY());
+			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
 		}
 
 	}
@@ -174,10 +179,6 @@ public class PlayerProjectile extends Projectile {
 	 */
 	public float getTargetPosY() {
 		return tPosY;
-	}
-
-	public void setInputManager(InputManager im) {
-		this.im = im;
 	}
 
 }

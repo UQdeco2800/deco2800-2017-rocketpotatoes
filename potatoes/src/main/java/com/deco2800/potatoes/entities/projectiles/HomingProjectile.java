@@ -49,7 +49,6 @@ public class HomingProjectile extends Projectile {
 		} else {
 			GameManager.get().getWorld().removeEntity(this);
 		}
-		updatePosition();
 		super.onTick(time);
 
 	}

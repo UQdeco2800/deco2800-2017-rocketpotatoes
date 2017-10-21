@@ -125,14 +125,14 @@ public class Projectile extends AbstractEntity implements Tickable {
 		// TODO -- look at the other constructor -- this block of code is commented out
 		// there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
-		updatePosition();
+		updateHeading();
 		setPosition();
 	}
 
 	/**
 	 * Initialize heading. Used if heading changes
 	 */
-	protected void updatePosition() {
+	protected void updateHeading() {
 		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
 		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
 		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
@@ -151,8 +151,9 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	public void setTargetPosition(float xPos, float yPos, float zPos) {
 		targetPos.set(xPos, yPos, zPos);
+		updateHeading();
 	}
-
+	
 	/**
 	 * Each frame the position is set/updated
 	 */
