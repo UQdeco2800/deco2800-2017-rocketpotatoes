@@ -106,7 +106,6 @@ public class WorldManager extends Manager {
 		// GameManager.setWorld will probably need to be updated. Some managers need to
 		// be reloaded, etc.
 		GameManager.get().setWorld(getWorld(key));
-		worldCached = false;
 	}
 
 	/**
