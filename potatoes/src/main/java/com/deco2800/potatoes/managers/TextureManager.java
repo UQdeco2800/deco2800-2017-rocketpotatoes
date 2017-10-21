@@ -79,13 +79,18 @@ public class TextureManager extends Manager {
         
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
-        // Seed Resource Tree Sprites
+        /* Seed Resource Tree Sprites */
         saveTexture("seed_resource_tree", "resources/resourceTrees/seedTree.png"); // Default Sprite
         
-        // Food Resource Tree Sprites
+        // Grow Animation
+        for (int i = 1; i < 44; i++) {
+        		saveTexture("seed_resource_tree", "resources/resourceTrees/seed/grow/seedtree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        /* Food Resource Tree Sprites */
         saveTexture("food_resource_tree", "resources/resourceTrees/foodTree.png"); // Default Sprite
         
-        // Pine Resource Tree Sprites
+        /* Pine Resource Tree Sprites */
         saveTexture("pine_resource_tree", "resources/resourceTrees/pineTree.png"); // Default Sprite
 
 
