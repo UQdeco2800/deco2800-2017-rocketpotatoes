@@ -398,6 +398,17 @@ public class TextureManager extends Manager {
             saveTexture("bear_walk_W_"+i,"resources/enemies/bear/walk/bear_walk_W_"+i+".png");
         }
 
+        for(int i =1;i<8;i++){
+            saveTexture("bear_attack_E_"+i,"resources/enemies/bear/attack/bear_attack_E_"+i+".png");
+            saveTexture("bear_attack_N_"+i,"resources/enemies/bear/attack/bear_attack_N_"+i+".png");
+            saveTexture("bear_attack_NE_"+i,"resources/enemies/bear/attack/bear_attack_NE_"+i+".png");
+            saveTexture("bear_attack_NW_"+i,"resources/enemies/bear/attack/bear_attack_NW_"+i+".png");
+            saveTexture("bear_attack_S_"+i,"resources/enemies/bear/attack/bear_attack_S_"+i+".png");
+            saveTexture("bear_attack_SE_"+i,"resources/enemies/bear/attack/bear_attack_SE_"+i+".png");
+            saveTexture("bear_attack_SW_"+i,"resources/enemies/bear/attack/bear_attack_SW_"+i+".png");
+            saveTexture("bear_attack_W_"+i,"resources/enemies/bear/attack/bear_attack_W_"+i+".png");
+        }
+
 
     }
 
