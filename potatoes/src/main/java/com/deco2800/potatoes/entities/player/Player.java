@@ -673,38 +673,37 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 				targetPosX= target.get().getPosX();
 				targetPosY = target.get().getPosY();
 				
+			}else {
+				if (shootMethod == PlayerShootMethod.DIRECTIONAL) {
+					switch (facing) {
+					case W:
+						projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
+						break;
+					case E:
+						projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
+						break;
+					case N:
+						projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
+						break;
+					case S:
+						projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
+						break;
+					case SE:
+						projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
+						break;
+					case NW:
+						projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
+						break;
+					case NE:
+						projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
+						break;
+					case SW:
+						projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
+						break;
+					}
+				}
+			
 			}
-			//else {
-//				if (shootMethod == PlayerShootMethod.DIRECTIONAL) {
-//					switch (facing) {
-//					case W:
-//						p.setTargetPosition(pPosX - 5, pPosY - 5, 0);
-//						break;
-//					case E:
-//						p.setTargetPosition(pPosX + 5, pPosY + 5, 0);
-//						break;
-//					case N:
-//						p.setTargetPosition(pPosX + 15, pPosY - 15, 0);
-//						break;
-//					case S:
-//						p.setTargetPosition(pPosX - 15, pPosY + 15, 0);
-//						break;
-//					case SE:
-//						p.setTargetPosition(pPosX + 15, pPosY + 1, 0);
-//						break;
-//					case NW:
-//						p.setTargetPosition(pPosX - 15, pPosY - 200, 0);
-//						break;
-//					case NE:
-//						p.setTargetPosition(pPosX + 20, pPosY + 200, 0);
-//						break;
-//					case SW:
-//						p.setTargetPosition(pPosX - 200, pPosY - 20, 0);
-//						break;
-//					}
-//				}
-//			
-//			}
 			Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
 			Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
 			projectile = new PlayerProjectile(!target.isPresent()?EnemyEntity.class:target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,

@@ -115,7 +115,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 			this.targetClass = MortalEntity.class;
 
 		this.projectileTexture = projectileTexture;
-		this.maxRange = this.range = range * 3;
+		this.maxRange = this.range = range;
 		this.damage = damage;
 		this.startEffect = startEffect;
 		this.endEffect = endEffect;
@@ -123,10 +123,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
 
-		// TODO -- look at the other constructor -- this block of code is commented out
-		// there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
-		// updateHeading();
 		setPosition();
 	}
 
@@ -138,6 +135,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
 		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
+
 		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
 	}
 
@@ -212,7 +210,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getMask())) {
-				((MortalEntity) entity).damage(damage);
+				((MortalEntity) entity).damage(damage / 10);
 				if (endEffect != null)
 					GameManager.get().getWorld().addEntity(endEffect);
 				rangeReached = true;

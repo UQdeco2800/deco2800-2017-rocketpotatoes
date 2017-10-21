@@ -142,14 +142,17 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 			float range, EffectTexture effectTexture) {
 		super(mask, xRenderLength, yRenderLength, effectTexture.textures()[0]);
 
-		if (targetClass != null)
+		if (targetClass != null) {
 			this.targetClass = targetClass;
-		else
+		} else {
 			this.targetClass = MortalEntity.class;
+		}
 
-		// if effectTexture is null, exception will be thrown at
-		// effectTexture.textures() call
-		this.effectTexture = effectTexture;
+		if (effectTexture != null) {
+			this.effectTexture = effectTexture;
+		} else {
+			this.effectTexture = EffectTexture.DUST;
+		}
 
 		this.damage = damage;
 		this.range = range;
