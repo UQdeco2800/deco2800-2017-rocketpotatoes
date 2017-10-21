@@ -32,9 +32,9 @@ public class SpeedyEnemyTest extends BaseTest {
 
     @Before
     public void setUp() throws Exception {
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
         speedyEmpty = new SpeedyEnemy();
         speedy1 = new SpeedyEnemy(0, 0);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
     @After

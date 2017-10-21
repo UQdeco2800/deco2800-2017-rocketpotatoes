@@ -47,8 +47,9 @@ public class ChannelEvent extends TimeEvent<EnemyEntity> {
     public void action(EnemyEntity enemy) {
         float channellingStart = channeledEvent.getProgress() - duration;
         if (enemy.getChannelTimer() % channeledEvent.getProgress() > channellingStart) {
+            /*Channel timer has reached the percentage of the channelled Events progress
+            where we want the enemy to stop moving*/
             enemy.setMoving(false);
-            //animation would go here.
         } else {
             enemy.setMoving(true);
         }

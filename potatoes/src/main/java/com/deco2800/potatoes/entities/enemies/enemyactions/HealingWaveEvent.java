@@ -59,7 +59,6 @@ public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
     public void action(EnemyEntity enemy) {
         enemy.setMoving(true);
         float distanceToEnemy;
-        //System.err.println("I'm a moose an i want to heal");
         Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
         for (AbstractEntity entity : entities.values()) {
             if (entity instanceof EnemyEntity) {
