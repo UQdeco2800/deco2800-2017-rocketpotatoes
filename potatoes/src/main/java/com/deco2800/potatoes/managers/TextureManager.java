@@ -109,7 +109,7 @@ public class TextureManager extends Manager {
         // GUI
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
-        saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
+        saveTexture("gameOverScreen", "resources/healthproperties/gameOverV2.1.png");
         saveTexture("resumePauseMenu", "resources/menu/pauseMenu/resumePauseMenu.png");
         saveTexture("optionsPauseMenu", "resources/menu/pauseMenu/optionsPauseMenu.png");
         saveTexture("savePauseMenu", "resources/menu/pauseMenu/savePauseMenu.png");
