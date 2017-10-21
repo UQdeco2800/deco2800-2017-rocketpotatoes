@@ -33,6 +33,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 1000;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
+	private float phealth =getHealth();
 	private static final transient String[] ENEMY_TYPE = new String[]{
 
 		"bear",
@@ -214,6 +215,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 	@Override
 	public void onTick(long i) {
+		enemyState();
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
 		if (getMoving() == true) {
 			pathMovement(pathTarget, relevantTarget);
@@ -222,6 +224,28 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		super.updateDirection();
 	}
 
+	public void enemyState(){
+
+		if(isAttacking()){
+			setEnemyStatus("attack");
+
+		}else{
+			setEnemyStatus("walk");
+
+		}
+
+	}
+
+
+	public boolean isAttacking(){
+		if(phealth!=getHealth()){
+			return true;
+		}
+		phealth=getHealth();
+		return false;
+
+
+	};
 
 	/**
 	 * Initialize basic statistics for Tank Enemy
