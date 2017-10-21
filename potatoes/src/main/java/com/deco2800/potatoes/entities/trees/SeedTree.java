@@ -17,7 +17,7 @@ public class SeedTree extends ResourceTree {
 	private static final transient int HEALTH = 8;			// The health of the tree
 	private static final transient int BUILD_TIME = 7500;	// Time taken to build the tree
 	private static final transient int BUILD_COST = 1;		// Cost of building the tree
-	private static final transient int GATHER_CAPACITY = 8;	// Max resource capacity of the tree
+	private static final transient int GATHER_CAPACITY = 12;	// Max resource capacity of the tree
 	private static final transient int GATHER_RATE = 10000;	// Time interval of gathering resources
 	private static final transient int GATHER_AMOUNT = 2;	// Amount of resources obtained per gather
 	
@@ -77,10 +77,9 @@ public class SeedTree extends ResourceTree {
 		
 		Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
 				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
-
-		String texture = "seed_resource_tree";
+		
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(HEALTH).setBuildTime(BUILD_TIME).setBuildCost(BUILD_COST)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
+				.setTexture("seed_resource_tree").addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
 
 		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
 			result.add(statisticsBuilder.createTreeStatistics());

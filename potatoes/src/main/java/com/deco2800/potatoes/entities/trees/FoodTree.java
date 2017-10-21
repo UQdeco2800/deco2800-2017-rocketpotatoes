@@ -13,7 +13,7 @@ import com.deco2800.potatoes.entities.resources.FoodResource;
 
 public class FoodTree extends ResourceTree {
 	
-	/* Stats for the seed resource tree */
+	/* Stats for the food resource tree */
 	private static final transient int HEALTH = 5;			// The health of the tree
 	private static final transient int BUILD_TIME = 10000;	// Time taken to build the tree
 	private static final transient int BUILD_COST = 1;		// Cost of building the tree
@@ -50,7 +50,7 @@ public class FoodTree extends ResourceTree {
     }
     
     /**
-     * Custom animation handling for the seed resource tree
+     * Custom animation handling for the food resource tree
      */
     private Void finishedProduce() {
         System.out.println("Finished Produce");
