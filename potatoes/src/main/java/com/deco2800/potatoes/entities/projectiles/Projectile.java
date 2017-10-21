@@ -9,6 +9,7 @@ import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -113,7 +114,7 @@ public class Projectile extends AbstractEntity implements Tickable {
         if (targetClass != null)
             this.targetClass = targetClass;
         else
-            this.targetClass = MortalEntity.class;
+            this.targetClass = EnemyEntity.class;
 
         this.projectileTexture = projectileTexture;
         this.maxRange = this.range = range * 3;

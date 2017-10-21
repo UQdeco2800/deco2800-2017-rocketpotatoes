@@ -318,7 +318,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
                 Vector3 startPos = new Vector3(pPosX , pPosY, pPosZ);
 
-                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 100, MineBomb.BombTexture.MINES,
+                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 10, MineBomb.BombTexture.MINES,
                         null, null);
                 GameManager.get().getWorld().addEntity(MBprojectile);
                 break;
