@@ -26,9 +26,8 @@ def get_script_dir():
             return os.path.dirname(x)
     return os.path.dirname(bpy.context.space_data.text.filepath)
 
-script_dir = get_script_dir()
-syspath.append(script_dir)
-from batcher_common import *
+common_lib = get_script_dir() + '/batcher_common.py'
+exec(compile(open(common_lib).read(), common_lib, 'exec'))
 
 # Options
 INTERVALS = 8 # The number of angles around the model to render

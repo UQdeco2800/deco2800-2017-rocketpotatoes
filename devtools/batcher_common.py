@@ -155,3 +155,4 @@ def setup_light(light, ambient_occlusion=False, shadows=True):
     light.data.energy = 1.3
 
 
+print("loaded batcher_common")
