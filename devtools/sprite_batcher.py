@@ -17,7 +17,6 @@ import os.path
 
 import bpy
 
-
 def get_script_dir():
     '''get the python script directory so we can import local modules'''
     # find the python script from the blender command line

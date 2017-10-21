@@ -15,7 +15,6 @@ import os.path
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
-
 def get_script_dir():
     '''get the python script directory so we can import local modules'''
     # find the python script from the blender command line
