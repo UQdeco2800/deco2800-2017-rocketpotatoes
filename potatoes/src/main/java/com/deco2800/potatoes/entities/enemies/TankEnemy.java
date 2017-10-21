@@ -224,12 +224,12 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		}
 		super.updateDirection();
 	}
-
-
+	/**
+	 * set the enemy state
+	 */
 	public void enemyState(){
 
 		if(isAttacking()){
-
 			sTime = System.currentTimeMillis();
 			setEnemyStatus("attack");
 			phealth=getHealth();
@@ -242,6 +242,10 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 	}
 
+	/**
+	 * set the enemy state
+	 * @return the state of enemy is the being attacking
+	 */
 	public boolean isAttacking(){
 
 		if(phealth!=getHealth()){
@@ -299,13 +303,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		return STATS;
 	}
 
-	/**
-	 * @return the current Direction of bear
-	 */
-	//@Override
-	public Direction getDirection() {
-		return currentDirection;
-	}
 
 	/**
 	 * @return String of this type of enemy (ie 'bear').
@@ -334,4 +331,5 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public ProgressBarEntity getProgressBar() {
 		return PROGRESS_BAR;
 	}
+
 }
