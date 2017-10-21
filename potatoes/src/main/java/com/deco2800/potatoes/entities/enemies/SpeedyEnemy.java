@@ -3,10 +3,13 @@ package com.deco2800.potatoes.entities.enemies;
 
 import java.util.*;
 
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.deco2800.potatoes.entities.Direction;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.StealingEvent;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import org.slf4j.Logger;
@@ -42,7 +45,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float HEALTH = 80f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
-//	private static final transient String ENEMY_TYPE = "raccoon";
 	private static final transient String[] ENEMY_TYPE = new String[]{
 
 		"raccoon"
@@ -57,13 +59,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 	private EnemyTargets targets = initTargets();
-	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees(); //is there a better data structure for this
+	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees();
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
 
-	private Direction currentDirection; // The direction the enemy faces
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 
 	/**
@@ -90,12 +91,14 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
 	 * enemy.
 	 *
-	 * @return
+	 * @return this enemy's initialized targets.
 	 */
 	private static EnemyProperties initStats() {
 		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
-				.addEvent(new StealingEvent(ATTACK_SPEED,ResourceTree.class))
+				.addEvent(new StealingEvent(1000))
+				.addEvent(new MeleeAttackEvent(500, BasePortal.class))
+				.addEvent(new MeleeAttackEvent(500, Player.class))
 				.createEnemyStatistics();
 		return result;
 	}
@@ -126,19 +129,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return PROGRESSBAR;
 	}
 
-	/**
-	 * Steal resources from ResourceTrees if within range
-	 */
-	public void stealResources() {
-		double interactRange = 2f;
-		Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
-		for (AbstractEntity entitiy : entities) {
-			if (entitiy instanceof ResourceTree && entitiy.distanceTo(this) <= interactRange &&((ResourceTree) entitiy).getGatherCount() > 0) {
-				((ResourceTree) entitiy).gather(-1);
-			}
-		}
-	}
-
 	public void addTreeToVisited(ResourceTree tree) {
 		resourceTreeQueue.remove(tree);
 		visitedResourceTrees.add(tree);
@@ -162,37 +152,31 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 	/*Find the most relevant target to go to according to its EnemyTargets*/
-//	@Override
-//	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
-//		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-//		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
-//		for (AbstractEntity entity : entities.values()) {
-//			for (Class sightTarget : targets.getSightAggroTargets()) {
-//				if (entity.getClass().isAssignableFrom(sightTarget) /*&& (!(visitedResourceTrees.contains(entity)))*/) {
-//					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-//					if (distance < 10) {
-//						System.err.println("going to sight target: " + entity.toString());
-//						return entity;
-//					}
-//				}
-//			}
-//		}
-//		/*If no aggro, return 'ultimate' target*/
-//		for (AbstractEntity entity : entities.values()) {
-//			for (Class mainTarget : targets.getMainTargets()) {
-//				if (entity.getClass().isAssignableFrom(mainTarget) /*&& (!(visitedResourceTrees.contains(entity)))*/) {
-//					System.err.println("going to main target: " + entity.toString());
-//					return entity;
-//				}
-//			}
-//		}
-//		return null;
-//	}
-
-	/**
-	 *	@return the current Direction of raccoon
-	 * */
-	public Direction getDirection() { return currentDirection; }
+	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
+		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
+		for (Class sightTarget : targets.getSightAggroTargets()) {
+			for (AbstractEntity entity : entities.values()) {
+				if (entity.getClass().isAssignableFrom(sightTarget)) {	//HOW TO CHECK SUPERCLASS SO WE CAN JUST ADD PLAYER TO TARGETS?
+					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
+					if ((distance < 10) && (!(visitedResourceTrees.contains(entity)))) {
+						return entity;
+					}
+				}
+			}
+		}
+		/*If no aggro, return 'ultimate' target*/
+		for (Class mainTarget : targets.getMainTargets()) {
+			for (AbstractEntity entity : entities.values()) {
+				if (entity.getClass().isAssignableFrom(mainTarget)) {
+					if  (!(visitedResourceTrees.contains(entity))) {
+						return entity;
+					}
+				}
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * @return String of this type of enemy (ie 'raccoon').
@@ -203,150 +187,35 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public void onTick(long i) {
 		AbstractEntity relevantTarget = mostRelevantTarget(targets);
-		if (getMoving() == true) {
+		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
+			super.updateDirection();
 		}
-		super.updateDirection();
 	}
 
-
+	/**
+	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
+	 * relevant target.
+	 *
+	 * @return
+	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
+		LinkedList<Class> mainTargets = new LinkedList<>();
 		mainTargets.add(ResourceTree.class);
 		mainTargets.add(BasePortal.class);
+		mainTargets.add(Archer.class);
+		mainTargets.add(Caveman.class);
+		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(ResourceTree.class);
-
-
-		/*Not yet implemented - concept: if enemy is attacked by these, then enemy aggros to these*/
-		ArrayList<Class> damageAggroTargets = new ArrayList<>();
-		damageAggroTargets.add(Archer.class);
-		damageAggroTargets.add(Caveman.class);
-		damageAggroTargets.add(Wizard.class);
+		LinkedList<Class> sightAggroTargets = new LinkedList<>();
+		//sightAggroTargets.add(ResourceTree.class);
+		sightAggroTargets.add(Archer.class);
+		sightAggroTargets.add(Caveman.class);
+		sightAggroTargets.add(Wizard.class);
 
 		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
-
-
-	/**
-	 * Raccoon follows it's path.
-	 * Requests a new path whenever it collides with a staticCollideable entity.
-	 * moves directly towards the closest resource tree, once it reaches tree it finds
-	 * the next and moves between the two. If trees are destroyed move to player.
-	 *
-	 * @param i The current game tick
-	 */
-//	@Override
-/*	public void onTick(long i) {
-		//raccoon steals resources from resourceTrees
-		//stealResources();
-		//found closest goal to the enemy
-		Optional<AbstractEntity> tgt = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
-
-		updateDirection();
-
-		//if no ResourceTree in the world, set goal to player
-		if (!tgt.isPresent()) {
-			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			AbstractEntity tgtGet = playerManager.getPlayer();
-			PathManager pathManager = GameManager.get().getManager(PathManager.class);
-
-			// check paths
-
-			// check collision
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-			}
-
-			// check if close enough to target
-			if (target != null && target.overlaps(this.getMask())) {
-				target = null;
-			}
-
-			// check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
-
-			float targetX;
-			float targetY;
-
-			if (target == null) {
-				target = tgtGet.getMask();
-			}
-
-			targetX = target.getX();
-			targetY = target.getY();
-
-			float deltaX = targetX - getPosX();
-			float deltaY = targetY - getPosY();
-
-
-			//sprite direction
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-			super.onTickMovement();
-
-			super.updateDirection();
-		} else {
-			//otherwise, set resourceTrees and move towards them
-
-			AbstractEntity tgtGet = tgt.get();
-			PathManager pathManager = GameManager.get().getManager(PathManager.class);
-
-			// check paths
-
-			// check collision
-//			for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
-//				if (entity.isSolid() && this.getMask().overlaps(entity.getMask())) {
-//					// collided with wall
-//					path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-//					target = path.pop();
-//					break;
-//				}
-//			}
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), tgtGet.getMask());
-			}
-
-			// check if close enough to target
-			if (target != null && target.overlaps(this.getMask())) {
-				target = null;
-			}
-
-			// check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
-
-			float targetX;
-			float targetY;
-
-			if (target == null) {
-				target = tgtGet.getMask();
-			}
-
-			targetX = target.getX();
-			targetY = target.getY();
-
-			float deltaX = targetX -getPosX();
-			float deltaY = targetY - getPosY();
-
-			//sprite direction
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-			super.onTickMovement();
-
-			super.updateDirection();
-		}
-	}
-	*/
-
-
 }

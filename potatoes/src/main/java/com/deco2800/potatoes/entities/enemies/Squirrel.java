@@ -16,9 +16,11 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.util.Path;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
- * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
+ * The standard & most basic enemy in the game - a squirrel. Moves towards base portal unless within close enough
+ * distance of the player at which point it will chase the player. Attacks portal & player.
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
@@ -31,8 +33,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 			"squirrel"
 
 	};
-//	private static final String ENEMY_TYPE = "squirrel";
-
 	private static final float SPEED = 0.05f;
 
 	private static Class<?> goal = Player.class;
@@ -44,8 +44,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
-
-	private Direction currentDirection; // The direction the enemy faces
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
@@ -84,12 +82,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	}
 
 	/**
-	 *	@return the current Direction of squirrel
-	 * */
-	//@Override
-	public Direction getDirection() { return currentDirection; }
-
-	/**
 	 * @return String of this type of enemy (ie 'squirrel').
 	 * */
 	@Override
@@ -118,7 +110,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
 	 * enemy.
 	 *
-	 * @return
 	 */
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
@@ -128,25 +119,25 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				.createEnemyStatistics();
 	}
 
+	/**
+	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
+	 * relevant target.
+	 *
+	 * @return this enemy's initialized targets.
+	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
+		LinkedList<Class> mainTargets = new LinkedList<>();
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
 		mainTargets.add(Caveman.class);
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
+		LinkedList<Class> sightAggroTargets = new LinkedList<>();
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);
-
-		/*Not yet implemented - concept: if enemy is attacked by these, then enemy aggros to these*/
-		ArrayList<Class> damageAggroTargets = new ArrayList<>();
-		damageAggroTargets.add(Archer.class);
-		damageAggroTargets.add(Caveman.class);
-		damageAggroTargets.add(Wizard.class);
 
 		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}

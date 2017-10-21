@@ -329,7 +329,6 @@ public class GameScreen implements Screen {
 				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
 			}
 			*/
-			initialiseResources();
 			initialisePortal();
 			addDamageTree();
 			addResourceTrees();
@@ -371,58 +370,8 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
 	}
 
-	private void initialiseResources() {
-
-		SeedResource seedResource = new SeedResource();
-		PineconeResource pineconeResource = new PineconeResource();
-		WoodResource woodResource = new WoodResource();
-		TumbleweedResource tumbleweedResource = new TumbleweedResource();
-		CactusThornResource cactusThornResource = new CactusThornResource();
-		PricklyPearResource pricklyPearResource = new PricklyPearResource();
-
-		SnowBallResource snowBallResource = new SnowBallResource();
-		SealSkinResource sealSkinResource = new SealSkinResource();
-		IceCrystalResource iceCrystalResource = new IceCrystalResource();
-
-		CoalResource coalResource = new CoalResource();
-		BonesResource bonesThornResource = new BonesResource();
-		ObsidianResource obsidianResource = new ObsidianResource();
-
-		FishMeatResource fishMeatResource = new FishMeatResource();
-		PearlResource pearlResource = new PearlResource();
-		TreasureResource treasureResource = new TreasureResource();
-
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 20.5f, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, pineconeResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 16.5f, woodResource));
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 20.5f, tumbleweedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 18.5f, cactusThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 16.5f, pricklyPearResource));
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 20.5f, snowBallResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 18.5f, sealSkinResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 16.5f, iceCrystalResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 20.5f, coalResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 18.5f, bonesThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 16.5f, obsidianResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 20.5f, fishMeatResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 18.5f, pearlResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 16.5f, treasureResource));
-
-
-
-
-	}
-
 	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 100));
+		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 10000));
 	}
 
 	private void tickGame(long timeDelta) {

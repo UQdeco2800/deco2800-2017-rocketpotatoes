@@ -209,7 +209,25 @@ public class TreeShopGui extends Gui implements SceneGui {
         TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
                 "damage");
         treeStates.add(acornTreeState);
-
+        
+        // Cactus tree
+        Inventory cactusTreeCost = new Inventory();
+        cactusTreeCost.updateQuantity(new CactusThornResource(), 2);
+        cactusTreeCost.updateQuantity(new PricklyPearResource(), 3);
+        cactusTreeCost.updateQuantity(new SeedResource(), 4);
+        DamageTree cactusTree = new DamageTree(treeX, treeY, new CactusTreeType());
+        TreeState cactusTreeState = new TreeState(cactusTree, cactusTreeCost, false,
+        		"damage");
+        treeStates.add(cactusTreeState);
+        
+        // Defense tree
+        Inventory defenseTreeCost = new Inventory();
+        defenseTreeCost.updateQuantity(new ObsidianResource(), 3);
+        defenseTreeCost.updateQuantity(new SeedResource(), 6);
+        DefenseTree defenseTree = new DefenseTree(treeX, treeY);
+        TreeState defenseTreeState = new TreeState(defenseTree, defenseTreeCost, false,
+        		"defense");
+        treeStates.add(defenseTreeState);
     }
 
     /**

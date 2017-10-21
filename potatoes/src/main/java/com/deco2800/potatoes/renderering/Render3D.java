@@ -173,6 +173,7 @@ public class Render3D implements Renderer {
 
 		if (!GameManager.get().getManager(WorldManager.class).isWorldCached()) {
 			cache.clear();
+			tileRenderer.setMap(GameManager.get().getWorld().getMap());
 
 
 			spriteCacheBatch.begin();
