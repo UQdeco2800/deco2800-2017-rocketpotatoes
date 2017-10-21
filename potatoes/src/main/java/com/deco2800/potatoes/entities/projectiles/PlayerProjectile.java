@@ -17,6 +17,7 @@ public class PlayerProjectile extends Projectile {
 	protected float tPosX;
 	protected float tPosY;
 	protected String directions;
+	protected Class<?> shootObjectClass;
 	protected PlayerShootMethod shootingStyle;
 	public Projectile projectile;
 
@@ -54,6 +55,7 @@ public class PlayerProjectile extends Projectile {
 	public PlayerProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect, String directions,
 			PlayerShootMethod shootingStyle, Class<?> shootObjectClass) {
+		this.shootObjectClass=shootObjectClass;
 		if (BallisticProjectile.class.isAssignableFrom(shootObjectClass)) {
 			projectile = new BallisticProjectile(targetClass, startPos, targetPos, range, damage, projectileTexture,
 					startEffect, endEffect);
@@ -101,6 +103,7 @@ public class PlayerProjectile extends Projectile {
 		// if (shootingStyle == PlayerShootMethod.ORB) {
 		// ((OrbProjectile)projectile).
 		//// }
+		//System.out.println("second");
 	}
 
 	/**
@@ -119,52 +122,39 @@ public class PlayerProjectile extends Projectile {
 			switch (directions.toLowerCase()) {
 			case "west":
 				projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "east":
 				projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "north":
 				projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "south":
 				projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "north-east":
 				projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "north-west":
 				projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "south-east":
 				projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			case "south-west":
 				projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
-				//projectile.updatePosition();
-				//projectile.setPosition();
 				break;
 			}
 		}
 		if (shootingStyle == PlayerShootMethod.MOUSE) {
+			
 			Vector2 mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
 					GameManager.get().getManager(InputManager.class).getMouseY());
+			if(HomingProjectile.class.isAssignableFrom(shootObjectClass)) {
+				((HomingProjectile)projectile).setHomingDelay(10);
+			}
 			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
 		}
-
 	}
 
 	/**

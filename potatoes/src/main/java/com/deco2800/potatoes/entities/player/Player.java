@@ -1,25 +1,50 @@
 package com.deco2800.potatoes.entities.player;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
-import com.deco2800.potatoes.entities.health.*;
-import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.health.ProgressBar;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.health.RespawnEvent;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.projectiles.PlayerProjectile.PlayerShootMethod;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
-import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.observers.MouseMovedObserver;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.function.Supplier;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.TreeState;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * Entity for the playable character.
@@ -35,7 +60,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private static final transient float HEALTH = 200f;
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
 
-
+    protected PlayerProjectile.PlayerShootMethod shootMethod=PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
+    protected Class<?> projectileType=BallisticProjectile.class;
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
     private boolean holdPosition = false;	// Used to determine if the player should be held in place
@@ -603,6 +629,92 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     protected void attack() {
         // Override in subclasses to allow custom attacking.
+    	if (this.setState(ATTACK)) {
+    		Projectile p = null;
+			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
+
+			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+
+			Optional<AbstractEntity> target;
+			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+			float targetPosX=0;
+			float targetPosY=0;
+			switch (facing) {
+			case N:
+				break;
+			case NE:
+				pPosY -= 1;
+				pPosX += 1.5;
+				break;
+			case E:
+				pPosY -= 1;
+				pPosX += 1.5;
+				break;
+			case SE:
+				pPosX += 1;
+				break;
+			case S:
+				pPosX += 1.2;
+				break;
+			case SW:
+				pPosY += 1;
+				pPosX += 1;
+				break;
+			case W:
+				break;
+			case NW:
+				break;
+			default:
+				break;
+			}
+			if (target.isPresent()) {
+				targetPosX= target.get().getPosX();
+				targetPosY = target.get().getPosY();
+				
+			}
+			//else {
+//				if (shootMethod == PlayerShootMethod.DIRECTIONAL) {
+//					switch (facing) {
+//					case W:
+//						p.setTargetPosition(pPosX - 5, pPosY - 5, 0);
+//						break;
+//					case E:
+//						p.setTargetPosition(pPosX + 5, pPosY + 5, 0);
+//						break;
+//					case N:
+//						p.setTargetPosition(pPosX + 15, pPosY - 15, 0);
+//						break;
+//					case S:
+//						p.setTargetPosition(pPosX - 15, pPosY + 15, 0);
+//						break;
+//					case SE:
+//						p.setTargetPosition(pPosX + 15, pPosY + 1, 0);
+//						break;
+//					case NW:
+//						p.setTargetPosition(pPosX - 15, pPosY - 200, 0);
+//						break;
+//					case NE:
+//						p.setTargetPosition(pPosX + 20, pPosY + 200, 0);
+//						break;
+//					case SW:
+//						p.setTargetPosition(pPosX - 200, pPosY - 20, 0);
+//						break;
+//					}
+//				}
+//			
+//			}
+			Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
+			Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
+			p = new PlayerProjectile(!target.isPresent()?EnemyEntity.class:target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
+					null, null, super.facing.toString(), shootMethod,
+					projectileType);
+
+			GameManager.get().getWorld().addEntity(p);
+
+			
+		}
     }
 
     /**

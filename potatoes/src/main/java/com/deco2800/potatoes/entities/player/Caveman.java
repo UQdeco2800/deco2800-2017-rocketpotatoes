@@ -93,63 +93,6 @@ public class Caveman extends Player {
 	protected void attack() {
 		super.attack();
 		setMoveSpeedModifier(0);
-
-		// TODO Stop walking for attacking
-		if (setState(ATTACK)) {
-			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
-
-			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-
-			Optional<AbstractEntity> target;
-			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-
-			// Disable shooting when no enemies is present until new fix is found.
-			if (!target.isPresent()) {
-				return;
-			}
-
-			float targetPosX = target.get().getPosX();
-			float targetPosY = target.get().getPosY();
-
-			switch (super.facing) {
-			case N:
-				break;
-			case NE:
-				pPosY -= 1;
-				pPosX += 1.5;
-				break;
-			case E:
-				pPosY -= 1;
-				pPosX += 1.5;
-				break;
-			case SE:
-				pPosX += 1;
-				break;
-			case S:
-				pPosX += 1.2;
-				break;
-			case SW:
-				pPosY += 1;
-				pPosX += 1;
-				break;
-			case W:
-				break;
-			case NW:
-				break;
-			default:
-				break;
-			}
-			Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
-			Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
-
-			GameManager.get().getWorld()
-					.addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100,
-							Projectile.ProjectileTexture.CHILLI, null, null, super.facing.toString(),
-							PlayerProjectile.PlayerShootMethod.DIRECTIONAL, BallisticProjectile.class));
-
-		}
 	}
 
 	/* Custom walk sound handling */

@@ -10,6 +10,8 @@ import com.deco2800.potatoes.util.WorldUtil;
 
 public class HomingProjectile extends Projectile {
 
+	int homingDelay = 0;
+
 	public HomingProjectile() {
 
 	}
@@ -40,17 +42,29 @@ public class HomingProjectile extends Projectile {
 
 	}
 
+	int i = 0;
+
 	@Override
 	public void onTick(long time) {
-		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
-				targetPos.y);
-		if (targetEntity.isPresent()) {
-			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
+		if (i < homingDelay) {
+			i++;
 		} else {
-			GameManager.get().getWorld().removeEntity(this);
+			Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
+					targetPos.y);
+			if (targetEntity.isPresent()) {
+				targetPos.lerp(new Vector3(targetEntity.get().getPosX(), targetEntity.get().getPosY(),
+						targetEntity.get().getPosZ()), 0.05f);
+				setTargetPosition(targetPos.x,targetPos.y,targetPos.z);
+			} else {
+				GameManager.get().getWorld().removeEntity(this);
+			}
 		}
 		super.onTick(time);
 
+	}
+
+	public void setHomingDelay(int numOfFrames) {
+		this.homingDelay = numOfFrames;
 	}
 
 }

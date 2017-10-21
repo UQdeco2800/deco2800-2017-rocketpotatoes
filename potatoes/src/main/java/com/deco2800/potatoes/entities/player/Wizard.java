@@ -4,22 +4,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Wizard extends Player {
@@ -119,61 +116,7 @@ public class Wizard extends Player {
 	@Override
 	protected void attack() {
 		super.attack();
-		if (this.setState(ATTACK)) {
-
-			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
-
-			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-
-			Optional<AbstractEntity> target;
-			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-
-			if (target.isPresent()) {
-				float targetPosX = target.get().getPosX();
-				float targetPosY = target.get().getPosY();
-
-				switch (super.facing) {
-				case N:
-					break;
-				case NE:
-					pPosY -= 1;
-					pPosX += 1.5;
-					break;
-				case E:
-					pPosY -= 1;
-					pPosX += 1.5;
-					break;
-				case SE:
-					pPosX += 1;
-					break;
-				case S:
-					pPosX += 1.2;
-					break;
-				case SW:
-					pPosY += 1;
-					pPosX += 1;
-					break;
-				case W:
-					break;
-				case NW:
-					break;
-				default:
-					break;
-				}
-
-				Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
-				Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
-
-				pp = new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
-						null, null, super.facing.toString(), PlayerProjectile.PlayerShootMethod.MOUSE,
-						OrbProjectile.class);
-
-				GameManager.get().getWorld().addEntity(pp);
-
-			}
-		}
+		
 	}
 
 	private void hoverAnimation() {
@@ -204,7 +147,7 @@ public class Wizard extends Player {
 
 		hoverAnimation();
 		
-		if (pp != null) {
+		if (pp != null && OrbProjectile.class.isAssignableFrom(pp.getClass())) {
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();

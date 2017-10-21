@@ -114,7 +114,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 			this.targetClass = MortalEntity.class;
 
 		this.projectileTexture = projectileTexture;
-		this.maxRange = this.range = range;
+		this.maxRange = this.range = range*3;
 		this.damage = damage;
 		this.startEffect = startEffect;
 		this.endEffect = endEffect;
@@ -125,15 +125,16 @@ public class Projectile extends AbstractEntity implements Tickable {
 		// TODO -- look at the other constructor -- this block of code is commented out
 		// there
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
-		updateHeading();
+		//updateHeading();
 		setPosition();
 	}
-
+	
 	/**
 	 * Initialize heading. Used if heading changes
 	 */
 	protected void updateHeading() {
 		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
+		
 		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
 		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
 		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
