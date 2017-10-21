@@ -9,6 +9,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertEquals;
  * @author ryanjphelan & tl
  */
 public class SpeedyEnemyTest extends BaseTest {
+
 
     private SpeedyEnemy speedyEmpty;
     private SpeedyEnemy speedy1;
@@ -45,7 +47,27 @@ public class SpeedyEnemyTest extends BaseTest {
         playerTest = null;
         goalPotatoTest = null;
     }
+    @Test
+    public void getProgressBarTest() throws Exception {
+        //untestable
+    }
 
+    @Test
+    public void addTreeToVisitedTest() throws Exception {
+        //TODO:need to fill code in
+    }
+
+    @Test
+    public void mostRelevantTargetTest() throws Exception {
+        //TODO:need to fill code in
+
+    }
+
+    @Test
+    public void getEnemyTypeTest() throws Exception {
+        Assert.assertEquals(1,speedy1.getEnemyType().length);
+
+    }
     /*
      * Test an emptyConstructor instance of the SpeedyEnemy.
      */
