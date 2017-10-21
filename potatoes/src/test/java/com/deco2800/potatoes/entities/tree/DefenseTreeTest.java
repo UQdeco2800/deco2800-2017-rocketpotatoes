@@ -1,6 +1,9 @@
 package com.deco2800.potatoes.entities.tree;
 
 import com.deco2800.potatoes.entities.trees.*;
+
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,17 +24,17 @@ public class DefenseTreeTest {
 	
 	@Test
 	public void stringTest() {
-		defenseTree.getName();
+		assertEquals(defenseTree.getName(), "Defense Tree");
 	}
 	
 	@Test
 	public void textureTest() {
-		defenseTree.getTexture();
+		assertEquals("defenseTree", defenseTree.getTexture());
 	}
 	
 	@Test
 	public void copyTest() {
-		defenseTree.createCopy();
+		assertEquals(new DefenseTree(1,0), defenseTree.createCopy());
 	}
 	
 }
