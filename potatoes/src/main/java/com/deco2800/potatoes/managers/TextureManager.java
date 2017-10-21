@@ -112,7 +112,11 @@ public class TextureManager extends Manager {
         for (int i = 1; i < 44; i++) {
     			saveTexture("pinetree_grow_" + i, "resources/resourceTrees/pine/grow/pinetree_grow_" + String.format("%04d", i) + ".png");
         }
-
+        
+        // Pine Produce Animation
+        for (int i = 1; i < 36; i++) {
+        		saveTexture("pinetree_produce_" + i, "resources/resourceTrees/pine/produce/pinetree_produce_" + String.format("%04d", i) + ".png");
+        }
 
         // Projectiles TODO: fix
         for (int i = 1; i < 4; i++) {
