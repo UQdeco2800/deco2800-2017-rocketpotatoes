@@ -19,7 +19,7 @@ public class SeedTree extends ResourceTree {
 	private static final transient int BUILD_COST = 1;		// Cost of building the tree
 	private static final transient int GATHER_CAPACITY = 12;	// Max resource capacity of the tree
 	private static final transient int GATHER_RATE = 10000;	// Time interval of gathering resources
-	private static final transient int GATHER_AMOUNT = 2;	// Amount of resources obtained per gather
+	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
 	
 	private static final transient String[] GROW_ANIMATION = getFrames();
 	private TimeAnimation produceAnimation = makeResourceTreeAnimation("seedtree", "produce", 31, 6000, this::finishedProduce);
