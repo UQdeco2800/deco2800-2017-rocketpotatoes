@@ -1,27 +1,14 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import javax.security.auth.x500.X500Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.animation.AnimationFactory;
-import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
-import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Inventory;
 
 /**
@@ -39,7 +26,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private int gatherCapacity; // Limit on resources held by resource tree
 	
 	public String defaultTexture; // The standard texture to default to
-	private TimeAnimation currentAnimation;
 
 	/**
 	 * Default constructor for serialization

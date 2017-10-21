@@ -7,8 +7,6 @@ import java.util.function.Function;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
-import com.deco2800.potatoes.entities.animation.SingleFrameAnimation;
-import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.resources.PineconeResource;
 
 public class PineTree extends ResourceTree {
