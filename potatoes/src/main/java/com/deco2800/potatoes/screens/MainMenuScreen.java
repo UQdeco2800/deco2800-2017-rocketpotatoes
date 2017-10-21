@@ -56,7 +56,6 @@ public class MainMenuScreen implements Screen {
         this.game = game;
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
-        // TODO config?
         camera.setToOrtho(false, 1920, 1080);
         // game screen background
 
@@ -189,7 +188,6 @@ public class MainMenuScreen implements Screen {
             game.setScreen(new GameScreen(game, name, ip, port, isHost));
         }
         catch (Exception ex) {
-            // TODO handle a failed connection.
             LOGGER.warn("Failed to get connect to host.", ex);
             System.exit(-1);
         }

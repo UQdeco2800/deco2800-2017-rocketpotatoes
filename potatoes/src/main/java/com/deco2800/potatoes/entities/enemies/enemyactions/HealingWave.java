@@ -15,28 +15,47 @@ import com.deco2800.potatoes.util.WorldUtil;
 
 import java.util.Map;
 
+/**
+ * A healing wave TimeEvent which, when belonging to an enemy, causes the enemy to heal other enemies around it for.
+ *
+ * @author: craig
+ **/
 public class HealingWave extends TimeEvent<EnemyEntity> {
 
-    private Class target;
     private float healAmount;
-    private int rate;
     private float waveRadius;
 
+    /**
+     * Default constructor for serialization
+     */
     public HealingWave() {
         // Blank comment for sonar
     }
 
-    public HealingWave(int rate, Class target, float waveRadius, float healAmount) {
+    /**
+     * Constructor for a HealingWave TimeEvent.
+     *
+     * @param eventRate
+     *          The rate at which this TimeEvent occurs in terms of number of ticks.
+     * @param waveRadius
+     *          The size of the radius of the created healing wave that other enemies need to be within to be healed
+     * @param healAmount
+     *          The amount of healing the wave provides affected enemies
+     */
+    public HealingWave(int eventRate, float waveRadius, float healAmount) {
         setDoReset(true);
-        setResetAmount(rate);
-        this.target = target;
-        this.rate = rate;
+        setResetAmount(eventRate);
         this.waveRadius = waveRadius;
         this.healAmount = healAmount;
         reset();
     }
 
-    /*Should we turn this into an effect?*/
+    /**
+     * The healing wave event - enemies within the radius of healing wave will be healed for a particular amount.
+     *
+     * @param enemy
+     *          The enemy that this healing wave belongs to.
+     */
     public void action(EnemyEntity enemy) {
         enemy.setMoving(true);
         float distanceToEnemy;
@@ -52,7 +71,7 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
             }
         }
 
-        //Particle effect for visual cue that healing is occurring.
+        //Particle effect for visual cue that healing wave has occurred.
         ParticleManager p = GameManager.get().getManager(ParticleManager.class);
 
         ParticleType particle =  new BasicParticleType(100000, 500.0f,
@@ -71,7 +90,7 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
      */
     @Override
     public TimeEvent<EnemyEntity> copy() {
-        return new HealingWave(getResetAmount(), this.target, this.waveRadius, this.healAmount);
+        return new HealingWave(getResetAmount(), this.waveRadius, this.healAmount);
     }
 
     /**

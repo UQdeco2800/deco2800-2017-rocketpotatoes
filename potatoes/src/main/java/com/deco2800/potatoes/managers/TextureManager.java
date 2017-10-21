@@ -66,21 +66,30 @@ public class TextureManager extends Manager {
         saveTexture("tankBear", "resources/enemies/bear/bear_SW.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
         saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
+        saveTexture("enemyCave_SE", "resources/enemies/enemyCave_SE.png");
+        saveTexture("enemyCave_S", "resources/enemies/enemyCave_S.png");
+        saveTexture("enemyCave_N", "resources/enemies/enemyCave_N.png");
+        saveTexture("enemyCave_W", "resources/enemies/enemyCave_W.png");
+        saveTexture("enemyCave_E", "resources/enemies/enemyCave_E.png");
+        saveTexture("enemyCave_SW", "resources/enemies/enemyCave_SW.png");
+        saveTexture("enemyCave_WS", "resources/enemies/enemyCave_WS.png");
         saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
         saveTexture("greybar", "resources/healthproperties/greyBar.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
-
-
+        saveTexture("acorn1", "resources/Projectiles/acorn1.png");
+        saveTexture("leaves1", "resources/Projectiles/leaves1.png");
+        
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
 
 
-        // Projectiles
+        // Projectiles TODO: fix
         for (int i = 1; i < 4; i++) {
             saveTexture("aoe" + i, "resources/Projectiles/aoe" + i + ".png");
             saveTexture("rocket" + i, "resources/Projectiles/rocket" + i + ".png");
             saveTexture("explosion" + i, "resources/Projectiles/explosion" + i + ".png");
             saveTexture("chilli" + i, "resources/Projectiles/chilliproj" + i + ".png");
+            
         }
         for (int i = 1; i < 6; i++) {
         	saveTexture("start" + i, "resources/Projectiles/start" + i + ".png");
@@ -181,7 +190,7 @@ public class TextureManager extends Manager {
         //damage tree:acorn
 
 
-        //Enemies
+        //enemies
         saveTexture("swipe1", "resources/enemies/swipe1.png");
         saveTexture("swipe2", "resources/enemies/swipe2.png");
         saveTexture("swipe3", "resources/enemies/swipe3.png");
@@ -207,14 +216,14 @@ public class TextureManager extends Manager {
         saveTexture("squirrel_SW", "resources/enemies/squirrel/idle/squirrel_SW.png");
         saveTexture("squirrel_W", "resources/enemies/squirrel/idle/squirrel_W.png");
         //Raccoon
-        saveTexture("raccoon_E", "resources/enemies/raccoon/raccoon_E.png");
-        saveTexture("raccoon_N", "resources/enemies/raccoon/raccoon_N.png");
-        saveTexture("raccoon_NE", "resources/enemies/raccoon/raccoon_NE.png");
-        saveTexture("raccoon_NW", "resources/enemies/raccoon/raccoon_NW.png");
-        saveTexture("raccoon_S", "resources/enemies/raccoon/raccoon_S.png");
-        saveTexture("raccoon_SE", "resources/enemies/raccoon/raccoon_SE.png");
-        saveTexture("raccoon_SW", "resources/enemies/raccoon/raccoon_SW.png");
-        saveTexture("raccoon_W", "resources/enemies/raccoon/raccoon_W.png");
+        saveTexture("raccoon_E", "resources/enemies/raccoon/idle/raccoon_E.png");
+        saveTexture("raccoon_N", "resources/enemies/raccoon/idle/raccoon_N.png");
+        saveTexture("raccoon_NE", "resources/enemies/raccoon/idle/raccoon_NE.png");
+        saveTexture("raccoon_NW", "resources/enemies/raccoon/idle/raccoon_NW.png");
+        saveTexture("raccoon_S", "resources/enemies/raccoon/idle/raccoon_S.png");
+        saveTexture("raccoon_SE", "resources/enemies/raccoon/idle/raccoon_SE.png");
+        saveTexture("raccoon_SW", "resources/enemies/raccoon/idle/raccoon_SW.png");
+        saveTexture("raccoon_W", "resources/enemies/raccoon/idle/raccoon_W.png");
         //Bear
         saveTexture("bear_E", "resources/enemies/bear/bear_E.png");
         saveTexture("bear_N", "resources/enemies/bear/bear_N.png");
@@ -378,7 +387,23 @@ public class TextureManager extends Manager {
         saveTexture("turbofish", "resources/rustyfish/turbofish.png");
         saveTexture("boatman", "resources/rustyfish/boatman.png");
 
+
+        //bear walk texture
+        for(int i =1;i<9;i++){
+            saveTexture("bear_walk_E_"+i,"resources/enemies/bear/walk/bear_walk_E_"+i+".png");
+            saveTexture("bear_walk_N_"+i,"resources/enemies/bear/walk/bear_walk_N_"+i+".png");
+            saveTexture("bear_walk_NE_"+i,"resources/enemies/bear/walk/bear_walk_NE_"+i+".png");
+            saveTexture("bear_walk_NW_"+i,"resources/enemies/bear/walk/bear_walk_NW_"+i+".png");
+            saveTexture("bear_walk_S_"+i,"resources/enemies/bear/walk/bear_walk_S_"+i+".png");
+            saveTexture("bear_walk_SE_"+i,"resources/enemies/bear/walk/bear_walk_SE_"+i+".png");
+            saveTexture("bear_walk_SW_"+i,"resources/enemies/bear/walk/bear_walk_SW_"+i+".png");
+            saveTexture("bear_walk_W_"+i,"resources/enemies/bear/walk/bear_walk_W_"+i+".png");
+        }
+
+
     }
+
+
 
     /**
      * Gets a texture object for a given string id

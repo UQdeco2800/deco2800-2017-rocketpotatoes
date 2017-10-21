@@ -3,7 +3,6 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -52,8 +51,12 @@ public class SpeedyEnemyTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(true, speedyEmpty.getDirection() == null);
-        assertEquals("raccoon", speedyEmpty.getEnemyType());
+        for (String data:speedyEmpty.getEnemyType()) {
+            assertEquals("raccoon", data);
+
+        }
+
+//        assertEquals("raccoon", speedyEmpty.getEnemyType());
         speedyEmpty.getBasicStats().getGoal();
         speedyEmpty.getBasicStats().getSpeed();
     }

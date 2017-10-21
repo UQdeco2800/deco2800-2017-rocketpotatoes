@@ -32,7 +32,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 	 * attackSpeed
 	 *
 	 * @param attackSpeed
-	 *            the delay between shots
+	 *            the delay between attacks
 	 *
 	 */
 	public MeleeAttackEvent(int attackSpeed, Class target) {
@@ -43,25 +43,25 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 	}
 
 	/**
-	 * Creates action as per TimeEvent shoots a projectile at small range to
-	 * simulate melee attack
+	 * Creates action as per TimeEvent in which the enemy this event belongs to attacks an
+	 * entity of the target class provided if within melee range.
 	 *
 	 * @param enemy
 	 *            The enemy that this melee attack belongs to
 	 */
 	@Override
 	public void action(EnemyEntity enemy) {
-		Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(target, enemy.getPosX(), enemy.getPosY());
+		Optional<AbstractEntity> foundTarget = WorldUtil.getClosestEntityOfClass(target, enemy.getPosX(), enemy.getPosY());
 
 		// no target exists or target is out of range
-		if (!target1.isPresent() || enemy.distanceTo(target1.get()) > range) {
+		if (!foundTarget.isPresent() || enemy.distanceTo(foundTarget.get()) > range) {
 			return;
 		}
 
 		GameManager.get().getWorld()
 				.addEntity(new MeleeAttack(target,
 						new Vector3(enemy.getPosX() + 0.5f, enemy.getPosY() + 0.5f, enemy.getPosZ()),
-						new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()), 1, 4));
+						new Vector3(foundTarget.get().getPosX(), foundTarget.get().getPosY(), foundTarget.get().getPosZ()), 1, 4));
 
 		/*Stop attacking if dead (deathHandler of mortal entity will eventually unregister the event).*/
 		if (enemy.isDead()) {
