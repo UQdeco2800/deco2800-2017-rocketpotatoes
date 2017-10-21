@@ -101,10 +101,9 @@ public class ChatGui extends Gui {
         GameManager.get().getManager(InputManager.class).addKeyDownListener(new KeyDownObserver() {
             @Override
             public void notifyKeyDown(int keycode) {
-                if (!hidden) {
-                    if (keycode == Input.Keys.ENTER) {
-                        stage.setKeyboardFocus(textField);
-                    }
+                if (!hidden && keycode == Input.Keys.ENTER) {
+                    stage.setKeyboardFocus(textField);
+
                 }
             }
         });
@@ -219,7 +218,6 @@ public class ChatGui extends Gui {
                 m.broadcastMessage(textField.getText());
             }
 
-            //addMessage("Button", textField.getText(), Color.WHITE);
             textField.setText("");
 
             // Reset keyboard focus to game window

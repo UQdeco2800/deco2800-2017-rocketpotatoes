@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.*;
 
 public class ResourceTest {
@@ -218,9 +219,8 @@ public class ResourceTest {
 		entity.setResourceType(new SeedResource());
 		assert(entity.getType().toString().equals("seed"));
 	}
-//	@Test
-//	public void tickTest(){
-//		ResourceEntity foodEntity = new ResourceEntity(1,2,new FoodResource());
-//		foodEntity.onTick(1);
-//	}
+	@Test
+	public void tickTest(){
+		resource.equals(new Player());
+	}
 }

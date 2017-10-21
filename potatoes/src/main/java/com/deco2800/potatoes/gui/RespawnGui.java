@@ -35,7 +35,6 @@ public class RespawnGui extends Gui{
 
     private int count = 1;
 
-    private PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 
     public RespawnGui(Stage stage, GameScreen screen) {
 

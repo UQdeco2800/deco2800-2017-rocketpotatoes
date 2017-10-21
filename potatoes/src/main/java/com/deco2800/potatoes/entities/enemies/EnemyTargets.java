@@ -1,38 +1,41 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
+import java.util.LinkedList;
+import java.util.List;
 
-import java.util.ArrayList;
-
+/**
+ * A data class for holding classes of entities that comprise an enemy's targets.
+ *
+ * Main targets are classes of entities that will attract an enemy regardless of their respective
+ * positions in the world. Sight aggro targets are classes of entities that are to only attract an
+ * enemy if they are within a certain distance of each other in game.
+ *
+ * @author: craig
+ */
 public class EnemyTargets {
 
-    private static ArrayList<Class> mainTargets;
-    private static ArrayList<Class> sightAggroTargets;
-    private static ArrayList<Class> damageAggroTargets;
+    private LinkedList<Class> mainTargets;
+    private LinkedList<Class> sightAggroTargets;
 
-    public EnemyTargets(ArrayList<Class> mainTargets, ArrayList<Class> sightAggroTargets,
-                        ArrayList<Class> damageAggroTargets) {
+    /**
+     * Constructor for class, initialize with collections of classes for main targets and sight aggro.
+     *
+     * @param mainTargets
+     * @param sightAggroTargets
+     */
+    public EnemyTargets(LinkedList<Class> mainTargets, LinkedList<Class> sightAggroTargets) {
         this.mainTargets = mainTargets;
         this.sightAggroTargets = sightAggroTargets;
-        this.damageAggroTargets = damageAggroTargets;
     }
 
-    public ArrayList<Class> getMainTargets() { return mainTargets;  }
+    /**
+     * @return the contained main target classes
+     */
+    public List<Class> getMainTargets() { return mainTargets;  }
 
-    public ArrayList<Class> getSightAggroTargets() { return sightAggroTargets; }
+    /**
+     * @return the contained sight aggro target classes
+     */
+    public List<Class> getSightAggroTargets() { return sightAggroTargets; }
 
-    public ArrayList<Class> getDamageAggroTargets() { return damageAggroTargets; }
-
-
-    /*public void addMainTarget(AbstractEntity mainTarget) {
-        mainTargets.add(mainTarget);
-    }
-
-    public ArrayList<AbstractEntity> getAggroableTargets() {
-        return aggroableTargets;
-    }
-
-    public void addAggroableTargets(AbstractEntity aggroableTarget) {
-        aggroableTargets.add(aggroableTarget);
-    }*/
 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
-import java.util.stream.IntStream;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
@@ -75,7 +75,8 @@ public class RTree<Key> {
      */
     public void move(Key k, Shape2D newPosition) {
         // TODO -- this
-        forwardLookup.put(k, newPosition);
+        remove(k);
+        insert(k, newPosition);
     }
 
     /**
@@ -85,8 +86,13 @@ public class RTree<Key> {
      *          The key of the key/position pair being removed.
      */
     public void remove(Key k) {
-        // TODO -- this
-        forwardLookup.remove(k);
+        Shape2D position = forwardLookup.remove(k);
+        if (position != null) {
+            root.remove(new Bucket<>(k, position));
+            if (root.isBranch() && root.getChildren().size() == 1) {
+                root = (Block<Key>) root.getChildren().get(0);
+            }
+        }
     }
 
     /**
@@ -102,6 +108,21 @@ public class RTree<Key> {
     }
 
     /**
+     * Finds the nearest key to a given position (by the Shape2D distance method) where the additionalCheck returns true. Ties are broken
+     * arbitrarily.
+     *
+     * @param position
+     *          The position keys are searched near.
+     * @param additionalCheck
+     *          The additional requirement for the result
+     * @return
+     *          The key that is closest to the position.
+     */
+    public Key findClosest(Shape2D position, Predicate<Key> additionalCheck) {
+        return root.findClosest(position, additionalCheck);
+    }
+
+    /**
      * Finds the nearest key to a given position (by the Shape2D distance method). Ties are broken
      * arbitrarily.
      *
@@ -111,7 +132,7 @@ public class RTree<Key> {
      *          The key that is closest to the position.
      */
     public Key findClosest(Shape2D position) {
-        return root.findClosest(position);
+        return root.findClosest(position, (x) -> true);
     }
 
     /**
@@ -192,8 +213,26 @@ public class RTree<Key> {
         public static Block branch(List<Block> children) {
             Block output = new Block(false);
             output.children = children;
-            output.minimumBoundingRectangle = Box2D.surrounding(children.stream().map(child -> child.minimumBoundingRectangle)).get();
+            output.minimumBoundingRectangle = Box2D.surrounding(
+                    children.stream().map(child -> child.minimumBoundingRectangle)).get();
             return output;
+        }
+
+        /**
+         * Getter, returns whether this node is not a leaf.
+         *
+         * @return
+         *          True for branches, false for leaves.
+         */
+        public boolean isBranch() {
+            return !isLeaf;
+        }
+
+        /**
+         * Getter for children. Does not return a copy, and should only be called on the root node.
+         */
+        public List getChildren() {
+            return isLeaf ? leafChildren : children;
         }
 
         /**
@@ -421,6 +460,81 @@ public class RTree<Key> {
         }
 
         /**
+         * Joins two buckets together.
+         * @param other
+         *              The bucket being joined.
+         * @require
+         *              Either this and other are both leafs, or they are both branches.
+         */
+        private void join(Block other) {
+            if (isLeaf) {
+                leafChildren.addAll(other.leafChildren);
+                minimumBoundingRectangle = Box2D.surrounding(
+                        leafChildren.stream().map(child -> child.getPosition())).get();
+            } else {
+                children.addAll(other.children);
+                minimumBoundingRectangle = Box2D.surrounding(
+                        children.stream().map(child -> child.minimumBoundingRectangle)).get();
+            }
+        }
+        
+        /**
+         * Removes a bucket from this block.
+         *
+         * @param b
+         *          The bucket being removed.
+         * @return
+         *          True if the node has underflowed and needs to be resized.
+         * @require
+         *          The bucket b is inside the current minimumBoundingRectangle.
+         */
+        public boolean remove(Bucket b) {
+            if (isLeaf) {
+                if (leafChildren.contains(b)) {
+                    leafChildren.remove(b);
+                }
+                minimumBoundingRectangle = Box2D.surrounding(
+                        leafChildren.stream().map(child -> child.getPosition())).get();
+                return leafChildren.size() < MIN_RATIO * BLOCK_SIZE;
+
+            } else {
+                Block toBeMaybeJoined = null;
+                for (Block child: children) {
+                    if (child.minimumBoundingRectangle.overlaps(b.getPosition())
+                            && child.remove(b)) {
+                        // child has overflown
+                        toBeMaybeJoined = child;
+                        break;
+                    }
+                }
+
+                final Block toBeJoined = toBeMaybeJoined;
+
+
+                // handle joining
+                if (toBeJoined != null) {
+                    Block joinWith = children.stream().filter(child -> !child.equals(toBeJoined))
+                        .min(Comparator.comparingDouble(child -> {
+                            Box2D newBounds = Box2D.surrounding(Stream.of(child, toBeJoined)
+                                    .map(block -> block.minimumBoundingRectangle)).get();
+                            return newBounds.getXLength() + newBounds.getYLength();
+                        })).get();
+
+                    children.remove(joinWith);
+                    toBeJoined.join(joinWith);
+                }
+
+                if (children.size() < MIN_RATIO * BLOCK_SIZE) {
+                    return true;
+                } else {
+                    minimumBoundingRectangle = Box2D.surrounding(
+                            children.stream().map(child -> child.minimumBoundingRectangle)).get();
+                    return false;
+                }
+            }
+        }
+
+        /**
          * Finds all the keys within this subset of the RTree that overlap the given position, and
          * add them to an existing collection.
          *
@@ -451,7 +565,7 @@ public class RTree<Key> {
          * @return
          *              The key of the nearest neighbour. Null if the RTree is empty.
          */
-        public Key findClosest(Shape2D position) {
+        public Key findClosest(Shape2D position, Predicate<Key> additionalCheck) {
             if (isLeaf && leafChildren.size() == 0) {
                 return null;
             }
@@ -460,14 +574,18 @@ public class RTree<Key> {
             float currentDistance = Float.MAX_VALUE;
             PriorityQueue<Block> queue = new PriorityQueue<>(Comparator.comparingDouble(
                         child -> child.minimumBoundingRectangle.distance(position)));
-            queue.addAll(children);
-
-            while (queue.peek().minimumBoundingRectangle.distance(position) < currentDistance) {
+            if (isLeaf) {
+                queue.add(this);
+            } else {
+                queue.addAll(children);
+            }
+            while (!queue.isEmpty() && queue.peek().minimumBoundingRectangle.distance(position) <
+                    currentDistance) {
                 Block<Key> head = queue.poll();
 
                 if (head.isLeaf) {
                     for (Bucket<Key> bucket: head.leafChildren) {
-                        if (bucket.getPosition().distance(position) < currentDistance) {
+                        if (bucket.getPosition().distance(position) < currentDistance && additionalCheck.test(bucket.getKey())) {
                             currentDistance = bucket.getPosition().distance(position);
                             output = bucket.getKey();
                         }
@@ -503,6 +621,26 @@ public class RTree<Key> {
 
         public void setPosition(Shape2D position) {
             this.position = position;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == this) {
+                return true;
+            }
+
+            if (!(other instanceof Bucket)) {
+                return false;
+            }
+
+            Bucket<Key> otherBucket = (Bucket<Key>) other;
+            // all equality cares about is the key, different position doesn't matter
+            return otherBucket.getKey().equals(k);
+        }
+
+        @Override
+        public int hashCode() {
+            return k.hashCode();
         }
     }
 }

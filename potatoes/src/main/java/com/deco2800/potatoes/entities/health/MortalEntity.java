@@ -3,19 +3,18 @@
  */
 package com.deco2800.potatoes.entities.health;
 
-import com.deco2800.potatoes.entities.Direction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.gui.GameOverGui;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -335,10 +334,10 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 
 	@Override
 	public void onTick(long time) {
-
 	}
 
     public Direction getFacing() {
         return this.facing;
     }
+
 }

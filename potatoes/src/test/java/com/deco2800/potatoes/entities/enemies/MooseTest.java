@@ -47,8 +47,11 @@ public class MooseTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(null, mooseEmpty.getDirection());
-        assertEquals("moose", mooseEmpty.getEnemyType());
+        for (String data:mooseEmpty.getEnemyType()) {
+            assertEquals("moose", data);
+
+        }
+
         assertEquals(Color.RED, mooseEmpty.getProgressBar().getColours().get(0));
         assertEquals(Color.valueOf("fff134"), mooseEmpty.getProgressBar().getColours().get(1));
         assertEquals(Color.GREEN, mooseEmpty.getProgressBar().getColours().get(2));
@@ -67,7 +70,7 @@ public class MooseTest extends BaseTest {
      */
     @Test
     public void onTickTest() {
-        GameManager.get().getWorld().addEntity(new EnemyGate(0,0));
+        GameManager.get().getWorld().addEntity(new EnemyGate(5,5, "enemyCave_SE"));
         GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
         GameManager.get().getWorld().addEntity(new ProjectileTree(10, 10));
         GameManager.get().getWorld().addEntity(moose1);
@@ -75,5 +78,6 @@ public class MooseTest extends BaseTest {
         GameManager.get().getManager(PlayerManager.class).setPlayer(playerTest);
         GameManager.get().getWorld().addEntity(playerTest);
         moose1.onTick(1);
+        moose1.getProgressBar();
     }
 }

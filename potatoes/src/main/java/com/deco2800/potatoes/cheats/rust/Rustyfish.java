@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Logger;
 import com.deco2800.potatoes.cheats.CheatExecution;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -14,13 +15,15 @@ import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.lwjgl.opengl.Display;
+import org.slf4j.LoggerFactory;
+
 
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Rustyfish implements CheatExecution {
-
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Rustyfish.class);
     private static SpriteBatch batch = new SpriteBatch();
     private static ShapeRenderer sr = new ShapeRenderer();
 
@@ -81,7 +84,6 @@ public class Rustyfish implements CheatExecution {
     /**
      * Updates the window, checking for resize events, key events etc.
      *
-     * Places key information inside STRUCT TODO
      */
     private static Callback updateWindow = new Callback() {
         @SuppressWarnings("unused")
@@ -135,10 +137,8 @@ public class Rustyfish implements CheatExecution {
     private static Callback getWindowInfo = new Callback() {
         @SuppressWarnings("unused")
         public void run(RenderInfo.ByReference info) {
-            info.sizeX = Gdx.graphics.getWidth();
-            info.sizeY = Gdx.graphics.getHeight();
-
-            //System.out.println(info);
+            info.setSizeX(Gdx.graphics.getWidth());
+            info.setSizeY(Gdx.graphics.getHeight());
         }
     };
 
@@ -149,15 +149,15 @@ public class Rustyfish implements CheatExecution {
         @SuppressWarnings("unused")
         public void run(RenderObject.ByValue obj) {
             TextureManager m = GameManager.get().getManager(TextureManager.class);
-            Texture t = m.getTexture(obj.asset);
+            Texture t = m.getTexture(obj.getAsset());
 
-            batch.setColor(getColor(obj.color));
+            batch.setColor(getColor(obj.getColor()));
 
             batch.draw(t,
-                    obj.x, Gdx.graphics.getHeight() - t.getHeight() * obj.scale - obj.y,
+                    obj.getX(), Gdx.graphics.getHeight() - t.getHeight() * obj.getScale() - obj.getY(),
                     0, 0,
-                    t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
-                    0, 0, t.getWidth(), t.getHeight(), obj.flipX != 0, obj.flipY != 0);
+                    t.getWidth(), t.getHeight(), obj.getScale(), obj.getScale(), obj.getRotation(),
+                    0, 0, t.getWidth(), t.getHeight(), obj.getFlipX() != 0, obj.getFlipY() != 0);
         }
     };
 
@@ -169,7 +169,7 @@ public class Rustyfish implements CheatExecution {
 
             Gdx.gl.glLineWidth(1);
             sr.begin(ShapeRenderer.ShapeType.Line);
-            sr.line(obj.srcX, Gdx.graphics.getHeight() - 3 - obj.srcY, obj.dstX, Gdx.graphics.getHeight() - 3 - obj.dstY);
+            sr.line(obj.getSrcX(), Gdx.graphics.getHeight() - 3 - obj.getSrcY(), obj.getDstX(), Gdx.graphics.getHeight() - 3 - obj.getDstY());
             sr.end();
         }
     };
@@ -180,10 +180,10 @@ public class Rustyfish implements CheatExecution {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            Color c = getColor(obj.color);
-            c.a = obj.alpha;
+            Color c = getColor(obj.getColor());
+            c.a = obj.getAlpha();
             sr.begin(ShapeRenderer.ShapeType.Filled);
-            sr.rect(obj.x, Gdx.graphics.getHeight() - obj.h - obj.y, obj.w, obj.h, c, c, c, c);
+            sr.rect(obj.getX(), Gdx.graphics.getHeight() - obj.getH() - obj.getY(), obj.getW(), obj.getH(), c, c, c, c);
             sr.end();
 
             glDisable(GL_BLEND);
@@ -201,6 +201,8 @@ public class Rustyfish implements CheatExecution {
         }
         catch (UnsatisfiedLinkError ex) {
             // Ignore failure, don't start game!
+            LOGGER.error("Unsatified Link Error occured",ex);
+            System.exit(-1);
         }
     }
 }

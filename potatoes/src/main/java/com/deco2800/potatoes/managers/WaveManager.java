@@ -1,9 +1,13 @@
 package com.deco2800.potatoes.managers;
 
 import com.deco2800.potatoes.entities.enemies.EnemyGate;
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
+import com.deco2800.potatoes.worlds.World;
+import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -48,7 +52,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         if (!(EASY <= difficulty && difficulty <= HARD)) {
             throw new IndexOutOfBoundsException("Difficult is not defined in range!");
         }
-        addWave(new EnemyWave(1000)); // pause wave to bootstrap startup
+        addWave(new EnemyWave(1500)); // pause wave to bootstrap startup
     }
 
     /**
@@ -85,9 +89,67 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
             waveIndex++;
             activateWave(waves.get(waveIndex));
             resetTime();
+            
+            // Add resources to other worlds
+            addResources();
         } else if (!isCampaign && WorldUtil.getClosestEntityOfClass(EnemyGate.class, 10, 10).isPresent()) { // no active wave, not campaign, make new wave
             generateNextWave();
         }
+    }
+    
+    /**
+     * Adds resources to random locations in the worlds
+     */
+    private void addResources() {
+    	// World manager
+    	WorldManager worldManager = GameManager.get().getManager(WorldManager.class);
+    	
+    	// The different world types
+    	World worlds[] = {worldManager.getWorld(WorldType.DESERT_WORLD),
+    			worldManager.getWorld(WorldType.ICE_WORLD),
+    			worldManager.getWorld(WorldType.VOLCANO_WORLD),
+    			worldManager.getWorld(WorldType.OCEAN_WORLD)};
+    	
+    	// Array of resources to add
+    	Resource resources[] = {new CactusThornResource(), new PricklyPearResource(),
+    			new TumbleweedResource(), new IceCrystalResource(), new SnowBallResource(),
+    			new SealSkinResource(), new BonesResource(), new CoalResource(),
+    			new ObsidianResource(), new FishMeatResource(), new PearlResource(),
+    			new TreasureResource()};
+
+    	// locations to add the resources
+    	int xPos;
+    	int yPos;
+    	
+    	// Terrain to add the resource to
+    	Terrain terrain;
+    	
+    	// Iterate over the three different resources
+    	for (int i = 0; i < 3; i ++) {
+    		// Attempt to add 10 of each resource
+    		for (int j = 0; j < 10; j++) {
+    			// Generate random location
+    			xPos = (int) (Math.random() * 40) + 10;
+    			yPos = (int) (Math.random() * 40) + 10;
+    			
+    			// Iterate over the 4 worlds
+    			for (int k = 0; k < 4; k++) {
+    				// Get the terrain type at the random location
+        			terrain = worlds[k].getTerrain(xPos, yPos);
+        			
+        			// Only add the resource if it isn't over water
+        			if (terrain.getTexture() != "water_tile_1") {
+        				// Add the resource to the world. Offset the resource array index to the
+        				// resources relevant to each world.
+        				worlds[k].addEntity(new ResourceEntity(xPos, yPos, resources[i + 3 * k]));
+        			}
+        			
+    			}			  			    			
+    		
+    		}
+    	
+    	}
+    	
     }
 
     /**

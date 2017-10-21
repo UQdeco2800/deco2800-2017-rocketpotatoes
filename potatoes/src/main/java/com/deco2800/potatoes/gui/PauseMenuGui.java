@@ -84,8 +84,8 @@ public class PauseMenuGui extends Gui {
 	private CheckBox potatoProgressBarCheckBox;
 	
 	// padding for top and bottom of buttons
-    private final int paddingVertical = 5;
-    private final int paddingHorizontal = 10;
+    private static final int PADDINGVERTICAL = 5;
+    private static final int PADDINGHORIZONTAL = 10;
 
     // State indicator
     private enum States {
@@ -194,8 +194,8 @@ public class PauseMenuGui extends Gui {
         optionsButtonGroup.space(20);
         
         // Add padding to buttons
-        helpBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
-        slideBackButton.pad(paddingVertical, paddingHorizontal, paddingVertical, paddingHorizontal);
+        helpBackButton.pad(PADDINGVERTICAL, PADDINGHORIZONTAL, PADDINGVERTICAL, PADDINGHORIZONTAL);
+        slideBackButton.pad(PADDINGVERTICAL, PADDINGHORIZONTAL, PADDINGVERTICAL, PADDINGHORIZONTAL);
         
         setupListeners();
 
@@ -225,7 +225,6 @@ public class PauseMenuGui extends Gui {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // ToDo: restart game state.
                 screen.menuBlipSound();
                 hide();
             }

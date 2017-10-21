@@ -3,13 +3,10 @@ package com.deco2800.potatoes.entities.trees;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.Inventory;
@@ -27,9 +24,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	private Resource gatherType; // Type of resource gathered by the tree
 	private boolean gatherEnabled = true; // Gathers resources default
 	private int gatherCapacity; // Limit on resources held by resource tree
-	public static final int DEFAULT_GATHER_CAPACITY = 32; // Default gather capacity, must be > 0
-	public static final String FOOD_TREE_TEXTURE = "food_resource_tree";
-	public static final String SEED_TREE_TEXTURE = "seed_resource_tree";
+	
+	public String defaultTexture; // The standard texture to default to
 
 	/**
 	 * Default constructor for serialization
@@ -51,10 +47,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public ResourceTree(float posX, float posY) {
 		super(posX, posY, 1f, 1f);
 		this.gatherCount = 0;
-		this.setGatherCapacity(DEFAULT_GATHER_CAPACITY);
+		this.setGatherCapacity(32); // Use a default value of 32
 		this.gatherType = new SeedResource();
 		this.resetStats();
-		this.setTexture(FOOD_TREE_TEXTURE);
+		this.setTexture("seed_resource_tree");
+		this.setSolid(false); // setSolid must be false for raccoons to be able to move between different targets
+		this.getShadow().setX(this.getShadow().getX() - 0.4f);
+		this.getShadow().setY(this.getShadow().getY() + 0.4f);
 	}
 
 	/**
@@ -81,25 +80,20 @@ public class ResourceTree extends AbstractTree implements Tickable {
 			this.gatherType = gatherType;
 		}
 		this.resetStats();
+		this.setSolid(false); // setSolid must be false for raccoons to be able to move between different targets
+		this.getShadow().setX(this.getShadow().getX() - 0.4f);
+		this.getShadow().setY(this.getShadow().getY() + 0.4f);
 	}
 	
 	@Override
-	public ResourceTree clone() {
+	public ResourceTree createCopy() {
 		return new ResourceTree(this.getPosX(), this.getPosY(), this.gatherType, this.gatherCapacity);
 	}
 
 	@Override
 	public List<TreeProperties> getAllUpgradeStats() {
-		if (this.gatherType instanceof SeedResource) {
-			this.setTexture(SEED_TREE_TEXTURE);
-			return getSeedTreeStats();
-		} else if (this.gatherType instanceof FoodResource) {
-			this.setTexture(FOOD_TREE_TEXTURE);
-			return getFoodTreeStats();
-		} else {
-			this.setTexture(SEED_TREE_TEXTURE);
-			return getSeedTreeStats();
-		}
+		this.setTexture("seed_resource_tree");
+		return getSeedTreeStats();
 	}
 
 	/**
@@ -111,35 +105,12 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 
-		String texture = SEED_TREE_TEXTURE;
+		String texture = "seed_resource_tree";
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(8).setBuildTime(2500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(20).setBuildTime(2000).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(30).setBuildTime(1500).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
-
-		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
-			result.add(statisticsBuilder.createTreeStatistics());
-		}
-		return result;
-	}
-
-	/**
-	 * Stats for a resource tree that gathers food
-	 * 
-	 * @return the list of upgrade stats for a food resource tree
-	 */
-	private static List<TreeProperties> getFoodTreeStats() {
-		List<TreeProperties> result = new LinkedList<>();
-		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
-
-		String texture = FOOD_TREE_TEXTURE;
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(5).setBuildTime(8000).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(6000, 1)));
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(10).setBuildTime(7000).setBuildCost(1)
-				.setTexture(texture).addEvent(new ResourceGatherEvent(5500, 1)));
-		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(15).setBuildTime(6500).setBuildCost(1)
 				.setTexture(texture).addEvent(new ResourceGatherEvent(5000, 2)));
 
 		for (PropertiesBuilder<ResourceTree> statisticsBuilder : builders) {
@@ -199,8 +170,8 @@ public class ResourceTree extends AbstractTree implements Tickable {
 			this.gatherCapacity = capacity;
 		} else {
 			LOGGER.warn("Attempted to set resource tree capacity to invalid capacity: " + capacity + ". Defaulting to "
-					+ DEFAULT_GATHER_CAPACITY);
-			this.gatherCapacity = DEFAULT_GATHER_CAPACITY;
+					+ "32");
+			this.gatherCapacity = 32;
 		}
 	}
 
@@ -212,19 +183,23 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            of resources to add. Can be positive or negative.
 	 */
 	public void gather(int amount) {
-		int oldCount = this.gatherCount;
-		this.gatherCount += amount;
-
-		// Check that the new amount is bounded
-		if (this.gatherCount > this.gatherCapacity) {
-			this.gatherCount = this.gatherCapacity;
-		} else if (this.gatherCount < 0) {
-			this.gatherCount = 0;
+		int newCount = gatherCount + amount;
+		
+		if (gatherCount == 12) {
+			return;
+		}
+		
+		updateAnimations();
+		
+		if (newCount > this.gatherCapacity) {
+			gatherCount = this.gatherCapacity;
+		} else if (newCount < 0) {
+			gatherCount = 0;
+		} else {
+			gatherCount += amount;
 		}
 
-		if (this.gatherCount - oldCount != 0) {
-			LOGGER.info("Added " + (this.gatherCount - oldCount) + " to " + this);
-		}
+		LOGGER.info("Set " + this + " gather count to " + gatherCount);
 	}
 
 	/**
@@ -239,6 +214,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		LOGGER.info(this + " transferred " + this.gatherCount + " resources.");
 		otherInventory.updateInventory(this.getInventory());
 		this.gatherCount = 0;
+		updateAnimations();
 	}
 
 	/**
@@ -247,6 +223,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public void toggleGatherEnabled() {
 		this.setGatherEnabled(!this.isGatherEnabled());
 		LOGGER.info(this + " has gathering enabled: " + this.isGatherEnabled() + ".");
+	}
+	
+	/**
+	 * Allows animations to be changed based on a set a conditions.
+	 */
+	public void updateAnimations() {
+		// Override in subclasses
 	}
 
 	/**
@@ -269,14 +252,24 @@ public class ResourceTree extends AbstractTree implements Tickable {
 
 	@Override
 	public String getName() {
-		if (this.gatherType instanceof SeedResource) {
-			return "Seed Tree";
-		} else if (this.gatherType instanceof FoodResource) {
-			this.setTexture(FOOD_TREE_TEXTURE);
-			return "Food Tree";
-		} else {
-			return "Seed Tree";
-		}
+		return "Resource Tree";
 	}
+	
+	/**
+	 * Creates an array of frames for resource tree animations
+	 * 
+	 * @param treeType	A string for the type of tree
+	 * @param treeState A string for the animation state
+	 * @param frameCount The number of frames in the animation
+	 * @param startFrame The frame to offset the beginning of the animation by
+	 * @return An array of the animation frames
+	 */
+    public static String[] makeFrames(String treeType, String treeState, int frameCount, int startFrame) {
+		String[] frames = new String[frameCount];
+		for (int i = startFrame; i <= frameCount; i++) {
+			frames[i - startFrame] = treeType + "_" + treeState + "_" + i;
+		}
+		return frames;
+    }
 
 }
