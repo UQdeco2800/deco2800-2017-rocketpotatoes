@@ -84,7 +84,12 @@ public class TextureManager extends Manager {
         
         // Grow Animation
         for (int i = 1; i < 44; i++) {
-        		saveTexture("seed_resource_tree", "resources/resourceTrees/seed/grow/seedtree_grow_" + String.format("%04d", i) + ".png");
+        		saveTexture("seedtree_grow_" + i, "resources/resourceTrees/seed/grow/seedtree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Produce Animation
+        for (int i = 1; i < 32; i++) {
+        		saveTexture("seedtree_produce_" + i, "resources/resourceTrees/seed/produce/seedtree_produce_" + String.format("%04d", i) + ".png");
         }
         
         /* Food Resource Tree Sprites */
