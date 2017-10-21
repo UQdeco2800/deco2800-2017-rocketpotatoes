@@ -86,4 +86,18 @@ public class SquirrelTest extends BaseTest {
         GameManager.get().getWorld().addEntity(playerTest);
         squirrel1.onTick(1);
     }
+
+    @Test
+    public void getEnemyTypeTest() throws Exception {
+    }
+
+
+    @Test
+    public void getProgressBarTest() throws Exception {
+    }
+
+    @Test
+    public void getBasicStatsTest() throws Exception {
+    }
+
 }
