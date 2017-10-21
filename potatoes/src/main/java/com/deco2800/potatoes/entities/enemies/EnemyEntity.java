@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -12,11 +11,6 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.Direction;
-import com.deco2800.potatoes.entities.health.HasProgressBar;
-import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
@@ -26,18 +20,10 @@ import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.ParticleManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.WorldUtil;
 
 import static com.deco2800.potatoes.entities.Direction.getFromRad;
 import static com.deco2800.potatoes.entities.Direction.getRadFromCoords;
@@ -59,7 +45,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 	private int count=0;
-	private static String perviousTexutre="";
+	private static String perviousTexutre="walk";
+	private String enemyStatus="";
 	protected int roundNum = 0;
 	/**
 	 * Default constructor for serialization
@@ -230,11 +217,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateSprites() {
 		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-		String enemyStatus = "walk";
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-			this.setTexture(type[delay(5, type.length)]+"_"+enemyStatus + direction + "_" + (delay(5, type.length) + 1));
+			LOGGER.warn("Texture:::"+type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
+			this.setTexture(type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
 		}
 
 	}
@@ -286,6 +273,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return this.goal;
 	}
 
+
+	public void setEnemyStatus(String enemyStatus){
+		this.enemyStatus=enemyStatus;
+	}
+
+
+	public String getEnemyStatus(){
+		return this.enemyStatus;
+	}
 	/**
 	 * Set the enemy's goal to the given entity class
 	 * @param g enemy's new goal(entity class)
@@ -333,8 +329,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
+
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
+
 
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
