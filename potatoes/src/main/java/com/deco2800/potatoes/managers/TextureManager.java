@@ -100,6 +100,11 @@ public class TextureManager extends Manager {
         		saveTexture("foodtree_grow_" + i, "resources/resourceTrees/food/grow/foodtree_grow_" + String.format("%04d", i) + ".png");
         }
         
+        // Produce Animation
+        for (int i = 1; i < 36; i++) {
+        		saveTexture("foodtree_produce_" + i, "resources/resourceTrees/food/produce/foodtree_produce_" + String.format("%04d", i) + ".png");
+        }
+        
         /* Pine Resource Tree Sprites */
         saveTexture("pine_resource_tree", "resources/resourceTrees/pineTree.png"); // Default Sprite
 
