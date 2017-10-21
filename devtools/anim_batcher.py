@@ -15,18 +15,16 @@ import os.path
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
-# get the python script directory so we can import modules
 
-# find the python script from the blender command line
-for x in argv:
-    if ".py" in x:
-        script_dir = os.path.dirname(x)
-        break
+def get_script_dir():
+    '''get the python script directory so we can import local modules'''
+    # find the python script from the blender command line
+    for x in argv:
+        if ".py" in x:
+            return os.path.dirname(x)
+    return os.path.dirname(bpy.context.space_data.text.filepath)
 
-if not script_dir:
-    # get the python script dir from the text editor window
-    script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
-
+script_dir = get_script_dir()
 syspath.append(script_dir)
 from batcher_common import *
 

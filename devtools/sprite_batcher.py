@@ -17,14 +17,16 @@ import os.path
 
 import bpy
 
-for x in argv:
-    if ".py" in x:
-        script_dir = os.path.dirname(x)
-        break
 
-if not script_dir:
-    script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
+def get_script_dir():
+    '''get the python script directory so we can import local modules'''
+    # find the python script from the blender command line
+    for x in argv:
+        if ".py" in x:
+            return os.path.dirname(x)
+    return os.path.dirname(bpy.context.space_data.text.filepath)
 
+script_dir = get_script_dir()
 syspath.append(script_dir)
 from batcher_common import *
 
