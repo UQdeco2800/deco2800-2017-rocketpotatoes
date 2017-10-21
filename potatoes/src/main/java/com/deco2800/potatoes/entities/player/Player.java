@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.deco2800.potatoes.entities.projectiles.MineBomb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private static int doublePressSpeed = 300;    // double keypressed in ms
     protected float defaultSpeed;    // the default speed of each player
     protected long[] lastPressed = {0, 0, 0, 0};    // the last time WASD was pressed.
-
+    private Optional<AbstractEntity> target;
     private boolean keyW = false;
     private boolean keyA = false;
     private boolean keyS = false;
@@ -309,6 +310,17 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 break;
             case Input.Keys.SPACE:
                 attack();
+                break;
+
+            case Input.Keys.B:
+                float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+                float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+                float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+                Vector3 startPos = new Vector3(pPosX , pPosY, pPosZ);
+
+                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 100, MineBomb.BombTexture.MINES,
+                        null, null);
+                GameManager.get().getWorld().addEntity(MBprojectile);
                 break;
             default:
                 break;
@@ -637,7 +649,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-			Optional<AbstractEntity> target;
+
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 			float targetPosX=0;
 			float targetPosY=0;
