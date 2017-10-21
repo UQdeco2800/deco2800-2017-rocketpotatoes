@@ -48,7 +48,7 @@ public class PineTree extends ResourceTree {
 	 * 
 	 * @return the list of upgrade stats for a food resource tree
 	 */
-	private static List<TreeProperties> getPineTreeStats() {
+	public static List<TreeProperties> getPineTreeStats() {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 		

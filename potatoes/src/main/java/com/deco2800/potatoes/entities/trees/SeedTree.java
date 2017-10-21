@@ -48,7 +48,7 @@ public class SeedTree extends ResourceTree {
 	 * 
 	 * @return the list of upgrade stats for a seed resource tree
 	 */
-	private static List<TreeProperties> getSeedTreeStats() {
+	public static List<TreeProperties> getSeedTreeStats() {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 		
