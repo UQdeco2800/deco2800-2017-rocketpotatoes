@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -145,7 +146,7 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		if (targetClass != null) {
 			this.targetClass = targetClass;
 		} else {
-			this.targetClass = MortalEntity.class;
+			this.targetClass = EnemyEntity.class;
 		}
 
 		if (effectTexture != null) {

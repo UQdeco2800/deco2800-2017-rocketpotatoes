@@ -6,6 +6,7 @@ import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.effects.AOEEffect;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
@@ -99,10 +100,17 @@ public class MineBomb extends AbstractEntity implements Tickable {
                 continue;
             }
             if (newPos.overlaps(entity.getMask())) {
+                if(stopAnimation == true){
                 ((MortalEntity) entity).damage(damage);
+                AOEEffect aoe = new AOEEffect(targetClass.getClass(),
+                        new Vector3(pPosX, pPosY, 0),
+                        100, 8f);
+
                 GameManager.get().getWorld().removeEntity(this);
+                GameManager.get().getWorld().addEntity(aoe);
                 if (endEffect != null)
                     GameManager.get().getWorld().addEntity(endEffect);
+                }
 
             }
         }
