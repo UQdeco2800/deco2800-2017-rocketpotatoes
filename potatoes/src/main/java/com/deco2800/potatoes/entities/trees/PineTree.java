@@ -21,7 +21,7 @@ public class PineTree extends ResourceTree {
 	private static final transient int GATHER_RATE = 9000;	// Time interval of gathering resources
 	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
 	
-	private static final transient String[] GROW_ANIMATION = makeFrames("pinetree", "grow", 43);
+	private static final transient String[] GROW_ANIMATION = makeFrames("pinetree", "grow", 43, 1);
 	//private TimeAnimation produceAnimation = makeResourceTreeAnimation("pinetree", "produce", 31, 6000, this::finishedProduce);
 	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("pine_resource_tree");
 	
@@ -36,6 +36,7 @@ public class PineTree extends ResourceTree {
 	public PineTree(float posX, float posY) {
 		super(posX, posY, new PineconeResource(), GATHER_CAPACITY); // Set resource to pinecone
 		this.defaultTexture = "pine_resource_tree";
+		this.resetStats();
 	}
     
     /**

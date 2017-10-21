@@ -191,19 +191,23 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	 *            of resources to add. Can be positive or negative.
 	 */
 	public void gather(int amount) {
-		int oldCount = this.gatherCount;
-		this.gatherCount += amount;
-
-		// Check that the new amount is bounded
-		if (this.gatherCount > this.gatherCapacity) {
-			this.gatherCount = this.gatherCapacity;
-		} else if (this.gatherCount < 0) {
-			this.gatherCount = 0;
+		int newCount = gatherCount + amount;
+		
+		if (gatherCount == 12) {
+			return;
+		}
+		
+		updateAnimations();
+		
+		if (newCount > this.gatherCapacity) {
+			gatherCount = this.gatherCapacity;
+		} else if (newCount < 0) {
+			gatherCount = 0;
+		} else {
+			gatherCount += amount;
 		}
 
-		if (this.gatherCount - oldCount != 0) {
-			LOGGER.info("Added " + (this.gatherCount - oldCount) + " to " + this);
-		}
+		LOGGER.info("Set " + this + " gather count to " + gatherCount);
 	}
 
 	/**
@@ -218,6 +222,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		LOGGER.info(this + " transferred " + this.gatherCount + " resources.");
 		otherInventory.updateInventory(this.getInventory());
 		this.gatherCount = 0;
+		updateAnimations();
 	}
 
 	/**
@@ -226,6 +231,13 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	public void toggleGatherEnabled() {
 		this.setGatherEnabled(!this.isGatherEnabled());
 		LOGGER.info(this + " has gathering enabled: " + this.isGatherEnabled() + ".");
+	}
+	
+	/**
+	 * Allows animations to be changed based on a set a conditions.
+	 */
+	public void updateAnimations() {
+		// Override in subclasses
 	}
 
 	/**
@@ -251,33 +263,19 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		return "Resource Tree";
 	}
 	
-	/* Animation */
-	
-//    /**
-//     * Creates a time animation based on frames provided for a resource tree
-//     *
-//     * @param treeType    A string representing the type of resource tree.
-//     * @param treeState    A string representing the state of the tree.
-//     * @param frameCount    The number of frames in the animation.
-//     * @param animationTime The time per animation cycle.
-//     * @param completionHandler The closure to execute upon completion.
-//     * @return Time animation for the specified resource tree
-//     */
-//    public static TimeAnimation makeResourceTreeAnimation(String treeType, String treeState, int frameCount, int animationTime, Supplier<Void> completionHandler) {
-//    		String[] frames = new String[frameCount];
-//    		for (int i = 1; i <= frameCount; i++) {
-//            frames[i - 1] = treeType + "_" + treeState + "_" + i;
-//        }
-//    		return new TimeTriggerAnimation(animationTime, frames, completionHandler);
-//    }
-	
 	/**
-     * Creates an array of frames for resource tree animations
-     */
-    public static String[] makeFrames(String treeType, String treeState, int frameCount) {
+	 * Creates an array of frames for resource tree animations
+	 * 
+	 * @param treeType	A string for the type of tree
+	 * @param treeState A string for the animation state
+	 * @param frameCount The number of frames in the animation
+	 * @param startFrame The frame to offset the beginning of the animation by
+	 * @return An array of the animation frames
+	 */
+    public static String[] makeFrames(String treeType, String treeState, int frameCount, int startFrame) {
 		String[] frames = new String[frameCount];
-		for (int i = 1; i <= frameCount; i++) {
-			frames[i - 1] = treeType + "_" + treeState + "_" + i;
+		for (int i = startFrame; i <= frameCount; i++) {
+			frames[i - startFrame] = treeType + "_" + treeState + "_" + i;
 		}
 		return frames;
     }

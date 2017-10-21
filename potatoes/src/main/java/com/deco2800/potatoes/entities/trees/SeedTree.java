@@ -21,12 +21,15 @@ public class SeedTree extends ResourceTree {
 	private static final transient int GATHER_RATE = 10000;	// Time interval of gathering resources
 	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
 	
-	private static final transient String[] GROW_ANIMATION = makeFrames("seedtree", "grow", 43);
-	//private TimeAnimation produceAnimation = makeResourceTreeAnimation("seedtree", "produce", 31, 6000, this::finishedProduce);
-	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("seed_resource_tree");
+	/* Seed Tree Animations */
+	private static final transient String[] GROW_ANIMATION = makeFrames("seedtree", "grow", 43, 1);
+	private static final transient String[] PRODUCE_ANIMATION = makeFrames("seedtree", "produce", 31, 1);
 	
-	Function<ResourceTree, Animation> produceAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
+	private static Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
 			GROW_ANIMATION, () -> (float) x.getConstructionLeft());
+	
+	private static Function<ResourceTree, Animation> produceAnimation = x -> AnimationFactory.createSimpleStateAnimation(12, 0,
+			PRODUCE_ANIMATION, () -> (float) 12-x.getGatherCount());
 	
 	/**
 	 * Constructor for creating a seed resource tree
@@ -39,20 +42,8 @@ public class SeedTree extends ResourceTree {
 	public SeedTree(float posX, float posY) {
 		super(posX, posY, new SeedResource(), GATHER_CAPACITY); // Set resource to seed
 		this.defaultTexture = "seed_resource_tree";
+		this.resetStats();
 	}
-	
-	
-    
-    /**
-     * Custom animation handling for the seed resource tree
-     */
-    private Void finishedProduce() {
-        System.out.println("Finished Produce");
-        this.setAnimation(defaultAnimation);
-        return null;
-    }
-    
-    
     
 	/**
 	 * Stats for a resource tree that gathers seeds
@@ -63,9 +54,6 @@ public class SeedTree extends ResourceTree {
 		List<TreeProperties> result = new LinkedList<>();
 		List<PropertiesBuilder<ResourceTree>> builders = new LinkedList<>();
 		
-		Function<ResourceTree, Animation> growAnimation = x -> AnimationFactory.createSimpleStateAnimation(100, 0,
-				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
-		
 		builders.add(new PropertiesBuilder<ResourceTree>().setHealth(HEALTH).setBuildTime(BUILD_TIME).setBuildCost(BUILD_COST)
 				.setTexture("seed_resource_tree").addEvent(new ResourceGatherEvent(GATHER_RATE, GATHER_AMOUNT)).setAnimation(growAnimation));
 
@@ -73,6 +61,12 @@ public class SeedTree extends ResourceTree {
 			result.add(statisticsBuilder.createTreeStatistics());
 		}
 		return result;
+	}
+	
+	@Override
+	public void updateAnimations() {
+		super.updateAnimations();
+		this.setAnimation(produceAnimation.apply(this));
 	}
 	
 	@Override

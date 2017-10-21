@@ -21,7 +21,7 @@ public class FoodTree extends ResourceTree {
 	private static final transient int GATHER_RATE = 15000;	// Time interval of gathering resources
 	private static final transient int GATHER_AMOUNT = 1;	// Amount of resources obtained per gather
 	
-	private static final transient String[] GROW_ANIMATION = makeFrames("foodtree", "grow", 50);
+	private static final transient String[] GROW_ANIMATION = makeFrames("foodtree", "grow", 50, 1);
 	//private TimeAnimation produceAnimation = makeResourceTreeAnimation("foodtree", "produce", 35, 6000, this::finishedProduce);
 	private SingleFrameAnimation defaultAnimation = new SingleFrameAnimation("food_resource_tree");
 	
@@ -36,6 +36,7 @@ public class FoodTree extends ResourceTree {
 	public FoodTree(float posX, float posY) {
 		super(posX, posY, new FoodResource(), GATHER_CAPACITY); // Set resource to food and capacity to 8
 		this.defaultTexture = "food_resource_tree";
+		this.resetStats();
 	}
     
     /**
