@@ -253,22 +253,33 @@ public class ResourceTree extends AbstractTree implements Tickable {
 	
 	/* Animation */
 	
-    /**
-     * Creates a time animation based on frames provided for a resource tree
-     *
-     * @param treeType    A string representing the type of resource tree.
-     * @param treeState    A string representing the state of the tree.
-     * @param frameCount    The number of frames in the animation.
-     * @param animationTime The time per animation cycle.
-     * @param completionHandler The closure to execute upon completion.
-     * @return Time animation for the specified resource tree
+//    /**
+//     * Creates a time animation based on frames provided for a resource tree
+//     *
+//     * @param treeType    A string representing the type of resource tree.
+//     * @param treeState    A string representing the state of the tree.
+//     * @param frameCount    The number of frames in the animation.
+//     * @param animationTime The time per animation cycle.
+//     * @param completionHandler The closure to execute upon completion.
+//     * @return Time animation for the specified resource tree
+//     */
+//    public static TimeAnimation makeResourceTreeAnimation(String treeType, String treeState, int frameCount, int animationTime, Supplier<Void> completionHandler) {
+//    		String[] frames = new String[frameCount];
+//    		for (int i = 1; i <= frameCount; i++) {
+//            frames[i - 1] = treeType + "_" + treeState + "_" + i;
+//        }
+//    		return new TimeTriggerAnimation(animationTime, frames, completionHandler);
+//    }
+	
+	/**
+     * Creates an array of frames for resource tree animations
      */
-    public static TimeAnimation makeResourceTreeAnimation(String treeType, String treeState, int frameCount, int animationTime, Supplier<Void> completionHandler) {
-    		String[] frames = new String[frameCount];
-    		for (int i = 1; i <= frameCount; i++) {
-            frames[i - 1] = treeType + "_" + treeState + "_" + i;
-        }
-    		return new TimeTriggerAnimation(animationTime, frames, completionHandler);
+    public static String[] makeFrames(String treeType, String treeState, int frameCount) {
+		String[] frames = new String[frameCount];
+		for (int i = 1; i <= frameCount; i++) {
+			frames[i - 1] = treeType + "_" + treeState + "_" + i;
+		}
+		return frames;
     }
 
 }
