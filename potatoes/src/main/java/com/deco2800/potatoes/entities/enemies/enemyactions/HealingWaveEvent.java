@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author: craig
  **/
-public class HealingWave extends TimeEvent<EnemyEntity> {
+public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
 
     private float healAmount;
     private float waveRadius;
@@ -28,12 +28,12 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
     /**
      * Default constructor for serialization
      */
-    public HealingWave() {
+    public HealingWaveEvent() {
         // Blank comment for sonar
     }
 
     /**
-     * Constructor for a HealingWave TimeEvent.
+     * Constructor for a HealingWaveEvent TimeEvent.
      *
      * @param eventRate
      *          The rate at which this TimeEvent occurs in terms of number of ticks.
@@ -42,7 +42,7 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
      * @param healAmount
      *          The amount of healing the wave provides affected enemies
      */
-    public HealingWave(int eventRate, float waveRadius, float healAmount) {
+    public HealingWaveEvent(int eventRate, float waveRadius, float healAmount) {
         setDoReset(true);
         setResetAmount(eventRate);
         this.waveRadius = waveRadius;
@@ -90,7 +90,7 @@ public class HealingWave extends TimeEvent<EnemyEntity> {
      */
     @Override
     public TimeEvent<EnemyEntity> copy() {
-        return new HealingWave(getResetAmount(), this.waveRadius, this.healAmount);
+        return new HealingWaveEvent(getResetAmount(), this.waveRadius, this.healAmount);
     }
 
     /**

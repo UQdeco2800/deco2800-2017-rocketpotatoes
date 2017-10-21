@@ -71,7 +71,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private int timer = 0;
 	private Shape2D targetPos = null;
 
-	private Direction currentDirection; // The direction the enemy faces
 
 	/**
 	 * Empty constructor for serialization
@@ -214,6 +213,11 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	}
 */
 
+	/***
+	 * Actions to be performed on every tick of the game
+	 *
+	 * @param i the current game tick
+	 */
 	@Override
 	public void onTick(long i) {
 		enemyState();
@@ -302,8 +306,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
-
-
+	
 	/**
 	 * @return String of this type of enemy (ie 'bear').
 	 */

@@ -1,7 +1,9 @@
-package com.deco2800.potatoes.entities.enemies;
+package com.deco2800.potatoes.entities.enemies.enemyactions;
 
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
@@ -14,7 +16,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test class to test the Moose enemy type
+ * Test class to test the MeleeAttackEvent type
  *
  * @author craig & ryanjphelan
  */

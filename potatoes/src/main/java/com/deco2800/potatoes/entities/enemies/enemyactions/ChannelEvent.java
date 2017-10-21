@@ -8,7 +8,7 @@ import com.deco2800.potatoes.entities.enemies.EnemyEntity;
  *
  * @author: craig
  */
-public class Channel extends TimeEvent<EnemyEntity> {
+public class ChannelEvent extends TimeEvent<EnemyEntity> {
     private float duration;
     private int rate;
     private TimeEvent<EnemyEntity> channeledEvent;
@@ -16,7 +16,7 @@ public class Channel extends TimeEvent<EnemyEntity> {
     /**
      * Default constructor for serialization
      */
-    public Channel() {
+    public ChannelEvent() {
         //Blank comment for sonar
     }
 
@@ -30,7 +30,7 @@ public class Channel extends TimeEvent<EnemyEntity> {
      * @param channeledEvent
      *          The TimeEvent to occur on completion of channelling
      */
-    public Channel(int eventRate, float channelDuration, TimeEvent<EnemyEntity> channeledEvent) {
+    public ChannelEvent(int eventRate, float channelDuration, TimeEvent<EnemyEntity> channeledEvent) {
         setDoReset(true);
         setResetAmount(eventRate);
         this.duration = channelDuration;
@@ -56,14 +56,12 @@ public class Channel extends TimeEvent<EnemyEntity> {
         enemy.setChannellingTimer(enemy.getChannelTimer() + this.rate);
     }
 
-    private TimeEvent<EnemyEntity> getChanneledEvent() { return this.channeledEvent; }
-
     /**
      * @return a copy of this MeleeAttackEvent
      */
     @Override
     public TimeEvent<EnemyEntity> copy() {
-        return new Channel(this.rate, this.duration, channeledEvent);
+        return new ChannelEvent(this.rate, this.duration, channeledEvent);
     }
 
     /**

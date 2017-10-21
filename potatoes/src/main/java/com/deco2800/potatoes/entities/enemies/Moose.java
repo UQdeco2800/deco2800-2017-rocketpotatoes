@@ -4,20 +4,18 @@ import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWave;
+import com.deco2800.potatoes.entities.enemies.enemyactions.ChannelEvent;
+import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWaveEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
-import com.deco2800.potatoes.entities.enemies.enemyactions.Channel;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -82,12 +80,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return ENEMY_TYPE;
 	}
 
-	/**
-	 * Moose follows it's path.
-	 * Requests a new path whenever it collides with a staticCollideable entity
-	 * moves directly towards the player once it reaches the end of it's path
+	/***
+	 * Actions to be performed on every tick of the game
 	 *
-	 * @param i
+	 * @param i the current game tick
 	 */
 	@Override
 	public void onTick(long i) {
@@ -95,8 +91,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
+			super.updateDirection();
 		}
-		super.updateDirection();
 	}
 
 	/**
@@ -123,11 +119,11 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * @return
 	 */
 	private static EnemyProperties initStats() {
-		HealingWave healingWave = new HealingWave(3500, 8f, 80f);
+		HealingWaveEvent healingWave = new HealingWaveEvent(3500, 8f, 80f);
 		EnemyProperties result = new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
-				.addEvent(new Channel(50, 1000, healingWave))
+				.addEvent(new ChannelEvent(50, 1000, healingWave))
 				.addEvent(healingWave)
 				.createEnemyStatistics();
 		return result;

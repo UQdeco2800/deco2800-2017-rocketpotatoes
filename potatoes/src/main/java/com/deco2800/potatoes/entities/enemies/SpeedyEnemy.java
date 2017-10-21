@@ -130,6 +130,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 
+	/**
+	 * Find and return a list of all resource trees that currently exist in the world
+	 *
+	 * @return list of resource trees
+	 */
 	private LinkedList<ResourceTree> allResourceTrees() {
 		LinkedList<ResourceTree> resourceTrees = new LinkedList<>();
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
@@ -140,7 +145,13 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return resourceTrees;
 	}
 
-	/*Find the most relevant target to go to according to its EnemyTargets*/
+	/***
+	 * Determine an the speedy enemy's most relevant target according to its main entity and 'sight aggro entity
+	 * targets. Ignore already visited resource trees.
+	 *
+	 * @param targets data class containing this enemy's main and sight aggro targets
+	 * @return the most relevant entity if one exists, if no entity is found null is returned
+	 */
 	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
@@ -173,6 +184,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public String[] getEnemyType() { return ENEMY_TYPE; }
 
+	/***
+	 * Actions to be performed on every tick of the game
+	 *
+	 * @param i the current game tick
+	 */
 	@Override
 	public void onTick(long i) {
 		AbstractEntity relevantTarget = mostRelevantTarget(targets);

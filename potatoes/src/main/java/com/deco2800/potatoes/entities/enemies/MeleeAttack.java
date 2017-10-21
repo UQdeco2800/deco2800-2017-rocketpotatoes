@@ -17,29 +17,24 @@ public class MeleeAttack extends Effect {
 	}
 
 	/**
-	 * Creates a melee attack. Homing Projectiles changes direction once fired. The
-	 * initial direction is based on the direction to the closest entity and follows
-	 * it.
+	 * Constructor for a melee attack
 	 *
-	 * @param posX
-	 *            x start position
-	 * @param posY
-	 *            y start position
-	 * @param posZ
-	 *            z start position
-	 * @param target
-	 *            Entity target object
-	 * @param range
-	 *            Projectile range
-	 * @param DAMAGE
-	 *            Projectile damage
+	 * @param targetClass the class of entities that will be attacked
+	 * @param startPos vector describing the starting position of the attack
+	 * @param targetPos vector describing the end position of the attack
+	 * @param damage the amount of damage this attack inflicts on targetClass entities
+	 * @param range the maximum range between start and target positions for attacks to occur
 	 */
-
 	public MeleeAttack(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
         super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectTexture.SWIPE);
 
 	}
 
+	/**
+	 * Actions to perform every time game ticks
+	 *
+	 * @param time the current game tick
+	 */
 	@Override
 	public void onTick(long time) {
 		super.onTick(time);

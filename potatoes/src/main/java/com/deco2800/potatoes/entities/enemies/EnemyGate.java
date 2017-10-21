@@ -81,12 +81,18 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 			}	
 		}	
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ProgressBar getProgressBar() {
 		return PROGRESS_BAR;
 	}
 
+	/**
+	 * @return a string representation of the enemy gate
+	 */
 	@Override
 	public String toString() {
 		return "The Enemy Gate";

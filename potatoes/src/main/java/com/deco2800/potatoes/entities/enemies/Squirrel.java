@@ -66,19 +66,19 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	}
 
 
-	/**
-	 * Squirrel follows it's path.
-	 * Requests a new path whenever it collides with a staticCollideable entity
-	 * moves directly towards the player once it reaches the end of it's path
+	/***
+	 * Actions to be performed on every tick of the game
 	 *
-	 * @param i The current game tick
+	 * @param i the current game tick
 	 */
 	@Override
 	public void onTick(long i) {
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
-		pathMovement(pathTarget, relevantTarget);
-		super.onTickMovement();
-		super.updateDirection();
+		if (getMoving()) {
+			pathMovement(pathTarget, relevantTarget);
+			super.onTickMovement();
+			super.updateDirection();
+		}
 	}
 
 	/**

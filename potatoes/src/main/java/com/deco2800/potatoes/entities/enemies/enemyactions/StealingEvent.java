@@ -92,6 +92,6 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
      */
     @Override
     public String toString() {
-        return String.format("Steal with %d attackspeed", this.getResetAmount());
+        return String.format("Steal occurring every %d ticks", this.getResetAmount());
     }
 }

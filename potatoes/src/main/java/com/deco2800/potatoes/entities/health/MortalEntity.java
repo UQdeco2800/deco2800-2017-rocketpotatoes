@@ -9,6 +9,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.effects.HealingEffect;
 import com.deco2800.potatoes.gui.GameOverGui;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -230,6 +231,8 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	@Override
 	public boolean heal(float amount) {
 		health += amount;
+		HealingEffect healAnimation = new HealingEffect(this.getClass(), this.getPosX(), this.getPosY(), true, 1f, 1);
+
 		if (health > maxHealth) {
 			health = maxHealth;
 			LOGGER.info("{} has been healed for {} points (health now {})", this, amount,
@@ -237,6 +240,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 			return false;
 		}
 		LOGGER.info("{} has been healed for {} points (health now {})", this, amount, getHealth());
+		GameManager.get().getWorld().addEntity(healAnimation);
 		return true;
 	}
 
@@ -332,6 +336,11 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		return true;
 	}
 
+	/***
+	 * Actions to be performed on every tick of the game
+	 *
+	 * @param time the current game tick
+	 */
 	@Override
 	public void onTick(long time) {
 	}
