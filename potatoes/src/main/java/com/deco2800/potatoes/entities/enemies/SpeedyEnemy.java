@@ -1,40 +1,29 @@
 package com.deco2800.potatoes.entities.enemies;
 
 
-import java.util.*;
-
-import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.deco2800.potatoes.entities.Direction;
+import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Shape2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.PropertiesBuilder;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.StealingEvent;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Archer;
 import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Direction;
-import com.deco2800.potatoes.entities.PropertiesBuilder;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 /**
  * A speedy raccoon enemy that steals resources from resource trees.
