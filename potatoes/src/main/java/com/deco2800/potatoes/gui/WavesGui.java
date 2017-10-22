@@ -34,7 +34,7 @@ public class WavesGui extends Gui {
         // Make window with skin
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         window = new Window("Wave info", uiSkin);
-        
+
         //add a window for amount of enemies
         enemyAmountWindow = new Window("Total Enemies In World", uiSkin);
         enemyAmountWindow.setWidth(30);
