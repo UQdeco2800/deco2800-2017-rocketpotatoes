@@ -50,7 +50,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 	private int count = 0;
-	private String enemyStatus = "";
+	private String enemyStatus = "walk";
 	protected int roundNum = 0;
 
 	/**

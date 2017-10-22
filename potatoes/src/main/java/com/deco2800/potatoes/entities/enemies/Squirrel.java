@@ -23,7 +23,14 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
 	private static final String[] ENEMY_TYPE = new String[]{
-			"squirrel"
+			"squirrel",
+			"squirrel",
+			"squirrel",
+			"squirrel",
+			"squirrel",
+			"squirrel",
+			"squirrel",
+			"squirrel",
 	};
 	private static final float SPEED = 0.05f;
 
@@ -36,6 +43,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
+	private long sTime=System.currentTimeMillis();
+	private float phealth=getHealth();
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
@@ -72,6 +81,33 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 			super.updateDirection();
 		}
 	}
+	/**
+	 * Set the enemy state
+	 */
+	public void enemyState(){
+		//Check if attacking
+		if(isAttacking()){
+			sTime = System.currentTimeMillis();
+			setEnemyStatus("attack");
+			phealth=getHealth();
+		}
+		//Check if walking
+		if((System.currentTimeMillis()-sTime)/1000.0>3){
+			setEnemyStatus("walk");
+		}
+	}
+
+	/**
+	 * Determine if the tank is currently attacking.
+	 *
+	 * @return true if the tank is attacking
+	 */
+	public boolean isAttacking(){
+		if((int)phealth!=(int)getHealth()){
+			return true;
+		}
+		return false;
+	};
 
 	/**
 	 * @return String of this type of enemy (ie 'squirrel').
