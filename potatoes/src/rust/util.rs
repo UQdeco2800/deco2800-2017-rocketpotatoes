@@ -9,6 +9,7 @@ pub struct CallbackFunctions {
     pub end_draw: extern "C" fn(),
     pub update_window: extern "C" fn(),
     pub is_space_pressed: extern "C" fn() -> bool,
+    pub is_cheat_key_pressed: extern "C" fn() -> u32,
     pub clear_window: extern "C" fn(),
     pub flush_window: extern "C" fn(),
     pub get_window_info: extern "C" fn(&RenderInfo),

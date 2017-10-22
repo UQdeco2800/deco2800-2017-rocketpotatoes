@@ -71,7 +71,16 @@ pub struct RenderObject {
 }
 
 impl RenderObject {
-    pub fn new(name: String, x: i32, y: i32, rotation: f32, scale: f32, flip_x: bool, flip_y: bool, col: i32) -> Self {
+    pub fn new(
+        name: String,
+        x: i32,
+        y: i32,
+        rotation: f32,
+        scale: f32,
+        flip_x: bool,
+        flip_y: bool,
+        col: i32,
+    ) -> Self {
         Self {
             asset: to_ptr(name),
             x: x,
@@ -91,4 +100,3 @@ pub struct RenderInfo {
     pub size_x: i32,
     pub size_y: i32,
 }
-
