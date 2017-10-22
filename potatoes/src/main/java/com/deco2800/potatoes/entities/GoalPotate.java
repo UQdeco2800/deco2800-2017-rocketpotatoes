@@ -17,7 +17,7 @@ public class GoalPotate extends MortalEntity implements HasProgressBar {
 	
 	private static final transient String TEXTURE = "potate";
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 2);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "potatoIcon", 2);
 
 	public GoalPotate() {
 		// empty for serialization

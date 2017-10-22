@@ -1,23 +1,20 @@
 package com.deco2800.potatoes.entities.portals;
 
-import java.util.Map;
-
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Shape2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.gui.GameOverGui;
+import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.worlds.World;
+import com.deco2800.potatoes.worlds.WorldType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.worlds.World;
-import com.deco2800.potatoes.worlds.WorldType;
-import com.deco2800.potatoes.entities.health.MortalEntity;
+import java.util.Map;
 
 /**
  * A class that can create portals which are not the base portal. Because these
@@ -112,6 +109,19 @@ public class AbstractPortal extends MortalEntity implements Tickable {
         return player;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deathHandler() {
+        super.deathHandler();
+
+        // End game
+        GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
+        GameManager.get().getWorld()
+                .removeEntity(GameManager.get().getManager(PlayerManager.class).getPlayer());
+    }
+
     @Override
     public void onTick(long time) {
         boolean collided = this.preTick(time);
@@ -149,5 +159,7 @@ public class AbstractPortal extends MortalEntity implements Tickable {
                 LOGGER.warn("Issue entering portal; " + e);
             }
         }
+
+
     }
 }

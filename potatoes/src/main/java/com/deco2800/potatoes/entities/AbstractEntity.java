@@ -570,16 +570,10 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		float dy = (float) (dist * Math.sin(theta));
 		float length = GameManager.get().getWorld().getLength();
 		float width = GameManager.get().getWorld().getWidth();
-		float terrainModifierCheck;
 
+		setPosX(Math.max(Math.min(getPosX() + dx, width), 0));
+		setPosY(Math.max(Math.min(getPosY() + dy, length), 0));
 
-		terrainModifierCheck = GameManager.get().getWorld()
-				.getTerrain(Math.round(Math.min(getPosX() + dx-1 , width - 1)), Math.round(Math.min(getPosY() + dy, length - 1)))
-				.getMoveScale();
-		if (terrainModifierCheck>0) {
-			setPosX(Math.max(Math.min(getPosX() + dx, width), 0));
-			setPosY(Math.max(Math.min(getPosY() + dy, length), 0));
-		}
 	}
 
 
@@ -708,7 +702,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	private void moveAndPush(Map<Integer, AbstractEntity> entities){
 		float length = GameManager.get().getWorld().getLength();
 		float width = GameManager.get().getWorld().getWidth();
-		float terrainModifierCheck;
+
 		float movDist = moveSpeed * moveSpeedModifier;
 
 		//set next pos
@@ -756,13 +750,9 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		}
 
-		terrainModifierCheck = GameManager.get().getWorld()
-				.getTerrain(Math.round(Math.min(nextPos.getX()-1 , width - 1)), Math.round(Math.min(nextPos.getY(), length - 1)))
-				.getMoveScale();
-		if (terrainModifierCheck>0) {
-			setPosX(Math.max(Math.min(nextPos.getX(), width), 0));
-			setPosY(Math.max(Math.min(nextPos.getY(), length), 0));
-		}
+		setPosX(Math.max(Math.min(nextPos.getX(), width), 0));
+		setPosY(Math.max(Math.min(nextPos.getY(), length), 0));
+
 	}
 
 

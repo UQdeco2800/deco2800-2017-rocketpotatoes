@@ -1,14 +1,11 @@
 package com.deco2800.potatoes.entities.player;
 
-import java.util.Map;
-import java.util.Optional;
-
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
-import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.EventManager;
@@ -16,6 +13,9 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class Archer extends Player {
 	
@@ -32,6 +32,7 @@ public class Archer extends Player {
             super.setMoveSpeed(defaultSpeed);
     		this.facing = Direction.SE;
         this.resetState();
+        PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
@@ -88,56 +89,56 @@ public class Archer extends Player {
 		}
 
     		if (this.setState(ATTACK)) {
-    			
-    			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
-    			
-			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-	        
-	        Optional<AbstractEntity> target;
-	        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-	            
-	        if (target.isPresent()) {
-	        		float targetPosX = target.get().getPosX();
-	        		float targetPosY = target.get().getPosY();
-	            
-	        		switch (super.facing) {
-	        		case N:
-	        			break;
-	        		case NE:
-	        			pPosY -= 1;
-	        			pPosX += 1.5;
-	        			break;
-	        		case E:
-	        			pPosY -= 1;
-	        			pPosX += 1.5;
-	        			break;
-	        		case SE:
-	        			pPosX += 1;
-	        			break;
-	        		case S:
-	        			pPosX += 1.2;
-	        			break;
-	        		case SW:
-	        			pPosY += 1;
-	        			pPosX += 1;
-	        			break;
-	        		case W:
-	        			break;
-	        		case NW:
-	        			break;
-	        		default:
-	        			break;
-	        		}
 
-				Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
-				Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
+				GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
-				GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.LEAVES, null, null,
-						super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
-	        }
-		}
+				float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+				float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+				float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+
+				Optional<AbstractEntity> target;
+				target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+
+				if (target.isPresent()) {
+					float targetPosX = target.get().getPosX();
+					float targetPosY = target.get().getPosY();
+
+					switch (super.facing) {
+						case N:
+							break;
+						case NE:
+							pPosY -= 1;
+							pPosX += 1.5;
+							break;
+						case E:
+							pPosY -= 1;
+							pPosX += 1.5;
+							break;
+						case SE:
+							pPosX += 1;
+							break;
+						case S:
+							pPosX += 1.2;
+							break;
+						case SW:
+							pPosY += 1;
+							pPosX += 1;
+							break;
+						case W:
+							break;
+						case NW:
+							break;
+						default:
+							break;
+					}
+
+					Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
+					Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
+
+					GameManager.get().getWorld().addEntity(new PlayerProjectile(target.get().getClass(), startPos, endPos, 8f, 100, Projectile.ProjectileTexture.LEAVES, null, null,
+							super.facing.toString(), PlayerProjectile.PlayerShootMethod.DIRECTIONAL));
+				}
+			}
     }
     
     @Override

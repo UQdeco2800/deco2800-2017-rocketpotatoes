@@ -31,7 +31,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
+    protected ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
 
 
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
@@ -276,8 +276,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 tossItem(new FoodResource());
                 break;
             case Input.Keys.E:
-                interact();
-                harvestResources();
+                // If successfully harvest, play animation
+                if (harvestResources()) {
+                    interact();
+                }
                 break;
             case Input.Keys.SPACE:
                 attack();
@@ -422,27 +424,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     @Override
     public void onTick(long arg0) {
 
-
-        //Get terrainModifier of the current tile
-        float myX = super.getPosX();
-        float myY = super.getPosY();
-        float length = GameManager.get().getWorld().getLength();
-        float width = GameManager.get().getWorld().getWidth();
-        float terrainModifier = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX-1, width - 1)), Math.round(Math.min(myY, length - 1)))
-                .getMoveScale();
-        float moveDist = getMoveSpeed() * terrainModifier;
-        float newX = moveDist * (float) Math.cos(this.getMoveAngle());
-        float newY = moveDist * (float) Math.sin(this.getMoveAngle());
-        float terrainModifierCheck = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX-1 + newX, width - 1)), Math.round(Math.min(myY + newY, length - 1)))
-                .getMoveScale();
-        if (terrainModifierCheck <= 0) {
-            terrainModifier = 0;
-        }
-        
         if (state == WALK) {
-            super.setMoveSpeedModifier(terrainModifier);
+            super.setMoveSpeedModifier(1);
         }
         super.onTickMovement();
     }
@@ -524,8 +507,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */
-    private void harvestResources() {
-        double interactRange = 3f; 
+    private boolean harvestResources() {
+        double interactRange = 1.5f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -538,6 +521,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (didHarvest) {
             GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
         }
+        return didHarvest;
     }
 
 

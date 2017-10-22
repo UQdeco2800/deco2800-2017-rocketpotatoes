@@ -3,9 +3,11 @@ package com.deco2800.potatoes.managers;
 import com.deco2800.potatoes.collisions.*;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.WaterWall;
 import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.util.RTree;
 import com.deco2800.potatoes.worlds.World;
 
 import java.util.*;
@@ -34,14 +36,47 @@ public class PathManager extends Manager {
     private static float nodeOffsetFudge = (float) 0.01;
     private static float edgeWidthFudge = (float) 0.001;
 
-
+    private static String WATER_TILE = "water_tile_1";
 
     /**
      */
     public PathManager() {
         // Hi sonar!
+        generateWaterWalls();
     }
 
+
+
+    //TODO comm & shift to somewhere more appropriate
+    public RTree<Shape2D> generateWaterWalls() {
+
+        World world = GameManager.get().getWorld();
+
+
+
+        RTree<Shape2D> waterWalls = new RTree<>();
+
+
+        int worldSize = WorldManager.WORLD_SIZE;
+
+        for (int x = 0; x < worldSize; x++) {
+
+            for (int y = 0; y < worldSize; y++) {
+                if (world.getTerrain(x,y).getTexture().equals(WATER_TILE)
+                    && !(((x == 0) || (world.getTerrain(x-1,y).getTexture().equals(WATER_TILE)))	// water to left
+                    && ((y == 0) || (world.getTerrain(x,y-1).getTexture().equals(WATER_TILE)))	//water below
+                    && ((x == worldSize - 1) || (world.getTerrain(x+1,y).getTexture().equals(WATER_TILE)))	//water to right
+                    && ((y == worldSize - 1) || (world.getTerrain(x,y+1).getTexture().equals(WATER_TILE))) 	//water above
+                    )) {
+
+                    world.addEntity(new WaterWall(x, y));
+                }
+
+            }
+        }
+
+        return waterWalls;
+    }
 
     // ----------     Debug Drawing    ---------- //
     // only should be used in render God/Debug
@@ -145,7 +180,7 @@ public class PathManager extends Manager {
         if (!this.targetIDs.contains(targetID)) {
             this.targetIDs.add(targetID);
             System.out.println("targID Add: " + targetID);
-            Point2D targCenter = world.getEntities().get(targetID).getMask().getCentre();
+            Point2D targCenter = world.getEntities().get(targetID).getMask().getCentre(); //TODO add try
             this.targetCentres.put(targetID, targCenter);
             this.targetPaths.put(targetID, new HashMap<>());
         }
@@ -187,32 +222,23 @@ public class PathManager extends Manager {
             // if straight line to target (clear of static solid obstacles)
             Line2D direct = new Line2D(currPos, target);
             float directWidth = getClearance(direct);
-            if (directWidth > rad) {
-                System.out.println("MAN: there's a straight path, with width: " + directWidth);
+            if (directWidth > rad)
                 return target;
-            }
 
             // if targetPathNode is not a valid node, try for a new path
             if (!targPath.nodes.contains(targetPathNode))
                 return newPath(targPath, currPos);
 
             // if targetPathNode reached (roughly centred on), follow to next point
-            if (currentPos.getCentre().distance(targetPathNode) < 0.2) { //TODO dist sqrd method
-                // go to next node
-                System.out.println("MAN: returning next node");
+            if (currentPos.getCentre().distance(targetPathNode) < 0.2) //TODO dist sqrd method
                 return targPath.spanningPath.get(targetPathNode);
-            }
 
-            // if straight line to targetPathNode (clear of static solid obstacles)
-            // (should implicitly be true if no obstacles have been added)
-            direct = new Line2D(currPos, targetPathNode); //TODO check if implicitly true
+            // if straight line to targetPathNode (clear of static solid obstacles) targetNode is valid
+            direct = new Line2D(currPos, targetPathNode);
             directWidth = getClearance(direct);
-            if (directWidth > rad) {
-                // targetNode is still valid
-                System.out.println("MAN: continuing to last node, with width: " + directWidth);
+            if (directWidth > rad)
                 return targetPathNode;
 
-            }
         }
 
         return newPath(targPath, currPos);
@@ -224,7 +250,6 @@ public class PathManager extends Manager {
         Point2D newTargPathNode = null;
         float pathCost = Float.POSITIVE_INFINITY;
 
-        System.out.println("MAN: I'm looking for a new path");
 
         // loop through all nodes,
         for (Point2D node : targPath.nodes) {
@@ -249,9 +274,12 @@ public class PathManager extends Manager {
     }
 
 
+    private float getClearance(Line2D edge) {
+        return getClearance(edge, 0);
+    }
 
     //TODO description & use obstacles data structure
-    private float getClearance(Line2D edge) {
+    private float getClearance(Line2D edge, float minClearance) {
 
         World world = GameManager.get().getWorld();
 
@@ -263,7 +291,7 @@ public class PathManager extends Manager {
 
                 width = Math.min(width, edge.distance(entity.getMask()));
 
-                if (width < 0 ) { //TODO allow my width?
+                if (width < minClearance ) {
                     // if overlapping; return  negative value early
                     return width;
                 }
@@ -379,9 +407,16 @@ public class PathManager extends Manager {
             //loop through all nodes and all entities, removing any nodes that intersect with entities
             Set<Point2D> removedNodes = new HashSet<>();
             for (Point2D node : this.nodes) {
+                //TODO check if on water
+                if (world.getTerrain((int) node.getX(), (int) node.getY()).getTexture().equals(WATER_TILE)) {
+                    removedNodes.add(node);
+                    continue;
+                }
+
                 for (AbstractEntity entity : world.getEntities().values()) { //TODO obstacle data structure
                     if (entity.isStatic() && entity.isSolid() && entity.getMask().overlaps(node)) {
                         removedNodes.add(node);
+                        break;
                     }
                 }
             }

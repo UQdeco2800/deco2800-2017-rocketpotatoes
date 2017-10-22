@@ -62,7 +62,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	public Squirrel(float posX, float posY) {
 
-		super(new Circle2D(posX, posY, 0.5f), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+		super(new Circle2D(posX, posY, 0.48f), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 

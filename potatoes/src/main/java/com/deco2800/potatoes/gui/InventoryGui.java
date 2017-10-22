@@ -28,7 +28,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 
 public class InventoryGui extends Gui {
 
-	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+	private Skin skin = new Skin(Gdx.files.internal("menu/uiskin.json"));
 
 	/* Create Window with skin */
     private Window window;

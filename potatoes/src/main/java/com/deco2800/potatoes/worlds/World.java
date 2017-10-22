@@ -52,8 +52,6 @@ public class World {
 	// First 16 index's are reserved for clients
 	private int currentIndex = 17;
 
-	// the subset of entities that isStatic and isSolid
-	private Set<AbstractEntity> obstacles = new HashSet<>();
 
 	protected TiledMap map;
 	private int width;

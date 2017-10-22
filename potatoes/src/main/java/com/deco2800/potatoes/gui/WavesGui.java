@@ -2,8 +2,9 @@ package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.deco2800.potatoes.managers.TreeState;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 /**
  * WavesGui provides a gui displaying the status of the enemy waves
@@ -32,7 +33,7 @@ public class WavesGui extends Gui {
         hidden = false;
 
         // Make window with skin
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         window = new Window("Wave info", uiSkin);
 
         //add a window for amount of enemies
@@ -50,13 +51,13 @@ public class WavesGui extends Gui {
         window.add(waveStatusLabel);
         window.add(waveTimeLabel);
         window.pack();
-        window.setMovable(false);
+        window.setMovable(true);
         window.setPosition(stage.getWidth()/2, stage.getHeight());
         
         enemyAmountWindow.add(waveTotalAmountLabel);
         enemyAmountWindow.add(waveEnemiesLabel);
         enemyAmountWindow.pack();
-        enemyAmountWindow.setMovable(false);
+        enemyAmountWindow.setMovable(true);
         enemyAmountWindow.setPosition(stage.getWidth()/2.8f, stage.getHeight());
 
         stage.addActor(window);
