@@ -24,7 +24,7 @@ import java.util.ArrayList;
  */
 public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
-	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
+	private static final transient String TEXTURE_LEFT = "pronograde";
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
@@ -117,17 +117,16 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
 	 * enemy.
 	 *
-	 * @return
+	 * @return EnemyProperties
 	 */
 	private static EnemyProperties initStats() {
 		HealingWaveEvent healingWave = new HealingWaveEvent(3500, 8f, 80f);
-		EnemyProperties result = new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
+		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
 				.addEvent(new ChannelEvent(50, 1000, healingWave))
 				.addEvent(healingWave)
 				.createEnemyStatistics();
-		return result;
 	}
 
 	/***
