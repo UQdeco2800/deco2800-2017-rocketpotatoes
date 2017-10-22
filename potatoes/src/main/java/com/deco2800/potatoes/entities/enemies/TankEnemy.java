@@ -109,7 +109,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * @return true if the tank is attacking
 	 */
 	public boolean isAttacking(){
-		if(phealth!=getHealth()){
+		if((int)phealth!=(int)getHealth()){
 			return true;
 		}
 		return false;
