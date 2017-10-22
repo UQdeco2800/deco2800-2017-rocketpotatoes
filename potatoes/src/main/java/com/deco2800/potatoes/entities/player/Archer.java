@@ -10,6 +10,7 @@ import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.EventManager;
@@ -33,6 +34,7 @@ public class Archer extends Player {
             super.setMoveSpeed(defaultSpeed);
     		this.facing = Direction.SE;
         this.resetState();
+        PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);

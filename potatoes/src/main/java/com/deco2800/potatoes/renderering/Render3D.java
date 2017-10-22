@@ -364,8 +364,6 @@ public class Render3D implements Renderer {
 		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
 		GoalPotate potato = null;
 		
-		
-		
 		batch.begin();
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
@@ -374,6 +372,7 @@ public class Render3D implements Renderer {
 			if (!progressValues.showPlayerProgress() && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
 				continue;
 			}
+			
 			// Progress Bar for Goal Potato.
 			if (!progressValues.showPotatoProgress() && e instanceof GoalPotate) {
 				continue;
@@ -404,10 +403,6 @@ public class Render3D implements Renderer {
 					// Skip for player
 					if (e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
 						continue;
-						/*Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
-						hudBatch.begin();
-						hudBatch.draw(iconTexture, 25, Gdx.graphics.getHeight()-134/2-75, 638/2, 134/2, 1, 2, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
-						hudBatch.end();*/
 					}
 					
 					// sets colour palette
@@ -454,7 +449,8 @@ public class Render3D implements Renderer {
 			}
 
 		}
-		if (player != null) {
+		// Draw player health HUD and progress bar.
+		if (player != null && progressValues.showPlayerProgress()) {
 			// Get texture
 			ProgressBar progressBar = player.getProgressBar();
 			Texture iconTexture = reg.getTexture(player.getProgressBar().getLayoutTexture());
@@ -472,12 +468,13 @@ public class Render3D implements Renderer {
 			float barX = 93;
 			float barY = Gdx.graphics.getHeight()-134/2-73.5f;
 			float endX = barX + barWidth;
+			// Draw amount of health left.
 			hudBatch.draw(barTexture, barX, barY,                        // texture, x, y
 					barWidth, maxBarWidth / 8, 0, 0,                // width, height srcX, srcY
 					(int) (barTexture.getWidth() * barRatio),        // srcWidth
 					barTexture.getHeight(),                            // srcHeight
 					false, false);                                    // flipX, flipY
-
+			// Draw amount of health lost.
 			hudBatch.setColor(0.5f, 0.5f, 0.5f, 1f);
 			hudBatch.draw(barTexture, endX, barY,                            // texture, x, y
 					barBackgroundWidth, maxBarWidth / 8,                // width, height
@@ -486,7 +483,6 @@ public class Render3D implements Renderer {
 					barTexture.getHeight(),                                // srcHeight
 					false, false);  
 			hudBatch.end();
-
 		}
 		
 		// reset the batch colour

@@ -75,6 +75,9 @@ public class TextureManager extends Manager {
         saveTexture("healthBarRed", "resources/healthproperties/health-bar-red.png");
         saveTexture("healthBarGreen", "resources/healthproperties/health-bar-green.png");
         saveTexture("caveIcon", "resources/healthproperties/icon-healthbar-cav.png");
+        saveTexture("wizardIcon", "resources/healthproperties/icon-healthbar-wiz.png");
+        saveTexture("archerIcon", "resources/healthproperties/icon-healthbar-arc.png");
+        saveTexture("potatoIcon", "resources/healthproperties/icon-healthbar-potato.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
         saveTexture("acorn1", "resources/Projectiles/acorn1.png");
         saveTexture("leaves1", "resources/Projectiles/leaves1.png");
