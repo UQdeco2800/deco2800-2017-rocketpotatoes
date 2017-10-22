@@ -22,7 +22,7 @@ import java.net.InetAddress;
 import java.util.List;
 
 /*
- * "Ascending the Vale" Kevin MacLeod (incompetech.com)
+ * "Call to Adventure" Kevin MacLeod (incompetech.com)
  * Licensed under Creative Commons: By Attribution 3.0 License
  * http://creativecommons.org/licenses/by/3.0/
  */
@@ -57,7 +57,7 @@ public class MainMenuScreen implements Screen {
         TextureManager.loadTextures();
         stage = new Stage(new ScreenViewport());
 
-        soundManager.playMusic("Ascending the Vale.mp3");
+        soundManager.playMusic("Call to Adventure.mp3");
 
         setupGui();
 

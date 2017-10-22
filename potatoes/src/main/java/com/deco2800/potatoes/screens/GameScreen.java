@@ -42,6 +42,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Map;
 
+/* "Feral Chase" Kevin MacLeod (incompetech.com)
+ * Licensed under Creative Commons: By Attribution 3.0 License
+ * http://creativecommons.org/licenses/by/3.0/
+ */
+
+
 /**
  * Handles the creation of the world and rendering.
  *
@@ -241,6 +247,9 @@ public class GameScreen implements Screen {
 		 * more for HUDs etc
 		 */
 		batch = new SpriteBatch();
+
+		// Start music
+		soundManager.playMusic("Feral Chase.mp3");
 	}
 
 	private void setupInputHandling() {
@@ -305,19 +314,19 @@ public class GameScreen implements Screen {
 			/* TODO remove this line!!!!!!
 			//add enemy gates to game world
 			//W
-			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength()/2, 6.5f, "enemyCave_SE");
+			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 6.5f, "enemyCave_SE");
 			GameManager.get().getWorld().addEntity(gateW);
 			//E
-			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 42f,"enemyCave_W" );
+			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 42f, "enemyCave_W");
 			GameManager.get().getWorld().addEntity(gateE);
 			//S
-			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength()/2 , "enemyCave_E");
+			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength() / 2, "enemyCave_E");
 			GameManager.get().getWorld().addEntity(gateS);
 			//N
-			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_WS");
+			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength() / 2, "enemyCave_WS");
 			GameManager.get().getWorld().addEntity(gateN);
 
-            GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
+			GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
 			// Initial player preparation up period
 			*/
@@ -325,31 +334,35 @@ public class GameScreen implements Screen {
 			initialisePortal();
 			
 			/* Randomly generate trees in each world */
-			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
+			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
-			
+
 			AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
-			
+
 			AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
-			
+
 			AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
-			
+
 			AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
 
 
 			if (!multiplayerManager.isMultiplayer()) {
-			/*
-			 * reseting the game while having a key held down will then
-			 * notify the new player with the keyUp event, which will result it in
-			 * moving without pressing a key. 
-			 */
 
 				// Make our player
-				playerManager.setPlayer(12.5f, 12.5f);
+				int targetX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
+				int targetY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
+
+				while (GameManager.get().getWorld().getTerrain(targetX, targetY).getMoveScale() == 0) {
+					targetX += GameManager.get().getRandom().nextInt() % 4 - 2;
+					targetY += GameManager.get().getRandom().nextInt() % 4 - 2;
+				}
+
+				playerManager.setPlayer(targetX, targetY);
+
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
@@ -622,6 +635,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void exitToMenu() {
+		soundManager.stopMusic();
 		GameManager.get().clearManagers();
 		game.setScreen(new MainMenuScreen(game));
 		dispose();

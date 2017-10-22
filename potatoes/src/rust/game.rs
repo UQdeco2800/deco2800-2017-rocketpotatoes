@@ -3,11 +3,11 @@ use util::CallbackFunctions;
 
 use std::time::Instant;
 
-extern crate rand;
-use self::rand::distributions::{IndependentSample, Range};
+use rand::{self, Rng};
+use rand::distributions::{IndependentSample, Range};
 
-const turbofish_width: i32 = 274;
-const turbofish_height: i32 = 86;
+const TURBOFISH_WIDTH: i32 = 274;
+const TURBOFISH_HEIGHT: i32 = 86;
 
 /// GameState machine!
 ///
@@ -27,8 +27,18 @@ enum GameState {
 #[derive(Debug)]
 enum FishableType {
     Turbofish,
-    Rustcrab,
+    Rustacean,
 }
+
+impl FishableType {
+    fn texture(&self) -> String {
+        match *self {
+            FishableType::Turbofish => "turbofish".into(),
+            FishableType::Rustacean => "rustacean".into(),
+        }
+    }
+}
+
 
 /// Represents a single object that can be fished out of the water
 #[derive(Debug)]
@@ -54,7 +64,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Self {
         Self {
-            state: GameState::Start, 
+            state: GameState::Start,
             line_x: 0,
             line_depth: 50,
             water_level: 200,
@@ -83,13 +93,12 @@ impl Game {
     }
 
     /// Updates the position the line's depth
-    fn update_depth(&mut self, delta_time: f64) {
+    fn update_depth(&mut self) {
         self.line_depth = self.line_depth + self.fall_rate;
     }
 
     /// Updates the position of all the fishables (and spawns new ones if required)
-    fn update_fishables(&mut self, delta_time: f64) {
-        // TODO delta
+    fn update_fishables(&mut self) {
         for f in self.fishables.iter_mut() {
             f.position.0 += f.velocity.0;
             f.position.0 += f.velocity.1;
@@ -97,7 +106,9 @@ impl Game {
 
 
         // Delete those outside bounds TODO better bounds
-        self.fishables.retain(|ref f| (f.position.0 >= -3000) && (f.position.0 <= 4000));
+        self.fishables.retain(|ref f| {
+            (f.position.0 >= -3000) && (f.position.0 <= 4000)
+        });
 
 
         // TODO fix this gross
@@ -111,20 +122,27 @@ impl Game {
             let velocity: (i32, i32);
             let position: (i32, i32);
             if dir_range.ind_sample(&mut rng) == 0 {
-                position = (-1500 + x_range.ind_sample(&mut rng)
-                            , y_range.ind_sample(&mut rng));
+                position = (
+                    -1500 + x_range.ind_sample(&mut rng),
+                    y_range.ind_sample(&mut rng),
+                );
                 velocity = (speed_range.ind_sample(&mut rng), 0);
-            }
-            else {
-                position = (3000 + x_range.ind_sample(&mut rng)
-                            , y_range.ind_sample(&mut rng));
+            } else {
+                position = (
+                    3000 + x_range.ind_sample(&mut rng),
+                    y_range.ind_sample(&mut rng),
+                );
                 velocity = (-speed_range.ind_sample(&mut rng), 0);
             }
             self.fishables.push(Fishable {
                 position: position,
                 scale: 0.25,
                 velocity: velocity,
-                category: FishableType::Turbofish,
+                category: if rng.gen_weighted_bool(2) {
+                    FishableType::Turbofish
+                } else {
+                    FishableType::Rustacean
+                },
                 color: color_range.ind_sample(&mut rng),
             });
         }
@@ -136,7 +154,10 @@ impl Game {
 
         for f in self.fishables.iter().enumerate() {
             let tl = f.1.position;
-            let br = (tl.0 + (turbofish_width as f32 * f.1.scale) as i32, tl.1 + (turbofish_height as f32 * f.1.scale) as i32);
+            let br = (
+                tl.0 + (TURBOFISH_WIDTH as f32 * f.1.scale) as i32,
+                tl.1 + (TURBOFISH_HEIGHT as f32 * f.1.scale) as i32,
+            );
 
             // Return index if point inside collider
             if p.0 >= tl.0 && p.1 >= tl.1 && p.0 <= br.0 && p.1 <= br.1 {
@@ -147,55 +168,60 @@ impl Game {
         None
     }
 
-    pub fn update(&mut self, delta_time: f64, callbacks: &CallbackFunctions) {
-        let window_info = RenderInfo { size_x: 0, size_y: 0 };
+    pub fn update(&mut self, callbacks: &CallbackFunctions) {
+        let window_info = RenderInfo {
+            size_x: 0,
+            size_y: 0,
+        };
         (callbacks.get_window_info)(&window_info);
         self.line_x = window_info.size_x / 2;
 
         // Update water level
         let elapsed = self.time.elapsed();
-        let real_time = f64::sin(elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9);
-        self.water_level = 200 + (10.0 * f64::sin(0.5 * real_time))as i32;
+        let real_time = f64::sin(
+            elapsed.as_secs() as f64 + elapsed.subsec_nanos() as f64 * 1e-9,
+        );
+        self.water_level = 200 + (10.0 * f64::sin(0.5 * real_time)) as i32;
 
-        self.update_fishables(delta_time);
-        self.update_depth(delta_time);
-        
+        self.update_fishables();
+        self.update_depth();
+
         match self.state {
             GameState::Start => {
                 self.start_falling();
-            },
+            }
 
             GameState::Falling => {
 
                 match self.check_collisions() {
                     Some(index) => {
                         self.start_caught(index);
-                    },
-                    None => { },
+                    }
+                    None => {}
                 }
 
                 if (callbacks.is_space_pressed)() {
                     self.start_reeling();
                 }
-            },
+            }
 
             GameState::Reeling => {
 
                 match self.check_collisions() {
                     Some(index) => {
                         self.start_caught(index);
-                    },
-                    None => { },
+                    }
+                    None => {}
                 }
 
                 if !(callbacks.is_space_pressed)() {
                     self.start_falling();
                 }
-            },
+            }
 
             GameState::Caught(ref mut fish) => {
                 fish.position.1 = self.line_depth;
-            },
+            }
         }
 
         if self.line_depth < 50 {
@@ -203,17 +229,20 @@ impl Game {
         }
     }
 
-    pub fn draw(&self, delta_time: f64, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
+    pub fn draw(&self, window_info: &RenderInfo, callbacks: &CallbackFunctions) {
         // Draw line
-        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 50), (window_info.size_x / 2, self.line_depth)));
+        (callbacks.draw_line)(RenderLine::new((window_info.size_x / 2, 50), (
+            window_info.size_x / 2,
+            self.line_depth,
+        )));
 
         /*
         // Debug drawing collisions
         for f in self.fishables.iter() {
             let tl = f.position;
-            let tr = (tl.0 + (turbofish_width as f32 * f.scale) as i32, tl.1);
-            let bl = (tl.0, tl.1 + (turbofish_height as f32 * f.scale) as i32);
-            let br = (tl.0 + (turbofish_width as f32 * f.scale) as i32, tl.1 + (turbofish_height as f32 * f.scale) as i32);
+            let tr = (tl.0 + (TURBOFISH_WIDTH as f32 * f.scale) as i32, tl.1);
+            let bl = (tl.0, tl.1 + (TURBOFISH_HEIGHT as f32 * f.scale) as i32);
+            let br = (tl.0 + (TURBOFISH_WIDTH as f32 * f.scale) as i32, tl.1 + (TURBOFISH_HEIGHT as f32 * f.scale) as i32);
 
             (callbacks.draw_line)(RenderLine::new(tl, tr));
             (callbacks.draw_line)(RenderLine::new(tl, bl));
@@ -228,36 +257,64 @@ impl Game {
 
         // Draw fisherman
         let b_scale = 0.3;
-        (callbacks.draw_sprite)(RenderObject::new("boatman".to_string(), 
-                                                  (window_info.size_x / 2) - (928 as f32 * b_scale) as i32, 50, 0.0, b_scale,
-                                                  false, false, 
-                                                  -1));
+        (callbacks.draw_sprite)(RenderObject::new(
+            "boatman".to_string(),
+            (window_info.size_x / 2) - (928 as f32 * b_scale) as i32,
+            50,
+            0.0,
+            b_scale,
+            false,
+            false,
+            -1,
+        ));
 
         // Draw caught
         match self.state {
             GameState::Caught(ref f) => {
-                (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                          f.position.0, f.position.1, 0.0, f.scale, 
-                                                          f.velocity.0 < 0, false, 
-                                                          f.color));
-            },
+                (callbacks.draw_sprite)(RenderObject::new(
+                    f.category.texture(),
+                    f.position.0,
+                    f.position.1,
+                    0.0,
+                    f.scale,
+                    f.velocity.0 < 0,
+                    false,
+                    f.color,
+                ));
+            }
 
-            _ => { },
+            _ => {}
         }
 
         // Draw others
         for f in self.fishables.iter() {
-            (callbacks.draw_sprite)(RenderObject::new("turbofish".to_string(), 
-                                                      f.position.0, f.position.1, 0.0, f.scale, 
-                                                      f.velocity.0 < 0, false, 
-                                                      f.color));
+            (callbacks.draw_sprite)(RenderObject::new(
+                f.category.texture(),
+                f.position.0,
+                f.position.1,
+                0.0,
+                f.scale,
+                f.velocity.0 < 0,
+                false,
+                f.color,
+            ));
         }
         (callbacks.end_draw)();
 
         // Draw water
-        (callbacks.draw_rectangle)(RenderRectangle::new((0, self.water_level), (window_info.size_x, window_info.size_y), 3, 0.3));
+        (callbacks.draw_rectangle)(RenderRectangle::new(
+            (0, self.water_level),
+            (window_info.size_x, window_info.size_y),
+            3,
+            0.3,
+        ));
 
         // Draw water seam
-        (callbacks.draw_rectangle)(RenderRectangle::new((0, self.water_level), (window_info.size_x, 3), -1, 1.0));
+        (callbacks.draw_rectangle)(RenderRectangle::new(
+            (0, self.water_level),
+            (window_info.size_x, 3),
+            -1,
+            1.0,
+        ));
     }
 }

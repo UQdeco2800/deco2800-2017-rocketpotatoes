@@ -8,9 +8,10 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.gui.GameOverGui;
-import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.worlds.World;
-import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.gui.WorldChangeGui;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,9 @@ public class AbstractPortal extends MortalEntity implements Tickable {
      * The player entity.
      */
     private AbstractEntity player;
+
+    // If the player was previous colliding
+    boolean prevCollided = false;
 
     /**
      * This instantiates an AbstractPortal given the appropriate parameters.
@@ -92,11 +96,21 @@ public class AbstractPortal extends MortalEntity implements Tickable {
                 // Player next to this resource
                 if (newPos.overlaps(entity.getMask())) {
                     collided = true;
-
                 }
             }
         }
-        return collided;
+
+        if (prevCollided && !collided) {
+            prevCollided = false;
+            // Hide gui
+            GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class).hide();
+            return false;
+        }
+        else if (!prevCollided && collided) {
+            prevCollided = true;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -124,42 +138,6 @@ public class AbstractPortal extends MortalEntity implements Tickable {
 
     @Override
     public void onTick(long time) {
-        boolean collided = this.preTick(time);
-        // remove from game world and add to inventory if a player has collided with
-        // this resource
-        if (collided) {
-            try {
-                LOGGER.info("Entered portal");
-                //play warping sound effect
-                SoundManager soundManager = new SoundManager();
-                soundManager.playSound("warpSound.wav");
-                //remover player from old world
-                GameManager.get().getWorld().removeEntity(getPlayer());
-                //change to new world
-                GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-                // The new world
-                World newWorld = GameManager.get().getWorld();
-                
-                // Find the portal in the world
-                for (AbstractEntity entity: newWorld.getEntities().values()) {
-                	if (AbstractPortal.class.isAssignableFrom(entity.getClass())) {
-                		
-                		//set player to be next to the portal
-                		playerManager.getPlayer().setPosition(entity.getPosX() + entity.getXRenderLength(),
-                				entity.getPosY() + entity.getYRenderLength());
-                	}               	
-                	
-                }
-                
-                //add player to new world
-                GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-
-                // Bring up portal interface
-            } catch (Exception e) {
-                LOGGER.warn("Issue entering portal; " + e);
-            }
-        }
-
 
     }
 }

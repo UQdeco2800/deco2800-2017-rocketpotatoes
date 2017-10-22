@@ -13,14 +13,18 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.lwjgl.opengl.Display;
 import org.slf4j.LoggerFactory;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Rustyfish implements CheatExecution {
+    private boolean state = true;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Rustyfish.class);
     private static SpriteBatch batch = new SpriteBatch();
     private static ShapeRenderer sr = new ShapeRenderer();
@@ -29,7 +33,7 @@ public class Rustyfish implements CheatExecution {
         RLibrary INSTANCE = null;
 
         void startGame(Callback startDraw, Callback endDraw,
-                       Callback updateWindow, Callback isSpacePressed,
+                       Callback updateWindow, Callback isSpacePressed, Callback isCheatKeyPressed,
                        Callback clearWindow, Callback flushWindow, Callback getWindowInfo,
                        Callback drawSprite, Callback drawLine, Callback drawRectangle);
     }
@@ -109,6 +113,34 @@ public class Rustyfish implements CheatExecution {
     };
 
     /**
+     * Returns an enum (passed as int through FFI) based on whether a certain key is pressed
+     */
+    private static Callback isCheatKeyPressed = new Callback() {
+        @SuppressWarnings("unused")
+        public int run() {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                return 0;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                return 1;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                return 2;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                return 3;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                return 4;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.B)) {
+                return 5;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+                return 6;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+                return 7;
+            } else {
+                return Integer.MAX_VALUE;
+            }
+        }
+    };
+
+    /**
      * Clears the window with default black color
      */
     private static Callback clearWindow = new Callback() {
@@ -135,10 +167,8 @@ public class Rustyfish implements CheatExecution {
     private static Callback getWindowInfo = new Callback() {
         @SuppressWarnings("unused")
         public void run(RenderInfo.ByReference info) {
-
             info.sizeX = Gdx.graphics.getWidth();
             info.sizeY = Gdx.graphics.getHeight();
-            
         }
     };
 
@@ -153,10 +183,8 @@ public class Rustyfish implements CheatExecution {
 
             batch.setColor(getColor(obj.color));
 
-            batch.draw(t,
-                    obj.x, Gdx.graphics.getHeight() - t.getHeight() * obj.scale - obj.y,
-                    0, 0,
-                    t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
+            batch.draw(t, obj.x, Gdx.graphics.getHeight() - t.getHeight() * obj.scale - obj.y,
+                    0, 0, t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
                     0, 0, t.getWidth(), t.getHeight(), obj.flipX != 0, obj.flipY != 0);
         }
     };
@@ -195,14 +223,21 @@ public class Rustyfish implements CheatExecution {
      */
     @Override
     public void run() {
+        state = !state;
+        if (state) {
+            return;
+        }
         try {
-            Native.loadLibrary("rustyfish", RLibrary.class).startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
-                    getWindowInfo, drawSprite, drawLine, drawRectangle);
+            Path loadPath = Paths.get(System.getProperty("user.dir"));
+            loadPath = Paths.get(loadPath.toString(), "build", "classes", "main");
+            NativeLibrary.addSearchPath("rustyfish", loadPath.toString());
+            Native.loadLibrary("rustyfish", RLibrary.class).startGame(
+                    startDraw, endDraw, updateWindow, isSpacePressed, isCheatKeyPressed,
+                    clearWindow, flushWindow, getWindowInfo, drawSprite, drawLine, drawRectangle);
         }
         catch (UnsatisfiedLinkError ex) {
             // Ignore failure, don't start game!
             LOGGER.error("Unsatified Link Error occured",ex);
-            System.exit(-1);
         }
     }
 }

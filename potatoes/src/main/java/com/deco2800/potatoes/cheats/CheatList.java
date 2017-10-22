@@ -33,8 +33,8 @@ public class CheatList {
                 Key.RIGHT,
                 Key.LEFT,
                 Key.RIGHT,
-                Key.A,
                 Key.B,
+                Key.A,
                 Key.START);
 
         manager.addCheatCode(new Rustyfish(),
@@ -47,6 +47,15 @@ public class CheatList {
                 Key.RIGHT,
                 Key.DOWN);
 
-        manager.addCheatCode(new Shortcut(), Key.SELECT);
+        manager.addCheatCode(new DuckLife(),
+                Key.UP,
+                Key.LEFT,
+                Key.UP,
+                Key.LEFT,
+                Key.UP,
+                Key.LEFT,
+                Key.UP,
+                Key.LEFT
+                );
     }
 }

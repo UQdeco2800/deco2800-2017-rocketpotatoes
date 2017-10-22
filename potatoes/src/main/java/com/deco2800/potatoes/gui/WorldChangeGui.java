@@ -1,20 +1,25 @@
 package com.deco2800.potatoes.gui;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.screens.GameScreen;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A GUI that is displayed when the player enters the base portal. Allows players to teleport to
@@ -113,25 +118,6 @@ public class WorldChangeGui extends Gui {
                 // hide the gui
                 hide();
                 
-                // the current player
-                Player player = playerManager.getPlayer();
-                // the current world
-                World currentWorld = GameManager.get().getWorld();
-                
-                // Find the portal in the world
-                for (AbstractEntity entity: currentWorld.getEntities().values()) {
-                	if (AbstractPortal.class.isAssignableFrom(entity.getClass())) {
-                		
-                        //set player to be next to the portal
-        				player.setPosition(entity.getPosX() + entity.getXRenderLength(),
-        						entity.getPosY() + entity.getYRenderLength());
-                	}               	
-                	
-                }
-
-                // add player back into the world
-                currentWorld.addEntity(player);
-                
                 LOGGER.info("Exited base portal");
             }
 
@@ -141,6 +127,14 @@ public class WorldChangeGui extends Gui {
         worldFourButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+
+                //play warping sound effect
+                SoundManager soundManager = new SoundManager();
+                soundManager.playSound("warpSound.wav");
+                //remove player from old world
+                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+                GameManager.get().getWorld().removeEntity(p);
+
                 //change to world 4
                 changeWorld(WorldType.OCEAN_WORLD);
                 
@@ -153,6 +147,14 @@ public class WorldChangeGui extends Gui {
         worldThreeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+
+                //play warping sound effect
+                SoundManager soundManager = new SoundManager();
+                soundManager.playSound("warpSound.wav");
+                //remove player from old world
+                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+                GameManager.get().getWorld().removeEntity(p);
+
                 //change to world 3
                 changeWorld(WorldType.VOLCANO_WORLD);
                 
@@ -166,6 +168,14 @@ public class WorldChangeGui extends Gui {
         worldTwoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+
+                //play warping sound effect
+                SoundManager soundManager = new SoundManager();
+                soundManager.playSound("warpSound.wav");
+                //remove player from old world
+                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+                GameManager.get().getWorld().removeEntity(p);
+
                 //change to world 2
                 changeWorld(WorldType.ICE_WORLD);
                 
@@ -178,6 +188,14 @@ public class WorldChangeGui extends Gui {
         worldOneButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+
+                //play warping sound effect
+                SoundManager soundManager = new SoundManager();
+                soundManager.playSound("warpSound.wav");
+                //remove player from old world
+                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+                GameManager.get().getWorld().removeEntity(p);
+
                 //change to world 1
                 changeWorld(WorldType.DESERT_WORLD);
                 
