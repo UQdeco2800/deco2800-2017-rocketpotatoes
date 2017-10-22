@@ -113,7 +113,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
-			this.targetClass = MortalEntity.class;
+			this.targetClass = EnemyEntity.class;
 
 		this.projectileTexture = projectileTexture;
 		this.maxRange = this.range = range;
@@ -297,5 +297,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public static float getShadowRadius() {
 		return shadowRadius;
 	}
+
 
 }
