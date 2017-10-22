@@ -109,11 +109,11 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 					0.0f, 256, Color.DARK_GRAY, 4, 1);
 			particle.speed = 0.15f;
 
-			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX() - 0.5f, this.getPosY() - 0.2f, -1);
+			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 1);
 			int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 			int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 			GameManager.get().getManager(ParticleManager.class).addParticleEmitter(
-					2f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2, particle));
+					0.5f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2, particle));
 		}
 	}
 	/**
