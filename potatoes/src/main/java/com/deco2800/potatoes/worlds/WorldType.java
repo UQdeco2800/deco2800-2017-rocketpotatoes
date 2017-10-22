@@ -37,8 +37,10 @@ public class WorldType {
 	private float landAmount = 0.3f;
 
 	/**
-	 * @param terrain
-	 *            the terrain type
+	 * The super constructor to create sub world types.
+	 * 
+	 * @param terrain The terrain type
+	 * @param entities The entities for that terrain
 	 */
 	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
 		this.terrain = terrain;

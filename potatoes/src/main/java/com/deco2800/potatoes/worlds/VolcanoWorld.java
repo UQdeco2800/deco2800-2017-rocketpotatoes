@@ -10,9 +10,14 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 public class VolcanoWorld extends WorldType {
 	private static final TerrainType volcanoTerrain = new TerrainType(null, new Terrain(GRASS, 1, true), new Terrain(GROUND, 0.5f, false), new Terrain(WATER, 0, false));
 	private static final List<Supplier<AbstractEntity>> volcanoEntities = defaultEntities("volcano");
-
 	private static final VolcanoWorld instance = new VolcanoWorld(volcanoTerrain, volcanoEntities);
 	
+	/**
+	 * Creates the volcano world type using the super constructor.
+	 * 
+	 * @param terrain The terrain type
+	 * @param entities The entities for that terrain
+	 */
 	private VolcanoWorld(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
 		super(volcanoTerrain, volcanoEntities);
 	}
