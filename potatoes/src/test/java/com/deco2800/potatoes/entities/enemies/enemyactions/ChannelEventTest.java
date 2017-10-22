@@ -59,4 +59,10 @@ public class ChannelEventTest extends BaseTest {
         Assert.assertEquals("channelling event hasn't properly incremented enemy's channeling timer",
                 (initialChannelTime + eventRate), moose.getChannelTimer());
     }
+
+    @Test
+    public void toStringTest() {
+        Assert.assertEquals("String mismatch", channel.toString(),
+                String.format("Channel with %f duration", channelDuration));
+    }
 }
