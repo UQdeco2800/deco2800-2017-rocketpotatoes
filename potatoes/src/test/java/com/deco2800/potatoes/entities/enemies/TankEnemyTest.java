@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.player.Player;
@@ -55,7 +54,7 @@ public class TankEnemyTest extends BaseTest {
 	@Test
 	public void bearTickTest(){
 		tank1.onTick(4);
-		tank1.setGoal(Player.class);
+		tank1.setTargetClass(Player.class);
 		tank1.onTick(4);
 	}
 	@Test

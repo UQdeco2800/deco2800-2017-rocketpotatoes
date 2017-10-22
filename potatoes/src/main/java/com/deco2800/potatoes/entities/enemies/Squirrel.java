@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.deco2800.potatoes.collisions.Point2D;
-import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
@@ -9,11 +7,6 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.util.WorldUtil;
-
-import java.util.Map;
 
 
 /**
@@ -33,18 +26,11 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	};
 	private static final float SPEED = 0.05f;
 
-	private static Class<?> goal = Player.class;
+	private static final Class<?> SQUIRREL_TARGET_CLASS = Player.class;
+	private static final float SQUIRREL_RADIUS = 0.48f;
 
 
 
-	private Integer target = null;	//the integer corresponding to the target
-	private Point2D targetNode = null;
-
-	private EnemyTargets targets = initTargets();
-
-
-	private long sTime = System.currentTimeMillis();
-	private float phealth = getHealth();
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1.5f);
 
 	/***
@@ -62,19 +48,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	public Squirrel(float posX, float posY) {
 
-		super(new Circle2D(posX, posY, 0.48f), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+		super(new Circle2D(posX, posY, SQUIRREL_RADIUS), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, SQUIRREL_TARGET_CLASS);
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-
-		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
-			if (entity.getValue() instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
-				this.target = entity.getKey();
-				break;
-			}
-		}
-
-
-		Squirrel.goal = goal;
 		setDelayTime(100);
 	}
 
@@ -86,89 +61,10 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
-		//PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		PathManager pathMan = GameManager.get().getManager(PathManager.class);
-
-
-		//AbstractEntity relevantTarget = mostRelevantTarget();
-
-		if (target == null)				//(relevantTarget == null)
-			return;
-
-		targetNode = pathMan.getNextNodeToTarget((Circle2D) this.getMask(), target, targetNode);
-
-		if (targetNode == null)
-			return;
-
-
-		float deltaX = targetNode.getX() - getPosX();
-		float deltaY = targetNode.getY() - getPosY();
-
-		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-		super.onTickMovement();
-
-		super.updateDirection();
+		super.onTick(i);
 	}
 
-	/*Find the most relevant target to go to according to its EnemyTargets
-	*
-	* This is likely to get EnemyEntity, squirrel is being used for testing aggro at the moment
-	*
-	private AbstractEntity mostRelevantTarget() {
 
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		Is a sight aggro-able target within range of enemy - if so, return as a target
-		for (AbstractEntity entity : entities.values()) {
-			for (Class sightTarget : targets.getSightAggroTargets()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {
-					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-					if (distance < 10) {
-						return entity;
-					}
-				}
-			}
-
-		enemyState();
-		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
-		if (getMoving()) {
-			//pathMovement(pathTarget, relevantTarget);
-			super.onTickMovement();
-			super.updateDirection();
-		}
-
-	}*/
-
-	/**
-	 * Set the enemy state
-	 */
-	public void enemyState(){
-		//Check if attacking
-		if(isAttacking()){
-			sTime = System.currentTimeMillis();
-			setTextureLength(7);
-			setEnemyStatus("_attack");
-			phealth=getHealth();
-
-		}
-		//Check if walking
-		if((System.currentTimeMillis()-sTime)/1000.0>3){
-
-			setTextureLength(7);
-			setEnemyStatus("_walk");
-		}
-	}
-
-	/**
-	 * Determine if the tank is currently attacking.
-	 *
-	 * @return true if the tank is attacking
-	 */
-	public boolean isAttacking(){
-		if((int)phealth!=(int)getHealth()){
-			return true;
-		}
-		return false;
-	};
 
 	/**
 	 * @return String of this type of enemy (ie 'squirrel').

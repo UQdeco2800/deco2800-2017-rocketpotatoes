@@ -42,12 +42,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final EnemyProperties STATS = initStats();
 
 	private static float speed = 0.07f;
-	private static Class<?> goal = ResourceTree.class;
 
 
-	private Shape2D target = null;
-
-	private EnemyTargets targets = initTargets();
 	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees();
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
@@ -71,9 +67,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @param posY
 	 */
 	public SpeedyEnemy(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.4f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        super(new Circle2D(posX, posY, 0.4f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, ResourceTree.class);
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
-		SpeedyEnemy.goal = goal;
 
 	}
 
@@ -145,14 +140,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return resourceTrees;
 	}
 
-	/**
-	 * Return the targets of this speedy enemy.
-	 *
-	 * @return the raccoon's targets
-	 */
-	public EnemyTargets getSpeedyTargets() {
-		return targets;
-	}
 
 	/***
 	 * Determine an the speedy enemy's most relevant target according to its main entity and 'sight aggro entity
@@ -199,7 +186,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public void onTick(long i) {
 
-		AbstractEntity relevantTarget = mostRelevantTarget(targets);
 		if (getMoving()) {
 			//pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();

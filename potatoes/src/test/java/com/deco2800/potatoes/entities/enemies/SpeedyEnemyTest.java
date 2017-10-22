@@ -39,7 +39,6 @@ public class SpeedyEnemyTest extends BaseTest {
         speedy1.getProgressBar();
         ResourceTree tree1 = new ResourceTree(1, 1);
         speedy1.addTreeToVisited(tree1);
-        speedy1.mostRelevantTarget(speedy1.getSpeedyTargets());
     }
 
     @After

@@ -29,7 +29,6 @@ public class PathManagerTest {
 
     TestableBlockingEntity blockingEntity;
     PathManager pathManager;
-    Path path;
     GameManager gameManager;
 
     @Before
@@ -58,7 +57,6 @@ public class PathManagerTest {
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
-        path = null;
         gameManager = null;
     }
 

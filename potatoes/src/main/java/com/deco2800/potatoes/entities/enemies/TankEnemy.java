@@ -51,7 +51,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 	private Shape2D target = null;
 
-	private EnemyTargets targets = initTargets();
 
 	private int count;
 	private float lastX;
@@ -87,7 +86,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public void onTick(long i) {
 		enemyState();
-		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
+
 		if (getMoving()) {
 			//pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();

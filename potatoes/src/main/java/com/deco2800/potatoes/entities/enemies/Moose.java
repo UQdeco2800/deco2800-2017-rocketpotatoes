@@ -34,10 +34,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static float speed = 0.04f;
 
 	private static Class<?> goal = GoalPotate.class;
-	private Shape2D target = null;
-	//private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
-	private EnemyTargets targets = initTargets();
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
 

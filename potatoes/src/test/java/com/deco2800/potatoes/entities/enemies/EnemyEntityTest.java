@@ -81,7 +81,7 @@ public class EnemyEntityTest extends BaseTest {
         resourceTree = new ResourceTree(7, 7);
         GameManager.get().getWorld().addEntity(resourceTree);
         tank1.onTick(1);
-        tank1.getGoal();
+        tank1.getTargetClass();
         for (int i = 0; i < 100; ++i) {
             tank1.onTick(1);
         }
@@ -117,8 +117,8 @@ public class EnemyEntityTest extends BaseTest {
     @Test
     public void setGoalTest() {
         tank1 = new TankEnemy(7, 7);
-        tank1.setGoal(ProjectileTree.class);
-        Assert.assertEquals("Failed to set Goal", ProjectileTree.class, tank1.getGoal());
+        tank1.setTargetClass(ProjectileTree.class);
+        Assert.assertEquals("Failed to set Goal", ProjectileTree.class, tank1.getTargetClass());
     }
 
     @Test

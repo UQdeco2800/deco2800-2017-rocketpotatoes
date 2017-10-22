@@ -2,34 +2,28 @@ package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
-import com.deco2800.potatoes.entities.player.Wizard;
-import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
 import com.deco2800.potatoes.renderering.particles.types.ParticleType;
-import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.deco2800.potatoes.entities.Direction.getFromRad;
 import static com.deco2800.potatoes.entities.Direction.getRadFromCoords;
@@ -43,10 +37,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	private float speed;
 
-	private Shape2D targetPos = null;
+	protected Class<?> targetClass;	//TODO add multiple target classes & weightings
+	protected Integer target = null;  //the integer corresponding to the target
+	protected Point2D targetPathNode = null;
 
-	private Class<?> goal;
-	private Map<Integer, AbstractEntity> entities;
+
 	private boolean moving = true;
 	private int channelTimer;
 
@@ -93,7 +88,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		super.setMoveSpeed(speed);
 		super.setSolid(true);
 
-		this.goal = goal;
+		this.targetClass = goal;
 	}
 
 	/***
@@ -103,54 +98,46 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	@Override
 	public void onTick(long i) {
-		float goalX = getPosX();
-		float goalY = getPosY();
-		//if goal is player, use playerManager to eet position and move towards target 
-		if (goal == Player.class) {
-			//goal = Player.class;
-			/*PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
-
-			if (target == null) {
-				target = goalEntity.getMask();
-			}
-
-			float deltaX = target.getX() - getPosX();
-			float deltaY = target.getY() - getPosY();
-
-			super.setMoveAngle(getRadFromCoords(deltaX, deltaY));
-			pathTarget.setPath(path);
-			pathTarget.setTarget(target);
-			*/
+		// if no target, get closest, if still none, don't move
+		if (target == null) {
+			target = mostRelevantTarget();
+			if (target == null)
+				return;
 		}
+
+		// get the next node in a path to the target
+		PathManager pathMan = GameManager.get().getManager(PathManager.class);
+		targetPathNode = pathMan.getNextNodeToTarget((Circle2D) this.getMask(), target, targetPathNode);
+
+		// check node not null
+		if (targetPathNode == null)
+			return;
+
+		// move towards node targetPathNode
+		float deltaX = targetPathNode.getX() - getPosX();
+		float deltaY = targetPathNode.getY() - getPosY();
+
+		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+		super.onTickMovement();
+
+		this.updateDirection();
 	}
 
 	/***
 	 * Determine an enemy's most relevant target according to its main entity and 'sight aggro' (entities that
 	 * if close enough to an enemy cause the enemy to preferentially move to it) entity targets.
 	 *
-	 * @param targets data class containing this enemy's main and sight aggro targets
-	 * @return the most relevant entity if one exists, if no entity is found null is returned
+	 * @return the ID of the closest entity of type targetClass, if no entity is found null is returned
 	 */
-	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
-		entities = GameManager.get().getWorld().getEntities();
-		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
-		for (Class sightTarget : targets.getSightAggroTargets()) {
-			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {
-					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
-					if (distance < 10) {
-						return entity;
-					}
-				}
-			}
-		}
-		/*If no aggro, return 'ultimate' target*/
-		for (Class mainTarget : targets.getMainTargets()) {
-			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					return entity;
+	public Integer mostRelevantTarget() {
+		Optional<AbstractEntity> newTarget = GameManager.get().getWorld().getClosestEntity(getPosX(), getPosY(), targetClass);
+
+		if (newTarget.isPresent()) {
+			for (Map.Entry<Integer, AbstractEntity> entity : GameManager.get().getWorld().getEntities().entrySet()) {
+				AbstractEntity e = entity.getValue();
+				if (newTarget.equals(e)) {
+					return entity.getKey();
 				}
 			}
 		}
@@ -275,8 +262,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return this enemy's goal
 	 */
-	public Class<?> getGoal() {
-		return this.goal;
+	public Class<?> getTargetClass() {
+		return this.targetClass;
 	}
 
 	/**
@@ -293,10 +280,10 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 	/**
 	 * Set the enemy's goal to the given entity class
-	 * @param newGoal enemy's new goal(entity class)
+	 * @param newTargetClass enemy's new goal(entity class)
 	 */
-	public void setGoal(Class<?> newGoal) {
-		this.goal = newGoal;
+	public void setTargetClass(Class<?> newTargetClass) {
+		this.targetClass = newTargetClass;
 	}
 
 	/**
@@ -434,29 +421,4 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		GameManager.get().getManager(WaveManager.class).getActiveWave().reduceTotalEnemiesByOne();
 	}
 
-	/**
-	 * Initialise the EnemyTargets for an enemy for use when determining the enemy's most
-	 * relevant target.
-	 *
-	 * @return the enemy's initialized targets.
-	 */
-	protected EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		List<Class> mainTargets = new ArrayList<>();
-		if (this instanceof SpeedyEnemy) {
-			mainTargets.add(ResourceTree.class);
-		}
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		List<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
-	}
 }
