@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -87,6 +88,15 @@ public class Wizard extends Player {
     @Override
     protected void attack() {
     		super.attack();
+    		
+    		if (!canAttack) {
+    			return;
+    		} else {
+    			canAttack = false;
+    			EventManager em = GameManager.get().getManager(EventManager.class);
+    	        em.registerEvent(this, new  AttackCooldownEvent(500));
+    		}
+    		
         if (this.setState(ATTACK)) {
 
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
