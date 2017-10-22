@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  * positions in the world. Sight aggro targets are classes of entities that are to only attract an
  * enemy if they are within a certain distance of each other in game.
  *
- * @author: craig
+ * @author craig
  */
 public class EnemyTargets {
 

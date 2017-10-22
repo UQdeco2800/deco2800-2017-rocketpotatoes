@@ -104,12 +104,12 @@ public class TankEnemyTest extends BaseTest {
 
 	}
 
-
 	@Test
 	public void getProgressBarTest() {
         assertEquals("healthBarRed", tank1.getProgressBar().getTexture());
         
 	}
+
 
 	/*
 	 * Test the toString method
