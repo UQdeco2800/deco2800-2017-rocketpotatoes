@@ -1,7 +1,6 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,8 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
 

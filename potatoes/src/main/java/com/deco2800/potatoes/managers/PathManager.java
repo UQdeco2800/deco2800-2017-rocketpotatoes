@@ -176,7 +176,7 @@ public class PathManager extends Manager {
         // add this target if it does not exist
         if (!this.targetIDs.contains(targetID)) {
             this.targetIDs.add(targetID);
-            System.out.println("targID Add: " + targetID);
+
             Point2D targCenter = world.getEntity(targetID).getMask().getCentre(); //TODO add try
             this.targetCentres.put(targetID, targCenter);
             this.targetPaths.put(targetID, new HashMap<>());

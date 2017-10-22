@@ -9,6 +9,7 @@ import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWaveEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
@@ -65,7 +66,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	/**
 	 * Change the target for the moose to a random location
 	 */
-	private void randomTarget() {
+	public void randomTarget() {
 		float x = (float) Math.random() * GameManager.get().getWorld().getLength();
 		float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
 		//target = new Point2D(x, y);
@@ -117,6 +118,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
+				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class))
 				.addEvent(new ChannelEvent(50, 1000, healingWave))
 				.addEvent(healingWave)
 				.createEnemyStatistics();

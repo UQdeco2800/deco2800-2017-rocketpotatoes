@@ -62,13 +62,13 @@ public class Projectile extends AbstractEntity implements Tickable {
 		LEAVES {
 			@Override
 			public String[] textures() {
-				return new String[] { "leaves1" };
+				return new String[] { "leaves" };
 			}
 		},
 		ACORN {
 			@Override
 			public String[] textures() {
-				return new String[] { "acorn1" };
+				return new String[] { "acorn" };
 			}
 		},
 		ORB {
@@ -76,7 +76,20 @@ public class Projectile extends AbstractEntity implements Tickable {
 			public String[] textures() {
 				return new String[] { "orb1" };
 			}
-		};
+		},
+		ARROW {
+			@Override
+			public String[] textures() {
+				return new String[] { "arrow" };
+			}
+		},
+		AXE {
+			@Override
+			public String[] textures() {
+				return new String[] { "axe" };
+			}
+		}
+		;
 
 		public String[] textures() {
 			return new String[] { "default" };

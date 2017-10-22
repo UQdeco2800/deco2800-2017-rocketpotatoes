@@ -54,9 +54,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private String enemyStatus = "_walk";
 	protected int roundNum = 0;
 	private int texturePointer=1;
-	private long sTime=System.currentTimeMillis();
-	private int textureLength=0;
-	private int delayTime=500;
+	private long sTime = System.currentTimeMillis();
+	private int textureLength = 0;
+	private int delayTime = 500;
 
 	/**
 	 * Default constructor for serialization

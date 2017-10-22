@@ -63,13 +63,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    protected ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
+    protected ProgressBarEntity progressBar = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
 
     public enum PlayerShootMethod {
-		DIRECTIONAL, CLOSEST, MOUSE
-	}
+        DIRECTIONAL, CLOSEST, MOUSE
+    }
     public enum ShootStage {
-    	READY, HOLDING, LOOSE
+        READY, HOLDING, LOOSE
     }
     public ShootStage currentShootStage=ShootStage.READY;
     protected PlayerShootMethod shootingStyle=PlayerShootMethod.MOUSE;
@@ -94,7 +94,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private boolean keyA = false;
     private boolean keyS = false;
     private boolean keyD = false;
-    
+
 
     // ----------     PlayerState class     ---------- //
 
@@ -334,7 +334,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 Vector3 startPos = new Vector3(pPosX, pPosY, pPosZ);
                 target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
-                MineBomb MBprojectile = new MineBomb(startPos, 8f, 100, MineBomb.BombTexture.MINES,
+                MineBomb MBprojectile = new MineBomb(startPos, 8f, 100,
                         null, null);
 
                 GameManager.get().getWorld().addEntity(MBprojectile);
@@ -478,31 +478,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     @Override
     public void onTick(long arg0) {
+
         //mouse input
-//    	System.out.println(Render3D.screenToTile(0,0));
         mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
                 GameManager.get().getManager(InputManager.class).getMouseY());
 
-        //Get terrainModifier of the current tile
-        float myX = super.getPosX();
-        float myY = super.getPosY();
-        float length = GameManager.get().getWorld().getLength();
-        float width = GameManager.get().getWorld().getWidth();
-        float terrainModifier = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX - 1, width - 1)), Math.round(Math.min(myY, length - 1)))
-                .getMoveScale();
-        float moveDist = getMoveSpeed() * terrainModifier;
-        float newX = moveDist * (float) Math.cos(this.getMoveAngle());
-        float newY = moveDist * (float) Math.sin(this.getMoveAngle());
-        float terrainModifierCheck = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX - 1 + newX, width - 1)), Math.round(Math.min(myY + newY, length - 1)))
-                .getMoveScale();
-        if (terrainModifierCheck <= 0) {
-            terrainModifier = 0;
-        }
+
 
         if (state == WALK) {
-            super.setMoveSpeedModifier(terrainModifier);
+            super.setMoveSpeedModifier(1);
         }
         super.onTickMovement();
     }
@@ -649,7 +633,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     @Override
     public ProgressBar getProgressBar() {
-        return PROGRESS_BAR;
+        return progressBar;
     }
     ArrayList<Projectile> tr=new ArrayList<Projectile>();
     /**
@@ -659,15 +643,15 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     protected void attack() {
         // Override in subclasses to allow custom attacking.
-    	if (!canAttack) {
-			return;
-		} else {
-			canAttack = false;
-			EventManager em = GameManager.get().getManager(EventManager.class);
-	        em.registerEvent(this, new  AttackCooldownEvent(500));
-		}
+        if (!canAttack) {
+            return;
+        } else {
+            canAttack = false;
+            EventManager em = GameManager.get().getManager(EventManager.class);
+            em.registerEvent(this, new  AttackCooldownEvent(500));
+        }
         if (this.setState(ATTACK)) {
-        	currentShootStage=ShootStage.READY;
+            currentShootStage=ShootStage.READY;
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
             float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
@@ -677,30 +661,30 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
             float targetPosX = 0;
             float targetPosY = 0;
-            
+
             Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
             Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
-            
-         
+
+
             if (BallisticProjectile.class.isAssignableFrom(projectileClass)) {
-    			projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(), startPos, endPos, 10, 1, projectileTexture,
-    					null, null);
-    		} else if (OrbProjectile.class.isAssignableFrom(projectileClass)) {
-    			projectile = new OrbProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
-    					null, null);
-    		} // else if (BombProjectile.class.isAssignableFrom(shootObjectClass)) {
-    			// projectile = new BombProjectile(targetClass, startPos, targetPos, range,
-    			// damage, projectileTexture,
-    			// startEffect, endEffect);
-    			// }
-    		else if (HomingProjectile.class.isAssignableFrom(projectileClass)) {//could be t.getclass
-    			projectile = new HomingProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
-    					null, null);
-    		} else {
-    			projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
-    					null, null);
-    		}
-    
+                projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(), startPos, endPos, 10, 1, projectileTexture,
+                        null, null);
+            } else if (OrbProjectile.class.isAssignableFrom(projectileClass)) {
+                projectile = new OrbProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+                        null, null);
+            } // else if (BombProjectile.class.isAssignableFrom(shootObjectClass)) {
+            // projectile = new BombProjectile(targetClass, startPos, targetPos, range,
+            // damage, projectileTexture,
+            // startEffect, endEffect);
+            // }
+            else if (HomingProjectile.class.isAssignableFrom(projectileClass)) {//could be t.getclass
+                projectile = new HomingProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+                        null, null);
+            } else {
+                projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+                        null, null);
+            }
+
             switch (facing) {
                 case N:
                     break;
@@ -729,12 +713,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 default:
                     break;
             }
-    		if (shootingStyle == PlayerShootMethod.MOUSE) {
-    			if (HomingProjectile.class.isAssignableFrom(projectileClass)) {
-    				((HomingProjectile) projectile).setHomingDelay(10);
-    			}
-    			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
-    		}
+            if (shootingStyle == PlayerShootMethod.MOUSE) {
+                if (HomingProjectile.class.isAssignableFrom(projectileClass)) {
+                    ((HomingProjectile) projectile).setHomingDelay(10);
+                }
+                projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
+            }
             if (target.isPresent()) {
                 targetPosX = target.get().getPosX();
                 targetPosY = target.get().getPosY();
@@ -813,5 +797,5 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public String toString() {
         return "The player";
     }
-    
+
 }

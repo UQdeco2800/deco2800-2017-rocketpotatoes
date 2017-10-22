@@ -22,15 +22,13 @@ import java.util.TimerTask;
 public class MineBomb extends AbstractEntity implements Tickable {
     protected float pPosX;
     protected float pPosY;
-    protected float tPosX;
-    protected float tPosY;
     protected float range;
     protected float damage = 100;
 
-    public Projectile projectile;
+//    public Projectile projectile;
     protected Effect startEffect;
     protected Effect endEffect;
-    protected BombTexture bombTexture;
+    protected BombTexture bombTexture = BombTexture.MINES;
     protected boolean stopAnimation = false;
     protected boolean loopAnimation = true;
     protected boolean explodable = false;
@@ -61,26 +59,23 @@ public class MineBomb extends AbstractEntity implements Tickable {
      * Creates a new projectile. A projectile is the vehicle used to deliver damage
      * to a target over a distance
      *
-
      * @param startPos
      * @param range
-     * @param damage            damage of projectile
-
-     * @param startEffect       the effect to play at the start of the projectile being fired
-     * @param endEffect         the effect to be played if a collision occurs
-
+     * @param damage      damage of projectile
+     * @param startEffect the effect to play at the start of the projectile being fired
+     * @param endEffect   the effect to be played if a collision occurs
      */
 
     public MineBomb(Vector3 startPos, float range, float damage,
-                    BombTexture bombTexture, Effect startEffect, Effect endEffect) {
+                    Effect startEffect, Effect endEffect) {
         super(new Circle2D(startPos.x, startPos.y, 1f), 0.8f, 0.8f,
-                bombTexture.MINES.textures()[0]);
+                BombTexture.MINES.textures()[0]);
         this.pPosX = startPos.x;
         this.pPosY = startPos.y;
         this.range = range;
         this.damage = damage;
         this.startEffect = startEffect;
-        this.bombTexture = bombTexture;
+        this.bombTexture = BombTexture.MINES;
         this.endEffect = endEffect;
         this.targetClass = EnemyEntity.class;
 
@@ -138,7 +133,7 @@ public class MineBomb extends AbstractEntity implements Tickable {
                             public void run() {
                                 explodable = true;
                             }
-                        },1500);
+                        }, 1500);
                     }
                 } else {
                     projectileCurrentSpriteIndexCount++;
@@ -148,18 +143,27 @@ public class MineBomb extends AbstractEntity implements Tickable {
     }
 
 
-    /**
-     * Returns Target Pos X
-     */
-    public float getTargetPosX() {
-        return tPosX;
+    public float getPosX() {
+        return pPosX;
     }
 
-    /**
-     * Returns Target Pos Y
-     */
-    public float getTargetPosY() {
-        return tPosY;
+    public float getPosY() {
+        return pPosY;
     }
 
+    public float getRange() {
+        return range;
+    }
+
+    public float getDamage() {
+        return damage;
+    }
+
+    public Effect getEndEffect() {
+        return endEffect;
+    }
+
+    public Effect getStartEffect() {
+        return startEffect;
+    }
 }

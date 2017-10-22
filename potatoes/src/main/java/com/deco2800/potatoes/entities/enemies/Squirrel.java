@@ -43,8 +43,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private EnemyTargets targets = initTargets();
 
 
-	private long sTime=System.currentTimeMillis();
-	private float phealth=getHealth();
+	private long sTime = System.currentTimeMillis();
+	private float phealth = getHealth();
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1.5f);
 
 	/***
@@ -69,8 +69,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
 			if (entity.getValue() instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
 				this.target = entity.getKey();
-				System.out.println("targ: " + this.target + " x: " + entity.getValue().getPosX()
-						+ " y: " + entity.getValue().getPosY());
 				break;
 			}
 		}
