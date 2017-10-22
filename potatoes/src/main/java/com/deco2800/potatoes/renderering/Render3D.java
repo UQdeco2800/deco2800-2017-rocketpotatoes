@@ -369,7 +369,7 @@ public class Render3D implements Renderer {
 			AbstractEntity e = entity.getKey();
 
 			// Progress Bars for players.
-			if (!progressValues.showPlayerProgress() && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+			if (e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
 				continue;
 			}
 			
@@ -389,6 +389,10 @@ public class Render3D implements Renderer {
 				continue;
 			}
 
+			if (e instanceof GoalPotate) {
+				potato = (GoalPotate) e;
+			}
+			
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
 
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
@@ -399,11 +403,6 @@ public class Render3D implements Renderer {
 				if (progressBar != null) {
 
 					Texture barTexture = reg.getTexture(progressBar.getTexture());
-
-					// Skip for player
-					if (e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
-						continue;
-					}
 					
 					// sets colour palette
 					batch.setColor(progressBar.getColour(((HasProgress) e).getProgressRatio()));
@@ -458,15 +457,52 @@ public class Render3D implements Renderer {
 			// Render the player health HUD
 			hudBatch.begin();
 			hudBatch.setColor(Color.WHITE);
-			hudBatch.draw(iconTexture, 25, Gdx.graphics.getHeight()-134/2-75, 638/2, 134/2, 1, 2, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
+			hudBatch.draw(iconTexture, 25+75, Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
 			
 			// Draw the player HealthBar
 			float barRatio = player.getProgressRatio();
 			float maxBarWidth = 638/2.55f;
 			float barWidth = maxBarWidth * barRatio;
 			float barBackgroundWidth = maxBarWidth * (1 - barRatio);
-			float barX = 93;
-			float barY = Gdx.graphics.getHeight()-134/2-73.5f;
+			float barX = 93+75;
+			float barY = Gdx.graphics.getHeight()-134/2-73.5f + 60;
+			float endX = barX + barWidth;
+			// Draw amount of health left.
+			hudBatch.draw(barTexture, barX, barY,                        // texture, x, y
+					barWidth, maxBarWidth / 8, 0, 0,                // width, height srcX, srcY
+					(int) (barTexture.getWidth() * barRatio),        // srcWidth
+					barTexture.getHeight(),                            // srcHeight
+					false, false);                                    // flipX, flipY
+			// Draw amount of health lost.
+			hudBatch.setColor(0.5f, 0.5f, 0.5f, 1f);
+			hudBatch.draw(barTexture, endX, barY,                            // texture, x, y
+					barBackgroundWidth, maxBarWidth / 8,                // width, height
+					(int) (barTexture.getWidth() * barRatio), 0,        // srcX, srcY
+					(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
+					barTexture.getHeight(),                                // srcHeight
+					false, false);  
+			hudBatch.end();
+		}
+		// potato
+		if (potato != null && progressValues.showPotatoProgress()) {
+			// Get texture
+			ProgressBar progressBar = player.getProgressBar();
+			Texture iconTexture = reg.getTexture(potato.getProgressBar().getLayoutTexture());
+			Texture barTexture =  reg.getTexture(potato.getProgressBar().getTexture());
+			// Render the player health HUD
+			hudBatch.begin();
+			hudBatch.setColor(Color.WHITE);
+			hudBatch.draw(iconTexture, Gdx.graphics.getWidth() - (25+75)-75 - 638/2.55f, 
+					Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(),
+					iconTexture.getHeight(), false, false);
+			
+			// Draw the player HealthBar
+			float barRatio = potato.getProgressRatio();
+			float maxBarWidth = 638/2.55f;
+			float barWidth = maxBarWidth * barRatio;
+			float barBackgroundWidth = maxBarWidth * (1 - barRatio);
+			float barX = Gdx.graphics.getWidth() - (93+80) - 638/2.55f;
+			float barY = Gdx.graphics.getHeight()-134/2-73.5f + 60;
 			float endX = barX + barWidth;
 			// Draw amount of health left.
 			hudBatch.draw(barTexture, barX, barY,                        // texture, x, y
