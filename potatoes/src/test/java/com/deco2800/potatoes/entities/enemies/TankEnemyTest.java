@@ -85,18 +85,18 @@ public class TankEnemyTest extends BaseTest {
 	public void enemyStateTest(){
 		tank1.enemyState();
 
-		Assert.assertEquals("walk",tank1.getEnemyStatus());
+		Assert.assertEquals("_walk",tank1.getEnemyStatus());
 
 		Projectile proj=new BallisticProjectile(null,new Vector3(0,0,0), new Vector3(1,1,1), 8, 10, Projectile.ProjectileTexture.ROCKET, null,
 				null);
 		tank1.getShot(proj);
 		tank1.enemyState();
-		Assert.assertEquals("attack",tank1.getEnemyStatus());
+		Assert.assertEquals("_attack",tank1.getEnemyStatus());
 
 		sTime = System.currentTimeMillis();
 		while((System.currentTimeMillis()-sTime)/1000.0<4);
 		tank1.enemyState();
-		Assert.assertEquals("walk",tank1.getEnemyStatus());
+		Assert.assertEquals("_walk",tank1.getEnemyStatus());
 
 
 
@@ -104,7 +104,7 @@ public class TankEnemyTest extends BaseTest {
 
 	@Test
 	public void getEnemyTypeTest() throws Exception {
-		Assert.assertEquals(8,tank1.getEnemyType().length);
+		Assert.assertEquals(2,tank1.getEnemyType().length);
 
 	}
 

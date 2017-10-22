@@ -40,8 +40,6 @@ public class TextureManager extends Manager {
         saveTexture("w1", "resources/placeholderassets/w1.png");
         saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
-        saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
-        saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -81,7 +79,44 @@ public class TextureManager extends Manager {
         
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
-
+        /* Seed Resource Tree Sprites */
+        saveTexture("seed_resource_tree", "resources/resourceTrees/seedTree.png"); // Default Sprite
+        
+        // Seed Grow Animation
+        for (int i = 1; i < 44; i++) {
+        		saveTexture("seedtree_grow_" + i, "resources/resourceTrees/seed/grow/seedtree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Seed Produce Animation
+        for (int i = 1; i < 32; i++) {
+        		saveTexture("seedtree_produce_" + i, "resources/resourceTrees/seed/produce/seedtree_produce_" + String.format("%04d", i) + ".png");
+        }
+        
+        /* Food Resource Tree Sprites */
+        saveTexture("food_resource_tree", "resources/resourceTrees/foodTree.png"); // Default Sprite
+        
+        // Food Grow Animation
+        for (int i = 1; i < 51; i++) {
+        		saveTexture("foodtree_grow_" + i, "resources/resourceTrees/food/grow/foodtree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Food Produce Animation
+        for (int i = 1; i < 36; i++) {
+        		saveTexture("foodtree_produce_" + i, "resources/resourceTrees/food/produce/foodtree_produce_" + String.format("%04d", i) + ".png");
+        }
+        
+        /* Pine Resource Tree Sprites */
+        saveTexture("pine_resource_tree", "resources/resourceTrees/pineTree.png"); // Default Sprite
+        
+        // Pine Grow Animation
+        for (int i = 1; i < 44; i++) {
+    			saveTexture("pinetree_grow_" + i, "resources/resourceTrees/pine/grow/pinetree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Pine Produce Animation
+        for (int i = 1; i < 36; i++) {
+        		saveTexture("pinetree_produce_" + i, "resources/resourceTrees/pine/produce/pinetree_produce_" + String.format("%04d", i) + ".png");
+        }
 
         // Projectiles TODO: fix
         for (int i = 1; i < 4; i++) {
@@ -184,6 +219,7 @@ public class TextureManager extends Manager {
         }
         
         saveTexture("cactusTree", "resources/trees/cactusTree.png");
+        saveTexture("coralTree", "resources/trees/coralTree.png");
         saveTexture("defenseTree", "resources/trees/defenseTree.png");
         //damage tree:ice
 
@@ -401,6 +437,7 @@ public class TextureManager extends Manager {
         }
 
         for(int i =1;i<8;i++){
+            //bear attack texture
             saveTexture("bear_attack_E_"+i,"resources/enemies/bear/attack/bear_attack_E_"+i+".png");
             saveTexture("bear_attack_N_"+i,"resources/enemies/bear/attack/bear_attack_N_"+i+".png");
             saveTexture("bear_attack_NE_"+i,"resources/enemies/bear/attack/bear_attack_NE_"+i+".png");
@@ -409,6 +446,33 @@ public class TextureManager extends Manager {
             saveTexture("bear_attack_SE_"+i,"resources/enemies/bear/attack/bear_attack_SE_"+i+".png");
             saveTexture("bear_attack_SW_"+i,"resources/enemies/bear/attack/bear_attack_SW_"+i+".png");
             saveTexture("bear_attack_W_"+i,"resources/enemies/bear/attack/bear_attack_W_"+i+".png");
+            //squirrel attack texture
+            saveTexture("squirrel_attack_E_"+i,"resources/enemies/squirrel/attack/squirrel_attack_E_"+i+".png");
+            saveTexture("squirrel_attack_N_"+i,"resources/enemies/squirrel/attack/squirrel_attack_N_"+i+".png");
+            saveTexture("squirrel_attack_NE_"+i,"resources/enemies/squirrel/attack/squirrel_attack_NE_"+i+".png");
+            saveTexture("squirrel_attack_NW_"+i,"resources/enemies/squirrel/attack/squirrel_attack_NW_"+i+".png");
+            saveTexture("squirrel_attack_S_"+i,"resources/enemies/squirrel/attack/squirrel_attack_S_"+i+".png");
+            saveTexture("squirrel_attack_SE_"+i,"resources/enemies/squirrel/attack/squirrel_attack_SE_"+i+".png");
+            saveTexture("squirrel_attack_SW_"+i,"resources/enemies/squirrel/attack/squirrel_attack_SW_"+i+".png");
+            saveTexture("squirrel_attack_W_"+i,"resources/enemies/squirrel/attack/squirrel_attack_W_"+i+".png");
+            //squirrel walk texture
+            saveTexture("squirrel_walk_E_"+i,"resources/enemies/squirrel/walk/squirrel_walk_E_"+i+".png");
+            saveTexture("squirrel_walk_N_"+i,"resources/enemies/squirrel/walk/squirrel_walk_N_"+i+".png");
+            saveTexture("squirrel_walk_NE_"+i,"resources/enemies/squirrel/walk/squirrel_walk_NE_"+i+".png");
+            saveTexture("squirrel_walk_NW_"+i,"resources/enemies/squirrel/walk/squirrel_walk_NW_"+i+".png");
+            saveTexture("squirrel_walk_S_"+i,"resources/enemies/squirrel/walk/squirrel_walk_S_"+i+".png");
+            saveTexture("squirrel_walk_SE_"+i,"resources/enemies/squirrel/walk/squirrel_walk_SE_"+i+".png");
+            saveTexture("squirrel_walk_SW_"+i,"resources/enemies/squirrel/walk/squirrel_walk_SW_"+i+".png");
+            saveTexture("squirrel_walk_W_"+i,"resources/enemies/squirrel/walk/squirrel_walk_W_"+i+".png");
+            //squirrel death texture
+            saveTexture("squirrel_death_E_"+i,"resources/enemies/squirrel/death/squirrel_death_E_"+i+".png");
+            saveTexture("squirrel_death_N_"+i,"resources/enemies/squirrel/death/squirrel_death_N_"+i+".png");
+            saveTexture("squirrel_death_NE_"+i,"resources/enemies/squirrel/death/squirrel_death_NE_"+i+".png");
+            saveTexture("squirrel_death_NW_"+i,"resources/enemies/squirrel/death/squirrel_death_NW_"+i+".png");
+            saveTexture("squirrel_death_S_"+i,"resources/enemies/squirrel/death/squirrel_death_S_"+i+".png");
+            saveTexture("squirrel_death_SE_"+i,"resources/enemies/squirrel/death/squirrel_death_SE_"+i+".png");
+            saveTexture("squirrel_death_SW_"+i,"resources/enemies/squirrel/death/squirrel_death_SW_"+i+".png");
+            saveTexture("squirrel_death_W_"+i,"resources/enemies/squirrel/death/squirrel_death_W_"+i+".png");
         }
         for(int i =1;i<7;i++){
             saveTexture("bear_death_E_"+i,"resources/enemies/bear/death/bear_death_E_"+i+".png");

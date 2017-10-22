@@ -93,6 +93,7 @@ public class GameManager implements TickableManager {
 	 */
 	public void setWorld(World world) {
 		// Stores managers on the world
+		getManager(WorldManager.class).setWorldCached(false);
 		if (gameWorld != null) {
 			for (Manager manager : managers) {
 				if (manager instanceof ForWorld) {

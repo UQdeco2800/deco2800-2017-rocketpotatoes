@@ -268,8 +268,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public int getMaxProgress() {
-		// TODO Auto-generated method stub
-		return 1;
+		if (constructionLeft > 0) {
+			return 100;
+		} else {
+			return (int) this.getMaxHealth();
+		}
 	}
 
 	@Override

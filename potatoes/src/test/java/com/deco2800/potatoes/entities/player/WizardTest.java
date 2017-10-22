@@ -18,20 +18,20 @@ import com.deco2800.potatoes.managers.PlayerManager;
  */
 public class WizardTest {
 	
-	Wizard caveman;
+	Wizard wizard;
 	
 	@Before
 	public void setup() {
-		caveman = new Wizard(0, 0);		
+		wizard = new Wizard(0, 0);		
 		PlayerManager m = new PlayerManager();
-		m.setPlayer(caveman);
+		m.setPlayer(wizard);
 		GameManager.get().addManager(m);
 	}
 	
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
-    	caveman = null;
+    	wizard = null;
     }
 	
 	/**
@@ -44,35 +44,29 @@ public class WizardTest {
 				PlayerState.IDLE, 1, 1, null);
 		
 		// Test setting idle animation to north
-		caveman.setAnimation(animationMap.get(Direction.N));
+		wizard.setAnimation(animationMap.get(Direction.N));
 		
 		// Test setting idle animation to south
-		caveman.setAnimation(animationMap.get(Direction.S));
+		wizard.setAnimation(animationMap.get(Direction.S));
 				
 		// Test setting idle animation to south west
-		caveman.setAnimation(animationMap.get(Direction.SW));
+		wizard.setAnimation(animationMap.get(Direction.SW));
 	}
 	@Test
 	public void extraTest() {
-		caveman.updateSprites();
-		caveman.walk(true);
-		caveman.walk(false);
-		caveman.setState(Player.PlayerState.WALK);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.setState(Player.PlayerState.ATTACK);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.setState(Player.PlayerState.DAMAGED);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.setState(Player.PlayerState.DEATH);
-		caveman.updateSprites();
-		caveman.setState(Player.PlayerState.INTERACT);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.interact();
-		caveman.attack();
-
+		wizard.updateSprites();
+		wizard.walk(true);
+		wizard.walk(false);
+		wizard.setState(Player.PlayerState.WALK);
+		wizard.updateSprites();
+		wizard.setState(Player.PlayerState.ATTACK);
+		wizard.updateSprites();
+		wizard.setState(Player.PlayerState.DAMAGED);
+		wizard.updateSprites();
+		wizard.setState(Player.PlayerState.DEATH);
+		wizard.updateSprites();
+		wizard.setState(Player.PlayerState.INTERACT);
+		wizard.updateSprites();
+		wizard.interact();
 	}
 }

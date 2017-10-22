@@ -44,12 +44,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static final transient String[] ENEMY_TYPE = new String[]{
 		"bear",
 		"bear",
-		"bear",
-		"bear",
-		"bear",
-		"bear",
-		"bear",
-		"bear",
+
 	};
 
 	/* Define speed, goal and path variables */
@@ -85,6 +80,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public TankEnemy(float posX, float posY) {
         super(new Circle2D(posX, posY, 1.414f), 2f, 2f, TEXTURE, HEALTH, speed, goal);
         this.health = health + (roundNum*250);
+        setDelayTime(100);
 	}
 
 	/***
@@ -127,12 +123,14 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		//Check if attacking
 		if(isAttacking()){
 			sTime = System.currentTimeMillis();
-			setEnemyStatus("attack");
+			setTextureLength(7);
+			setEnemyStatus("_attack");
 			phealth=getHealth();
 		}
 		//Check if walking
 		if((System.currentTimeMillis()-sTime)/1000.0>3){
-			setEnemyStatus("walk");
+			setTextureLength(8);
+			setEnemyStatus("_walk");
 		}
 	}
 
@@ -142,7 +140,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 * @return true if the tank is attacking
 	 */
 	public boolean isAttacking(){
-		if(phealth!=getHealth()){
+		if((int)phealth>(int)getHealth()){
 			return true;
 		}
 		return false;

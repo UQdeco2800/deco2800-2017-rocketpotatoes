@@ -154,17 +154,23 @@ public class TreeShopGui extends Gui implements SceneGui {
         // Seed resource tree
         Inventory seedTreeCost = new Inventory();
         seedTreeCost.updateQuantity(new SeedResource(), 1);
-        TreeState seedTreeState = new TreeState(new ResourceTree(treeX, treeY, new
-                SeedResource(), 10), seedTreeCost, true, "resource");
+        TreeState seedTreeState = new TreeState(new SeedTree(treeX, treeY), 
+        		seedTreeCost, true, "resource");
         treeStates.add(seedTreeState);
 
         // Food resource tree
         Inventory foodTreeCost = new Inventory();
-        foodTreeCost.updateQuantity(new SeedResource(), 1);
-        //foodTreeCost.updateQuantity(new FoodResource(), 1);
-        TreeState foodTreeState = new TreeState(new ResourceTree(treeX, treeY, new
-                FoodResource(), 10), foodTreeCost, true, "resource");
+        foodTreeCost.updateQuantity(new SeedResource(), 2);
+        TreeState foodTreeState = new TreeState(new FoodTree(treeX, treeY), 
+        		foodTreeCost, false, "resource");
         treeStates.add(foodTreeState);
+        
+        // Pine resource tree
+        Inventory pineTreeCost = new Inventory();
+        pineTreeCost.updateQuantity(new SeedResource(), 1);
+        TreeState pineTreeState = new TreeState(new PineTree(treeX, treeY), 
+        		pineTreeCost, false, "resource");
+        treeStates.add(pineTreeState);
 
         // Lightning tree
         Inventory lightningTreeCost = new Inventory();
@@ -203,7 +209,25 @@ public class TreeShopGui extends Gui implements SceneGui {
         TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
                 "damage");
         treeStates.add(acornTreeState);
-
+        
+        // Cactus tree
+        Inventory cactusTreeCost = new Inventory();
+        cactusTreeCost.updateQuantity(new CactusThornResource(), 2);
+        cactusTreeCost.updateQuantity(new PricklyPearResource(), 3);
+        cactusTreeCost.updateQuantity(new SeedResource(), 4);
+        DamageTree cactusTree = new DamageTree(treeX, treeY, new CactusTreeType());
+        TreeState cactusTreeState = new TreeState(cactusTree, cactusTreeCost, false,
+        		"damage");
+        treeStates.add(cactusTreeState);
+        
+        // Defense tree
+        Inventory defenseTreeCost = new Inventory();
+        defenseTreeCost.updateQuantity(new ObsidianResource(), 3);
+        defenseTreeCost.updateQuantity(new SeedResource(), 6);
+        DefenseTree defenseTree = new DefenseTree(treeX, treeY);
+        TreeState defenseTreeState = new TreeState(defenseTree, defenseTreeCost, false,
+        		"defense");
+        treeStates.add(defenseTreeState);
     }
 
     /**
