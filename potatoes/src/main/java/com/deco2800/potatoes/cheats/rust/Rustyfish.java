@@ -17,6 +17,8 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import org.lwjgl.opengl.Display;
 import org.slf4j.LoggerFactory;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
@@ -195,7 +197,9 @@ public class Rustyfish implements CheatExecution {
     @Override
     public void run() {
         try {
-            NativeLibrary.addSearchPath("rustyfish", "build/classes/main");
+            Path loadPath = Paths.get(System.getProperty("user.dir"));
+            loadPath = Paths.get(loadPath.toString(), "build", "classes", "main");
+            NativeLibrary.addSearchPath("rustyfish", loadPath.toString());
             Native.loadLibrary("rustyfish", RLibrary.class).startGame(
                     startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
                     getWindowInfo, drawSprite, drawLine, drawRectangle);
