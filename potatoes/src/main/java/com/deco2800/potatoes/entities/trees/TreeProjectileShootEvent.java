@@ -11,7 +11,6 @@ import com.deco2800.potatoes.entities.effects.ExplosionEffect;
 import com.deco2800.potatoes.entities.effects.LazerEffect;
 import com.deco2800.potatoes.entities.effects.LightningEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
@@ -50,7 +49,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 		Optional<AbstractEntity> target1 = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, tree.getPosX(),
 				tree.getPosY());
 		if (target1.isPresent() && tree.distanceTo(target1.get()) <= tree.getUpgradeStats().getAttackRange()) {
-			AbstractEntity e = null;
+			AbstractEntity e;
 			if(BallisticProjectile.class.isAssignableFrom(fireObjectClass)) {
 				e=new BallisticProjectile(target1.get().getClass(),
 						new Vector3(tree.getPosX() + 0.5f, tree.getPosY() + 0.5f, tree.getPosZ()),
@@ -91,13 +90,7 @@ public class TreeProjectileShootEvent extends TimeEvent<AbstractTree> {
 								1));
 			}
 			GameManager.get().getWorld().addEntity(e);
-
-//			GameManager.get().getWorld().addEntity(new HomingProjectile(target1.get().getClass(),
-//					new Vector3(tree.getPosX() + 0.5f, tree.getPosY() + 0.5f, tree.getPosZ()),
-//					new Vector3(target1.get().getPosX(), target1.get().getPosY(), target1.get().getPosZ()),
-//					tree.getUpgradeStats().getAttackRange(), 100, Projectile.ProjectileTexture.ROCKET, null,
-//					null,"", Projectile.PlayerShootMethod.HOMINGPROJECTILE));
-
+			
 		}
 
 	}

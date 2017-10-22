@@ -62,17 +62,6 @@ public class ParticleManager extends Manager implements TickableManager {
         while (emitterIterator.hasNext()) {
             EmitterContainer e = emitterIterator.next();
 
-            /*
-            float x = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-            float y = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-
-            int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
-            int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-
-            Vector2 p = Render3D.worldToScreenCoordinates(x, y, 0);
-            e.emitter.setOrigin(p.x + tileWidth / 2, p.y + tileHeight / 2);
-            */
-
             e.emitter.onTick(deltaTime, particlePool);
 
             if (!compareFloat(e.maxLifeTime, 0.0f)) {

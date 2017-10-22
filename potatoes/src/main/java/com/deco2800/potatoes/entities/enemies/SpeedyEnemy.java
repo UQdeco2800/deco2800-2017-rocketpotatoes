@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -16,8 +15,6 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -48,9 +45,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity("healthBarRed", 1.5f);
-
-	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
-
+	
 	/**
 	 * Empty constructor for serialization
 	 */

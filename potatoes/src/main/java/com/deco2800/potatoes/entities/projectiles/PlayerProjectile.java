@@ -95,11 +95,11 @@ public class PlayerProjectile extends Projectile {
          * Shoots enemies base on the player directions
          */
         if ("DIRECTIONAL".equalsIgnoreCase(shootingStyle.toString())) {
-            if (directions.equalsIgnoreCase("w")) {
+            if ("w".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX - 5, pPosY - 5, 0);
                 updatePosition();
                 setPosition();
-            } else if (directions.equalsIgnoreCase("e")) {
+            } else if ("e".equalsIgnoreCase(directions)) {
                 setTargetPosition(pPosX + 5, pPosY + 5, 0);
                 updatePosition();
                 setPosition();

@@ -17,7 +17,6 @@ import java.util.Map;
  * @author ryanjphelan
  */
 public class LargeFootstepEffect extends Effect {
-    // TODO Texture is a placeholder. Need to design proper artwork for footstep (for different terrains as well?)
     private static final transient String TEXTURE = "TankFootstepTemp1";
 
     private boolean resourceStomped = false;
@@ -30,6 +29,7 @@ public class LargeFootstepEffect extends Effect {
      * Empty constructor. Used for serialisation purposes
      */
     public LargeFootstepEffect() {
+        //empty
     }
 
     /**
@@ -44,7 +44,6 @@ public class LargeFootstepEffect extends Effect {
      */
 
     public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float damage, float range) {
-        // TODO -- find the appropriate constants for this
         super(targetClass, new Box2D(posX - 1, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
         effectPosition = getMask();
 
