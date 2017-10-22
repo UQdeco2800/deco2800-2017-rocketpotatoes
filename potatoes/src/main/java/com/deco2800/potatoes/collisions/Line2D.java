@@ -473,16 +473,7 @@ public class Line2D extends Shape2D{
 
         Line2D line2D = (Line2D) o;
 
-        if (Float.compare(line2D.x1, x1) != 0)
-            return false;
-        if (Float.compare(line2D.y1, y1) != 0)
-            return false;
-        if (Float.compare(line2D.x2, x2) != 0)
-            return false;
-        if (Float.compare(line2D.y2, y2) != 0)
-            return false;
-
-        return true;
+        return point1.equals(line2D.point1) && point2.equals(line2D.point2);
     }
 
     @Override

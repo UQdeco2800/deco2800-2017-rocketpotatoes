@@ -61,9 +61,82 @@ public class Shape2DTest {
         assertTrue(circ1.getRadius() == 3);
     }
 
-    //TODO area
+    @Test
+    public void testArea() {
+        for (int width = 1; width < 10; ++width) {
+            for (int height = 1; height < 10; ++height) {
+                Box2D theBox = new Box2D(0, 0, width, height);
+                assertTrue(compareFloat(theBox.getArea(), width * height));
+            }
+        }
 
-    //TODO line equals
+        for (int radius = 1; radius < 10; ++radius) {
+            Circle2D theCircle = new Circle2D(0, 0, radius);
+            assertTrue(compareFloat(theCircle.getArea(), (float) Math.PI * radius * radius));
+        }
+
+        Point2D thePoint = new Point2D(0, 0);
+        assertTrue(compareFloat(thePoint.getArea(), 0));
+
+        for (int x0 = -10; x0 < 10; ++x0) {
+            for (int y0 = -10; y0 < 10; ++y0) {
+                for (int x1 = -10; x1 < 10; ++x1) {
+                    for (int y1 = -10; y1 < 10; ++y1) {
+                        Line2D theLine = new Line2D(x0, y0, x1, y1);
+                        assertTrue(compareFloat(theLine.getArea(), 0));
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean shouldTheseLinesEqual(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3) {
+        if (!(x0 < x1 || (compareFloat(x0, x1) && y0 < y1))) {
+            int tmp = x0;
+            x0 = x1;
+            x1 = tmp;
+            tmp = y0;
+            y0 = y1;
+            y1 = tmp;
+        }
+        if (!(x2 < x3 || (compareFloat(x2, x3) && y2 < y3))) {
+            int tmp = x2;
+            x2 = x3;
+            x3 = tmp;
+            tmp = y2;
+            y2 = y3;
+            y3 = tmp;
+        }
+
+        return (x0 == x2 && x1 == x3 && y0 == y2 && y1 == y3);
+    }
+
+    @Test
+    public void testLineEquals() {
+        for (int x0 = -10; x0 < 10; x0 += 4) {
+            for (int y0 = -10; y0 < 10; y0 += 4) {
+                for (int x1 = -10; x1 < 10; x1 += 4) {
+                    for (int y1 = -10; y1 < 10; y1 += 4) {
+                        Line2D theLine = new Line2D(x0, y0, x1, y1);
+                        for (int x2 = -10; x2 < 10; x2 += 4) {
+                            for (int y2 = -10; y2 < 10; y2 += 4) {
+                                for (int x3 = -10; x3 < 10; x3 += 4) {
+                                    for (int y3 = -10; y3 < 10; y3 += 4) {
+                                        Line2D theOtherLine = new Line2D(x2, y2, x3, y3);
+                                        if (shouldTheseLinesEqual(x0, y0, x1, y1, x2, y2, x3, y3)) {
+                                            assertEquals(theLine, theOtherLine);
+                                        } else {
+                                            assertNotEquals(theLine, theOtherLine);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
     //colision
