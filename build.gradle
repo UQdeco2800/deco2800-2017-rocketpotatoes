@@ -9,11 +9,7 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
-    dependencies {
-        classpath "gradle.plugin.com.jtitor:rust-gradle-plugin:0.1.4"
-    }
 }
-apply plugin: "com.jtitor.rust"
 
 configurations.all {
     // check for updates every build

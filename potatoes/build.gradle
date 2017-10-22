@@ -33,21 +33,44 @@ buildscript {
 
 }
 
+
 task(run, dependsOn: "classes", type: JavaExec) {
     main = "com.deco2800.potatoes.GameLauncher"
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task rustyfish(type: RustBuild) {
-    group 'rusty'
-    description 'Builds the project as a Rust crate.'
-    release = true
-}
-
-task copyRustyfish(type: Copy) {
+task copyRust(type: Copy) {
     from 'target/release/'
     into "build/classes/main"
-    include 'librustyfish.so'
+    include 'librustyfish.*'
 }
 
-rustyfish.finalizedBy(copyRustyfish)
+task compileRust(type: Exec) {
+    executable "sh"
+    args "-c", "which cargo 2>&1 >/dev/null || exit 0; cargo build --release"
+
+    finalizedBy "copyRust"
+}
+
+build.dependsOn compileRust
+
+task cleanCopiedRust(type: Delete) {
+    delete "build/classes/main"
+}
+
+
+task cleanRust(type: Exec) {
+    executable "sh"
+    args "-c", "which cargo 2>&1 >/dev/null || exit 0; cargo clean"
+
+    finalizedBy cleanCopiedRust
+}
+
+clean.dependsOn cleanRust
+
+task testRust(type: Exec) {
+    executable "sh"
+    args "-c", "which cargo 2>&1 >/dev/null || exit 0; cargo test"
+}
+
+test.dependsOn testRust
