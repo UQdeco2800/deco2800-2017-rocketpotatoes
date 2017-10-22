@@ -1,11 +1,18 @@
 package com.deco2800.potatoes.entities.effects;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.ParticleManager;
 import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
+import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 
 import java.util.Map;
 
@@ -17,19 +24,17 @@ import java.util.Map;
  * @author ryanjphelan
  */
 public class LargeFootstepEffect extends Effect {
-    // TODO Texture is a placeholder. Need to design proper artwork for footstep (for different terrains as well?)
-    private static final transient String TEXTURE = "TankFootstepTemp1";
 
     private boolean resourceStomped = false;
     private Shape2D effectPosition;
     private int currentTextureIndexCount = 0;
-    private String[] currentTextureArray = { "TankFootstepTemp1", "TankFootstepTemp2", "TankFootstepTemp3" };
     private int timer = 0;
 
     /**
      * Empty constructor. Used for serialisation purposes
      */
     public LargeFootstepEffect() {
+        // Empty for serialization purposes
     }
 
     /**
@@ -44,8 +49,7 @@ public class LargeFootstepEffect extends Effect {
      */
 
     public LargeFootstepEffect(Class<?> targetClass, float posX, float posY, float damage, float range) {
-        // TODO -- find the appropriate constants for this
-        super(targetClass, new Box2D(posX - 1, posY, 1.1f, 0.7f), 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
+        super(targetClass, new Circle2D(posX, posY, 0.75f), 1.4f, 1.4f, damage, range, EffectTexture.LARGE_FOOTSTEP);
         effectPosition = getMask();
 
     }
@@ -60,7 +64,16 @@ public class LargeFootstepEffect extends Effect {
                         || !effectPosition.overlaps(entity.getMask())) {
                     continue;
                 }
-
+                //Create a particle effect to represent a resource being destroyed
+                ParticleType particle =  new BasicParticleType(1700, 1700.0f,
+                        0.0f, 256, Color.OLIVE, 25, 4);
+                particle.setSpeed(0.04f);
+                Vector2 pos = Render3D.worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), -0.5f);
+                int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+                int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+                GameManager.get().getManager(ParticleManager.class).addParticleEmitter(
+                        1.5f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2, particle));
+                //Play the appropriate sound effect
                 String resourceType = ((ResourceEntity) entity).getType().getTypeName();
                 GameManager.get().getWorld().removeEntity(entity);
                 if ("seed".equals(resourceType)) {
@@ -75,7 +88,6 @@ public class LargeFootstepEffect extends Effect {
         }
         if (timer % 10 == 0) {
             if (currentTextureIndexCount < 3) {
-                setTexture(currentTextureArray[currentTextureIndexCount]);
                 currentTextureIndexCount++;
             } else {
                 GameManager.get().getWorld().removeEntity(this);
@@ -93,13 +105,14 @@ public class LargeFootstepEffect extends Effect {
     }
 
     /**
-     * Get the current index for the texture being used
+     * Return the current texture index count.
      *
-     * @return Int current index
+     * @return the index
      */
-    public int getCurrentTextureIndex() {
+    public int getCurrentTextureIndexCount() {
         return currentTextureIndexCount;
     }
+
 
     /**
      * String representation of the footstep at its set position.

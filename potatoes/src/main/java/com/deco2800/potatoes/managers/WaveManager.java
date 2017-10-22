@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Wave manager acts as a controller for the games waves of enemies. It's primary
+ * Wave manager acts as a controller for the games waves of enemies. Its primary
  * function is to hold a queue of individual enemy waves and schedule them to
  * create the flow of wave - break, and so on. Through wave manager you can determine
  * the progress and state of the game.
@@ -32,6 +32,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
 
     private LinkedList<EnemyWave> waves;
     private int waveIndex = 0;
+    private int nonPauseWaveIndex = 0;
     private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
 
@@ -54,7 +55,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         if (!(EASY <= difficulty && difficulty <= HARD)) {
             throw new IndexOutOfBoundsException("Difficult is not defined in range!");
         }
-        addWave(new EnemyWave(1500)); // pause wave to bootstrap startup
+        //addWave(new EnemyWave(1500)); // pause wave to bootstrap startup
     }
 
     /**
@@ -91,7 +92,9 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
             waveIndex++;
             activateWave(waves.get(waveIndex));
             resetTime();
-            
+            if (!(waves.get(waveIndex).isPauseWave())) {
+                nonPauseWaveIndex++;
+            }
             // Add resources to other worlds
             addResources();
         } else if (!isCampaign && WorldUtil.getClosestEntityOfClass(EnemyGate.class, 10, 10).isPresent()) { // no active wave, not campaign, make new wave
@@ -159,23 +162,27 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      */
     private void generateNextWave() {
         int roundTime = 750 + waveIndex * 75;
-        int spawnRates = 1  + (waveIndex % 4) * difficulty;
+        addWave(new EnemyWave(1500));
         switch (waveIndex % 4) {
             case 0:
-                addWave(new EnemyWave(spawnRates, 0, 0, 0, roundTime, waveIndex));
+                addWave(new EnemyWave(2, 1, 0, 0, roundTime, waveIndex));
                 break;
             case 1:
-                addWave(new EnemyWave(0, spawnRates, 0, 0, roundTime, waveIndex));
+                addWave(new EnemyWave(3, 0, 1, 1, roundTime, waveIndex));
                 break;
             case 2:
-                addWave(new EnemyWave(600 + waveIndex * 75)); // pause wave
+                addWave(new EnemyWave(2, 1, 1, 1, roundTime, waveIndex));
                 break;
             case 3:
-                addWave(new EnemyWave(spawnRates, spawnRates, spawnRates, spawnRates, roundTime,
-                        waveIndex));
+                addWave(new EnemyWave(2, 0, 1, 1, roundTime, waveIndex));
+                break;
+            case 4:
+                addWave(new EnemyWave(2, 1, 1, 1, roundTime, waveIndex));
+                break;
+            case 5:
+                addWave(new EnemyWave(1, 0, 0, 0, roundTime, waveIndex));
                 break;
             default: // this should not be reached
-                addWave(new EnemyWave(1500)); // pause wave
                 break;
         }
     }
@@ -226,6 +233,12 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      *
      * @return waveIndex the most recently/currently active wave*/
     public int getWaveIndex() { return waveIndex; }
+
+    /**
+     * @return the position of the currently active wave in list of all waves excluding pause
+     * waves
+     */
+    public int getNonPauseWaveIndex() { return nonPauseWaveIndex; }
 
     /**
      * @return the time before next wave begins

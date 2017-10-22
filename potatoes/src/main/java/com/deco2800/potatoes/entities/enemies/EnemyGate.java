@@ -32,7 +32,7 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	 */
 	public EnemyGate(float posX, float posY, String texture) {
         super(new Circle2D(posX, posY, 1.3f), 1.6f, 1.6f, texture, 1000f);
-        this.setSolid( false );
+        this.setSolid( true );
         this.setStatic( true );
         clearPath(posX, posY);
 	}
@@ -79,7 +79,7 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	 */
 	@Override
 	public ProgressBar getProgressBar() {
-		return PROGRESS_BAR;
+		return null;
 	}
 
 	/**

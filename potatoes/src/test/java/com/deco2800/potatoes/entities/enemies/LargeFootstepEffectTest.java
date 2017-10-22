@@ -61,7 +61,7 @@ public class LargeFootstepEffectTest extends BaseTest {
      */
     @Test
     public void toStringTest() {
-        assertEquals("Large Footstep at (-1, 0)", footStep1.toString());
+        assertEquals("Large Footstep at (0, 0)", footStep1.toString());
     }
 
     /*
@@ -71,15 +71,15 @@ public class LargeFootstepEffectTest extends BaseTest {
     public void onTickTestNoCollisions() {
         GameManager.get().getWorld().addEntity(footStep1);
         footStep1.onTick(1);
-        assertEquals(true, footStep1.getCurrentTextureIndex() == 0);
+        assertEquals(true, footStep1.getCurrentTextureIndexCount() == 0);
         for (int i = 0; i < 9; ++i) {
             footStep1.onTick(1);
         }
-        assertEquals(true, footStep1.getCurrentTextureIndex() == 1);
+        assertEquals(true, footStep1.getCurrentTextureIndexCount() == 1);
         for (int i = 0; i < 10; ++i) {
             footStep1.onTick(1);
         }
-        assertEquals(true, footStep1.getCurrentTextureIndex() == 2);
+        assertEquals(true, footStep1.getCurrentTextureIndexCount() == 2);
         for (int i = 0; i < 20; ++i) {
             footStep1.onTick(1);
         }

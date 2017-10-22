@@ -70,6 +70,6 @@ public class ChannelEvent extends TimeEvent<EnemyEntity> {
      */
     @Override
     public String toString() {
-        return String.format("Channel with %d duration", this.duration);
+        return String.format("Channel with %f duration", this.duration);
     }
 }

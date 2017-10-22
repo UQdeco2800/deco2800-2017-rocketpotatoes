@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -13,6 +14,11 @@ import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.ParticleManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
+import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
@@ -31,9 +37,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 	private static final transient String[] ENEMY_TYPE = new String[]{
-
 		"raccoon"
-};
+	};
 
 	private static final EnemyProperties STATS = initStats();
 
@@ -49,7 +54,9 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity("healthBarRed", 1.5f);
 
-	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
+	private int count = 0;
+	private float lastX;
+	private float lastY;
 
 	/**
 	 * Empty constructor for serialization
@@ -188,6 +195,22 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
 			super.updateDirection();
+			count++;
 		}
+		if (count % 10 == 0 && getMoving() && (this.getPosX() != lastX && this.getPosY() != lastY)) {
+			lastX = this.getPosX();
+			lastY = this.getPosY();
+			//Create a particle effect that will display as the raccoon runs (kicks up a little bit of dirt)
+			ParticleType particle =  new BasicParticleType(370, 400.0f,
+					0.0f, 32, Color.DARK_GRAY, 3, 3);
+			particle.setSpeed(0.1f);
+
+			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX() - 0.8f, this.getPosY() - 0.4f, -0.5f);
+			int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+			int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+			GameManager.get().getManager(ParticleManager.class).addParticleEmitter(
+					1.2f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2, particle));
+		}
+
 	}
 }
