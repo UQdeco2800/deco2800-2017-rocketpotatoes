@@ -126,7 +126,7 @@ public class Render3D implements Renderer {
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
 			renderCollisionMasks(); 	// rend collisionMask outlines of entities
-			renderPathFinderNodes();	// rend nodes in PathManager TODO
+			renderPathFinderNodes();	// rend nodes in PathManager 
 		}
 	}
 
@@ -560,15 +560,7 @@ public class Render3D implements Renderer {
 	 * Renders the nodes in PathManager */
 	private void renderPathFinderNodes() {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
-
-		// TODO does PathManger store nodes as expected?
-		/*
-		batch.begin();
-		for (Point2D node : pathMan.getNodes) {
-			Point2D.render...()
-		}
-		batch.end();
-		*/
+		
 	}
 
 

@@ -346,11 +346,9 @@ public class GameScreen implements Screen {
 
 			if (!multiplayerManager.isMultiplayer()) {
 			/*
-			 * TODO bug! currently reseting the game while having a key held down will then
-			 * notify the new player with the keyUp TODO event, which will result it in
-			 * moving without pressing a key. This is something a bit difficult to fix as
-			 * TODO so I'm just going to leave it for now since fixing it is a bit of a
-			 * hassle
+			 * reseting the game while having a key held down will then
+			 * notify the new player with the keyUp event, which will result it in
+			 * moving without pressing a key. 
 			 */
 
 				// Make our player
