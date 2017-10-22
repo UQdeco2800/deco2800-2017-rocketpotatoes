@@ -60,7 +60,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	/**
 	 * Change the target for the moose to a random location
 	 */
-	private void randomTarget() {
+	public void randomTarget() {
 		float x = (float) Math.random() * GameManager.get().getWorld().getLength();
 		float y = (float) Math.random() * GameManager.get().getWorld().getWidth();
 		target = new Point2D(x, y);
