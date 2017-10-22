@@ -9,7 +9,7 @@ public class Gui {
     protected boolean hidden;
 
     /**
-     * Redraws this gui element TODO use for this?
+     * Redraws this gui element
      * @param deltaTime deltaTime for animations/effects that are relative to game speed.
      */
     public void render(float deltaTime) {

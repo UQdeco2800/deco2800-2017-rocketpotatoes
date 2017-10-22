@@ -42,7 +42,6 @@ public class TreeStatisticsTest {
                 .removeConstructionResources(tree));
         pm.getPlayer().getInventory().updateQuantity(new SeedResource(), (int) test.getBuildCost());
         test.getBuildTime();
-        //Todo: fix
         //assertTrue("Construction failed with enough resources", test.removeConstructionResources());
     }
 
