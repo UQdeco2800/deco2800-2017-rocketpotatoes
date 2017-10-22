@@ -29,7 +29,7 @@ public class NetworkServer {
 
     /**
 
-     * Starts a server for the game // TODO ports occupied?
+     * Starts a server for the game 
      * TODO debug logging
      *
      * @param tcpPort tcp port to use, presumed to be correct

@@ -77,7 +77,11 @@ public class TextureManager extends Manager {
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
         saveTexture("acorn1", "resources/Projectiles/acorn1.png");
         saveTexture("leaves1", "resources/Projectiles/leaves1.png");
-        
+        saveTexture("leaves","resources/Projectiles/leaves.png");
+        saveTexture("acorn","resources/Projectiles/acorn.png");
+        saveTexture("axe","resources/Projectiles/axe1.png");
+        saveTexture("arrow","resources/Projectiles/arrow.png");
+
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
         /* Seed Resource Tree Sprites */

@@ -48,7 +48,7 @@ public class Wizard extends Player {
 		return null;
 	}
 
-	private float hoverTime = 0;	 // A value used to determine the height of the hover
+	private float hoverTime = 0;  // A value used to determine the height of the hover
 	private static final float HOVER_SPEED = 0.1f; // Rate at which wizard hovers
 	private static final float HOVER_HEIGHT = 7.5f; // Max height at which wizard hovers
 
@@ -100,15 +100,15 @@ public class Wizard extends Player {
 			break;
 		}
 	}
-
+	
     @Override
     protected void attack() {
     	super.attack(); 
     	
     }
 
-    private void hoverAnimation() {
-    	// Update shadow position
+	private void hoverAnimation() {
+		// Update shadow position
 		shadow.setY(getPosY() + 0.25f);
 		shadow.setX(getPosX() - 0.25f);
 
@@ -126,7 +126,7 @@ public class Wizard extends Player {
 	@Override
 	protected void interact() {
 		super.interact();
-	} 
+	}
 
 	@Override
 	public void onTick(long arg0) {

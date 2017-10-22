@@ -5,7 +5,6 @@ import com.deco2800.potatoes.managers.WaveManager;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 public class WaveLoader {
@@ -22,7 +21,7 @@ public class WaveLoader {
         int tankRate;
         int mooseRate;
         int waveLength;
-        int round_number;
+        int roundNumber;
 
         // Extract value for each variable from string
         String[] WaveArray = line.split(", ");
@@ -31,13 +30,12 @@ public class WaveLoader {
         tankRate = Integer.parseInt(WaveArray[2]);
         mooseRate = Integer.parseInt(WaveArray[3]);
         waveLength = Integer.parseInt(WaveArray[4]);
-        round_number = Integer.parseInt(WaveArray[5]);
-        
-        EnemyWave returnWave = new EnemyWave(squirrelRate, speedyRate, tankRate, mooseRate, waveLength, round_number);
-        return returnWave;
+        roundNumber = Integer.parseInt(WaveArray[5]);
+
+        return new EnemyWave(squirrelRate, speedyRate, tankRate, mooseRate, waveLength, roundNumber);
     }
 
-    public void LoadWave(){
+    public void loadWave(){
 
         File f = new File(filename);
 

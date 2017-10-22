@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.renderering.Render3D;
+import org.lwjgl.Sys;
 
 import java.util.Map;
 import java.util.Timer;
@@ -32,6 +33,7 @@ public class MineBomb extends AbstractEntity implements Tickable {
     protected BombTexture bombTexture;
     protected boolean stopAnimation = false;
     protected boolean loopAnimation = true;
+    protected boolean explodable = false;
     protected boolean animated = true;
     protected Class<?> targetClass;
     protected int projectileEffectTimer;
@@ -59,18 +61,17 @@ public class MineBomb extends AbstractEntity implements Tickable {
      * Creates a new projectile. A projectile is the vehicle used to deliver damage
      * to a target over a distance
      *
-     * @param targetClass       the targets class
+
      * @param startPos
-     * @param targetPos
      * @param range
      * @param damage            damage of projectile
-     * @param projectileTexture the texture set to use for animations. Use ProjectileTexture._
+
      * @param startEffect       the effect to play at the start of the projectile being fired
      * @param endEffect         the effect to be played if a collision occurs
-     * @param directions        Player Directions
+
      */
 
-    public MineBomb(Vector3 startPos, Vector3 targetPos, float range, float damage,
+    public MineBomb(Vector3 startPos, float range, float damage,
                     BombTexture bombTexture, Effect startEffect, Effect endEffect) {
         super(new Circle2D(startPos.x, startPos.y, 1f), 0.8f, 0.8f,
                 bombTexture.MINES.textures()[0]);
@@ -99,17 +100,19 @@ public class MineBomb extends AbstractEntity implements Tickable {
             if (!targetClass.isInstance(entity)) {
                 continue;
             }
-            if (newPos.overlaps(entity.getMask())) {
-                if(stopAnimation == true){
-                ((MortalEntity) entity).damage(damage);
-                AOEEffect aoe = new AOEEffect(targetClass.getClass(),
-                        new Vector3(pPosX, pPosY, 0),
-                        100, 8f);
 
-                GameManager.get().getWorld().removeEntity(this);
-                GameManager.get().getWorld().addEntity(aoe);
-                if (endEffect != null)
-                    GameManager.get().getWorld().addEntity(endEffect);
+            if (newPos.overlaps(entity.getMask())) {
+                if (stopAnimation && explodable) {
+
+                    ((MortalEntity) entity).damage(damage);
+                    AOEEffect aoe = new AOEEffect(targetClass.getClass(),
+                            new Vector3(pPosX, pPosY, 0),
+                            100, 8f);
+
+                    GameManager.get().getWorld().removeEntity(this);
+                    GameManager.get().getWorld().addEntity(aoe);
+                    if (endEffect != null)
+                        GameManager.get().getWorld().addEntity(endEffect);
                 }
 
             }
@@ -125,10 +128,19 @@ public class MineBomb extends AbstractEntity implements Tickable {
             projectileEffectTimer++;
             if (loopAnimation && projectileEffectTimer % 18 == 0) {
                 setTexture(bombTexture.textures()[projectileCurrentSpriteIndexCount]);
-                if (projectileCurrentSpriteIndexCount == bombTexture.textures().length - 1){
+                if (projectileCurrentSpriteIndexCount == bombTexture.textures().length - 1) {
                     projectileCurrentSpriteIndexCount = 0;
-                stopAnimation = true;
-            }else {
+                    stopAnimation = true;
+                    if (stopAnimation) {
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                explodable = true;
+                            }
+                        },1500);
+                    }
+                } else {
                     projectileCurrentSpriteIndexCount++;
                 }
             }

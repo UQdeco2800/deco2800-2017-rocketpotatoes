@@ -28,7 +28,7 @@ public class Archer extends Player {
 		this.facing = Direction.SE;
 		this.resetState();
 	}
-	
+
 	private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
 	private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
 	private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200,
@@ -52,24 +52,24 @@ public class Archer extends Player {
 	public void updateSprites() {
 		super.updateSprites();
 		switch (this.getState()) {
-		case IDLE:
-			super.setAnimation(archerIdleAnimations.get(super.facing));
-			break;
-		case WALK:
-			super.setAnimation(archerWalkAnimations.get(super.facing));
-			break;
-		case ATTACK:
-			super.setAnimation(archerAttackAnimations.get(super.facing));
-			break;
-		case DAMAGED:
-			super.setAnimation(archerDamagedAnimations.get(super.facing));
-			break;
-		case INTERACT:
-			super.setAnimation(archerInteractAnimations.get(super.facing));
-			break;
-		default:
-			super.setAnimation(archerIdleAnimations.get(super.facing));
-			break;
+			case IDLE:
+				super.setAnimation(archerIdleAnimations.get(super.facing));
+				break;
+			case WALK:
+				super.setAnimation(archerWalkAnimations.get(super.facing));
+				break;
+			case ATTACK:
+				super.setAnimation(archerAttackAnimations.get(super.facing));
+				break;
+			case DAMAGED:
+				super.setAnimation(archerDamagedAnimations.get(super.facing));
+				break;
+			case INTERACT:
+				super.setAnimation(archerInteractAnimations.get(super.facing));
+				break;
+			default:
+				super.setAnimation(archerIdleAnimations.get(super.facing));
+				break;
 		}
 	}
 
