@@ -17,6 +17,17 @@ public class OrbProjectile extends Projectile {
 	private int numTexPerCharge = 3;
 	private boolean canFire = false;
 	private Vector3 playerPos;
+	private Class<?> targetClass;
+	private Vector3 targetPos;
+	private float pPosX;
+	private float pPosY;
+	private float tPosX;
+	private float tPosY;
+	private float range;
+	private float damage;
+	private ProjectileTexture projectileTexture;
+	private Effect startEffect;
+	private Effect endEffect;
 
 	public OrbProjectile() {
 
@@ -45,7 +56,16 @@ public class OrbProjectile extends Projectile {
 	public OrbProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
 		super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
-		playerPos = startPos;
+		this.playerPos = startPos;
+		this.pPosX = startPos.x;
+		this.pPosY = startPos.y;
+		this.targetClass = targetClass;
+		this.targetPos = targetPos;
+		this.range = range;
+		this.damage = damage;
+		this.projectileTexture = projectileTexture;
+		this.startEffect = startEffect;
+		this.endEffect = endEffect;
 	}
 
 	@Override
@@ -93,4 +113,37 @@ public class OrbProjectile extends Projectile {
 		return shadowRadius;
 	}
 
+	public float getRange(){
+		return range;
+	}
+
+	public Class<?> getTargetClass(){
+		return targetClass;
+	}
+
+	public float getDamage(){
+		return damage;
+	}
+
+	public float getPosX(){
+		return pPosX;
+	}
+
+	public float getPosY(){
+		return pPosY;
+	}
+
+	public ProjectileTexture getProjectileTexture() {
+		return projectileTexture;
+	}
+
+	@Override
+	public Effect getStartEffect() {
+		return startEffect;
+	}
+
+	@Override
+	public Effect getEndEffect() {
+		return endEffect;
+	}
 }

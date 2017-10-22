@@ -13,16 +13,13 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.*;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.projectiles.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.worlds.World;
 import org.junit.After;
 import org.junit.Test;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 
 import java.util.Optional;
 
@@ -32,11 +29,13 @@ import java.util.Optional;
 public class ProjectileTest {
 
 	protected Projectile testProjectile;
-	protected PlayerProjectile testPlayerProjectile;
+//	protected PlayerProjectile testPlayerProjectile;
 	protected BallisticProjectile testBallisticProjectile;
 	protected HomingProjectile testHomingProjectile;
+	protected MineBomb testMineBomb;
+	protected OrbProjectile testOrbProjectile;
 	protected Optional<AbstractEntity> target = null;
-	protected Class<?> targetClass = MortalEntity.class;
+	protected Class<?> targetClass = EnemyEntity.class;
 	protected float posX = 5f;
 	protected float posY = 10f;
 	protected float posZ = 0;
@@ -50,6 +49,7 @@ public class ProjectileTest {
 	protected Effect startEffect = new AOEEffect();
 	protected Effect endEffect = null;
 	protected String Directions = "E";
+	protected Vector3 getStartPos;
 
 	protected PlayerProjectile.PlayerShootMethod playerShootMethod = PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
 
@@ -61,9 +61,11 @@ public class ProjectileTest {
 	public void tearDown() {
 		GameManager.get().clearManagers();
 		testProjectile = null;
-		testPlayerProjectile = null;
+//		testPlayerProjectile = null;
 		testBallisticProjectile = null;
 		testHomingProjectile = null;
+		testMineBomb = null;
+		testOrbProjectile = null;
 	}
 
 	@Test
@@ -140,29 +142,62 @@ public class ProjectileTest {
 
 	}
 
+//	@Test
+//	public void TestPlayerProjectile() {
+//		GameManager.get().setWorld(new ProjectileTest.TestWorld());
+//		target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
+//		assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
+//		endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
+//		testPlayerProjectile = new PlayerProjectile(targetClass.getClass(), startPos, targetPos, range, damage,
+//				projectileTexture, startEffect, endEffect, Directions, playerShootMethod, BallisticProjectile.class);
+//		assertNotNull(testPlayerProjectile);
+//		assertNotNull(target);
+//		assertTrue(testPlayerProjectile.getDamage() == 10);
+//		assertEquals(startEffect, testPlayerProjectile.getStartEffect());
+//		assertEquals(endEffect, testPlayerProjectile.getEndEffect());
+//		assertTrue(testPlayerProjectile.getProjectileTexture().toString().contains("ROCKET"));
+//		assertTrue(testPlayerProjectile.getRange() == 8);
+//		assertEquals(5.0, testPlayerProjectile.getPosX(), 0.2);
+//		assertEquals(10.0, testPlayerProjectile.getPosY(), 0.2);
+//		assertEquals(0, testPlayerProjectile.getPosZ(), 0.0);
+//		assertEquals(TargetPosX, testPlayerProjectile.getTargetPosX(), 0);
+//		assertEquals(TargetPosY, testPlayerProjectile.getTargetPosY(), 0);
+//		assertEquals(targetClass.getClass(), testPlayerProjectile.getTargetClass());
+//
+//	}
+
+
 	@Test
-	public void TestPlayerProjectile() {
+	public void TestMineBomb(){
+		startPos = new Vector3(posX,posY,posZ);
+		GameManager.get().setWorld(new ProjectileTest.TestWorld());
+		testMineBomb = new MineBomb(startPos,range,damage,startEffect,endEffect);
+		assertNotNull(testMineBomb);
+		assertTrue(testMineBomb.getPosX() == posX);
+		assertTrue(testMineBomb.getPosY() == posY);
+		assertEquals(startEffect,testMineBomb.getStartEffect());
+		assertEquals(endEffect,testMineBomb.getEndEffect());
+	}
+
+	@Test
+	public void TestOrbProjectile(){
 		GameManager.get().setWorld(new ProjectileTest.TestWorld());
 		target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
-		assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
-		endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
-		testPlayerProjectile = new PlayerProjectile(targetClass.getClass(), startPos, targetPos, range, damage,
-				projectileTexture, startEffect, endEffect, Directions, playerShootMethod, BallisticProjectile.class);
-		assertNotNull(testPlayerProjectile);
-		assertNotNull(target);
-		assertTrue(testPlayerProjectile.getDamage() == 10);
-		assertEquals(startEffect, testPlayerProjectile.getStartEffect());
-		assertEquals(endEffect, testPlayerProjectile.getEndEffect());
-		assertTrue(testPlayerProjectile.getTexture().contains("rocket"));
-		assertTrue(testPlayerProjectile.getRange() == 8);
-		assertEquals(5.319001197814941, testPlayerProjectile.getPosX(), 0.2);
-		assertEquals(10.232157707214355, testPlayerProjectile.getPosY(), 0.2);
-		assertEquals(0, testPlayerProjectile.getPosZ(), 0.0);
-		assertEquals(TargetPosX, testPlayerProjectile.getTargetPosX(), 0);
-		assertEquals(TargetPosY, testPlayerProjectile.getTargetPosY(), 0);
-		assertEquals(targetClass.getClass(), testPlayerProjectile.getTargetClass());
-
+		startPos = new Vector3(posX,posY,posZ);
+		targetPos = new Vector3(TargetPosX, TargetPosY, posZ);
+		testOrbProjectile = new OrbProjectile(targetClass.getClass(),startPos,targetPos,range,damage,projectileTexture,startEffect,endEffect);
+		assertNotNull(testOrbProjectile);
+		assertTrue(testOrbProjectile.getPosX() == posX);
+		assertTrue(testOrbProjectile.getPosY() == posY);
+		assertEquals(startEffect,testOrbProjectile.getStartEffect());
+		assertEquals(endEffect,testOrbProjectile.getEndEffect());
+		assertTrue(testOrbProjectile.getRange()==range);
+		assertTrue(testOrbProjectile.getDamage()==damage);
+		assertEquals(testOrbProjectile.getTargetClass(),targetClass.getClass());
+		assertEquals(testOrbProjectile.getProjectileTexture(),projectileTexture);
 	}
+
+
 
 	@Test
 	public void TestAOEEffect() {

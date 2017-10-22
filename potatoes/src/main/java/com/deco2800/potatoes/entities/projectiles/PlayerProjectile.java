@@ -13,12 +13,18 @@ import com.deco2800.potatoes.util.WorldUtil;
 
 public class PlayerProjectile extends Projectile {
 	protected Vector3 startPos;
+	protected  Vector3 targetPos;
 	protected String directions;
 	protected Class<?> shootObjectClass;
+	protected Class<?> targetClass;
 	protected PlayerShootMethod shootingStyle;
 	public Projectile projectile;
 	public Vector2 mousePos;
-
+	private float damage;
+	private Effect startEffect;
+	private Effect endEffect;
+	private float range;
+	private ProjectileTexture projectileTexture;
 	public enum PlayerShootMethod {
 		DIRECTIONAL, CLOSEST, MOUSE
 	}
@@ -74,9 +80,15 @@ public class PlayerProjectile extends Projectile {
 		}
 		GameManager.get().getWorld().addEntity(projectile);
 		this.startPos = startPos;
-
+		this.targetPos = targetPos;
+		this.damage = damage;
 		this.directions = directions;
 		this.shootingStyle = shootingStyle;
+		this.startEffect = startEffect;
+		this.endEffect = endEffect;
+		this.projectileTexture = projectileTexture;
+		this.range = range;
+		this.targetClass = targetClass;
 		ShootingStyle(shootingStyle);
 	}
 
@@ -156,4 +168,46 @@ public class PlayerProjectile extends Projectile {
 		}
 	}
 
+
+	public float getDamage(){
+		return damage;
+	}
+
+	@Override
+	public Effect getStartEffect() {
+		return startEffect;
+	}
+
+	@Override
+	public Effect getEndEffect() {
+		return endEffect;
+	}
+
+	public ProjectileTexture getProjectileTexture() {
+		return projectileTexture;
+	}
+
+	public float getPosX(){
+		return startPos.x;
+	}
+
+	public float getPosY(){
+		return startPos.y;
+	}
+
+	public float getRange(){
+		return range;
+	}
+
+	public float getTargetPosX(){
+		return targetPos.x;
+	}
+
+	public float getTargetPosY(){
+		return targetPos.y;
+	}
+
+	public Class<?> getTargetClass(){
+		return targetClass;
+	}
 }
