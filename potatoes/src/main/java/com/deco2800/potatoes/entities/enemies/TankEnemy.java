@@ -4,15 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.util.Path;
@@ -21,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * A stronger but slower enemy type, only attacks towers/trees.
@@ -258,29 +253,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class))
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
 				.createEnemyStatistics();
-	}
-
-	/**
-	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
-	 * relevant target.
-	 *
-	 * @return this enemy's initialized targets.
-	 */
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		List<Class> mainTargets = new ArrayList<>();
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		List<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 
 	/**

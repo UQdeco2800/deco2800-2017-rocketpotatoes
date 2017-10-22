@@ -9,15 +9,9 @@ import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWaveEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
-import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
@@ -30,7 +24,6 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final transient String[] ENEMY_TYPE = new String[]{
 			"moose"
-
 	};
 	private static final EnemyProperties STATS = initStats();
 
@@ -49,7 +42,7 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
-		//Empty for serialization (is a code smell to not have comment here)
+		//Empty for serialization
 	}
 
 	/***
@@ -136,28 +129,5 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	@Override
 	public EnemyProperties getBasicStats() {
 		return STATS;
-	}
-
-	/**
-	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
-	 * relevant target.
-	 *
-	 * @return this enemy's initialized targets.
-	 */
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		List<Class> mainTargets = new ArrayList<>();
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		List<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 }

@@ -1,5 +1,3 @@
-
-
 package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.collisions.Shape2D;
@@ -8,15 +6,10 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.util.Path;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The standard & most basic enemy in the game - a squirrel. Moves towards base portal unless within close enough
@@ -118,29 +111,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				.createEnemyStatistics();
 	}
 
-	/**
-	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
-	 * relevant target.
-	 *
-	 * @return this enemy's initialized targets.
-	 */
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		List<Class> mainTargets = new ArrayList<>();
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		List<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
-	}
-
 	/***
 	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
 	 */
@@ -148,5 +118,4 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
-
 }

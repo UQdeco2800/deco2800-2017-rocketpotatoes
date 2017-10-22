@@ -10,7 +10,12 @@ import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Archer;
+import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Wizard;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
@@ -20,6 +25,8 @@ import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -414,6 +421,32 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		GameManager.get().getWorld().removeEntity(this);
 		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		GameManager.get().getManager(WaveManager.class).getActiveWave().reduceTotalEnemiesByOne();
+	}
+
+	/**
+	 * Initialise the EnemyTargets for an enemy for use when determining the enemy's most
+	 * relevant target.
+	 *
+	 * @return the enemy's initialized targets.
+	 */
+	protected EnemyTargets initTargets() {
+		/*Enemy will move to these (in order) if no aggro*/
+		List<Class> mainTargets = new ArrayList<>();
+		if (this instanceof SpeedyEnemy) {
+			mainTargets.add(ResourceTree.class);
+		}
+		mainTargets.add(BasePortal.class);
+		mainTargets.add(Archer.class);
+		mainTargets.add(Caveman.class);
+		mainTargets.add(Wizard.class);
+
+		/*if enemy can 'see' these, then enemy aggros to these*/
+		List<Class> sightAggroTargets = new ArrayList<>();
+		sightAggroTargets.add(Archer.class);
+		sightAggroTargets.add(Caveman.class);
+		sightAggroTargets.add(Wizard.class);
+
+		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 
 }

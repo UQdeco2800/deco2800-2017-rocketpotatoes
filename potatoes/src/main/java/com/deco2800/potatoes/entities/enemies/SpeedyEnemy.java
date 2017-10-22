@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.entities.enemies;
 
-
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
@@ -10,10 +9,7 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.StealingEvent;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
@@ -23,7 +19,6 @@ import com.deco2800.potatoes.util.WorldUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -195,29 +190,5 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			super.onTickMovement();
 			super.updateDirection();
 		}
-	}
-
-	/**
-	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
-	 * relevant target.
-	 *
-	 * @return
-	 */
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		List<Class> mainTargets = new ArrayList<>();
-		mainTargets.add(ResourceTree.class);
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		List<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 }
