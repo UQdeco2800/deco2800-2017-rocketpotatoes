@@ -90,8 +90,6 @@ task testRust(type: Exec) {
         executable "sh"
         args "-c", "which cargo >/dev/null || exit 0; cargo test"
     }
-
-    finalizedBy cleanCopiedRust
 }
 
 test.dependsOn testRust
