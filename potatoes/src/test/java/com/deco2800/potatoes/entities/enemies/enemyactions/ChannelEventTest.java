@@ -24,7 +24,7 @@ public class ChannelEventTest extends BaseTest {
     private ChannelEvent channel = new ChannelEvent(eventRate, channelDuration, healWave);
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
         emptyChannel = new ChannelEvent();
         healWave = new HealingWaveEvent(300, 10f, 10f);

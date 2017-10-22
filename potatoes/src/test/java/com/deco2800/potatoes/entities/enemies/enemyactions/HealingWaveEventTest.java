@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 /***
  * Test for HealingWaveEvent
+ *
  */
 public class HealingWaveEventTest extends BaseTest {
     private Squirrel squirrel = new Squirrel(20,20);
@@ -27,7 +28,7 @@ public class HealingWaveEventTest extends BaseTest {
     ParticleManager particleManager;
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
         GameManager.get().getWorld().addEntity(squirrel);
         healWave = new HealingWaveEvent(eventRate, waveRadius, healAmount);
@@ -38,6 +39,8 @@ public class HealingWaveEventTest extends BaseTest {
     public void cleanUp() {
         GameManager.get().clearManagers();
         healWave = null;
+        squirrel = null;
+        particleManager = null;
     }
 
     @Test
