@@ -408,7 +408,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		ParticleType particle =  new BasicParticleType(100000, 500.0f,
 				0.0f, 1024, Color.RED, 5, 5);
-		particle.speed = 0.9f;
+		particle.setSpeed(0.9f);
 
 		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");

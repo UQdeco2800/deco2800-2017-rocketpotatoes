@@ -9,26 +9,26 @@ import java.util.List;
 
 public abstract class ParticleType {
     public Color color;
-    public int sizeX, sizeY;
+    private int sizeX, sizeY;
     public int number, rate;
     public float lifeTime;
     public float cycleDelta;
     public float currentCycleTime;
     public float rotationSpeed = 1.0f;
     public float alphaCeil = 1.0f;
-    public float fadeOutPercent = 1.0f;
-    public float speed = 1.0f;
+    private float fadeOutPercent = 1.0f;
+    private float speed = 1.0f;
 
     // Random angle spread
-    public float lowerAngleBound = 0.0f;
-    public float upperAngleBound = 360.0f;
+    private float lowerAngleBound = 0.0f;
+    private float upperAngleBound = 360.0f;
 
     // Random spread of SPEED (if this are the same the SPEED is constant)
-    public float speedVarianceMin = 0.0f;
-    public float speedVarianceMax = 1.0f;
+    private float speedVarianceMin = 0.0f;
+    private float speedVarianceMax = 1.0f;
 
     // Not functional yet. Will implement when/if needed
-    public float fadeInPercent = 0.1f;
+    private float fadeInPercent = 0.1f;
     public Texture texture;
 
     // List of active particles of this type
@@ -70,7 +70,9 @@ public abstract class ParticleType {
                 alpha = p.lifeTime / fadeOutThreshold;
             }
 
-            if (alpha > this.alphaCeil) { alpha = this.alphaCeil; }
+            if (alpha > this.alphaCeil) { 
+                alpha = this.alphaCeil; 
+            }
 
             batch.setColor(col.r, col.g, col.b, alpha);
             batch.draw(this.texture, p.x, p.y, 0, 0,
@@ -80,6 +82,60 @@ public abstract class ParticleType {
                     false, false);
         }
     }
-
-
+    //return speed
+    public float getSpeed(){
+        return this.speed;
+    }
+    //set speed
+    public void setSpeed(float speed){
+        this.speed = speed;
+    }
+    //set speedVarianceMin
+    public float getSpeedVarianceMin(){
+        return this.speedVarianceMin;
+    }
+    //set speedVarianceMin
+    public void setSpeedVarianceMin(float speedVarianceMin){
+        this.speedVarianceMin = speedVarianceMin;
+    }
+    //set speedVarianceMax
+    public float getSpeedVarianceMax(){
+        return this.speedVarianceMax;
+    }
+    //set speedVarianceMin
+    public void setSpeedVarianceMax(float speedVarianceMax){
+        this.speedVarianceMax = speedVarianceMax;
+    }
+    //return size X
+    public int getSizeX(){
+        return this.sizeX;
+    }
+    //set size X
+    public void setSizeX(int sizeX){
+        this.sizeX = sizeX;
+    }
+    //return size Y
+    public int getSizeY(){
+        return this.sizeX;
+    }
+    //set size Y
+    public void setSizeY(int sizeY){
+        this.sizeY = sizeY;
+    }
+    //set lowerAngleBound
+    public float getLowerAngleBound(){
+        return this.lowerAngleBound;
+    }
+    //set lowerAngleBound
+    public void setlowerAngleBound(float lowerAngleBound){
+        this.lowerAngleBound = lowerAngleBound;
+    }
+    //set upperAngleBound
+    public float getUpperAngleBound(){
+        return this.upperAngleBound;
+    }
+    //set lowerAngleBound
+    public void setUpperAngleBound(float upperAngleBound){
+        this.upperAngleBound = upperAngleBound;
+    }
 }
