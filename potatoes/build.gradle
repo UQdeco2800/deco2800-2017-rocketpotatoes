@@ -58,6 +58,7 @@ task compileRust(type: Exec) {
     finalizedBy "copyRust"
 }
 
+run.dependsOn compileRust
 build.dependsOn compileRust
 
 task cleanCopiedRust(type: Delete) {
