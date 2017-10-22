@@ -203,8 +203,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	public float getPosY() {
 		return collisionMask.getY();
 	}
-
-	// TODO comment / depreciate 3D methods
+	
 	@Override
 	public float getPosZ() {
 		return 0;
@@ -289,8 +288,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	public void setYRenderOffset(float yRenderOffset) {
 		this.yRenderOffset = yRenderOffset;
 	}
-
-	//TODO comment, maybe remove & only rotate on projectile
+	
 	public float rotationAngle() {
 		return 0;
 	}
@@ -616,9 +614,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		// more massive entities will move less during mobile entity to mobile entity collision
 
 
-
-		// TODO only consider nearby entities using some sort of World.getNearbySolid, should implement a quadtree
-		// TODO get a collection of Box2D shapes that represent tiles & consider them like entities
+		
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 
 		// collection of entities I overlap during this step
@@ -737,8 +733,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 				//get the max distance that I could move before collision
 				float dist = this.distanceTo(e);
-				/* TODO this method returns min dist, not min dist in the direction of movement
-				need method accurate methods for minDist and angle of incidence/reflection */
+				/* this method returns min dist, not min dist in the direction of movement*/
 
 				float remainDist = movDist - dist;
 

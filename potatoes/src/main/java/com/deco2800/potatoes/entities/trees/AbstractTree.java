@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities.trees;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.List;
+
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -15,9 +16,6 @@ import com.deco2800.potatoes.gui.FadingGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
  * registered normal events which are triggered when the tree is not under
@@ -30,20 +28,16 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private int upgradeLevel = 0;
 	private transient Animation animation;
 
-	private static final List<Color> BUILD_COLOURS = Arrays.asList(Color.YELLOW);
-	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("progress_bar", BUILD_COLOURS, 60, 1);
+	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("healthBarBlue", 1.5f);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
-	private static final int unlockRange = 2;
+	private static final int UNLOCK_RANGE = 2;
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public AbstractTree() {
+		// Reseting may not be needed
 		resetStats();
-
-		super.setStatic(true);
-		super.setSolid(true);
-		super.setShadow(new Circle2D(0,0,0.4f));
 	}
 
 	/**
@@ -70,29 +64,26 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void onTick(long time) {
 		// Check if player is close enough to unlock it
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-		if (playerManager != null) {
-			if (playerManager.getPlayer() != null) {
+		if (playerManager != null && playerManager.getPlayer() != null) {
 				float distance = playerManager.distanceFromPlayer(this.getPosX(), this
 						.getPosY());
-				if (distance < unlockRange) {
+				if (distance < UNLOCK_RANGE) {
 					TreeShopGui treeShop = GameManager.get().getManager(GuiManager.class)
 							.getGui(TreeShopGui.class);
 					if (treeShop!= null) {
 						TreeState treeState = treeShop.getTreeStateByName(this.getName());
 
-						if (treeState != null) {
-							if (!treeState.isUnlocked()) {
+						if (treeState != null && !treeState.isUnlocked()) {
 								treeState.unlock();
 								showUnlockedMenu(treeState);
 								treeShop.refreshTreeStates();
 							}
-						}
+						
 					}
 
 				}
 			}
-
-		}
+			
 
 	}
 
@@ -270,8 +261,11 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public int getMaxProgress() {
-		// TODO Auto-generated method stub
-		return 1;
+		if (constructionLeft > 0) {
+			return 100;
+		} else {
+			return (int) this.getMaxHealth();
+		}
 	}
 
 	@Override

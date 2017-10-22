@@ -17,14 +17,13 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.deco2800.potatoes.collisions.Box2D;
-import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.GoalPotate;
-import com.deco2800.potatoes.entities.animation.Animated;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.collisions.*;
+import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.EnemyGate;
+import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
@@ -39,7 +38,12 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A simple isometric renderer for DECO2800 games
@@ -76,7 +80,7 @@ public class Render3D implements Renderer {
 	public void render(SpriteBatch batch) {
 		//IMPORTANT: each subroutine opens and closes the batch itself
 
-		// Created here because constructor is run in tests, TODO should be moved to constructor though
+		// Created here because constructor is run in tests
 		if (shapeRenderer == null) {
 			shapeRenderer = new ShapeRenderer();
 		}
@@ -93,15 +97,15 @@ public class Render3D implements Renderer {
 		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
 		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);
 
-		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
+		//get entities sorted back to front, for drawing order
 		getRenderedEntitiesSorted();
 
 		//get shading colour for day night cycle
 		Color shading = GameManager.get().getManager(GameTimeManager.class).getColour();
 
 
-		batch.setColor(shading);		// set world shading
-		renderMap();					// rend tiles TODO render is offset
+		batch.setColor(shading);		// 		set world shading
+		renderMap();					// 		rend tiles
 		renderCursor();					//		highlighted cursor, communicates with treeShopGui
 		renderShadows();				// 		CollisionMasks of entities as shadows
 		renderEntities();				// 		entities normal
@@ -118,13 +122,11 @@ public class Render3D implements Renderer {
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
-		// TODO does this render for other players ???
-		// TODO planting does not match up with mouse cursor, depending on part of the tile clicked
 
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
 			renderCollisionMasks(); 	// rend collisionMask outlines of entities
-			renderPathFinderNodes();	// rend nodes in PathManager TODO
+			renderPathFinderNodes();	// rend nodes in PathManager 
 		}
 	}
 
@@ -132,7 +134,6 @@ public class Render3D implements Renderer {
 	 * @return a list of entities sorted in render order (back to front)
 	 */
 	private void getRenderedEntitiesSorted() {
-		//TODO only rend entities on screen or close to edges
 		Map<Integer, AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
 
 		/* Tree map so we sort our entities properly */
@@ -169,6 +170,7 @@ public class Render3D implements Renderer {
 
 		if (!GameManager.get().getManager(WorldManager.class).isWorldCached()) {
 			cache.clear();
+			tileRenderer.setMap(GameManager.get().getWorld().getMap());
 
 
 			spriteCacheBatch.begin();
@@ -178,9 +180,9 @@ public class Render3D implements Renderer {
 							WorldManager.WORLD_SIZE),tileHeight * ((float) Math.floor(tileRenderer.getViewBounds().y /
 					tileHeight - 1) - WorldManager.WORLD_SIZE));
 			// draw with screen corner and width a little bit more than the screen
-			//TextureRegionDrawable background = GameManager.get().getWorld().getBackground();
-			//spriteCacheBatch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
-			//spriteCacheBatch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
+			TextureRegionDrawable background = GameManager.get().getWorld().getBackground();
+			spriteCacheBatch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
+			spriteCacheBatch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
 			spriteCacheBatch.end();
 
 			tileRenderer.setView(new Matrix4(), 0, 0, tileWidth * WorldManager.WORLD_SIZE, tileHeight *
@@ -281,16 +283,9 @@ public class Render3D implements Renderer {
 				continue;
 
 			// get texture
-			Texture tex = null;
+			Texture tex;
 			if (e instanceof Animated) {
-				// TODO Animations should probably be changed to TextureRegion for performance
-				try {
-					tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
-				}
-				catch (NullPointerException exp) {
-					// Fallback on texture
-					tex = texMan.getTexture(e.getTexture());
-				}
+				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
 			} else {
 				tex = texMan.getTexture(e.getTexture());
 			}
@@ -304,10 +299,7 @@ public class Render3D implements Renderer {
 			float offsetY;
 			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
 			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
-
-			//TODO use batch.setColour to recolor an entitiy when it takes damage, then reset batch colour
-			//probably use the event manager to toggle some internal "takingDamage" boolean of the entity
-
+			
 			batch.draw(tex,
 					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
 					tileWidth * e.getXRenderLength(), 						// width
@@ -332,7 +324,6 @@ public class Render3D implements Renderer {
 			// get texture
 			Texture tex;
 			if (e instanceof Animated) {
-				// TODO Animations should probably be changed to TextureRegion for performance
 				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
 			} else {
 				tex = texMan.getTexture(e.getTexture());
@@ -508,9 +499,7 @@ public class Render3D implements Renderer {
 				font.draw(batch, String.format("%s", m.getClients().get(entity.getValue())),
 						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
 			}
-
 		}
-		batch.end();
 
 		return;
 	}
@@ -571,15 +560,7 @@ public class Render3D implements Renderer {
 	 * Renders the nodes in PathManager */
 	private void renderPathFinderNodes() {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
-
-		// TODO does PathManger store nodes as expected?
-		/*
-		batch.begin();
-		for (Point2D node : pathMan.getNodes) {
-			Point2D.render...()
-		}
-		batch.end();
-		*/
+		
 	}
 
 

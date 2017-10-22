@@ -3,13 +3,17 @@ package com.deco2800.potatoes.gui;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.screens.GameScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 
 /**
@@ -107,13 +111,25 @@ public class WorldChangeGui extends Gui {
             public void changed(ChangeEvent event, Actor actor) {            	
                 // hide the gui
                 hide();
-
+                
                 // the current player
                 Player player = playerManager.getPlayer();
-                //set player to be next to the portal
-				playerManager.getPlayer().setPosition(18, 16);
+                // the current world
+                World currentWorld = GameManager.get().getWorld();
+                
+                // Find the portal in the world
+                for (AbstractEntity entity: currentWorld.getEntities().values()) {
+                	if (AbstractPortal.class.isAssignableFrom(entity.getClass())) {
+                		
+                        //set player to be next to the portal
+        				player.setPosition(entity.getPosX() + entity.getXRenderLength(),
+        						entity.getPosY() + entity.getYRenderLength());
+                	}               	
+                	
+                }
+
                 // add player back into the world
-                GameManager.get().getWorld().addEntity(player);
+                currentWorld.addEntity(player);
                 
                 LOGGER.info("Exited base portal");
             }
@@ -180,10 +196,22 @@ public class WorldChangeGui extends Gui {
     private void changeWorld(WorldType world) {
         // change to new world
         GameManager.get().getManager(WorldManager.class).setWorld(world);
+        // The new world
+        World newWorld = GameManager.get().getWorld();
+        
+        // Find the portal in the world
+        for (AbstractEntity entity: newWorld.getEntities().values()) {
+        	if (AbstractPortal.class.isAssignableFrom(entity.getClass())) {
+        		
+        		//set player to be next to the portal
+        		playerManager.getPlayer().setPosition(entity.getPosX() + entity.getXRenderLength(),
+        				entity.getPosY() + entity.getYRenderLength());
+        	}               	
+        	
+        }
+        
         // add player to new world
         GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-        // set player to be next to the portal
-        playerManager.getPlayer().setPosition(9, 4);
 
         // hide the world change gui
         hide();

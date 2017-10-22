@@ -9,6 +9,15 @@ import com.deco2800.potatoes.managers.CheatCodeManager.Key;
  * A list of cheat codes to be added to the game.
  */
 public class CheatList {
+
+    /**
+     * empty constructor for serialization
+     */
+    public void CheatList(){
+
+
+    }
+
     /**
      * Does what it says on the tin.
      */

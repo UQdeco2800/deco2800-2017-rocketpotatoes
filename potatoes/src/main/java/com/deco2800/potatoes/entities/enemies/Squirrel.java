@@ -1,5 +1,3 @@
-
-
 package com.deco2800.potatoes.entities.enemies;
 
 import com.deco2800.potatoes.collisions.Shape2D;
@@ -8,31 +6,25 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.util.Path;
 
-import java.util.ArrayList;
 
 /**
- * The standard & most basic enemy in the game - a squirrel. Currently attacks and follows player.
+ * The standard & most basic enemy in the game - a squirrel. Moves towards base portal unless within close enough
+ * distance of the player at which point it will chase the player. Attacks portal & player.
  */
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient float HEALTH = 100f;
+	private static final transient float HEALTH = 200f;
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
 	private static final String[] ENEMY_TYPE = new String[]{
 			"squirrel"
-
 	};
-//	private static final String ENEMY_TYPE = "squirrel";
-
 	private static final float SPEED = 0.05f;
 
 	private static Class<?> goal = Player.class;
@@ -43,9 +35,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
-
-	private Direction currentDirection; // The direction the enemy faces
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1.5f);
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
@@ -62,32 +52,26 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @param posY The y coordinate the created squirrel will spawn from
 	 */
 	public Squirrel(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.332f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+        super(new Circle2D(posX, posY, 0.5f), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		Squirrel.goal = goal;
 		this.path = null;
 	}
 
 
-	/**
-	 * Squirrel follows it's path.
-	 * Requests a new path whenever it collides with a staticCollideable entity
-	 * moves directly towards the player once it reaches the end of it's path
+	/***
+	 * Actions to be performed on every tick of the game
 	 *
-	 * @param i The current game tick
+	 * @param i the current game tick
 	 */
 	@Override
 	public void onTick(long i) {
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
-		pathMovement(pathTarget, relevantTarget);
-		super.onTickMovement();
-		super.updateDirection();
+		if (getMoving()) {
+			pathMovement(pathTarget, relevantTarget);
+			super.onTickMovement();
+			super.updateDirection();
+		}
 	}
-
-	/**
-	 *	@return the current Direction of squirrel
-	 * */
-	//@Override
-	public Direction getDirection() { return currentDirection; }
 
 	/**
 	 * @return String of this type of enemy (ie 'squirrel').
@@ -118,7 +102,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
 	 * enemy.
 	 *
-	 * @return
 	 */
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(SPEED)
@@ -128,29 +111,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 				.createEnemyStatistics();
 	}
 
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		ArrayList<Class> mainTargets = new ArrayList<>();
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		ArrayList<Class> sightAggroTargets = new ArrayList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		/*Not yet implemented - concept: if enemy is attacked by these, then enemy aggros to these*/
-		ArrayList<Class> damageAggroTargets = new ArrayList<>();
-		damageAggroTargets.add(Archer.class);
-		damageAggroTargets.add(Caveman.class);
-		damageAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
-	}
-
 	/***
 	 * @return the EnemyStatistics of enemy which contain various governing stats of this enemy
 	 */
@@ -158,5 +118,4 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	public EnemyProperties getBasicStats() {
 		return STATS;
 	}
-
 }

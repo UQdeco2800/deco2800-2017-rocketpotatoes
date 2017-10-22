@@ -52,6 +52,7 @@ public class CavemanTest {
 		// Test setting idle animation to south west
 		caveman.setAnimation(animationMap.get(Direction.SW));
 	}
+	
 	@Test
 	public void extraTest() {
 		caveman.updateSprites();
@@ -59,19 +60,14 @@ public class CavemanTest {
 		caveman.walk(false);
 		caveman.setState(Player.PlayerState.WALK);
 		caveman.updateSprites();
-		caveman.onTick(2);
 		caveman.setState(Player.PlayerState.ATTACK);
 		caveman.updateSprites();
-		caveman.onTick(2);
 		caveman.setState(Player.PlayerState.DAMAGED);
 		caveman.updateSprites();
-		caveman.onTick(2);
 		caveman.setState(Player.PlayerState.DEATH);
 		caveman.updateSprites();
 		caveman.setState(Player.PlayerState.INTERACT);
 		caveman.updateSprites();
-		caveman.onTick(2);
 		caveman.interact();
-		caveman.attack();
 	}
 }

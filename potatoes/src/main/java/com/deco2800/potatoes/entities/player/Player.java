@@ -8,22 +8,15 @@ import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.health.*;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.entities.resources.SeedResource;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
+import com.deco2800.potatoes.entities.resources.*;
+import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -38,15 +31,16 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final transient ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
 
 
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
     private boolean holdPosition = false;	// Used to determine if the player should be held in place
 
-    protected transient TimeAnimation currentAnimation;    // The current animation of the player
+    protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
+    public boolean canAttack = true;		// A boolean that determines whether the player can attack
 
     private static int doublePressSpeed = 300;    // double keypressed in ms
     protected float defaultSpeed;    // the default speed of each player
@@ -56,9 +50,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private boolean keyA = false;
     private boolean keyS = false;
     private boolean keyD = false;
-
-
-    //TODO change this. -> super. in as many locations as possible
+    
 
     // ----------     PlayerState class     ---------- //
 
@@ -73,12 +65,12 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     }
 
     // make usage of PlayerState less verbose for use in this class and subclasses
-    static transient final PlayerState IDLE = PlayerState.IDLE;
-    static transient final PlayerState WALK = PlayerState.WALK;
-    static transient final PlayerState ATTACK = PlayerState.ATTACK;
-    static transient final PlayerState DAMAGED = PlayerState.DAMAGED;
-    static transient final PlayerState DEATH = PlayerState.DEATH;
-    static transient final PlayerState INTERACT = PlayerState.INTERACT;
+    static final PlayerState IDLE = PlayerState.IDLE;
+    static final PlayerState WALK = PlayerState.WALK;
+    static final PlayerState ATTACK = PlayerState.ATTACK;
+    static final PlayerState DAMAGED = PlayerState.DAMAGED;
+    static final PlayerState DEATH = PlayerState.DEATH;
+    static final PlayerState INTERACT = PlayerState.INTERACT;
 
 
     // ----------     Initialisation     ---------- //
@@ -87,14 +79,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Default constructor for the purposes of serialization
      */
     public Player() {
-        super(new Circle2D(0, 0, 0.4f), 1f, 1f, "player_right", HEALTH);
-        this.defaultSpeed = 0.08f;
-        this.facing = Direction.SE;
-        this.state = IDLE;
-        this.setMoveSpeedModifier(0);
-        this.setStatic(false);
-        this.setSolid(true);
-        addResources();    //Initialise the inventory with the valid resources
+        this(0, 0);
     }
 
     /**
@@ -172,7 +157,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (currentAnimation != null) {
             return currentAnimation.getFrame();
         } else {
-            //LOGGER.warn("Rendered player without texture.");
+            LOGGER.warn("Rendered player without texture.");
             return "";
         }
     }
@@ -192,7 +177,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
         // Check if the change is the same, if so return true.
-        if (state == newState) return true;
+        if (state == newState){
+            return true;
+        }
 		//Only change the state if IDLE or WALK-ing
         if (state == IDLE || state == WALK || state == DEATH) {
         		stateChanged(state, newState);
@@ -344,8 +331,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     void updateMovingAndFacing() {
         Direction newFacing;
 
-        //TODO releasing keys while travelling diagonal, not working, returning to cardinal directions
-
         // get direction based on current keys
         // considers if opposite keys are pressed
 
@@ -455,9 +440,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (terrainModifierCheck <= 0) {
             terrainModifier = 0;
         }
-
-        //TODO getting terrainModifier should be easier as multiple entities will use it
-        //TODO is not using terrainModifier
+        
         if (state == WALK) {
             super.setMoveSpeedModifier(terrainModifier);
         }
@@ -542,7 +525,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * are added to the player's inventory.
      */
     private void harvestResources() {
-        double interactRange = 3f; // TODO: Could this be a class variable?
+        double interactRange = 3f; 
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -574,7 +557,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
-        // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+        // play Wilhelm scream sound effect
         SoundManager soundManager = new SoundManager();
         soundManager.playSound("death.wav");
         // get the event manager
@@ -614,7 +597,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void attack() {
-        // Override in subclasses to allow custom attacking.
+    		// Override in subclasses to allow custom attack.
     }
 
     /**

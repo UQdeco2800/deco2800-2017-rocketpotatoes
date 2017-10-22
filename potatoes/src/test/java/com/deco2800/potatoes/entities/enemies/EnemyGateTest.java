@@ -23,9 +23,9 @@ public class EnemyGateTest extends BaseTest {
 
     @Before
     public void setup() throws Exception {
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
         enemyGateEmpty = new EnemyGate();
         enemyGate1 = new EnemyGate(5,5, "enemyCave_SE");
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
     @After
@@ -40,7 +40,7 @@ public class EnemyGateTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals("healthbar", enemyGateEmpty.getProgressBar().getTexture());
+        assertEquals("healthBarRed", enemyGateEmpty.getProgressBar().getTexture());
     }
 
     /*

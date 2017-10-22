@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
-import java.util.stream.IntStream;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
@@ -74,7 +74,6 @@ public class RTree<Key> {
      *          The new position to be associated with the key.
      */
     public void move(Key k, Shape2D newPosition) {
-        // TODO -- this
         remove(k);
         insert(k, newPosition);
     }
@@ -108,6 +107,21 @@ public class RTree<Key> {
     }
 
     /**
+     * Finds the nearest key to a given position (by the Shape2D distance method) where the additionalCheck returns true. Ties are broken
+     * arbitrarily.
+     *
+     * @param position
+     *          The position keys are searched near.
+     * @param additionalCheck
+     *          The additional requirement for the result
+     * @return
+     *          The key that is closest to the position.
+     */
+    public Key findClosest(Shape2D position, Predicate<Key> additionalCheck) {
+        return root.findClosest(position, additionalCheck);
+    }
+
+    /**
      * Finds the nearest key to a given position (by the Shape2D distance method). Ties are broken
      * arbitrarily.
      *
@@ -117,7 +131,7 @@ public class RTree<Key> {
      *          The key that is closest to the position.
      */
     public Key findClosest(Shape2D position) {
-        return root.findClosest(position);
+        return root.findClosest(position, (x) -> true);
     }
 
     /**
@@ -143,7 +157,7 @@ public class RTree<Key> {
      */
     private static class Block<Key> {
         // Number of nodes within a block.
-        private static final int BLOCK_SIZE = 20; // TODO -- find a good value for this
+        private static final int BLOCK_SIZE = 20;
         private static final float MIN_RATIO = 0.4f;
 
         // Child nodes of the block. If isLeaf is true, then leafChildren must be an actual
@@ -255,7 +269,7 @@ public class RTree<Key> {
          * @return
          *          The new block containing ~half of this block's children.
          */
-        private Block splitBranch() { // TODO -- clean this... lots
+        private Block splitBranch() { 
             boolean isResultHorizontal = true;
             float cheapest = Float.MAX_VALUE;
             int splitIndex = -1;
@@ -334,7 +348,7 @@ public class RTree<Key> {
          * @return
          *          The new block containing ~half of this block's children.
          */
-        private Block splitLeaf() { // TODO -- clean this... lots... and probably find a way to remove it
+        private Block splitLeaf() { 
             boolean isResultHorizontal = true;
             float cheapest = Float.MAX_VALUE;
             int splitIndex = -1;
@@ -550,7 +564,7 @@ public class RTree<Key> {
          * @return
          *              The key of the nearest neighbour. Null if the RTree is empty.
          */
-        public Key findClosest(Shape2D position) {
+        public Key findClosest(Shape2D position, Predicate<Key> additionalCheck) {
             if (isLeaf && leafChildren.size() == 0) {
                 return null;
             }
@@ -559,14 +573,18 @@ public class RTree<Key> {
             float currentDistance = Float.MAX_VALUE;
             PriorityQueue<Block> queue = new PriorityQueue<>(Comparator.comparingDouble(
                         child -> child.minimumBoundingRectangle.distance(position)));
-            queue.addAll(children);
-
-            while (queue.peek().minimumBoundingRectangle.distance(position) < currentDistance) {
+            if (isLeaf) {
+                queue.add(this);
+            } else {
+                queue.addAll(children);
+            }
+            while (!queue.isEmpty() && queue.peek().minimumBoundingRectangle.distance(position) <
+                    currentDistance) {
                 Block<Key> head = queue.poll();
 
                 if (head.isLeaf) {
                     for (Bucket<Key> bucket: head.leafChildren) {
-                        if (bucket.getPosition().distance(position) < currentDistance) {
+                        if (bucket.getPosition().distance(position) < currentDistance && additionalCheck.test(bucket.getKey())) {
                             currentDistance = bucket.getPosition().distance(position);
                             output = bucket.getKey();
                         }

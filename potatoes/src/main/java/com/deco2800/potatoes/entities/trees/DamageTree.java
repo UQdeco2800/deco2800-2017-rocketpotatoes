@@ -1,5 +1,14 @@
 package com.deco2800.potatoes.entities.trees;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
@@ -9,30 +18,19 @@ import com.deco2800.potatoes.entities.effects.Effect.EffectTexture;
 import com.deco2800.potatoes.entities.effects.LightningEffect;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 
 public class DamageTree extends AbstractTree implements Tickable {
 
-    private transient static final Logger LOGGER = LoggerFactory.getLogger(DamageTree.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(DamageTree.class);
     /**
      * A map include ALL TREE'S ANIMATION
      */
-    private transient static Map<String,String[]> treeStatus = new HashMap<String, String[]>();
-
+    private static Map<String,String[]> treeStatus = new HashMap<String, String[]>();
     /**
      * A map include tree status
      */
-    private transient static Map<String,String > status=new HashMap<String,String>();
-
+    private static Map<String,String > status=new HashMap<String,String>();
     /**
      * setup all tree animation inculding damaging , death ,attacking and normal status
      */
@@ -43,6 +41,7 @@ public class DamageTree extends AbstractTree implements Tickable {
         status.put("lightning_tree1","lightning_tree1-normal");
         status.put("fire_tree","fire_tree-normal");
         status.put("cactusTree", "cactusTree-normal");
+        status.put("coralTree", "coralTree-normal");
 
 
         treeStatus.put("ice_tree-death",new String[]{
@@ -137,43 +136,50 @@ public class DamageTree extends AbstractTree implements Tickable {
         treeStatus.put("cactusTree-normal",new String[]{
                 "cactusTree"
         });
+        
+        treeStatus.put("coralTree-normal",new String[]{
+                "coralsTree"
+        });
 
 
     }
     /**
      * Static generating ice tree
      */
-    private transient static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), BallisticProjectile.class,ProjectileTexture.LEAVES);
+    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), LightningEffect.class,EffectTexture.LIGHTNING_ICE);
     /**
      * Static generating acorn tree
      */
-	private transient static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), BallisticProjectile.class,ProjectileTexture.ACORN);
+	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), LightningEffect.class,EffectTexture.LIGHTNING_FORREST);
     /**
      * Static generating lightning tree
      */
-	private transient static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation(),  LightningEffect.class,EffectTexture.LIGHTNING_DESERT);
+	private static final List<TreeProperties> LIGHTNING_TREE_STATS = generateTree("lightning_tree1", animation(),  LightningEffect.class,EffectTexture.LIGHTNING_WATER);
     /**
      * Static generating fire tree
      */
-	private transient static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(),  BallisticProjectile.class,ProjectileTexture.CHILLI);
+	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(),  LightningEffect.class,EffectTexture.LIGHTNING_FIRE);
 	 /**
      * Static generating cactus tree
      */
-	private transient static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(),  BallisticProjectile.class,ProjectileTexture.ACORN);
-    
+	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), LightningEffect.class,EffectTexture.LIGHTNING_DESERT);
+	/**
+     * Static generating coral tree
+     */
+	private static final List<TreeProperties> CORAL_TREE_STATS=generateTree("coralTree", animation(), LightningEffect.class,EffectTexture.LIGHTNING_WATER);
+
 	/**
      * Static field to store information about upgrades
      */
-    private transient DamageTreeType damageTreeType;
+    private DamageTreeType damageTreeType;
 
 
     /**
      * Default constructor for serialization
      */
     public DamageTree() {
-        this.resetStats();
+        //Default constructor
     }
-
     /**
      * Base Constructor
      */
@@ -229,6 +235,11 @@ public class DamageTree extends AbstractTree implements Tickable {
 
             this.setTexture("cactusTree");
             return CACTUS_TREE_STATS;
+        }else if(damageTreeType instanceof CoralTreeType){
+
+
+            this.setTexture("coralTree");
+            return CORAL_TREE_STATS;
         }
 
         this.setTexture("lightning_tree1");
@@ -288,6 +299,8 @@ public class DamageTree extends AbstractTree implements Tickable {
             return "Fire Tree";
         } else if(damageTreeType instanceof CactusTreeType){
             return "Cactus Tree";
+        } else if(damageTreeType instanceof CoralTreeType){
+            return "Coral Tree";            
         } else {
             return "Lightning Tree";
         }

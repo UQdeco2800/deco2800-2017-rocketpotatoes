@@ -27,17 +27,21 @@ public class MainMenuGui extends Gui {
     private Stage stage;
     private Skin uiSkin;
 
+    // Standard sizings and spacing for widgets in the main menu.
     private int buttonHeight;
     private int buttonWidth;
     private float buttonSpacing;
 
     // Root table for this entire element
     private Table root;
+
+    // Elements on opening screen.
     private Table primaryButtons;
     private TextButton startButton;
     private TextButton optionsButton;
     private TextButton exitButton;
 
+    // Elements in start menu.
     private Table startButtonGroup;
     private Table startCharacterSelectTable;
     private Image startCharacterImage;
@@ -46,11 +50,13 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerButton;
     private TextButton startBackButton;
 
+    // Elements in start>multiplayer menu.
     private Table startMultiplayerButtonGroup;
     private TextButton multiplayerClientButton;
     private TextButton multiplayerHostButton;
     private TextButton multiplayerBackButton;
 
+    // Elements in start>multiplayer>client menu.
     private Table multiplayerClientButtonGroup;
     private Table multiplayerServerTable;
     private Table multiplayerClientInputsTable;
@@ -62,6 +68,7 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerClientConnectButton;
     private TextButton multiplayerClientBackButton;
 
+    // Elements in start>multiplayer>host menu.
     private Table multiplayerHostButtonGroup;
     private Table multiplayerHostInputsTable;
     private Label multiplayerHostIpAddress;
@@ -69,6 +76,7 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerHostConnectButton;
     private TextButton multiplayerHostBackButton;
 
+    // Elements in options menu.
     private Table optionsButtonGroup;
     private Table effectsButtonGroup;
     private Table musicButtonGroup;
@@ -91,7 +99,6 @@ public class MainMenuGui extends Gui {
     }
 
     private States state = States.PRIMARY;
-
 
     public MainMenuGui(Stage stage, MainMenuScreen screen) {
         this.stage = stage;
@@ -218,8 +225,10 @@ public class MainMenuGui extends Gui {
         stage.addActor(root);
     }
 
+    /* Setup the listeners for the widgets for all states of the screen. */
     private void setupListeners() {
-        // Primary state
+
+        // Primary State
 
         startButton.addListener(new ChangeListener() {
             @Override
@@ -247,7 +256,8 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Start state
+        // Start State
+
         startCharacterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -282,7 +292,7 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Multiplayer start state
+        // Multiplayer Start State
 
         multiplayerClientButton.addListener(new ChangeListener() {
             @Override
@@ -312,7 +322,7 @@ public class MainMenuGui extends Gui {
         });
 
 
-        // Multiplayer Client state
+        // Multiplayer Client State
 
         multiplayerFindServers.addListener(new ChangeListener() {
             @Override
@@ -345,7 +355,7 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Multiplayer Host state
+        // Multiplayer Host State
 
         multiplayerHostConnectButton.addListener(new ChangeListener() {
             @Override
@@ -366,6 +376,7 @@ public class MainMenuGui extends Gui {
         });
 
         // Options State
+
         optionsEffectsVolumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -444,7 +455,6 @@ public class MainMenuGui extends Gui {
 
     /**
      * Adjusts this gui's position to correct for any resize event.
-     *
      * @param stage
      */
     @Override
@@ -461,7 +471,8 @@ public class MainMenuGui extends Gui {
         singleplayerButton.addListener(e);
     }
 
-    public static Array<String> capitalisePlayerTypes (Array<String> playerTypes) {
+    /* Makes the list of player types display nice. */
+    private static Array<String> capitalisePlayerTypes(Array<String> playerTypes) {
         Array<String> capitalisedPayerTypes = new Array<> ();
         for (String lowerCaseName : playerTypes) {
             String tempStr = lowerCaseName.substring(0, 1).toUpperCase();

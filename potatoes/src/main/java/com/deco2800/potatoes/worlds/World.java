@@ -1,5 +1,9 @@
 package com.deco2800.potatoes.worlds;
 
+import java.awt.Point;
+import java.util.*;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -8,16 +12,20 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
-import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.Manager;
+import com.deco2800.potatoes.managers.MultiplayerManager;
+import com.deco2800.potatoes.managers.TextureManager;
+import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Renderable;
+import com.deco2800.potatoes.util.RTree;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
-import java.util.*;
 
 /**
  * World is the Game World
@@ -31,18 +39,17 @@ public class World {
 	/**
 	 * Size of the area entites that are in will be put into the same position in the map
 	 */
-	private static final int GRID_SIZE = 5;
+	private static final int GRID_SIZE = 2;
 
 	private static final int TILE_WIDTH = 128;
 	private static final int TILE_HEIGHT = 74;
 	private Terrain[][] terrain;
 
 	private Map<Integer, AbstractEntity> entities = new HashMap<>();
-	private Map<Point, Map<Integer, AbstractEntity>> entitiesByPosition = new HashMap<>();
+	private RTree<Integer> entitiesRtree = new RTree<>();
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
 	// First 16 index's are reserved for clients
-	// TODO game will likely crash/break badly when this overflows
 	private int currentIndex = 17;
 	protected TiledMap map;
 	private int width;
@@ -93,7 +100,7 @@ public class World {
 	 *
 	 * In singleplayer this should work as you expect.
 	 *
-	 * For multiplayer, this should only be called by the master client. TODO way to
+	 * For multiplayer, this should only be called by the master client.  way to
 	 * for perform client side prediction.
 	 *
 	 * @param entity
@@ -182,15 +189,45 @@ public class World {
 	}
 
 	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @param maxDistance
+	 * @return
+	 */
+	public Iterator<AbstractEntity> getEntitiesWithinDistance(float x, float y, float maxDistance) {
+		return entitiesRtree.findOverlapping(new Circle2D(x, y, maxDistance)).stream().map((id) -> entities.get(id)).iterator();
+	}
+
+
+	/**
+	 * Gets the approximate closest entity of the given type to the given position, approximately within the the
+	 * given maximum distance.
+	 * @param x The x coordinate to measure the distance from
+	 * @param y The y coordinate to measure the distance from
+	 * @param type The type of entity to check for, {@link AbstractEntity} the closest general entity
+	 * @return The closest entity
+	 */
+	public Optional<AbstractEntity> getClosestEntity(float x, float y, Class<?> type) {
+		return Optional.ofNullable(entities.get(entitiesRtree.findClosest(new Point2D(x, y), (id) -> type.isAssignableFrom(entities.get(id).getClass()))));
+	}
+
+	/**
+	 * Could be updated to be run from {@link AbstractEntity#setPosition(float, float)}
+	 */
+	public void updatePositions() {
+		for (Entry<Integer, AbstractEntity> entry : entities.entrySet()) {
+			if (!entry.getValue().isStatic() && entry.getValue().getMoveSpeed() > 0) {
+				entitiesRtree.move(entry.getKey(), entry.getValue().getMask());
+			}
+		}
+	}
+
+	/**
 	 * Adds the entity and associated id to all the maps
 	 */
 	private void addToMaps(int id, AbstractEntity entity) {
-		// Check if the nested maps exist and create them if they don't
-		if (!entitiesByPosition.containsKey(getGridPoint(entity))) {
-			entitiesByPosition.put(getGridPoint(entity), new HashMap<>());
-		}
-
-		entitiesByPosition.get(getGridPoint(entity)).put(id, entity);
+		if (entity.isSolid()) entitiesRtree.insert(id, entity.getMask());
 		entities.put(id, entity);
 	}
 
@@ -198,11 +235,7 @@ public class World {
 	 * Removes the entity associated with the given id from all the maps
 	 */
 	private void removeFromMaps(int id) {
-		AbstractEntity entity = entities.get(id);
-		// Check all the nested maps exist
-		if (entitiesByPosition.containsKey(getGridPoint(entity))) {
-			entitiesByPosition.get(getGridPoint(entity)).remove(id);
-		}
+		entitiesRtree.remove(id);
 		entities.remove(id);
 	}
 
@@ -214,9 +247,9 @@ public class World {
 		return getGridPoint((int)entity.getPosX(), (int)entity.getPosY());
 	}
 
-	private Point getGridPoint(int x, int y) {
+	private Point getGridPoint(float x, float y) {
 		// Rounds x and y to a multiple of GRID_SIZE
-		return new Point(GRID_SIZE * (x / GRID_SIZE), GRID_SIZE * (y / GRID_SIZE));
+		return new Point(GRID_SIZE * (int)(0.5 + x / GRID_SIZE), GRID_SIZE * (int)(0.5 + y / GRID_SIZE));
 	}
 
 	/**
@@ -336,7 +369,6 @@ public class World {
 	 * Sets the background for beyond the edges of the map
 	 */
 	public void setBackground(Terrain terrain) {
-		// TODO fix tests so they don't throw null pointer error here
 		try {
 			backgroundTerrain = terrain;
 			TextureRegion textureRegion = new TextureRegion(GameManager.get().getManager(TextureManager.class)

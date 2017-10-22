@@ -47,15 +47,11 @@ public class MooseTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(null, mooseEmpty.getDirection());
         for (String data:mooseEmpty.getEnemyType()) {
             assertEquals("moose", data);
 
         }
 
-        assertEquals(Color.RED, mooseEmpty.getProgressBar().getColours().get(0));
-        assertEquals(Color.valueOf("fff134"), mooseEmpty.getProgressBar().getColours().get(1));
-        assertEquals(Color.GREEN, mooseEmpty.getProgressBar().getColours().get(2));
     }
 
     /*

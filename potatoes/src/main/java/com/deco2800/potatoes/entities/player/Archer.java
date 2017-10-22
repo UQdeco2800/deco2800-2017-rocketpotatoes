@@ -1,25 +1,24 @@
 package com.deco2800.potatoes.entities.player;
 
+import java.util.Map;
+import java.util.Optional;
+
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
+import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
-import java.util.Map;
-import java.util.Optional;
-
 public class Archer extends Player {
-
-	public Archer() {
-		this(0, 0);
-	}
+	
 	
 	/**
      * Creates a new Archer instance.
@@ -35,11 +34,11 @@ public class Archer extends Player {
         this.resetState();
     }
     
-    private transient Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
-    private transient Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
-    private transient Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, super::completionHandler);
-    private transient Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, this::damagedCompletionHandler);
-    private transient Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, super::completionHandler);
+    private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, super::completionHandler);
 
     /**
      * Custom damaged handling for the archer
@@ -79,6 +78,14 @@ public class Archer extends Player {
     @Override
     protected void attack() {
 	    super.attack();
+	    
+	    if (!canAttack) {
+			return;
+		} else {
+			canAttack = false;
+			EventManager em = GameManager.get().getManager(EventManager.class);
+	        em.registerEvent(this, new  AttackCooldownEvent(700));
+		}
 
     		if (this.setState(ATTACK)) {
     			

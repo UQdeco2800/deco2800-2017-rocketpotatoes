@@ -1,9 +1,11 @@
 package com.deco2800.potatoes.networking;
 
 import com.badlogic.gdx.graphics.Color;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.gui.ChatGui;
-import com.deco2800.potatoes.managers.*;
-import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * Static processor for messages
  */
 public class ClientMessageProcessor {
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
 
     /**
      * Calls the appropriate handler for the given message
@@ -49,7 +51,7 @@ public class ClientMessageProcessor {
                 entityUpdatePositionMessage(client, (Network.HostEntityUpdatePositionMessage) object);
             }
             else if (object instanceof Network.HostEntityUpdateProgressMessage) {
-                //entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
+                entityUpdateProgressMessage(client, (Network.HostEntityUpdateProgressMessage) object);
             }
             else if (object instanceof Network.HostChatMessage) {
                 chatMessage(client, (Network.HostChatMessage) object);
@@ -66,14 +68,8 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
+
         client.setID(m.getId());
-        GameManager.get().setSeed(m.getSeed());
-
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
-
-		/* Move camera to center */
-        GameManager.get().getManager(CameraManager.class).getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
-        GameManager.get().getManager(CameraManager.class).getCamera().position.y = 0;
     }
 
     /**
@@ -85,6 +81,7 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void disconnectMessage(NetworkClient client, Network.HostDisconnectMessage m) {
+
         client.disconnect();
     }
 
@@ -116,8 +113,11 @@ public class ClientMessageProcessor {
     private static void newPlayerMessage(NetworkClient client, Network.HostNewPlayerMessage m) {
         client.getClients().set(m.getId(), m.getName());
 
+        // Make the player
+        Player p = new Player(10 + m.getId(), 10 + m.getId());
+
         try {
-            GameManager.get().getWorld().addEntity(m.getPlayer(), m.getId());
+            GameManager.get().getWorld().addEntity(p, m.getId());
 
         } catch (Exception ex) {
             // Throws when we try run this in a test, this is a hacky fix for now!
@@ -125,8 +125,9 @@ public class ClientMessageProcessor {
 
 
         if (client.getID() == m.getId()) {
+            System.out.println("[CLIENT]: IT'S ME!");
             // Give the player manager me
-            GameManager.get().getManager(PlayerManager.class).setPlayer(m.getPlayer());
+            GameManager.get().getManager(PlayerManager.class).setPlayer(p);
 
         } else {
             client.sendSystemMessage("New Player Joined:" + m.getName() + "(" + m.getId() + ")");
@@ -213,6 +214,7 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void entityUpdatePositionMessage(NetworkClient client, Network.HostEntityUpdatePositionMessage m) {
+
         GameManager.get().getWorld().getEntities().get(m.getId()).setPosX(m.getX());
         GameManager.get().getWorld().getEntities().get(m.getId()).setPosY(m.getY());
     }
@@ -230,8 +232,6 @@ public class ClientMessageProcessor {
 
 		LOGGER.error("Trying to use setProgress to update the progress. This is no longer currently"
 				+ " part of the HasProgress interface and needs to be fixed.");
-        //((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
-
     }
 
     /**

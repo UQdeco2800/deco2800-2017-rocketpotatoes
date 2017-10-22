@@ -17,7 +17,7 @@ import java.util.Optional;
 /**
  * A point class that implements Shape2D.
  * Can be used to check distance or overlaps with other Shape2D's.
- * Can render to isometric view. TODO
+ * Can render to isometric view.
  * Being used by AbstractEntity & descendents for collision
  *          & by PathManger to represent points in a path
  *
@@ -140,7 +140,7 @@ public class Point2D extends Shape2D {
 
         //render ellipse
         float rt2 = (float) Math.sqrt(2);
-        float size = 5;     //TODO test these vals
+        float size = 5;     
         float width = 3;
                                 //x1, y1, x2, y2, width
         shapeRenderer.rectLine(v.x - size, v.y - size * rt2, v.x + size, v.y + size * rt2, width);
