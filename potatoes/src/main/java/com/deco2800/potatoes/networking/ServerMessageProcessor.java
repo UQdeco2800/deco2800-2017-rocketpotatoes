@@ -126,10 +126,11 @@ public class ServerMessageProcessor {
         response.setY(m.getY());
         response.setId(c.getID());
 
-        server.server.sendToAllExceptUDP(c.getID(), response);
+        server.server.sendToAllExceptTCP(c.getID(), response);
     }
 
     /**
+     * Processes a build order
      * Processes a build order
      *
      * Builds a tower entity at the given position if possible, otherwise does nothing
