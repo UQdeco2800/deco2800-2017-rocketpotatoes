@@ -54,15 +54,21 @@ def get_output_name(arg_num):
 
     return os.path.splitext(output)[0]
 
+def deselect_all():
+    for obj in bpy.data.objects:
+        obj.select = False
+
 
 def centre_origin():
     bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='BOUNDS')
+
 
 def centre_model(model):
     '''centre the model & its origin'''
     centre_origin()
     model.location = [0, 0, 0]
     model.rotation_euler = [0, 0, 0]
+
 
 def setup_camera(camera):
     """prepare the camera for batch rendering"""

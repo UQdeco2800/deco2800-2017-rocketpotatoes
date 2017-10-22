@@ -96,8 +96,7 @@ def main():
     setup_camera(camera)
     setup_light(light)
 
-    for obj in bpy.data.objects:
-        obj.select = False
+    deselect_all()
 
     model = OBJECTS["Model"]
     model.select = True
@@ -146,8 +145,9 @@ def main():
         x.select = True
 
     # merge all the newly imported models into one supermodel
-    selected = bpy.context.selected_objects
-    SCENE.objects.active = merged = selected.pop()
+    bpy.ops.object.select_pattern(pattern="Model.*")
+
+    SCENE.objects.active = merged = OBJECTS["Model.001"]
     bpy.ops.object.join()
 
     merged.name = "Merged"
