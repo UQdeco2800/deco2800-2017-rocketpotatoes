@@ -329,7 +329,8 @@ public class GameScreen implements Screen {
 			 */
 
 				// Make our player
-				playerManager.setPlayer(5.5f, 10.5f);
+				playerManager.setPlayer(GameManager.get().getWorld().getLength() / 2 - 5f,
+						GameManager.get().getWorld().getWidth() / 2 - 5f);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
