@@ -1,7 +1,5 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.List;
-
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -15,6 +13,8 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.gui.FadingGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.*;
+
+import java.util.List;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -89,7 +89,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	private void showUnlockedMenu(TreeState treeState) {
 		GuiManager guiManager = GameManager.get().getManager(GuiManager.class);
-		guiManager.addFadingGui(new FadingGui(treeState, 200,guiManager.getStage()));
+		guiManager.addFadingGui(new FadingGui(treeState, 2000, guiManager.getStage()));
 	}
 
 	/**

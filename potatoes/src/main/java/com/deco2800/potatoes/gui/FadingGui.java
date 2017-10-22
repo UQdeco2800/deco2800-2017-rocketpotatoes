@@ -19,14 +19,12 @@ public class FadingGui extends Gui implements Tickable{
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
     private Image image;
     private int startTime;
-    private int latestTick;
     private Table container;
 
     public FadingGui(TreeState treeState, int timer, Stage stage) {
         this.treeState = treeState;
         this.timer = timer;
         this.startTime = timer;
-        this.latestTick = timer;
         container = new Table();
         initializeGui(stage);
 
@@ -69,11 +67,10 @@ public class FadingGui extends Gui implements Tickable{
      */
     @Override
     public void onTick (long time){
-        timer -= time-latestTick;
+        timer -= time;
         float opacity = (float)timer / startTime;
         container.setColor(4,4,4,opacity);
         container.setPosition(container.getX(), container.getY()+1);
-        latestTick = timer;
     }
 
     @Override
