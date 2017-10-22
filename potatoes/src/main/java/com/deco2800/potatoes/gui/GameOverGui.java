@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,9 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
-//import com.deco2800.potatoes.screens.GameOverScreen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,6 @@ public class GameOverGui extends Gui {
     private Drawable exitDrawable;
     private ImageButton startButton;
     private ImageButton exitButton;
-//    private Label gameOverLabel;
 
     public GameOverGui(Stage stage, GameScreen screen) {
     	this.stage = stage;
@@ -50,21 +51,27 @@ public class GameOverGui extends Gui {
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
-//        gameOverLabel = new Label("GAME OVER",uiSkin);
         // Make drawables from textures
-        startDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("startMainMenu")));
-        exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("exitMainMenu")));
+        startDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("gameOverRestart")));
+        exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("gameOverExit")));
         startButton = new ImageButton(startDrawable);
         exitButton = new ImageButton(exitDrawable);
 
         primaryButtons = new VerticalGroup();
         primaryButtons.addActor(startButton);
         primaryButtons.addActor(exitButton);
+        
+     // padding for top and bottom of buttons
+        final int PADDINGVERTICAL = 15;
+        final int PADDINGHORIZONTAL = 10;
 
+     // Add padding to buttons
+        startButton.pad(PADDINGVERTICAL, PADDINGHORIZONTAL, PADDINGVERTICAL, PADDINGHORIZONTAL);
+        exitButton.pad(PADDINGVERTICAL, PADDINGHORIZONTAL, PADDINGVERTICAL, PADDINGHORIZONTAL);
         setupListeners();
 
         table.setBackground(new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("gameOverScreen"))));
-        table.add(primaryButtons);
+        table.add(primaryButtons).expandX().center().padTop(230);
         table.setVisible(false);
         table.setWidth(stage.getWidth());
         table.setHeight(stage.getHeight());
@@ -104,11 +111,24 @@ public class GameOverGui extends Gui {
         table.setVisible(true);
 
         stage.addActor(table);
+        hidden = false;
     }
 
     @Override
 	public void hide() {
         table.setVisible(false);
+        hidden = true;
+    }
+    
+    /**
+     * Toggles whether the menu is shown or hidden, using the hide() and show() methods.
+     */
+    public void toggle() {
+        if (hidden) {
+            show();
+        } else {
+            hide();
+        }
     }
 
 }

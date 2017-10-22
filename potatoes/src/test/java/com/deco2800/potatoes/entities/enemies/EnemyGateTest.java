@@ -3,7 +3,6 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,9 +23,9 @@ public class EnemyGateTest extends BaseTest {
 
     @Before
     public void setup() throws Exception {
-        enemyGateEmpty = new EnemyGate();
-        enemyGate1 = new EnemyGate(0, 0);
         GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
+        enemyGateEmpty = new EnemyGate();
+        enemyGate1 = new EnemyGate(5,5, "enemyCave_SE");
     }
 
     @After
@@ -41,7 +40,7 @@ public class EnemyGateTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals("healthbar", enemyGateEmpty.getProgressBar().getTexture());
+        assertEquals(null, enemyGateEmpty.getProgressBar());
     }
 
     /*

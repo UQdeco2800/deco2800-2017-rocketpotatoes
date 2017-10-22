@@ -28,7 +28,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 
 public class InventoryGui extends Gui {
 
-	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+	private Skin skin = new Skin(Gdx.files.internal("menu/uiskin.json"));
 
 	/* Create Window with skin */
     private Window window;
@@ -55,8 +55,6 @@ public class InventoryGui extends Gui {
 	public InventoryGui(Stage stage) {		
 		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
-		//inventoryTable.top().right();
-		//instantiateScrollPane();
 		
 		/* set up window */
 		window = new Window("Inventory", skin);

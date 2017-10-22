@@ -40,7 +40,7 @@ public class Render3DTest extends BaseTest {
 	
 	@Test
 	public void screenAndTileTest() {
-		//Todo: fix null pointer exception
+		//fix null pointer exception
 		Vector2 testVector1 = Render3D.screenToTile(10, 10);
 		//Vector3 testVector2 = renderer.tileToScreen(GameManager.get().getManager(GuiManager.class).getStage(), testVector1.x, testVector1.y);
 		

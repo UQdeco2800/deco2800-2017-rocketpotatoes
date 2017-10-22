@@ -56,6 +56,11 @@ public class PlayerManagerTest {
         playerManager.setPlayerType(playerManager.getPlayerType());
         playerManager.getPlayerType().toString();
         playerManager.setPlayer(0,0);
+        playerManager.setPlayerType(PlayerManager.PlayerType.ARCHER);
+        playerManager.setPlayer(0,0);
+        playerManager.setPlayerType(PlayerManager.PlayerType.WIZARD);
+        playerManager.setPlayer(0,0);
+        PlayerManager.PlayerType.names();
     }
 
 }

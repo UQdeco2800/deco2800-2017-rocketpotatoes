@@ -1,23 +1,21 @@
 package com.deco2800.potatoes.entities.portals;
 
-import java.util.Map;
-
+import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Shape2D;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.gui.GameOverGui;
+import com.deco2800.potatoes.gui.WorldChangeGui;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.PlayerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.worlds.ForestWorld;
-import com.deco2800.potatoes.worlds.WorldType;
-import com.deco2800.potatoes.entities.health.MortalEntity;
+import java.util.Map;
 
 /**
  * A class that can create portals which are not the base portal. Because these
@@ -48,6 +46,9 @@ public class AbstractPortal extends MortalEntity implements Tickable {
      * The player entity.
      */
     private AbstractEntity player;
+
+    // If the player was previous colliding
+    boolean prevCollided = false;
 
     /**
      * This instantiates an AbstractPortal given the appropriate parameters.
@@ -95,11 +96,21 @@ public class AbstractPortal extends MortalEntity implements Tickable {
                 // Player next to this resource
                 if (newPos.overlaps(entity.getMask())) {
                     collided = true;
-
                 }
             }
         }
-        return collided;
+
+        if (prevCollided && !collided) {
+            prevCollided = false;
+            // Hide gui
+            GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class).hide();
+            return false;
+        }
+        else if (!prevCollided && collided) {
+            prevCollided = true;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -112,30 +123,21 @@ public class AbstractPortal extends MortalEntity implements Tickable {
         return player;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deathHandler() {
+        super.deathHandler();
+
+        // End game
+        GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
+        GameManager.get().getWorld()
+                .removeEntity(GameManager.get().getManager(PlayerManager.class).getPlayer());
+    }
+
     @Override
     public void onTick(long time) {
-        boolean collided = this.preTick(time);
-        // remove from game world and add to inventory if a player has collided with
-        // this resource
-        if (collided) {
-            try {
-                LOGGER.info("Entered portal");
-                //play warping sound effect
-                SoundManager soundManager = new SoundManager();
-                soundManager.playSound("warpSound.wav");
-                //remover player from old world
-                GameManager.get().getWorld().removeEntity(getPlayer());
-                //change to new world
-                GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
-                //add player to new world
-                GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-                //set player to be next to the portal
-                playerManager.getPlayer().setPosition(18, 16);
 
-                // Bring up portal interface
-            } catch (Exception e) {
-                LOGGER.warn("Issue entering portal; " + e);
-            }
-        }
     }
 }

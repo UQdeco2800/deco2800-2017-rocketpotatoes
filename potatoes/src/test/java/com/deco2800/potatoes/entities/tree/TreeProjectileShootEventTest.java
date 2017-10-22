@@ -1,6 +1,8 @@
 package com.deco2800.potatoes.entities.tree;
 
 import com.deco2800.potatoes.entities.enemies.Squirrel;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.worlds.World;
@@ -9,7 +11,7 @@ import org.junit.After;
 import org.junit.Test;
 
 public class TreeProjectileShootEventTest {
-    TreeProjectileShootEvent testEvent = new TreeProjectileShootEvent(10);
+    TreeProjectileShootEvent testEvent = new TreeProjectileShootEvent(10,  BallisticProjectile.class,ProjectileTexture.ROCKET);
     private static final int RELOAD = 100;
     private static final float HEALTH = 10f;
     private static final float RANGE = 8f;

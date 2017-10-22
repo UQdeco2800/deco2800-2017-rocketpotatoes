@@ -43,6 +43,12 @@ public interface ProgressBar {
 	 * @return the scale of the progress bar in relation to its entity
 	 */
 	public float getWidthScale();
+	
+	/**
+	 * 
+	 * @return The layout texture.
+	 */
+	public String getLayoutTexture();
 
 
 }

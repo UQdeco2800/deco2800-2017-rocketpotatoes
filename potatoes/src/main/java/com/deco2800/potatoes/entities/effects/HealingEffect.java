@@ -4,14 +4,10 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 
-
-
-
 /*
    A HealingEffect, an virtually terrain that has been "heal" in the game.
    HealingEffect created for Moose's healing spell to enemyentity,Whenever Moose heal
    other enemy, the effect will appear to show it is healing the enemy.
-   TODO heal enemy.
  */
 public class HealingEffect extends Effect {
     private static final transient String TEXTURE = "Healing1";

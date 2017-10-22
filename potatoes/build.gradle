@@ -20,6 +20,7 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+
 apply plugin: 'org.flywaydb.flyway'
 buildscript {
     repositories {
@@ -32,7 +33,69 @@ buildscript {
 
 }
 
+
 task(run, dependsOn: "classes", type: JavaExec) {
     main = "com.deco2800.potatoes.GameLauncher"
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task copyRust(type: Copy) {
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        from 'target\\release'
+        into 'build\\classes\\main'
+        include 'rustyfish.dll'
+    } else {
+        from 'target/release/'
+        into "build/classes/main"
+        include 'librustyfish.*'
+    }
+}
+
+task compileRust(type: Exec) {
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable "cmd.exe"
+        args "/c", "cargo build --release"
+        ignoreExitValue true
+    } else {
+        executable "sh"
+        args "-c", "which cargo >/dev/null || exit 0; cargo build --release"
+    }
+
+    finalizedBy "copyRust"
+}
+
+run.dependsOn compileRust
+build.dependsOn compileRust
+
+task cleanCopiedRust(type: Delete) {
+    delete "build/classes/main"
+}
+
+
+task cleanRust(type: Exec) {
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable "cmd.exe"
+        args "/c", "cargo clean"
+        ignoreExitValue true
+    } else {
+        executable "sh"
+        args "-c", "which cargo >/dev/null || exit 0; cargo clean"
+    }
+
+    finalizedBy cleanCopiedRust
+}
+
+clean.dependsOn cleanRust
+
+task testRust(type: Exec) {
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable "cmd.exe"
+        args "/c", "cargo test"
+        ignoreExitValue true
+    } else {
+        executable "sh"
+        args "-c", "which cargo >/dev/null || exit 0; cargo test"
+    }
+}
+
+test.dependsOn testRust

@@ -1,19 +1,15 @@
 package com.deco2800.potatoes.entities.portals;
 
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
-
-import com.deco2800.potatoes.managers.SoundManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class for creating the base portal. This class differs from AbstractPortals
@@ -26,7 +22,7 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
     /*
      * Progress bar to display health of base portal
      */
-    private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthbar", 1);
+    private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthBarGreen", 1);
     /*
      * Base portal's texture
     */
@@ -57,11 +53,6 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
         if (collided) {
             try {
                 LOGGER.info("Entered portal");
-                //play warping sound effect
-                SoundManager soundManager = new SoundManager();
-                soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                GameManager.get().getWorld().removeEntity(this.getPlayer());
 				// Bring up portal interface
                 GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class).show();
 

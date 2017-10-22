@@ -3,6 +3,7 @@ package com.deco2800.potatoes.util;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,12 +58,17 @@ public class MinimumSpanningTreeTest {
                         nodes.get(j).getY()
                 );
                 tree.putGraphEntry(line.getDistance(), i, j);
+                tree.hashCode();
 
             }
         }
 
     }
 
+    @After
+    public void tearDown() {
+        nodes = null;
+        tree = null;
 
-
+    }
 }

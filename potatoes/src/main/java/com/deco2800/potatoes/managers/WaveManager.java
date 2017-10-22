@@ -1,13 +1,24 @@
 package com.deco2800.potatoes.managers;
 
+import com.deco2800.potatoes.entities.enemies.EnemyGate;
+import com.deco2800.potatoes.entities.resources.*;
+import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
+import com.deco2800.potatoes.worlds.DesertWorld;
+import com.deco2800.potatoes.worlds.IceWorld;
+import com.deco2800.potatoes.worlds.OceanWorld;
+import com.deco2800.potatoes.worlds.VolcanoWorld;
+import com.deco2800.potatoes.worlds.World;
+import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Wave manager acts as a controller for the games waves of enemies. It's primary
+ * Wave manager acts as a controller for the games waves of enemies. Its primary
  * function is to hold a queue of individual enemy waves and schedule them to
  * create the flow of wave - break, and so on. Through wave manager you can determine
  * the progress and state of the game.
@@ -15,9 +26,17 @@ import java.util.List;
  * @author craig
  */
 public class WaveManager extends Manager implements TickableManager, ForWorld {
+    public static final int EASY = 1;
+    public static final int MEDIUM = 2;
+    public static final int HARD = 3;
 
-    private ArrayList<EnemyWave> waves;
+    // Default is that there will be no campaign and the difficulty will be medium
+    private boolean isCampaign = false;
+    private int difficulty = MEDIUM;
+
+    private LinkedList<EnemyWave> waves;
     private int waveIndex = 0;
+    private int nonPauseWaveIndex = 0;
     private int timeBetweenWaves = 800;
     private int elapsedTime = 0;
 
@@ -25,7 +44,22 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * Create a new instance of WaveManager
      */
     public WaveManager() {
-        waves = new ArrayList<>();
+        // most of the time waves are created on the fly, history should be preserved though
+        // LinedList offers better performance for this, will be slower when loading campaigns initially
+        waves = new LinkedList<EnemyWave>();
+    }
+
+    /**
+     * Start a regular game where waves are randomly generated based off difficulty.
+     * @param difficulty one of the difficults given in this class,
+     *                   EASY, MEDIUM or HARD.
+     */
+    public void regularGame(int difficulty) {
+        isCampaign = false;
+        if (!(EASY <= difficulty && difficulty <= HARD)) {
+            throw new IndexOutOfBoundsException("Difficult is not defined in range!");
+        }
+        //addWave(new EnemyWave(1500)); // pause wave to bootstrap startup
     }
 
     /**
@@ -55,16 +89,105 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      */
     @Override
 	public void onTick(long i) {
-        if (getActiveWave() != null) {
+        if (getActiveWave() != null) { // active wave
             getActiveWave().tickAction();
-        } else if (getWaveIndex()+1 < getWaves().size()) {
+        } else if (waveIndex < waves.size() - 1) {
             //there are still more waves
-            incrementTime();
-            if (getElapsedTime() > timeBetweenWaves) {
-                waveIndex++;
-                activateWave(waves.get(getWaveIndex()));
-                resetTime();
+            waveIndex++;
+            activateWave(waves.get(waveIndex));
+            resetTime();
+            if (!(waves.get(waveIndex).isPauseWave())) {
+                nonPauseWaveIndex++;
             }
+            // Add resources to other worlds
+            addResources();
+        } else if (!isCampaign && WorldUtil.getClosestEntityOfClass(EnemyGate.class, 10, 10).isPresent()) { // no active wave, not campaign, make new wave
+            generateNextWave();
+        }
+    }
+    
+    /**
+     * Adds resources to random locations in the worlds
+     */
+    private void addResources() {
+    	// World manager
+    	WorldManager worldManager = GameManager.get().getManager(WorldManager.class);
+    	
+    	// The different world types
+    	World[] worlds = {worldManager.getWorld(DesertWorld.get()),
+    			worldManager.getWorld(IceWorld.get()),
+    			worldManager.getWorld(VolcanoWorld.get()),
+    			worldManager.getWorld(OceanWorld.get())};
+    	
+    	// Array of resources to add
+    	Resource[] resources = {new CactusThornResource(), new PricklyPearResource(),
+    			new TumbleweedResource(), new IceCrystalResource(), new SnowBallResource(),
+    			new SealSkinResource(), new BonesResource(), new CoalResource(),
+    			new ObsidianResource(), new FishMeatResource(), new PearlResource(),
+    			new TreasureResource()};
+
+    	// locations to add the resources
+    	int xPos;
+    	int yPos;
+    	
+    	// Terrain to add the resource to
+    	Terrain terrain;
+    	
+    	// Iterate over the three different resources
+    	for (int i = 0; i < 3; i ++) {
+    		// Attempt to add 10 of each resource
+    		for (int j = 0; j < 10; j++) {
+    			// Generate random location
+    			xPos = (int) (Math.random() * 40) + 10;
+    			yPos = (int) (Math.random() * 40) + 10;
+    			
+    			// Iterate over the 4 worlds
+    			for (int k = 0; k < 4; k++) {
+    				// Get the terrain type at the random location
+        			terrain = worlds[k].getTerrain(xPos, yPos);
+        			
+        			// Only add the resource if it isn't over water
+        			if (terrain.getTexture() != "water_tile_1") {
+        				// Add the resource to the world. Offset the resource array index to the
+        				// resources relevant to each world.
+        				worlds[k].addEntity(new ResourceEntity(xPos, yPos, resources[i + 3 * k]));
+        			}
+        			
+    			}			  			    			
+    		
+    		}
+    	
+    	}
+    	
+    }
+
+    /**
+     * Creates next wave based off the wave number, difficulty previous wave in set.
+     */
+    private void generateNextWave() {
+        int roundTime = 750 + waveIndex * 75;
+        addWave(new EnemyWave(1500));
+        switch (waveIndex % 4) {
+            case 0:
+                addWave(new EnemyWave(2, 1, 0, 0, roundTime, waveIndex));
+                break;
+            case 1:
+                addWave(new EnemyWave(3, 0, 1, 1, roundTime, waveIndex));
+                break;
+            case 2:
+                addWave(new EnemyWave(2, 1, 1, 1, roundTime, waveIndex));
+                break;
+            case 3:
+                addWave(new EnemyWave(2, 0, 1, 1, roundTime, waveIndex));
+                break;
+            case 4:
+                addWave(new EnemyWave(2, 1, 1, 1, roundTime, waveIndex));
+                break;
+            case 5:
+                addWave(new EnemyWave(1, 0, 0, 0, roundTime, waveIndex));
+                break;
+            default: // this should not be reached
+                break;
         }
     }
 
@@ -76,7 +199,8 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      * */
     public EnemyWave getActiveWave() {
         for (EnemyWave wave: waves) {
-            if (wave.getWaveState() == WaveState.ACTIVE) {
+            WaveState waveState = wave.getWaveState();
+            if (waveState == WaveState.ACTIVE) {
                 return wave;
             }
         }
@@ -113,6 +237,12 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
      *
      * @return waveIndex the most recently/currently active wave*/
     public int getWaveIndex() { return waveIndex; }
+
+    /**
+     * @return the position of the currently active wave in list of all waves excluding pause
+     * waves
+     */
+    public int getNonPauseWaveIndex() { return nonPauseWaveIndex; }
 
     /**
      * @return the time before next wave begins

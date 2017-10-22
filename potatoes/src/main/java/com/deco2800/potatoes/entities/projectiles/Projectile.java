@@ -18,7 +18,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 	protected ProjectileTexture projectileTexture;
 	protected boolean loopAnimation = true;
-	protected boolean animate = true;
+	protected boolean animated = true;
 
 	protected Vector3 targetPos = new Vector3();
 	protected Vector3 change = new Vector3();
@@ -65,7 +65,6 @@ public class Projectile extends AbstractEntity implements Tickable {
 		ACORN {
 			@Override
 			public String[] textures() {
-
 				return new String[] { "acorn1" };
 
 			}
@@ -103,10 +102,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		else
 			this.targetClass = MortalEntity.class;
 
-		if (projectileTexture == null)
-			throw new RuntimeException("projectile type must not be null");
-		else
-			this.projectileTexture = projectileTexture;
+		this.projectileTexture = projectileTexture;
 		this.maxRange = this.range = range;
 		this.damage = damage;
 		this.startEffect = startEffect;
@@ -114,9 +110,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
-
-
-        // TODO -- look at the other constructor -- this block of code is commented out there
+		
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
 		updatePosition();
 		setPosition();
@@ -173,16 +167,14 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 * AnimationFactory as animation controller
 	 */
 	protected void animate() {
-		if (animate) {
+		if (animated) {
 			projectileEffectTimer++;
-			if (loopAnimation) {
-				if (projectileEffectTimer % 4 == 0) {
-					setTexture(projectileTexture.textures()[projectileCurrentSpriteIndexCount]);
-					if (projectileCurrentSpriteIndexCount == projectileTexture.textures().length - 1)
-						projectileCurrentSpriteIndexCount = 0;
-					else {
-						projectileCurrentSpriteIndexCount++;
-					}
+			if (loopAnimation && projectileEffectTimer % 4 == 0) {
+				setTexture(projectileTexture.textures()[projectileCurrentSpriteIndexCount]);
+				if (projectileCurrentSpriteIndexCount == projectileTexture.textures().length - 1)
+					projectileCurrentSpriteIndexCount = 0;
+				else {
+					projectileCurrentSpriteIndexCount++;
 				}
 			}
 		}

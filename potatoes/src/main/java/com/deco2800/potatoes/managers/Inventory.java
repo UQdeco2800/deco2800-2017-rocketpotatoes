@@ -20,7 +20,7 @@ public class Inventory {
 	/*
 	 * Logger for all info/warning/error logs
 	 */
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
 
 	/*
 	 * Gui Manager to call on for updating the resources
@@ -133,7 +133,6 @@ public class Inventory {
 	 */
 	public int getQuantity(Resource resource) {
 		if (!this.getInventoryResources().contains(resource)) {
-			//LOGGER.error("Please supply a valid resource");
 			return 0;
 		}
 		return inventoryMap.get(resource);
@@ -291,5 +290,16 @@ public class Inventory {
 		}
 		return true;
 	}
+	/**
+	 * InteliJ generated Hashcode Function to meet sonar requirements
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (guiManager != null ? guiManager.hashCode() : 0);
+		result = 31 * result + (inventoryMap != null ? inventoryMap.hashCode() : 0);
+		return result;
+	}
+
 
 }

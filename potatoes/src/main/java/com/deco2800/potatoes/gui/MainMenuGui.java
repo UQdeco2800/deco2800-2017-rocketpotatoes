@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.managers.GameManager;
@@ -28,17 +27,21 @@ public class MainMenuGui extends Gui {
     private Stage stage;
     private Skin uiSkin;
 
+    // Standard sizings and spacing for widgets in the main menu.
     private int buttonHeight;
     private int buttonWidth;
     private float buttonSpacing;
 
     // Root table for this entire element
     private Table root;
+
+    // Elements on opening screen.
     private Table primaryButtons;
     private TextButton startButton;
     private TextButton optionsButton;
     private TextButton exitButton;
 
+    // Elements in start menu.
     private Table startButtonGroup;
     private Table startCharacterSelectTable;
     private Image startCharacterImage;
@@ -47,11 +50,13 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerButton;
     private TextButton startBackButton;
 
+    // Elements in start>multiplayer menu.
     private Table startMultiplayerButtonGroup;
     private TextButton multiplayerClientButton;
     private TextButton multiplayerHostButton;
     private TextButton multiplayerBackButton;
 
+    // Elements in start>multiplayer>client menu.
     private Table multiplayerClientButtonGroup;
     private Table multiplayerServerTable;
     private Table multiplayerClientInputsTable;
@@ -63,6 +68,7 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerClientConnectButton;
     private TextButton multiplayerClientBackButton;
 
+    // Elements in start>multiplayer>host menu.
     private Table multiplayerHostButtonGroup;
     private Table multiplayerHostInputsTable;
     private Label multiplayerHostIpAddress;
@@ -70,6 +76,7 @@ public class MainMenuGui extends Gui {
     private TextButton multiplayerHostConnectButton;
     private TextButton multiplayerHostBackButton;
 
+    // Elements in options menu.
     private Table optionsButtonGroup;
     private Table effectsButtonGroup;
     private Table musicButtonGroup;
@@ -80,6 +87,7 @@ public class MainMenuGui extends Gui {
     private TextButton optionsBackButton;
 
     private Dialog failedMultiplayerConnection;
+    private Dialog multiplayerDLC;
 
     // State indicator
     private enum States {
@@ -92,7 +100,6 @@ public class MainMenuGui extends Gui {
     }
 
     private States state = States.PRIMARY;
-
 
     public MainMenuGui(Stage stage, MainMenuScreen screen) {
         this.stage = stage;
@@ -119,15 +126,14 @@ public class MainMenuGui extends Gui {
         startCharacterImage = new Image(new TextureRegion(textureManager.getTexture("caveman_idle_SW_1")));
         startCharacterSelect = new SelectBox<String>(uiSkin);
         startCharacterSelect.setItems(capitalisePlayerTypes(PlayerType.names()));
-        singleplayerButton = new TextButton("Singleplayer", uiSkin);
+        singleplayerButton = new TextButton("Single Player", uiSkin);
         multiplayerButton = new TextButton("Multiplayer", uiSkin);
         startBackButton = new TextButton("Back", uiSkin);
 
         startButtonGroup = new Table();
         startCharacterSelectTable = new Table();
-        startCharacterSelectTable.add(startCharacterImage);
-        startCharacterSelectTable.row();
-        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth).height(buttonHeight/2).space(buttonSpacing);
+        startCharacterSelectTable.add(startCharacterImage).size(125, 125);
+        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth - 50).height(buttonHeight/2);
         startButtonGroup.add(startCharacterSelectTable);
         startButtonGroup.add(singleplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
         startButtonGroup.add(multiplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
@@ -212,6 +218,10 @@ public class MainMenuGui extends Gui {
         failedMultiplayerConnection = new Dialog("Failed to connect to host.", uiSkin);
         failedMultiplayerConnection.button("Ok", uiSkin);
 
+        // Dialog
+        multiplayerDLC = new Dialog("Multiplayer is currently unavailable.", uiSkin);
+        multiplayerDLC.button("Buy Now!", uiSkin);
+
         setupListeners();
 
         root = new Table(uiSkin);
@@ -220,8 +230,10 @@ public class MainMenuGui extends Gui {
         stage.addActor(root);
     }
 
+    /* Setup the listeners for the widgets for all states of the screen. */
     private void setupListeners() {
-        // Primary state
+
+        // Primary State
 
         startButton.addListener(new ChangeListener() {
             @Override
@@ -245,12 +257,12 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                // Todo nicer exit?
                 System.exit(0);
             }
         });
 
-        // Start state
+        // Start State
+
         startCharacterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -285,7 +297,7 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Multiplayer start state
+        // Multiplayer Start State
 
         multiplayerClientButton.addListener(new ChangeListener() {
             @Override
@@ -315,7 +327,7 @@ public class MainMenuGui extends Gui {
         });
 
 
-        // Multiplayer Client state
+        // Multiplayer Client State
 
         multiplayerFindServers.addListener(new ChangeListener() {
             @Override
@@ -329,6 +341,7 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
+                /* Mutliplayer is too broken.
                 multiplayerServerList.setItems(MainMenuScreen.findHostAddress());
                 if (multiplayerServerList.getItems().contains(multiplayerClientIpAddConnection.getText(), false)) {
                     mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
@@ -336,6 +349,8 @@ public class MainMenuGui extends Gui {
                 } else {
                     failedMultiplayerConnection.show(stage);
                 }
+                */
+                multiplayerDLC.show(stage);
             }
         });
 
@@ -348,14 +363,17 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Multiplayer Host state
+        // Multiplayer Host State
 
         multiplayerHostConnectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
+                /* Multiplayer is too broken.
                 mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
                         MainMenuScreen.multiplayerHostAddress(),1337, true);
+                */
+                multiplayerDLC.show(stage);
             }
         });
 
@@ -369,6 +387,7 @@ public class MainMenuGui extends Gui {
         });
 
         // Options State
+
         optionsEffectsVolumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -418,7 +437,7 @@ public class MainMenuGui extends Gui {
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight()/2);
-        root.setPosition(0, 0);
+        root.setPosition(0, -45);
 
         switch (state) {
             case PRIMARY:
@@ -447,7 +466,6 @@ public class MainMenuGui extends Gui {
 
     /**
      * Adjusts this gui's position to correct for any resize event.
-     *
      * @param stage
      */
     @Override
@@ -464,7 +482,8 @@ public class MainMenuGui extends Gui {
         singleplayerButton.addListener(e);
     }
 
-    public static Array<String> capitalisePlayerTypes (Array<String> playerTypes) {
+    /* Makes the list of player types display nice. */
+    private static Array<String> capitalisePlayerTypes(Array<String> playerTypes) {
         Array<String> capitalisedPayerTypes = new Array<> ();
         for (String lowerCaseName : playerTypes) {
             String tempStr = lowerCaseName.substring(0, 1).toUpperCase();

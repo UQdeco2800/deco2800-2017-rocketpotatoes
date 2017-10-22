@@ -143,7 +143,7 @@ public class NetworkClient {
         message.setX(entity.getPosX());
         message.setY(entity.getPosY());
 
-        client.sendUDP(message);
+        client.sendTCP(message);
     }
 
     /**

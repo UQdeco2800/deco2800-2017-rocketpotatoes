@@ -2,7 +2,9 @@ package com.deco2800.potatoes.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 /**
  * WavesGui provides a gui displaying the status of the enemy waves
@@ -17,7 +19,10 @@ public class WavesGui extends Gui {
     private Skin uiSkin;
     private Label waveStatusLabel;
     private Label waveTimeLabel;
+    private Label waveTotalAmountLabel;
+    private Label waveEnemiesLabel;
     private Window window;
+    private Window enemyAmountWindow;
 
     /**
      * Construct a new WavesGui element for the current stage.
@@ -28,22 +33,35 @@ public class WavesGui extends Gui {
         hidden = false;
 
         // Make window with skin
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         window = new Window("Wave info", uiSkin);
 
+        //add a window for amount of enemies
+        enemyAmountWindow = new Window(" Enemies in the forest ", uiSkin);
+        enemyAmountWindow.setWidth(30);
+        
         // Make buttons & labels
         waveStatusLabel = new Label("Time until wave ends", uiSkin);
         waveTimeLabel = new Label("0", uiSkin);
+        waveTotalAmountLabel = new Label("Total Enemies: ",uiSkin);
+        waveEnemiesLabel = new Label("0", uiSkin);
+
 
         //window
         window.add(waveStatusLabel);
         window.add(waveTimeLabel);
         window.pack();
-        window.setMovable(false);
+        window.setMovable(true);
         window.setPosition(stage.getWidth()/2, stage.getHeight());
+        
+        enemyAmountWindow.add(waveTotalAmountLabel);
+        enemyAmountWindow.add(waveEnemiesLabel);
+        enemyAmountWindow.pack();
+        enemyAmountWindow.setMovable(true);
+        enemyAmountWindow.setPosition(stage.getWidth()/2.8f, stage.getHeight());
 
         stage.addActor(window);
-
+        stage.addActor(enemyAmountWindow);
     }
 
     /**
@@ -60,5 +78,15 @@ public class WavesGui extends Gui {
      * @return The Label indicating the time of the current wave stage
      */
     public Label getWaveTimeLabel() { return waveTimeLabel; }
-
+    
+    /**
+     * @return the label indicating the total enemy amount of the current wave  
+     */
+    public Label getWaveTotalAmountLabel() { return waveTotalAmountLabel;}
+    
+    /**
+     * @return the label indicating the enemy amount of the current wave stage 
+     */
+    public Label getWaveEnemiesLabel() { return waveEnemiesLabel; }
+ 
 }

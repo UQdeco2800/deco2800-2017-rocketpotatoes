@@ -5,7 +5,6 @@ import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
@@ -55,11 +54,12 @@ public class SquirrelTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(null, squirrelEmpty.getDirection());
-        assertEquals("squirrel", squirrelEmpty.getEnemyType());
-        assertEquals(Color.RED, squirrel1.getProgressBar().getColours().get(0));
-        assertEquals(Color.valueOf("fff134"), squirrel1.getProgressBar().getColours().get(1));
-        assertEquals(Color.GREEN, squirrel1.getProgressBar().getColours().get(2));
+        for (String data:squirrelEmpty.getEnemyType()) {
+            assertEquals("squirrel", data);
+
+        }
+//        assertEquals("squirrel", squirrelEmpty.getEnemyType());
+
     }
 
     /*
@@ -75,7 +75,7 @@ public class SquirrelTest extends BaseTest {
  */
     @Test
     public void onTickTest() {
-        GameManager.get().getWorld().addEntity(new EnemyGate(0,0));
+        GameManager.get().getWorld().addEntity(new EnemyGate(5,5, "enemyCave_SE"));
         GameManager.get().getWorld().addEntity(new GoalPotate(15, 10));
         GameManager.get().getWorld().addEntity(new ProjectileTree(10, 10));
         GameManager.get().getWorld().addEntity(squirrel1);
@@ -85,4 +85,18 @@ public class SquirrelTest extends BaseTest {
         GameManager.get().getWorld().addEntity(playerTest);
         squirrel1.onTick(1);
     }
+
+    @Test
+    public void getEnemyTypeTest() throws Exception {
+    }
+
+
+    @Test
+    public void getProgressBarTest() throws Exception {
+    }
+
+    @Test
+    public void getBasicStatsTest() throws Exception {
+    }
+
 }

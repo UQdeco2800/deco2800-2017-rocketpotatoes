@@ -43,7 +43,7 @@ public class MultiplayerTest {
         assertEquals(true, multiplayerManager.isClientReady());
 
         // Might not work well as a test? What if port 1337 is occupied?
-        // TODO this test sometimes throws a NullPointerException in the client thread when it tries to create a player
+        // this test sometimes throws a NullPointerException in the client thread when it tries to create a player
         try {
             multiplayerManager.createHost(1337);
             while (!multiplayerManager.isServerReady());
@@ -73,7 +73,6 @@ public class MultiplayerTest {
         assertEquals(false, multiplayerManager.isMaster());
         assertEquals(true, multiplayerManager.isClientReady());
 
-        // TODO test protocols
     }
 
     @Test
