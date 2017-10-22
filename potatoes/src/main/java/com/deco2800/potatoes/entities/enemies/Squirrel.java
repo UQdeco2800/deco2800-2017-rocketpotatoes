@@ -36,8 +36,8 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
-	private long sTime=System.currentTimeMillis();
-	private float phealth=getHealth();
+	private long sTime = System.currentTimeMillis();
+	private float phealth = getHealth();
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1.5f);
 
 	/***
