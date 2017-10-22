@@ -32,8 +32,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	private boolean dying = false;
 	protected Direction facing; 		// The direction the entity is facing
 
-
-
 	private static final transient Logger LOGGER = LoggerFactory.getLogger(MortalEntity.class);
 
 	/**

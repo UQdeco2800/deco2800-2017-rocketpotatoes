@@ -44,7 +44,17 @@ public class EnemyWave {
     }
 
     // Used for testing when waves not in use
-
+    /**
+     * Create an EnemyWave. The rates for each enemy are relative, i.e if given 5,1,1,1 for each
+     * enemyRate parameter, the relative rates of spawning for each type will be 5/8, 1/8, 1/8, 1/8.
+     *
+     * @param squirrelRate
+     * @param speedyRate
+     * @param tankRate
+     * @param mooseRate
+     * --can be changed to simply individual args for each enemy type - might actually be better
+     * @param waveLength the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
+     * */
     public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength) {
         this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
         this.waveLength = waveLength;

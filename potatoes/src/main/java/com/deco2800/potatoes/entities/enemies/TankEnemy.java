@@ -153,7 +153,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
-				//.addEvent(new MeleeAttackEvent(ATTACK_SPEED, AbstractTree.class))
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class))
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
 				.createEnemyStatistics();

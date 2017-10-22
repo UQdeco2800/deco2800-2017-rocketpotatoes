@@ -167,7 +167,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
 		for (Class sightTarget : targets.getSightAggroTargets()) {
 			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(sightTarget)) {	//HOW TO CHECK SUPERCLASS SO WE CAN JUST ADD PLAYER TO TARGETS?
+				if (entity.getClass().isAssignableFrom(sightTarget)) {
 					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
 					if ((distance < 10) && (!(visitedResourceTrees.contains(entity)))) {
 						return entity;
