@@ -3,10 +3,8 @@ package com.deco2800.potatoes.entities.player;
 import java.util.Map;
 import java.util.Optional;
 
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
@@ -37,12 +35,12 @@ public class Wizard extends Player {
         this.resetState();
         this.setShadow(shadow);
     }
-
-    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation("wizard", INTERACT, 6, 450, this::completionHandler);
-    private Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation("wizard", DEATH, 17, 1700, this::completionHandler);
+    private String wizName =  "wizard";
+    private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation(wizName, IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation(wizName, ATTACK, 4, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation(wizName, DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation(wizName, INTERACT, 6, 450, this::completionHandler);
+    private Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation(wizName, DEATH, 17, 1700, this::completionHandler);
     
     /**
      * Custom damaged handling for the wizard
