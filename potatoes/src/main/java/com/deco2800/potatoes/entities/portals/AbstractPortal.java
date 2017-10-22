@@ -12,6 +12,8 @@ import com.deco2800.potatoes.gui.WorldChangeGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,6 +140,9 @@ public class AbstractPortal extends MortalEntity implements Tickable {
 
     @Override
     public void onTick(long time) {
-
+        // Hacky fix for not changing worlds
+        if (!(this instanceof BasePortal) && preTick(time)) {
+            GameManager.get().getManager(GuiManager.class).getGui(WorldChangeGui.class).changeWorld(ForestWorld.get());
+        }
     }
 }

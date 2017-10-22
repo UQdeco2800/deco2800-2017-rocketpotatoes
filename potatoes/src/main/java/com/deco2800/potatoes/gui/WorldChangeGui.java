@@ -135,9 +135,6 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 4
                 changeWorld(OceanWorld.get());
@@ -155,9 +152,6 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 3
                 changeWorld(VolcanoWorld.get());
@@ -176,9 +170,6 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 2
                 changeWorld(IceWorld.get());
@@ -196,9 +187,6 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 1
                 changeWorld(DesertWorld.get());
@@ -216,7 +204,10 @@ public class WorldChangeGui extends Gui {
      * @param world
      * 			The key of the world to change to
      */
-    private void changeWorld(WorldType world) {
+    public void changeWorld(WorldType world) {
+        //remove player from old world
+        Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+        GameManager.get().getWorld().removeEntity(p);
         // change to new world
         GameManager.get().getManager(WorldManager.class).setWorld(world);
         // The new world
