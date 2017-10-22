@@ -42,7 +42,7 @@ public class Wizard extends Player {
 		this.resetState();
 		this.setShadow(shadow);
 	}
-	protected Class<?> projectileType = BallisticProjectile.class;
+
 	private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
 	private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200, this::completionHandler);
 	private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
@@ -133,12 +133,23 @@ public class Wizard extends Player {
 	protected void interact() {
 		super.interact();
 		// Custom interaction code here
-	}
+	} 
 
 	@Override
 	public void onTick(long arg0) {
 		super.onTick(arg0);
 		hoverAnimation();
+		
+		if (projectile != null && OrbProjectile.class.isAssignableFrom(projectileType)) {
+			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+			if (isCharging) {
+				((OrbProjectile) ((PlayerProjectile) projectile).projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
+			} else {
+				((OrbProjectile) ((PlayerProjectile) projectile).projectile).fire();
+			}
+		}
 	}
 
 }
