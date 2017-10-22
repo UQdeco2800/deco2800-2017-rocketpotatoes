@@ -8,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
@@ -17,8 +15,7 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.*;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.AcornTreeType;
 import com.deco2800.potatoes.entities.trees.CactusTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
@@ -39,6 +36,7 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
 import java.util.Map;
@@ -330,8 +328,24 @@ public class GameScreen implements Screen {
 			}
 			*/
 			initialisePortal();
-			addDamageTree();
-			addResourceTrees();
+			//addDamageTree();
+			//addResourceTrees();
+			
+			/* Randomly generate trees in each world */
+			AbstractTree forestTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
+			
+			AbstractTree desertTrees[] = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
+			
+			AbstractTree iceTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
+			
+			AbstractTree oceanTrees[] = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
+			
+			AbstractTree volcanoTrees[] = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
 
 
 			if (!multiplayerManager.isMultiplayer()) {
@@ -352,6 +366,44 @@ public class GameScreen implements Screen {
 		
 		//show the tutorial menu
 		guiManager.getGui(TutorialGui.class).show();
+	}
+	
+	/**
+	 * Randomly generates trees in a specified world. Currently only spawns
+	 * resource trees.
+	 * 
+	 * @param world 		the world to randomly generate trees in
+	 * @param trees	 	the trees allowed to generate
+	 */
+	private void randomlyGenerateTrees(com.deco2800.potatoes.worlds.World world, AbstractTree[] trees) {
+		// locations to add the trees
+	    	int xPos;
+	    	int yPos;
+	    	
+	    	// The amount of each tree to generate
+    		int amount = 30/trees.length;
+	    	
+	    	// Terrain to add the tree to
+	    	Terrain terrain;
+	    	
+	    	// Iterate over the trees
+	    	for (int i = 0; i < trees.length; i ++) {
+	    		for (int j = 0; j < amount; j++) {
+	    			// Generate random location
+	    			xPos = (int) (Math.random() * 40) + 10;
+	    			yPos = (int) (Math.random() * 40) + 10;
+	    			terrain = world.getTerrain(xPos, yPos);
+	    			
+	    			// Only add a tree if it is on grass
+        			if (terrain.getTexture() == "grass_tile_1") {
+        				AbstractTree newTree = trees[i].createCopy();
+        				newTree.setPosX(xPos);
+        				newTree.setPosY(yPos);
+        				world.addEntity(newTree);
+        			}
+	    		}
+	    	}
+		
 	}
 	
 	private void addResourceTrees() {
