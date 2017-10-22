@@ -289,4 +289,11 @@ public abstract class Effect extends AbstractEntity implements Tickable {
 		return damage;
 	}
 
+	public void setTargetClass(Class<?> targetClass) {
+		this.targetClass = targetClass;
+	}
+
+	public Class<?> getTargetClass() {
+		return targetClass;
+	}
 }
