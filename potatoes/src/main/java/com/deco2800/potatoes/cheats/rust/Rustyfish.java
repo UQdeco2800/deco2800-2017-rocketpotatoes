@@ -225,7 +225,6 @@ public class Rustyfish implements CheatExecution {
      */
     @Override
     public void run() {
-        System.out.println("Running with state " + state);
         state = !state;
         if (state) {
             return;
