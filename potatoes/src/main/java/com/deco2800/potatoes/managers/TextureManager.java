@@ -147,6 +147,7 @@ public class TextureManager extends Manager {
 
         // Particles
         saveTexture("snowflake", "resources/particles/snowflake.png");
+        saveTexture("duck", "resources/particles/duck.png");
 
         // GUI
         saveTexture("tree_shop", "resources/menu/tree_menu.png");

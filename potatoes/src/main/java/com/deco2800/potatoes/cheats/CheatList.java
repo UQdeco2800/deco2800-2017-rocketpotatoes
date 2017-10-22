@@ -46,5 +46,16 @@ public class CheatList {
                 Key.LEFT,
                 Key.RIGHT,
                 Key.DOWN);
+
+        manager.addCheatCode(new DuckLife(),
+                Key.UP,
+                Key.LEFT,
+                Key.UP,
+                Key.LEFT,
+                Key.UP,
+                Key.LEFT,
+                Key.UP,
+                Key.LEFT
+                );
     }
 }
