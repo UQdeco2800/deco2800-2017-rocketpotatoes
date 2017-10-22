@@ -30,7 +30,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
 	private boolean dying = false;
-	//TODO use states like the player does
 	protected Direction facing; 		// The direction the entity is facing
 
 
@@ -113,7 +112,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
-	 */ //TODO max health probably shouldn't be set here
+	 */
     public MortalEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture,
 						float maxHealth) {
 
@@ -232,7 +231,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	public boolean heal(float amount) {
 		health += amount;
 		HealingEffect healAnimation = new HealingEffect(this.getClass(), this.getPosX(), this.getPosY(), true, 1f, 1);
-
 		if (health > maxHealth) {
 			health = maxHealth;
 			LOGGER.info("{} has been healed for {} points (health now {})", this, amount,
@@ -240,7 +238,9 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 			return false;
 		}
 		LOGGER.info("{} has been healed for {} points (health now {})", this, amount, getHealth());
-		GameManager.get().getWorld().addEntity(healAnimation);
+		if (healAnimation != null) {
+			GameManager.get().getWorld().addEntity(healAnimation);
+		}
 		return true;
 	}
 

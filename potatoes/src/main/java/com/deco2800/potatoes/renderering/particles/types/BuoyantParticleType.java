@@ -28,8 +28,8 @@ public class BuoyantParticleType extends ParticleType {
         this.lifeTime = lifeTime;
         this.cycleDelta = cycleDelta;
         this.rate = rate;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        this.setSizeX(sizeX);
+        this.setSizeY(sizeY);
         this.color = color;
         particles = new ArrayList<>();
     }
@@ -113,9 +113,9 @@ public class BuoyantParticleType extends ParticleType {
                         newP.x = originX;
                         newP.y = originY;
 
-                        float min = this.speedVarianceMin;
-                        float max = this.speedVarianceMax;
-                        float factor = (random.nextFloat() * (max - min) + min) * this.speed;
+                        float min = this.getSpeedVarianceMin();
+                        float max = this.getSpeedVarianceMax();
+                        float factor = (random.nextFloat() * (max - min) + min) * this.getSpeed();
                         float direction = random.nextFloat() * 360;
 
                         // Gen normalized vec and scale it by factor

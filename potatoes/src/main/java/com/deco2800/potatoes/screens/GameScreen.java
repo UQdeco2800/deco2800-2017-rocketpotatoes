@@ -95,8 +95,8 @@ public class GameScreen implements Screen {
 	 * @param isHost
 	 *            is this client a host (i.e. start a server then connect to it)
 	 */
-	public GameScreen(RocketPotatoes game, String name, String IP, int port, boolean isHost)
-			throws IllegalStateException, IllegalArgumentException, IOException {
+	public GameScreen(RocketPotatoes game, String name, String Ip, int port, boolean isHost)
+			throws IOException {
 		this.game = game;
 		setupGame();
 		
@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
 			// Loopback for host's connection to itself
 			multiplayerManager.joinGame(name, "127.0.0.1", port);
 		} else {
-			multiplayerManager.joinGame(name, IP, port);
+			multiplayerManager.joinGame(name, Ip, port);
 		}
 
 		initializeGame();
@@ -258,10 +258,10 @@ public class GameScreen implements Screen {
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
 
-		MouseHandler mouseHandler = new MouseHandler();
-		inputManager.addTouchDownListener(mouseHandler);
-		inputManager.addTouchDraggedListener(mouseHandler);
-		inputManager.addMouseMovedListener(mouseHandler);
+		MouseHandler mouseHandlers = new MouseHandler();
+		inputManager.addTouchDownListener(mouseHandlers);
+		inputManager.addTouchDraggedListener(mouseHandlers);
+		inputManager.addMouseMovedListener(mouseHandlers);
 		inputMultiplexer.addProcessor(inputManager);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
@@ -270,10 +270,6 @@ public class GameScreen implements Screen {
 	/**
 	 * Initializes everything needed to actually play the game Can be used to
 	 * `reset` the state of the game
-	 *
-	 * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <->
-	 * Paused. With every state having TODO it's own menu(s), initialization etc.
-	 * And when we setup custom transition logic.
 	 */
 	private void initializeGame() {
 
@@ -332,29 +328,27 @@ public class GameScreen implements Screen {
 			//addResourceTrees();
 			
 			/* Randomly generate trees in each world */
-			AbstractTree forestTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
+			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
 			
-			AbstractTree desertTrees[] = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
+			AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
 			
-			AbstractTree iceTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
+			AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
 			
-			AbstractTree oceanTrees[] = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
+			AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
 			
-			AbstractTree volcanoTrees[] = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
+			AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
 
 
 			if (!multiplayerManager.isMultiplayer()) {
 			/*
-			 * TODO bug! currently reseting the game while having a key held down will then
-			 * notify the new player with the keyUp TODO event, which will result it in
-			 * moving without pressing a key. This is something a bit difficult to fix as
-			 * TODO so I'm just going to leave it for now since fixing it is a bit of a
-			 * hassle
+			 * reseting the game while having a key held down will then
+			 * notify the new player with the keyUp event, which will result it in
+			 * moving without pressing a key. 
 			 */
 
 				// Make our player
@@ -427,9 +421,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void tickGame(long timeDelta) {
-		/*
-		 * broken! window.removeActor(peonButton); boolean somethingSelected = false;
-		 */
 
 		// Tick our player
 		if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
@@ -443,21 +434,16 @@ public class GameScreen implements Screen {
 
 			}
 
-			/*
-			 * broken! if (e instanceof Selectable) { if (((Selectable) e).isSelected()) {
-			 * peonButton = ((Selectable) e).getButton(); somethingSelected = true; } }
-			 */
-
 		}
 
-		// Broadcast updates if we're master TODO only when needed.
+		// Broadcast updates if we're master TO DO only when needed.
 		if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
 			for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
 				// But don't broadcast our player yet
 				if (e.getKey() != multiplayerManager.getID()) {
 					multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
 
-					// TODO only when needed Maybe attach to the HasProgress interface itself?
+					// TO DO only when needed Maybe attach to the HasProgress interface itself?
 					if (e.getValue() instanceof HasProgress) {
 						multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
 					}
@@ -465,13 +451,8 @@ public class GameScreen implements Screen {
 			}
 		}
 
-		// Broadcast our player updating pos TODO only when needed.
+		// Broadcast our player updating pos TO DO only when needed.
 		multiplayerManager.broadcastPlayerUpdatePosition();
-
-		/*
-		 * broken! if (!somethingSelected) { peonButton = uiPeonButton; }
-		 * window.add(peonButton);
-		 */
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
@@ -523,8 +504,8 @@ public class GameScreen implements Screen {
 				} else {
 					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
 				}
-				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
-				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(""+totalEnemies);
+				((WavesGui) waveGUI).getWaveTimeLabel().setText(Integer.toString(timeToWaveEnd/75));
+				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(Integer.toString(totalEnemies));
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
@@ -534,8 +515,7 @@ public class GameScreen implements Screen {
 			}
 		}
 	}
-
-	//TODO: better implementation?
+	
 	private void updateRespawnGUI(){
 
 		Gui respawnGui = guiManager.getGui(RespawnGui.class);
@@ -612,7 +592,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void pause() {
-
+		//note for sonar
 	}
 
 	/**
@@ -620,7 +600,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resume() {
-
+		// Don't need this at the moment
 	}
 
 	/**
@@ -628,7 +608,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-
+		// Don't need this at the moment
 	}
 
 	/**
@@ -636,7 +616,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void hide() {
-
+		// Don't need this at the moment
 	}
 
 	/**
@@ -693,7 +673,6 @@ public class GameScreen implements Screen {
 		public void notifyKeyDown(int keycode) {
 			if (keycode == Input.Keys.ESCAPE) {
 				// Pause the Game
-				// ToDo
 				// Show the Pause Menu
 				guiManager.getGui(PauseMenuGui.class).show();
 			}

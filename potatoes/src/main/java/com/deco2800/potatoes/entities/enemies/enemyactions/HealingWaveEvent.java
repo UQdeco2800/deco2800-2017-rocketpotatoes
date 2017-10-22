@@ -74,7 +74,7 @@ public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
 
         ParticleType particle =  new BasicParticleType(100000, 500.0f,
                 0.0f, 1024, Color.GREEN, 10, 10);
-        particle.speed = 0.9f;
+        particle.setSpeed(0.9f);
 
         Vector2 pos = Render3D.worldToScreenCoordinates(enemy.getPosX(), enemy.getPosY(), 0);
         int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");

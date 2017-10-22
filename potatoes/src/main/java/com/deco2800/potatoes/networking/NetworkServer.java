@@ -53,7 +53,7 @@ public class NetworkServer {
         // Register classes for serialization
         Network.register(server);
 
-        // ToDo: Get IP Address
+        //Get IP Address
         ipAddress = "Local Host";
 
         // Hacky

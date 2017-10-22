@@ -81,7 +81,7 @@ public class Render3D implements Renderer {
 	public void render(SpriteBatch batch) {
 		//IMPORTANT: each subroutine opens and closes the batch itself
 
-		// Created here because constructor is run in tests, TODO should be moved to constructor though
+		// Created here because constructor is run in tests
 		if (shapeRenderer == null) {
 			shapeRenderer = new ShapeRenderer();
 		}
@@ -98,15 +98,15 @@ public class Render3D implements Renderer {
 		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
 		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);
 
-		//get entities sorted back to front, for drawing order //TODO only rend entities on screen or close to edges
+		//get entities sorted back to front, for drawing order
 		getRenderedEntitiesSorted();
 
 		//get shading colour for day night cycle
 		Color shading = GameManager.get().getManager(GameTimeManager.class).getColour();
 
 
-		batch.setColor(shading);		// set world shading
-		renderMap();					// rend tiles TODO render is offset
+		batch.setColor(shading);		// 		set world shading
+		renderMap();					// 		rend tiles
 		renderCursor();					//		highlighted cursor, communicates with treeShopGui
 		renderShadows();				// 		CollisionMasks of entities as shadows
 		renderEntities();				// 		entities normal
@@ -123,13 +123,11 @@ public class Render3D implements Renderer {
 
 		// tree shop radial menu
 		GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).render();
-		// TODO does this render for other players ???
-		// TODO planting does not match up with mouse cursor, depending on part of the tile clicked
 
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
 			renderCollisionMasks(); 	// rend collisionMask outlines of entities
-			renderPathFinderNodes();	// rend nodes in PathManager TODO
+			renderPathFinderNodes();	// rend nodes in PathManager 
 		}
 	}
 
@@ -137,7 +135,6 @@ public class Render3D implements Renderer {
 	 * @return a list of entities sorted in render order (back to front)
 	 */
 	private void getRenderedEntitiesSorted() {
-		//TODO only rend entities on screen or close to edges
 		Map<Integer, AbstractEntity> renderables = GameManager.get().getWorld().getEntities();
 
 		/* Tree map so we sort our entities properly */
@@ -289,7 +286,6 @@ public class Render3D implements Renderer {
 			// get texture
 			Texture tex;
 			if (e instanceof Animated) {
-				// TODO Animations should probably be changed to TextureRegion for performance
 				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
 			} else {
 				tex = texMan.getTexture(e.getTexture());
@@ -304,10 +300,7 @@ public class Render3D implements Renderer {
 			float offsetY;
 			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
 			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
-
-			//TODO use batch.setColour to recolor an entitiy when it takes damage, then reset batch colour
-			//probably use the event manager to toggle some internal "takingDamage" boolean of the entity
-
+			
 			batch.draw(tex,
 					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
 					tileWidth * e.getXRenderLength(), 						// width
@@ -332,7 +325,6 @@ public class Render3D implements Renderer {
 			// get texture
 			Texture tex;
 			if (e instanceof Animated) {
-				// TODO Animations should probably be changed to TextureRegion for performance
 				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
 			} else {
 				tex = texMan.getTexture(e.getTexture());
@@ -623,15 +615,7 @@ public class Render3D implements Renderer {
 	 * Renders the nodes in PathManager */
 	private void renderPathFinderNodes() {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
-
-		// TODO does PathManger store nodes as expected?
-		/*
-		batch.begin();
-		for (Point2D node : pathMan.getNodes) {
-			Point2D.render...()
-		}
-		batch.end();
-		*/
+		
 	}
 
 

@@ -51,9 +51,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private boolean keyA = false;
     private boolean keyS = false;
     private boolean keyD = false;
-
-
-    //TODO change this. -> super. in as many locations as possible
+    
 
     // ----------     PlayerState class     ---------- //
 
@@ -332,8 +330,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     void updateMovingAndFacing() {
         Direction newFacing;
 
-        //TODO releasing keys while travelling diagonal, not working, returning to cardinal directions
-
         // get direction based on current keys
         // considers if opposite keys are pressed
 
@@ -443,9 +439,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (terrainModifierCheck <= 0) {
             terrainModifier = 0;
         }
-
-        //TODO getting terrainModifier should be easier as multiple entities will use it
-        //TODO is not using terrainModifier
+        
         if (state == WALK) {
             super.setMoveSpeedModifier(terrainModifier);
         }
@@ -530,7 +524,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * are added to the player's inventory.
      */
     private void harvestResources() {
-        double interactRange = 3f; // TODO: Could this be a class variable?
+        double interactRange = 3f; 
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -562,7 +556,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
-        // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+        // play Wilhelm scream sound effect
         SoundManager soundManager = new SoundManager();
         soundManager.playSound("death.wav");
         // get the event manager

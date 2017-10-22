@@ -54,12 +54,12 @@ public class SpeedyEnemyTest extends BaseTest {
 
     @Test
     public void addTreeToVisitedTest() throws Exception {
-        //TODO:need to fill code in
+        //not yet used
     }
 
     @Test
     public void mostRelevantTargetTest() throws Exception {
-        //TODO:need to fill code in
+        ////not yet used
 
     }
 
