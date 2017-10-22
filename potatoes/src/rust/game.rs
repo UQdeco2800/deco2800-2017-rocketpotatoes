@@ -3,8 +3,8 @@ use util::CallbackFunctions;
 
 use std::time::Instant;
 
-extern crate rand;
-use self::rand::distributions::{IndependentSample, Range};
+use rand::{self, Rng};
+use rand::distributions::{IndependentSample, Range};
 
 const TURBOFISH_WIDTH: i32 = 274;
 const TURBOFISH_HEIGHT: i32 = 86;
@@ -27,8 +27,18 @@ enum GameState {
 #[derive(Debug)]
 enum FishableType {
     Turbofish,
-    Rustcrab,
+    Rustacean,
 }
+
+impl FishableType {
+    fn texture(&self) -> String {
+        match *self {
+            FishableType::Turbofish => "turbofish".into(),
+            FishableType::Rustacean => "rustacean".into(),
+        }
+    }
+}
+
 
 /// Represents a single object that can be fished out of the water
 #[derive(Debug)]
@@ -128,7 +138,11 @@ impl Game {
                 position: position,
                 scale: 0.25,
                 velocity: velocity,
-                category: FishableType::Turbofish,
+                category: if rng.gen_weighted_bool(2) {
+                    FishableType::Turbofish
+                } else {
+                    FishableType::Rustacean
+                },
                 color: color_range.ind_sample(&mut rng),
             });
         }
@@ -258,7 +272,7 @@ impl Game {
         match self.state {
             GameState::Caught(ref f) => {
                 (callbacks.draw_sprite)(RenderObject::new(
-                    "turbofish".to_string(),
+                    f.category.texture(),
                     f.position.0,
                     f.position.1,
                     0.0,
@@ -275,7 +289,7 @@ impl Game {
         // Draw others
         for f in self.fishables.iter() {
             (callbacks.draw_sprite)(RenderObject::new(
-                "turbofish".to_string(),
+                f.category.texture(),
                 f.position.0,
                 f.position.1,
                 0.0,

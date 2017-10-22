@@ -1,4 +1,6 @@
 #![crate_type = "dylib"]
+extern crate rand;
+
 mod render;
 mod util;
 mod game;
