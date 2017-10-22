@@ -54,6 +54,11 @@ public class MooseTest extends BaseTest {
 
     }
 
+    @Test
+    public void getProgressBarTest() throws Exception {
+        assertEquals("healthBarRed", moose1.getProgressBar().getTexture());
+    }
+    
     /*
      * Test the toString method
      */

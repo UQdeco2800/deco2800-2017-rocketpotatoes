@@ -35,6 +35,8 @@ public class BasePortalTest{
 	public void ProgressBar() {
 		assertTrue(testPortal.getProgressBar() instanceof ProgressBar);
 		assertTrue(testPortal.showProgress() == true);
+        assertEquals("healthBarGreen", testPortal.getProgressBar().getTexture());
+
 	}
 
 

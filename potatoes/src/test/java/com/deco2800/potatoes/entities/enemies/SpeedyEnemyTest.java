@@ -49,7 +49,7 @@ public class SpeedyEnemyTest extends BaseTest {
     }
     @Test
     public void getProgressBarTest() throws Exception {
-        //untestable
+        assertEquals("healthBarRed", speedy1.getProgressBar().getTexture());
     }
 
     @Test

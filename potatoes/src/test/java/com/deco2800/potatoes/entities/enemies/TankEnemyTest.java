@@ -50,7 +50,6 @@ public class TankEnemyTest extends BaseTest {
 
 		}
 
-
 	}
 	@Test
 	public void bearTickTest(){
@@ -107,8 +106,9 @@ public class TankEnemyTest extends BaseTest {
 
 
 	@Test
-	public void getProgressBarTest() throws Exception {
-//		System.out.print(tank1.getProgressBar());
+	public void getProgressBarTest() {
+        assertEquals("healthBarRed", tank1.getProgressBar().getTexture());
+        
 	}
 
 	/*

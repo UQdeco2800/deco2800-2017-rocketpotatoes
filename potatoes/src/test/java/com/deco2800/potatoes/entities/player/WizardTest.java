@@ -68,5 +68,6 @@ public class WizardTest {
 		wizard.setState(Player.PlayerState.INTERACT);
 		wizard.updateSprites();
 		wizard.interact();
+		wizard.getProgressBar().getLayoutTexture();
 	}
 }
