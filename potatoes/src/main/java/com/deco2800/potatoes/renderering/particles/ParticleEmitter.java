@@ -23,7 +23,7 @@ public class ParticleEmitter {
     private boolean hasParticles;
 
     /**
-     * Create a particle emitter with the given particleTypes TODO emitter settings
+     * Create a particle emitter with the given particleTypes 
      * @param x position of the emitter
      * @param y position of the emitter
      * @param particleTypes the particleTypes to be created
@@ -60,7 +60,7 @@ public class ParticleEmitter {
      *
      * Creates particles as neccessary. Particles are pooled, so we need the pool from the ParticleManager
      * @param deltaTime the tick time
-     * @param particlePool the pool of particles to use (TODO expandable)
+     * @param particlePool the pool of particles to use 
      */
     public void onTick(double deltaTime, List<Particle> particlePool) {
         // Tick particles

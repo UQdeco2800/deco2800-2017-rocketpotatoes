@@ -242,8 +242,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * the purpose of method is make a time delay for next texture
-	 * @param time i guest just millisecond
-	 * @param frameSize the texture array size
+	 * @param milliSeconds i guest just millisecond
+
 	 * @return Int the index of texture
 	 */
 	public boolean delay(int milliSeconds){

@@ -39,7 +39,14 @@ import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Map;
+
+/* "Feral Chase" Kevin MacLeod (incompetech.com)
+ * Licensed under Creative Commons: By Attribution 3.0 License
+ * http://creativecommons.org/licenses/by/3.0/
+ */
+
 
 /**
  * Handles the creation of the world and rendering.
@@ -58,7 +65,6 @@ public class GameScreen implements Screen {
 	private Renderer renderer = new Render3D();
 
 	// Managers tracked here for ease of use. Should be initialized from the
-	// GameManager.get().getManager(...) though!
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
@@ -95,7 +101,7 @@ public class GameScreen implements Screen {
 	 * @param isHost
 	 *            is this client a host (i.e. start a server then connect to it)
 	 */
-	public GameScreen(RocketPotatoes game, String name, String Ip, int port, boolean isHost)
+	public GameScreen(RocketPotatoes game, String name, String ip, int port, boolean isHost)
 			throws IOException {
 		this.game = game;
 		setupGame();
@@ -104,9 +110,9 @@ public class GameScreen implements Screen {
 		if (isHost) {
 			multiplayerManager.createHost(port);
 			// Loopback for host's connection to itself
-			multiplayerManager.joinGame(name, "127.0.0.1", port);
+			multiplayerManager.joinGame(name, InetAddress.getLoopbackAddress().getHostAddress(), port);
 		} else {
-			multiplayerManager.joinGame(name, Ip, port);
+			multiplayerManager.joinGame(name, ip, port);
 		}
 
 		initializeGame();
@@ -237,6 +243,9 @@ public class GameScreen implements Screen {
 		 * more for HUDs etc
 		 */
 		batch = new SpriteBatch();
+
+		// Start music
+		soundManager.playMusic("Feral Chase.mp3");
 	}
 
 	private void setupInputHandling() {
@@ -284,70 +293,56 @@ public class GameScreen implements Screen {
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
 			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add enemy gates to game world
 			//W
-			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength()/2, 6.5f, "enemyCave_SE");
+			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 6.5f, "enemyCave_SE");
 			GameManager.get().getWorld().addEntity(gateW);
-			//gateW.clearPath();
 			//E
-			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 42f,"enemyCave_W" );
+			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 42f, "enemyCave_W");
 			GameManager.get().getWorld().addEntity(gateE);
-			//gateE.clearPath();
 			//S
-			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength()/2 , "enemyCave_E");
+			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength() / 2, "enemyCave_E");
 			GameManager.get().getWorld().addEntity(gateS);
-			//gateS.clearPath();
 			//N
-			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_WS");
+			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength() / 2, "enemyCave_WS");
 			GameManager.get().getWorld().addEntity(gateN);
-			//gateN.clearPath();
 
-            GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
+			GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
 			// Initial player preparation up period
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1000)); // pause wave
-			// Waves: sq -> sq + rac -> sq + rac + bear -> sq + rac + bear + moose
-			for (int i = 0; i<10; i++) {
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0, 0, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1, 1, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-			}
 			*/
 			initialisePortal();
-			//addDamageTree();
-			//addResourceTrees();
 			
 			/* Randomly generate trees in each world */
-			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
+			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
-			
+
 			AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
-			
+
 			AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
-			
+
 			AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
-			
+
 			AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
 
 
 			if (!multiplayerManager.isMultiplayer()) {
-			/*
-			 * reseting the game while having a key held down will then
-			 * notify the new player with the keyUp event, which will result it in
-			 * moving without pressing a key. 
-			 */
 
 				// Make our player
-				playerManager.setPlayer(5.5f, 10.5f);
+				int targetX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
+				int targetY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
+
+				while (GameManager.get().getWorld().getTerrain(targetX, targetY).getMoveScale() == 0) {
+					targetX += GameManager.get().getRandom().nextInt() % 4 - 2;
+					targetY += GameManager.get().getRandom().nextInt() % 4 - 2;
+				}
+
+				playerManager.setPlayer(targetX, targetY);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
@@ -487,7 +482,6 @@ public class GameScreen implements Screen {
 		if (waveGui instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			//int totalEnemies = activeWave.getTotalEnemies();
 			((WavesGui) waveGui).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex));
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
@@ -538,11 +532,7 @@ public class GameScreen implements Screen {
 		if (!GameManager.get().isPaused()) {
 			tickGame((int)(delta * 1000 * tickrate));
 		}
-
-		/*
-		 * Update the input handlers
-		 */
-		// handleInput();
+		
 
 		/*
 		 * Update the camera
@@ -621,6 +611,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void exitToMenu() {
+		soundManager.stopMusic();
 		GameManager.get().clearManagers();
 		game.setScreen(new MainMenuScreen(game));
 		dispose();

@@ -25,7 +25,7 @@ public class GameMenuGui extends Gui {
         this.screen = screen;
 
         // Make window, with the given skin
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         window = new Window("Menu", uiSkin);
 
 		// Make our buttons
@@ -47,10 +47,9 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
-                    if (r instanceof Selectable) {
-                        if (((Selectable) r).isSelected()) {
-                            // Did this ever work?
-                        }
+                    if (r instanceof Selectable && ((Selectable) r).isSelected()) {
+                        // Did this ever work?
+
                     }
                 }
             }

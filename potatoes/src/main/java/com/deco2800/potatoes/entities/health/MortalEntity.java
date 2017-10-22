@@ -280,7 +280,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	}
 	
 	public void dyingHandler() {
-		gameManager.getManager(EventManager.class).unregisterAll(this);
+		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		setDying(false);
 	}
 

@@ -22,8 +22,6 @@ import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 

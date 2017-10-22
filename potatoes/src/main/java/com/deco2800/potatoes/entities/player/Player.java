@@ -1,52 +1,95 @@
 package com.deco2800.potatoes.entities.player;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
-import com.deco2800.potatoes.entities.health.*;
-import com.deco2800.potatoes.entities.resources.*;
-import com.deco2800.potatoes.entities.trees.*;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.health.HasProgressBar;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.health.ProgressBar;
+import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.health.RespawnEvent;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
+import com.deco2800.potatoes.entities.projectiles.MineBomb;
+import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+import com.deco2800.potatoes.entities.resources.FoodResource;
+import com.deco2800.potatoes.entities.resources.Resource;
+import com.deco2800.potatoes.entities.resources.ResourceEntity;
+import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
-import com.deco2800.potatoes.managers.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.function.Supplier;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.InputManager;
+import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.managers.PlayerManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.managers.TreeState;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.util.WorldUtil;
 
 /**
  * Entity for the playable character.
  * <p>
  *
  * @author leggy, petercondoleon
- *
+ * <p>
  * <p>
  */
 public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
+    protected ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
 
-
+    public enum PlayerShootMethod {
+		DIRECTIONAL, CLOSEST, MOUSE
+	}
+    public enum ShootStage {
+    	READY, HOLDING, LOOSE
+    }
+    public ShootStage currentShootStage=ShootStage.READY;
+    protected PlayerShootMethod shootingStyle=PlayerShootMethod.MOUSE;
+    public Vector2 mousePos;
+    public Projectile projectile;
+    protected Class<?> projectileClass = BallisticProjectile.class;
+    protected ProjectileTexture projectileTexture=ProjectileTexture.ROCKET;
+    //protected Projectile projectile = null;
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
-    private boolean holdPosition = false;	// Used to determine if the player should be held in place
+    private boolean holdPosition = false;    // Used to determine if the player should be held in place
 
     protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
-    public boolean canAttack = true;		// A boolean that determines whether the player can attack
+    public boolean canAttack = true;        // A boolean that determines whether the player can attack
 
     private static int doublePressSpeed = 300;    // double keypressed in ms
     protected float defaultSpeed;    // the default speed of each player
     protected long[] lastPressed = {0, 0, 0, 0};    // the last time WASD was pressed.
-
+    private Optional<AbstractEntity> target;
     private boolean keyW = false;
     private boolean keyA = false;
     private boolean keyS = false;
@@ -126,9 +169,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
         return animations;
     }
-    
+
     /**
-     * Generic completion handler for execution when the player 
+     * Generic completion handler for execution when the player
      * exits a state other than walk or idle.
      */
     protected Void completionHandler() {
@@ -162,7 +205,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return "";
         }
     }
-    
+
     // ----------     Input handling / Movement setup     ---------- //
 
 
@@ -178,11 +221,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
         // Check if the change is the same, if so return true.
+
         if (state == newState) return true;
-		//Only change the state if IDLE or WALK-ing
+        //Only change the state if IDLE or WALK-ing
+
         if (state == IDLE || state == WALK || state == DEATH) {
-        		stateChanged(state, newState);
-        		state = newState;
+            stateChanged(state, newState);
+            state = newState;
             // Only allow moving on WALK
             setMoveSpeedModifier((newState == WALK) ? 1 : 0);
             updateSprites();
@@ -191,7 +236,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
             return false; // State not changed
         }
     }
-    
+
     /**
      * Returns the current state of the player.
      *
@@ -200,36 +245,34 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public PlayerState getState() {
         return this.state;
     }
-    
+
     /**
-     * This method, unlike the set state method, always resets the state to 
+     * This method, unlike the set state method, always resets the state to
      * IDLE. Use this method to clear that state after being in a state like
      * ATTACK, INTERACT or DAMAGED.
      */
     public void resetState() {
-    		stateChanged(state, IDLE);
-    		state = IDLE;
-    		updateSprites();
+        stateChanged(state, IDLE);
+        state = IDLE;
+        updateSprites();
     }
-    
+
     /**
      * This method allows for handling of state changes. For example, if the
      * player changes to the WALK state, then walking sound effects can start
      * playing. If the state changes from the WALK state to another state,
      * then walking sound effects can be stopped.
-     * 
-     * @param from
-     * 			The state that was changed from
-     * @param to
-     * 			The state that was changed to
+     *
+     * @param from The state that was changed from
+     * @param to   The state that was changed to
      */
     private void stateChanged(PlayerState from, PlayerState to) {
-    		// Handle changing in and out of WALK
-    		if (to == WALK) {
-    			walk(true);
-    		} else if (from == WALK) {
-    			walk(false);
-    		}
+        // Handle changing in and out of WALK
+        if (to == WALK) {
+            walk(true);
+        } else if (from == WALK) {
+            walk(false);
+        }
     }
 
     /**
@@ -238,11 +281,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * @param keycode The key pressed
      */
     public void handleKeyDown(int keycode) {
-    	// stop input if player is dead.
+        // stop input if player is dead.
         if (state == DEATH) {
             return;
         }
-    	
+
         switch (keycode) {
             case Input.Keys.W:
                 keyW = true;
@@ -265,9 +308,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 updateMovingAndFacing();
                 break;
             case Input.Keys.SHIFT_LEFT:
-            		holdPosition = true;
-            		setState(IDLE);
-            		break;
+                holdPosition = true;
+                setState(IDLE);
+                break;
             case Input.Keys.T:
                 tossItem(new SeedResource());
                 break;
@@ -275,11 +318,26 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 tossItem(new FoodResource());
                 break;
             case Input.Keys.E:
-                interact();
-                harvestResources();
+                // If successfully harvest, play animation
+                if (harvestResources()) {
+                    interact();
+                }
                 break;
             case Input.Keys.SPACE:
                 attack();
+                break;
+
+            case Input.Keys.B:
+                float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+                float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+                float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+                Vector3 startPos = new Vector3(pPosX, pPosY, pPosZ);
+                target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+
+                MineBomb MBprojectile = new MineBomb(startPos, 8f, 100, MineBomb.BombTexture.MINES,
+                        null, null);
+
+                GameManager.get().getWorld().addEntity(MBprojectile);
                 break;
             default:
                 break;
@@ -293,11 +351,11 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public void handleKeyUp(int keycode) {
 
-    	// stop input if player is dead.
+        // stop input if player is dead.
         if (state == DEATH) {
             return;
         }
-    	
+
         switch (keycode) {
             case Input.Keys.W:
                 keyW = false;
@@ -316,9 +374,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 updateMovingAndFacing();
                 break;
             case Input.Keys.SHIFT_LEFT:
-            		holdPosition = false;
-            		setState( (keyA || keyD || keyS || keyW) ? WALK : IDLE );
-        			break;
+                holdPosition = false;
+                setState((keyA || keyD || keyS || keyW) ? WALK : IDLE);
+                break;
             default:
                 break;
         }
@@ -366,8 +424,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 newFacing = Direction.W;
                 break;
             case 4:
-            		newFacing = facing; // Not moving, keep existing direction
-            		break;
+                newFacing = facing; // Not moving, keep existing direction
+                break;
             case 5:
                 newFacing = Direction.E;
                 break;
@@ -381,30 +439,30 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 newFacing = Direction.SE;
                 break;
         }
-        
+
         // Firstly, if the player position is held, keep in IDLE but allow changing direction for aiming.
         if (holdPosition) {
-			setState(IDLE);
-			super.setMoveSpeedModifier(0);
-			super.setMoveSpeed(defaultSpeed);
-			super.setMoveAngle(newFacing.getAngleRad());
-			facing = newFacing;
-			updateSprites();
-			return;
+            setState(IDLE);
+            super.setMoveSpeedModifier(0);
+            super.setMoveSpeed(defaultSpeed);
+            super.setMoveAngle(newFacing.getAngleRad());
+            facing = newFacing;
+            updateSprites();
+            return;
         }
-        
+
         if (direcEnum == 4) {
             setState(IDLE);
             super.setMoveSpeed(defaultSpeed);
             super.setMoveSpeedModifier(0);
         } else {
-        		if (setState(WALK)) {
-        			super.setMoveAngle(newFacing.getAngleRad());
+            if (setState(WALK)) {
+                super.setMoveAngle(newFacing.getAngleRad());
                 super.setMoveSpeedModifier(1);
                 facing = newFacing;
-        		}
+            }
         }
-        
+
         updateSprites();
     }
 
@@ -412,7 +470,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if ((System.currentTimeMillis() - lastPressed[wasd]) < doublePressSpeed) {
             this.setMoveSpeed(defaultSpeed * 2);
         } else {
-            lastPressed[wasd] =  System.currentTimeMillis();
+            lastPressed[wasd] = System.currentTimeMillis();
         }
     }
 
@@ -420,7 +478,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     @Override
     public void onTick(long arg0) {
-
+    	//mouse input
+//    	System.out.println(Render3D.screenToTile(0,0));
+    	mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
+				GameManager.get().getManager(InputManager.class).getMouseY());
 
         //Get terrainModifier of the current tile
         float myX = super.getPosX();
@@ -428,13 +489,13 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         float length = GameManager.get().getWorld().getLength();
         float width = GameManager.get().getWorld().getWidth();
         float terrainModifier = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX-1, width - 1)), Math.round(Math.min(myY, length - 1)))
+                .getTerrain(Math.round(Math.min(myX - 1, width - 1)), Math.round(Math.min(myY, length - 1)))
                 .getMoveScale();
         float moveDist = getMoveSpeed() * terrainModifier;
         float newX = moveDist * (float) Math.cos(this.getMoveAngle());
         float newY = moveDist * (float) Math.sin(this.getMoveAngle());
         float terrainModifierCheck = GameManager.get().getWorld()
-                .getTerrain(Math.round(Math.min(myX-1 + newX, width - 1)), Math.round(Math.min(myY + newY, length - 1)))
+                .getTerrain(Math.round(Math.min(myX - 1 + newX, width - 1)), Math.round(Math.min(myY + newY, length - 1)))
                 .getMoveScale();
         if (terrainModifierCheck <= 0) {
             terrainModifier = 0;
@@ -490,7 +551,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     /**
      * Returns true if the user can buy this tree
      */
-    public boolean canAfford(AbstractTree tree){
+    public boolean canAfford(AbstractTree tree) {
         if (tree == null || inventory == null) {
             return false;
         }
@@ -511,7 +572,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
         Inventory cost = treeState.getCost();
         for (Resource resource : cost.getInventoryResources()) {
-            if (inventory.getQuantity(resource) < cost.getQuantity(resource)){
+            if (inventory.getQuantity(resource) < cost.getQuantity(resource)) {
                 return false;
             }
 
@@ -523,8 +584,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */
-    private void harvestResources() {
-        double interactRange = 3f; 
+    private boolean harvestResources() {
+        double interactRange = 1.5f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -537,6 +598,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (didHarvest) {
             GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
         }
+        return didHarvest;
     }
 
 
@@ -569,7 +631,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
 
     // ----------     Abstract Methods     ---------- //
-    
+
     /**
      * A method for damaging the player's health. Allows the damaged
      * state to be enabled and respective animations to play.
@@ -589,14 +651,127 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public ProgressBar getProgressBar() {
         return PROGRESS_BAR;
     }
-
+    ArrayList<Projectile> tr=new ArrayList<Projectile>();
     /**
      * A method for making the player attack based on the direction it
      * faces. Allows the attack state to be enabled and respective
      * animations to play.
      */
     protected void attack() {
-    		// Override in subclasses to allow custom attack.
+        // Override in subclasses to allow custom attacking.
+    	if (!canAttack) {
+			return;
+		} else {
+			canAttack = false;
+			EventManager em = GameManager.get().getManager(EventManager.class);
+	        em.registerEvent(this, new  AttackCooldownEvent(500));
+		}
+        if (this.setState(ATTACK)) {
+        	currentShootStage=ShootStage.READY;
+            GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
+
+            float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
+            float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
+            float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
+
+            target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
+            float targetPosX = 0;
+            float targetPosY = 0;
+            
+            Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
+            Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
+            
+         
+            if (BallisticProjectile.class.isAssignableFrom(projectileClass)) {
+    			projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(), startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		} else if (OrbProjectile.class.isAssignableFrom(projectileClass)) {
+    			projectile = new OrbProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		} // else if (BombProjectile.class.isAssignableFrom(shootObjectClass)) {
+    			// projectile = new BombProjectile(targetClass, startPos, targetPos, range,
+    			// damage, projectileTexture,
+    			// startEffect, endEffect);
+    			// }
+    		else if (HomingProjectile.class.isAssignableFrom(projectileClass)) {//could be t.getclass
+    			projectile = new HomingProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		} else {
+    			projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		}
+    
+            switch (facing) {
+                case N:
+                    break;
+                case NE:
+                    pPosY -= 1;
+                    pPosX += 1.5;
+                    break;
+                case E:
+                    pPosY -= 1;
+                    pPosX += 1.5;
+                    break;
+                case SE:
+                    pPosX += 1;
+                    break;
+                case S:
+                    pPosX += 1.2;
+                    break;
+                case SW:
+                    pPosY += 1;
+                    pPosX += 1;
+                    break;
+                case W:
+                    break;
+                case NW:
+                    break;
+                default:
+                    break;
+            }
+    		if (shootingStyle == PlayerShootMethod.MOUSE) {
+    			if (HomingProjectile.class.isAssignableFrom(projectileClass)) {
+    				((HomingProjectile) projectile).setHomingDelay(10);
+    			}
+    			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
+    		}
+            if (target.isPresent()) {
+                targetPosX = target.get().getPosX();
+                targetPosY = target.get().getPosY();
+
+            } else {
+                if (shootingStyle == PlayerShootMethod.DIRECTIONAL) {
+                    switch (facing) {
+                        case W:
+                            projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
+                            break;
+                        case E:
+                            projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
+                            break;
+                        case N:
+                            projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
+                            break;
+                        case S:
+                            projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
+                            break;
+                        case SE:
+                            projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
+                            break;
+                        case NW:
+                            projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
+                            break;
+                        case NE:
+                            projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
+                            break;
+                        case SW:
+                            projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
+                            break;
+                    }
+                }
+
+            }
+            GameManager.get().getWorld().addEntity(projectile);
+        }
     }
 
     /**
@@ -605,10 +780,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void interact() {
-   		// Override in subclasses to allow custom interacting.
-	    	if (this.setState(INTERACT)) {
-	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-	    	}
+        // Override in subclasses to allow custom interacting.
+        if (this.setState(INTERACT)) {
+            GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
+        }
     }
 
     /**
@@ -620,7 +795,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      *               if the player stops walking.
      */
     protected void walk(boolean active) {
-    		// Override in subclasses to allow handling of custom walking.
+        // Override in subclasses to allow handling of custom walking.
     }
 
     /**
@@ -638,5 +813,5 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public String toString() {
         return "The player";
     }
-
+    
 }

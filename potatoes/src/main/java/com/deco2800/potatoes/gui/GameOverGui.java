@@ -43,7 +43,6 @@ public class GameOverGui extends Gui {
     private Drawable exitDrawable;
     private ImageButton startButton;
     private ImageButton exitButton;
-//    private Label gameOverLabel;
 
     public GameOverGui(Stage stage, GameScreen screen) {
     	this.stage = stage;
@@ -52,7 +51,6 @@ public class GameOverGui extends Gui {
         uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table(uiSkin);
 
-//        gameOverLabel = new Label("GAME OVER",uiSkin);
         // Make drawables from textures
         startDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("gameOverRestart")));
         exitDrawable = new TextureRegionDrawable(new TextureRegion(GameManager.get().getManager(TextureManager.class).getTexture("gameOverExit")));
@@ -86,12 +84,6 @@ public class GameOverGui extends Gui {
 
     private void setupListeners() {
         // Primary state
-    	GameManager.get().getManager(InputManager.class).addKeyDownListener(keycode -> {
-            if (keycode == Input.Keys.ESCAPE) {
-                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
-                toggle();
-            }
-        });
 
         startButton.addListener(new ChangeListener() {
             @Override
@@ -120,15 +112,12 @@ public class GameOverGui extends Gui {
 
         stage.addActor(table);
         hidden = false;
-
-//        GameManager.get().setPaused(true);
     }
 
     @Override
 	public void hide() {
         table.setVisible(false);
         hidden = true;
-//        GameManager.get().setPaused(false);
     }
     
     /**

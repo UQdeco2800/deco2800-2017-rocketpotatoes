@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.waves;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -16,7 +15,7 @@ public class EnemyWave {
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
     private static int totalAmount = 0;
-    private int round_number;
+    private int roundNumber;
     private boolean isPauseWave;
 
     public enum WaveState {
@@ -37,10 +36,10 @@ public class EnemyWave {
      * @param waveLength the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
      * @param round_number
      * */
-    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength, int round_number) {
+    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength, int roundNumber) {
         this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
         this.waveLength = waveLength;
-        this.round_number = round_number;
+        this.roundNumber = roundNumber;
     }
 
     // Used for testing when waves not in use
@@ -83,8 +82,8 @@ public class EnemyWave {
         float speedyRatio = squirrelRatio + speedyRate/total;
         float tankRatio = speedyRatio + tankRate/total;
         float mooseRatio = tankRatio + mooseRate/total;
-        float[] enemyRatios = {squirrelRatio, speedyRatio, tankRatio, mooseRatio};
-        return enemyRatios;
+        float[] ratios = {squirrelRatio, speedyRatio, tankRatio, mooseRatio};
+        return ratios;
     }
 
     /***
@@ -121,13 +120,8 @@ public class EnemyWave {
     public void tickAction() {
         switch (getWaveState()) {
 /*            case WAITING:
-                //Do nothing
-                break;*/
+                //Do nothing*/
             case PAUSE:
-                /*setCurrentWaveTime(elapsedWaveTime() + 1);
-                if (elapsedWaveTime() > getWaveLength()) {
-                    setWaveState(WaveState.FINISHED);
-                }*/
                 break;
             case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
@@ -138,10 +132,6 @@ public class EnemyWave {
                 }
                 //Check to see if wave is paused for some reason
                 break;
- /*           case FINISHED:
-                //Handling finished state
-                break;
-   */
         }
     }
 
@@ -159,7 +149,7 @@ public class EnemyWave {
      * Sets the current wave Time.
      * @param CurrentTime
      */
-    public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
+    public void setCurrentWaveTime(int currentTime) { this.waveTime = currentTime; }
 
     /**
      * @return Amount of time left in current wave

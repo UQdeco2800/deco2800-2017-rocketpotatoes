@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Game manager manages all the components of the game.
@@ -27,6 +28,8 @@ public class GameManager implements TickableManager {
 	private World mainWorld;
 
 	private boolean paused = false;
+	private long seed = (long)(Math.random() * 10000000);
+	private Random random = new Random(seed);
 
 	/**
 	 * Returns an instance of the GM
@@ -165,6 +168,13 @@ public class GameManager implements TickableManager {
 	}
 
 	/**
+	 * Resets the entire game state
+	 */
+	public static void resetState() {
+		instance = null;
+	}
+
+	/**
 	 * Returns if the game is paused or not
 	 */
 	public boolean isPaused() {
@@ -176,5 +186,18 @@ public class GameManager implements TickableManager {
 	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+
+	public Random getRandom() {
+		return random;
+	}
+
+	public long	getSeed() {
+		return seed;
+	}
+
+	public void setSeed(long seed) {
+		this.seed = seed;
+		random = new Random(seed);
 	}
 }
