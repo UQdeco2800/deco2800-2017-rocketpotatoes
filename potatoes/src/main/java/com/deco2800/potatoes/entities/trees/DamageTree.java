@@ -37,7 +37,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     static {
 
         status.put("ice_tree","ice_tree-normal");
-        status.put("acorn_tree1","acorn_tree1-death");
+        status.put("acorn_tree1","acorn_tree1-normal");
         status.put("lightning_tree1","lightning_tree1-normal");
         status.put("fire_tree","fire_tree-normal");
         status.put("cactusTree", "cactusTree-normal");

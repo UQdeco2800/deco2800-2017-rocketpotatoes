@@ -48,9 +48,12 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private int channelTimer;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
-	private int count = 0;
-	private String enemyStatus = "";
+	private String enemyStatus = "_walk";
 	protected int roundNum = 0;
+	private int texturePointer=1;
+	private long sTime=System.currentTimeMillis();
+	private int textureLength=0;
+	private int delayTime=500;
 
 	/**
 	 * Default constructor for serialization
@@ -168,6 +171,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
+	 * set up the animation delay time
+	 * @param time milliseconds
+	 */
+	public void setDelayTime(int time){
+		this.delayTime=time;
+	}
+
+	/**
+	 * set up the animation length
+	 * @param length how many texture for this enemy
+	 */
+	public void setTextureLength(int length){
+		this.textureLength=length;
+	}
+	/**
 	 * Flag whether this enemy should be allowed to move or not
 	 *
 	 * @param move
@@ -212,22 +230,30 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-			this.setTexture(type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
+			LOGGER.info("Texture:::"+type[0]+enemyStatus + direction + "_" + texturePointer);
+			this.setTexture(type[0]+enemyStatus + direction + "_" + texturePointer);
+			if(delay(delayTime)){
+				texturePointer++;
+				if(texturePointer>textureLength){
+					texturePointer=1;
+				}
+			}
 		}
-
 	}
 
 	/**
 	 * the purpose of method is make a time delay for next texture
-	 * @param time i guest just millisecond
-	 * @param frameSize the texture array size
+	 * @param milliSeconds i guest just millisecond
+
 	 * @return Int the index of texture
 	 */
-	public int delay(int time,int frameSize){
-		count++;
-		if((count/time)>=(frameSize-1))
-			count=0;
-		return count/time;
+	public boolean delay(int milliSeconds){
+
+		if((System.currentTimeMillis()-sTime)>milliSeconds){
+			sTime=System.currentTimeMillis();
+			return true;
+		}
+		return false;
 	}
 
 	/***
@@ -406,13 +432,13 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		ParticleManager p = GameManager.get().getManager(ParticleManager.class);
 
 		ParticleType particle =  new BasicParticleType(100000, 500.0f,
-				0.0f, 1024, Color.RED, 5, 5);
-		particle.setSpeed(0.9f);
+				0.0f, 512, Color.RED, 7, 7);
+		particle.setSpeed(0.2f);
 
 		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-		p.addParticleEmitter(1.0f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
+		p.addParticleEmitter(2f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
 				particle));
 
 		// destroy the enemy & it's events

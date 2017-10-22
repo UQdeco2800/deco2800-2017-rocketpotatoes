@@ -29,8 +29,7 @@ public class NetworkServer {
 
     /**
 
-     * Starts a server for the game 
-     * TODO debug logging
+     * Starts a server for the game
      *
      * @param tcpPort tcp port to use, presumed to be correct
      * @param udpPort udp port to use, presumed to be correct
@@ -118,7 +117,7 @@ public class NetworkServer {
         message.setY(entity.getPosY());
 
         // Tell everyone except the master.
-        server.sendToAllExceptUDP(MASTER_ID, message);
+        server.sendToAllExceptTCP(MASTER_ID, message);
     }
 
     public void broadcastEntityUpdateProgress(int id) {
@@ -131,7 +130,7 @@ public class NetworkServer {
             message.setProgress(e.getProgress());
 
             // Tell everyone except the master.
-            server.sendToAllExceptUDP(MASTER_ID, message);
+            server.sendToAllExceptTCP(MASTER_ID, message);
         }
         else {
             throw new IllegalArgumentException("Entity doesn't implement HasProgress!");

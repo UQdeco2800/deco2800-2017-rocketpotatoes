@@ -63,7 +63,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
+    protected ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
 
     public enum PlayerShootMethod {
 		DIRECTIONAL, CLOSEST, MOUSE
@@ -318,8 +318,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 tossItem(new FoodResource());
                 break;
             case Input.Keys.E:
-                interact();
-                harvestResources();
+                // If successfully harvest, play animation
+                if (harvestResources()) {
+                    interact();
+                }
                 break;
             case Input.Keys.SPACE:
                 attack();
@@ -581,8 +583,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */
-    private void harvestResources() {
-        double interactRange = 3f; 
+    private boolean harvestResources() {
+        double interactRange = 1.5f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -595,6 +597,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (didHarvest) {
             GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
         }
+        return didHarvest;
     }
 
 

@@ -1,10 +1,5 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.HashMap;
-
-import java.util.Map;
-import java.util.Random;
-
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -12,6 +7,9 @@ import com.deco2800.potatoes.util.GridUtil;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manager for worlds. Stores and generates all the worlds.

@@ -8,12 +8,12 @@ import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 
 public class Wizard extends Player {
+
 	private Optional<AbstractEntity> target;
 	/**
 	 * Creates a new Archer instance.

@@ -84,12 +84,6 @@ public class GameOverGui extends Gui {
 
     private void setupListeners() {
         // Primary state
-    	GameManager.get().getManager(InputManager.class).addKeyDownListener(keycode -> {
-            if (keycode == Input.Keys.ESCAPE) {
-                GameManager.get().getManager(GuiManager.class).getGui(TreeShopGui.class).closeShop();
-                toggle();
-            }
-        });
 
         startButton.addListener(new ChangeListener() {
             @Override
@@ -118,15 +112,12 @@ public class GameOverGui extends Gui {
 
         stage.addActor(table);
         hidden = false;
-
-//        GameManager.get().setPaused(true);
     }
 
     @Override
 	public void hide() {
         table.setVisible(false);
         hidden = true;
-//        GameManager.get().setPaused(false);
     }
     
     /**

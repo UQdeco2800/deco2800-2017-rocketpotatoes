@@ -59,6 +59,7 @@ public class Render3D implements Renderer {
 	private ShapeRenderer shapeRenderer;
 
 	private SpriteBatch batch;
+	private SpriteBatch hudBatch = new SpriteBatch();;
 	private SpriteCache cache;
 	private SpriteCacheBatch spriteCacheBatch;
 	private BatchTiledMapRenderer tiledMap;
@@ -92,7 +93,7 @@ public class Render3D implements Renderer {
 		}
 
 		this.batch = batch;
-
+		
 		World world = GameManager.get().getWorld();
 		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
 		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);
@@ -126,7 +127,7 @@ public class Render3D implements Renderer {
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
 			renderCollisionMasks(); 	// rend collisionMask outlines of entities
-			renderPathFinderNodes();	// rend nodes in PathManager 
+			renderPathFinderNodes();	// rend nodes in PathManager
 		}
 	}
 
@@ -299,7 +300,7 @@ public class Render3D implements Renderer {
 			float offsetY;
 			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
 			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
-			
+
 			batch.draw(tex,
 					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
 					tileWidth * e.getXRenderLength(), 						// width
@@ -356,16 +357,22 @@ public class Render3D implements Renderer {
 	 * Renders progress bars above entities */
 	private void renderProgressBars() {
 		ProgressBarManager progressValues = GameManager.get().getManager(ProgressBarManager.class);
-		Color currentShade = batch.getColor();
+		TextureManager reg = GameManager.get().getManager(TextureManager.class);
 
+		Color currentShade = batch.getColor();
+		
+		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		GoalPotate potato = null;
+		
 		batch.begin();
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
 			// Progress Bars for players.
-			if (!progressValues.showPlayerProgress() && e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+			if (e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
 				continue;
 			}
+			
 			// Progress Bar for Goal Potato.
 			if (!progressValues.showPotatoProgress() && e instanceof GoalPotate) {
 				continue;
@@ -382,17 +389,21 @@ public class Render3D implements Renderer {
 				continue;
 			}
 
+			if (e instanceof GoalPotate) {
+				potato = (GoalPotate) e;
+			}
+			
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
 
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
 
 				ProgressBar progressBar = ((HasProgressBar) e).getProgressBar();
+	
 				// Allow entities to return null if they don't want to display their progress bar
 				if (progressBar != null) {
-					TextureManager reg = GameManager.get().getManager(TextureManager.class);
 
 					Texture barTexture = reg.getTexture(progressBar.getTexture());
-
+					
 					// sets colour palette
 					batch.setColor(progressBar.getColour(((HasProgress) e).getProgressRatio()));
 
@@ -432,13 +443,89 @@ public class Render3D implements Renderer {
 							barTexture.getHeight(),                                // srcHeight
 							false, false);                                        // flipX, flipY
 
-					// reset the batch colour
-					batch.setColor(Color.WHITE);
+
 				}
 			}
-		}
-		batch.end();
 
+		}
+		// Draw player health HUD and progress bar.
+		if (player != null && progressValues.showPlayerProgress()) {
+			// Get texture
+			ProgressBar progressBar = player.getProgressBar();
+			Texture iconTexture = reg.getTexture(player.getProgressBar().getLayoutTexture());
+			Texture barTexture =  reg.getTexture(player.getProgressBar().getTexture());
+			// Render the player health HUD
+			hudBatch.begin();
+			hudBatch.setColor(Color.WHITE);
+			hudBatch.draw(iconTexture, 25+75, Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
+			
+			// Draw the player HealthBar
+			float barRatio = player.getProgressRatio();
+			float maxBarWidth = 638/2.55f;
+			float barWidth = maxBarWidth * barRatio;
+			float barBackgroundWidth = maxBarWidth * (1 - barRatio);
+			float barX = 93+75;
+			float barY = Gdx.graphics.getHeight()-134/2-73.5f + 60;
+			float endX = barX + barWidth;
+			// Draw amount of health left.
+			hudBatch.draw(barTexture, barX, barY,                        // texture, x, y
+					barWidth, maxBarWidth / 8, 0, 0,                // width, height srcX, srcY
+					(int) (barTexture.getWidth() * barRatio),        // srcWidth
+					barTexture.getHeight(),                            // srcHeight
+					false, false);                                    // flipX, flipY
+			// Draw amount of health lost.
+			hudBatch.setColor(0.5f, 0.5f, 0.5f, 1f);
+			hudBatch.draw(barTexture, endX, barY,                            // texture, x, y
+					barBackgroundWidth, maxBarWidth / 8,                // width, height
+					(int) (barTexture.getWidth() * barRatio), 0,        // srcX, srcY
+					(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
+					barTexture.getHeight(),                                // srcHeight
+					false, false);  
+			hudBatch.end();
+		}
+		// potato
+		if (potato != null && progressValues.showPotatoProgress()) {
+			// Get texture
+			ProgressBar progressBar = player.getProgressBar();
+			Texture iconTexture = reg.getTexture(potato.getProgressBar().getLayoutTexture());
+			Texture barTexture =  reg.getTexture(potato.getProgressBar().getTexture());
+			// Render the player health HUD
+			hudBatch.begin();
+			hudBatch.setColor(Color.WHITE);
+			hudBatch.draw(iconTexture, Gdx.graphics.getWidth() - (25+75)-75 - 638/2.55f, 
+					Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(),
+					iconTexture.getHeight(), false, false);
+			
+			// Draw the player HealthBar
+			float barRatio = potato.getProgressRatio();
+			float maxBarWidth = 638/2.55f;
+			float barWidth = maxBarWidth * barRatio;
+			float barBackgroundWidth = maxBarWidth * (1 - barRatio);
+			float barX = Gdx.graphics.getWidth() - (93+80) - 638/2.55f;
+			float barY = Gdx.graphics.getHeight()-134/2-73.5f + 60;
+			float endX = barX + barWidth;
+			// Draw amount of health left.
+			hudBatch.draw(barTexture, barX, barY,                        // texture, x, y
+					barWidth, maxBarWidth / 8, 0, 0,                // width, height srcX, srcY
+					(int) (barTexture.getWidth() * barRatio),        // srcWidth
+					barTexture.getHeight(),                            // srcHeight
+					false, false);                                    // flipX, flipY
+			// Draw amount of health lost.
+			hudBatch.setColor(0.5f, 0.5f, 0.5f, 1f);
+			hudBatch.draw(barTexture, endX, barY,                            // texture, x, y
+					barBackgroundWidth, maxBarWidth / 8,                // width, height
+					(int) (barTexture.getWidth() * barRatio), 0,        // srcX, srcY
+					(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
+					barTexture.getHeight(),                                // srcHeight
+					false, false);  
+			hudBatch.end();
+		}
+		
+		// reset the batch colour
+		batch.setColor(Color.WHITE);
+		
+		batch.end();
+			
 		batch.setColor(currentShade);
 	}
 
@@ -450,7 +537,7 @@ public class Render3D implements Renderer {
 		if (font == null) {
 			font = new BitmapFont();
 		}
-		font.getData().setScale(1.0f);
+		font.getData().setScale(3.0f);
 		font.setColor(Color.GREEN);
 
 
@@ -463,7 +550,7 @@ public class Render3D implements Renderer {
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
 
 				font.draw(batch, String.format("%s", ((ResourceTree) e).getGatherCount()),
-						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
+						isoPosition.x, isoPosition.y + 100);
 			}
 		}
 		batch.end();
@@ -560,7 +647,7 @@ public class Render3D implements Renderer {
 	 * Renders the nodes in PathManager */
 	private void renderPathFinderNodes() {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
-		
+
 	}
 
 

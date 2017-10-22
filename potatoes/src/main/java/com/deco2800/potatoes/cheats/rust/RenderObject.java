@@ -13,14 +13,14 @@ public class RenderObject extends Structure implements Closeable {
     public static class ByValue extends RenderObject implements Structure.ByValue {
     }
 
-    private String asset;
-    private int x;
-    private int y;
-    private float rotation;
-    private float scale;
-    private int flipX;
-    private int flipY;
-    private int color;
+    public String asset;
+    public int x;
+    public int y;
+    public float rotation;
+    public float scale;
+    public int flipX;
+    public int flipY;
+    public int color;
 
 
     @Override
@@ -35,69 +35,5 @@ public class RenderObject extends Structure implements Closeable {
         // occurs after every native method call. If it occurs after we drop the struct, JNA
         // will try to read from the freed memory and cause a segmentation fault.
         setAutoSynch(false);
-    }
-
-    /**
-     * Return the object's asset value
-     * @return asset
-     */
-    public String getAsset() {
-        return asset;
-    }
-
-    /**
-     * Return the object's x value
-     * @return x
-     */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * Return the object's y value
-     * @return y
-     */
-    public int getY() {
-        return y;
-    }
-
-    /**
-     * Return the object's rotation value
-     * @return asset
-     */
-    public float getRotation() {
-        return rotation;
-    }
-
-    /**
-     * Return the object's scale value
-     * @return scale
-     */
-    public float getScale() {
-        return scale;
-    }
-
-    /**
-     * Return the object's flipX value
-     * @return asset
-     */
-    public int getFlipX() {
-        return flipX;
-    }
-
-    /**
-     * Return the object's flipY value
-     * @return flipY
-     */
-    public int getFlipY() {
-        return flipY;
-    }
-
-    /**
-     * Return the object's color value
-     * @return color
-     */
-    public int getColor() {
-        return color;
     }
 }
