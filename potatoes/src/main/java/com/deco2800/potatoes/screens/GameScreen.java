@@ -270,10 +270,6 @@ public class GameScreen implements Screen {
 	/**
 	 * Initializes everything needed to actually play the game Can be used to
 	 * `reset` the state of the game
-	 *
-	 * TODO this logic should be state-machined'd (i.e. Main menu <-> Playing <->
-	 * Paused. With every state having TODO it's own menu(s), initialization etc.
-	 * And when we setup custom transition logic.
 	 */
 	private void initializeGame() {
 
@@ -450,14 +446,14 @@ public class GameScreen implements Screen {
 
 		}
 
-		// Broadcast updates if we're master TODO only when needed.
+		// Broadcast updates if we're master TO DO only when needed.
 		if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
 			for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
 				// But don't broadcast our player yet
 				if (e.getKey() != multiplayerManager.getID()) {
 					multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
 
-					// TODO only when needed Maybe attach to the HasProgress interface itself?
+					// TO DO only when needed Maybe attach to the HasProgress interface itself?
 					if (e.getValue() instanceof HasProgress) {
 						multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
 					}
@@ -465,7 +461,7 @@ public class GameScreen implements Screen {
 			}
 		}
 
-		// Broadcast our player updating pos TODO only when needed.
+		// Broadcast our player updating pos TO DO only when needed.
 		multiplayerManager.broadcastPlayerUpdatePosition();
 
 		/*
@@ -534,8 +530,7 @@ public class GameScreen implements Screen {
 			}
 		}
 	}
-
-	//TODO: better implementation?
+	
 	private void updateRespawnGUI(){
 
 		Gui respawnGui = guiManager.getGui(RespawnGui.class);
@@ -693,7 +688,6 @@ public class GameScreen implements Screen {
 		public void notifyKeyDown(int keycode) {
 			if (keycode == Input.Keys.ESCAPE) {
 				// Pause the Game
-				// ToDo
 				// Show the Pause Menu
 				guiManager.getGui(PauseMenuGui.class).show();
 			}
