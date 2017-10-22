@@ -122,12 +122,12 @@ public class WorldManager extends Manager implements TickableManager {
 		World world = new World();
 		Cell[][] terrainCells = new Cell[WORLD_SIZE][WORLD_SIZE];
 		Terrain[][] terrain = worldType.generateWorld(WORLD_SIZE);
-		for (int x = 0; x < WORLD_SIZE; x++) {
+		for (int x = 0; x   d  < WORLD_SIZE; x++) {
 			for (int y = 0; y < WORLD_SIZE; y++) {
 				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
 			}
 		}
-		//world.setBackground(worldType.getTerrain().getWater());
+		world.setBackground(worldType.getTerrain().getWater());
 		world.setTerrain(terrain);
 		return world;
 	}
