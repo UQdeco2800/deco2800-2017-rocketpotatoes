@@ -1,9 +1,5 @@
 package com.deco2800.potatoes.entities.player;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
@@ -19,17 +15,23 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
 public class Caveman extends Player {
 
-	/**
+	public Caveman() {
+		this(0, 0);
+	}
 
+	/**
      * Creates a new Caveman instance.
      *
      * @param posX The x-coordinate.
      * @param posY The y-coordinate.
      */
     public Caveman(float posX, float posY) {
-
     	super(posX, posY);
     	this.defaultSpeed = 0.08f;
         super.setMoveSpeed(defaultSpeed);
@@ -40,12 +42,12 @@ public class Caveman extends Player {
     }
 
     /* Caveman Animations */
-    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
-    private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
-    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
-    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
+    private transient Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
+    private transient Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
+    private transient Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private transient Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
+    private transient Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
+    private transient Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
     
     /**
      * Custom damaged handling for the caveman
@@ -153,11 +155,11 @@ public class Caveman extends Player {
 
 		}
     }
-    
+
     /* Custom walk sound handling */
-	private int stepNumber = 1;	// Used for playing left and right foot steps
-	private boolean alternateSound = false;	// Used for playing alternate sounds
-	private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
+	private transient int stepNumber = 1;	// Used for playing left and right foot steps
+	private transient boolean alternateSound = false;	// Used for playing alternate sounds
+	private transient TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
 	private Void walkHandler() {
 		if (alternateSound) {
 			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");

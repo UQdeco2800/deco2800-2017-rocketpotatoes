@@ -52,12 +52,6 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
     public void action(EnemyEntity enemy) {
         Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(ResourceTree.class, enemy.getPosX(), enemy.getPosY());
 
-		/*Stop event if dead (deathHandler of mortal entity will eventually unregister the event).*/
-        if (enemy.isDead()) {
-            GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
-            setDoReset(false);
-        }
-
         // no target exists or target is out of range
         if (!target.isPresent() || enemy.distanceTo(target.get()) > range) {
             return;

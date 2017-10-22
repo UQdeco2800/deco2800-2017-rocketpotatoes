@@ -32,10 +32,6 @@ import java.util.Set;
  */
 public abstract class AbstractEntity implements Renderable, Comparable<AbstractEntity> {
 
-	protected transient GameManager gameManager = GameManager.get();
-
-
-
 	// Rendering texture
 	private String texture = "error_box";
 
@@ -783,13 +779,12 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	@Override
 	public int compareTo(AbstractEntity o) {
 		float cartX = this.collisionMask.getX();
-		float cartY = gameManager.getWorld().getLength() - this.collisionMask.getY();
-
+		float cartY = GameManager.get().getWorld().getLength() - this.collisionMask.getY();
 		float isoX = (cartX - cartY) / 2.0f;
 		float isoY = (cartX + cartY) / 2.0f;
 
 		float otherCartX = o.getPosX();
-		float otherCartY = gameManager.getWorld().getLength() - o.getPosY();
+		float otherCartY = GameManager.get().getWorld().getLength() - o.getPosY();
 
 		float otherIsoX = (otherCartX - otherCartY) / 2.0f;
 		float otherIsoY = (otherCartX + otherCartY) / 2.0f;

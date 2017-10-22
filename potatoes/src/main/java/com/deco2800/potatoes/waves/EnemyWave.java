@@ -15,7 +15,7 @@ public class EnemyWave {
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
     private static int totalAmount = 0;
-    private int round_number;
+    private int roundNumber;
     private boolean isPauseWave;
 
     public enum WaveState {
@@ -36,10 +36,10 @@ public class EnemyWave {
      * @param waveLength the length in minutes and seconds of wave (1.30) is 1 minute 30 seconds.
      * @param round_number
      * */
-    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength, int round_number) {
+    public EnemyWave(int squirrelRate, int speedyRate, int tankRate, int mooseRate, int waveLength, int roundNumber) {
         this.enemyRatios = calculateEnemyRatios(squirrelRate, speedyRate, tankRate, mooseRate);
         this.waveLength = waveLength;
-        this.round_number = round_number;
+        this.roundNumber = roundNumber;
     }
 
     // Used for testing when waves not in use

@@ -127,7 +127,7 @@ public class Render3D implements Renderer {
 		//if DebugGui is shown ...
 		if (!GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).isHidden()) {
 			renderCollisionMasks(); 	// rend collisionMask outlines of entities
-			renderPathFinderNodes();	// rend nodes in PathManager 
+			renderPathFinderNodes();	// rend nodes in PathManager
 		}
 	}
 
@@ -300,7 +300,7 @@ public class Render3D implements Renderer {
 			float offsetY;
 			offsetX = tileWidth * e.getXRenderLength() / 2 - aspect * e.getXRenderOffset();
 			offsetY = tileWidth * e.getXRenderLength() / 4 - aspect * e.getYRenderOffset();
-			
+
 			batch.draw(tex,
 					isoPosition.x - offsetX, isoPosition.y - offsetY,		// x, y
 					tileWidth * e.getXRenderLength(), 						// width
@@ -647,7 +647,7 @@ public class Render3D implements Renderer {
 	 * Renders the nodes in PathManager */
 	private void renderPathFinderNodes() {
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
-		
+
 	}
 
 

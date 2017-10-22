@@ -10,13 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
-import com.deco2800.potatoes.cheats.rust.Rustyfish;
 import com.deco2800.potatoes.gui.MainMenuGui;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

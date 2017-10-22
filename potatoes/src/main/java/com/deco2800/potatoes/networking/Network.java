@@ -1,18 +1,11 @@
 package com.deco2800.potatoes.networking;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.Resource;
-import com.deco2800.potatoes.entities.resources.SeedResource;
+import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.TreeProjectileShootEvent;
-import com.deco2800.potatoes.entities.trees.TreeProperties;
-import com.deco2800.potatoes.managers.Inventory;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
-import org.reflections.Reflections;
-
-import java.util.*;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 public class Network {
 
@@ -27,60 +20,9 @@ public class Network {
     public static void register(EndPoint endPoint) {
         Kryo k = endPoint.getKryo();
 
-        /* Message types */
-        k.register(ClientConnectionRegisterMessage.class);
-        k.register(ClientPlayerUpdatePositionMessage.class);
-        k.register(ClientBuildOrderMessage.class);
-
-        k.register(HostPlayerDisconnectedMessage.class);
-        k.register(HostDisconnectMessage.class);
-        k.register(HostPlayReadyMessage.class);
-        k.register(HostNewPlayerMessage.class);
-        k.register(HostConnectionConfirmMessage.class);
-        k.register(HostEntityCreationMessage.class);
-        k.register(HostEntityDestroyMessage.class);
-        k.register(HostEntityUpdatePositionMessage.class);
-        k.register(HostEntityUpdateProgressMessage.class);
-        k.register(HostExistingPlayerMessage.class);
-
-        k.register(ClientChatMessage.class);
-        k.register(HostChatMessage.class);
-        // Register member variables here:
-
-        k.register(java.util.Optional.class);
-        k.register(LinkedList.class);
-        k.register(TreeProjectileShootEvent.class);
-        k.register(TreeProperties.class);
-        k.register(Resource.class);
-        k.register(FoodResource.class);
-        k.register(SeedResource.class);
-        k.register(Inventory.class);
-        k.register(TreeMap.class);
-        k.register(float[][].class);
-        k.register(float[].class);
-        k.register(String[].class);
-        k.register(Class.class);
-
-        /* Maybe don't serialize entire entities at all. But rather have custom generalized messages for different
-         * actions? Requires as much abstraction as possible with regards to custom behaviour, shouldn't be too tedious
-         */
-
-        Reflections reflections = new Reflections("com.deco2800");
-
-        Set<Class<? extends AbstractEntity>> entities =
-                reflections.getSubTypesOf(com.deco2800.potatoes.entities.AbstractEntity.class);
-
-        // Order matters so let's order them
-        TreeSet<Class<? extends AbstractEntity>> sorted = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
-
-        sorted.addAll(entities);
-
-        for (Class c : sorted) {
-            // Auto register entities!
-            k.register(c);
-        }
-
-
+        // Kyro magic (with overhead) to automatically register and initialize (without requiring default constructors)
+        k.setRegistrationRequired(false);
+        ((Kryo.DefaultInstantiatorStrategy) k.getInstantiatorStrategy()).setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
     }
 
     // Define our custom types/containers for serialization here
@@ -94,6 +36,7 @@ public class Network {
      * should be the first message between a client and host */
     public static class ClientConnectionRegisterMessage {
         private String name;
+        private Player player;
 
         public String getName() {
             return name;
@@ -101,6 +44,14 @@ public class Network {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public void setPlayer(Player player) {
+            this.player = player;
         }
     }
 
@@ -136,6 +87,7 @@ public class Network {
     public static class HostNewPlayerMessage {
         private String name;
         private int id;
+        private Player player;
 
         public String getName() {
             return name;
@@ -151,6 +103,14 @@ public class Network {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public void setPlayer(Player player) {
+            this.player = player;
         }
     }
 
@@ -177,9 +137,10 @@ public class Network {
     }
 
 
-    /* Message confirming connection, gives the client their id */
+    /* Message confirming connection, gives the client their id and the seed */
     public static class HostConnectionConfirmMessage {
         private int id;
+        private long seed;
 
         public int getId() {
             return id;
@@ -187,6 +148,14 @@ public class Network {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public long getSeed() {
+            return seed;
+        }
+
+        public void setSeed(long seed) {
+            this.seed = seed;
         }
     }
 

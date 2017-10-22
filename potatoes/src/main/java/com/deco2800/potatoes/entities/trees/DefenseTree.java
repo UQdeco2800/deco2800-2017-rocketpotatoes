@@ -1,9 +1,9 @@
 package com.deco2800.potatoes.entities.trees;
 
+import com.deco2800.potatoes.entities.PropertiesBuilder;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import com.deco2800.potatoes.entities.PropertiesBuilder;
 
 /**
  * Class for defensive trees that don't attack but act as a wall.
@@ -35,6 +35,11 @@ public class DefenseTree extends AbstractTree {
 	@Override
 	public AbstractTree createCopy() {
 		return new DefenseTree(this.getPosX(), this.getPosY());
+	}
+
+	@Override
+	public String getTexture() {
+		return TEXTURE;
 	}
 
 	@Override

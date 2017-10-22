@@ -58,7 +58,6 @@ public class GameScreen implements Screen {
 	private Renderer renderer = new Render3D();
 
 	// Managers tracked here for ease of use. Should be initialized from the
-	// GameManager.get().getManager(...) though!
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
@@ -87,7 +86,7 @@ public class GameScreen implements Screen {
 	 *            game instance
 	 * @param name
 	 *            name to join with
-	 * @param IP
+	 * @param Ip
 	 *            IP to connect to, (ignored if isHost is true (will connect to
 	 *            127.0.0.1))
 	 * @param port
@@ -95,7 +94,7 @@ public class GameScreen implements Screen {
 	 * @param isHost
 	 *            is this client a host (i.e. start a server then connect to it)
 	 */
-	public GameScreen(RocketPotatoes game, String name, String Ip, int port, boolean isHost)
+	public GameScreen(RocketPotatoes game, String name, String ip, int port, boolean isHost)
 			throws IOException {
 		this.game = game;
 		setupGame();
@@ -106,7 +105,7 @@ public class GameScreen implements Screen {
 			// Loopback for host's connection to itself
 			multiplayerManager.joinGame(name, "127.0.0.1", port);
 		} else {
-			multiplayerManager.joinGame(name, Ip, port);
+			multiplayerManager.joinGame(name, ip, port);
 		}
 
 		initializeGame();
@@ -214,6 +213,7 @@ public class GameScreen implements Screen {
         //Make our game over window
 		guiManager.addGui(new GameOverGui(guiManager.getStage(),this));
 
+		// Make our wave information window
 		guiManager.addGui(new WavesGui(guiManager.getStage()));
 
 		guiManager.addGui(new RespawnGui(guiManager.getStage(),this));
@@ -289,43 +289,21 @@ public class GameScreen implements Screen {
 			//W
 			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength()/2, 6.5f, "enemyCave_SE");
 			GameManager.get().getWorld().addEntity(gateW);
-			//gateW.clearPath();
 			//E
 			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength()/2, 42f,"enemyCave_W" );
 			GameManager.get().getWorld().addEntity(gateE);
-			//gateE.clearPath();
 			//S
 			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength()/2 , "enemyCave_E");
 			GameManager.get().getWorld().addEntity(gateS);
-			//gateS.clearPath();
 			//N
 			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength()/2, "enemyCave_WS");
 			GameManager.get().getWorld().addEntity(gateN);
-			//gateN.clearPath();
-			
-			
-			
-			
-			
-			
 
             GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
 			// Initial player preparation up period
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1000)); // pause wave
-			// Waves: sq -> sq + rac -> sq + rac + bear -> sq + rac + bear + moose
-			for (int i = 0; i<10; i++) {
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(0, 1, 0, 0, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 1, 1, 1, 750, i));
-				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
-			}
 			*/
 			initialisePortal();
-			//addDamageTree();
-			//addResourceTrees();
 			
 			/* Randomly generate trees in each world */
 			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
@@ -483,34 +461,31 @@ public class GameScreen implements Screen {
 	/**
 	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
 	 */
-	/*Wave GUI won't be accurate until we've settled on implementation - currently it's displaying 'pause' waves as waves*/
 	private void updateWaveGUI() {
 		int timeToWaveEnd;
-		int currentIndex = GameManager.get().getManager(WaveManager.class).getWaveIndex();	//position of current wave in queue
-		int totalWaves = GameManager.get().getManager(WaveManager.class).getWaves().size();	//total waves in queue
+		int currentIndex = GameManager.get().getManager(WaveManager.class).getNonPauseWaveIndex();	//position of current wave in queue
 		int totalEnemies = GameManager.get().getManager(
 				WaveManager.class).getActiveWave().getTotalEnemies();//total enemies in game
-		Gui waveGUI = guiManager.getGui(WavesGui.class);
-		if (waveGUI instanceof WavesGui) {
+		Gui waveGui = guiManager.getGui(WavesGui.class);
+		if (waveGui instanceof WavesGui) {
 			//Display progress through total waves
 			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			//int totalEnemies = activeWave.getTotalEnemies();
-			((WavesGui) waveGUI).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex+1)/* + "/" + totalWaves*/);
+			((WavesGui) waveGui).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex));
 			if (activeWave != null) {
 				//if a wave is currently active show time left until it finishes spawning enemies
 				timeToWaveEnd = activeWave.getTimeToEnd();
 				if (activeWave.isPauseWave()) {
-					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time to next wave: ");
+					((WavesGui) waveGui).getWaveStatusLabel().setText("Time to next wave: ");
 				} else {
-					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
+					((WavesGui) waveGui).getWaveStatusLabel().setText("Time left in wave: ");
 				}
-				((WavesGui) waveGUI).getWaveTimeLabel().setText(Integer.toString(timeToWaveEnd/75));
-				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(Integer.toString(totalEnemies));
+				((WavesGui) waveGui).getWaveTimeLabel().setText(Integer.toString(timeToWaveEnd/75));
+				((WavesGui) waveGui).getWaveEnemiesLabel().setText(Integer.toString(totalEnemies));
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WavesGui) waveGUI).getWaveStatusLabel().setText("No more waves.");
-					((WavesGui) waveGUI).getWaveTimeLabel().setText("");
+					((WavesGui) waveGui).getWaveStatusLabel().setText("No more waves.");
+					((WavesGui) waveGui).getWaveTimeLabel().setText("");
 				}
 			}
 		}
@@ -545,11 +520,7 @@ public class GameScreen implements Screen {
 		if (!GameManager.get().isPaused()) {
 			tickGame((int)(delta * 1000 * tickrate));
 		}
-
-		/*
-		 * Update the input handlers
-		 */
-		// handleInput();
+		
 
 		/*
 		 * Update the camera

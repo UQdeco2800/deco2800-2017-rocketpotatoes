@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Logger;
 import com.deco2800.potatoes.cheats.CheatExecution;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -16,7 +15,6 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import org.lwjgl.opengl.Display;
 import org.slf4j.LoggerFactory;
-
 
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
