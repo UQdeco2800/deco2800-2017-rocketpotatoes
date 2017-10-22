@@ -4,19 +4,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Archer;
+import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Wizard;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.Direction;
-import com.deco2800.potatoes.entities.health.HasProgressBar;
-import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
@@ -26,18 +25,11 @@ import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.ParticleManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.WorldUtil;
 
 import static com.deco2800.potatoes.entities.Direction.getFromRad;
 import static com.deco2800.potatoes.entities.Direction.getRadFromCoords;
@@ -54,18 +46,17 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Map<Integer, AbstractEntity> entities;
 	private boolean moving = true;
 	private int channelTimer;
-	public EnemyTargets targets;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
-	private int count=0;
-	private static String perviousTexutre="";
+	private int count = 0;
+	private String enemyStatus = "";
 	protected int roundNum = 0;
+
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
-		// empty for serialization
 		getBasicStats().registerEvents(this);	//MAY BE USELESS
 	}
 
@@ -99,17 +90,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		this.goal = goal;
 	}
-
-	// Method of creating enemy with round number included
-
-   /* public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth,
-                       float speed, Class<?> goal, int roundNum) {
-        super(mask, xRenderLength, yRenderLength, texture, maxHealth);
-        getBasicStats().registerEvents(this);
-        this.speed = speed + roundNum;
-        this.goal = goal;
-        this.roundNum = roundNum;
-    }*/
 
 	/***
 	 * Update the enemy's target that it is moving to and the path that it is following to do so with
@@ -206,7 +186,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateDirection() {
 		// if not moving don't update
 		if (super.getMoveSpeedModifier() == 0) {
-			return;    // Not moving
+			return;
 		}
 		// set facing Direction based on movement angle
 		this.facing = getFromRad(super.getMoveAngle());
@@ -220,7 +200,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param yCoord y coordinate
 	 */
 	public void setDirectionToCoords(float xCoord, float yCoord) {
-		this.facing = getFromRad( getRadFromCoords( xCoord-this.getPosX(), yCoord-this.getPosY()) );
+		this.facing = getFromRad( getRadFromCoords( xCoord-this.getPosX(), yCoord-this.getPosY()));
 		this.updateSprites();
 	}
 
@@ -230,25 +210,26 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateSprites() {
 		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-		String enemyStatus = "walk";
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-			this.setTexture(type[delay(5, type.length)]+"_"+enemyStatus + direction + "_" + (delay(5, type.length) + 1));
+//			LOGGER.warn("Texture:::"+type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
+			this.setTexture(type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
 		}
 
 	}
+
 	/**
 	 * the purpose of method is make a time delay for next texture
 	 * @param time i guest just millisecond
-	 * @param Framesize the texture array size
+	 * @param frameSize the texture array size
 	 * @return Int the index of texture
 	 */
-	public int delay(int time,int Framesize){
+	public int delay(int time,int frameSize){
 		count++;
-		if((count/time)>=(Framesize-1))
+		if((count/time)>=(frameSize-1))
 			count=0;
-		return Math.round((count/time));
+		return count/time;
 	}
 
 	/***
@@ -280,6 +261,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Get the goal of the enemy
+	 *
 	 * @return this enemy's goal
 	 */
 	public Class<?> getGoal() {
@@ -287,15 +269,28 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Set the enemy's goal to the given entity class
-	 * @param g enemy's new goal(entity class)
+	 * Set the status for an enemy.
+	 *
+	 * @param enemyStatus, the new status
 	 */
-	public void setGoal(Class<?> g) {
-		this.goal = g;
+	public void setEnemyStatus(String enemyStatus){
+		this.enemyStatus=enemyStatus;
+	}
+
+	public String getEnemyStatus(){
+		return this.enemyStatus;
+	}
+	/**
+	 * Set the enemy's goal to the given entity class
+	 * @param newGoal enemy's new goal(entity class)
+	 */
+	public void setGoal(Class<?> newGoal) {
+		this.goal = newGoal;
 	}
 
 	/**
 	 * Get the speed of this enemy
+	 *
 	 * @return the speed of this enemy
 	 */
 	public float getSpeed() {
@@ -304,15 +299,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Set this enemy's speed to given speed
-	 * @param s enemy's new speed
+	 *
+	 * @param newSpeed enemy's new speed
 	 */
-	public void setSpeed(Float s) {
-		this.speed = s;
+	public void setSpeed(Float newSpeed) {
+		this.speed = newSpeed;
 	}
 
 	/***
 	 * Get the current value of the enemy's channel timer.
-	 *
 	 * The channel timer acts as an internal clock of enemy that can be used to see for how
 	 * long an enemy has been in a channelling state for.
 	 *
@@ -321,7 +316,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public int getChannelTimer() { return this.channelTimer; }
 
 	/**
-	 * Set the value of the enemy's channel timer
+	 * Set the value of the enemy's channel timer.
 	 *
 	 * @param channelTime
 	 */
@@ -329,15 +324,18 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+	 *
 	 * @param projectile, the projectile shot
 	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
+
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
 
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+	 *
 	 * @param effect, the projectile shot
 	 */
 	public void getShot(Effect effect) {
@@ -347,7 +345,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Returns the ProgressBar of an entity
-	 * @return
+	 *
+	 * @return enemy's progress bar
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
@@ -355,7 +354,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/***
-	 * Get the enemy's current health to max health progres
+	 * Get the enemy's current health to max health progress.
 	 *
 	 * @return the ratio of current to maximum health
 	 */
@@ -365,7 +364,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Get the maximum health of the enemy
+	 * Get the maximum health of the enemy.
 	 *
 	 * @return the enemy's maximum health
 	 */
@@ -379,7 +378,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * the animation.
 	 *
 	 * @param amount - the amount of health to subtract
-	 * @return
+	 * @return true if damaged
 	 */
 	@Override
 	public boolean damage(float amount) {
@@ -403,6 +402,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	@Override
 	public void deathHandler() {
+
 		LOGGER.info(this + " is dead.");
 
 		ParticleManager p = GameManager.get().getManager(ParticleManager.class);
@@ -423,4 +423,29 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		GameManager.get().getManager(WaveManager.class).getActiveWave().reduceTotalEnemiesByOne();
 	}
 
+	/**
+	 * Initialise the EnemyTargets for an enemy for use when determining the enemy's most
+	 * relevant target.
+	 *
+	 * @return the enemy's initialized targets.
+	 */
+	protected EnemyTargets initTargets() {
+		/*Enemy will move to these (in order) if no aggro*/
+		List<Class> mainTargets = new ArrayList<>();
+		if (this instanceof SpeedyEnemy) {
+			mainTargets.add(ResourceTree.class);
+		}
+		mainTargets.add(BasePortal.class);
+		mainTargets.add(Archer.class);
+		mainTargets.add(Caveman.class);
+		mainTargets.add(Wizard.class);
+
+		/*if enemy can 'see' these, then enemy aggros to these*/
+		List<Class> sightAggroTargets = new ArrayList<>();
+		sightAggroTargets.add(Archer.class);
+		sightAggroTargets.add(Caveman.class);
+		sightAggroTargets.add(Wizard.class);
+
+		return new EnemyTargets(mainTargets, sightAggroTargets);
+	}
 }

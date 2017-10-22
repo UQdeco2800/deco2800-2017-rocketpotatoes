@@ -79,6 +79,14 @@ public class Archer extends Player {
     @Override
     protected void attack() {
 	    super.attack();
+	    
+	    if (!canAttack) {
+			return;
+		} else {
+			canAttack = false;
+			EventManager em = GameManager.get().getManager(EventManager.class);
+	        em.registerEvent(this, new  AttackCooldownEvent(700));
+		}
 
     		if (this.setState(ATTACK)) {
     			

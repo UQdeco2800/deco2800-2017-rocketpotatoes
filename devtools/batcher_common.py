@@ -23,12 +23,14 @@ RENDER = SCENE.render # The data object associated with rendering
 def get_arg_index():
     return argv.index("--") if "--" in argv else None
 
+
 def get_arg(number):
     arg_index = get_arg_index()
     if arg_index and (len(argv) - arg_index) > number:
         return argv[arg_index + number]
     else:
         return None
+
 
 def get_distance(object1, object2):
     """Get the distance between two objects"""
@@ -38,26 +40,35 @@ def get_distance(object1, object2):
     return sqrt(x_dist ** 2 + y_dist ** 2 + z_dist ** 2)
 
 
-def get_output_name():
-    if TKINTER:
-        output = get_arg(2) \
-                or filedialog.asksaveasfilename(filetypes=(("PNG image", "*.png"),
-                   ("All Files", ".*")), title="Select the sprite base name") \
-                or "blender-output/model-out"
-    else:
-        output = get_arg(2) \
-            or "blender-output/model-out"
+def get_output_name(arg_num):
+    output = get_arg(arg_num)
+    if (not output) and TKINTER:
+       output = filedialog.asksaveasfilename(filetypes=(("PNG image", "*.png"),
+           ("All Files", ".*")), title="Select the sprite base name")
+
+    if not output:
+        if 'export_name' in SCENE:
+            output = SCENE['export_name']
+        else:
+            output = "blender-output/model-out"
 
     return os.path.splitext(output)[0]
 
+def deselect_all():
+    for obj in bpy.data.objects:
+        obj.select = False
+
+
 def centre_origin():
     bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='BOUNDS')
+
 
 def centre_model(model):
     '''centre the model & its origin'''
     centre_origin()
     model.location = [0, 0, 0]
     model.rotation_euler = [0, 0, 0]
+
 
 def setup_camera(camera):
     """prepare the camera for batch rendering"""
@@ -150,3 +161,4 @@ def setup_light(light, ambient_occlusion=False, shadows=True):
     light.data.energy = 1.3
 
 
+print("loaded batcher_common")

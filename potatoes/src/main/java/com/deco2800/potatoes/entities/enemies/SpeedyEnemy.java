@@ -1,40 +1,25 @@
 package com.deco2800.potatoes.entities.enemies;
 
-
-import java.util.*;
-
-import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.deco2800.potatoes.entities.Direction;
-import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
-import com.deco2800.potatoes.entities.enemies.enemyactions.StealingEvent;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.player.Wizard;
-import com.deco2800.potatoes.entities.portals.BasePortal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.enemies.enemyactions.StealingEvent;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PathManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * A speedy raccoon enemy that steals resources from resource trees.
@@ -42,7 +27,7 @@ import java.util.Optional;
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient float HEALTH = 80f;
+	private static final transient float HEALTH = 160f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 	private static final transient String[] ENEMY_TYPE = new String[]{
@@ -52,7 +37,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final EnemyProperties STATS = initStats();
 
-	private static float speed = 0.08f;
+	private static float speed = 0.07f;
 	private static Class<?> goal = ResourceTree.class;
 
 	private Path path = null;
@@ -71,7 +56,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
-		//Empty constructor for serialization
+		//Empty for serialization purposes
 	}
 
 	/***
@@ -81,7 +66,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @param posY
 	 */
 	public SpeedyEnemy(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        super(new Circle2D(posX, posY, 0.4f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;
@@ -94,13 +79,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @return this enemy's initialized targets.
 	 */
 	private static EnemyProperties initStats() {
-		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
+		return new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
 				.addEvent(new StealingEvent(1000))
 				.addEvent(new MeleeAttackEvent(500, BasePortal.class))
 				.addEvent(new MeleeAttackEvent(500, Player.class))
 				.createEnemyStatistics();
-		return result;
 	}
 
 	/***
@@ -141,6 +125,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	}
 
 
+	/**
+	 * Find and return a list of all resource trees that currently exist in the world
+	 *
+	 * @return list of resource trees
+	 */
 	private LinkedList<ResourceTree> allResourceTrees() {
 		LinkedList<ResourceTree> resourceTrees = new LinkedList<>();
 		for (AbstractEntity entity : GameManager.get().getWorld().getEntities().values()) {
@@ -151,7 +140,13 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return resourceTrees;
 	}
 
-	/*Find the most relevant target to go to according to its EnemyTargets*/
+	/***
+	 * Determine an the speedy enemy's most relevant target according to its main entity and 'sight aggro entity
+	 * targets. Ignore already visited resource trees.
+	 *
+	 * @param targets data class containing this enemy's main and sight aggro targets
+	 * @return the most relevant entity if one exists, if no entity is found null is returned
+	 */
 	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
@@ -168,10 +163,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		/*If no aggro, return 'ultimate' target*/
 		for (Class mainTarget : targets.getMainTargets()) {
 			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					if  (!(visitedResourceTrees.contains(entity))) {
-						return entity;
-					}
+				if (entity.getClass().isAssignableFrom(mainTarget) && !(visitedResourceTrees.contains(entity))) {
+					return entity;
 				}
 			}
 		}
@@ -184,6 +177,11 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	@Override
 	public String[] getEnemyType() { return ENEMY_TYPE; }
 
+	/***
+	 * Actions to be performed on every tick of the game
+	 *
+	 * @param i the current game tick
+	 */
 	@Override
 	public void onTick(long i) {
 		AbstractEntity relevantTarget = mostRelevantTarget(targets);
@@ -192,30 +190,5 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			super.onTickMovement();
 			super.updateDirection();
 		}
-	}
-
-	/**
-	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
-	 * relevant target.
-	 *
-	 * @return
-	 */
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		LinkedList<Class> mainTargets = new LinkedList<>();
-		mainTargets.add(ResourceTree.class);
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		LinkedList<Class> sightAggroTargets = new LinkedList<>();
-		//sightAggroTargets.add(ResourceTree.class);
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 }
