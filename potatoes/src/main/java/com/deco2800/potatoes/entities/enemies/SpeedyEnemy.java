@@ -47,7 +47,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees();
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
-	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity("healthBarRed", 1);
+	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity("healthBarRed", 1.5f);
 
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites available
 

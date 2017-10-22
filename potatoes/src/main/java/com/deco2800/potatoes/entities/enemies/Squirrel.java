@@ -35,7 +35,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private Shape2D target = null;
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1.5f);
 	//public enum PlayerState {idle, walk, attack, damaged, death}  // useful for when sprites for different states become available
 
 	/***
