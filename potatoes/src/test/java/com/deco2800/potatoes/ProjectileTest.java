@@ -69,7 +69,7 @@ public class ProjectileTest {
 	protected String Directions = "E";
 	protected Vector3 getStartPos;
 
-	protected PlayerProjectile.PlayerShootMethod playerShootMethod = PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
+//	protected PlayerProjectile.PlayerShootMethod playerShootMethod = PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
 
 	private class TestWorld extends World {
 
@@ -105,7 +105,7 @@ public class ProjectileTest {
 		assertEquals(startEffect, testProjectile.getStartEffect());
 		assertEquals(endEffect, testProjectile.getEndEffect());
 		assertEquals(targetClass.getClass(), testProjectile.getTargetClass());
-		assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
+//		assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
 
 	}
 
@@ -115,7 +115,7 @@ public class ProjectileTest {
 		target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
 		assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
 		endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
-		playerShootMethod = PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
+//		playerShootMethod = PlayerProjectile.PlayerShootMethod.DIRECTIONAL;
 		testBallisticProjectile = new BallisticProjectile(targetClass.getClass(), startPos, targetPos, range, damage,
 				projectileTexture, startEffect, endEffect);
 		assertNotNull(testBallisticProjectile);
@@ -131,7 +131,7 @@ public class ProjectileTest {
 		assertEquals(TargetPosX, testBallisticProjectile.getTargetPosX(), 0);
 		assertEquals(TargetPosY, testBallisticProjectile.getTargetPosY(), 0);
 		assertEquals(targetClass.getClass(), testBallisticProjectile.getTargetClass());
-		assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
+//		assertEquals(PlayerProjectile.PlayerShootMethod.DIRECTIONAL, playerShootMethod);
 
 	}
 
@@ -141,7 +141,7 @@ public class ProjectileTest {
 		target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, 0, 0);
 		assertTrue(target.toString().equalsIgnoreCase("optional.empty"));
 		endEffect = new AOEEffect(target.getClass(), targetPos, 1, 1);
-		playerShootMethod = PlayerProjectile.PlayerShootMethod.CLOSEST;
+//		playerShootMethod = PlayerProjectile.PlayerShootMethod.CLOSEST;
 		testHomingProjectile = new HomingProjectile(targetClass.getClass(), startPos, targetPos, range, damage,
 				projectileTexture, startEffect, endEffect);
 		assertNotNull(testHomingProjectile);
