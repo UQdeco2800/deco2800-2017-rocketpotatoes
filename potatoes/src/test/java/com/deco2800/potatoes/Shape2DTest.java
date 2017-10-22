@@ -77,6 +77,17 @@ public class Shape2DTest {
 
         Point2D thePoint = new Point2D(0, 0);
         assertTrue(compareFloat(thePoint.getArea(), 0));
+
+        for (int x0 = -10; x0 < 10; ++x0) {
+            for (int y0 = -10; y0 < 10; ++y0) {
+                for (int x1 = -10; x1 < 10; ++x1) {
+                    for (int y1 = -10; y1 < 10; ++y1) {
+                        Line2D theLine = new Line2D(x0, y0, x1, y1);
+                        assertTrue(compareFloat(theLine.getArea(), 0));
+                    }
+                }
+            }
+        }
     }
 
     //TODO line equals
