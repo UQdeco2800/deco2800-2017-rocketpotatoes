@@ -184,6 +184,7 @@ public class TextureManager extends Manager {
         }
         
         saveTexture("cactusTree", "resources/trees/cactusTree.png");
+        saveTexture("coralTree", "resources/trees/coralTree.png");
         saveTexture("defenseTree", "resources/trees/defenseTree.png");
         //damage tree:ice
 

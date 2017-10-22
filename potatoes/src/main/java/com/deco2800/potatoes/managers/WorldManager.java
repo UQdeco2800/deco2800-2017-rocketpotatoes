@@ -16,7 +16,7 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
 /**
  * Manager for worlds. Stores and generates all the worlds.
  */
-public class WorldManager extends Manager {
+public class WorldManager extends Manager implements TickableManager {
 	public static final int WORLD_SIZE = 50;
 
 	private Map<WorldType, World> worlds;
@@ -106,7 +106,6 @@ public class WorldManager extends Manager {
 		// GameManager.setWorld will probably need to be updated. Some managers need to
 		// be reloaded, etc.
 		GameManager.get().setWorld(getWorld(key));
-		worldCached = false;
 	}
 
 	/**
@@ -141,5 +140,10 @@ public class WorldManager extends Manager {
 
 	public void setWorldCached(boolean worldCached) {
 		this.worldCached = worldCached;
+	}
+
+	@Override
+	public void onTick(long i) {
+		GameManager.get().getWorld().updatePositions();
 	}
 }
