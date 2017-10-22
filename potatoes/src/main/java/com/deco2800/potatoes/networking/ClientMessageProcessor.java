@@ -232,8 +232,6 @@ public class ClientMessageProcessor {
 
 		LOGGER.error("Trying to use setProgress to update the progress. This is no longer currently"
 				+ " part of the HasProgress interface and needs to be fixed.");
-        //((HasProgress) GameManager.get().getWorld().getEntities().get(m.id)).setProgress(m.progress);
-
     }
 
     /**

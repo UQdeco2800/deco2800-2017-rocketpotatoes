@@ -74,7 +74,6 @@ public class RTree<Key> {
      *          The new position to be associated with the key.
      */
     public void move(Key k, Shape2D newPosition) {
-        // TODO -- this
         remove(k);
         insert(k, newPosition);
     }
@@ -158,7 +157,7 @@ public class RTree<Key> {
      */
     private static class Block<Key> {
         // Number of nodes within a block.
-        private static final int BLOCK_SIZE = 20; // TODO -- find a good value for this
+        private static final int BLOCK_SIZE = 20;
         private static final float MIN_RATIO = 0.4f;
 
         // Child nodes of the block. If isLeaf is true, then leafChildren must be an actual
@@ -270,7 +269,7 @@ public class RTree<Key> {
          * @return
          *          The new block containing ~half of this block's children.
          */
-        private Block splitBranch() { // TODO -- clean this... lots
+        private Block splitBranch() { 
             boolean isResultHorizontal = true;
             float cheapest = Float.MAX_VALUE;
             int splitIndex = -1;
@@ -349,7 +348,7 @@ public class RTree<Key> {
          * @return
          *          The new block containing ~half of this block's children.
          */
-        private Block splitLeaf() { // TODO -- clean this... lots... and probably find a way to remove it
+        private Block splitLeaf() { 
             boolean isResultHorizontal = true;
             float cheapest = Float.MAX_VALUE;
             int splitIndex = -1;
