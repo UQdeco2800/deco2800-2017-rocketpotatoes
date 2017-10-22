@@ -87,6 +87,7 @@ public class MainMenuGui extends Gui {
     private TextButton optionsBackButton;
 
     private Dialog failedMultiplayerConnection;
+    private Dialog multiplayerDLC;
 
     // State indicator
     private enum States {
@@ -217,6 +218,10 @@ public class MainMenuGui extends Gui {
         failedMultiplayerConnection = new Dialog("Failed to connect to host.", uiSkin);
         failedMultiplayerConnection.button("Ok", uiSkin);
 
+        // Dialog
+        multiplayerDLC = new Dialog("Multiplayer is currently unavailable.", uiSkin);
+        multiplayerDLC.button("Buy Now!", uiSkin);
+
         setupListeners();
 
         root = new Table(uiSkin);
@@ -336,6 +341,7 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
+                /* Mutliplayer is too broken.
                 multiplayerServerList.setItems(MainMenuScreen.findHostAddress());
                 if (multiplayerServerList.getItems().contains(multiplayerClientIpAddConnection.getText(), false)) {
                     mainMenuScreen.startMultiplayer(multiplayerClientName.getText(),
@@ -343,6 +349,8 @@ public class MainMenuGui extends Gui {
                 } else {
                     failedMultiplayerConnection.show(stage);
                 }
+                */
+                multiplayerDLC.show(stage);
             }
         });
 
@@ -361,8 +369,11 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
+                /* Multiplayer is too broken.
                 mainMenuScreen.startMultiplayer(multiplayerHostName.getText(),
                         MainMenuScreen.multiplayerHostAddress(),1337, true);
+                */
+                multiplayerDLC.show(stage);
             }
         });
 
