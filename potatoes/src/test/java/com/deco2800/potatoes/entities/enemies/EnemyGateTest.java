@@ -40,7 +40,7 @@ public class EnemyGateTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals("healthBarRed", enemyGateEmpty.getProgressBar().getTexture());
+        assertEquals(null, enemyGateEmpty.getProgressBar());
     }
 
     /*
