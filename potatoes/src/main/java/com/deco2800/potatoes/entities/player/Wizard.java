@@ -14,6 +14,7 @@ import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -110,17 +111,15 @@ public class Wizard extends Player {
 		case Input.Keys.SPACE:
 			isCharging = false;
 		}
-
 	}
 
-	@Override
-	protected void attack() {
-		super.attack();
+    @Override
+    protected void attack() {
+    	super.attack();    		
+    }
 
-	}
-
-	private void hoverAnimation() {
-		// Update shadow position
+    private void hoverAnimation() {
+    	// Update shadow position
 		shadow.setY(getPosY() + 0.25f);
 		shadow.setX(getPosX() - 0.25f);
 

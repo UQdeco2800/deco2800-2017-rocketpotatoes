@@ -53,7 +53,6 @@ public class SquirrelTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(null, squirrelEmpty.getDirection());
         for (String data:squirrelEmpty.getEnemyType()) {
             assertEquals("squirrel", data);
 

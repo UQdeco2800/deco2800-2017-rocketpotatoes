@@ -47,7 +47,6 @@ public class MooseTest extends BaseTest {
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(null, mooseEmpty.getDirection());
         for (String data:mooseEmpty.getEnemyType()) {
             assertEquals("moose", data);
 

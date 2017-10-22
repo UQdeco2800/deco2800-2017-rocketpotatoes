@@ -38,63 +38,59 @@ public class Caveman extends Player {
 		super.setMoveSpeed(defaultSpeed);
 		updateSprites();
 		super.setYRenderOffset(9);
-	}
+    }
 
-	/* Caveman Animations */
-	private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
-	private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
-	private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200,
-			this::damagedCompletionHandler);
-	private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300,
-			super::completionHandler);
-	private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200,
-			super::completionHandler);
-	private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400,
-			super::completionHandler);
+    /* Caveman Animations */
+    private Map<Direction, TimeAnimation> cavemanWalkAnimations = makePlayerAnimation("caveman", WALK, 8, 750, null);
+    private Map<Direction, TimeAnimation> cavemanIdleAnimations = makePlayerAnimation("caveman", IDLE, 1, 1, null);
+    private Map<Direction, TimeAnimation> cavemanDamagedAnimations = makePlayerAnimation("caveman", DAMAGED, 1, 200, this::damagedCompletionHandler);
+    private Map<Direction, TimeAnimation> cavemanDeathAnimations = makePlayerAnimation("caveman", DEATH, 3, 300, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanAttackAnimations = makePlayerAnimation("caveman", ATTACK, 5, 200, super::completionHandler);
+    private Map<Direction, TimeAnimation> cavemanInteractAnimations = makePlayerAnimation("caveman", INTERACT, 5, 400, super::completionHandler);
+    
+    /**
+     * Custom damaged handling for the caveman
+     */
+    protected Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
+    }
 
-	/**
-	 * Custom damaged handling for the caveman
-	 */
-	protected Void damagedCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		state = IDLE;
-		updateMovingAndFacing();
-		return null;
-	}
+    @Override
+    public void updateSprites() {
 
-	@Override
-	public void updateSprites() {
+    		switch (super.getState()) {
+            case IDLE:
+				super.setAnimation(cavemanIdleAnimations.get(super.facing));
+				break;
+            case WALK:
+				super.setAnimation(cavemanWalkAnimations.get(super.facing));
+				break;
+            case ATTACK:
+				super.setAnimation(cavemanAttackAnimations.get(super.facing));
+				break;
+            case DAMAGED:
+				super.setAnimation(cavemanDamagedAnimations.get(super.facing));
+				break;
+            case DEATH:
+				super.setAnimation(cavemanDeathAnimations.get(super.facing));
+				break;
+            case INTERACT:
+				super.setAnimation(cavemanInteractAnimations.get(super.facing));
+				break;
+            default:
+				super.setAnimation(cavemanIdleAnimations.get(super.facing));
+				break;
+            }
+    }
 
-		switch (super.getState()) {
-		case IDLE:
-			super.setAnimation(cavemanIdleAnimations.get(super.facing));
-			break;
-		case WALK:
-			super.setAnimation(cavemanWalkAnimations.get(super.facing));
-			break;
-		case ATTACK:
-			super.setAnimation(cavemanAttackAnimations.get(super.facing));
-			break;
-		case DAMAGED:
-			super.setAnimation(cavemanDamagedAnimations.get(super.facing));
-			break;
-		case DEATH:
-			super.setAnimation(cavemanDeathAnimations.get(super.facing));
-			break;
-		case INTERACT:
-			super.setAnimation(cavemanInteractAnimations.get(super.facing));
-			break;
-		default:
-			super.setAnimation(cavemanIdleAnimations.get(super.facing));
-			break;
-		}
-	}
-
-	@Override
-	protected void attack() {
+    @Override
+    protected void attack() {
 		super.attack();
 		setMoveSpeedModifier(0);
-	}
+    }
 
 	/* Custom walk sound handling */
 	private int stepNumber = 1; // Used for playing left and right foot steps
