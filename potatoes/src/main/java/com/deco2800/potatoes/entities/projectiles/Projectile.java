@@ -9,6 +9,7 @@ import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -210,7 +211,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getMask())) {
-				((MortalEntity) entity).damage(damage / 10);
+				((EnemyEntity) entity).damage(damage / 10);
 				if (endEffect != null)
 					GameManager.get().getWorld().addEntity(endEffect);
 				rangeReached = true;
