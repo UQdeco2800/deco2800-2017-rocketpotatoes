@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -32,7 +33,7 @@ public class Caveman extends Player {
 		updateSprites();
 		super.setYRenderOffset(9);
 		progressBar = new ProgressBarEntity("healthBarGreen", "caveIcon", 4);
-
+        projectileTexture= Projectile.ProjectileTexture.AXE;
     }
 
     /* Caveman Animations */
@@ -84,6 +85,7 @@ public class Caveman extends Player {
     @Override
     protected void attack() {
         super.attack();
+
         setMoveSpeedModifier(0);
     }
 

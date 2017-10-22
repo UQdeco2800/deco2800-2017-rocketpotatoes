@@ -88,6 +88,24 @@ public class Projectile extends AbstractEntity implements Tickable {
 			public String[] textures() {
 				return new String[] { "axe" };
 			}
+		},
+		WATER {
+			@Override
+			public String[] textures() {
+				return new String[] { "water" };
+			}
+		},
+		ICE {
+			@Override
+			public String[] textures() {
+				return new String[] { "ice" };
+			}
+		},
+		FIRE {
+			@Override
+			public String[] textures() {
+				return new String[] { "fire" };
+			}
 		}
 		;
 
