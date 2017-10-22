@@ -1,9 +1,6 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.collisions.Point2D;
-import com.deco2800.potatoes.collisions.Line2D;
+import com.deco2800.potatoes.collisions.*;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.EnemyGate;
@@ -29,13 +26,13 @@ public class PathManager extends Manager {
      * expanded so that multiple different goals can be set.
      */
 
-    private Set<AbstractEntity> targets = new HashSet<>();
-    private Map<AbstractEntity, Point2D> targetCentres = new HashMap<>();
-    private Map<AbstractEntity, Map<Float, TargetPath>> targetPaths = new HashMap<>();
+    private Set<Integer> targetIDs = new HashSet<>();
+    private Map<Integer, Point2D> targetCentres = new HashMap<>();
+    private Map<Integer, Map<Float, TargetPath>> targetPaths = new HashMap<>();
 
 
-    private static float nodeOffsetFudge = (float) 0.005;
-    private static float edgeWidthFudge = (float) 0.01;
+    private static float nodeOffsetFudge = (float) 0.01;
+    private static float edgeWidthFudge = (float) 0.001;
 
 
 
@@ -96,34 +93,37 @@ public class PathManager extends Manager {
     public void onTick() {
         World world = GameManager.get().getWorld();
 
-        Set<AbstractEntity> removeTargets = null;
+        Set<Integer> removeTargets = new HashSet<>();
 
         // check targets moved, update trees
-        for (AbstractEntity target: this.targets) {
+        for (Integer targetID: this.targetIDs) {
+
+            AbstractEntity target = world.getEntities().getOrDefault(targetID, null);
 
             // remove target if it is no longer valid
-            if (!world.getEntities().containsValue(target)) {
+            if (target == null) {
                 // Messes up this for loop if we remove here
-                removeTargets.add(target);
+                removeTargets.add(targetID);
+                continue;
             }
 
             Point2D newCentre = target.getMask().getCentre();
 
             // if the target has moved significantly set the flag for it's paths to be recalculated
-            if (this.targetCentres.get(target).distance(newCentre) > 0.2f) {
+            if (this.targetCentres.get(targetID).distance(newCentre) > 0.2f) { //TODO dist sqrd methd
                 //set recalc flag, do not recalc yet in case no entity requests path
-                this.targetCentres.put(target, newCentre);
-                for(TargetPath targPath : this.targetPaths.get(target).values()) {
+                this.targetCentres.put(targetID, newCentre);
+                for(TargetPath targPath : this.targetPaths.get(targetID).values()) {
                     targPath.needsUpdateFlag = true;
                 }
             }
         }
 
         // remove targets that are no longer valid
-        for (AbstractEntity target: removeTargets) {
-            this.targets.remove(target);
-            this.targetCentres.remove(target);
-            this.targetPaths.remove(target);
+        for (Integer targetID: removeTargets) {
+            this.targetIDs.remove(targetID);
+            this.targetCentres.remove(targetID);
+            this.targetPaths.remove(targetID);
         }
     }
 
@@ -133,88 +133,118 @@ public class PathManager extends Manager {
     // ----------     Requesting a path    ---------- //
 
     //TODO comm
-    public Point2D getNextNodeToTarget(Circle2D currentPos, AbstractEntity target, Point2D targetNode) {
+    public Point2D getNextNodeToTarget(Circle2D currentPos, Integer targetID, Point2D targetPathNode) {
 
-        return new Point2D(0,0); //TODO
+        World world = GameManager.get().getWorld();
 
-        /*
-        //this.edges.remove(this.currEdge);
-
-        if (target == null)
+        // if no targetID don't move
+        if (targetID == null)
             return null;
 
-        float currX = currentPos.getX();
-        float currY = currentPos.getY();
-        float targX = target.getPosX();
-        float targY = target.getPosY();
+        // add this target if it does not exist
+        if (!this.targetIDs.contains(targetID)) {
+            this.targetIDs.add(targetID);
+            System.out.println("targID Add: " + targetID);
+            Point2D targCenter = world.getEntities().get(targetID).getMask().getCentre();
+            this.targetCentres.put(targetID, targCenter);
+            this.targetPaths.put(targetID, new HashMap<>());
+        }
 
+        // get this TargetPath, add this path width if it does not exist
         float rad = currentPos.getRadius();
 
-        boolean hasNode = (targetNode != null);
-        float nodeX = hasNode? targetNode.getX() : -999;
-        float nodeY = hasNode? targetNode.getY() : -999;
+        TargetPath targPath = null;
 
-        // if straight line to target (clear of static solid obstacles)
-        Line2D direct = new Line2D(currX, currY, targX, targY);
-
-        //this.currEdge = direct;
-        //this.edges.add(this.currEdge);
-
-        float directWidth = getClearance(direct);
-        if ( directWidth > rad) {
-            System.out.println("MAN: there's a straight path, with width: " + directWidth);
-            return target.getMask();
-        }
-
-        // if targetNode reached (roughly centred on)
-        if (hasNode && Math.abs(currX - nodeX) < 0.25f && Math.abs(currY - nodeY) < 0.25f) {
-            // go to next node
-            System.out.println("MAN: returning next node");
-            return spanningPath.get(targetNode);
-        }
-
-        // if straight line to targetNode (clear of static solid obstacles)
-        // (should implicitly be true if no obstacles have been added)
-        direct = new Line2D(currX, currY, nodeX, nodeY);
-        directWidth = getClearance(direct);
-        if (hasNode && directWidth > rad) {
-            // targetNode is still valid
-            System.out.println("MAN: continuing to last node, with width: " + directWidth);
-            return targetNode;
-
-        } else {
-
-            // find new shortest path
-
-            Point2D currNode = new Point2D(currX, currY);
-
-            Point2D newTargNode = null;
-            float pathCost = Float.POSITIVE_INFINITY;
-
-            System.out.println("MAN: I'm looking for a new path");
-
-            // loop through all nodes,
-            for (Point2D node : this.nodes) {
-
-                // draw a line from here to node
-                Line2D edge = new Line2D(currNode, node);
-
-                // check that there is clearance / path is valid
-                float width = getClearance(edge);
-                if (width < rad)
-                    continue;
-
-                // get cost of new valid path
-                float newPathCost = this.nodeCost.getOrDefault(node, Float.POSITIVE_INFINITY) + edge.getLenSqr();
-
-                if ( newPathCost < pathCost ) {
-                    pathCost = newPathCost;
-                    newTargNode = node;
-                }
+        for (TargetPath targPathIter : this.targetPaths.get(targetID).values()){
+            if (compareFloat(targPathIter.myWidth,  rad)) {
+                targPath = targPathIter;
+                break;
             }
-            return newTargNode;
         }
-        */
+
+        if (targPath == null) {
+            targPath = new TargetPath();
+            targPath.myWidth = rad;
+            targPath.targetID = targetID;
+            targPath.initialise();
+            this.targetPaths.get(targetID).put(rad, targPath);
+        }
+
+        // update
+        if (targPath.needsUpdateFlag) {
+            targPath.createGraph();
+            targPath.needsUpdateFlag = false;
+        }
+
+
+        Point2D target = this.targetCentres.get(targetID);
+        Point2D currPos = currentPos.getCentre();
+
+
+        if (targetPathNode != null) {
+
+            // if straight line to target (clear of static solid obstacles)
+            Line2D direct = new Line2D(currPos, target);
+            float directWidth = getClearance(direct);
+            if (directWidth > rad) {
+                System.out.println("MAN: there's a straight path, with width: " + directWidth);
+                return target;
+            }
+
+            // if targetPathNode is not a valid node, try for a new path
+            if (!targPath.nodes.contains(targetPathNode))
+                return newPath(targPath, currPos);
+
+            // if targetPathNode reached (roughly centred on), follow to next point
+            if (currentPos.getCentre().distance(targetPathNode) < 0.2) { //TODO dist sqrd method
+                // go to next node
+                System.out.println("MAN: returning next node");
+                return targPath.spanningPath.get(targetPathNode);
+            }
+
+            // if straight line to targetPathNode (clear of static solid obstacles)
+            // (should implicitly be true if no obstacles have been added)
+            direct = new Line2D(currPos, targetPathNode); //TODO check if implicitly true
+            directWidth = getClearance(direct);
+            if (directWidth > rad) {
+                // targetNode is still valid
+                System.out.println("MAN: continuing to last node, with width: " + directWidth);
+                return targetPathNode;
+
+            }
+        }
+
+        return newPath(targPath, currPos);
+    }
+
+    private Point2D newPath(TargetPath targPath, Point2D currPos) {
+        // new shortest path is needed
+
+        Point2D newTargPathNode = null;
+        float pathCost = Float.POSITIVE_INFINITY;
+
+        System.out.println("MAN: I'm looking for a new path");
+
+        // loop through all nodes,
+        for (Point2D node : targPath.nodes) {
+
+            // draw a line from here to node
+            Line2D edge = new Line2D(currPos, node);
+
+            // check that there is clearance / path is valid
+            float width = getClearance(edge);
+            if (width <= targPath.myWidth)
+                continue;
+
+            // get cost of new valid path
+            float newPathCost = targPath.nodeCost.getOrDefault(node, Float.POSITIVE_INFINITY) + edge.getLenSqr();
+
+            if (newPathCost < pathCost) {
+                pathCost = newPathCost;
+                newTargPathNode = node;
+            }
+        }
+        return newTargPathNode;
     }
 
 
@@ -242,13 +272,13 @@ public class PathManager extends Manager {
         return width;
     }
 
-    //TODO stores nodes in order in X & Y coords seperately
+    //TODO stores nodes in order in X & Y coords seperately?
     private class nodeMap {}
 
     private class TargetPath {
 
-        private AbstractEntity target;
-        private float myWidth;
+        private Integer targetID;
+        private float myWidth = -1;
 
         boolean needsUpdateFlag = false;
 
@@ -256,61 +286,73 @@ public class PathManager extends Manager {
         // for each target there is a spanning tree of nodes, showing the shortest path to that target
 
         private Set<Point2D> nodes = new HashSet<>();               // all nodes of the graph
-        private Map<Point2D, Boolean> nodeChecked = new HashMap<>();// nodes which have a direct line of sight
+        private Map<Point2D, Boolean> nodeChecked = new HashMap<>();// keeps track of nodes as they are checked off
         private Map<Point2D, Float> nodeCost = new HashMap<>();     // the distance to the target from this node
 
         private Set<Line2D> edges = new HashSet<>();                    // all the edges of the graph
         private Map<Point2D, Set<Line2D>> nodeEdges = new HashMap<>();  // the edges that each point is a part of
         private Map<Line2D, Float> edgeCost = new HashMap<>();          // the cost of the edge (at the moment distance^2)
-        private Map<Line2D, Float> edgeWidth = new HashMap<>();         // the max width an entity following this edge can be
 
+        //TODO init
+        //TODO add shape
+        //TODO remove shape
 
+        public void initialise() {
+            initialiseNodes();
+            initialiseEdges();
+            createGraph();
+            needsUpdateFlag = false;
+        }
 
-
+        //assumes width has been set
         public void initialiseNodes() {
-            if (! nodes.isEmpty()) return;
+            spanningPath.clear();
 
             nodes.clear();
+            nodeChecked.clear();
+            nodeCost.clear();
+
             edges.clear();
-            //TODO clear the other stuff
+            nodeEdges.clear();
+            edgeCost.clear();
 
             World world = GameManager.get().getWorld();
 
-
-            //add points in corners of map
-            nodes.add(new Point2D(0, 0));
-            nodes.add(new Point2D(world.getWidth(), 0));
-            nodes.add(new Point2D(0, world.getLength()));
-            nodes.add(new Point2D(world.getWidth(), world.getLength()));
-
-
-            //get portal
-            AbstractEntity portal = null;
-            for (AbstractEntity entity : world.getEntities().values()) {
-                if (entity instanceof EnemyGate) {
-                    portal = entity;
-                    break;
-                }
-            }
-
-            //add points around corners of of portal
-            float portX = portal.getPosX();
-            float portY = portal.getPosY();
-
-            nodes.add( new Point2D(portX - myWidth, portY - myWidth)); //TODO include fudge
-            nodes.add( new Point2D(portX - myWidth, portY + myWidth));
-            nodes.add( new Point2D(portX + myWidth, portY - myWidth));
-            nodes.add( new Point2D(portX + myWidth, portY + myWidth));
-
+            float offset = nodeOffsetFudge + myWidth;
 
             // put nodes on the corners of our static entities
             for (AbstractEntity entity : world.getEntities().values()) {
                 if (entity.isStatic() && entity.isSolid()) {
-                    //TODO make less crummy & make 8 points for circles
-                    nodes.add( new Point2D(entity.getPosX() - (myWidth + 0.5f), entity.getPosY() - (myWidth + 0.5f)));
-                    nodes.add( new Point2D(entity.getPosX() - (myWidth + 0.5f), entity.getPosY() + (myWidth + 0.5f)));
-                    nodes.add( new Point2D(entity.getPosX() + (myWidth + 0.5f), entity.getPosY() - (myWidth + 0.5f)));
-                    nodes.add( new Point2D(entity.getPosX() + (myWidth + 0.5f), entity.getPosY() + (myWidth + 0.5f)));
+                    Shape2D mask = entity.getMask();
+
+                    float xExtent = 0;
+                    float yExtent = 0;
+                    if (mask instanceof Box2D) {
+                        Box2D box = (Box2D) mask;
+
+                        xExtent = box.getXLength() / 2 + offset;
+                        yExtent = box.getYLength() / 2 + offset;
+
+                    } else if (mask instanceof Circle2D) {
+                        // TODO 8 points around circles / make smoother
+                        Circle2D circ = (Circle2D) mask;
+
+                        xExtent = circ.getRadius() + offset;
+                        yExtent = xExtent;
+                    }
+
+                    float xMin = mask.getX() - xExtent;
+                    float xMax = mask.getX() + xExtent;
+                    float yMin = mask.getY() - yExtent;
+                    float yMax = mask.getY() + yExtent;
+
+                    // add corner nodes
+                    nodes.add(new Point2D(xMin, yMin));
+                    nodes.add(new Point2D(xMin, yMax));
+                    nodes.add(new Point2D(xMax, yMin));
+                    nodes.add(new Point2D(xMax, yMax));
+
+                    //NOTE: only Box2D's and Circle2D's have points added
                 }
             }
 
@@ -322,10 +364,10 @@ public class PathManager extends Manager {
             }
             */
 
-            //loop through all nodes and all entities, removing any nodes that intersect with the entity
+            //loop through all nodes and all entities, removing any nodes that intersect with entities
             Set<Point2D> removedNodes = new HashSet<>();
             for (Point2D node : this.nodes) {
-                for (AbstractEntity entity : world.getEntities().values()) {
+                for (AbstractEntity entity : world.getEntities().values()) { //TODO obstacle data structure
                     if (entity.isStatic() && entity.isSolid() && entity.getMask().overlaps(node)) {
                         removedNodes.add(node);
                     }
@@ -336,6 +378,12 @@ public class PathManager extends Manager {
                 this.nodes.remove(node);
             }
 
+            nodesNeedsUpdateFlag = true;
+        }
+
+        public void initialiseEdges () {
+
+            float clearance = myWidth + edgeWidthFudge;
 
             //loop through every combination of 2 nodes & create lines
             for (Point2D node1 : this.nodes) {
@@ -355,13 +403,12 @@ public class PathManager extends Manager {
 
 
                     // if clear of overlaps
-                    if(width > 0.68f ) { //TODO
+                    if(width > clearance ) {
 
                         float distSqr = edge.getLenSqr();
 
                         this.edges.add(edge);
                         this.edgeCost.put(edge, distSqr);
-                        this.edgeWidth.put(edge, width);
                         this.nodeEdges.get(node1).add(edge);
                         this.nodeEdges.get(node2).add(edge);
 
@@ -369,7 +416,7 @@ public class PathManager extends Manager {
                 }
             }
 
-            //TODO nodesNeedsUpdateFlag = true
+            edgesNeedsUpdateFlag = true;
         }
 
         // build the minimum spanning tree from the graph - and set the spanningTree variable.
@@ -378,19 +425,13 @@ public class PathManager extends Manager {
 
             //clear data structures
             this.nodeCost.clear();
+            this.spanningPath.clear();
 
             //set target entity to the player
             World world = GameManager.get().getWorld();
 
-            for (AbstractEntity entity : world.getEntities().values()) { //TODO allow custom target
-                if (entity instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
-                    this.target = entity;
-                    break;
-                }
-            }
-
             // get a point at the centre of the target
-            Point2D targetNode = new Point2D(target.getPosX(), target.getPosY());
+            Point2D targetNode = world.getEntities().get(targetID).getMask().getCentre();
 
 
             // setup queue for dijkstra's algorithm
@@ -404,18 +445,16 @@ public class PathManager extends Manager {
             );
 
 
-            // clear the current spanningPath (spanning tree)
-            this.spanningPath.clear();
+            float clearance = myWidth + edgeWidthFudge;
 
             // loop through all nodes,
             for (Point2D node : this.nodes) {
 
                 Line2D edge = new Line2D(node, targetNode);
 
-
                 float width = getClearance(edge);
 
-                if (width >= 0.68f ) { //TODO check width is enough for my movement
+                if (width > clearance ) {
 
                     //this node has a direct line of sight(with given width), it is a direct node
 
@@ -431,7 +470,7 @@ public class PathManager extends Manager {
 
                         // the node might also be a direct node and have already been explored
                         if (this.nodeChecked.getOrDefault(exploreNode, false)) {
-                            break;
+                            continue;
                         }
 
                         // the cost to reach exploreNode from this directNode
@@ -476,7 +515,7 @@ public class PathManager extends Manager {
 
                     // the node might also be a part of the path already and have already been explored
                     if (this.nodeChecked.get(exploreNode)) {
-                        break;
+                        continue;
                     }
 
                     // the cost to reach exploreNode from this directNode
@@ -497,11 +536,6 @@ public class PathManager extends Manager {
                         nodeQ.add(exploreNode);                                 // reorder the nodeQ
                     }
                 }
-            }
-
-            System.out.println("---------");
-            for (Point2D node : this.nodes) {
-                System.out.println("n: " + node + " to: " + this.spanningPath.get(node));
             }
         }
 

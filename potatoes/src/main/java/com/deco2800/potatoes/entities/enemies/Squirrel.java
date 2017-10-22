@@ -40,7 +40,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 
 
-	private AbstractEntity target = null;
+	private Integer target = null;	//the integer corresponding to the target
 	private Point2D targetNode = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
@@ -67,12 +67,16 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
 
-		for (AbstractEntity entity : entities.values()) {
-			if (entity instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
-				this.target = entity;
+		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
+			if (entity.getValue() instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
+				this.target = entity.getKey();
+				System.out.println("targ: " + this.target + " x: " + entity.getValue().getPosX()
+						+ " y: " + entity.getValue().getPosY());
 				break;
 			}
 		}
+
+
 	}
 
 
@@ -99,10 +103,9 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		if (targetNode == null)
 			return;
 
-		System.out.println("targNode: " + targetNode);
 
-		float deltaX = target.getPosX() - getPosX();
-		float deltaY = target.getPosY() - getPosY();
+		float deltaX = targetNode.getX() - getPosX();
+		float deltaY = targetNode.getY() - getPosY();
 
 		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
 		super.onTickMovement();

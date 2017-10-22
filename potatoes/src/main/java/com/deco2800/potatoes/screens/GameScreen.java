@@ -64,6 +64,7 @@ public class GameScreen implements Screen {
 	private TextureManager textureManager;
 	private InputManager inputManager;
 	private WaveManager waveManager;
+	private PathManager pathManager;
 
 	private long lastGameTick = 0;
 	private double tickrate = 10;
@@ -213,6 +214,9 @@ public class GameScreen implements Screen {
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
 		cameraManager.getCamera().position.y = 0;
+
+		// Forces the GameManager to load the TextureManager
+		pathManager = GameManager.get().getManager(PathManager.class);
 	}
 
 	private void setupInputHandling() {
@@ -263,7 +267,7 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
+			//GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
 			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add an enemy gate to game world
@@ -298,9 +302,9 @@ public class GameScreen implements Screen {
 	}
 
 	private void addDamageTree() {
-		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
-		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
+		//GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
+		//GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
+		//GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));
 	}
 
@@ -407,6 +411,10 @@ public class GameScreen implements Screen {
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
+
+		// check if the paths need to be updated / binned
+		pathManager.onTick();
+
 		// Ticks all tickable managers, currently events, waves, particles
 		GameManager.get().onTick(timeDelta);
     }
