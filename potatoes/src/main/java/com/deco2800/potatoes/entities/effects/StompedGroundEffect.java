@@ -4,7 +4,6 @@ import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.SoundManager;
 
 /**
  * A StompedGroundEffect, essentially terrain that has been "damaged" by an
@@ -16,11 +15,9 @@ import com.deco2800.potatoes.managers.SoundManager;
  */
 public class StompedGroundEffect extends Effect {
 
-	private static final transient String TEXTURE = "DamagedGroundTemp1";
-
 	private boolean isTemporary;
 	private Shape2D effectPosition;
-	private int currentTextureIndexCount = 0;
+	private int indexCount = 0;
 	private String[] currentTextureArray = { "DamagedGroundTemp1", "DamagedGroundTemp2", "DamagedGroundTemp3" };
 	private int timer = 0;
 
@@ -57,9 +54,9 @@ public class StompedGroundEffect extends Effect {
 		if (isTemporary) {
 			timer++;
 			if (timer % 200 == 0) {
-				if (currentTextureIndexCount < 3) {
-					setTexture(currentTextureArray[currentTextureIndexCount]);
-					currentTextureIndexCount++;
+				if (indexCount < 3) {
+					setTexture(currentTextureArray[indexCount]);
+					indexCount++;
 				} else {
 					GameManager.get().getWorld().removeEntity(this);
 				}
@@ -73,7 +70,7 @@ public class StompedGroundEffect extends Effect {
 	 * @return Int current index
 	 */
 	public int getCurrentTextureIndex() {
-		return currentTextureIndexCount;
+		return indexCount;
 	}
 
 	/**

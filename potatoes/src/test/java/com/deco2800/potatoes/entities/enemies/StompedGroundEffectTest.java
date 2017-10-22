@@ -61,6 +61,7 @@ public class StompedGroundEffectTest extends BaseTest {
      */
     @Test
     public void onTickTest() {
+        int entitiesStartSize = GameManager.get().getWorld().getEntities().values().size();
         GameManager.get().getWorld().addEntity(stomp1);
         stomp1.onTick(1);
         assertEquals(true, stomp1.getCurrentTextureIndex() == 0);
@@ -76,6 +77,6 @@ public class StompedGroundEffectTest extends BaseTest {
             stomp1.onTick(1);
         }
         Collection<AbstractEntity> entityValues = GameManager.get().getWorld().getEntities().values();
-        assertEquals(0, entityValues.size());
+        assertEquals(0, entityValues.size() - entitiesStartSize);
     }
 }

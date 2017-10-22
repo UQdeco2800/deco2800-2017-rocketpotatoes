@@ -47,6 +47,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Map;
 
+/* "Feral Chase" Kevin MacLeod (incompetech.com)
+ * Licensed under Creative Commons: By Attribution 3.0 License
+ * http://creativecommons.org/licenses/by/3.0/
+ */
+
+
 /**
  * Handles the creation of the world and rendering.
  *
@@ -242,6 +248,9 @@ public class GameScreen implements Screen {
 		 * more for HUDs etc
 		 */
 		batch = new SpriteBatch();
+
+		// Start music
+		soundManager.playMusic("Feral Chase.mp3");
 	}
 
 	private void setupInputHandling() {
@@ -596,6 +605,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void exitToMenu() {
+		soundManager.stopMusic();
 		GameManager.get().clearManagers();
 		game.setScreen(new MainMenuScreen(game));
 		dispose();

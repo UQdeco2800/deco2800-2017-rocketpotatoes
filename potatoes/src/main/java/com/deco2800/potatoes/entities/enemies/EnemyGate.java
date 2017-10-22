@@ -14,7 +14,6 @@ import com.deco2800.potatoes.worlds.terrain.Terrain;
  */
 public class EnemyGate extends MortalEntity implements HasProgressBar {
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 2);
 	private static final String GRASS = "grass_tile_1";
 
 	/**

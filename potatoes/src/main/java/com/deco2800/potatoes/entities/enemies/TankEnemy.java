@@ -108,7 +108,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 					0.0f, 256, Color.DARK_GRAY, 4, 1);
 			particle.setSpeed(0.15f);
 
-			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 1);
+			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 			int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 			int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 			GameManager.get().getManager(ParticleManager.class).addParticleEmitter(
@@ -153,7 +153,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private static EnemyProperties initStats() {
 		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
-				//.addEvent(new MeleeAttackEvent(ATTACK_SPEED, AbstractTree.class))
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, Player.class))
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
 				.createEnemyStatistics();

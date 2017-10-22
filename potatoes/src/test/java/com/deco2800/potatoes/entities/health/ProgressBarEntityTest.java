@@ -17,10 +17,12 @@ public class ProgressBarEntityTest {
 	private static List<Color> colours = Arrays.asList(Color.RED, Color.ORANGE, Color.GREEN, Color.BLUE, Color.PURPLE);
 
 	ProgressBarEntity progressBarEntity;
+	ProgressBarEntity progressBarEntity2;
 
 	@Before
 	public void setUp() throws Exception {
 		progressBarEntity = new ProgressBarEntity("progress_bar", colours, 50, 1);
+		progressBarEntity2 = new ProgressBarEntity("progress_bar", "layout", 1);
 	}
 
 	// Common to all initialisation test
@@ -74,6 +76,12 @@ public class ProgressBarEntityTest {
 		assertEquals("Colour selected is not correct", progressBarEntity.getColour(1), Color.WHITE);
 		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0.5f), Color.WHITE);
 		assertEquals("Colour selected is not correct", progressBarEntity.getColour(0), Color.WHITE);
+
+	}
+	
+	@Test
+	public void getLayout() {
+		assertEquals("layout selected are not correct", progressBarEntity2.getLayoutTexture(), "layout");
 
 	}
 

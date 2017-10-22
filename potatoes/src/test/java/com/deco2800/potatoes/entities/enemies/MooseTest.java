@@ -55,6 +55,11 @@ public class MooseTest extends BaseTest {
 
     }
 
+    @Test
+    public void getProgressBarTest() throws Exception {
+        assertEquals("healthBarRed", moose1.getProgressBar().getTexture());
+    }
+    
     /*
      * Test the toString method
      */
@@ -77,5 +82,6 @@ public class MooseTest extends BaseTest {
         GameManager.get().getWorld().addEntity(playerTest);
         moose1.onTick(1);
         moose1.getProgressBar();
+        moose1.randomTarget();
     }
 }

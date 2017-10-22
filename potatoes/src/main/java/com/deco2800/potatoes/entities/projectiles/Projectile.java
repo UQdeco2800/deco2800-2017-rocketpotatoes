@@ -4,11 +4,12 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 
@@ -24,6 +25,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	protected Vector3 change = new Vector3();
 	protected Vector2 delta = new Vector2();
 
+	protected static float shadowRadius = 0.4f;
 	protected static float xRenderLength = 1.4f;
 	protected static float yRenderLength = 1.4f;
 	protected static float xLength = 0.4f;
@@ -32,6 +34,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 	protected Class<?> targetClass;
 	protected boolean rangeReached;
+	protected boolean canRemove = true;
 	protected float maxRange;
 	protected float range;
 	protected float damage;
@@ -59,16 +62,34 @@ public class Projectile extends AbstractEntity implements Tickable {
 		LEAVES {
 			@Override
 			public String[] textures() {
-				return new String[] { "leaves1" };
+				return new String[] { "leaves" };
 			}
 		},
 		ACORN {
 			@Override
 			public String[] textures() {
-				return new String[] { "acorn1" };
-
+				return new String[] { "acorn" };
 			}
-		};
+		},
+		ORB {
+			@Override
+			public String[] textures() {
+				return new String[] { "orb1" };
+			}
+		},
+		ARROW {
+			@Override
+			public String[] textures() {
+				return new String[] { "arrow" };
+			}
+		},
+		AXE {
+			@Override
+			public String[] textures() {
+				return new String[] { "axe" };
+			}
+		}
+		;
 
 		public String[] textures() {
 			return new String[] { "default" };
@@ -83,24 +104,29 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 * Creates a new projectile. A projectile is the vehicle used to deliver damage
 	 * to a target over a distance
 	 *
-	 * @param targetClass       the targets class
+	 * @param targetClass
+	 *            the targets class
 	 * @param startPos
 	 * @param targetPos
 	 * @param range
-	 * @param damage            damage of projectile
-	 * @param projectileTexture the texture set to use for animations. Use ProjectileTexture._
-	 * @param startEffect       the effect to play at the start of the projectile being fired
-	 * @param endEffect         the effect to be played if a collision occurs
+	 * @param damage
+	 *            damage of projectile
+	 * @param projectileTexture
+	 *            the texture set to use for animations. Use ProjectileTexture._
+	 * @param startEffect
+	 *            the effect to play at the start of the projectile being fired
+	 * @param endEffect
+	 *            the effect to be played if a collision occurs
 	 */
 	public Projectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
 			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
-		super(new Box2D(startPos.x, startPos.y, xLength + 1f, yLength + 1f), xRenderLength, yRenderLength,
+		super(new Circle2D(startPos.x, startPos.y, getShadowRadius()), xRenderLength, yRenderLength,
 				projectileTexture.textures()[0]);
 
 		if (targetClass != null)
 			this.targetClass = targetClass;
 		else
-			this.targetClass = MortalEntity.class;
+			this.targetClass = EnemyEntity.class;
 
 		this.projectileTexture = projectileTexture;
 		this.maxRange = this.range = range;
@@ -110,19 +136,21 @@ public class Projectile extends AbstractEntity implements Tickable {
 
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
-		
+
+
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
-		updatePosition();
 		setPosition();
 	}
 
 	/**
 	 * Initialize heading. Used if heading changes
 	 */
-	protected void updatePosition() {
+	protected void updateHeading() {
 		delta.set(getPosX() - targetPos.x, getPosY() - targetPos.y);
+
 		float angle = (float) Math.atan2(delta.y, delta.x) + (float) Math.PI;
 		rotationAngle = (float) (angle * 180 / Math.PI + 45 + 90);
+
 		change.set((float) (SPEED * Math.cos(angle)), (float) (SPEED * Math.sin(angle)), 0);
 	}
 
@@ -138,6 +166,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 	 */
 	public void setTargetPosition(float xPos, float yPos, float zPos) {
 		targetPos.set(xPos, yPos, zPos);
+		updateHeading();
 	}
 
 	/**
@@ -147,7 +176,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		setPosX(getPosX() + change.x);
 		setPosY(getPosY() + change.y);
 
-		if (range < SPEED || rangeReached) {
+		if ((range < SPEED || rangeReached) && canRemove) {
 			GameManager.get().getWorld().removeEntity(this);
 		} else {
 			range -= SPEED;
@@ -196,7 +225,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 				continue;
 			}
 			if (newPos.overlaps(entity.getMask())) {
-				((MortalEntity) entity).damage(damage);
+				((EnemyEntity) entity).damage(damage / 10);
 				if (endEffect != null)
 					GameManager.get().getWorld().addEntity(endEffect);
 				rangeReached = true;
@@ -250,7 +279,38 @@ public class Projectile extends AbstractEntity implements Tickable {
 	public Effect getEndEffect() {
 		return endEffect;
 	}
-	
+
+	/**
+	 * Returns Target Pos X
+	 */
+	public float getTargetPosX() {
+		return targetPos.x;
+	}
+
+	/**
+	 * Returns Target Pos Y
+	 */
+	public float getTargetPosY() {
+		return targetPos.y;
+	}
+
+	/**
+	 * Set shadow radius
+	 * 
+	 * @param radius
+	 */
+	public void setShadowRadius(float radius) {
+		shadowRadius = radius;
+	}
+
+	/**
+	 * Returns shadow radius
+	 * 
+	 * @return shadow radius
+	 */
+	public static float getShadowRadius() {
+		return shadowRadius;
+	}
 
 
 }

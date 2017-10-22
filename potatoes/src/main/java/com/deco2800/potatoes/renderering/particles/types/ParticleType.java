@@ -75,7 +75,7 @@ public abstract class ParticleType {
             }
 
             batch.setColor(col.r, col.g, col.b, alpha);
-            batch.draw(this.texture, p.x, p.y, 0, 0,
+            batch.draw(this.texture, p.x, p.y, this.texture.getWidth() / 2, this.texture.getHeight() / 2,
                     this.texture.getWidth(), this.texture.getHeight(),
                     1.0f, 1.0f, p.rotation,
                     0, 0, this.texture.getWidth(), this.texture.getHeight(),

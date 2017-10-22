@@ -21,12 +21,19 @@ public class EnemyGateTest extends BaseTest {
 
     private EnemyGate enemyGateEmpty;
     private EnemyGate enemyGate1;
+    private EnemyGate enemyGate2;
+    private EnemyGate enemyGate3;
+    private EnemyGate enemyGate4;
 
     @Before
     public void setup() throws Exception {
         GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
         enemyGateEmpty = new EnemyGate();
-        enemyGate1 = new EnemyGate(5,5, "enemyCave_SE");
+        System.out.println(GameManager.get().getWorld().getLength()/2);
+        enemyGate1 = new EnemyGate(4,4, "enemyCave_SE");
+        enemyGate2 = new EnemyGate(4,40, "enemyCave_SE");
+        enemyGate3 = new EnemyGate(40,4, "enemyCave_SE");
+        enemyGate4 = new EnemyGate(40,40, "enemyCave_SE");
     }
 
     @After
