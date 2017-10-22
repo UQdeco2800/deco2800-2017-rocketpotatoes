@@ -11,12 +11,11 @@ import com.deco2800.potatoes.managers.SoundManager;
  * entity in the game. Originally created for the TankEnemy, as the bear moves
  * he "stomps" the ground and damages it. This effect can be either temporary or
  * permanent. When entities walk through this effect, they will be slowed down
- * TODO Actually make them slow down.
  *
  * @author ryanjphelan
  */
 public class StompedGroundEffect extends Effect {
-	// TODO Texture is a placeholder. Need to design proper artwork for stomped ground
+
 	private static final transient String TEXTURE = "DamagedGroundTemp1";
 
 	private boolean isTemporary;
@@ -30,7 +29,7 @@ public class StompedGroundEffect extends Effect {
 	 * Empty constructor. Used for serialisation purposes
 	 */
 	public StompedGroundEffect() {
-		// empty for serialization
+		// Empty for serialization
 	}
 
 	/**

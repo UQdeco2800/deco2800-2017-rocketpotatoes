@@ -1,16 +1,27 @@
 package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
+import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
+import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.AbstractTree;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.ParticleManager;
+import com.deco2800.potatoes.managers.SoundManager;
+import com.deco2800.potatoes.renderering.Render3D;
+import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
+import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
+import com.deco2800.potatoes.renderering.particles.types.ParticleType;
 import com.deco2800.potatoes.util.Path;
 
 import java.util.Arrays;
@@ -50,6 +61,10 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 	private EnemyTargets targets = initTargets();
 
+	private int count;
+	private float lastX;
+	private float lastY;
+
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
@@ -84,8 +99,26 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
+			count++;
 		}
 		super.updateDirection();
+		if (count % 52 == 0 && getMoving() && (this.getPosX() != lastX && this.getPosY() != lastY)) {
+			GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
+			GameManager.get().getWorld().addEntity(
+					new LargeFootstepEffect(MortalEntity.class, this.getPosX(), this.getPosY(), 1, 1));
+			lastX = this.getPosX();
+			lastY = this.getPosY();
+			//Create the particle effect to represent the tank bear kicking up dirt as it walks
+			ParticleType particle =  new BasicParticleType(15000, 1000.0f,
+					0.0f, 256, Color.DARK_GRAY, 4, 1);
+			particle.speed = 0.15f;
+
+			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX() - 0.5f, this.getPosY() - 0.2f, -1);
+			int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
+			int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
+			GameManager.get().getManager(ParticleManager.class).addParticleEmitter(
+					2f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2, particle));
+		}
 	}
 	/**
 	 * Set the enemy state
