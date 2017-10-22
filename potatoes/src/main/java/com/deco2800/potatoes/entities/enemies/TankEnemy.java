@@ -25,7 +25,6 @@ import java.util.List;
  */
 public class TankEnemy extends EnemyEntity implements Tickable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TankEnemy.class);
 	private static final EnemyProperties STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
 	private static final transient float HEALTH = 2000;
@@ -56,8 +55,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	/* Define variables for the TankEnemy's progress bar */
 	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
-	private int timer = 0;
-	private Shape2D targetPos = null;
 
 	/**
 	 * Empty constructor for serialization
@@ -77,127 +74,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
         this.health = health + (roundNum*250);
 	}
 
-	/**
-	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target,
-	 * otherwise get the closest targeted entity position.
-	 */
-/*	public void onTick(long i) {
-		float goalX = getPosX();
-		float goalY = getPosY();
-		//if goal is player, use playerManager to eet position and move towards target
-		if (goal == Player.class) {
-			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
-			PathManager pathManager = GameManager.get().getManager(PathManager.class);
-
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), playerManager.getPlayer().getMask());
-			}
-
-			//check if close enough to target
-			if (targetPos != null && targetPos.overlaps(this.getMask())) {
-				targetPos = null;
-			}
-
-			//check if the path has another node
-			if (targetPos == null && !path.isEmpty()) {
-				targetPos = path.pop();
-			}
-
-			if (targetPos == null) {
-				targetPos = playerManager.getPlayer().getMask();
-			}
-
-			goalX = targetPos.getX();
-			goalY = targetPos.getY();
-		} else {
-			//set the target of Enemy to the closest goal
-			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
-
-			if (target.isPresent()) {
-				//otherwise, move to enemy's closest goal
-				AbstractEntity getTarget = target.get();
-				// get the position of the target
-
-				goalX = getTarget.getPosX();
-				goalY = getTarget.getPosY();
-
-				if(this.distanceTo(getTarget) < speed) {
-					this.setPosX(goalX);
-					this.setPosY(goalY);
-					return;
-				}
-			}
-		}
-
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
-
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
-
-		Shape2D newPos = getMask();
-
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
-/*
-		/*
-		 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
-		 *     -> enemies of the same type, projectiles, resources.
-		 */
-/*		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		boolean collidedTankEffect = false;
-		timer++;
-		String stompedGroundTextureString = "";
-
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile) && !(entity instanceof TankEnemy)
-					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getMask()) ) {
-
-				if(entity instanceof Player) {
-					LOGGER.info("Ouch! a " + this + " hit the player!");
-					((Player) entity).damage(1);
-
-				}
-				if (entity instanceof Effect || entity instanceof ResourceEntity) {
-					if (entity instanceof StompedGroundEffect) {
-						collidedTankEffect = true;
-						stompedGroundTextureString = entity.getTexture();
-					}
-					continue;
-				}
-				collided = true;
-			}
-		}
-
-
-
-		if (timer % 100 == 0 && !collided) {
-			GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
-			GameManager.get().getWorld().addEntity(
-					new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
-		}
-		if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
-				stompedGroundTextureString.equals("DamagedGroundTemp3")) {
-			GameManager.get().getWorld().addEntity(
-					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-		} else if (!collidedTankEffect) {
-			GameManager.get().getWorld().addEntity(
-					new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-		}
-
-
-		if (!collided) {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
-
-		super.updateDirection();
-	}
-*/
 	/***
 	 * Actions to be performed on every tick of the game
 	 *
@@ -207,7 +83,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	public void onTick(long i) {
 		enemyState();
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
-		if (getMoving() == true) {
+		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
 		}
