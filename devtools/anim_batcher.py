@@ -8,15 +8,23 @@ for a detailed explanation on its use.
 '''
 from math import pi
 
+from sys import argv
 from sys import path as syspath
 import os.path
 
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
 
-script_dir = os.path.dirname(bpy.context.space_data.text.filepath)
-syspath.append(script_dir)
-from batcher_common import *
+def get_script_dir():
+    '''get the python script directory so we can import local modules'''
+    # find the python script from the blender command line
+    for x in argv:
+        if ".py" in x:
+            return os.path.dirname(x)
+    return os.path.dirname(bpy.context.space_data.text.filepath)
+
+common_lib = get_script_dir() + '/batcher_common.py'
+exec(compile(open(common_lib).read(), common_lib, 'exec'))
 
 # Options
 INTERVALS = 8 # The number of angles around the model to render
@@ -40,7 +48,7 @@ def render_intervals(model, intervals):
     Rotate around the model, rendering a number of angles as specified by
     intervals
     '''
-    output_name = get_output_name()
+    output_name = get_output_name(1)
     for frame in range(SCENE.frame_start, SCENE.frame_end):
         bpy.context.scene.frame_current = frame
         bpy.context.scene.frame_set(frame)
@@ -51,12 +59,14 @@ def render_intervals(model, intervals):
             bpy.ops.render.render(write_still=True)
 
 
-def render_compass_points(model, output_name=get_output_name()):
+def render_compass_points(model):
     '''
     Rotate around the model, rendering a number of angles as specified by
     len(direction)
     '''
     direction = ['_S_', '_SE_', '_E_', '_NE_', '_N_', '_NW_', '_W_', '_SW_']
+
+    output_name = get_output_name(1)
 
     for frame in range(SCENE.frame_start, SCENE.frame_end):
         bpy.context.scene.frame_current = frame
@@ -72,18 +82,21 @@ def main():
     camera = OBJECTS["Camera"]
     light = OBJECTS["Lamp"]
 
+    if "Model" not in OBJECTS:
+        raise Exception("No parent model found. You either haven't done the" \
+                + " preparation on the wiki, or you forgot to include the" \
+                + " blender file when running from the command line")
     model = OBJECTS["Model"]
     model.select = True
 
     bpy.context.scene.frame_current = 0
     bpy.context.scene.frame_set(0)
 
-    centre_origin()
+    centre_model(model)
     setup_camera(camera)
     setup_light(light)
 
-    for obj in bpy.data.objects:
-        obj.select = False
+    deselect_all()
 
     model = OBJECTS["Model"]
     model.select = True
@@ -132,8 +145,9 @@ def main():
         x.select = True
 
     # merge all the newly imported models into one supermodel
-    selected = bpy.context.selected_objects
-    SCENE.objects.active = merged = selected.pop()
+    bpy.ops.object.select_pattern(pattern="Model.*")
+
+    SCENE.objects.active = merged = OBJECTS["Model.001"]
     bpy.ops.object.join()
 
     merged.name = "Merged"
@@ -153,5 +167,6 @@ def main():
     bpy.ops.object.delete()
 
     render_compass_points(model)
+
 
 main()

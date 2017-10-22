@@ -19,6 +19,7 @@ import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
@@ -61,7 +62,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
 
     protected PlayerProjectile.PlayerShootMethod shootMethod = PlayerProjectile.PlayerShootMethod.MOUSE;
     protected Class<?> projectileType = BallisticProjectile.class;
@@ -72,6 +73,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
+    public boolean canAttack = true;        // A boolean that determines whether the player can attack
 
     private static int doublePressSpeed = 300;    // double keypressed in ms
     protected float defaultSpeed;    // the default speed of each player
@@ -326,7 +328,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 //                        null, new AOEEffect(targetClass,
 //                        new Vector3(startPos.x, startPos.y,startPos.z),1,8f));
 
-                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 0, MineBomb.BombTexture.MINES,
+                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 100, MineBomb.BombTexture.MINES,
                         null, null);
 
                 GameManager.get().getWorld().addEntity(MBprojectile);
@@ -650,93 +652,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * animations to play.
      */
     protected void attack() {
-        // Override in subclasses to allow custom attacking.
-        if (this.setState(ATTACK)) {
-            GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
-
-            float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-            float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-            float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-
-
-            target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
-            float targetPosX = 0;
-            float targetPosY = 0;
-            switch (facing) {
-                case N:
-                    break;
-                case NE:
-                    pPosY -= 1;
-                    pPosX += 1.5;
-                    break;
-                case E:
-                    pPosY -= 1;
-                    pPosX += 1.5;
-                    break;
-                case SE:
-                    pPosX += 1;
-                    break;
-                case S:
-                    pPosX += 1.2;
-                    break;
-                case SW:
-                    pPosY += 1;
-                    pPosX += 1;
-                    break;
-                case W:
-                    break;
-                case NW:
-                    break;
-                default:
-                    break;
-            }
-            if (target.isPresent()) {
-                targetPosX = target.get().getPosX();
-                targetPosY = target.get().getPosY();
-
-            } else {
-                if (shootMethod == PlayerShootMethod.DIRECTIONAL) {
-                    switch (facing) {
-                        case W:
-                            projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
-                            break;
-                        case E:
-                            projectile.setTargetPosition(pPosX + 5, pPosY + 5, 0);
-                            break;
-                        case N:
-                            projectile.setTargetPosition(pPosX + 15, pPosY - 15, 0);
-                            break;
-                        case S:
-                            projectile.setTargetPosition(pPosX - 15, pPosY + 15, 0);
-                            break;
-                        case SE:
-                            projectile.setTargetPosition(pPosX + 15, pPosY + 1, 0);
-                            break;
-                        case NW:
-                            projectile.setTargetPosition(pPosX - 15, pPosY - 200, 0);
-                            break;
-                        case NE:
-                            projectile.setTargetPosition(pPosX + 20, pPosY + 200, 0);
-                            break;
-                        case SW:
-                            projectile.setTargetPosition(pPosX - 200, pPosY - 20, 0);
-                            break;
-                    }
-                }
-
-            }
-            Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
-            Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
-            projectile = new PlayerProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
-                    null, null, super.facing.toString(), shootMethod,
-                    projectileType);
-
-
-
-            GameManager.get().getWorld().addEntity(projectile);
-
-
-        }
+        // Override in subclasses to allow custom attack.
     }
 
     /**

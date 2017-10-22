@@ -48,6 +48,7 @@ public class WaveLoader {
             while ((readline = b.readLine()) != null){
             GameManager.get().getManager(WaveManager.class).addWave(createwavefromline(readline));
             }
+            b.close();
         } catch (java.io.IOException e) {
             System.out.println("Error reading file");
         }
