@@ -25,12 +25,6 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	private static final String[] ENEMY_TYPE = new String[]{
 			"squirrel",
 			"squirrel",
-			"squirrel",
-			"squirrel",
-			"squirrel",
-			"squirrel",
-			"squirrel",
-			"squirrel",
 	};
 	private static final float SPEED = 0.05f;
 
@@ -64,6 +58,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
         super(new Circle2D(posX, posY, 0.5f), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		Squirrel.goal = goal;
 		this.path = null;
+		setDelayTime(100);
 	}
 
 
@@ -74,6 +69,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	@Override
 	public void onTick(long i) {
+		enemyState();
 		AbstractEntity relevantTarget = super.mostRelevantTarget(targets);
 		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
@@ -88,12 +84,15 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		//Check if attacking
 		if(isAttacking()){
 			sTime = System.currentTimeMillis();
-			setEnemyStatus("attack");
+			setTextureLength(7);
+			setEnemyStatus("_attack");
 			phealth=getHealth();
 		}
 		//Check if walking
 		if((System.currentTimeMillis()-sTime)/1000.0>3){
-			setEnemyStatus("walk");
+
+			setTextureLength(7);
+			setEnemyStatus("_walk");
 		}
 	}
 

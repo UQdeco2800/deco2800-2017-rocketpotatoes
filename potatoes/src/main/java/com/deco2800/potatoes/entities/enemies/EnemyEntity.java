@@ -50,8 +50,12 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
 	private int count = 0;
-	private String enemyStatus = "walk";
+	private String enemyStatus = "_walk";
 	protected int roundNum = 0;
+	private int texturePointer=1;
+	private long sTime=System.currentTimeMillis();
+	private int textureLength=0;
+	private int delayTime=500;
 
 	/**
 	 * Default constructor for serialization
@@ -169,6 +173,21 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
+	 * set up the animation delay time
+	 * @param time milliseconds
+	 */
+	public void setDelayTime(int time){
+		this.delayTime=time;
+	}
+
+	/**
+	 * set up the animation length
+	 * @param length how many texture for this enemy
+	 */
+	public void setTextureLength(int length){
+		this.textureLength=length;
+	}
+	/**
 	 * Flag whether this enemy should be allowed to move or not
 	 *
 	 * @param move
@@ -213,8 +232,16 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-//			LOGGER.warn("Texture:::"+type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
-			this.setTexture(type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
+			LOGGER.warn("Texture:::"+type[0]+enemyStatus + direction + "_" + texturePointer);
+			this.setTexture(type[0]+enemyStatus + direction + "_" + texturePointer);
+			if(delay(delayTime)){
+				texturePointer++;
+				if(texturePointer>textureLength){
+					texturePointer=1;
+				}
+			}
+
+
 		}
 
 	}
@@ -225,11 +252,13 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param frameSize the texture array size
 	 * @return Int the index of texture
 	 */
-	public int delay(int time,int frameSize){
-		count++;
-		if((count/time)>=(frameSize-1))
-			count=0;
-		return count/time;
+	public boolean delay(int milliSeconds){
+
+		if((System.currentTimeMillis()-sTime)>milliSeconds){
+			sTime=System.currentTimeMillis();
+			return true;
+		}
+		return false;
 	}
 
 	/***
