@@ -171,9 +171,19 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		}
 		return null;
 	}
+
+	/**
+	 * set up the animation delay time
+	 * @param time milliseconds
+	 */
 	public void setDelayTime(int time){
 		this.delayTime=time;
 	}
+
+	/**
+	 * set up the animation length
+	 * @param length how many texture for this enemy
+	 */
 	public void setTextureLength(int length){
 		this.textureLength=length;
 	}
