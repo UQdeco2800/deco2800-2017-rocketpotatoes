@@ -60,12 +60,20 @@ public class World {
 	private Drawable background;
 	private Terrain backgroundTerrain;
 
+	private WorldType worldType;
+
 	public World() {
 		map = new TiledMap();
 		map.getProperties().put("tilewidth", TILE_WIDTH);
 		map.getProperties().put("tileheight", TILE_HEIGHT);
 		terrain = new Terrain[WorldManager.WORLD_SIZE][WorldManager.WORLD_SIZE];
 		backgroundTerrain = new Terrain("", 0.5f, true);
+		worldType = ForestWorld.get();
+	}
+
+	public World(WorldType worldType) {
+		this();
+		this.worldType = worldType;
 	}
 
 	/**
@@ -154,6 +162,31 @@ public class World {
 			throw new IllegalStateException("Not in multiplayer, this function should only be used for multiplayer");
 		}
 
+	}
+
+	/**
+	 * Add the given entity to a random land tile accessible to the default entities (portal, enemy gate)
+	 * @param entity the entity to add to the world
+	 */
+	public void addToLand(AbstractEntity entity) {
+		Point p = worldType.getClearSpots().get(GameManager.get().getRandom().nextInt(worldType.clearSpots.size()));
+		entity.setPosition(p.x, p.y);
+		addEntity(entity);
+	}
+
+	/**
+	 * Adds the entity to a grass tile, or doesn't add it to the world
+	 * @param entity the entity to add to the world
+	 */
+	public void addToPlantable(AbstractEntity entity) {
+		// 10 tries for adding
+		for (int i = 0; i < 10; i++) {
+			Point p = worldType.getClearSpots().get(GameManager.get().getRandom().nextInt(worldType.clearSpots.size()));
+			if (getTerrain(p.x, p.y).isPlantable()) {
+				entity.setPosition(p.x, p.y);
+				addEntity(entity);
+			}
+		}
 	}
 
 	/**
@@ -261,7 +294,7 @@ public class World {
 	 * @param tile
 	 */
 	public void setTile(int x, int y, Terrain tile) {
-		if (!tile.equals(terrain[x][y])) {
+		if (!tile.equals(terrain[x][y]) && !backgroundTerrain.equals(tile)) {
 			GameManager.get().getManager(WorldManager.class).setWorldCached(false);
 			terrain[x][y] = tile;
 			Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile.getTexture());
@@ -336,7 +369,7 @@ public class World {
 	 * Returns the terrain of the specified location taken from the terrain grid
 	 */
 	public Terrain getTerrain(int x, int y) {
-		if (x > 0 && y > 0 && x < width && y < length)
+		if (x > 0 && y > 0 && x < width && y < length && terrain[y][x] != null)
 			return terrain[y][x];
 		else
 			// Makes sure terrain finding doesn't crash
@@ -381,5 +414,9 @@ public class World {
 			background = new TextureRegionDrawable();
 			LOGGER.info(e.getMessage());
 		}
+	}
+
+	public WorldType getWorldType() {
+		return worldType;
 	}
 }

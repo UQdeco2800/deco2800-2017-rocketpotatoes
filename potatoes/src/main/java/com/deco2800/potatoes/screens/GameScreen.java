@@ -288,8 +288,6 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
-
 			GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
 			// Initial player preparation up period
@@ -345,31 +343,36 @@ public class GameScreen implements Screen {
 		// locations to add the trees
 	    	int xPos;
 	    	int yPos;
-	    	
+
 	    	// The amount of each tree to generate
     		int amount = 35/trees.length;
-	    	
+
 	    	// Terrain to add the tree to
 	    	Terrain terrain;
-	    	
+
+	    	boolean oldTreeSpread = true;
+
 	    	// Iterate over the trees
 	    	for (int i = 0; i < trees.length; i ++) {
 	    		for (int j = 0; j < amount; j++) {
-	    			// Generate random location
-	    			xPos = (int) (Math.random() * 40) + 10;
-	    			yPos = (int) (Math.random() * 40) + 10;
-	    			terrain = world.getTerrain(xPos, yPos);
-	    			
-	    			// Only add a tree if it is on grass
-        			if (terrain.getTexture() == "grass_tile_1") {
-        				AbstractTree newTree = trees[i].createCopy();
-        				newTree.setPosX(xPos);
-        				newTree.setPosY(yPos);
-        				world.addEntity(newTree);
-        			}
+	    			if (oldTreeSpread) {// Generate random location
+					    xPos = (int) (Math.random() * 40) + 10;
+					    yPos = (int) (Math.random() * 40) + 10;
+					    terrain = world.getTerrain(xPos, yPos);
+
+					    // Only add a tree if it is on grass
+					    if (terrain.getTexture() == "grass_tile_1") {
+						    AbstractTree newTree = trees[i].createCopy();
+						    newTree.setPosX(xPos);
+						    newTree.setPosY(yPos);
+						    world.addEntity(newTree);
+					    }
+				    } else {
+	    				world.addToPlantable(trees[i].createCopy());
+				    }
 	    		}
 	    	}
-		
+
 	}
 	
 	private void addResourceTrees() {
