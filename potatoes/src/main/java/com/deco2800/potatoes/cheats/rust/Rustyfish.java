@@ -14,6 +14,7 @@ import com.deco2800.potatoes.managers.TextureManager;
 import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.lwjgl.opengl.Display;
 import org.slf4j.LoggerFactory;
 
@@ -137,8 +138,8 @@ public class Rustyfish implements CheatExecution {
     private static Callback getWindowInfo = new Callback() {
         @SuppressWarnings("unused")
         public void run(RenderInfo.ByReference info) {
-            info.setSizeX(Gdx.graphics.getWidth());
-            info.setSizeY(Gdx.graphics.getHeight());
+            info.sizeX = Gdx.graphics.getWidth();
+            info.sizeY = Gdx.graphics.getHeight();
         }
     };
 
@@ -149,15 +150,13 @@ public class Rustyfish implements CheatExecution {
         @SuppressWarnings("unused")
         public void run(RenderObject.ByValue obj) {
             TextureManager m = GameManager.get().getManager(TextureManager.class);
-            Texture t = m.getTexture(obj.getAsset());
+            Texture t = m.getTexture(obj.asset);
 
-            batch.setColor(getColor(obj.getColor()));
+            batch.setColor(getColor(obj.color));
 
-            batch.draw(t,
-                    obj.getX(), Gdx.graphics.getHeight() - t.getHeight() * obj.getScale() - obj.getY(),
-                    0, 0,
-                    t.getWidth(), t.getHeight(), obj.getScale(), obj.getScale(), obj.getRotation(),
-                    0, 0, t.getWidth(), t.getHeight(), obj.getFlipX() != 0, obj.getFlipY() != 0);
+            batch.draw(t, obj.x, Gdx.graphics.getHeight() - t.getHeight() * obj.scale - obj.y,
+                    0, 0, t.getWidth(), t.getHeight(), obj.scale, obj.scale, obj.rotation,
+                    0, 0, t.getWidth(), t.getHeight(), obj.flipX != 0, obj.flipY != 0);
         }
     };
 
@@ -169,7 +168,7 @@ public class Rustyfish implements CheatExecution {
 
             Gdx.gl.glLineWidth(1);
             sr.begin(ShapeRenderer.ShapeType.Line);
-            sr.line(obj.getSrcX(), Gdx.graphics.getHeight() - 3 - obj.getSrcY(), obj.getDstX(), Gdx.graphics.getHeight() - 3 - obj.getDstY());
+            sr.line(obj.srcX, Gdx.graphics.getHeight() - 3 - obj.srcY, obj.dstX, Gdx.graphics.getHeight() - 3 - obj.dstY);
             sr.end();
         }
     };
@@ -196,6 +195,7 @@ public class Rustyfish implements CheatExecution {
     @Override
     public void run() {
         try {
+            NativeLibrary.addSearchPath("rustyfish", "build/classes/main");
             Native.loadLibrary("rustyfish", RLibrary.class).startGame(
                     startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
                     getWindowInfo, drawSprite, drawLine, drawRectangle);

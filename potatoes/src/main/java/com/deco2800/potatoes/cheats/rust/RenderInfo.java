@@ -13,8 +13,8 @@ public class RenderInfo extends Structure implements Closeable {
     public static class ByValue extends RenderInfo implements Structure.ByValue {
     }
 
-    private int sizeX;
-    private int sizeY;
+    public int sizeX;
+    public int sizeY;
 
     @Override
     protected List<String> getFieldOrder() {
@@ -28,21 +28,5 @@ public class RenderInfo extends Structure implements Closeable {
         // occurs after every native method call. If it occurs after we drop the struct, JNA
         // will try to read from the freed memory and cause a segmentation fault.
         setAutoSynch(false);
-    }
-
-    /**
-     * @param val
-     * Sets the value of sizeX
-     */
-    public void setSizeX(int val){
-        sizeX=val;
-    }
-
-    /**
-     * @param val
-     * Sets the value of sizeY
-     */
-    public void setSizeY(int val){
-        sizeY = val;
     }
 }
