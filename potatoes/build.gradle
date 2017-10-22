@@ -46,8 +46,14 @@ task copyRust(type: Copy) {
 }
 
 task compileRust(type: Exec) {
-    executable "sh"
-    args "-c", "which cargo 2>&1 >/dev/null || exit 0; cargo build --release"
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable "cmd.exe"
+        args "/c", "cargo build --release"
+        ignoreExitValue true
+    } else {
+        executable "sh"
+        args "-c", "which cargo >/dev/null || exit 0; cargo build --release"
+    }
 
     finalizedBy "copyRust"
 }
@@ -60,8 +66,14 @@ task cleanCopiedRust(type: Delete) {
 
 
 task cleanRust(type: Exec) {
-    executable "sh"
-    args "-c", "which cargo 2>&1 >/dev/null || exit 0; cargo clean"
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable "cmd.exe"
+        args "/c", "cargo clean"
+        ignoreExitValue true
+    } else {
+        executable "sh"
+        args "-c", "which cargo >/dev/null || exit 0; cargo clean"
+    }
 
     finalizedBy cleanCopiedRust
 }
@@ -69,8 +81,16 @@ task cleanRust(type: Exec) {
 clean.dependsOn cleanRust
 
 task testRust(type: Exec) {
-    executable "sh"
-    args "-c", "which cargo 2>&1 >/dev/null || exit 0; cargo test"
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable "cmd.exe"
+        args "/c", "cargo test"
+        ignoreExitValue true
+    } else {
+        executable "sh"
+        args "-c", "which cargo >/dev/null || exit 0; cargo test"
+    }
+
+    finalizedBy cleanCopiedRust
 }
 
 test.dependsOn testRust
