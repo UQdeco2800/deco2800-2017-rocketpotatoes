@@ -187,10 +187,6 @@ public class Render3D implements Renderer {
 						WorldManager.WORLD_SIZE),tileHeight * ((float) Math.floor(tileRenderer.getViewBounds().y /
 				tileHeight - 1) - WorldManager.WORLD_SIZE));
 		// draw with screen corner and width a little bit more than the screen
-		System.out.println(GameManager.get()
-				.getManager(GameTimeManager.class).getCurrentTime());
-		System.out.println(GameManager.get().getWorld().getBackgroundArray
-				().length);
 		TextureRegionDrawable background = GameManager.get().getWorld().getBackgroundArray()[Math.round(100 *
 				GameManager.get()
 				.getManager(GameTimeManager.class).getCurrentTime()) % GameManager.get().getWorld().getBackgroundArray
