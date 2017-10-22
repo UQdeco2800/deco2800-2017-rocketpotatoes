@@ -203,8 +203,10 @@ public class ProjectileTest {
 		targetPos = new Vector3(TargetPosX, TargetPosY, posZ);
 		testOrbProjectile = new OrbProjectile(targetClass.getClass(),startPos,targetPos,range,damage,projectileTexture,startEffect,endEffect);
 		assertNotNull(testOrbProjectile);
-		assertTrue(testOrbProjectile.getPosX() == posX);
-		assertTrue(testOrbProjectile.getPosY() == posY);
+		float orbPosX = testOrbProjectile.getPos().x;
+		float orbPosY = testOrbProjectile.getPos().y;
+		assertTrue(orbPosX == posX);
+		assertTrue(orbPosY == posY);
 		assertEquals(startEffect,testOrbProjectile.getStartEffect());
 		assertEquals(endEffect,testOrbProjectile.getEndEffect());
 		assertTrue(testOrbProjectile.getRange()==range);

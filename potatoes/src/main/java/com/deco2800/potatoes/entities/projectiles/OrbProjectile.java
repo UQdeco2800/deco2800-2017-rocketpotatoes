@@ -16,6 +16,7 @@ public class OrbProjectile extends Projectile {
 	private int numTexPerCharge = 3;
 	private boolean canFire = false;
 	private Vector3 playerPos;
+	public boolean hasBeenReleased=false;
 
 	private Class<?> targetClass;
 	private Vector3 targetPos;
@@ -28,8 +29,6 @@ public class OrbProjectile extends Projectile {
 	private ProjectileTexture projectileTexture;
 	private Effect startEffect;
 	private Effect endEffect;
-	public boolean hasBeenReleased=false;
-
 
 	public OrbProjectile() {
 
@@ -43,7 +42,7 @@ public class OrbProjectile extends Projectile {
 	 *            the targets class
 	 * @param startPos
 	 * @param targetPos
-	 * 
+	 *
 	 * @param range
 	 * @param damage
 	 *            damage of projectile
@@ -56,9 +55,9 @@ public class OrbProjectile extends Projectile {
 	 */
 
 	public OrbProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
-			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
+						 ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
 		super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
-		this.playerPos = startPos;
+		playerPos = startPos;
 		this.pPosX = startPos.x;
 		this.pPosY = startPos.y;
 		this.targetClass = targetClass;
@@ -72,7 +71,7 @@ public class OrbProjectile extends Projectile {
 
 	@Override
 	public void onTick(long time) {
-		
+
 		Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
 		if (p.currentShootStage==ShootStage.HOLDING&&!hasBeenReleased) {
 			charge(new Vector3(p.getPosX(), p.getPosY(), p.getPosZ()));
@@ -120,7 +119,7 @@ public class OrbProjectile extends Projectile {
 	public static float getShadowRadius() {
 		return shadowRadius;
 	}
-	
+
 	public void hasBeenReleased(boolean tf) {
 		hasBeenReleased=tf;
 	}
@@ -137,12 +136,8 @@ public class OrbProjectile extends Projectile {
 		return damage;
 	}
 
-	public float getPosX(){
-		return pPosX;
-	}
-
-	public float getPosY(){
-		return pPosY;
+	public Vector3 getPos(){
+		return playerPos;
 	}
 
 	public ProjectileTexture getProjectileTexture() {
@@ -158,4 +153,7 @@ public class OrbProjectile extends Projectile {
 	public Effect getEndEffect() {
 		return endEffect;
 	}
+
+
+
 }

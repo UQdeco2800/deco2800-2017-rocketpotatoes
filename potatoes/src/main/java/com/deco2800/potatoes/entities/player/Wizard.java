@@ -78,15 +78,15 @@ public class Wizard extends Player {
 				break;
 		}
 	}
-	
+
 	@Override
 	public void handleKeyDown(int keycode) {
 		super.handleKeyDown(keycode);
 		switch (keycode) {
-		case Input.Keys.SPACE:
-			if(!(currentShootStage==ShootStage.LOOSE))
-				currentShootStage=ShootStage.HOLDING;
-			break;
+			case Input.Keys.SPACE:
+				if(!(currentShootStage==ShootStage.LOOSE))
+					currentShootStage=ShootStage.HOLDING;
+				break;
 		}
 	}
 
@@ -94,19 +94,19 @@ public class Wizard extends Player {
 	public void handleKeyUp(int keycode) {
 		super.handleKeyUp(keycode);
 		switch (keycode) {
-		case Input.Keys.SPACE:
-			currentShootStage=ShootStage.LOOSE;
-			if(OrbProjectile.class.isAssignableFrom(projectileClass))
-				((OrbProjectile)projectile).hasBeenReleased(true);
-			break;
+			case Input.Keys.SPACE:
+				currentShootStage=ShootStage.LOOSE;
+				if(OrbProjectile.class.isAssignableFrom(projectileClass))
+					((OrbProjectile)projectile).hasBeenReleased(true);
+				break;
 		}
 	}
-	
-    @Override
-    protected void attack() {
-    	super.attack(); 
-    	
-    }
+
+	@Override
+	protected void attack() {
+		super.attack();
+
+	}
 
 	private void hoverAnimation() {
 		// Update shadow position
