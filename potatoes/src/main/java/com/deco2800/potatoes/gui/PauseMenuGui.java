@@ -244,7 +244,7 @@ public class PauseMenuGui extends Gui {
         saveButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //TODO
+                //not yet implemented
             }
         });
 
@@ -428,7 +428,7 @@ public class PauseMenuGui extends Gui {
             	break;
             case INFORMATION:
             	tutorialDrawable = new Image(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(tutorialTexture))));
-            	table.add(tutorialDrawable).size(400, 400).pad(10);
+            	table.add(tutorialDrawable).size(450, 490).pad(10);
             	table.row();
             	table.add(slideBackButton).expandX().center();
             	break;

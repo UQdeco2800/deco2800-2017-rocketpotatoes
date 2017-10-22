@@ -58,9 +58,7 @@ public class SquirrelTest extends BaseTest {
 
         }
 //        assertEquals("squirrel", squirrelEmpty.getEnemyType());
-        assertEquals(Color.RED, squirrel1.getProgressBar().getColours().get(0));
-        assertEquals(Color.valueOf("fff134"), squirrel1.getProgressBar().getColours().get(1));
-        assertEquals(Color.GREEN, squirrel1.getProgressBar().getColours().get(2));
+
     }
 
     /*
@@ -86,4 +84,18 @@ public class SquirrelTest extends BaseTest {
         GameManager.get().getWorld().addEntity(playerTest);
         squirrel1.onTick(1);
     }
+
+    @Test
+    public void getEnemyTypeTest() throws Exception {
+    }
+
+
+    @Test
+    public void getProgressBarTest() throws Exception {
+    }
+
+    @Test
+    public void getBasicStatsTest() throws Exception {
+    }
+
 }

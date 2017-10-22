@@ -15,6 +15,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 
@@ -126,10 +127,22 @@ public class AbstractPortal extends MortalEntity implements Tickable {
                 GameManager.get().getWorld().removeEntity(getPlayer());
                 //change to new world
                 GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+                // The new world
+                World newWorld = GameManager.get().getWorld();
+                
+                // Find the portal in the world
+                for (AbstractEntity entity: newWorld.getEntities().values()) {
+                	if (AbstractPortal.class.isAssignableFrom(entity.getClass())) {
+                		
+                		//set player to be next to the portal
+                		playerManager.getPlayer().setPosition(entity.getPosX() + entity.getXRenderLength(),
+                				entity.getPosY() + entity.getYRenderLength());
+                	}               	
+                	
+                }
+                
                 //add player to new world
                 GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-                //set player to be next to the portal
-                playerManager.getPlayer().setPosition(18, 16);
 
                 // Bring up portal interface
             } catch (Exception e) {

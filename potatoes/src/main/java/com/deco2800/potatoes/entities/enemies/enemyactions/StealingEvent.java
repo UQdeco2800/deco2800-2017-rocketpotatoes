@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * A stealing TimeEvent which, when belonging to an enemy, allows the enemy to steal from resource trees.
  *
- * @author: tl & craig
+ * @author tl & craig
  **/
 public class StealingEvent extends TimeEvent<EnemyEntity> {
 
@@ -23,7 +23,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
      * Default constructor for serialization
      */
     public StealingEvent() {
-        // Blank comment for the great lord Sonar
+        // Empty for serialization purposes
     }
 
     /**
@@ -46,7 +46,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
      * on.
      *
      * @param enemy
-     *            The enemy that this melee attack belongs to
+     *            The enemy that this steal action belongs to
      */
     @Override
     public void action(EnemyEntity enemy) {
@@ -80,7 +80,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
     }
 
     /**
-     * @return a copy of this MeleeAttackEvent
+     * @return a copy of this StealingEvent
      */
     @Override
     public TimeEvent<EnemyEntity> copy() {
@@ -88,10 +88,10 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
     }
 
     /**
-     * @return string representation of melee attack
+     * @return string representation of stealing event
      */
     @Override
     public String toString() {
-        return String.format("Steal with %d attackspeed", this.getResetAmount());
+        return String.format("Steal occurring every %d ticks", this.getResetAmount());
     }
 }

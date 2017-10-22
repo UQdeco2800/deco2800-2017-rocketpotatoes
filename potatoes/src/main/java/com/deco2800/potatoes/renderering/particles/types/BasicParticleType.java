@@ -28,12 +28,12 @@ public class BasicParticleType extends ParticleType {
      */
     public BasicParticleType(int number, float lifeTime, float cycleDelta, int rate, Color color, int sizeX, int sizeY) {
         this.number = number;
-        this.lifeTime = lifeTime;
+        this.setLifeTime(lifeTime);
         this.cycleDelta = cycleDelta;
         this.rate = rate;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
-        this.color = color;
+        this.setSizeX(sizeX);
+        this.setSizeY(sizeY);
+        this.setColor(color);
         particles = new ArrayList<>();
     }
 
@@ -47,7 +47,7 @@ public class BasicParticleType extends ParticleType {
      */
     public BasicParticleType(int number, float lifeTime, float cycleDelta, int rate, Texture texture) {
         this.number = number;
-        this.lifeTime = lifeTime;
+        this.setLifeTime(lifeTime);
         this.cycleDelta = cycleDelta;
         this.rate = rate;
         particles = new ArrayList<>();
@@ -74,7 +74,7 @@ public class BasicParticleType extends ParticleType {
             p.x += p.vector.x * deltaTime;
             p.y += p.vector.y * deltaTime;
             p.lifeTime -= deltaTime;
-            p.rotation += this.rotationSpeed - this.rotationSpeed  * 2.0f * (p.hashCode() % 2);
+            p.rotation += this.getRotationSpeed() - this.getRotationSpeed()  * 2.0f * (p.hashCode() % 2);
 
             // Delete expired
             if (p.lifeTime <= 0.0f) {
@@ -113,26 +113,28 @@ public class BasicParticleType extends ParticleType {
                         newP.x = originX;
                         newP.y = originY;
 
-                        float min = this.speedVarianceMin;
-                        float max = this.speedVarianceMax;
-                        float factor = (random.nextFloat() * (max - min) + min) * this.speed;
+                        float min = this.getSpeedVarianceMin();
+                        float max = this.getSpeedVarianceMax();
+                        float factor = (random.nextFloat() * (max - min) + min) * this. getSpeed();
 
 
-                        float direction = random.nextFloat() * (upperAngleBound - lowerAngleBound);
+                        float direction = random.nextFloat() * (this.getUpperAngleBound() - this.getLowerAngleBound());
 
                         // Gen normalized vec and scale it by factor
                         newP.vector.set(
                                 (float) Math.sin(Math.toRadians(direction)),
                                 (float) Math.cos(Math.toRadians(direction))).nor().scl(factor);
 
-                        newP.lifeTime = this.lifeTime;
+                        newP.lifeTime = this.getLifeTime();
                         newP.rotation = random.nextFloat();
 
                         this.particles.add(newP);
                         count++;
                     }
                 }
-                if (compareFloat(this.cycleDelta, 0.0f)) { break; }
+                if (compareFloat(this.cycleDelta, 0.0f)) {
+                    break;
+                }
             }
         }
     }

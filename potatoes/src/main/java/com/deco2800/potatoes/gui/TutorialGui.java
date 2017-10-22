@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.screens.GameScreen;
@@ -165,13 +164,13 @@ public class TutorialGui extends Gui {
     	
         // set size and position of table
         table.reset();
-        table.setWidth(500);
-        table.setHeight(450);
+        table.setWidth(450);
+        table.setHeight(490);
         table.center();
         table.setPosition(stage.getWidth()/2,stage.getHeight()/2, center);
 
         // add elements to table
-        table.add(tutorialDrawable).size(400, 400).pad(10);
+        table.add(tutorialDrawable).size(450, 490).pad(10);
         table.row();
         table.add(tutorialButtonGroup).expandX().center();
          

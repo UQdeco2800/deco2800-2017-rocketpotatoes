@@ -29,7 +29,7 @@ public class NetworkServer {
 
     /**
 
-     * Starts a server for the game // TODO ports occupied?
+     * Starts a server for the game 
      * TODO debug logging
      *
      * @param tcpPort tcp port to use, presumed to be correct
@@ -53,7 +53,7 @@ public class NetworkServer {
         // Register classes for serialization
         Network.register(server);
 
-        // ToDo: Get IP Address
+        //Get IP Address
         ipAddress = "Local Host";
 
         // Hacky

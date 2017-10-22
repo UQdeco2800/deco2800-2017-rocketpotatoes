@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deco2800.potatoes.GameLauncher;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.rust.Rustyfish;
 import com.deco2800.potatoes.gui.MainMenuGui;
@@ -18,11 +17,9 @@ import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
-import com.sun.jna.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Console;
 import java.net.InetAddress;
 import java.util.List;
 
@@ -35,8 +32,6 @@ import java.util.List;
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
  * Also holds the logic for starting a game, (e.g. singleplayer, multiplayer, loaded, etc.)
- *
- * TODO make this nicer (i.e. use dispose) Probably has tiny memory leaks
  */
 public class MainMenuScreen implements Screen {
     private RocketPotatoes game;
@@ -130,8 +125,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void show() {
-
-
+//not implemented
     }
 
 
@@ -140,7 +134,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void pause() {
-
+//not implemented
     }
 
     /**
@@ -148,7 +142,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void resume() {
-
+//not implemented
     }
 
     /**
@@ -156,7 +150,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void hide() {
-
+//not implemented
     }
 
     /**
@@ -164,7 +158,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void dispose() {
-
+//not implemented
     }
 
     /**

@@ -12,7 +12,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -51,7 +50,6 @@ public class World {
 	// Current index of the hashmap i.e. the last value we inserted into, for
 	// significantly more efficient insertion)
 	// First 16 index's are reserved for clients
-	// TODO game will likely crash/break badly when this overflows
 	private int currentIndex = 17;
 	protected TiledMap map;
 	private int width;
@@ -102,7 +100,7 @@ public class World {
 	 *
 	 * In singleplayer this should work as you expect.
 	 *
-	 * For multiplayer, this should only be called by the master client. TODO way to
+	 * For multiplayer, this should only be called by the master client.  way to
 	 * for perform client side prediction.
 	 *
 	 * @param entity
@@ -219,7 +217,6 @@ public class World {
 	 */
 	public void updatePositions() {
 		for (Entry<Integer, AbstractEntity> entry : entities.entrySet()) {
-			// TODO check move speed, could be wrong
 			if (!entry.getValue().isStatic() && entry.getValue().getMoveSpeed() > 0) {
 				entitiesRtree.move(entry.getKey(), entry.getValue().getMask());
 			}
@@ -372,7 +369,6 @@ public class World {
 	 * Sets the background for beyond the edges of the map
 	 */
 	public void setBackground(Terrain terrain) {
-		// TODO fix tests so they don't throw null pointer error here
 		try {
 			backgroundTerrain = terrain;
 			TextureRegion textureRegion = new TextureRegion(GameManager.get().getManager(TextureManager.class)
