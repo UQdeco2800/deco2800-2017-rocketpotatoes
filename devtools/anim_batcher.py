@@ -166,8 +166,7 @@ def main():
             x.select = True
     bpy.ops.object.delete()
 
-    camera.location[0] = 0
-
     render_compass_points(model)
+
 
 main()
