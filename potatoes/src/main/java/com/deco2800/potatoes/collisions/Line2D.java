@@ -134,6 +134,10 @@ public class Line2D extends Shape2D{
         return this.lenSqr;
     }
 
+    public float getMaxExtent() {
+        return Math.max(maxX - minX, maxY - minY);
+    }
+
 
     private boolean overlapsPoint(Point2D other) {
         return compareFloat( distanceToPoint( other ), 0);

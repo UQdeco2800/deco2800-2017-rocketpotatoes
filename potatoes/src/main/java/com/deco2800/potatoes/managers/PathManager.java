@@ -4,9 +4,6 @@ import com.deco2800.potatoes.collisions.*;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.WaterWall;
-import com.deco2800.potatoes.entities.enemies.EnemyGate;
-import com.deco2800.potatoes.entities.enemies.Squirrel;
-import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.util.RTree;
 import com.deco2800.potatoes.worlds.World;
 
@@ -180,7 +177,7 @@ public class PathManager extends Manager {
         if (!this.targetIDs.contains(targetID)) {
             this.targetIDs.add(targetID);
             System.out.println("targID Add: " + targetID);
-            Point2D targCenter = world.getEntities().get(targetID).getMask().getCentre(); //TODO add try
+            Point2D targCenter = world.getEntity(targetID).getMask().getCentre(); //TODO add try
             this.targetCentres.put(targetID, targCenter);
             this.targetPaths.put(targetID, new HashMap<>());
         }
@@ -286,7 +283,9 @@ public class PathManager extends Manager {
         float width = Float.POSITIVE_INFINITY; //default width
 
         //limit width by each obstacle
-        for (AbstractEntity entity : world.getEntities().values()) {
+        Iterator<AbstractEntity> entityIter = world.getEntitiesWithinDistance(edge.getX(), edge.getY(), edge.getMaxExtent());
+        while ( entityIter.hasNext() ) {
+            AbstractEntity entity = entityIter.next();
             if (entity.isStatic() && entity.isSolid()) {
 
                 width = Math.min(width, edge.distance(entity.getMask()));
@@ -332,7 +331,7 @@ public class PathManager extends Manager {
             createGraph();
 
             // get the 'width' of the target
-            Shape2D targMask = GameManager.get().getWorld().getEntities().get(targetID).getMask();
+            Shape2D targMask = GameManager.get().getWorld().getEntity(targetID).getMask();
             targWidth = 0;
             if (targMask instanceof Box2D) {
                 Box2D targBox = (Box2D) targMask;
@@ -413,8 +412,13 @@ public class PathManager extends Manager {
                     continue;
                 }
 
-                for (AbstractEntity entity : world.getEntities().values()) { //TODO obstacle data structure
-                    if (entity.isStatic() && entity.isSolid() && entity.getMask().overlaps(node)) {
+
+                Iterator<AbstractEntity> entityIter = GameManager.get().getWorld()
+                        .getEntitiesWithinDistance(node.getX(), node.getY(), 3);
+
+                while (entityIter.hasNext()) {
+                    AbstractEntity e = entityIter.next();
+                    if (e.isStatic() && e.isSolid() && e.getMask().overlaps(node)) {
                         removedNodes.add(node);
                         break;
                     }
@@ -478,7 +482,7 @@ public class PathManager extends Manager {
             World world = GameManager.get().getWorld();
 
             // get a point at the centre of the target
-            Point2D targetNode = world.getEntities().get(targetID).getMask().getCentre();
+            Point2D targetNode = world.getEntity(targetID).getMask().getCentre();
 
 
             // setup queue for dijkstra's algorithm

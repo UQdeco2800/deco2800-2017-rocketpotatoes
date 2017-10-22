@@ -478,9 +478,31 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     @Override
     public void onTick(long arg0) {
+        //mouse input
+//    	System.out.println(Render3D.screenToTile(0,0));
+        mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
+                GameManager.get().getManager(InputManager.class).getMouseY());
+
+        //Get terrainModifier of the current tile
+        float myX = super.getPosX();
+        float myY = super.getPosY();
+        float length = GameManager.get().getWorld().getLength();
+        float width = GameManager.get().getWorld().getWidth();
+        float terrainModifier = GameManager.get().getWorld()
+                .getTerrain(Math.round(Math.min(myX - 1, width - 1)), Math.round(Math.min(myY, length - 1)))
+                .getMoveScale();
+        float moveDist = getMoveSpeed() * terrainModifier;
+        float newX = moveDist * (float) Math.cos(this.getMoveAngle());
+        float newY = moveDist * (float) Math.sin(this.getMoveAngle());
+        float terrainModifierCheck = GameManager.get().getWorld()
+                .getTerrain(Math.round(Math.min(myX - 1 + newX, width - 1)), Math.round(Math.min(myY + newY, length - 1)))
+                .getMoveScale();
+        if (terrainModifierCheck <= 0) {
+            terrainModifier = 0;
+        }
 
         if (state == WALK) {
-            super.setMoveSpeedModifier(1);
+            super.setMoveSpeedModifier(terrainModifier);
         }
         super.onTickMovement();
     }

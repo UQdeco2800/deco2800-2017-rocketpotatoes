@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.entities;
 
 
+import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.effects.Effect;
@@ -8,9 +9,7 @@ import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.renderering.Renderable;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A AbstractEntity is an item that has a physical position in the 2D world
@@ -608,8 +607,16 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 		// more massive entities will move less during mobile entity to mobile entity collision
 
 
-		
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
+		// get the range of entities to search
+		Optional<Box2D> boundingBox = this.collisionMask.getBoundingBox();
+		float searchRange = 10;
+		if (boundingBox.isPresent()) {
+			searchRange = Math.max(boundingBox.get().getXLength(), boundingBox.get().getYLength()) * (float) Math.sqrt(2) / 2 + 0.2f;
+		}
+
+		Iterator<AbstractEntity> entityIter = GameManager.get().getWorld()
+				.getEntitiesWithinDistance(this.getPosX(), this.getPosY(), searchRange);
+
 
 		// collection of entities I overlap during this step
 		overlappedEntities.clear();
@@ -617,15 +624,17 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		// If I'm overlapping any entities, move away from them/try push them away
 		// This method modifies overlappedEntities to contain entities I overlap this step
-		moveEscapeOverlapping( entities );
+		moveEscapeOverlapping( entityIter );
 
 
 		if (moveSpeedModifier <= 0)
 			return;
 
+		entityIter = GameManager.get().getWorld().getEntitiesWithinDistance(this.getPosX(), this.getPosY(), searchRange);
+
 		// Move me and distribute my momentum with any entities I collide with
 		// This method modifies pushedEntities to contain entities I overlap this step
-		moveAndPush( entities );
+		moveAndPush( entityIter );
 
 	}
 
@@ -663,13 +672,13 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * Used in onTickMovement
 	 * Tries to escape any entities currently overlapped.
 	 *
-	 * @param entities	The entities to check collision against
+	 * @param entities    The entities to check collision against
 	 */
-	private void moveEscapeOverlapping(Map<Integer, AbstractEntity> entities) {
+	private void moveEscapeOverlapping(Iterator<AbstractEntity> entities) {
 
 		// Check for entities i'm already overlapping, and move away from those entities centres
-		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
-			AbstractEntity e = entity.getValue();
+		while (entities.hasNext()) {
+			AbstractEntity e = entities.next();
 
 			if (this.equals(e) || !e.isSolid)         // don't collide with yourself silly, or non solid entities
 				continue;
@@ -697,9 +706,9 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 * Tries to move the distance and direction, defined by moveSpeed & moveAngle.
 	 * Pushes entities where possible.
 	 *
-	 * @param entities 	The entities to check collision against
+	 * @param entities    The entities to check collision against
 	 */
-	private void moveAndPush(Map<Integer, AbstractEntity> entities){
+	private void moveAndPush(Iterator<AbstractEntity> entities){
 		float length = GameManager.get().getWorld().getLength();
 		float width = GameManager.get().getWorld().getWidth();
 
@@ -713,8 +722,8 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		//check if next position overlaps with any new entities, push them out of the way if possible
 		//let them push this entity too, do not allow nextPos to overlap another entity
-		for (Map.Entry<Integer, AbstractEntity> entity : entities.entrySet()) {
-			AbstractEntity e = entity.getValue();
+		while (entities.hasNext()) {
+			AbstractEntity e = entities.next();
 
 			if (this.equals(e) || !e.isSolid)         // don't collide with yourself silly, or non solid entities
 				continue;
