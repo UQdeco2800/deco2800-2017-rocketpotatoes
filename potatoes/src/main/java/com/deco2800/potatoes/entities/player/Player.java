@@ -63,7 +63,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    protected ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
+    protected ProgressBarEntity progressBar = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
 
     public enum PlayerShootMethod {
 		DIRECTIONAL, CLOSEST, MOUSE
@@ -649,7 +649,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     @Override
     public ProgressBar getProgressBar() {
-        return PROGRESS_BAR;
+        return progressBar;
     }
     ArrayList<Projectile> tr=new ArrayList<Projectile>();
     /**

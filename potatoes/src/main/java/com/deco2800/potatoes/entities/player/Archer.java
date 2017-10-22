@@ -26,7 +26,7 @@ public class Archer extends Player {
             super.setMoveSpeed(defaultSpeed);
     		this.facing = Direction.SE;
         this.resetState();
-        PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
+        progressBar = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
     }
 
 	private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);

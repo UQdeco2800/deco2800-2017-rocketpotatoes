@@ -27,6 +27,7 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.DebugModeGui;
@@ -361,7 +362,7 @@ public class Render3D implements Renderer {
 		Color currentShade = batch.getColor();
 		
 		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
-		GoalPotate potato = null;
+		BasePortal portal = null;
 		
 		batch.begin();
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
@@ -373,13 +374,14 @@ public class Render3D implements Renderer {
 			}
 			
 			// Progress Bar for Goal Potato.
-			if (!progressValues.showPotatoProgress() && e instanceof GoalPotate) {
+			if (!progressValues.showPotatoProgress() && e instanceof BasePortal) {
 				continue;
 			}
 
 			// Progress Bars for allies [Trees, Portals].
 			if (!progressValues.showAlliesProgress() && !(e instanceof EnemyEntity)
-					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer()) 
+							&& !(e instanceof BasePortal)) {
 				continue;
 			}
 			// Progress Bars for enemy entities.
@@ -387,8 +389,8 @@ public class Render3D implements Renderer {
 				continue;
 			}
 
-			if (e instanceof GoalPotate) {
-				potato = (GoalPotate) e;
+			if (e instanceof BasePortal) {
+				portal = (BasePortal) e;
 			}
 			
 			if (e instanceof HasProgressBar && ((HasProgress) e).showProgress()) {
@@ -482,10 +484,10 @@ public class Render3D implements Renderer {
 					false, false);  
 			hudBatch.end();
 		}
-		// potato
-		if (potato != null && progressValues.showPotatoProgress()) {
+		// portal
+		if (portal != null && progressValues.showPotatoProgress()) {
 			// Get texture
-			ProgressBar progressBar = potato.getProgressBar();
+			ProgressBar progressBar = portal.getProgressBar();
 			Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
 			Texture barTexture =  reg.getTexture(progressBar.getTexture());
             hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -497,7 +499,7 @@ public class Render3D implements Renderer {
 					iconTexture.getHeight(), false, false);
 			
 			// Draw the player HealthBar
-			float barRatio = potato.getProgressRatio();
+			float barRatio = portal.getProgressRatio();
 			float maxBarWidth = 638/2.55f;
 			float barWidth = maxBarWidth * barRatio;
 			float barBackgroundWidth = maxBarWidth * (1 - barRatio);

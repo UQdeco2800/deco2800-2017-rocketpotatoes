@@ -22,7 +22,7 @@ public class BasePortal extends AbstractPortal implements Tickable, HasProgressB
     /*
      * Progress bar to display health of base portal
      */
-    private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthBarGreen", 1);
+    private static final ProgressBarEntity progressBar = new ProgressBarEntity("healthBarGreen", "portalIcon", 1);
     /*
      * Base portal's texture
     */
