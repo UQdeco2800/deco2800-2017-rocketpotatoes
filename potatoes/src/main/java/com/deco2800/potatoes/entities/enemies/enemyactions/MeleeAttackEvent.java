@@ -63,12 +63,6 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 						new Vector3(enemy.getPosX() + 0.5f, enemy.getPosY() + 0.5f, enemy.getPosZ()),
 						new Vector3(foundTarget.get().getPosX(), foundTarget.get().getPosY(), foundTarget.get().getPosZ()), 1, 4));
 
-		/*Stop attacking if dead (deathHandler of mortal entity will eventually unregister the event).*/
-		if (enemy.isDead()) {
-			GameManager.get().getManager(EventManager.class).unregisterEvent(enemy, this);
-			setDoReset(false);
-
-		}
 	}
 
 	/**
