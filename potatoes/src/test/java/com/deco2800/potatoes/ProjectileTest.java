@@ -7,12 +7,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
+
+import org.junit.After;
+import org.junit.Test;
+
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.effects.*;
+import com.deco2800.potatoes.entities.effects.AOEEffect;
+import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.effects.LazerEffect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.health.MortalEntity;
+
 import com.deco2800.potatoes.entities.projectiles.*;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
@@ -23,10 +31,20 @@ import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 
 import java.util.Optional;
 
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.worlds.World;
+
+
 /**
  * @author Tristan Cargill
  */
 public class ProjectileTest {
+
 
 	protected Projectile testProjectile;
 //	protected PlayerProjectile testPlayerProjectile;
@@ -142,6 +160,7 @@ public class ProjectileTest {
 
 	}
 
+
 //	@Test
 //	public void TestPlayerProjectile() {
 //		GameManager.get().setWorld(new ProjectileTest.TestWorld());
@@ -155,16 +174,13 @@ public class ProjectileTest {
 //		assertTrue(testPlayerProjectile.getDamage() == 10);
 //		assertEquals(startEffect, testPlayerProjectile.getStartEffect());
 //		assertEquals(endEffect, testPlayerProjectile.getEndEffect());
-//		assertTrue(testPlayerProjectile.getProjectileTexture().toString().contains("ROCKET"));
-//		assertTrue(testPlayerProjectile.getRange() == 8);
-//		assertEquals(5.0, testPlayerProjectile.getPosX(), 0.2);
-//		assertEquals(10.0, testPlayerProjectile.getPosY(), 0.2);
 //		assertEquals(0, testPlayerProjectile.getPosZ(), 0.0);
 //		assertEquals(TargetPosX, testPlayerProjectile.getTargetPosX(), 0);
 //		assertEquals(TargetPosY, testPlayerProjectile.getTargetPosY(), 0);
 //		assertEquals(targetClass.getClass(), testPlayerProjectile.getTargetClass());
 //
 //	}
+
 
 
 	@Test
@@ -253,5 +269,6 @@ public class ProjectileTest {
 		ProjectileTexture.LEAVES.textures();
 		ProjectileTexture.ACORN.textures();
 	}
+
 
 }

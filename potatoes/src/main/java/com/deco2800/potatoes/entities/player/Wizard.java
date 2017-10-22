@@ -4,28 +4,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
-import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
-import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.util.WorldUtil;
 
 public class Wizard extends Player {
+
 	private Optional<AbstractEntity> target;
-	private boolean isCharging = false;
 	/**
 	 * Creates a new Archer instance.
 	 *
@@ -36,7 +25,7 @@ public class Wizard extends Player {
 	public Wizard(float posX, float posY) {
 		super(posX, posY);
 		this.defaultSpeed = 0.09f;
-		this.projectileType = OrbProjectile.class;
+		this.projectileClass = OrbProjectile.class;
 		super.setMoveSpeed(defaultSpeed);
 		this.facing = Direction.SE;
 		this.resetState();
@@ -89,13 +78,14 @@ public class Wizard extends Player {
 				break;
 		}
 	}
-
+	
 	@Override
 	public void handleKeyDown(int keycode) {
 		super.handleKeyDown(keycode);
 		switch (keycode) {
-			case Input.Keys.SPACE:
-				isCharging = true;
+		case Input.Keys.SPACE:
+			if(!(currentShootStage==ShootStage.LOOSE))
+				currentShootStage=ShootStage.HOLDING;
 		}
 	}
 
@@ -103,16 +93,19 @@ public class Wizard extends Player {
 	public void handleKeyUp(int keycode) {
 		super.handleKeyUp(keycode);
 		switch (keycode) {
-			case Input.Keys.SPACE:
-				isCharging = false;
+		case Input.Keys.SPACE:
+			currentShootStage=ShootStage.LOOSE;
+			if(OrbProjectile.class.isAssignableFrom(projectileClass))
+				((OrbProjectile)projectile).hasBeenReleased(true);
+			break;
 		}
 	}
-
-	@Override
-	protected void attack() {
-		super.attack();
-		System.out.println("att");
-	}
+	
+    @Override
+    protected void attack() {
+    	super.attack(); 
+    	
+    }
 
 	private void hoverAnimation() {
 		// Update shadow position
@@ -133,25 +126,12 @@ public class Wizard extends Player {
 	@Override
 	protected void interact() {
 		super.interact();
-		// Custom interaction code here
 	}
 
 	@Override
 	public void onTick(long arg0) {
 		super.onTick(arg0);
 		hoverAnimation();
-
-		if (canAttack&&projectile != null && OrbProjectile.class.isAssignableFrom(projectileType)) {
-			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-			if (isCharging) {
-				((OrbProjectile) ((PlayerProjectile) projectile).projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
-				((OrbProjectile) ((PlayerProjectile) projectile).projectile).setTargetPosition(((PlayerProjectile)projectile).mousePos.x, ((PlayerProjectile)projectile).mousePos.y, 0);
-			} else {
-				((OrbProjectile) ((PlayerProjectile) projectile).projectile).fire();
-			}
-		}
 	}
 
 }

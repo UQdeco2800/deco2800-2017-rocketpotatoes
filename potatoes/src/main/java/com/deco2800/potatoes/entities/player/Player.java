@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,13 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.deco2800.potatoes.entities.effects.AOEEffect;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.MineBomb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -28,9 +27,10 @@ import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.health.RespawnEvent;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
+import com.deco2800.potatoes.entities.projectiles.MineBomb;
+import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.entities.projectiles.PlayerProjectile.PlayerShootMethod;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
@@ -43,10 +43,12 @@ import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.InputManager;
 import com.deco2800.potatoes.managers.Inventory;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TreeState;
+import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 /**
@@ -61,11 +63,21 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
+    protected ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
 
-    protected PlayerProjectile.PlayerShootMethod shootMethod = PlayerProjectile.PlayerShootMethod.MOUSE;
-    protected Class<?> projectileType = BallisticProjectile.class;
-    protected Projectile projectile = null;
+    public enum PlayerShootMethod {
+		DIRECTIONAL, CLOSEST, MOUSE
+	}
+    public enum ShootStage {
+    	READY, HOLDING, LOOSE
+    }
+    public ShootStage currentShootStage=ShootStage.READY;
+    protected PlayerShootMethod shootingStyle=PlayerShootMethod.MOUSE;
+    public Vector2 mousePos;
+    public Projectile projectile;
+    protected Class<?> projectileClass = BallisticProjectile.class;
+    protected ProjectileTexture projectileTexture=ProjectileTexture.ROCKET;
+    //protected Projectile projectile = null;
     protected int respawnTime = 5000;    // Time until respawn in milliseconds
     private Inventory inventory;
     private boolean holdPosition = false;    // Used to determine if the player should be held in place
@@ -306,8 +318,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 tossItem(new FoodResource());
                 break;
             case Input.Keys.E:
-                interact();
-                harvestResources();
+                // If successfully harvest, play animation
+                if (harvestResources()) {
+                    interact();
+                }
                 break;
             case Input.Keys.SPACE:
                 attack();
@@ -464,7 +478,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     @Override
     public void onTick(long arg0) {
-
+    	//mouse input
+    	mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
+				GameManager.get().getManager(InputManager.class).getMouseY());
 
         //Get terrainModifier of the current tile
         float myX = super.getPosX();
@@ -567,8 +583,8 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * Handles harvesting resources from resource tree that are in range. Resources
      * are added to the player's inventory.
      */
-    private void harvestResources() {
-        double interactRange = 3f; 
+    private boolean harvestResources() {
+        double interactRange = 1.5f;
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -581,6 +597,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (didHarvest) {
             GameManager.get().getManager(SoundManager.class).playSound("harvesting.mp3");
         }
+        return didHarvest;
     }
 
 
@@ -633,7 +650,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public ProgressBar getProgressBar() {
         return PROGRESS_BAR;
     }
-
+    ArrayList<Projectile> tr=new ArrayList<Projectile>();
     /**
      * A method for making the player attack based on the direction it
      * faces. Allows the attack state to be enabled and respective
@@ -649,16 +666,40 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 	        em.registerEvent(this, new  AttackCooldownEvent(500));
 		}
         if (this.setState(ATTACK)) {
+        	currentShootStage=ShootStage.READY;
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
             float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
             float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
             float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-
             target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
             float targetPosX = 0;
             float targetPosY = 0;
+            
+            Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
+            Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
+            
+         
+            if (BallisticProjectile.class.isAssignableFrom(projectileClass)) {
+    			projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(), startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		} else if (OrbProjectile.class.isAssignableFrom(projectileClass)) {
+    			projectile = new OrbProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		} // else if (BombProjectile.class.isAssignableFrom(shootObjectClass)) {
+    			// projectile = new BombProjectile(targetClass, startPos, targetPos, range,
+    			// damage, projectileTexture,
+    			// startEffect, endEffect);
+    			// }
+    		else if (HomingProjectile.class.isAssignableFrom(projectileClass)) {//could be t.getclass
+    			projectile = new HomingProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		} else {
+    			projectile = new BallisticProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(),  startPos, endPos, 10, 1, projectileTexture,
+    					null, null);
+    		}
+    
             switch (facing) {
                 case N:
                     break;
@@ -687,12 +728,18 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 default:
                     break;
             }
+    		if (shootingStyle == PlayerShootMethod.MOUSE) {
+    			if (HomingProjectile.class.isAssignableFrom(projectileClass)) {
+    				((HomingProjectile) projectile).setHomingDelay(10);
+    			}
+    			projectile.setTargetPosition(mousePos.x, mousePos.y, 0);
+    		}
             if (target.isPresent()) {
                 targetPosX = target.get().getPosX();
                 targetPosY = target.get().getPosY();
 
             } else {
-                if (shootMethod == PlayerShootMethod.DIRECTIONAL) {
+                if (shootingStyle == PlayerShootMethod.DIRECTIONAL) {
                     switch (facing) {
                         case W:
                             projectile.setTargetPosition(pPosX - 5, pPosY - 5, 0);
@@ -722,17 +769,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
                 }
 
             }
-            Vector3 startPos = new Vector3(pPosX - 1, pPosY, pPosZ);
-            Vector3 endPos = new Vector3(targetPosX, targetPosY, 0);
-            projectile = new PlayerProjectile(!target.isPresent() ? EnemyEntity.class : target.get().getClass(), startPos, endPos, 8f, 100, ProjectileTexture.ROCKET,
-                    null, null, super.facing.toString(), shootMethod,
-                    projectileType);
-
-
-
             GameManager.get().getWorld().addEntity(projectile);
-
-
         }
     }
 
@@ -775,5 +812,5 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     public String toString() {
         return "The player";
     }
-
+    
 }

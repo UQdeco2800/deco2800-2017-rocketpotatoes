@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TreeShopGui extends Gui implements SceneGui {
     private static final transient Logger LOGGER = LoggerFactory.getLogger(TreeShopGui.class);
-    private static final float anglePadding = 2.0f;
+    private static final float ANGLE_PADDING = 2.0f;
     private Circle shopShape; // Circle around whole shop
     private Circle cancelShape; // Circle around cross in menu center
     private boolean mouseIn; // Mouse inside shopMenu
@@ -65,13 +65,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 
     // Opacity value for treeShop subsection when mouse is not hovering over it
-    private final float UNSELECTED_ALPHA = 0.2f;
+    private static final float UNSELECTED_ALPHA = 0.2f;
     // Opacity value for treeShop subsection when mouse hovers over
     private static final float SELECTED_ALPHA = 0.5f;
     // Maximum number of tile lengths from player where you can plant trees
     private static final int MAX_RANGE = 6;
 
-     private int SHOPRADIUS = 150;
+     private int shopRadius = 150;
 
     /**
      * Instantiates shop with but doesn't display it yet.
@@ -140,12 +140,7 @@ public class TreeShopGui extends Gui implements SceneGui {
                 closeShop();
             }
         }
-        try {
-
-        } catch (Exception e){
-            // not a valid tree binding
-        }
-
+        
     }
 
     private void initTreeState() {
@@ -290,7 +285,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         if (distance > MAX_RANGE)
             closeShop();
         updateScreenPos();
-        createTreeMenu(shopX, shopY, SHOPRADIUS);
+        createTreeMenu(shopX, shopY, shopRadius);
     }
 
     /**

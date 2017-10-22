@@ -13,10 +13,10 @@ public class RenderLine extends Structure implements Closeable {
     public static class ByValue extends RenderLine implements Structure.ByValue {
     }
 
-    private int srcX;
-    private int srcY;
-    private int dstX;
-    private int dstY;
+    public int srcX;
+    public int srcY;
+    public int dstX;
+    public int dstY;
 
 
     @Override
@@ -31,37 +31,5 @@ public class RenderLine extends Structure implements Closeable {
         // occurs after every native method call. If it occurs after we drop the struct, JNA
         // will try to read from the freed memory and cause a segmentation fault.
         setAutoSynch(false);
-    }
-
-    /**
-     * Returns the line's src x
-     * @return srcX
-     */
-    public int getSrcX() {
-        return srcX;
-    }
-
-    /**
-     * Returns the line's src y
-     * @return srcY
-     */
-    public int getSrcY() {
-        return srcY;
-    }
-
-    /**
-     * Returns the line's dst x
-     * @return dstX
-     */
-    public int getDstX() {
-        return dstX;
-}
-
-    /**
-     * Returns the line's dst y
-     * @return dstY
-     */
-    public int getDstY() {
-        return dstY;
     }
 }

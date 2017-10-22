@@ -1,23 +1,22 @@
 package com.deco2800.potatoes.worlds;
 
-import java.awt.Point;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.portals.AbstractPortal;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.util.GridUtil;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
+import com.deco2800.potatoes.worlds.terrain.TerrainType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.portals.AbstractPortal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.WorldManager;
-import com.deco2800.potatoes.util.GridUtil;
-import com.deco2800.potatoes.worlds.terrain.Terrain;
-import com.deco2800.potatoes.worlds.terrain.TerrainType;
 
 /**
  * Represents a type of world with a set of terrain types and world generation.
@@ -116,10 +115,11 @@ public class WorldType {
 			}
 			validLand = checkValidLand(worldSize, terrainSet);
 			count++;
-			if (count == 500) {
+			if (count == 50000) {
+				// Computers are fast let's make a lot more worlds
 				LOGGER.warn("world gen is taking a long time, valid location is probably very unlikely");
 			}
-			if (count > 1000) {
+			if (count > 100000) {
 				LOGGER.warn("gave up on valid world");
 				break;
 			}

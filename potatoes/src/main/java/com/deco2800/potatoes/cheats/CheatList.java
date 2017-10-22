@@ -9,6 +9,15 @@ import com.deco2800.potatoes.managers.CheatCodeManager.Key;
  * A list of cheat codes to be added to the game.
  */
 public class CheatList {
+
+    /**
+     * empty constructor for serialization
+     */
+    public void CheatList(){
+
+
+    }
+
     /**
      * Does what it says on the tin.
      */
@@ -24,8 +33,8 @@ public class CheatList {
                 Key.RIGHT,
                 Key.LEFT,
                 Key.RIGHT,
-                Key.A,
                 Key.B,
+                Key.A,
                 Key.START);
 
         manager.addCheatCode(new Rustyfish(),
@@ -37,7 +46,5 @@ public class CheatList {
                 Key.LEFT,
                 Key.RIGHT,
                 Key.DOWN);
-
-        manager.addCheatCode(new Shortcut(), Key.SELECT);
     }
 }

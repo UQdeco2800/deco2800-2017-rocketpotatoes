@@ -63,9 +63,10 @@ public class ServerMessageProcessor {
         // Set connection name
         c.name = m.getName();
 
-        // Tell the new client their id
+        // Tell the new client their id and seed
         Network.HostConnectionConfirmMessage cResponse = new Network.HostConnectionConfirmMessage();
         cResponse.setId((byte) c.getID());
+        cResponse.setSeed(GameManager.get().getSeed());
         server.server.sendToTCP(c.getID(), cResponse);
 
         // Tell the client of all the other clients in order
@@ -96,6 +97,8 @@ public class ServerMessageProcessor {
         Network.HostNewPlayerMessage response = new Network.HostNewPlayerMessage();
         response.setId((byte) c.getID());
         response.setName(m.getName());
+        response.setPlayer(m.getPlayer());
+
         server.server.sendToAllTCP(response);
 
         // Finally tell the client they are ready to play
@@ -123,10 +126,11 @@ public class ServerMessageProcessor {
         response.setY(m.getY());
         response.setId(c.getID());
 
-        server.server.sendToAllExceptUDP(c.getID(), response);
+        server.server.sendToAllExceptTCP(c.getID(), response);
     }
 
     /**
+     * Processes a build order
      * Processes a build order
      *
      * Builds a tower entity at the given position if possible, otherwise does nothing
