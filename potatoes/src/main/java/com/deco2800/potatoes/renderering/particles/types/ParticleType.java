@@ -8,14 +8,14 @@ import com.deco2800.potatoes.renderering.particles.Particle;
 import java.util.List;
 
 public abstract class ParticleType {
-    public Color color;
+    private Color color;
     private int sizeX, sizeY;
     public int number, rate;
-    public float lifeTime;
+    private float lifeTime;
     public float cycleDelta;
     public float currentCycleTime;
-    public float rotationSpeed = 1.0f;
-    public float alphaCeil = 1.0f;
+    private float rotationSpeed = 1.0f;
+    private float alphaCeil = 1.0f;
     private float fadeOutPercent = 1.0f;
     private float speed = 1.0f;
 
@@ -122,7 +122,7 @@ public abstract class ParticleType {
     public void setSizeY(int sizeY){
         this.sizeY = sizeY;
     }
-    //set lowerAngleBound
+    //get lowerAngleBound
     public float getLowerAngleBound(){
         return this.lowerAngleBound;
     }
@@ -137,5 +137,29 @@ public abstract class ParticleType {
     //set lowerAngleBound
     public void setUpperAngleBound(float upperAngleBound){
         this.upperAngleBound = upperAngleBound;
+    }
+    //set colour
+    public Color getColor(){
+        return this.color;
+    }
+    //set colour
+    public void setColor(Color color){
+        this.color = color;
+    }
+    //return LifeTime
+    public float getLifeTime(){
+        return this.lifeTime;
+    }
+    //set LifeTime
+    public void setLifeTime(float lifeTime){
+        this.lifeTime = lifeTime;
+    }
+    //return rotationSpeed
+    public float getRotationSpeed(){
+        return this.rotationSpeed;
+    }
+    //set rotationSpeed
+    public void setRotationSpeed(float rotationSpeed){
+        this.rotationSpeed = rotationSpeed;
     }
 }

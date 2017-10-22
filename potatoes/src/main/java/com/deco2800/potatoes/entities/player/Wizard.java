@@ -59,7 +59,7 @@ public class Wizard extends Player {
 		return null;
 	}
 
-	private float hoverTime = 0;	 // A value used to determine the height of the hover
+	private float hoverTime = 0;  // A value used to determine the height of the hover
 	private static final float HOVER_SPEED = 0.1f; // Rate at which wizard hovers
 	private static final float HOVER_HEIGHT = 7.5f; // Max height at which wizard hovers
 
@@ -108,13 +108,14 @@ public class Wizard extends Player {
 		}
 	}
 
-    @Override
-    protected void attack() {
-    	super.attack();    		
-    }
+	@Override
+	protected void attack() {
+		super.attack();
+		System.out.println("att");
+	}
 
-    private void hoverAnimation() {
-    	// Update shadow position
+	private void hoverAnimation() {
+		// Update shadow position
 		shadow.setY(getPosY() + 0.25f);
 		shadow.setX(getPosX() - 0.25f);
 
@@ -133,19 +134,20 @@ public class Wizard extends Player {
 	protected void interact() {
 		super.interact();
 		// Custom interaction code here
-	} 
+	}
 
 	@Override
 	public void onTick(long arg0) {
 		super.onTick(arg0);
 		hoverAnimation();
-		
-		if (projectile != null && OrbProjectile.class.isAssignableFrom(projectileType)) {
+
+		if (canAttack&&projectile != null && OrbProjectile.class.isAssignableFrom(projectileType)) {
 			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 			if (isCharging) {
 				((OrbProjectile) ((PlayerProjectile) projectile).projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
+				((OrbProjectile) ((PlayerProjectile) projectile).projectile).setTargetPosition(((PlayerProjectile)projectile).mousePos.x, ((PlayerProjectile)projectile).mousePos.y, 0);
 			} else {
 				((OrbProjectile) ((PlayerProjectile) projectile).projectile).fire();
 			}

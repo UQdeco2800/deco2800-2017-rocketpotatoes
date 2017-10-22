@@ -19,7 +19,6 @@ import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
@@ -210,8 +209,10 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
         // Check if the change is the same, if so return true.
+
         if (state == newState) return true;
         //Only change the state if IDLE or WALK-ing
+
         if (state == IDLE || state == WALK || state == DEATH) {
             stateChanged(state, newState);
             state = newState;
