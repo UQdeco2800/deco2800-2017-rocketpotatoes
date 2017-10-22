@@ -31,7 +31,7 @@ public class Caveman extends Player {
         super.setMoveSpeed(defaultSpeed);
 		updateSprites();
 		super.setYRenderOffset(9);
-		PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "caveIcon", 4);
+		progressBar = new ProgressBarEntity("healthBarGreen", "caveIcon", 4);
 
     }
 

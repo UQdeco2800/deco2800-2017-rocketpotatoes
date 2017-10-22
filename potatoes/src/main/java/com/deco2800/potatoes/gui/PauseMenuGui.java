@@ -170,13 +170,13 @@ public class PauseMenuGui extends Gui {
         
         // progress bar options
 		progressBarLabel = new Label("Progress Bars", uiSkin);
-		playerProgressBarCheckBox = new CheckBox(" Show Player Progress Bar", uiSkin);
+		playerProgressBarCheckBox = new CheckBox(" Display Player Progress Bar", uiSkin);
 		playerProgressBarCheckBox.setChecked(true);
-		potatoProgressBarCheckBox = new CheckBox(" Show Goal Potato Progress Bar", uiSkin);
+		potatoProgressBarCheckBox = new CheckBox(" Display Portal Progress Bar", uiSkin);
 		potatoProgressBarCheckBox.setChecked(true);
-		alliesProgressBarCheckBox = new CheckBox(" Show Allies Progress Bar", uiSkin);
+		alliesProgressBarCheckBox = new CheckBox(" Display Ally Progress Bars", uiSkin);
 		alliesProgressBarCheckBox.setChecked(true);
-		enemyProgressBarCheckBox = new CheckBox(" Show Enemy Progress Bar", uiSkin);
+		enemyProgressBarCheckBox = new CheckBox(" Display Enemy Progress Bars", uiSkin);
 		enemyProgressBarCheckBox.setChecked(true);
 		
         optionsButtonGroup = new VerticalGroup();
