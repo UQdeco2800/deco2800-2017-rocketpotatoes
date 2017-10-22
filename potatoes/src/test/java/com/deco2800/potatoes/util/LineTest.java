@@ -25,9 +25,6 @@ public class LineTest {
                 is(equalTo(1)));
     }
 
-    @Test
-    public void onSegment() {
-    }
 
     @Test
     public void doIntersect() {

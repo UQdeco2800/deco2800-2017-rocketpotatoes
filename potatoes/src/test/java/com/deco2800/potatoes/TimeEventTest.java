@@ -2,6 +2,8 @@ package com.deco2800.potatoes;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.deco2800.potatoes.entities.TimeEvent;
@@ -38,9 +40,11 @@ public class TimeEventTest {
 
 	}
 
-	@Test
+	TestTimeEvent<Object> event;
+
+	@Before
 	public void testReseting() {
-		TestTimeEvent<Object> event = new TestTimeEvent<Object>();
+		event = new TestTimeEvent<Object>();
 		event.setDoReset(true);
 		event.setResetAmount(100);
 		event.setProgress(30);
@@ -53,6 +57,11 @@ public class TimeEventTest {
 		event.setDoReset(false);
 		event.decreaseProgress(100, null);
 		assertEquals("Event progress is not 0 after reset", event.getProgress(), 0);
+	}
+
+	@After
+	public void tearDown() {
+		event = null;
 	}
 
 	@Test
