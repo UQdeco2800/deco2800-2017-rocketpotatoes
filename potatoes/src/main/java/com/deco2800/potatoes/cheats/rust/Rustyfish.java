@@ -179,10 +179,10 @@ public class Rustyfish implements CheatExecution {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            Color c = getColor(obj.getColor());
-            c.a = obj.getAlpha();
+            Color c = getColor(obj.color);
+            c.a = obj.alpha;
             sr.begin(ShapeRenderer.ShapeType.Filled);
-            sr.rect(obj.getX(), Gdx.graphics.getHeight() - obj.getH() - obj.getY(), obj.getW(), obj.getH(), c, c, c, c);
+            sr.rect(obj.x, Gdx.graphics.getHeight() - obj.h - obj.y, obj.w, obj.h, c, c, c, c);
             sr.end();
 
             glDisable(GL_BLEND);
@@ -199,6 +199,7 @@ public class Rustyfish implements CheatExecution {
             Native.loadLibrary("rustyfish", RLibrary.class).startGame(
                     startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
                     getWindowInfo, drawSprite, drawLine, drawRectangle);
+            System.out.println("are we here?");
         }
         catch (UnsatisfiedLinkError ex) {
             // Ignore failure, don't start game!
