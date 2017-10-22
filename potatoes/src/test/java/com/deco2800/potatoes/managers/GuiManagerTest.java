@@ -40,8 +40,7 @@ public class GuiManagerTest {
     public void testStage() {
 
         assertEquals(null, guiManager.getStage());
-
-        // TODO test we can set the stage (problems with gdx)
+        
     }
 
 }

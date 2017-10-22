@@ -152,8 +152,7 @@ public class ChatGui extends Gui {
             table.add(minButton).height(30.0f).padLeft(Align.left);
             minButton.setText("Hide Chat");
             table.row();
-
-            // TODO refine these measurements
+            
             table.add(chatContainer).width(stage.getWidth() * 0.4f).height(stage.getHeight() * 0.4f);
             table.row();
             table.add(textField).width(stage.getWidth() * 0.4f - 30.0f).align(Align.left);
@@ -205,7 +204,7 @@ public class ChatGui extends Gui {
         textList.row();
         textList.layout();
 
-        // Force scroll to bottom (TODO disable if manually scrolled up?)
+        // Force scroll to bottom
         chatContainer.layout();
         chatContainer.scrollTo(0, 0, 0, 0);
     }
