@@ -146,6 +146,15 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		return resourceTrees;
 	}
 
+	/**
+	 * Return the targets of this speedy enemy.
+	 *
+	 * @return the raccoon's targets
+	 */
+	public EnemyTargets getSpeedyTargets() {
+		return targets;
+	}
+
 	/***
 	 * Determine an the speedy enemy's most relevant target according to its main entity and 'sight aggro entity
 	 * targets. Ignore already visited resource trees.

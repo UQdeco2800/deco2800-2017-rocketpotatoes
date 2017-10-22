@@ -105,12 +105,6 @@ public class TankEnemyTest extends BaseTest {
 
 	}
 
-
-	@Test
-	public void getProgressBarTest() throws Exception {
-//		System.out.print(tank1.getProgressBar());
-	}
-
 	/*
 	 * Test the toString method
 	 */
