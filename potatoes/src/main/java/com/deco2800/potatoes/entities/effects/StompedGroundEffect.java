@@ -15,6 +15,7 @@ import com.deco2800.potatoes.managers.SoundManager;
  * @author ryanjphelan
  */
 public class StompedGroundEffect extends Effect {
+
 	private static final transient String TEXTURE = "DamagedGroundTemp1";
 
 	private boolean isTemporary;
@@ -28,7 +29,7 @@ public class StompedGroundEffect extends Effect {
 	 * Empty constructor. Used for serialisation purposes
 	 */
 	public StompedGroundEffect() {
-		// empty for serialization
+		// Empty for serialization
 	}
 
 	/**

@@ -72,14 +72,14 @@ public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
         //Particle effect for visual cue that healing wave has occurred.
         ParticleManager p = GameManager.get().getManager(ParticleManager.class);
 
-        ParticleType particle =  new BasicParticleType(100000, 500.0f,
-                0.0f, 1024, Color.GREEN, 10, 10);
-        particle.setSpeed(0.9f);
+        ParticleType particle =  new BasicParticleType(25000, 1000.0f,
+                0.0f, 256, Color.GREEN, 6, 6);
+        particle.setSpeed(0.47f);
 
         Vector2 pos = Render3D.worldToScreenCoordinates(enemy.getPosX(), enemy.getPosY(), 0);
         int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
         int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-        p.addParticleEmitter(1.0f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
+        p.addParticleEmitter(1.27f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
                 particle));
     }
 
