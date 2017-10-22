@@ -35,12 +35,7 @@ public class TextureManager extends Manager {
      * Loads all the textures.
      */
     public static void loadTextures() {
-        saveTexture("grass", "resources/placeholderassets/grass.png");
-        saveTexture("grass2", "resources/placeholderassets/grass2.png");
-        saveTexture("w1", "resources/placeholderassets/w1.png");
         saveTexture("tree", "resources/trees/Basic.png");
-        saveTexture("real_tree", "resources/placeholderassets/tree.png");
-        saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
         saveTexture("spacman_blue", "resources/placeholderassets/spacman_blue.png");
@@ -49,18 +44,14 @@ public class TextureManager extends Manager {
         saveTexture("spacman_ded", "resources/placeholderassets/spacman_ded.png");
         saveTexture("selected", "resources/placeholderassets/selected.png");
         saveTexture("selected_black", "resources/placeholderassets/selected_black.png");
-        saveTexture("tree_selected", "resources/placeholderassets/tree_selected.png");
         saveTexture("squirrel", "resources/placeholderassets/squirrel.png");
         saveTexture("squirrel_right", "resources/placeholderassets/squirrel_right.png");
-        saveTexture("tower", "resources/placeholderassets/tower.png");
         saveTexture("potate", "resources/placeholderassets/potate.png");
         saveTexture("projectile", "resources/placeholderassets/projectile.png");
         saveTexture("europeanhattedsquirrel", "resources/placeholderassets/europeanhattedsquirrel.png");
         saveTexture("pronograde", "resources/placeholderassets/pronograde.png");  //Moose placeholder
         saveTexture("progress_bar", "resources/placeholderassets/progress_bar.png");
         saveTexture("ring", "resources/placeholderassets/ring.png");
-        saveTexture("highlight_tile", "resources/tiles/highlight_tile.png");
-        saveTexture("highlight_tile_invalid", "resources/tiles/highlight_tile_invalid.png");
         saveTexture("tankBear", "resources/enemies/bear/bear_SW.png");
         saveTexture("speedyRaccoon", "resources/placeholderassets/raccoon.png");
         saveTexture("enemyGate", "resources/placeholderassets/enemyGate.png");
@@ -86,8 +77,6 @@ public class TextureManager extends Manager {
         saveTexture("axe","resources/Projectiles/axe1.png");
         saveTexture("arrow","resources/Projectiles/arrow.png");
 
-        saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
-        
         /* Seed Resource Tree Sprites */
         saveTexture("seed_resource_tree", "resources/resourceTrees/seedTree.png"); // Default Sprite
         
@@ -422,13 +411,14 @@ public class TextureManager extends Manager {
         // Tiles
         // Maybe just load everything from this directory
         String[] tileNames = {"dirt_tile_1", "dirt_tile_2", "grass_tile_1", "grass_tile_2", "grass_tile_3",
-                "gravel_tile_1", "gravel_tile_1", "leaflitter_tile_1", "leaflitter_tile_2", "mud_tile_1", "rock_tile_1",
+                "gravel_tile_1", "gravel_tile_1", "mud_tile_1", "rock_tile_1",
                 "rock_tile_2", "rock_tile_3", "sand_tile_1", "snow_tile_1", "snow_tile_2"};
         for (String string : tileNames) {
             saveTexture(string, "resources/tiles/" + string + ".png");
         }
-        saveTexture("water_tile_1", "resources/placeholderassets/water_tile_1.png");
-        saveTexture("water_tile_2", "resources/placeholderassets/water_tile_2.png");
+        for (int i = 1; i <= 12; i++) {
+            saveTexture("water" + i, "resources/tiles/water" + i + ".png");
+        }
 
 
         // CollisionMask debug

@@ -3,12 +3,13 @@ package com.deco2800.potatoes.worlds;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.deco2800.potatoes.worlds.terrain.RandomTerrain;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class IceWorld extends WorldType {
-	private static final TerrainType iceTerrain = new TerrainType(null, new Terrain(GRASS, 1, true), new Terrain(GROUND, 1, false), new Terrain(WATER, 2f, false));
+	private static final TerrainType iceTerrain = new TerrainType(null, RandomTerrain.SNOW, new Terrain(GROUND, 1, true), new Terrain(WATER, 2f, false));
 	private static final List<Supplier<AbstractEntity>> iceEntities = defaultEntities("iceland");
 	private static final IceWorld instance = new IceWorld(iceTerrain, iceEntities);
 

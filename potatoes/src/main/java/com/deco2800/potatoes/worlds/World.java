@@ -57,8 +57,8 @@ public class World {
 	// Store managers for this world
 	private Set<Manager> managers = new HashSet<>();
 
-	private Drawable background;
-	private Terrain backgroundTerrain;
+	private Drawable[] background;
+	private Terrain[] backgroundTerrain;
 
 	private WorldType worldType;
 
@@ -67,7 +67,7 @@ public class World {
 		map.getProperties().put("tilewidth", TILE_WIDTH);
 		map.getProperties().put("tileheight", TILE_HEIGHT);
 		terrain = new Terrain[WorldManager.WORLD_SIZE][WorldManager.WORLD_SIZE];
-		backgroundTerrain = new Terrain("", 0.5f, true);
+		backgroundTerrain = new Terrain[]{new Terrain("", 0.5f, true)};
 		worldType = ForestWorld.get();
 	}
 
@@ -250,8 +250,12 @@ public class World {
 	 */
 	public void updatePositions() {
 		for (Entry<Integer, AbstractEntity> entry : entities.entrySet()) {
-			if (!entry.getValue().isStatic() && entry.getValue().getMoveSpeed() > 0) {
-				entitiesRtree.move(entry.getKey(), entry.getValue().getMask());
+			try {
+				if (!entry.getValue().isStatic() && entry.getValue().getMoveSpeed() > 0) {
+					entitiesRtree.move(entry.getKey(), entry.getValue().getMask());
+				}
+			} catch (NoSuchElementException e) {
+				// This is fine :fire:
 			}
 		}
 	}
@@ -268,7 +272,11 @@ public class World {
 	 * Removes the entity associated with the given id from all the maps
 	 */
 	private void removeFromMaps(int id) {
-		entitiesRtree.remove(id);
+		try {
+			entitiesRtree.remove(id);
+		} catch (NoSuchElementException e) {
+			// This is fine :fire:
+		}
 		entities.remove(id);
 	}
 
@@ -294,7 +302,7 @@ public class World {
 	 * @param tile
 	 */
 	public void setTile(int x, int y, Terrain tile) {
-		if (!tile.equals(terrain[x][y]) && !backgroundTerrain.equals(tile)) {
+		if (!tile.equals(terrain[x][y]) && !backgroundTerrain[0].equals(tile)) {
 			GameManager.get().getManager(WorldManager.class).setWorldCached(false);
 			terrain[x][y] = tile;
 			Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile.getTexture());
@@ -373,7 +381,7 @@ public class World {
 			return terrain[y][x];
 		else
 			// Makes sure terrain finding doesn't crash
-			return backgroundTerrain;
+			return backgroundTerrain[0];
 	}
 
 	/**
@@ -395,23 +403,49 @@ public class World {
 	 * Returns the background for beyond the edges of the map
 	 */
 	public TextureRegionDrawable getBackground() {
-		return (TextureRegionDrawable) background;
+		return (TextureRegionDrawable) background[0];
+	}
+
+	public TextureRegionDrawable[] getBackgroundArray() {
+		return (TextureRegionDrawable[]) background;
 	}
 
 	/**
 	 * Sets the background for beyond the edges of the map
 	 */
 	public void setBackground(Terrain terrain) {
+		if (terrain.getTexture().equals("water1")) {
+			setBackground(Terrain.WATER_ARRAY);
+			return;
+		}
 		try {
-			backgroundTerrain = terrain;
+			backgroundTerrain = new Terrain[]{terrain};
 			TextureRegion textureRegion = new TextureRegion(GameManager.get().getManager(TextureManager.class)
 					.getTextureRegion(terrain.getTexture()));
 			textureRegion.setRegionHeight(textureRegion.getRegionHeight() * WorldManager.WORLD_SIZE * 2);
 			textureRegion.setRegionWidth(textureRegion.getRegionWidth() * WorldManager.WORLD_SIZE * 2);
 			textureRegion.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-			background = new TextureRegionDrawable(textureRegion);
+			background = new TextureRegionDrawable[]{new TextureRegionDrawable(textureRegion)};
 		} catch (NullPointerException e) {
-			background = new TextureRegionDrawable();
+			background = new TextureRegionDrawable[]{new TextureRegionDrawable()};
+			LOGGER.info(e.getMessage());
+		}
+	}
+
+	public void setBackground(Terrain[] terrain) {
+		try {
+			backgroundTerrain = terrain;
+			background = new TextureRegionDrawable[terrain.length];
+			for (int i = 0; i < terrain.length; i++) {
+				TextureRegion textureRegion = new TextureRegion(GameManager.get().getManager(TextureManager.class)
+						.getTextureRegion(terrain[i].getTexture()));
+				textureRegion.setRegionHeight(textureRegion.getRegionHeight() * WorldManager.WORLD_SIZE * 2);
+				textureRegion.setRegionWidth(textureRegion.getRegionWidth() * WorldManager.WORLD_SIZE * 2);
+				textureRegion.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+				background[i] = new TextureRegionDrawable(textureRegion);
+			}
+		} catch (NullPointerException e) {
+			background = new TextureRegionDrawable[]{new TextureRegionDrawable()};
 			LOGGER.info(e.getMessage());
 		}
 	}

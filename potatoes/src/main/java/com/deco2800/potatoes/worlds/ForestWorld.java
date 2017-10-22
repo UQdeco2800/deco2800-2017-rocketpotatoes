@@ -10,12 +10,13 @@ import java.util.function.Supplier;
 import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.terrain.RandomTerrain;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class ForestWorld extends WorldType {
-	private static final TerrainType FOREST_TERRAIN = new TerrainType(null, new Terrain(GRASS, 1, true), new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false));
+	private static final TerrainType FOREST_TERRAIN = new TerrainType(null, RandomTerrain.GRASS, RandomTerrain.DIRT_NO_PLANT, new Terrain(WATER, 0, false));
 	private static final List<Supplier<AbstractEntity>> FOREST_ENTITIES = forestDefaultEntities();
 	private static final Set<Point> FOREST_CLEAR_SPOTS = forestClearSpots();
 	private static final ForestWorld INSTANCE = new ForestWorld(FOREST_TERRAIN, FOREST_ENTITIES, FOREST_CLEAR_SPOTS);

@@ -4,6 +4,9 @@ package com.deco2800.potatoes.worlds.terrain;
  * Class representing a type of terrain
  */
 public class Terrain {
+	public static final Terrain[] WATER_ARRAY = new Terrain[]{new Terrain("water1", 0, false), new Terrain
+			("water2", 0, false), new Terrain("water3", 0, false), new Terrain("water4", 0, false), new Terrain("water5", 0, false), new Terrain("water6", 0, false), new Terrain("water7", 0, false), new Terrain("water8", 0, false), new Terrain("water9", 0, false), new Terrain("water10", 0, false), new Terrain("water11", 0, false), new Terrain("water12", 0, false)};
+
 	private final String texture;
 	private final float moveScale;
 	private final boolean plantable;

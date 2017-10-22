@@ -173,25 +173,31 @@ public class Render3D implements Renderer {
 			cache.clear();
 			tileRenderer.setMap(GameManager.get().getWorld().getMap());
 
-
-			spriteCacheBatch.begin();
-			// within the screen, but down rounded to the nearest tile
-			Vector2 waterCoords = new Vector2(
-					tileWidth * ((float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1) - 0.5f *
-							WorldManager.WORLD_SIZE),tileHeight * ((float) Math.floor(tileRenderer.getViewBounds().y /
-					tileHeight - 1) - WorldManager.WORLD_SIZE));
-			// draw with screen corner and width a little bit more than the screen
-			TextureRegionDrawable background = GameManager.get().getWorld().getBackground();
-			spriteCacheBatch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
-			spriteCacheBatch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
-			spriteCacheBatch.end();
-
 			tileRenderer.setView(new Matrix4(), 0, 0, tileWidth * WorldManager.WORLD_SIZE, tileHeight *
 					WorldManager.WORLD_SIZE);
 			tileRenderer.render();
 			GameManager.get().getManager(WorldManager.class).setWorldCached(true);
 
 		}
+
+		batch.begin();
+		// within the screen, but down rounded to the nearest tile
+		Vector2 waterCoords = new Vector2(
+				tileWidth * ((float) Math.floor(tileRenderer.getViewBounds().x / tileWidth - 1) - 0.5f *
+						WorldManager.WORLD_SIZE),tileHeight * ((float) Math.floor(tileRenderer.getViewBounds().y /
+				tileHeight - 1) - WorldManager.WORLD_SIZE));
+		// draw with screen corner and width a little bit more than the screen
+		System.out.println(GameManager.get()
+				.getManager(GameTimeManager.class).getCurrentTime());
+		System.out.println(GameManager.get().getWorld().getBackgroundArray
+				().length);
+		TextureRegionDrawable background = GameManager.get().getWorld().getBackgroundArray()[Math.round(100 *
+				GameManager.get()
+				.getManager(GameTimeManager.class).getCurrentTime()) % GameManager.get().getWorld().getBackgroundArray
+				().length];
+		batch.draw(background.getRegion(), waterCoords.x, waterCoords.y);
+		batch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
+		batch.end();
 
 		cache.setProjectionMatrix(GameManager.get().getManager(CameraManager.class).getCamera().combined);
 		cache.begin();

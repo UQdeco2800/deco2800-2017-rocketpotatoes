@@ -25,7 +25,7 @@ public class WorldType {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorldType.class);
 
 	protected static final String GROUND = "mud_tile_1";
-	protected static final String WATER = "water_tile_1";
+	protected static final String WATER = "water1";
 	protected static final String GRASS = "grass_tile_1";
 	private static final Point PORTAL_POS = new Point(WorldManager.WORLD_SIZE / 2, WorldManager.WORLD_SIZE / 2);
 
