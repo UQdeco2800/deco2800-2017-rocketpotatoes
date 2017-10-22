@@ -319,7 +319,7 @@ public class Render3D implements Renderer {
 			AbstractEntity e = entity.getKey();
 
 			// skip projectiles & effects
-			if (!(e instanceof Projectile))
+			if (!(e instanceof Projectile)&&!(e instanceof Effect))
 				continue;
 
 			// get texture
