@@ -329,8 +329,17 @@ public class GameScreen implements Screen {
 			 */
 
 				// Make our player
-				playerManager.setPlayer(GameManager.get().getWorld().getLength() / 2 - 5f,
-						GameManager.get().getWorld().getWidth() / 2 - 5f);
+
+
+				int targetX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
+				int targetY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
+
+				while (GameManager.get().getWorld().getTerrain(targetX, targetY).getMoveScale() == 0) {
+					targetX += GameManager.get().getRandom().nextInt() % 4 - 2;
+					targetY += GameManager.get().getRandom().nextInt() % 4 - 2;
+				}
+
+				playerManager.setPlayer(targetX, targetY);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
