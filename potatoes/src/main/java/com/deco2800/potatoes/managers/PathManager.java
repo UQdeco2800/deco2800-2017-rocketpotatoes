@@ -4,6 +4,7 @@ import com.deco2800.potatoes.collisions.*;
 
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.WaterWall;
+import com.deco2800.potatoes.gui.DebugModeGui;
 import com.deco2800.potatoes.util.RTree;
 import com.deco2800.potatoes.worlds.World;
 
@@ -40,6 +41,7 @@ public class PathManager extends Manager {
     public PathManager() {
         // Hi sonar!
         generateWaterWalls();
+        GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).show();
     }
 
 
