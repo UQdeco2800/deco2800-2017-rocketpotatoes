@@ -200,7 +200,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param yCoord y coordinate
 	 */
 	public void setDirectionToCoords(float xCoord, float yCoord) {
-		this.facing = getFromRad( getRadFromCoords( xCoord-this.getPosX(), yCoord-this.getPosY()) );
+		this.facing = getFromRad( getRadFromCoords( xCoord-this.getPosX(), yCoord-this.getPosY()));
 		this.updateSprites();
 	}
 
