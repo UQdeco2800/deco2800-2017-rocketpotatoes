@@ -39,6 +39,7 @@ import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Map;
 
 /**
@@ -103,7 +104,7 @@ public class GameScreen implements Screen {
 		if (isHost) {
 			multiplayerManager.createHost(port);
 			// Loopback for host's connection to itself
-			multiplayerManager.joinGame(name, "127.0.0.1", port);
+			multiplayerManager.joinGame(name, InetAddress.getLoopbackAddress().getHostAddress(), port);
 		} else {
 			multiplayerManager.joinGame(name, ip, port);
 		}
