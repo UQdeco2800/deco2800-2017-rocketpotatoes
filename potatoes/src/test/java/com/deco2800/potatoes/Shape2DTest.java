@@ -65,6 +65,7 @@ public class Shape2DTest {
 
     //TODO line equals
 
+
     //colision
     @Test
     public void collisionPointToPoint() {

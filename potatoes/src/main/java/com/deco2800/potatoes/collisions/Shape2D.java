@@ -48,6 +48,13 @@ public abstract class Shape2D {
 	}
 
 	/**
+	 * @return A Point2D at the centre of this shape
+	 */
+	public Point2D getCentre() {
+		return new Point2D(x,y);
+	}
+
+	/**
 	 * Gets the angle of the line from the centre of this Shape2D to
 	 * the other Shape2D in radians, using Math.atan2()
 	 *

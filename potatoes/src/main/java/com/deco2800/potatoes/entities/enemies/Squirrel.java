@@ -1,5 +1,6 @@
 package com.deco2800.potatoes.entities.enemies;
 
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.*;
@@ -40,7 +41,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 
 	private AbstractEntity target = null;
-	private Shape2D targetNode = null;
+	private Point2D targetNode = null;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
@@ -87,14 +88,13 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 		//PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		PathManager pathMan = GameManager.get().getManager(PathManager.class);
 
-		pathMan.initialise();
 
 		//AbstractEntity relevantTarget = mostRelevantTarget();
 
 		if (target == null)				//(relevantTarget == null)
 			return;
 
-		targetNode = pathMan.getTargetNode((Circle2D) this.getMask(), target, targetNode);
+		targetNode = pathMan.getNextNodeToTarget((Circle2D) this.getMask(), target, targetNode);
 
 		if (targetNode == null)
 			return;

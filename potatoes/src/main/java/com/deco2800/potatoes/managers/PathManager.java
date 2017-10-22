@@ -29,31 +29,15 @@ public class PathManager extends Manager {
      * expanded so that multiple different goals can be set.
      */
 
-    //private Map< AbstractEntity, Map<Point2D, Point2D>> spanningPaths = new HashMap<>(); TODO allow targets & width
-    private Map<Point2D, Point2D> spanningPath = new HashMap<>();
-    // for each target there is a spanning tree of nodes, showing the shortest path to that target
-
-    private Set<Point2D> nodes = new HashSet<>();               // all nodes of the graph
-    private Map<Point2D, Boolean> nodeChecked = new HashMap<>();// nodes which have a direct line of sight
-    private Map<Point2D, Float> nodeCost = new HashMap<>();     // the distance to the target from this node
-
-    private Set<Line2D> edges = new HashSet<>();                    // all the edges of the graph
-    private Map<Point2D, Set<Line2D>> nodeEdges = new HashMap<>();  // the edges that each point is a part of
-    private Map<Line2D, Float> edgeCost = new HashMap<>();          // the cost of the edge (at the moment distance^2)
-    private Map<Line2D, Float> edgeWidth = new HashMap<>();         // the max width an entity following this edge can be
-
-    private AbstractEntity target;
-
-    //TODO Check target static
-    //TODO Check obstacles added removed
-    //TODO Check target mobile && moved
-    //TODO different set of nodes based on entity size
-
-    private Line2D currEdge = null;
+    private Set<AbstractEntity> targets = new HashSet<>();
+    private Map<AbstractEntity, Point2D> targetCentres = new HashMap<>();
+    private Map<AbstractEntity, Map<Float, TargetPath>> targetPaths = new HashMap<>();
 
 
-    private static final int NUMBER_OF_RANDOM_NODES = 0;
-    private static float nodeOffset = (float) 0.7;
+    private static float nodeOffsetFudge = (float) 0.005;
+    private static float edgeWidthFudge = (float) 0.01;
+
+
 
     /**
      */
@@ -62,368 +46,99 @@ public class PathManager extends Manager {
     }
 
 
+    // ----------     Debug Drawing    ---------- //
+    // only should be used in render God/Debug
 
+    private boolean nodesNeedsUpdateFlag = false;
+    private Set<Point2D> nodes = new HashSet<>();
+
+    private boolean edgesNeedsUpdateFlag = false;
+    private Set<Line2D> edges = new HashSet<>();
+
+    //TODO comm
     public Set<Point2D> getNodes() {
+        if (nodesNeedsUpdateFlag) {
+
+            nodes.clear();
+
+            for (Map<Float, TargetPath> target : targetPaths.values()) {
+                for (TargetPath targPath : target.values()) {
+                    nodes.addAll(targPath.nodes);
+                }
+            }
+        }
         return nodes;
     }
 
+    //TODO comm
     public Set<Line2D> getEdges() {
+        if (edgesNeedsUpdateFlag) {
+
+            edges.clear();
+
+            for (Map<Float, TargetPath> target : targetPaths.values()) {
+                for (TargetPath targPath : target.values()) {
+                    edges.addAll(targPath.edges);
+                }
+            }
+        }
+
         return edges;
     }
 
-    /**
-     * Populates the internal graph representation of the path manager, based on the initial world state.
-     * Should be run after loading the map
-     */
-    public void initialise() {
-        if (! nodes.isEmpty()) return;
 
-        nodes.clear();
-        edges.clear();
-        //TODO clear the other stuff
 
-        World world = GameManager.get().getWorld();
 
+    // ----------     on Tick    ---------- //
 
-        //add points in corners of map
-        nodes.add(new Point2D(0, 0));
-        nodes.add(new Point2D(world.getWidth(), 0));
-        nodes.add(new Point2D(0, world.getLength()));
-        nodes.add(new Point2D(world.getWidth(), world.getLength()));
-
-
-        //get portal
-        AbstractEntity portal = null;
-        for (AbstractEntity entity : world.getEntities().values()) {
-            if (entity instanceof EnemyGate) {
-                portal = entity;
-                break;
-            }
-        }
-
-        //add points around corners of of portal
-        float portX = portal.getPosX();
-        float portY = portal.getPosY();
-
-        nodes.add( new Point2D(portX - nodeOffset, portY - nodeOffset));
-        nodes.add( new Point2D(portX - nodeOffset, portY + nodeOffset));
-        nodes.add( new Point2D(portX + nodeOffset, portY - nodeOffset));
-        nodes.add( new Point2D(portX + nodeOffset, portY + nodeOffset));
-
-
-        // put nodes on the corners of our static entities
-        for (AbstractEntity entity : world.getEntities().values()) {
-            if (entity.isStatic() && entity.isSolid()) {
-                //TODO make less crummy & make 8 points for circles
-                nodes.add( new Point2D(entity.getPosX() - (nodeOffset + 0.5f), entity.getPosY() - (nodeOffset + 0.5f)));
-                nodes.add( new Point2D(entity.getPosX() - (nodeOffset + 0.5f), entity.getPosY() + (nodeOffset + 0.5f)));
-                nodes.add( new Point2D(entity.getPosX() + (nodeOffset + 0.5f), entity.getPosY() - (nodeOffset + 0.5f)));
-                nodes.add( new Point2D(entity.getPosX() + (nodeOffset + 0.5f), entity.getPosY() + (nodeOffset + 0.5f)));
-            }
-        }
-
-
-        // Initialise random points on the map
-        for (int i = 0; i < NUMBER_OF_RANDOM_NODES; i++) {
-            nodes.add(new Point2D((float) (Math.random() * world.getWidth()),
-                    (float) (Math.random() * world.getLength())));
-        }
-
-        //loop through all nodes and all entities, removing any nodes that intersect with the entity
-        Set<Point2D> removedNodes = new HashSet<>();
-        for (Point2D node : this.nodes) {
-            for (AbstractEntity entity : world.getEntities().values()) {
-                if (entity.isStatic() && entity.isSolid() && entity.getMask().overlaps(node)) {
-                    removedNodes.add(node);
-                }
-            }
-        }
-
-        for (Point2D node : removedNodes) {
-            this.nodes.remove(node);
-        }
-
-
-        //loop through every combination of 2 nodes & create lines
-        for (Point2D node1 : this.nodes) {
-
-            this.nodeEdges.put(node1, new HashSet<>());     //start the list of edges associated with this node
-
-            for (Point2D node2 : this.nodes) {
-
-                // only get each line once
-                if (node1 == node2)
-                    break;
-
-                Line2D edge = new Line2D(node1, node2);
-
-                // check the line against each obstacle entity TODO use obstacles data structure
-                float width = getClearance(edge);
-
-
-                // if clear of overlaps
-                if(width > 0.68f ) { //TODO
-
-                    float distSqr = edge.getLenSqr();
-
-                    this.edges.add(edge);
-                    this.edgeCost.put(edge, distSqr);
-                    this.edgeWidth.put(edge, width);
-                    this.nodeEdges.get(node1).add(edge);
-                    this.nodeEdges.get(node2).add(edge);
-
-                }
-            }
-        }
-
-        // build the minimum spanning tree from the graph - and set the spanningTree variable.
-        //optimiseGraph(lastPlayerPosition, nodes, edges);
-        initialiseGraph();
-    }
-
-    //TODO description & use obstacles data structure
-    private float getClearance(Line2D edge) {
-
-        World world = GameManager.get().getWorld();
-
-        float width = Float.POSITIVE_INFINITY; //default width
-
-        //limit width by each obstacle
-        for (AbstractEntity entity : world.getEntities().values()) {
-            if (entity.isStatic() && entity.isSolid()) {
-
-                width = Math.min(width, edge.distance(entity.getMask()));
-
-                if (width < 0 ) { //TODO allow my width?
-                    // if overlapping; return  negative value early
-                    return width;
-                }
-            }
-        }
-
-        return width;
-    }
-
-
-    private void initialiseGraph() {
-
-        //clear data structures
-        this.nodeCost.clear();
-
-        //set target entity to the player
-        World world = GameManager.get().getWorld();
-
-        for (AbstractEntity entity : world.getEntities().values()) { //TODO allow custom target
-            if (entity instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
-                this.target = entity;
-                break;
-            }
-        }
-
-        // get a point at the centre of the target
-        Point2D targetNode = new Point2D(target.getPosX(), target.getPosY());
-
-
-        // setup queue for dijkstra's algorithm
-        Queue<Point2D> nodeQ = new PriorityQueue<>(20, (Point2D p1, Point2D p2) -> {
-            // order nodes by nodeCost
-                int val = (int) (nodeCost.get(p1) - nodeCost.get(p2));
-                return val;
-            // NOTE: this is kinda unstable, updating the value in nodeCost will not update the queue
-            // the node will have to be removed, nodeCost updated, node reinserted to queue
-            }
-        );
-
-
-        // clear the current spanningPath (spanning tree)
-        this.spanningPath.clear();
-
-        // loop through all nodes,
-        for (Point2D node : this.nodes) {
-
-            Line2D edge = new Line2D(node, targetNode);
-
-
-            float width = getClearance(edge);
-
-            if (width >= 0.68f ) { //TODO check width is enough for my movement
-
-                //this node has a direct line of sight(with given width), it is a direct node
-
-                float directNodeCost = edge.getLenSqr();    // set the cost of getting from the node to the target
-                this.nodeCost.put(node, directNodeCost);
-                this.spanningPath.put(node, null);      // add a null terminator as the next node in the spanningPath
-                this.nodeChecked.put(node, true);       // Mark this node as explored
-
-                //start Dijkstra's algorithm here, start the queue
-                for (Line2D nodeEdge : this.nodeEdges.get(node)) {
-
-                    Point2D exploreNode = nodeEdge.getOtherEndPoint(node);
-
-                    // the node might also be a direct node and have already been explored
-                    if (this.nodeChecked.getOrDefault(exploreNode, false)) {
-                        break;
-                    }
-
-                    // the cost to reach exploreNode from this directNode
-                    float exploreNodeCost = directNodeCost + nodeEdge.getLenSqr();
-
-                    // find the current cost to reach exploreNode, if it has any
-                    float exploreNodeCurrCost = this.nodeCost.getOrDefault(exploreNode, Float.POSITIVE_INFINITY);
-
-                    // if cost is smaller
-                    if (exploreNodeCost < exploreNodeCurrCost) {
-
-                        nodeQ.remove(exploreNode);
-                        this.nodeCost.put(exploreNode, exploreNodeCost);        // update cost
-
-                        // add the node that this node should point towards (tentatively)
-                        this.spanningPath.put(exploreNode, node);
-
-                        nodeQ.add(exploreNode);                                 // reorder the nodeQ
-                    }
-                }
-
-            } else {
-                this.nodeChecked.put(node, false);
-                this.nodeCost.put(node, Float.POSITIVE_INFINITY);
-            }
-        }
-
-        // Dijkstra's algorithm thing
-        while (!nodeQ.isEmpty()) {
-            // pop front
-            Point2D addedNode = nodeQ.poll();
-
-            // add this on to the spanning path
-            this.nodeChecked.put(addedNode, true);
-
-            float addedNodeCost = this.nodeCost.get(addedNode);
-
-            //explore edges
-            for (Line2D nodeEdge : this.nodeEdges.get(addedNode)) {
-
-                Point2D exploreNode = nodeEdge.getOtherEndPoint(addedNode);
-
-                // the node might also be a part of the path already and have already been explored
-                if (this.nodeChecked.get(exploreNode)) {
-                    break;
-                }
-
-                // the cost to reach exploreNode from this directNode
-                float exploreNodeCost = addedNodeCost + nodeEdge.getLenSqr();
-
-                // find the current cost to reach exploreNode, if it has any
-                float exploreNodeCurrCost = this.nodeCost.getOrDefault(exploreNode, Float.POSITIVE_INFINITY);
-
-                // if cost is smaller
-                if (exploreNodeCost < exploreNodeCurrCost) {
-
-                    nodeQ.remove(exploreNode);
-                    this.nodeCost.put(exploreNode, exploreNodeCost);        // update cost
-
-                    // add the node that this node should point towards (tentatively)
-                    this.spanningPath.put(exploreNode, addedNode);
-
-                    nodeQ.add(exploreNode);                                 // reorder the nodeQ
-                }
-            }
-        }
-
-        System.out.println("---------");
-        for (Point2D node : this.nodes) {
-            System.out.println("n: " + node + " to: " + this.spanningPath.get(node));
-        }
-    }
-
-
+    //TODO comm removes any targets that have been removed from entities
+    //Checks entities that have moved, sets a flag for their TargetPath's to be updated on next request
     public void onTick() {
-        /*
-        // AbstractWorld world = GameManager.get().getWorld();
+        World world = GameManager.get().getWorld();
 
+        Set<AbstractEntity> removeTargets = null;
 
-         //if player hasn't moved since last tick, can skip this
-         if (!player.equals(lastPlayerPosition)) {
-             lastPlayerPosition = player;
+        // check targets moved, update trees
+        for (AbstractEntity target: this.targets) {
 
-             //populates directNode, nodes which have a direct line of sight
-             boolean doesCollide;
-             for (Box3D node : this.nodes) {
-                 doesCollide = false;
-                 for (AbstractEntity entity : world.getEntities().values()) {
-                     if (entity.isStaticCollideable() &&
-                            entity.getBox3D().doesIntersectLine(node.getX(), node.getY(), 0, player.getX(), player.getY(), 0)) {
-                         doesCollide = true;
-                         break;
-                     }
-                 }
-                 if (!doesCollide) {
-                     this.directNode.put(node, true);
-                 }
-             }
-         }
-        */
-    }
-
-    /**
-     * Takes as inputs a representation of the graph of internode connections that can be used to create paths.
-     * Calculates the minimum spanning tree of the graph, and then stores this internally so it can be used to generate
-     * new paths for enemies.
-     *
-     * param start The initial vertex within the graph where the search starts, and where each generated path will end.
-     * param vertices The vertices of the graph of internode connections.
-     * param edges The edges of the graph of internode connections.
-     */
-    private void optimiseGraph() {          //Point2D start, Set<Point2D> vertices, Map<DoublePoint2D, Float> edges) {
-        /*List<Point2D> workQueue = new ArrayList<>();
-        Map<Point2D, Float> distances = new HashMap<>();
-
-        spanningTree.clear();
-        workQueue.add(start);
-        distances.put(start, new Float(0));
-
-        while (workQueue.size() > 0) {
-            // find the closest thing within the work queue
-            Point2D current = workQueue.get(0);
-            for (Point2D other : workQueue) {
-                if (distances.get(other) < distances.get(current)) {
-                    current = other;
-                }
-            }
-            vertices.remove(current);
-            workQueue.remove(current);
-
-            // TODO make this more efficient by improving the way we store the graph
-            for (Point2D other : vertices) {
-
-                DoublePoint2D pair = new DoublePoint2D(current, other);
-
-                if (!edges.containsKey(pair)) {
-                    continue;
-                }
-
-                Float distance = edges.get(pair);
-
-                if (!distances.containsKey(other) || distances.get(other) > distance) {
-                    spanningTree.put(other, current);
-                    distances.put(other, distance);
-                }
-
-                if (!workQueue.contains(other)) {
-                    workQueue.add(other);
-                }
+            // remove target if it is no longer valid
+            if (!world.getEntities().containsValue(target)) {
+                // Messes up this for loop if we remove here
+                removeTargets.add(target);
             }
 
+            Point2D newCentre = target.getMask().getCentre();
+
+            // if the target has moved significantly set the flag for it's paths to be recalculated
+            if (this.targetCentres.get(target).distance(newCentre) > 0.2f) {
+                //set recalc flag, do not recalc yet in case no entity requests path
+                this.targetCentres.put(target, newCentre);
+                for(TargetPath targPath : this.targetPaths.get(target).values()) {
+                    targPath.needsUpdateFlag = true;
+                }
+            }
         }
 
-        */
-
+        // remove targets that are no longer valid
+        for (AbstractEntity target: removeTargets) {
+            this.targets.remove(target);
+            this.targetCentres.remove(target);
+            this.targetPaths.remove(target);
+        }
     }
 
-    //TODO
-    public Shape2D getTargetNode(Circle2D currentPos, AbstractEntity target, Shape2D targetNode) {
 
-        this.edges.remove(this.currEdge);
+
+
+    // ----------     Requesting a path    ---------- //
+
+    //TODO comm
+    public Point2D getNextNodeToTarget(Circle2D currentPos, AbstractEntity target, Point2D targetNode) {
+
+        return new Point2D(0,0); //TODO
+
+        /*
+        //this.edges.remove(this.currEdge);
 
         if (target == null)
             return null;
@@ -442,8 +157,8 @@ public class PathManager extends Manager {
         // if straight line to target (clear of static solid obstacles)
         Line2D direct = new Line2D(currX, currY, targX, targY);
 
-        this.currEdge = direct;
-        this.edges.add(this.currEdge);
+        //this.currEdge = direct;
+        //this.edges.add(this.currEdge);
 
         float directWidth = getClearance(direct);
         if ( directWidth > rad) {
@@ -499,9 +214,296 @@ public class PathManager extends Manager {
             }
             return newTargNode;
         }
+        */
     }
 
-    private class targetPath {
+
+
+    //TODO description & use obstacles data structure
+    private float getClearance(Line2D edge) {
+
+        World world = GameManager.get().getWorld();
+
+        float width = Float.POSITIVE_INFINITY; //default width
+
+        //limit width by each obstacle
+        for (AbstractEntity entity : world.getEntities().values()) {
+            if (entity.isStatic() && entity.isSolid()) {
+
+                width = Math.min(width, edge.distance(entity.getMask()));
+
+                if (width < 0 ) { //TODO allow my width?
+                    // if overlapping; return  negative value early
+                    return width;
+                }
+            }
+        }
+
+        return width;
+    }
+
+    //TODO stores nodes in order in X & Y coords seperately
+    private class nodeMap {}
+
+    private class TargetPath {
+
+        private AbstractEntity target;
+        private float myWidth;
+
+        boolean needsUpdateFlag = false;
+
+        private Map<Point2D, Point2D> spanningPath = new HashMap<>();
+        // for each target there is a spanning tree of nodes, showing the shortest path to that target
+
+        private Set<Point2D> nodes = new HashSet<>();               // all nodes of the graph
+        private Map<Point2D, Boolean> nodeChecked = new HashMap<>();// nodes which have a direct line of sight
+        private Map<Point2D, Float> nodeCost = new HashMap<>();     // the distance to the target from this node
+
+        private Set<Line2D> edges = new HashSet<>();                    // all the edges of the graph
+        private Map<Point2D, Set<Line2D>> nodeEdges = new HashMap<>();  // the edges that each point is a part of
+        private Map<Line2D, Float> edgeCost = new HashMap<>();          // the cost of the edge (at the moment distance^2)
+        private Map<Line2D, Float> edgeWidth = new HashMap<>();         // the max width an entity following this edge can be
+
+
+
+
+        public void initialiseNodes() {
+            if (! nodes.isEmpty()) return;
+
+            nodes.clear();
+            edges.clear();
+            //TODO clear the other stuff
+
+            World world = GameManager.get().getWorld();
+
+
+            //add points in corners of map
+            nodes.add(new Point2D(0, 0));
+            nodes.add(new Point2D(world.getWidth(), 0));
+            nodes.add(new Point2D(0, world.getLength()));
+            nodes.add(new Point2D(world.getWidth(), world.getLength()));
+
+
+            //get portal
+            AbstractEntity portal = null;
+            for (AbstractEntity entity : world.getEntities().values()) {
+                if (entity instanceof EnemyGate) {
+                    portal = entity;
+                    break;
+                }
+            }
+
+            //add points around corners of of portal
+            float portX = portal.getPosX();
+            float portY = portal.getPosY();
+
+            nodes.add( new Point2D(portX - myWidth, portY - myWidth)); //TODO include fudge
+            nodes.add( new Point2D(portX - myWidth, portY + myWidth));
+            nodes.add( new Point2D(portX + myWidth, portY - myWidth));
+            nodes.add( new Point2D(portX + myWidth, portY + myWidth));
+
+
+            // put nodes on the corners of our static entities
+            for (AbstractEntity entity : world.getEntities().values()) {
+                if (entity.isStatic() && entity.isSolid()) {
+                    //TODO make less crummy & make 8 points for circles
+                    nodes.add( new Point2D(entity.getPosX() - (myWidth + 0.5f), entity.getPosY() - (myWidth + 0.5f)));
+                    nodes.add( new Point2D(entity.getPosX() - (myWidth + 0.5f), entity.getPosY() + (myWidth + 0.5f)));
+                    nodes.add( new Point2D(entity.getPosX() + (myWidth + 0.5f), entity.getPosY() - (myWidth + 0.5f)));
+                    nodes.add( new Point2D(entity.getPosX() + (myWidth + 0.5f), entity.getPosY() + (myWidth + 0.5f)));
+                }
+            }
+
+            /*
+            // Initialise random points on the map
+            for (int i = 0; i < NUMBER_OF_RANDOM_NODES; i++) {
+                nodes.add(new Point2D((float) (Math.random() * world.getWidth()),
+                        (float) (Math.random() * world.getLength())));
+            }
+            */
+
+            //loop through all nodes and all entities, removing any nodes that intersect with the entity
+            Set<Point2D> removedNodes = new HashSet<>();
+            for (Point2D node : this.nodes) {
+                for (AbstractEntity entity : world.getEntities().values()) {
+                    if (entity.isStatic() && entity.isSolid() && entity.getMask().overlaps(node)) {
+                        removedNodes.add(node);
+                    }
+                }
+            }
+
+            for (Point2D node : removedNodes) {
+                this.nodes.remove(node);
+            }
+
+
+            //loop through every combination of 2 nodes & create lines
+            for (Point2D node1 : this.nodes) {
+
+                this.nodeEdges.put(node1, new HashSet<>());     //start the list of edges associated with this node
+
+                for (Point2D node2 : this.nodes) {
+
+                    // only get each line once
+                    if (node1 == node2)
+                        break;
+
+                    Line2D edge = new Line2D(node1, node2);
+
+                    // check the line against each obstacle entity TODO use obstacles data structure
+                    float width = getClearance(edge);
+
+
+                    // if clear of overlaps
+                    if(width > 0.68f ) { //TODO
+
+                        float distSqr = edge.getLenSqr();
+
+                        this.edges.add(edge);
+                        this.edgeCost.put(edge, distSqr);
+                        this.edgeWidth.put(edge, width);
+                        this.nodeEdges.get(node1).add(edge);
+                        this.nodeEdges.get(node2).add(edge);
+
+                    }
+                }
+            }
+
+            //TODO nodesNeedsUpdateFlag = true
+        }
+
+        // build the minimum spanning tree from the graph - and set the spanningTree variable.
+        //optimiseGraph(lastPlayerPosition, nodes, edges);
+        private void createGraph() {
+
+            //clear data structures
+            this.nodeCost.clear();
+
+            //set target entity to the player
+            World world = GameManager.get().getWorld();
+
+            for (AbstractEntity entity : world.getEntities().values()) { //TODO allow custom target
+                if (entity instanceof Player) {					//(entity.getClass().isAssignableFrom(goal)) {
+                    this.target = entity;
+                    break;
+                }
+            }
+
+            // get a point at the centre of the target
+            Point2D targetNode = new Point2D(target.getPosX(), target.getPosY());
+
+
+            // setup queue for dijkstra's algorithm
+            Queue<Point2D> nodeQ = new PriorityQueue<>(20, (Point2D p1, Point2D p2) -> {
+                // order nodes by nodeCost
+                int val = (int) (nodeCost.get(p1) - nodeCost.get(p2));
+                return val;
+                // NOTE: this is kinda unstable, updating the value in nodeCost will not update the queue
+                // the node will have to be removed, nodeCost updated, node reinserted to queue
+            }
+            );
+
+
+            // clear the current spanningPath (spanning tree)
+            this.spanningPath.clear();
+
+            // loop through all nodes,
+            for (Point2D node : this.nodes) {
+
+                Line2D edge = new Line2D(node, targetNode);
+
+
+                float width = getClearance(edge);
+
+                if (width >= 0.68f ) { //TODO check width is enough for my movement
+
+                    //this node has a direct line of sight(with given width), it is a direct node
+
+                    float directNodeCost = edge.getLenSqr();    // set the cost of getting from the node to the target
+                    this.nodeCost.put(node, directNodeCost);
+                    this.spanningPath.put(node, null);      // add a null terminator as the next node in the spanningPath
+                    this.nodeChecked.put(node, true);       // Mark this node as explored
+
+                    //start Dijkstra's algorithm here, start the queue
+                    for (Line2D nodeEdge : this.nodeEdges.get(node)) {
+
+                        Point2D exploreNode = nodeEdge.getOtherEndPoint(node);
+
+                        // the node might also be a direct node and have already been explored
+                        if (this.nodeChecked.getOrDefault(exploreNode, false)) {
+                            break;
+                        }
+
+                        // the cost to reach exploreNode from this directNode
+                        float exploreNodeCost = directNodeCost + nodeEdge.getLenSqr();
+
+                        // find the current cost to reach exploreNode, if it has any
+                        float exploreNodeCurrCost = this.nodeCost.getOrDefault(exploreNode, Float.POSITIVE_INFINITY);
+
+                        // if cost is smaller
+                        if (exploreNodeCost < exploreNodeCurrCost) {
+
+                            nodeQ.remove(exploreNode);
+                            this.nodeCost.put(exploreNode, exploreNodeCost);        // update cost
+
+                            // add the node that this node should point towards (tentatively)
+                            this.spanningPath.put(exploreNode, node);
+
+                            nodeQ.add(exploreNode);                                 // reorder the nodeQ
+                        }
+                    }
+
+                } else {
+                    this.nodeChecked.put(node, false);
+                    this.nodeCost.put(node, Float.POSITIVE_INFINITY);
+                }
+            }
+
+            // Dijkstra's algorithm thing
+            while (!nodeQ.isEmpty()) {
+                // pop front
+                Point2D addedNode = nodeQ.poll();
+
+                // add this on to the spanning path
+                this.nodeChecked.put(addedNode, true);
+
+                float addedNodeCost = this.nodeCost.get(addedNode);
+
+                //explore edges
+                for (Line2D nodeEdge : this.nodeEdges.get(addedNode)) {
+
+                    Point2D exploreNode = nodeEdge.getOtherEndPoint(addedNode);
+
+                    // the node might also be a part of the path already and have already been explored
+                    if (this.nodeChecked.get(exploreNode)) {
+                        break;
+                    }
+
+                    // the cost to reach exploreNode from this directNode
+                    float exploreNodeCost = addedNodeCost + nodeEdge.getLenSqr();
+
+                    // find the current cost to reach exploreNode, if it has any
+                    float exploreNodeCurrCost = this.nodeCost.getOrDefault(exploreNode, Float.POSITIVE_INFINITY);
+
+                    // if cost is smaller
+                    if (exploreNodeCost < exploreNodeCurrCost) {
+
+                        nodeQ.remove(exploreNode);
+                        this.nodeCost.put(exploreNode, exploreNodeCost);        // update cost
+
+                        // add the node that this node should point towards (tentatively)
+                        this.spanningPath.put(exploreNode, addedNode);
+
+                        nodeQ.add(exploreNode);                                 // reorder the nodeQ
+                    }
+                }
+            }
+
+            System.out.println("---------");
+            for (Point2D node : this.nodes) {
+                System.out.println("n: " + node + " to: " + this.spanningPath.get(node));
+            }
+        }
 
     }
 }
