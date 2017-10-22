@@ -32,7 +32,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
+    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", "caveIcon", 4);
 
 
     protected int respawnTime = 5000;    // Time until respawn in milliseconds

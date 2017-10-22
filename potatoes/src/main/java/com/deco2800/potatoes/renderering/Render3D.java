@@ -59,6 +59,7 @@ public class Render3D implements Renderer {
 	private ShapeRenderer shapeRenderer;
 
 	private SpriteBatch batch;
+	private SpriteBatch hudBatch = new SpriteBatch();;
 	private SpriteCache cache;
 	private SpriteCacheBatch spriteCacheBatch;
 	private BatchTiledMapRenderer tiledMap;
@@ -92,7 +93,7 @@ public class Render3D implements Renderer {
 		}
 
 		this.batch = batch;
-
+		
 		World world = GameManager.get().getWorld();
 		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
 		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);
@@ -364,8 +365,15 @@ public class Render3D implements Renderer {
 	 * Renders progress bars above entities */
 	private void renderProgressBars() {
 		ProgressBarManager progressValues = GameManager.get().getManager(ProgressBarManager.class);
-		Color currentShade = batch.getColor();
+		TextureManager reg = GameManager.get().getManager(TextureManager.class);
 
+		Color currentShade = batch.getColor();
+		
+		Player player = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		GoalPotate potato = null;
+		
+		
+		
 		batch.begin();
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
@@ -395,12 +403,21 @@ public class Render3D implements Renderer {
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
 
 				ProgressBar progressBar = ((HasProgressBar) e).getProgressBar();
+	
 				// Allow entities to return null if they don't want to display their progress bar
 				if (progressBar != null) {
-					TextureManager reg = GameManager.get().getManager(TextureManager.class);
 
 					Texture barTexture = reg.getTexture(progressBar.getTexture());
 
+					// Skip for player
+					if (e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
+						continue;
+						/*Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
+						hudBatch.begin();
+						hudBatch.draw(iconTexture, 25, Gdx.graphics.getHeight()-134/2-75, 638/2, 134/2, 1, 2, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
+						hudBatch.end();*/
+					}
+					
 					// sets colour palette
 					batch.setColor(progressBar.getColour(((HasProgress) e).getProgressRatio()));
 
@@ -440,13 +457,51 @@ public class Render3D implements Renderer {
 							barTexture.getHeight(),                                // srcHeight
 							false, false);                                        // flipX, flipY
 
-					// reset the batch colour
-					batch.setColor(Color.WHITE);
+
 				}
 			}
-		}
-		batch.end();
 
+		}
+		if (player != null) {
+			// Get texture
+			ProgressBar progressBar = player.getProgressBar();
+			Texture iconTexture = reg.getTexture(player.getProgressBar().getLayoutTexture());
+			Texture barTexture =  reg.getTexture(player.getProgressBar().getTexture());
+			// Render the player health HUD
+			hudBatch.begin();
+			hudBatch.setColor(Color.WHITE);
+			hudBatch.draw(iconTexture, 25, Gdx.graphics.getHeight()-134/2-75, 638/2, 134/2, 1, 2, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
+			
+			// Draw the player HealthBar
+			float barRatio = player.getProgressRatio();
+			float maxBarWidth = 638/2.55f;
+			float barWidth = maxBarWidth * barRatio;
+			float barBackgroundWidth = maxBarWidth * (1 - barRatio);
+			float barX = 93;
+			float barY = Gdx.graphics.getHeight()-134/2-73.5f;
+			float endX = barX + barWidth;
+			hudBatch.draw(barTexture, barX, barY,                        // texture, x, y
+					barWidth, maxBarWidth / 8, 0, 0,                // width, height srcX, srcY
+					(int) (barTexture.getWidth() * barRatio),        // srcWidth
+					barTexture.getHeight(),                            // srcHeight
+					false, false);                                    // flipX, flipY
+
+			hudBatch.setColor(0.5f, 0.5f, 0.5f, 1f);
+			hudBatch.draw(barTexture, endX, barY,                            // texture, x, y
+					barBackgroundWidth, maxBarWidth / 8,                // width, height
+					(int) (barTexture.getWidth() * barRatio), 0,        // srcX, srcY
+					(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
+					barTexture.getHeight(),                                // srcHeight
+					false, false);  
+			hudBatch.end();
+
+		}
+		
+		// reset the batch colour
+		batch.setColor(Color.WHITE);
+		
+		batch.end();
+			
 		batch.setColor(currentShade);
 	}
 
