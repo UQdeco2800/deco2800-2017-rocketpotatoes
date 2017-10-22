@@ -92,7 +92,7 @@ def main():
     bpy.context.scene.frame_current = 0
     bpy.context.scene.frame_set(0)
 
-    centre_origin()
+    centre_model(model)
     setup_camera(camera)
     setup_light(light)
 
@@ -165,6 +165,8 @@ def main():
         if "Model." in x.name:
             x.select = True
     bpy.ops.object.delete()
+
+    camera.location[0] = 0
 
     render_compass_points(model)
 
