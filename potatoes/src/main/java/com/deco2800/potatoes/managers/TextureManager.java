@@ -428,6 +428,7 @@ public class TextureManager extends Manager {
         saveTexture("BOX_HIGHLIGHT", "resources/collisionmasks/Box2D_highlight.png");
 
         saveTexture("turbofish", "resources/rustyfish/turbofish.png");
+        saveTexture("rustacean", "resources/rustyfish/rustacean.png");
         saveTexture("boatman", "resources/rustyfish/boatman.png");
 
 
