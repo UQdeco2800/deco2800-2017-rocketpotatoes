@@ -9,10 +9,9 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class HomingProjectile extends Projectile {
-	protected float pPosX;
-	protected float pPosY;
-	protected float tPosX;
-	protected float tPosY;
+
+	int homingDelay = 0;
+
 	public HomingProjectile() {
 
 	}
@@ -25,7 +24,7 @@ public class HomingProjectile extends Projectile {
 	 *            the targets class
 	 * @param startPos
 	 * @param targetPos
-
+	 * 
 	 * @param range
 	 * @param damage
 	 *            damage of projectile
@@ -37,41 +36,33 @@ public class HomingProjectile extends Projectile {
 	 *            the effect to be played if a collision occurs
 	 */
 
-	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage, ProjectileTexture projectileTexture, Effect startEffect,
-							Effect endEffect) {
-		super(targetClass,startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
-
-		this.pPosX = startPos.x;
-		this.pPosY = startPos.y;
-		this.tPosX = targetPos.x;
-		this.tPosY = targetPos.y;
+	public HomingProjectile(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float range, float damage,
+			ProjectileTexture projectileTexture, Effect startEffect, Effect endEffect) {
+		super(targetClass, startPos, targetPos, range, damage, projectileTexture, startEffect, endEffect);
 
 	}
+
+	int i = 0;
 
 	@Override
 	public void onTick(long time) {
-		Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x, targetPos.y);
-		if (targetEntity.isPresent()) {
-			setTargetPosition(targetEntity.get().getPosX(), targetEntity.get().getPosY(), targetEntity.get().getPosZ());
+		if (i < homingDelay) {
+			i++;
 		} else {
-			GameManager.get().getWorld().removeEntity(this);
+			Optional<AbstractEntity> targetEntity = WorldUtil.getClosestEntityOfClass(targetClass, targetPos.x,
+					targetPos.y);
+			if (targetEntity.isPresent()) {
+				targetPos.lerp(new Vector3(targetEntity.get().getPosX(), targetEntity.get().getPosY(),
+						targetEntity.get().getPosZ()), 0.05f);
+				setTargetPosition(targetPos.x,targetPos.y,targetPos.z);
+			} 
 		}
-		updatePosition();
 		super.onTick(time);
 
 	}
-	/**
-	 * Returns Target Pos X
-	 * */
-	public float getTargetPosX() {
-		return tPosX;
-	}
 
-	/**
-	 * Returns Target Pos Y
-	 */
-	public float getTargetPosY() {
-		return tPosY;
+	public void setHomingDelay(int numOfFrames) {
+		this.homingDelay = numOfFrames;
 	}
 
 }
