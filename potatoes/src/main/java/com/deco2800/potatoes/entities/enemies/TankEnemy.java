@@ -61,8 +61,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private float lastY;
 
 	/* Define variables for the TankEnemy's progress bar */
-	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
 
 	/**
 	 * Empty constructor for serialization
@@ -107,7 +106,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 			//Create the particle effect to represent the tank bear kicking up dirt as it walks
 			ParticleType particle =  new BasicParticleType(15000, 1000.0f,
 					0.0f, 256, Color.DARK_GRAY, 4, 1);
-			particle.speed = 0.15f;
+			particle.setSpeed(0.15f);
 
 			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX() - 0.5f, this.getPosY() - 0.2f, -1);
 			int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");

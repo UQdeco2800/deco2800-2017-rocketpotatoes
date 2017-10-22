@@ -35,8 +35,6 @@ import java.util.List;
 /**
  * Main menu screen implemetation. Handles the logic/display for the main menu, and other adjacent menus (e.g. options).
  * Also holds the logic for starting a game, (e.g. singleplayer, multiplayer, loaded, etc.)
- *
- * TODO make this nicer (i.e. use dispose) Probably has tiny memory leaks
  */
 public class MainMenuScreen implements Screen {
     private RocketPotatoes game;

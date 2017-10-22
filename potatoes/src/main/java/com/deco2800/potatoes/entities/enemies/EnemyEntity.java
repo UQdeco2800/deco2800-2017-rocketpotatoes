@@ -47,8 +47,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private boolean moving = true;
 	private int channelTimer;
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
 	private int count = 0;
 	private String enemyStatus = "_walk";
 	protected int roundNum = 0;
@@ -438,7 +437,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		ParticleType particle =  new BasicParticleType(100000, 500.0f,
 				0.0f, 1024, Color.RED, 5, 5);
-		particle.speed = 0.9f;
+		particle.setSpeed(0.9f);
 
 		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");

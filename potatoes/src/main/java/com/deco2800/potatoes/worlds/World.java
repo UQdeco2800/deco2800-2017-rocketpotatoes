@@ -372,7 +372,6 @@ public class World {
 	 * Sets the background for beyond the edges of the map
 	 */
 	public void setBackground(Terrain terrain) {
-		// TODO fix tests so they don't throw null pointer error here
 		try {
 			backgroundTerrain = terrain;
 			TextureRegion textureRegion = new TextureRegion(GameManager.get().getManager(TextureManager.class)
