@@ -27,7 +27,7 @@ public class MeleeAttackEventTest extends BaseTest {
     private TankEnemy testMeleeEnemy = new TankEnemy(15, 15);
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         eventEmpty = new MeleeAttackEvent();
         testEvent = new MeleeAttackEvent(20, Player.class);
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
