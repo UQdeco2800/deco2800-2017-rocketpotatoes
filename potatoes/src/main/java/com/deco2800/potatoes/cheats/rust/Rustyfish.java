@@ -203,7 +203,6 @@ public class Rustyfish implements CheatExecution {
             Native.loadLibrary("rustyfish", RLibrary.class).startGame(
                     startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
                     getWindowInfo, drawSprite, drawLine, drawRectangle);
-            System.out.println("are we here?");
         }
         catch (UnsatisfiedLinkError ex) {
             // Ignore failure, don't start game!
