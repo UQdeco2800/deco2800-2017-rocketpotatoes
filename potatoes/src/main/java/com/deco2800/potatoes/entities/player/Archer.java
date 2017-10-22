@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 
@@ -27,6 +28,7 @@ public class Archer extends Player {
     		this.facing = Direction.SE;
         this.resetState();
         progressBar = new ProgressBarEntity("healthBarGreen", "archerIcon", 4);
+		projectileTexture= Projectile.ProjectileTexture.ARROW;
     }
 
 	private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);

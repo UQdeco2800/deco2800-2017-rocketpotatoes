@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,11 +147,11 @@ public class DamageTree extends AbstractTree implements Tickable {
     /**
      * Static generating ice tree
      */
-    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), LightningEffect.class,EffectTexture.LIGHTNING_ICE);
+    private static final List<TreeProperties> ICE_TREE_STATS = generateTree("ice_tree",animation(), BallisticProjectile.class,ProjectileTexture.ICE);
     /**
      * Static generating acorn tree
      */
-	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), LightningEffect.class,EffectTexture.LIGHTNING_FORREST);
+	private static final List<TreeProperties> ACORN_TREE_STATS = generateTree("acorn_tree1", animation(), HomingProjectile.class,ProjectileTexture.ACORN);
     /**
      * Static generating lightning tree
      */
@@ -158,15 +159,15 @@ public class DamageTree extends AbstractTree implements Tickable {
     /**
      * Static generating fire tree
      */
-	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(),  LightningEffect.class,EffectTexture.LIGHTNING_FIRE);
+	private static final List<TreeProperties> FIRE_TREE_STATS=generateTree("fire_tree", animation(),  HomingProjectile.class,ProjectileTexture.FIRE);
 	 /**
      * Static generating cactus tree
      */
-	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), LightningEffect.class,EffectTexture.LIGHTNING_DESERT);
+	private static final List<TreeProperties> CACTUS_TREE_STATS=generateTree("cactusTree", animation(), HomingProjectile.class,ProjectileTexture.LEAVES);
 	/**
      * Static generating coral tree
      */
-	private static final List<TreeProperties> CORAL_TREE_STATS=generateTree("coralTree", animation(), LightningEffect.class,EffectTexture.LIGHTNING_WATER);
+	private static final List<TreeProperties> CORAL_TREE_STATS=generateTree("coralTree", animation(), BallisticProjectile.class,ProjectileTexture.WATER);
 
 	/**
      * Static field to store information about upgrades
