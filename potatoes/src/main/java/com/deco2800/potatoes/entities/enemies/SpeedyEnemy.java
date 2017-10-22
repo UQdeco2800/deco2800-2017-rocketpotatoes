@@ -61,7 +61,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * Empty constructor for serialization
 	 */
 	public SpeedyEnemy() {
-		//Empty constructor for serialization
+		//Empty for serialization purposes
 	}
 
 	/***

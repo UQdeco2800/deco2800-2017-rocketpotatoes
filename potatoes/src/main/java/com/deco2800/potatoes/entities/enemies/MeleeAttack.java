@@ -14,6 +14,7 @@ public class MeleeAttack extends Effect {
 	 * Empty constructor for serialization
 	 */
 	public MeleeAttack() {
+		//Empty for serialization purposes
 	}
 
 	/**
@@ -28,15 +29,5 @@ public class MeleeAttack extends Effect {
 	public MeleeAttack(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
         super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectTexture.SWIPE);
 
-	}
-
-	/**
-	 * Actions to perform every time game ticks
-	 *
-	 * @param time the current game tick
-	 */
-	@Override
-	public void onTick(long time) {
-		super.onTick(time);
 	}
 }

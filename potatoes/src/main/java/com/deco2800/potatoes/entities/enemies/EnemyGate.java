@@ -21,7 +21,7 @@ public class EnemyGate extends MortalEntity implements HasProgressBar {
 	 * Empty constructor for serialization
 	 */
 	public EnemyGate() {
-		// empty for serialization
+		//Empty for serialization purposes
 	}
 
 	/**
