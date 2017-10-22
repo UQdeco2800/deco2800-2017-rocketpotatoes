@@ -84,13 +84,12 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @return this enemy's initialized targets.
 	 */
 	private static EnemyProperties initStats() {
-		EnemyProperties result = new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
+		return new PropertiesBuilder<EnemyEntity>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE)
 				.addEvent(new StealingEvent(1000))
 				.addEvent(new MeleeAttackEvent(500, BasePortal.class))
 				.addEvent(new MeleeAttackEvent(500, Player.class))
 				.createEnemyStatistics();
-		return result;
 	}
 
 	/***
@@ -169,10 +168,8 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		/*If no aggro, return 'ultimate' target*/
 		for (Class mainTarget : targets.getMainTargets()) {
 			for (AbstractEntity entity : entities.values()) {
-				if (entity.getClass().isAssignableFrom(mainTarget)) {
-					if  (!(visitedResourceTrees.contains(entity))) {
-						return entity;
-					}
+				if (entity.getClass().isAssignableFrom(mainTarget) && !(visitedResourceTrees.contains(entity))) {
+					return entity;
 				}
 			}
 		}
@@ -217,7 +214,6 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
 		List<Class> sightAggroTargets = new ArrayList<>();
-		//sightAggroTargets.add(ResourceTree.class);
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);
