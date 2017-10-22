@@ -18,9 +18,7 @@ public class LazerEffect extends Effect {
 
 	public LazerEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range) {
         super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, EffectTexture.LAZER);
-
-
-		// TODO: figure out why inverses
+		
 		this.xPos = yPos;
 		this.yPos = xPos;
 		this.fxPos = fyPos;
@@ -36,8 +34,6 @@ public class LazerEffect extends Effect {
 		newPos.setX(this.getPosX());
 		newPos.setY(this.getPosY());
 
-//		ExplosionEffect expEffect = new ExplosionEffect(targetClass, newPos.getX(), newPos.getY(), 0, damage, range);
-//		GameManager.get().getWorld().addEntity(expEffect);
 
 	}
 

@@ -14,6 +14,7 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
@@ -217,11 +218,7 @@ public class Line2D extends Shape2D{
 
     private float distanceToBox(Box2D other) {
 
-        Line2D ccc = new Line2D(13.5f, 12.5f, 50, 0); //TODO deleteme
-        boolean aaa = this.equals(ccc) && compareFloat(other.x, 15.5f) && compareFloat(other.y, 11.5f);
-        if (aaa) { //TODO deleteme
-            System.out.println("found col  1");
-        }
+
 
         // if len approaching 0, consider as a point
         if (compareFloat(lenSqr, 0)) {
@@ -405,6 +402,11 @@ public class Line2D extends Shape2D{
         //draw staight line between each node and the next
         drawTextureBetween(batch, textureHighlight, x1, y1, x2, y2);
 
+    }
+
+    @Override
+    public Optional<Box2D> getBoundingBox() {
+        return Optional.of(new Box2D(x, y, x - minX, y - minY));
     }
 
     //TODO copied from LightningEffect, clean up

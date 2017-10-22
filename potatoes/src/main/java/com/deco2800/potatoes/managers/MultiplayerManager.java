@@ -24,6 +24,7 @@ import java.util.List;
 public class MultiplayerManager extends Manager {
     // IP this client is connected to ("" if none)
     private String ip;
+    private String clientExists = "Client already exists!";
 
     // Port this client is connected to (-1 if none)
     private int clientPort;
@@ -79,15 +80,20 @@ public class MultiplayerManager extends Manager {
 
     /**
      * Creates a host in the background with the given port, the client then has to connect to this server using
-     * joinGame(...); TODO error checking should throw exceptions?
+     * joinGame(...); 
      * @param port
      * @throws IllegalStateException
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    public void createHost(int port) throws IllegalStateException, IllegalArgumentException, IOException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+    public void createHost(int port) throws IOException {
+        if (!isValidPort(port)) {
+          throw new IllegalArgumentException("Invalid port: " + port);
+        }
+
+        if (client != null) {
+           throw new IllegalStateException(clientExists);
+         }
 
         master = true;
         serverPort = port;
@@ -102,21 +108,27 @@ public class MultiplayerManager extends Manager {
      * Join's the given IP and port, with the given name (which is then stored in the manager).
      * @param name
      * @param IP - String representing an IP, in the format (255.255.255.255),
-     * @param port - port number in range of 1024-65565 (or 0 for any port) ?? TODO 0 port
+     * @param port - port number in range of 1024-65565 (or 0 for any port)
      * @throws IOException
      * @throws IllegalArgumentException
      */
-    public void joinGame(String name, String IP, int port) throws IOException, IllegalArgumentException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (!isValidIP(IP)) { throw new IllegalArgumentException("Invalid IP: " + IP); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+    public void joinGame(String name, String inIP, int port) throws IOException {
+        if (!isValidPort(port)) {
+           throw new IllegalArgumentException("Invalid port: " + port);
+         }
+        if (!isValidIP(inIP)) {
+           throw new IllegalArgumentException("Invalid IP: " + inIP);
+         }
+        if (client != null) {
+           throw new IllegalStateException(clientExists);
+         }
 
-        // TODO move away from ALL tcp
+        
         clientPort = port;
         multiplayer = true;
-        ip = IP;
+        ip = inIP;
         client = new NetworkClient();
-        client.connect(name, IP, port, port);
+        client.connect(name, inIP, port, port);
 
         while (!isClientReady());
     }
@@ -125,8 +137,12 @@ public class MultiplayerManager extends Manager {
     *
     */
     public List<InetAddress> discoverHosts(int port) throws IOException, IllegalArgumentException {
-        if (!isValidPort(port)) { throw new IllegalArgumentException("Invalid port: " + port); }
-        if (client != null) { throw new IllegalStateException("Client already exists!"); }
+        if (!isValidPort(port)) {
+           throw new IllegalArgumentException("Invalid port: " + port);
+          }
+        if (client != null) {
+           throw new IllegalStateException(clientExists);
+         }
 
         clientPort = port;
         client = new NetworkClient();
@@ -152,7 +168,7 @@ public class MultiplayerManager extends Manager {
      */
     public void sendMessageTo(int clientID, String message) {
         if (client != null) {
-            // TODO
+            // unimplented
         }
     }
 
@@ -199,6 +215,7 @@ public class MultiplayerManager extends Manager {
 
 
     public void broadcastEntityUpdateTimeEvents(int id) {
+        //not yet implemented
     }
 
     /**
@@ -290,7 +307,7 @@ public class MultiplayerManager extends Manager {
             return client.getClients();
         }
         else {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -301,7 +318,6 @@ public class MultiplayerManager extends Manager {
      * @return if a port is within a valid range or not
      */
     public static boolean isValidPort(int p) {
-        // TODO 128 < ports < 1024 are avaliable if running as root/admin could check this
         if (p != 0 && p < 1024 || p > 65535) {
             return false;
         }

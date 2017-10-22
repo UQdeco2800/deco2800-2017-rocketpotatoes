@@ -10,7 +10,13 @@ import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.renderering.Render3D;
+
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
@@ -26,7 +32,7 @@ public class Box2D extends Shape2D {
 
     private float xLength;
     private float yLength;
-    private static final String textureStr = "BOX_HIGHLIGHT";
+    private static final String TEXTURE_STRING = "BOX_HIGHLIGHT";
 
     private Vector3 c1;//corners during screen render
     private Vector3 c2;
@@ -47,6 +53,51 @@ public class Box2D extends Shape2D {
         this.y = y;
         setXLength(xLength);
         setYLength(yLength);
+    }
+
+    /**
+     * Creates a minimum bounding rectangle that surrounds all of internals.
+     *
+     * @param internals
+     *      The shapes being surrounded by the created box.
+     *
+     * @return The box, if it is possible to create one from the internals, otherwise nothing.
+     */
+    public static Optional<Box2D> surrounding(Stream<Shape2D> internals) {
+        List<Point2D> points = internals.filter(shape -> shape != null).flatMap(shape -> {
+            Optional<Box2D> bounds = shape.getBoundingBox();
+            if (bounds.isPresent()) {
+                float x = bounds.get().x;
+                float y = bounds.get().y;
+                float xRadius = bounds.get().xLength / 2;
+                float yRadius = bounds.get().yLength / 2;
+                return Stream.of(new Point2D(x - xRadius, y - yRadius),
+                        new Point2D(x + xRadius, y - yRadius),
+                        new Point2D(x - xRadius, y + yRadius),
+                        new Point2D(x + xRadius, y + yRadius));
+            } else {
+                return Stream.of(new Point2D(shape.getX(), shape.getY()));
+            }
+        }).collect(Collectors.toList());
+
+        if (points.isEmpty()) {
+            return Optional.empty();
+        }
+
+        float minX = points.stream().map(point -> point.getX()).min(Comparator.naturalOrder()).get();
+        float minY = points.stream().map(point -> point.getY()).min(Comparator.naturalOrder()).get();
+        float maxX = points.stream().map(point -> point.getX()).max(Comparator.naturalOrder()).get();
+        float maxY = points.stream().map(point -> point.getY()).max(Comparator.naturalOrder()).get();
+
+        if (compareFloat(minX, maxX) || compareFloat(minY, maxY)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new Box2D(
+                    (maxX + minX) / 2,
+                    (maxY + minY) / 2,
+                    0.01f + maxX - minX,
+                    0.01f + maxY - minY));
     }
 
     /**
@@ -171,10 +222,10 @@ public class Box2D extends Shape2D {
 
         // Check dist's are large enough that no collision could occur
         if (distX >= (this.xLength + other.getXLength())/2) {
-        	return false; 
+        	return false;
         }
         if (distY >= (this.yLength + other.getYLength())/2) {
-        	return false; 
+        	return false;
         }
 
         return true;
@@ -222,7 +273,6 @@ public class Box2D extends Shape2D {
             return distY;
         } else {
             // Box & point overlap, return rough negative val
-            // TODO this val might be used in physics
             return Math.max(distX, distY);
         }
     }
@@ -269,7 +319,7 @@ public class Box2D extends Shape2D {
             return (float) Math.sqrt(distPointX * distPointX + distPointY * distPointY) - other.getRadius();
         } else {
             // Box & circle overlap, return negative val
-            // TODO this val might be used in physics
+            
             return -1;
         }
     }
@@ -345,7 +395,7 @@ public class Box2D extends Shape2D {
      */
     @Override
     public void renderHighlight(SpriteBatch batch) {
-        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(textureStr);
+        Texture textureHighlight  = GameManager.get().getManager(TextureManager.class).getTexture(TEXTURE_STRING);
 
         Vector2 isoPosition = Render3D.worldToScreenCoordinates(x, y, 0);
 
@@ -410,7 +460,11 @@ public class Box2D extends Shape2D {
      */
     @Override
     public String toString() {
-        return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength ;
+        return this.x + ", " + this.y + ", " + this.xLength + ", " + this.yLength;
     }
 
+    @Override
+    public Optional<Box2D> getBoundingBox() {
+        return Optional.of(this.copy());
+    }
 }

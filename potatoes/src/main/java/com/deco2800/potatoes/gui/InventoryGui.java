@@ -1,6 +1,7 @@
 package com.deco2800.potatoes.gui;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,7 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.Inventory;
+import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
 /**
@@ -36,7 +40,10 @@ public class InventoryGui extends Gui {
 	private Table inventoryTable;
 	
 	/* Hashmap with the resource type as key and respective Label as value */
-	private HashMap<String, Label> inventoryMap = new HashMap<String, Label>();	
+	private HashMap<String, Label> labelMap = new HashMap<String, Label>();
+	
+	/* Inventory Map to keep track */
+	private TreeMap<Resource, Integer> inventoryMap = new TreeMap<Resource, Integer>();
 
 	/**
 	 * Instantiates a table for the InventoryGui to be placed on the current
@@ -48,8 +55,6 @@ public class InventoryGui extends Gui {
 	public InventoryGui(Stage stage) {		
 		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
-		//inventoryTable.top().right();
-		//instantiateScrollPane();
 		
 		/* set up window */
 		window = new Window("Inventory", skin);
@@ -74,16 +79,40 @@ public class InventoryGui extends Gui {
 	 *            The amount of resource that was added to inventory
 	 */
 	public void increaseInventory(String resource, int amount) {
-		Label resourceLabel = inventoryMap.get(resource);
+		Label resourceLabel = labelMap.get(resource);
 		if (resourceLabel == null) {
 			
 			resourceLabel = new Label("0", skin);
 			resourceLabel.setText(Integer.toString(amount));
-			inventoryMap.put(resource, resourceLabel);
+			labelMap.put(resource, resourceLabel);
 			
 			updateTable(resource);
 		} else {
 			resourceLabel.setText(Integer.toString(amount));
+		}
+	}
+	
+	/**
+	 * Update Inventory
+	 * 
+	 * @param resource
+	 *            The type of resource that was added to inventory
+	 * @param amount
+	 *            The amount of resource that was added to inventory
+	 */
+	public void updateInventory(TreeMap<Resource, Integer> map) {
+		inventoryMap = map;
+
+		for (Resource resource : inventoryMap.keySet()){
+			Label resourceLabel = labelMap.get(resource.getTypeName());
+			if (resourceLabel == null) {
+				resourceLabel = new Label("0", skin);
+				resourceLabel.setText(Integer.toString(inventoryMap.get(resource)));
+				labelMap.put(resource.getTypeName(), resourceLabel);
+				updateTable(resource.getTypeName());
+			} else {
+				resourceLabel.setText(Integer.toString(inventoryMap.get(resource)));
+			}
 		}
 	}
 
@@ -118,9 +147,44 @@ public class InventoryGui extends Gui {
 			
 		resourceImage.setOrigin(50, 50);
 		inventoryTable.add(resourceImage).size(30, 30).pad(2);
-		inventoryTable.add(inventoryMap.get(resource)).bottom().center().pad(2);
+		inventoryTable.add(labelMap.get(resource)).bottom().center().pad(2);
 			
 		inventoryTable.row();
+	}
+
+	public void refreshInventory() {
+
+		inventoryTable.clear();
+
+		Inventory inventory;
+
+		try {
+			inventory = GameManager.get().getManager(PlayerManager.class)
+					.getPlayer().getInventory();
+		} catch(Exception e) {
+			inventory = null;
+		}
+
+		if (inventory == null)
+			return;
+
+		for (Resource resource : inventory.getInventoryResources()) {
+			/* Image linking to display sprite */
+			TextureManager textureManager = GameManager.get().getManager(TextureManager.class);
+			Image resourceImage = new Image(new TextureRegionDrawable(new TextureRegion
+					(textureManager.getTexture(resource.getTexture()))));
+
+			Label resourceLabel = new Label(Integer.toString(inventory.getQuantity
+					(resource)), skin);
+
+			resourceImage.setOrigin(50, 50);
+			inventoryTable.add(resourceImage).size(30, 30).pad(2);
+			inventoryTable.add(resourceLabel).bottom()
+					.center().pad(2);
+
+			inventoryTable.row();
+		}
+
 	}
 
 	/**

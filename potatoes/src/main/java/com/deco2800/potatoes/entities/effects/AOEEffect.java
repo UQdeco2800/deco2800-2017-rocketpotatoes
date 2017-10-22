@@ -7,8 +7,7 @@ public class AOEEffect extends Effect {
 
 	private static float aoeWidth = 5f;
 	private static float aoeHeight = 2f;
-	private Vector3 pos;
-	private EffectTexture effectTexture;
+	private Vector3 pos = new Vector3(0, 0, 0);
 	public AOEEffect() {
 		// empty for serialization
 	}

@@ -3,13 +3,13 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.ResourceEntity;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SpeedyEnemyTest extends BaseTest {
 
+
     private SpeedyEnemy speedyEmpty;
     private SpeedyEnemy speedy1;
     private ResourceEntity seed;
@@ -31,23 +32,53 @@ public class SpeedyEnemyTest extends BaseTest {
 
     @Before
     public void setUp() throws Exception {
+        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
         speedyEmpty = new SpeedyEnemy();
         speedy1 = new SpeedyEnemy(0, 0);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
     }
 
     @After
     public void cleanUp() {
         GameManager.get().clearManagers();
+        speedyEmpty = null;
+        speedy1 = null;
+        seed = null;
+        resourceTree = null;
+        playerTest = null;
+        goalPotatoTest = null;
+    }
+    @Test
+    public void getProgressBarTest() throws Exception {
+        //untestable
     }
 
+    @Test
+    public void addTreeToVisitedTest() throws Exception {
+        //not yet used
+    }
+
+    @Test
+    public void mostRelevantTargetTest() throws Exception {
+        ////not yet used
+
+    }
+
+    @Test
+    public void getEnemyTypeTest() throws Exception {
+        Assert.assertEquals(1,speedy1.getEnemyType().length);
+
+    }
     /*
      * Test an emptyConstructor instance of the SpeedyEnemy.
      */
     @Test
     public void emptyConstructor() {
-        assertEquals(true, speedyEmpty.getDirection() == null);
-        assertEquals("raccoon", speedyEmpty.getEnemyType());
+        for (String data:speedyEmpty.getEnemyType()) {
+            assertEquals("raccoon", data);
+
+        }
+
+//        assertEquals("raccoon", speedyEmpty.getEnemyType());
         speedyEmpty.getBasicStats().getGoal();
         speedyEmpty.getBasicStats().getSpeed();
     }

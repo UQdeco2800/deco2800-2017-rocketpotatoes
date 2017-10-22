@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class NetworkServer {
     // Master will always be the first connection
-    private static int MASTER_ID = 1;
+    private static final int MASTER_ID = 1;
 
     Server server;
     private int tcpPort;
@@ -29,8 +29,7 @@ public class NetworkServer {
 
     /**
 
-     * Starts a server for the game // TODO ports occupied?
-     * TODO debug logging
+     * Starts a server for the game
      *
      * @param tcpPort tcp port to use, presumed to be correct
      * @param udpPort udp port to use, presumed to be correct
@@ -53,7 +52,7 @@ public class NetworkServer {
         // Register classes for serialization
         Network.register(server);
 
-        // ToDo: Get IP Address
+        //Get IP Address
         ipAddress = "Local Host";
 
         // Hacky
@@ -118,7 +117,7 @@ public class NetworkServer {
         message.setY(entity.getPosY());
 
         // Tell everyone except the master.
-        server.sendToAllExceptUDP(MASTER_ID, message);
+        server.sendToAllExceptTCP(MASTER_ID, message);
     }
 
     public void broadcastEntityUpdateProgress(int id) {
@@ -131,7 +130,7 @@ public class NetworkServer {
             message.setProgress(e.getProgress());
 
             // Tell everyone except the master.
-            server.sendToAllExceptUDP(MASTER_ID, message);
+            server.sendToAllExceptTCP(MASTER_ID, message);
         }
         else {
             throw new IllegalArgumentException("Entity doesn't implement HasProgress!");

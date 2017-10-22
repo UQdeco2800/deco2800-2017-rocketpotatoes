@@ -8,17 +8,19 @@ import org.apache.log4j.Logger;
 
 /**
  * Launches RocketPotatoes.
- * 
+ *
  * @author leggy
  *
  */
 public class GameLauncher {
 	private GameLauncher() { }
 
+
+
 	/**
 	 * Main function for the game
-	 * 
-	 * @param arg
+	 *
+	 * @param args
 	 *            Command line arguments (we wont use these)
 	 */
 	public static void main(String[] args) {
@@ -28,7 +30,6 @@ public class GameLauncher {
 		config.width = 1280;
 		config.height = 720;
 		config.title = "DECO2800 2017: RocketPotatoes";
-		@SuppressWarnings("unused")
 		LwjglApplication game = new LwjglApplication(new RocketPotatoes(), config);
 	}
 }

@@ -1,21 +1,21 @@
 package com.deco2800.potatoes.entities.enemies;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.deco2800.potatoes.collisions.Shape2D;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.effects.LargeFootstepEffect;
-import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-
+import com.deco2800.potatoes.entities.player.Archer;
+import com.deco2800.potatoes.entities.player.Caveman;
+import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-
+import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 
 import com.deco2800.potatoes.entities.player.Player;
@@ -23,57 +23,54 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
 import com.deco2800.potatoes.renderering.particles.types.ParticleType;
-
+import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.graphics.Color;
-import com.deco2800.potatoes.entities.effects.Effect;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import com.deco2800.potatoes.entities.resources.ResourceEntity;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.ParticleManager;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-
-
-import com.deco2800.potatoes.util.WorldUtil;
+import static com.deco2800.potatoes.entities.Direction.getFromRad;
+import static com.deco2800.potatoes.entities.Direction.getRadFromCoords;
 
 /**
  * An abstract class for the basic functionality of enemy entities which extend from it
  */
 public abstract class EnemyEntity extends MortalEntity implements HasProgressBar, Tickable {
 
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
+	private static final transient Logger LOGGER = LoggerFactory.getLogger(EnemyEntity.class);
 
 	private float speed;
+
 	private Shape2D targetPos = null;
+
 	private Class<?> goal;
+	private Map<Integer, AbstractEntity> entities;
+	private boolean moving = true;
+	private int channelTimer;
 
-	private static final SoundManager enemySoundManager = new SoundManager();
-
-	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
-	
-
-	private int timer = 0;
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
+	private String enemyStatus = "_walk";
+	protected int roundNum = 0;
+	private int texturePointer=1;
+	private long sTime=System.currentTimeMillis();
+	private int textureLength=0;
+	private int delayTime=500;
 
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
-		// empty for serialization
 		getBasicStats().registerEvents(this);	//MAY BE USELESS
 	}
 
 	/**
-	 * Constructs a new AbstractEntity with specific render lengths. Allows
+	 * Constructs a new EnemyEntity with specific render lengths. Allows
 	 * specification of rendering dimensions different to those used for collision.
 	 * For example, could be used to have collision on the trunk of a tree but not
 	 * the leaves/branches.
-	 * 
+	 *
 	 * @param mask
 	 * 			  The collision mask of the entity.
 	 * @param xRenderLength
@@ -99,11 +96,11 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		this.goal = goal;
 	}
 
-
-	/**
-	 * Move the enemy to its target. If the goal is player, use playerManager to get targeted player position for target, 
-	 * otherwise get the closest targeted entity position.
+	/***
+	 * Update the enemy's target that it is moving to and the path that it is following to do so with
+	 * a provided goal AbstractEntity
 	 */
+
 	@Override
 	public void onTick(long i) {
 		float goalX = getPosX();
@@ -111,124 +108,103 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		//if goal is player, use playerManager to eet position and move towards target 
 		if (goal == Player.class) {
 			//goal = Player.class;
-			PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+			/*PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 			PathManager pathManager = GameManager.get().getManager(PathManager.class);
 
 
-			goalX = targetPos.getX();
-			goalY = targetPos.getY();
-		} else {
-			//set the target of Enemy to the closest goal
-			Optional<AbstractEntity> target = WorldUtil.getClosestEntityOfClass(goal, getPosX(), getPosY());
-
-			if (target.isPresent()) {
-				//otherwise, move to enemy's closest goal
-				AbstractEntity getTarget = target.get();
-				// get the position of the target
-
-				goalX = getTarget.getPosX(); 
-				goalY = getTarget.getPosY(); 
-				
-				if(this.distanceTo(getTarget) < speed) {
-					this.setPosX(goalX);
-					this.setPosY(goalY);
-					return;
-				}
+			if (target == null) {
+				target = goalEntity.getMask();
 			}
+
+			float deltaX = target.getX() - getPosX();
+			float deltaY = target.getY() - getPosY();
+
+			super.setMoveAngle(getRadFromCoords(deltaX, deltaY));
+			pathTarget.setPath(path);
+			pathTarget.setTarget(target);
+			*/
 		}
-
-		float deltaX = getPosX() - goalX;
-		float deltaY = getPosY() - goalY;
-
-		float angle = (float)Math.atan2(deltaY, deltaX) + (float)Math.PI;
-
-		float changeX = (float)(speed * Math.cos(angle));
-		float changeY = (float)(speed * Math.sin(angle));
-
-		Shape2D newPos = getMask();
-
-		newPos.setX(getPosX() + changeX);
-		newPos.setY(getPosY() + changeY);
-
-		/*
-		 * Check for enemies colliding with other entities. The following entities will not stop an enemy:
-		 *     -> Enemies of the same type, projectiles, resources.
-		 */
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		boolean collided = false;
-		boolean collidedTankEffect = false;
-		timer++;
-		String stompedGroundTextureString = "";
-
-		for (AbstractEntity entity : entities.values()) {
-			if (!this.equals(entity) && !(entity instanceof Projectile ) && !(entity instanceof TankEnemy)
-					&& !(entity instanceof EnemyGate) && newPos.overlaps(entity.getMask()) ) {
-
-				if(entity instanceof Player) {
-					LOGGER.info("Ouch! a " + this + " hit the player!");
-					((Player) entity).damage(1);
-
-				}
-				if (entity instanceof Effect || entity instanceof ResourceEntity) {
-					if (this instanceof TankEnemy && entity instanceof StompedGroundEffect) {
-						collidedTankEffect = true;
-						stompedGroundTextureString = entity.getTexture();
-					}
-					continue;
-				}
-				collided = true;
-			}
-		}
-
-
-		if (this instanceof TankEnemy) {
-			if (timer % 100 == 0 && !collided) {
-				GameManager.get().getManager(SoundManager.class).playSound("tankEnemyFootstep.wav");
-				GameManager.get().getWorld().addEntity(
-						new LargeFootstepEffect(MortalEntity.class, getPosX(), getPosY(), 1, 1));
-			}
-			if (stompedGroundTextureString.equals("DamagedGroundTemp2") ||
-					stompedGroundTextureString.equals("DamagedGroundTemp3")) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			} else if (!collidedTankEffect) {
-				GameManager.get().getWorld().addEntity(
-						new StompedGroundEffect(MortalEntity.class, getPosX(), getPosY(), true, 1, 1));
-			}
-		}
-
-		if (!collided) {
-			setPosX(getPosX() + changeX);
-			setPosY(getPosY() + changeY);
-		}
-
-		updateDirection();
 	}
 
-
-
-	public BasePortal findPortal() {
-		Map<Integer, AbstractEntity> entities = GameManager.get().getWorld().getEntities();
-		for (AbstractEntity entity : entities.values()) {
-			if (entity instanceof BasePortal) {
-				return (BasePortal)entity;
+	/***
+	 * Determine an enemy's most relevant target according to its main entity and 'sight aggro' (entities that
+	 * if close enough to an enemy cause the enemy to preferentially move to it) entity targets.
+	 *
+	 * @param targets data class containing this enemy's main and sight aggro targets
+	 * @return the most relevant entity if one exists, if no entity is found null is returned
+	 */
+	public AbstractEntity mostRelevantTarget(EnemyTargets targets) {
+		entities = GameManager.get().getWorld().getEntities();
+		/*Is a sight aggro-able target within range of enemy - if so, return as a target*/
+		for (Class sightTarget : targets.getSightAggroTargets()) {
+			for (AbstractEntity entity : entities.values()) {
+				if (entity.getClass().isAssignableFrom(sightTarget)) {
+					float distance = WorldUtil.distance(this.getPosX(), this.getPosY(), entity.getPosX(), entity.getPosY());
+					if (distance < 10) {
+						return entity;
+					}
+				}
+			}
+		}
+		/*If no aggro, return 'ultimate' target*/
+		for (Class mainTarget : targets.getMainTargets()) {
+			for (AbstractEntity entity : entities.values()) {
+				if (entity.getClass().isAssignableFrom(mainTarget)) {
+					return entity;
+				}
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Updates the direction of the player based on change in position.
+	 * set up the animation delay time
+	 * @param time milliseconds
+	 */
+	public void setDelayTime(int time){
+		this.delayTime=time;
+	}
+
+	/**
+	 * set up the animation length
+	 * @param length how many texture for this enemy
+	 */
+	public void setTextureLength(int length){
+		this.textureLength=length;
+	}
+	/**
+	 * Flag whether this enemy should be allowed to move or not
+	 *
+	 * @param move
+	 */
+	public void setMoving(boolean move) { this.moving = move; }
+
+	/**
+	 * @return whether this enemy is allowed to move or not
+	 */
+	public boolean getMoving() { return this.moving; }
+
+	/**
+	 * Updates the direction of the enemy based on change in position.
 	 */
 	public void updateDirection() {
 		// if not moving don't update
 		if (super.getMoveSpeedModifier() == 0) {
-			return;    // Not moving
+			return;
 		}
-
 		// set facing Direction based on movement angle
-		this.facing = Direction.getFromRad(super.getMoveAngle());
+		this.facing = getFromRad(super.getMoveAngle());
+		this.updateSprites();
+	}
 
+	/***
+	 * Sets the direction of enemy to face a set of x, y coordinates
+	 *
+	 * @param xCoord x coordinate
+	 * @param yCoord y coordinate
+	 */
+	public void setDirectionToCoords(float xCoord, float yCoord) {
+		this.facing = getFromRad( getRadFromCoords( xCoord-this.getPosX(), yCoord-this.getPosY()));
 		this.updateSprites();
 	}
 
@@ -236,9 +212,35 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * Updates the player sprite based on it's state and direction.
 	 */
 	public void updateSprites() {
-		String type = getEnemyType();
+		String[] type = getEnemyType();
 		String direction = "_" + super.facing.name();
-		this.setTexture(type + direction);
+		if (type.length == 1) {
+			this.setTexture(type[0] + direction);
+		} else {
+			LOGGER.info("Texture:::"+type[0]+enemyStatus + direction + "_" + texturePointer);
+			this.setTexture(type[0]+enemyStatus + direction + "_" + texturePointer);
+			if(delay(delayTime)){
+				texturePointer++;
+				if(texturePointer>textureLength){
+					texturePointer=1;
+				}
+			}
+		}
+	}
+
+	/**
+	 * the purpose of method is make a time delay for next texture
+	 * @param milliSeconds i guest just millisecond
+
+	 * @return Int the index of texture
+	 */
+	public boolean delay(int milliSeconds){
+
+		if((System.currentTimeMillis()-sTime)>milliSeconds){
+			sTime=System.currentTimeMillis();
+			return true;
+		}
+		return false;
 	}
 
 	/***
@@ -247,7 +249,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 *
 	 * @return String corresponding to enemy type (e.g. squirrel)
 	 */
-	public abstract String getEnemyType();
+	public abstract String[] getEnemyType();
 
 	/**
 	 * Registers the list of events given with the event manager and unregisters all
@@ -270,47 +272,81 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Get the goal of the enemy
+	 *
 	 * @return this enemy's goal
 	 */
 	public Class<?> getGoal() {
 		return this.goal;
 	}
-	
+
+	/**
+	 * Set the status for an enemy.
+	 *
+	 * @param enemyStatus, the new status
+	 */
+	public void setEnemyStatus(String enemyStatus){
+		this.enemyStatus=enemyStatus;
+	}
+
+	public String getEnemyStatus(){
+		return this.enemyStatus;
+	}
 	/**
 	 * Set the enemy's goal to the given entity class
-	 * @param g enemy's new goal(entity class)
+	 * @param newGoal enemy's new goal(entity class)
 	 */
-	public void setGoal(Class<?> g) {
-		this.goal = g;
+	public void setGoal(Class<?> newGoal) {
+		this.goal = newGoal;
 	}
-	
+
 	/**
 	 * Get the speed of this enemy
+	 *
 	 * @return the speed of this enemy
 	 */
 	public float getSpeed() {
 		return this.speed;
 	}
-	
-	/**
-	 * Set this enemy's speed to given speed
-	 * @param s enemy's new speed
-	 */
-	public void setSpeed(Float s) {
-		this.speed = s;
-	}
 
 	/**
-	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * Set this enemy's speed to given speed
+	 *
+	 * @param newSpeed enemy's new speed
+	 */
+	public void setSpeed(Float newSpeed) {
+		this.speed = newSpeed;
+	}
+
+	/***
+	 * Get the current value of the enemy's channel timer.
+	 * The channel timer acts as an internal clock of enemy that can be used to see for how
+	 * long an enemy has been in a channelling state for.
+	 *
+	 * @return channelTimer
+	 */
+	public int getChannelTimer() { return this.channelTimer; }
+
+	/**
+	 * Set the value of the enemy's channel timer.
+	 *
+	 * @param channelTime
+	 */
+	public void setChannellingTimer(int channelTime) { this.channelTimer = channelTime; }
+
+	/**
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+	 *
 	 * @param projectile, the projectile shot
 	 */
 	public void getShot(Projectile projectile) {
 		this.damage(projectile.getDamage());
+
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
-	
+
 	/**
-	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead. 
+	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+	 *
 	 * @param effect, the projectile shot
 	 */
 	public void getShot(Effect effect) {
@@ -320,7 +356,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Returns the ProgressBar of an entity
-	 * @return
+	 *
+	 * @return enemy's progress bar
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
@@ -328,7 +365,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/***
-	 * Get the enemy's current health to max health progres
+	 * Get the enemy's current health to max health progress.
 	 *
 	 * @return the ratio of current to maximum health
 	 */
@@ -338,7 +375,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Get the maximum health of the enemy
+	 * Get the maximum health of the enemy.
 	 *
 	 * @return the enemy's maximum health
 	 */
@@ -347,38 +384,79 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		return (int) getMaxHealth();
 	}
 
+	/**
+	 * Apply damage to this enemy and if a 'being damaged' animation exists for it, trigger
+	 * the animation.
+	 *
+	 * @param amount - the amount of health to subtract
+	 * @return true if damaged
+	 */
 	@Override
 	public boolean damage(float amount) {
 		getBasicStats().setDamageAnimation(this);
 		return super.damage(amount);
 	}
 
+	/**
+	 * Trigger death animation of enemy if enemy has one
+	 */
 	@Override
 	public void dyingHandler() {
 		getBasicStats().setDeathAnimation(this);
 	}
-	
+
 	/**
-	 * remove the enemy if it is dead
+	 * Trigger actions upon the death of this enemy, these being:
+	 * 	- create particle blood splatter effect
+	 * 	- remove enemy
+	 * 	- remove it's events
 	 */
 	@Override
 	public void deathHandler() {
+
 		LOGGER.info(this + " is dead.");
 
 		ParticleManager p = GameManager.get().getManager(ParticleManager.class);
 
 		ParticleType particle =  new BasicParticleType(100000, 500.0f,
-				0.0f, 1024, Color.RED, 5, 5);
-		particle.speed = 0.9f;
+				0.0f, 512, Color.RED, 7, 7);
+		particle.setSpeed(0.2f);
 
 		Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX(), this.getPosY(), 0);
 		int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
-		p.addParticleEmitter(1.0f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
+		p.addParticleEmitter(2f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
 				particle));
 
-		// destroy the enemy
+		// destroy the enemy & it's events
 		GameManager.get().getWorld().removeEntity(this);
+		GameManager.get().getManager(EventManager.class).unregisterAll(this);
+		GameManager.get().getManager(WaveManager.class).getActiveWave().reduceTotalEnemiesByOne();
 	}
 
+	/**
+	 * Initialise the EnemyTargets for an enemy for use when determining the enemy's most
+	 * relevant target.
+	 *
+	 * @return the enemy's initialized targets.
+	 */
+	protected EnemyTargets initTargets() {
+		/*Enemy will move to these (in order) if no aggro*/
+		List<Class> mainTargets = new ArrayList<>();
+		if (this instanceof SpeedyEnemy) {
+			mainTargets.add(ResourceTree.class);
+		}
+		mainTargets.add(BasePortal.class);
+		mainTargets.add(Archer.class);
+		mainTargets.add(Caveman.class);
+		mainTargets.add(Wizard.class);
+
+		/*if enemy can 'see' these, then enemy aggros to these*/
+		List<Class> sightAggroTargets = new ArrayList<>();
+		sightAggroTargets.add(Archer.class);
+		sightAggroTargets.add(Caveman.class);
+		sightAggroTargets.add(Wizard.class);
+
+		return new EnemyTargets(mainTargets, sightAggroTargets);
+	}
 }

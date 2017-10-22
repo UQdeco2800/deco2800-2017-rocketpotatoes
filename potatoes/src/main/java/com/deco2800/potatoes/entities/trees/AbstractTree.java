@@ -1,9 +1,7 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.Arrays;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -14,8 +12,9 @@ import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.gui.FadingGui;
+import com.deco2800.potatoes.gui.TreeShopGui;
+import com.deco2800.potatoes.managers.*;
 
 /**
  * AbstractTree represents an upgradable tree entity. AbstractTree can have
@@ -29,9 +28,9 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private int upgradeLevel = 0;
 	private transient Animation animation;
 
-	private static final List<Color> BUILD_COLOURS = Arrays.asList(Color.YELLOW);
-	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("progress_bar", BUILD_COLOURS, 60, 1);
+	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("healthBarBlue", 1.5f);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
+	private static final int UNLOCK_RANGE = 2;
 
 	/**
 	 * Default constructor for serialization
@@ -59,12 +58,38 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	/**
 	 * Creates a copy of this object as it was when it was first created.
 	 */
-	@Override
-	public abstract AbstractTree clone();
+	public abstract AbstractTree createCopy();
 
 	@Override
 	public void onTick(long time) {
-		// Nothing here now
+		// Check if player is close enough to unlock it
+		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
+		if (playerManager != null && playerManager.getPlayer() != null) {
+				float distance = playerManager.distanceFromPlayer(this.getPosX(), this
+						.getPosY());
+				if (distance < UNLOCK_RANGE) {
+					TreeShopGui treeShop = GameManager.get().getManager(GuiManager.class)
+							.getGui(TreeShopGui.class);
+					if (treeShop!= null) {
+						TreeState treeState = treeShop.getTreeStateByName(this.getName());
+
+						if (treeState != null && !treeState.isUnlocked()) {
+								treeState.unlock();
+								showUnlockedMenu(treeState);
+								treeShop.refreshTreeStates();
+							}
+						
+					}
+
+				}
+			}
+			
+
+	}
+
+	private void showUnlockedMenu(TreeState treeState) {
+		GuiManager guiManager = GameManager.get().getManager(GuiManager.class);
+		guiManager.addFadingGui(new FadingGui(treeState, 200,guiManager.getStage()));
 	}
 
 	/**
@@ -75,7 +100,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 * @return
 	 */
 	public static boolean constructTree(AbstractTree tree) {
-		boolean result = tree.getUpgradeStats().removeConstructionResources();
+		boolean result = tree.getUpgradeStats().removeConstructionResources(tree);
 		if (result) {
 			GameManager.get().getWorld().addEntity(tree);
 		} else {
@@ -236,12 +261,24 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public int getMaxProgress() {
-		// TODO Auto-generated method stub
-		return 1;
+		if (constructionLeft > 0) {
+			return 100;
+		} else {
+			return (int) this.getMaxHealth();
+		}
 	}
 
 	@Override
 	public ProgressBarEntity getProgressBar() {
 		return constructionLeft > 0 ? BUILD_PROGRESS_BAR : getHealth() < getMaxHealth() ? PROGRESS_BAR : null;
+	}
+
+	public String getName() {
+		return "Abstract Tree";
+	}
+
+	@Override
+	public String toString(){
+		return "Tree: " + getUpgradeStats().getAnimation().apply(this).getFrame();
 	}
 }

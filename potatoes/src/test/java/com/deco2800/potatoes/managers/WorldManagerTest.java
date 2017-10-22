@@ -27,7 +27,12 @@ public class WorldManagerTest {
 		HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
 		new HeadlessApplication(new GdxTestApplication(), conf);
 		Gdx.gl = mock(GL20.class);
-		worldManager = new WorldManager();
+		worldManager = GameManager.get().getManager(WorldManager.class);
+	}
+
+	@After
+	public void tearDown() {
+		GameManager.get().clearManagers();
 	}
 
 	@Test
@@ -57,6 +62,15 @@ public class WorldManagerTest {
 				w1 == worldManager.getWorld(WorldType.FOREST_WORLD));
 		assertFalse("Deleting world resulted in the same world returned",
 				w2 == worldManager.getWorld(WorldType.DESERT_WORLD));
+	}
+	@Test
+	public void testCachedWorld() {
+		World w1 = worldManager.getWorld(WorldType.FOREST_WORLD);
+		worldManager.isWorldCached();
+		GameManager gm = GameManager.get();
+		gm.getMainWorld();
+		gm.isPaused();
+		gm.setPaused(false);
 	}
 
 }

@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.managers.GameManager;
@@ -28,60 +27,64 @@ public class MainMenuGui extends Gui {
     private Stage stage;
     private Skin uiSkin;
 
+    // Standard sizings and spacing for widgets in the main menu.
+    private int buttonHeight;
+    private int buttonWidth;
+    private float buttonSpacing;
+
     // Root table for this entire element
     private Table root;
-    private HorizontalGroup primaryButtons;
-    private Drawable startDrawable;
-    private Drawable optionsDrawable;
-    private Drawable exitDrawable;
-    private ImageButton startButton;
-    private ImageButton optionsButton;
-    private ImageButton exitButton;
 
-    private HorizontalGroup startButtonGroup;
-    private Table characterSelectTable;
-    private Drawable singleplayerDrawable;
-    private Drawable multiplayerDrawable;
-    private Drawable backDrawable;
+    // Elements on opening screen.
+    private Table primaryButtons;
+    private TextButton startButton;
+    private TextButton optionsButton;
+    private TextButton exitButton;
+
+    // Elements in start menu.
+    private Table startButtonGroup;
+    private Table startCharacterSelectTable;
+    private Image startCharacterImage;
     private SelectBox<String> startCharacterSelect;
-    private ImageButton singleplayerButton;
-    private ImageButton multiplayerButton;
-    private ImageButton startBackButton;
+    private TextButton singleplayerButton;
+    private TextButton multiplayerButton;
+    private TextButton startBackButton;
 
-    private HorizontalGroup startMultiplayerButtonGroup;
-    private Drawable multiplayerClientDrawable;
-    private Drawable multiplayerHostDrawable;
-    private ImageButton multiplayerClientButton;
-    private ImageButton multiplayerHostButton;
-    private ImageButton multiplayerBackButton;
+    // Elements in start>multiplayer menu.
+    private Table startMultiplayerButtonGroup;
+    private TextButton multiplayerClientButton;
+    private TextButton multiplayerHostButton;
+    private TextButton multiplayerBackButton;
 
-    private HorizontalGroup multiplayerClientButtonGroup;
+    // Elements in start>multiplayer>client menu.
+    private Table multiplayerClientButtonGroup;
     private Table multiplayerServerTable;
     private Table multiplayerClientInputsTable;
-    private Drawable connectDrawable;
     private ScrollPane multiplayerServerScrollPane;
     private List<String> multiplayerServerList;
     private TextButton multiplayerFindServers;
     private TextField multiplayerClientName;
     private TextField multiplayerClientIpAddConnection;
-    private ImageButton multiplayerClientConnectButton;
-    private ImageButton multiplayerClientBackButton;
+    private TextButton multiplayerClientConnectButton;
+    private TextButton multiplayerClientBackButton;
 
-    private HorizontalGroup multiplayerHostButtonGroup;
+    // Elements in start>multiplayer>host menu.
+    private Table multiplayerHostButtonGroup;
     private Table multiplayerHostInputsTable;
     private Label multiplayerHostIpAddress;
     private TextField multiplayerHostName;
-    private ImageButton multiplayerHostConnectButton;
-    private ImageButton multiplayerHostBackButton;
+    private TextButton multiplayerHostConnectButton;
+    private TextButton multiplayerHostBackButton;
 
-    private HorizontalGroup optionsButtonGroup;
-    private VerticalGroup effectsButtonGroup;
-    private VerticalGroup musicButtonGroup;
+    // Elements in options menu.
+    private Table optionsButtonGroup;
+    private Table effectsButtonGroup;
+    private Table musicButtonGroup;
     private Label optionsEffectsVolumeLabel;
     private Slider optionsEffectsVolumeSlider;
     private Label optionsMusicVolumeLabel;
     private Slider optionsMusicVolumeSlider;
-    private ImageButton optionsBackButton;
+    private TextButton optionsBackButton;
 
     private Dialog failedMultiplayerConnection;
 
@@ -97,7 +100,6 @@ public class MainMenuGui extends Gui {
 
     private States state = States.PRIMARY;
 
-
     public MainMenuGui(Stage stage, MainMenuScreen screen) {
         this.stage = stage;
         this.mainMenuScreen = screen;
@@ -105,121 +107,111 @@ public class MainMenuGui extends Gui {
         uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         textureManager = GameManager.get().getManager(TextureManager.class);
 
-        // State 1
-        // Make drawables from textures
-        startDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("startMainMenu")));
-        optionsDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("optionsMainMenu")));
-        exitDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("exitMainMenu")));
-        startButton = new ImageButton(startDrawable);
-        optionsButton = new ImageButton(optionsDrawable);
-        exitButton = new ImageButton(exitDrawable);
+        buttonHeight = (int) stage.getHeight()/10;
+        buttonWidth = (int) stage.getWidth()/7;
+        buttonSpacing = (float) stage.getWidth()/20;
 
-        primaryButtons = new HorizontalGroup();
-        primaryButtons.addActor(startButton);
-        primaryButtons.addActor(optionsButton);
-        primaryButtons.addActor(exitButton);
-        primaryButtons.space(50);
+        // State 1
+        startButton = new TextButton("Start", uiSkin);
+        optionsButton = new TextButton("Options", uiSkin);
+        exitButton = new TextButton("Exit", uiSkin);
+
+        primaryButtons = new Table();
+        primaryButtons.add(startButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        primaryButtons.add(optionsButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        primaryButtons.add(exitButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
 
         // Start state
-        singleplayerDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("singleplayerMainMenu")));
-        multiplayerDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("multiplayerMainMenu")));
-        backDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("backMainMenu")));
+        startCharacterImage = new Image(new TextureRegion(textureManager.getTexture("caveman_idle_SW_1")));
         startCharacterSelect = new SelectBox<String>(uiSkin);
-        startCharacterSelect.setItems(PlayerType.names());
-        singleplayerButton = new ImageButton(singleplayerDrawable);
-        multiplayerButton = new ImageButton(multiplayerDrawable);
-        startBackButton = new ImageButton(backDrawable);
+        startCharacterSelect.setItems(capitalisePlayerTypes(PlayerType.names()));
+        singleplayerButton = new TextButton("Singleplayer", uiSkin);
+        multiplayerButton = new TextButton("Multiplayer", uiSkin);
+        startBackButton = new TextButton("Back", uiSkin);
 
-        startButtonGroup = new HorizontalGroup();
-        characterSelectTable = new Table();
-        characterSelectTable.add(new Label("Player Type", uiSkin));
-        characterSelectTable.row();
-        characterSelectTable.add(startCharacterSelect).width(120).height(50);
-        startButtonGroup.addActor(characterSelectTable);
-        startButtonGroup.addActor(singleplayerButton);
-        startButtonGroup.addActor(multiplayerButton);
-        startButtonGroup.addActor(startBackButton);
-        startButtonGroup.space(50);
+        startButtonGroup = new Table();
+        startCharacterSelectTable = new Table();
+        startCharacterSelectTable.add(startCharacterImage).size(125, 125);
+        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth - 50).height(buttonHeight/2);
+        startButtonGroup.add(startCharacterSelectTable);
+        startButtonGroup.add(singleplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        startButtonGroup.add(multiplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        startButtonGroup.add(startBackButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
         startCharacterSelect.setSelected(GameManager.get().getManager(PlayerManager.class).getPlayerType().name());
 
         // Start Multiplayer state
-        multiplayerClientDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("clientMainMenu")));
-        multiplayerHostDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("hostMainMenu")));
-        multiplayerClientButton = new ImageButton(multiplayerClientDrawable);
-        multiplayerHostButton = new ImageButton(multiplayerHostDrawable);
-        multiplayerBackButton = new ImageButton(backDrawable);
+        multiplayerClientButton = new TextButton("Client", uiSkin);
+        multiplayerHostButton = new TextButton("Host", uiSkin);
+        multiplayerBackButton = new TextButton("Back", uiSkin);
 
-        startMultiplayerButtonGroup = new HorizontalGroup();
-        startMultiplayerButtonGroup.addActor(multiplayerClientButton);
-        startMultiplayerButtonGroup.addActor(multiplayerHostButton);
-        startMultiplayerButtonGroup.addActor(multiplayerBackButton);
-        startMultiplayerButtonGroup.space(50);
+        startMultiplayerButtonGroup = new Table();
+        startMultiplayerButtonGroup.add(multiplayerClientButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        startMultiplayerButtonGroup.add(multiplayerHostButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        startMultiplayerButtonGroup.add(multiplayerBackButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
 
         // Multiplayer Client state
-        connectDrawable = new TextureRegionDrawable(new TextureRegion(textureManager.getTexture("connectMainMenu")));
         multiplayerServerList = new List<String>(uiSkin);
         multiplayerServerScrollPane = new ScrollPane(multiplayerServerList, uiSkin);
         multiplayerFindServers = new TextButton("Find Server", uiSkin);
         multiplayerClientName = new TextField("Fred", uiSkin);
         multiplayerClientIpAddConnection = new TextField(MainMenuScreen.multiplayerHostAddress(), uiSkin);
-        multiplayerClientConnectButton = new ImageButton(connectDrawable);
-        multiplayerClientBackButton = new ImageButton(backDrawable);
+        multiplayerClientConnectButton = new TextButton("Connect", uiSkin);
+        multiplayerClientBackButton = new TextButton("Back", uiSkin);
 
-        multiplayerClientButtonGroup = new HorizontalGroup();
+        multiplayerClientButtonGroup = new Table();
         multiplayerServerTable = new Table();
         multiplayerServerTable.add(multiplayerServerScrollPane).width(150).height(130).space(10);
         multiplayerServerTable.row();
-        multiplayerServerTable.add(multiplayerFindServers).width(120).height(50);
-        multiplayerClientButtonGroup.addActor(multiplayerServerTable);
+        multiplayerServerTable.add(multiplayerFindServers).width(120).height(buttonHeight);
+        multiplayerClientButtonGroup.add(multiplayerServerTable).space(buttonSpacing/2);
         multiplayerClientInputsTable = new Table();
         multiplayerClientInputsTable.add(new Label("Player Name", uiSkin));
         multiplayerClientInputsTable.add(new Label("Host Address", uiSkin));
         multiplayerClientInputsTable.row();
         multiplayerClientInputsTable.add(multiplayerClientName);
         multiplayerClientInputsTable.add(multiplayerClientIpAddConnection);
-        multiplayerClientButtonGroup.addActor(multiplayerClientInputsTable);
-        multiplayerClientButtonGroup.addActor(multiplayerClientConnectButton);
-        multiplayerClientButtonGroup.addActor(multiplayerClientBackButton);
-        multiplayerClientButtonGroup.space(30);
+        multiplayerClientButtonGroup.add(multiplayerClientInputsTable).space(buttonSpacing/2);
+        multiplayerClientButtonGroup.add(multiplayerClientConnectButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        multiplayerClientButtonGroup.add(multiplayerClientBackButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
 
         // Multiplayer Host state
         multiplayerHostIpAddress = new Label(MainMenuScreen.multiplayerHostAddress(), uiSkin);
         multiplayerHostName = new TextField("Bob", uiSkin);
-        multiplayerHostConnectButton = new ImageButton(connectDrawable);
-        multiplayerHostBackButton = new ImageButton(backDrawable);
+        multiplayerHostConnectButton = new TextButton("Connect", uiSkin);
+        multiplayerHostBackButton = new TextButton("Back", uiSkin);
 
-        multiplayerHostButtonGroup = new HorizontalGroup();
+        multiplayerHostButtonGroup = new Table();
         multiplayerHostInputsTable = new Table();
         multiplayerHostInputsTable.add(new Label("Host Address", uiSkin));
         multiplayerHostInputsTable.add(new Label("Player Name", uiSkin));
         multiplayerHostInputsTable.row();
         multiplayerHostInputsTable.add(multiplayerHostIpAddress);
         multiplayerHostInputsTable.add(multiplayerHostName);
-        multiplayerHostButtonGroup.addActor(multiplayerHostInputsTable);
-        multiplayerHostButtonGroup.addActor( multiplayerHostConnectButton);
-        multiplayerHostButtonGroup.addActor(multiplayerHostBackButton);
-        multiplayerHostButtonGroup.space(50);
+        multiplayerHostButtonGroup.add(multiplayerHostInputsTable);
+        multiplayerHostButtonGroup.add( multiplayerHostConnectButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
+        multiplayerHostButtonGroup.add(multiplayerHostBackButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
 
         // Options State
         optionsEffectsVolumeLabel = new Label("SFX Volume", uiSkin);
         optionsEffectsVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
         optionsMusicVolumeLabel = new Label("Music Volume", uiSkin);
         optionsMusicVolumeSlider = new Slider(0f,1f,0.01f,false, uiSkin);
-        optionsBackButton = new ImageButton(backDrawable);
+        optionsBackButton = new TextButton("Back", uiSkin);
 
-        optionsButtonGroup = new HorizontalGroup();
-        effectsButtonGroup = new VerticalGroup();
-        musicButtonGroup = new VerticalGroup();
-        effectsButtonGroup.addActor(optionsEffectsVolumeLabel);
-        effectsButtonGroup.addActor(optionsEffectsVolumeSlider);
-        musicButtonGroup.addActor(optionsMusicVolumeLabel);
-        musicButtonGroup.addActor(optionsMusicVolumeSlider);
-        optionsButtonGroup.addActor(effectsButtonGroup);
-        optionsButtonGroup.addActor(musicButtonGroup);
-        optionsButtonGroup.addActor(optionsBackButton);
+        optionsButtonGroup = new Table();
+        effectsButtonGroup = new Table();
+        musicButtonGroup = new Table();
+        effectsButtonGroup.add(optionsEffectsVolumeLabel);
+        effectsButtonGroup.row();
+        effectsButtonGroup.add(optionsEffectsVolumeSlider);
+        musicButtonGroup.add(optionsMusicVolumeLabel);
+        musicButtonGroup.row();
+        musicButtonGroup.add(optionsMusicVolumeSlider);
+        optionsButtonGroup.add(effectsButtonGroup).space(buttonSpacing);
+        optionsButtonGroup.add(musicButtonGroup).space(buttonSpacing);
+        optionsButtonGroup.add(optionsBackButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing).right();
         optionsEffectsVolumeSlider.setValue(mainMenuScreen.getEffectsVolume());
         optionsMusicVolumeSlider.setValue(mainMenuScreen.getMusicVolume());
-        optionsButtonGroup.space(50);
 
         // Dialog that appears when connection to multiplayer fails.
         failedMultiplayerConnection = new Dialog("Failed to connect to host.", uiSkin);
@@ -233,8 +225,10 @@ public class MainMenuGui extends Gui {
         stage.addActor(root);
     }
 
+    /* Setup the listeners for the widgets for all states of the screen. */
     private void setupListeners() {
-        // Primary state
+
+        // Primary State
 
         startButton.addListener(new ChangeListener() {
             @Override
@@ -258,16 +252,17 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                // Todo nicer exit?
                 System.exit(0);
             }
         });
 
-        // Start state
+        // Start State
+
         startCharacterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 GameManager.get().getManager(PlayerManager.class).setPlayerType(PlayerType.valueOf(startCharacterSelect.getSelected().toUpperCase()));
+                startCharacterImage.setDrawable(new TextureRegionDrawable(new TextureRegion(textureManager.getTexture(startCharacterSelect.getSelected().toLowerCase()+"_idle_SW_1"))));
             }
         });
 
@@ -297,7 +292,7 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Multiplayer start state
+        // Multiplayer Start State
 
         multiplayerClientButton.addListener(new ChangeListener() {
             @Override
@@ -327,7 +322,7 @@ public class MainMenuGui extends Gui {
         });
 
 
-        // Multiplayer Client state
+        // Multiplayer Client State
 
         multiplayerFindServers.addListener(new ChangeListener() {
             @Override
@@ -360,7 +355,7 @@ public class MainMenuGui extends Gui {
             }
         });
 
-        // Multiplayer Host state
+        // Multiplayer Host State
 
         multiplayerHostConnectButton.addListener(new ChangeListener() {
             @Override
@@ -381,6 +376,7 @@ public class MainMenuGui extends Gui {
         });
 
         // Options State
+
         optionsEffectsVolumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -430,7 +426,7 @@ public class MainMenuGui extends Gui {
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight()/2);
-        root.setPosition(0, 0);
+        root.setPosition(0, -45);
 
         switch (state) {
             case PRIMARY:
@@ -459,7 +455,6 @@ public class MainMenuGui extends Gui {
 
     /**
      * Adjusts this gui's position to correct for any resize event.
-     *
      * @param stage
      */
     @Override
@@ -475,4 +470,16 @@ public class MainMenuGui extends Gui {
     public void addSingleplayerStartListener(EventListener e) {
         singleplayerButton.addListener(e);
     }
+
+    /* Makes the list of player types display nice. */
+    private static Array<String> capitalisePlayerTypes(Array<String> playerTypes) {
+        Array<String> capitalisedPayerTypes = new Array<> ();
+        for (String lowerCaseName : playerTypes) {
+            String tempStr = lowerCaseName.substring(0, 1).toUpperCase();
+            String nameCapitalised = tempStr + lowerCaseName.substring(1);
+            capitalisedPayerTypes.add(nameCapitalised);
+        }
+        return capitalisedPayerTypes;
+    }
+
 }

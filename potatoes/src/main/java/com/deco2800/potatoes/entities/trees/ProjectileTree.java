@@ -8,6 +8,8 @@ import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.animation.Animation;
 import com.deco2800.potatoes.entities.animation.AnimationFactory;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 
 /**
  * A tree that shoots projectiles using the ProjectileShootEvent
@@ -71,7 +73,7 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 	 * Creates a copy of this tree as it was when it was just created
 	 */
 	@Override
-	public ProjectileTree clone() {
+	public ProjectileTree createCopy() {
 		return new ProjectileTree(this.getPosX(), this.getPosY(), this.reloadTime, this.range, this.maxHealth);
 	}
 
@@ -88,15 +90,16 @@ public class ProjectileTree extends AbstractTree implements Tickable {
 				GROW_ANIMATION, () -> (float) x.getConstructionLeft());
 
 		result.add(new PropertiesBuilder<AbstractTree>().setHealth(10).setAttackRange(8f).setBuildTime(5000)
-				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(3000))
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(3000,  BallisticProjectile.class,ProjectileTexture.ROCKET))
 				.createTreeStatistics());
 		result.add(new PropertiesBuilder<AbstractTree>().setHealth(20).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(2500))
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(2500,  BallisticProjectile.class,ProjectileTexture.ROCKET))
 				.createTreeStatistics());
 		result.add(new PropertiesBuilder<AbstractTree>().setHealth(30).setAttackRange(8f).setBuildTime(2000)
-				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(1500))
+				.setBuildCost(1).setAnimation(growAnimation).addEvent(new TreeProjectileShootEvent(1500,  BallisticProjectile.class,ProjectileTexture.ROCKET))
 				.createTreeStatistics());
 
 		return result;
 	}
+
 }

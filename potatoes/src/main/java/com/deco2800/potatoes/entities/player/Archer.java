@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.player;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -29,32 +28,28 @@ public class Archer extends Player {
      */
     public Archer(float posX, float posY) {
     		super(posX, posY);
-    		super.setMoveSpeed(0.07f);
+    		this.defaultSpeed = 0.07f;
+            super.setMoveSpeed(defaultSpeed);
     		this.facing = Direction.SE;
-        this.state = IDLE;
-        //this.currentAnimation = ;
+        this.resetState();
     }
     
     private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
     private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
-    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, this::completionHandler);
+    private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200, super::completionHandler);
     private Map<Direction, TimeAnimation> archerDamagedAnimations = makePlayerAnimation("archer", DEATH, 3, 200, this::damagedCompletionHandler);
-    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, this::completionHandler);
-    
-    private Void completionHandler() {
-		// Re-enable walking
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
+    private Map<Direction, TimeAnimation> archerInteractAnimations = makePlayerAnimation("archer", INTERACT, 5, 400, super::completionHandler);
+
+    /**
+     * Custom damaged handling for the archer
+     */
+    public Void damagedCompletionHandler() {
+        GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
+        state = IDLE;
+        updateMovingAndFacing();
+        return null;
     }
-    
-    private Void damagedCompletionHandler() {
-		GameManager.get().getManager(SoundManager.class).playSound("damage.wav");
-		super.state = IDLE;
-		super.updateMovingAndFacing();
-		return null;
-    }
-    
+
     @Override
     public void updateSprites() {
     		super.updateSprites();
@@ -81,8 +76,16 @@ public class Archer extends Player {
     }
     
     @Override
-    public void attack() {
+    protected void attack() {
 	    super.attack();
+	    
+	    if (!canAttack) {
+			return;
+		} else {
+			canAttack = false;
+			EventManager em = GameManager.get().getManager(EventManager.class);
+	        em.registerEvent(this, new  AttackCooldownEvent(700));
+		}
 
     		if (this.setState(ATTACK)) {
     			
@@ -92,7 +95,7 @@ public class Archer extends Player {
 	        float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 	        float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 	        
-	        Optional<AbstractEntity> target = null;
+	        Optional<AbstractEntity> target;
 	        target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 	            
 	        if (target.isPresent()) {
@@ -137,44 +140,12 @@ public class Archer extends Player {
 		}
     }
     
-    /* Custom walk sound handling */
-	private int stepNumber = 1;	// Used for playing left and right foot steps
-	private boolean alternateSound = false;	// Used for playing alternate sounds
-	private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
-	private Void walkHandler() {
-		if (alternateSound) {
-			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
-		} else {
-			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
-		}
-		
-		stepNumber++;
-		if (stepNumber == 3)
-			stepNumber = 1;
-		alternateSound = new Random().nextBoolean();
-		return null;
-	}
-    
     @Override
-	protected void walk(boolean active) {
-		super.walk(active);
-		if (active) {
-			// Archer starts walking
-			GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
-		} else {
-			// Archer stops walking
-			GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
-		}
-	}
-    
-    @Override
-    public void interact() {
-    		super.interact();
-
-	    	if (this.setState(INTERACT)) {
-	    		// Archer interacts
-	    		GameManager.get().getManager(SoundManager.class).playSound("interact.wav");
-	    	}
+    protected void interact() {
+	    	super.interact();
+	    	// Custom interaction code here
     }
+
+
 
 }

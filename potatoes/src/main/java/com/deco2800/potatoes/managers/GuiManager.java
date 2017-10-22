@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.deco2800.potatoes.gui.FadingGui;
 import com.deco2800.potatoes.gui.Gui;
 
 public class GuiManager extends Manager {
     private List<Gui> gui;
     private Stage stage;
+    private List<FadingGui> fadingGui;
 
     /**
      * Initialize the basic GuiManager. Just creates the internal gui storage
      */
     public GuiManager() {
         gui = new ArrayList<>();
+        fadingGui = new ArrayList<>();
     }
 
     /**
@@ -27,7 +30,6 @@ public class GuiManager extends Manager {
 
     /**
      * Add's a gui element to be tracked by the GuiManager. Duplicates are not well supported
-     * TODO better support for duplicates
      * @param g the gui element
      */
     public void addGui(Gui g) {
@@ -48,10 +50,27 @@ public class GuiManager extends Manager {
                 return (G) g;
             }
         }
-
-		/* If it doesn't exist, we return null. TODO log this? error? */
+        
 
         return null;
+    }
+
+    public void addFadingGui(FadingGui fadingGui) {
+        this.fadingGui.add(fadingGui);
+    }
+
+    public void removeFadingGui(FadingGui fadingGui) {
+        this.fadingGui.remove(fadingGui);
+    }
+
+    public void tickFadingGuis(long tick) {
+        for (FadingGui gui : fadingGui) {
+            if (gui.getTimer() < 0) {
+                fadingGui.remove(gui);
+                return;
+            }
+            gui.onTick(tick);
+        }
     }
 
     /**

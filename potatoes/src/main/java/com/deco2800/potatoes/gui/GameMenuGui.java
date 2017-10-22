@@ -18,7 +18,6 @@ public class GameMenuGui extends Gui {
     private Skin uiSkin;
     private Button pauseMenuButton;
     private Button selectButton;
-    private Button godModeButton;
     private Window window;
 
     public GameMenuGui(Stage stage, GameScreen screen) {
@@ -30,20 +29,8 @@ public class GameMenuGui extends Gui {
         window = new Window("Menu", uiSkin);
 
 		// Make our buttons
-        pauseMenuButton = new TextButton("Pause", uiSkin);
+        pauseMenuButton = new TextButton("Menu", uiSkin);
         selectButton = new TextButton("Select a Unit", uiSkin);
-        godModeButton = new TextButton("God",uiSkin);
-
-           /* Listener to godMode button */
-        godModeButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //Sound added just to alert a change in game state
-                screen.menuBlipSound();
-                GameManager.get().getManager(GuiManager.class).getGui(DebugModeGui.class).toggle();
-
-            }
-        });
 
 		/* Add a listener to the pause menu button */
         pauseMenuButton.addListener(new ChangeListener() {
@@ -60,10 +47,9 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
-                    if (r instanceof Selectable) {
-                        if (((Selectable) r).isSelected()) {
-                            // Did this ever work?
-                        }
+                    if (r instanceof Selectable && ((Selectable) r).isSelected()) {
+                        // Did this ever work?
+
                     }
                 }
             }
@@ -73,8 +59,6 @@ public class GameMenuGui extends Gui {
 		*   Note: this is left to right order
 		* */
         window.add(pauseMenuButton);
-        window.add(selectButton);
-        window.add(godModeButton);
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen

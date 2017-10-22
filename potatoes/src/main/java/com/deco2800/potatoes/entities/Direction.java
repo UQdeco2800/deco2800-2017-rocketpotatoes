@@ -34,22 +34,30 @@ public enum Direction { N("North"), NE("North-East"), E("East"), SE("South-East"
      */
     public float getAngleRad() {
 
-        if (this == NE)
+        if (this == NE){
             return 0;
-        if (this == E)
-            return 0.78540f;    // 45 deg
-        if (this == SE)
-            return 1.57080f;    // 90 deg
-        if (this == S)
-            return 2.35619f;    // 135 deg
-        if (this == SW)
+          }
+        else if (this == E){
+            return 0.78540f;
+          }    // 45 deg
+        else if (this == SE){
+            return 1.57080f;
+          }    // 90 deg
+        else if (this == S){
+            return 2.35619f;
+          }    // 135 deg
+        else if (this == SW){
             return (float) Math.PI;    // 180 deg
-        if (this == W)
+          }
+        else if (this == W){
             return 3.92700f;    // 225 deg
-        if (this == NW)
+          }
+        else if (this == NW){
             return 4.71239f;    // 270 deg
-        //else this = N
+          }
+        else{
             return 5.49779f;    // 315 deg
+          }
     }
 
     /**

@@ -168,6 +168,7 @@ public class PathManager extends Manager {
             targPath.targetID = targetID;
             targPath.initialise();
             this.targetPaths.get(targetID).put(rad, targPath);
+
         }
 
         // update

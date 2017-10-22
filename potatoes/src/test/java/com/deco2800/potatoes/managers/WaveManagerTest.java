@@ -1,34 +1,53 @@
 package com.deco2800.potatoes.managers;
 
-import com.deco2800.potatoes.BaseTest;
+import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.waves.EnemyWave;
+import com.deco2800.potatoes.waves.WaveLoader;
 import com.deco2800.potatoes.worlds.World;
+import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.waves.EnemyWave.WaveState;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import com.deco2800.potatoes.waves.EnemyWave.WaveState;
-import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.Collection;
 
-import static org.mockito.Mockito.mock;
+
 
 public class WaveManagerTest {
 
     WaveManager wm;
+    WaveLoader wl;
     EnemyWave testWaveOne = new EnemyWave(1,1,1,1,750);
     EnemyWave testWaveTwo = new EnemyWave(2,1,1,2,750);
     World mockWorld;
+    GameManager gm;
 
     @Before
     public void setUp() throws Exception {
         mockWorld = mock(World.class);
-        GameManager gm = GameManager.get();
+        gm = GameManager.get();
         gm.setWorld(mockWorld);
-        wm = new WaveManager();
+        wm = gm.getManager(WaveManager.class);
         wm.addWave(testWaveOne);
         wm.addWave(testWaveTwo);
+    }
+
+    @After
+    public void tearDown() {
+
+        mockWorld = null;
+        gm.clearManagers();
+        gm = null;
+        testWaveOne = null;
+        testWaveTwo = null;
     }
 
     @Test
@@ -88,5 +107,85 @@ public class WaveManagerTest {
     public void getTimeBeforeNextWaveTest() {
         //Time before waves is set to 800
         Assert.assertEquals("Time before next wave not correct", 800-0, wm.getTimeBeforeNextWave());
+    }
+    
+    @Test
+    public void addResourceTest() {
+    	// Variable that holds if a resources if found in a world
+    	boolean desertResources = false;
+    	boolean iceResources = false;
+    	boolean volcanoResources = false;
+    	boolean oceanResources = false;
+    	
+    	WorldManager worldManager = gm.getManager(WorldManager.class);
+    	
+    	// The worlds to check
+    	World desertWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
+    	World iceWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
+    	World volcanoWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
+    	World oceanWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
+    	
+    	// Shorter waves to add to the wave manager
+    	EnemyWave waveOne = new EnemyWave(1,1,1,1,1);
+        EnemyWave waveTwo = new EnemyWave(2,1,1,2,1);
+
+        // Remove old waves
+        wm.getWaves().remove(0);
+        wm.getWaves().remove(0);
+        
+        // Add new waves
+        waveOne.setCurrentWaveTime(2);
+        wm.addWave(waveOne);
+        wm.addWave(waveTwo);
+        
+        // Simulate game ticks so the wave changes
+        wm.onTick(1);
+        wm.onTick(1);
+        
+        // Check if resources have been added to each world
+        desertResources = checkContains(desertWorld.getEntities().values());
+        iceResources = checkContains(iceWorld.getEntities().values());
+        volcanoResources = checkContains(volcanoWorld.getEntities().values());
+        oceanResources = checkContains(oceanWorld.getEntities().values());
+        
+        assertTrue(desertResources);
+        assertTrue(iceResources);
+        assertTrue(volcanoResources);
+        assertTrue(oceanResources);
+    }
+    
+    /**
+     * Checks if resources are part of a collection
+     * @param values
+     * 			The collection of abstract entities to check
+     * @return
+     * 			True if a resource is in the collection, otherwise false
+     */
+    private boolean checkContains(Collection<AbstractEntity> values) {
+    	for (AbstractEntity entity : values) {
+     	   if (entity.getClass() == ResourceEntity.class) {
+     		   return true;
+     	   }
+     	   
+        }
+    	
+    	return false;
+    	
+    }
+
+    @Test
+    public void extraTest() {
+        testWaveOne = new EnemyWave(1,2,3,4,5,6);
+        testWaveOne = new EnemyWave(6) ;
+        wm.regularGame(2);
+        wm.onTick(1);
+        wm.onTick(1);
+        wm.onTick(1);
+    }
+
+    @Test
+    public void loaderTest() {
+        wl = new WaveLoader("filename");
+        wl.createwavefromline("1, 2, 3, 4, 5, 6, 7");
     }
 }

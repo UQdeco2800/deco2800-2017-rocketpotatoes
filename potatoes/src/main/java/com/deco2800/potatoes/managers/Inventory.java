@@ -20,7 +20,7 @@ public class Inventory {
 	/*
 	 * Logger for all info/warning/error logs
 	 */
-	private static final transient Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Inventory.class);
 
 	/*
 	 * Gui Manager to call on for updating the resources
@@ -133,7 +133,6 @@ public class Inventory {
 	 */
 	public int getQuantity(Resource resource) {
 		if (!this.getInventoryResources().contains(resource)) {
-			LOGGER.error("Please supply a valid resource");
 			return 0;
 		}
 		return inventoryMap.get(resource);
@@ -174,13 +173,13 @@ public class Inventory {
 			try {
 				inventoryMap.put(resource, currentAmount + amount);
 				guiManager = GameManager.get().getManager(GuiManager.class);
-				guiManager.getGui(InventoryGui.class).increaseInventory(resource.getTypeName(),
-						currentAmount + amount);
+				guiManager.getGui(InventoryGui.class).refreshInventory();
 			} catch (NullPointerException exception) {
 				// catch exception for tests when the gui isn't initialised
 				result = 0;
 			}
 		}
+
 
 		return result;
 	}
@@ -222,6 +221,44 @@ public class Inventory {
 	}
 
 	/**
+	 * @require Inventory needs to have enough resources to subtract item resources
+	 * from it
+	 *
+	 * <p>
+	 * This method subtracts all of the items in parameter items to this
+	 * object.
+	 * </p>
+	 *
+	 * <p>
+	 * That is, for each resource, this method updates the quantity of that
+	 * resource in this object
+	 * </p>
+	 *
+	 * <p>
+	 * This method will not modify items (unless this ==
+	 * items)
+	 * </p>
+	 *
+	 * @param items
+	 *            the extra items to be added to this object
+	 */
+	public void subtractInventory(Inventory items){
+		if (items == null) {
+			LOGGER.warn("Cannot add null to Inventory");
+		} else {
+			for (Resource resource : items.inventoryMap.keySet()) {
+				if (inventoryMap.containsKey(resource)) {
+					this.updateQuantity(resource, -items.getQuantity(resource));
+				} else {
+					inventoryMap.put(resource, 0);
+					this.updateQuantity(resource, -items.getQuantity(resource));
+				}
+
+			}
+		}
+	}
+
+	/**
 	 * <p>
 	 * Returns a string representation of the inventory in the form of: <br>
 	 * resource.toString() " count = " this.getQuantity(resource) for each
@@ -237,5 +274,32 @@ public class Inventory {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean equals(Object o){
+		if (!(o instanceof Inventory))
+			return false;
+		Inventory other = (Inventory) o;
+		if (other.getInventoryResources().size() != this.getInventoryResources().size())
+			return false;
+
+		Set<Resource> otherResources = other.getInventoryResources();
+		for (Resource resource : inventoryMap.keySet()) {
+			if (!otherResources.contains(resource))
+				return false;
+		}
+		return true;
+	}
+	/**
+	 * InteliJ generated Hashcode Function to meet sonar requirements
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (guiManager != null ? guiManager.hashCode() : 0);
+		result = 31 * result + (inventoryMap != null ? inventoryMap.hashCode() : 0);
+		return result;
+	}
+
 
 }
