@@ -40,9 +40,15 @@ task(run, dependsOn: "classes", type: JavaExec) {
 }
 
 task copyRust(type: Copy) {
-    from 'target/release/'
-    into "build/classes/main"
-    include 'librustyfish.*'
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        from 'target\\release'
+        into 'build\\classes\\main'
+        include 'rustyfish.dll'
+    } else {
+        from 'target/release/'
+        into "build/classes/main"
+        include 'librustyfish.*'
+    }
 }
 
 task compileRust(type: Exec) {
