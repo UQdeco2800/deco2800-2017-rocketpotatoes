@@ -437,6 +437,7 @@ public class TextureManager extends Manager {
         }
 
         for(int i =1;i<8;i++){
+            //bear attack texture
             saveTexture("bear_attack_E_"+i,"resources/enemies/bear/attack/bear_attack_E_"+i+".png");
             saveTexture("bear_attack_N_"+i,"resources/enemies/bear/attack/bear_attack_N_"+i+".png");
             saveTexture("bear_attack_NE_"+i,"resources/enemies/bear/attack/bear_attack_NE_"+i+".png");
@@ -445,6 +446,33 @@ public class TextureManager extends Manager {
             saveTexture("bear_attack_SE_"+i,"resources/enemies/bear/attack/bear_attack_SE_"+i+".png");
             saveTexture("bear_attack_SW_"+i,"resources/enemies/bear/attack/bear_attack_SW_"+i+".png");
             saveTexture("bear_attack_W_"+i,"resources/enemies/bear/attack/bear_attack_W_"+i+".png");
+            //squirrel attack texture
+            saveTexture("squirrel_attack_E_"+i,"resources/enemies/squirrel/attack/squirrel_attack_E_"+i+".png");
+            saveTexture("squirrel_attack_N_"+i,"resources/enemies/squirrel/attack/squirrel_attack_N_"+i+".png");
+            saveTexture("squirrel_attack_NE_"+i,"resources/enemies/squirrel/attack/squirrel_attack_NE_"+i+".png");
+            saveTexture("squirrel_attack_NW_"+i,"resources/enemies/squirrel/attack/squirrel_attack_NW_"+i+".png");
+            saveTexture("squirrel_attack_S_"+i,"resources/enemies/squirrel/attack/squirrel_attack_S_"+i+".png");
+            saveTexture("squirrel_attack_SE_"+i,"resources/enemies/squirrel/attack/squirrel_attack_SE_"+i+".png");
+            saveTexture("squirrel_attack_SW_"+i,"resources/enemies/squirrel/attack/squirrel_attack_SW_"+i+".png");
+            saveTexture("squirrel_attack_W_"+i,"resources/enemies/squirrel/attack/squirrel_attack_W_"+i+".png");
+            //squirrel walk texture
+            saveTexture("squirrel_walk_E_"+i,"resources/enemies/squirrel/walk/squirrel_walk_E_"+i+".png");
+            saveTexture("squirrel_walk_N_"+i,"resources/enemies/squirrel/walk/squirrel_walk_N_"+i+".png");
+            saveTexture("squirrel_walk_NE_"+i,"resources/enemies/squirrel/walk/squirrel_walk_NE_"+i+".png");
+            saveTexture("squirrel_walk_NW_"+i,"resources/enemies/squirrel/walk/squirrel_walk_NW_"+i+".png");
+            saveTexture("squirrel_walk_S_"+i,"resources/enemies/squirrel/walk/squirrel_walk_S_"+i+".png");
+            saveTexture("squirrel_walk_SE_"+i,"resources/enemies/squirrel/walk/squirrel_walk_SE_"+i+".png");
+            saveTexture("squirrel_walk_SW_"+i,"resources/enemies/squirrel/walk/squirrel_walk_SW_"+i+".png");
+            saveTexture("squirrel_walk_W_"+i,"resources/enemies/squirrel/walk/squirrel_walk_W_"+i+".png");
+            //squirrel death texture
+            saveTexture("squirrel_death_E_"+i,"resources/enemies/squirrel/death/squirrel_death_E_"+i+".png");
+            saveTexture("squirrel_death_N_"+i,"resources/enemies/squirrel/death/squirrel_death_N_"+i+".png");
+            saveTexture("squirrel_death_NE_"+i,"resources/enemies/squirrel/death/squirrel_death_NE_"+i+".png");
+            saveTexture("squirrel_death_NW_"+i,"resources/enemies/squirrel/death/squirrel_death_NW_"+i+".png");
+            saveTexture("squirrel_death_S_"+i,"resources/enemies/squirrel/death/squirrel_death_S_"+i+".png");
+            saveTexture("squirrel_death_SE_"+i,"resources/enemies/squirrel/death/squirrel_death_SE_"+i+".png");
+            saveTexture("squirrel_death_SW_"+i,"resources/enemies/squirrel/death/squirrel_death_SW_"+i+".png");
+            saveTexture("squirrel_death_W_"+i,"resources/enemies/squirrel/death/squirrel_death_W_"+i+".png");
         }
         for(int i =1;i<7;i++){
             saveTexture("bear_death_E_"+i,"resources/enemies/bear/death/bear_death_E_"+i+".png");
