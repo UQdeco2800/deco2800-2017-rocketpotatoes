@@ -2,7 +2,6 @@ use std::ffi::{CStr, CString};
 use std::mem;
 use std::os::raw::c_char;
 use std::str;
-use std::time::{Instant};
 use render::{RenderInfo, RenderLine, RenderRectangle, RenderObject};
 
 pub struct CallbackFunctions {
