@@ -24,7 +24,7 @@ public class MeleeAttackEvent extends TimeEvent<EnemyEntity> {
 	 * Default constructor for serialization
 	 */
 	public MeleeAttackEvent() {
-		// Blank comment for the great lord Sonar
+		// Empty for serialzation purposes
 	}
 
 	/**

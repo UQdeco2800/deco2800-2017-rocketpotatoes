@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * A stealing TimeEvent which, when belonging to an enemy, allows the enemy to steal from resource trees.
  *
- * @author: tl & craig
+ * @author tl & craig
  **/
 public class StealingEvent extends TimeEvent<EnemyEntity> {
 
@@ -23,7 +23,7 @@ public class StealingEvent extends TimeEvent<EnemyEntity> {
      * Default constructor for serialization
      */
     public StealingEvent() {
-        // Blank comment for the great lord Sonar
+        // Empty for serialization purposes
     }
 
     /**

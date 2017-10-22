@@ -448,5 +448,4 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
-
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * A healing wave TimeEvent which, when belonging to an enemy, causes the enemy to heal other enemies around it for.
  *
- * @author: craig
+ * @author craig
  **/
 public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
 
@@ -29,7 +29,7 @@ public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
      * Default constructor for serialization
      */
     public HealingWaveEvent() {
-        // Blank comment for sonar
+        // Empty for serialization purposes
     }
 
     /**
@@ -69,7 +69,6 @@ public class HealingWaveEvent extends TimeEvent<EnemyEntity> {
                 }
             }
         }
-
         //Particle effect for visual cue that healing wave has occurred.
         ParticleManager p = GameManager.get().getManager(ParticleManager.class);
 

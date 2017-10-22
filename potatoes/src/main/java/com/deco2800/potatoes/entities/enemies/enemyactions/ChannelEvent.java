@@ -6,7 +6,7 @@ import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 /**
  * A channelling time event that represents an enemy 'charging up' before performing another TimeEvent action
  *
- * @author: craig
+ * @author craig
  */
 public class ChannelEvent extends TimeEvent<EnemyEntity> {
     private float duration;
@@ -17,7 +17,7 @@ public class ChannelEvent extends TimeEvent<EnemyEntity> {
      * Default constructor for serialization
      */
     public ChannelEvent() {
-        //Blank comment for sonar
+        //Empty for serialization purposes
     }
 
     /**
