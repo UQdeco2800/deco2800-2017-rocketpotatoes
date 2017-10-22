@@ -450,7 +450,7 @@ public class Render3D implements Renderer {
 		if (font == null) {
 			font = new BitmapFont();
 		}
-		font.getData().setScale(1.0f);
+		font.getData().setScale(3.0f);
 		font.setColor(Color.GREEN);
 
 
@@ -463,7 +463,7 @@ public class Render3D implements Renderer {
 				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
 
 				font.draw(batch, String.format("%s", ((ResourceTree) e).getGatherCount()),
-						isoPosition.x + tileWidth / 2 - 7, isoPosition.y + 65);
+						isoPosition.x, isoPosition.y + 100);
 			}
 		}
 		batch.end();
