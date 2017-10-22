@@ -1,12 +1,11 @@
 package com.deco2800.potatoes.entities.projectiles;
 
-import java.util.Optional;
-
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.effects.Effect;
+import com.deco2800.potatoes.entities.player.Player;
+import com.deco2800.potatoes.entities.player.Player.ShootStage;
 import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.util.WorldUtil;
+import com.deco2800.potatoes.managers.PlayerManager;
 
 public class OrbProjectile extends Projectile {
 
@@ -17,6 +16,7 @@ public class OrbProjectile extends Projectile {
 	private int numTexPerCharge = 3;
 	private boolean canFire = false;
 	private Vector3 playerPos;
+	public boolean hasBeenReleased=false;
 
 	public OrbProjectile() {
 
@@ -50,6 +50,14 @@ public class OrbProjectile extends Projectile {
 
 	@Override
 	public void onTick(long time) {
+		
+		Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+		if (p.currentShootStage==ShootStage.HOLDING&&!hasBeenReleased) {
+			charge(new Vector3(p.getPosX(), p.getPosY(), p.getPosZ()));
+			setTargetPosition(p.mousePos.x, p.mousePos.y, 0);
+		} else if(p.currentShootStage==ShootStage.LOOSE) {
+			fire();
+		}
 		if (canFire) {
 			// dont remove until range reached
 			if (range < SPEED) {
@@ -59,12 +67,10 @@ public class OrbProjectile extends Projectile {
 			}
 			super.onTick(time);
 		}
-		
 	}
 
 	@Override
 	protected void animate() {
-
 		projectileEffectTimer++;
 		if (projectileEffectTimer % 4 == 0) {
 			setTexture(projectileTexture.textures()[(int) (Math.floor((double) currentCharge)) * numTexPerCharge
@@ -91,6 +97,10 @@ public class OrbProjectile extends Projectile {
 
 	public static float getShadowRadius() {
 		return shadowRadius;
+	}
+	
+	public void hasBeenReleased(boolean tf) {
+		hasBeenReleased=tf;
 	}
 
 }
