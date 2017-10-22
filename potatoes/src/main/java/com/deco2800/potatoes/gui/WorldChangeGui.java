@@ -55,7 +55,7 @@ public class WorldChangeGui extends Gui {
 
         this.screen = screen;
         this.stage = stage;
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         table = new Table(uiSkin);
 
         // actors initialisation
@@ -72,6 +72,7 @@ public class WorldChangeGui extends Gui {
         worldsButtonGroup.addActor(worldThreeButton);
         worldsButtonGroup.addActor(worldFourButton);
         worldsButtonGroup.addActor(exitButton);
+        worldsButtonGroup.space(10);
         table.add(worldsButtonGroup);
 
         // create listeners for each button

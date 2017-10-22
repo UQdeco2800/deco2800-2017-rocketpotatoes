@@ -25,7 +25,7 @@ public class GameMenuGui extends Gui {
         this.screen = screen;
 
         // Make window, with the given skin
-        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("menu/uiskin.json"));
         window = new Window("Menu", uiSkin);
 
 		// Make our buttons
