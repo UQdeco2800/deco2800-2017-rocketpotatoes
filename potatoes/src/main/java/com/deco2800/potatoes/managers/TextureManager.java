@@ -40,8 +40,6 @@ public class TextureManager extends Manager {
         saveTexture("w1", "resources/placeholderassets/w1.png");
         saveTexture("tree", "resources/trees/Basic.png");
         saveTexture("real_tree", "resources/placeholderassets/tree.png");
-        saveTexture("seed_resource_tree", "resources/placeholderassets/basicResourceTree-01.png");
-        saveTexture("food_resource_tree", "resources/placeholderassets/pinkResourcetree-01.png");
         saveTexture("ground_1", "resources/placeholderassets/ground-1.png");
         saveTexture("spacman", "resources/placeholderassets/spacman.png");
         saveTexture("spacman_red", "resources/placeholderassets/spacman_red.png");
@@ -81,7 +79,44 @@ public class TextureManager extends Manager {
         
         saveFromSpriteSheet("nicer_terrain", new String[][] {{"ground_1", "grass", "w1"}});
         
-
+        /* Seed Resource Tree Sprites */
+        saveTexture("seed_resource_tree", "resources/resourceTrees/seedTree.png"); // Default Sprite
+        
+        // Seed Grow Animation
+        for (int i = 1; i < 44; i++) {
+        		saveTexture("seedtree_grow_" + i, "resources/resourceTrees/seed/grow/seedtree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Seed Produce Animation
+        for (int i = 1; i < 32; i++) {
+        		saveTexture("seedtree_produce_" + i, "resources/resourceTrees/seed/produce/seedtree_produce_" + String.format("%04d", i) + ".png");
+        }
+        
+        /* Food Resource Tree Sprites */
+        saveTexture("food_resource_tree", "resources/resourceTrees/foodTree.png"); // Default Sprite
+        
+        // Food Grow Animation
+        for (int i = 1; i < 51; i++) {
+        		saveTexture("foodtree_grow_" + i, "resources/resourceTrees/food/grow/foodtree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Food Produce Animation
+        for (int i = 1; i < 36; i++) {
+        		saveTexture("foodtree_produce_" + i, "resources/resourceTrees/food/produce/foodtree_produce_" + String.format("%04d", i) + ".png");
+        }
+        
+        /* Pine Resource Tree Sprites */
+        saveTexture("pine_resource_tree", "resources/resourceTrees/pineTree.png"); // Default Sprite
+        
+        // Pine Grow Animation
+        for (int i = 1; i < 44; i++) {
+    			saveTexture("pinetree_grow_" + i, "resources/resourceTrees/pine/grow/pinetree_grow_" + String.format("%04d", i) + ".png");
+        }
+        
+        // Pine Produce Animation
+        for (int i = 1; i < 36; i++) {
+        		saveTexture("pinetree_produce_" + i, "resources/resourceTrees/pine/produce/pinetree_produce_" + String.format("%04d", i) + ".png");
+        }
 
         // Projectiles TODO: fix
         for (int i = 1; i < 4; i++) {
@@ -184,6 +219,7 @@ public class TextureManager extends Manager {
         }
         
         saveTexture("cactusTree", "resources/trees/cactusTree.png");
+        saveTexture("coralTree", "resources/trees/coralTree.png");
         saveTexture("defenseTree", "resources/trees/defenseTree.png");
         //damage tree:ice
 

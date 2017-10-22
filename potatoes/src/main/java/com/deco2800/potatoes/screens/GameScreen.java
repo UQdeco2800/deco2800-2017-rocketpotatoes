@@ -8,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
@@ -17,15 +15,17 @@ import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.enemies.*;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.resources.FoodResource;
-import com.deco2800.potatoes.entities.resources.*;
+import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.AcornTreeType;
 import com.deco2800.potatoes.entities.trees.CactusTreeType;
 import com.deco2800.potatoes.entities.trees.DamageTree;
 import com.deco2800.potatoes.entities.trees.DefenseTree;
 import com.deco2800.potatoes.entities.trees.FireTreeType;
+import com.deco2800.potatoes.entities.trees.FoodTree;
 import com.deco2800.potatoes.entities.trees.IceTreeType;
+import com.deco2800.potatoes.entities.trees.PineTree;
 import com.deco2800.potatoes.entities.trees.ProjectileTree;
+import com.deco2800.potatoes.entities.trees.SeedTree;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -36,6 +36,7 @@ import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.Terrain;
 
 import java.io.IOException;
 import java.util.Map;
@@ -326,9 +327,25 @@ public class GameScreen implements Screen {
 				GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(600)); // pause wave
 			}
 			*/
-			initialiseResources();
 			initialisePortal();
-			addDamageTree();
+			//addDamageTree();
+			//addResourceTrees();
+			
+			/* Randomly generate trees in each world */
+			AbstractTree forestTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
+			
+			AbstractTree desertTrees[] = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
+			
+			AbstractTree iceTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
+			
+			AbstractTree oceanTrees[] = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
+			
+			AbstractTree volcanoTrees[] = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
 
 
 			if (!multiplayerManager.isMultiplayer()) {
@@ -350,6 +367,50 @@ public class GameScreen implements Screen {
 		//show the tutorial menu
 		guiManager.getGui(TutorialGui.class).show();
 	}
+	
+	/**
+	 * Randomly generates trees in a specified world. Currently only spawns
+	 * resource trees.
+	 * 
+	 * @param world 		the world to randomly generate trees in
+	 * @param trees	 	the trees allowed to generate
+	 */
+	private void randomlyGenerateTrees(com.deco2800.potatoes.worlds.World world, AbstractTree[] trees) {
+		// locations to add the trees
+	    	int xPos;
+	    	int yPos;
+	    	
+	    	// The amount of each tree to generate
+    		int amount = 35/trees.length;
+	    	
+	    	// Terrain to add the tree to
+	    	Terrain terrain;
+	    	
+	    	// Iterate over the trees
+	    	for (int i = 0; i < trees.length; i ++) {
+	    		for (int j = 0; j < amount; j++) {
+	    			// Generate random location
+	    			xPos = (int) (Math.random() * 40) + 10;
+	    			yPos = (int) (Math.random() * 40) + 10;
+	    			terrain = world.getTerrain(xPos, yPos);
+	    			
+	    			// Only add a tree if it is on grass
+        			if (terrain.getTexture() == "grass_tile_1") {
+        				AbstractTree newTree = trees[i].createCopy();
+        				newTree.setPosX(xPos);
+        				newTree.setPosY(yPos);
+        				world.addEntity(newTree);
+        			}
+	    		}
+	    	}
+		
+	}
+	
+	private void addResourceTrees() {
+		GameManager.get().getWorld().addEntity(new SeedTree(20f, 20f));
+		GameManager.get().getWorld().addEntity(new FoodTree(22f, 20f));
+		GameManager.get().getWorld().addEntity(new PineTree(24f, 20f));
+	}
 
 	private void addDamageTree() {
 		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
@@ -361,58 +422,8 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
 	}
 
-	private void initialiseResources() {
-
-		SeedResource seedResource = new SeedResource();
-		PineconeResource pineconeResource = new PineconeResource();
-		WoodResource woodResource = new WoodResource();
-		TumbleweedResource tumbleweedResource = new TumbleweedResource();
-		CactusThornResource cactusThornResource = new CactusThornResource();
-		PricklyPearResource pricklyPearResource = new PricklyPearResource();
-
-		SnowBallResource snowBallResource = new SnowBallResource();
-		SealSkinResource sealSkinResource = new SealSkinResource();
-		IceCrystalResource iceCrystalResource = new IceCrystalResource();
-
-		CoalResource coalResource = new CoalResource();
-		BonesResource bonesThornResource = new BonesResource();
-		ObsidianResource obsidianResource = new ObsidianResource();
-
-		FishMeatResource fishMeatResource = new FishMeatResource();
-		PearlResource pearlResource = new PearlResource();
-		TreasureResource treasureResource = new TreasureResource();
-
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 20.5f, seedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 18.5f, pineconeResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(10.5f, 16.5f, woodResource));
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 20.5f, tumbleweedResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 18.5f, cactusThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(9.5f, 16.5f, pricklyPearResource));
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 20.5f, snowBallResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 18.5f, sealSkinResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(8.5f, 16.5f, iceCrystalResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 20.5f, coalResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 18.5f, bonesThornResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(7.5f, 16.5f, obsidianResource));
-
-
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 20.5f, fishMeatResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 18.5f, pearlResource));
-		GameManager.get().getWorld().addEntity(new ResourceEntity(6.5f, 16.5f, treasureResource));
-
-
-
-
-	}
-
 	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 100));
+		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 10000));
 	}
 
 	private void tickGame(long timeDelta) {

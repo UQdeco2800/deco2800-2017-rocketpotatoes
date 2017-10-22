@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.*;
 
 public class FadingGui extends Gui implements Tickable{
@@ -43,8 +44,14 @@ public class FadingGui extends Gui implements Tickable{
                 .class);
         Label unlockedLabel = new Label("Unlocked " + treeState.getTree().getName(),
                 uiSkin);
-        image =  new Image(new TextureRegionDrawable(new TextureRegion(textureManager
-                .getTexture(treeState.getTree().getTexture()))));
+        
+        if (treeState.getTree() instanceof ResourceTree) {
+        		image =  new Image(new TextureRegionDrawable(new TextureRegion(textureManager
+                    .getTexture(	((ResourceTree) treeState.getTree()).defaultTexture))));
+        } else {
+        		image =  new Image(new TextureRegionDrawable(new TextureRegion(textureManager
+                    .getTexture(treeState.getTree().getTexture()))));
+        }
 
         float x = (stage.getWidth() - image.getImageWidth())/2;
         float y = (stage.getHeight() - image.getImageHeight())/2;

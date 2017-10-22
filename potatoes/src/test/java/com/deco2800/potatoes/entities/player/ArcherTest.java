@@ -18,20 +18,20 @@ import com.deco2800.potatoes.managers.PlayerManager;
  */
 public class ArcherTest {
 	
-	Archer caveman;
+	Archer archer;
 	
 	@Before
 	public void setup() {
-		caveman = new Archer(0, 0);
+		archer = new Archer(0, 0);
 		PlayerManager m = new PlayerManager();
-		m.setPlayer(caveman);
+		m.setPlayer(archer);
 		GameManager.get().addManager(m);
 	}
 	
 	@After
     public void cleanUp() {
     	GameManager.get().clearManagers();
-    	caveman = null;
+    	archer = null;
     }
 	
 	/**
@@ -44,35 +44,30 @@ public class ArcherTest {
 				PlayerState.IDLE, 1, 1, null);
 		
 		// Test setting idle animation to north
-		caveman.setAnimation(animationMap.get(Direction.N));
+		archer.setAnimation(animationMap.get(Direction.N));
 		
 		// Test setting idle animation to south
-		caveman.setAnimation(animationMap.get(Direction.S));
+		archer.setAnimation(animationMap.get(Direction.S));
 				
 		// Test setting idle animation to south west
-		caveman.setAnimation(animationMap.get(Direction.SW));
+		archer.setAnimation(animationMap.get(Direction.SW));
 	}
 	@Test
 	public void extraTest() {
-		caveman.updateSprites();
-		caveman.walk(true);
-		caveman.walk(false);
-		caveman.setState(Player.PlayerState.WALK);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.setState(Player.PlayerState.ATTACK);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.setState(Player.PlayerState.DAMAGED);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.setState(Player.PlayerState.DEATH);
-		caveman.updateSprites();
-		caveman.setState(Player.PlayerState.INTERACT);
-		caveman.updateSprites();
-		caveman.onTick(2);
-		caveman.interact();
-		caveman.attack();
+		archer.updateSprites();
+		archer.walk(true);
+		archer.walk(false);
+		archer.setState(Player.PlayerState.WALK);
+		archer.updateSprites();
+		archer.setState(Player.PlayerState.ATTACK);
+		archer.updateSprites();
+		archer.setState(Player.PlayerState.DAMAGED);
+		archer.updateSprites();
+		archer.setState(Player.PlayerState.DEATH);
+		archer.updateSprites();
+		archer.setState(Player.PlayerState.INTERACT);
+		archer.updateSprites();
+		archer.interact();
 
 	}
 }
