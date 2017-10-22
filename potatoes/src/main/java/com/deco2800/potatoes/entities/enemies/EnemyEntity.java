@@ -47,8 +47,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private boolean moving = true;
 	private int channelTimer;
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
 	private int count = 0;
 	private String enemyStatus = "";
 	protected int roundNum = 0;

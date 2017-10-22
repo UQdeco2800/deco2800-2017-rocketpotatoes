@@ -31,8 +31,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private int upgradeLevel = 0;
 	private transient Animation animation;
 
-	private static final List<Color> BUILD_COLOURS = Arrays.asList(Color.YELLOW);
-	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("progress_bar", BUILD_COLOURS, 60, 1);
+	private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("healthBarBlue", 1);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 	private static final int unlockRange = 2;
 

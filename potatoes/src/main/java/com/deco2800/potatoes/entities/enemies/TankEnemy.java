@@ -51,8 +51,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	private EnemyTargets targets = initTargets();
 
 	/* Define variables for the TankEnemy's progress bar */
-	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity(COLOURS);
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
 
 	/**
 	 * Empty constructor for serialization
