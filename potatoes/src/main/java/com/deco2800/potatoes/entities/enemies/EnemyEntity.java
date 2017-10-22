@@ -212,7 +212,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-//			LOGGER.warn("Texture:::"+type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
 			this.setTexture(type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
 		}
 

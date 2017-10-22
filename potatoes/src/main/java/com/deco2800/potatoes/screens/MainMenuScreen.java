@@ -22,7 +22,6 @@ import com.sun.jna.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Console;
 import java.net.InetAddress;
 import java.util.List;
 

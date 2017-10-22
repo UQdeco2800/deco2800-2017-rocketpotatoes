@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * Static processor for messages
  */
 public class ClientMessageProcessor {
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
 
     /**
      * Calls the appropriate handler for the given message
@@ -68,8 +68,6 @@ public class ClientMessageProcessor {
      * @param m the message
      */
     private static void connectionConfirmMessage(NetworkClient client, Network.HostConnectionConfirmMessage m) {
-
-        //System.out.println("[CLIENT]: Got host connection confirm message: " + m.id);
 
         client.setID(m.getId());
     }

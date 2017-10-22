@@ -178,7 +178,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     public boolean setState(PlayerState newState) {
         // Check if the change is the same, if so return true.
-        if (state == newState) return true;
+        if (state == newState){
+            return true;
+        }
 		//Only change the state if IDLE or WALK-ing
         if (state == IDLE || state == WALK || state == DEATH) {
         		stateChanged(state, newState);
