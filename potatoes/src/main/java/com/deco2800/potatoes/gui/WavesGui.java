@@ -36,7 +36,7 @@ public class WavesGui extends Gui {
         window = new Window("Wave info", uiSkin);
 
         //add a window for amount of enemies
-        enemyAmountWindow = new Window("Total Enemies In World", uiSkin);
+        enemyAmountWindow = new Window(" Enemies in the forest ", uiSkin);
         enemyAmountWindow.setWidth(30);
         
         // Make buttons & labels

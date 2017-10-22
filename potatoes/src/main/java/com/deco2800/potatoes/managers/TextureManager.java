@@ -71,8 +71,9 @@ public class TextureManager extends Manager {
         saveTexture("enemyCave_E", "resources/enemies/enemyCave_E.png");
         saveTexture("enemyCave_SW", "resources/enemies/enemyCave_SW.png");
         saveTexture("enemyCave_WS", "resources/enemies/enemyCave_WS.png");
-        saveTexture("healthbar", "resources/healthproperties/Full_Health_Bar.png");
-        saveTexture("greybar", "resources/healthproperties/greyBar.png");
+        saveTexture("healthBarBlue", "resources/healthproperties/health-bar-blue.png");
+        saveTexture("healthBarRed", "resources/healthproperties/health-bar-red.png");
+        saveTexture("healthBarGreen", "resources/healthproperties/health-bar-green.png");
         saveTexture("nicer_terrain", "resources/placeholderassets/nicer_terrain.png");
         saveTexture("acorn1", "resources/Projectiles/acorn1.png");
         saveTexture("leaves1", "resources/Projectiles/leaves1.png");
@@ -146,7 +147,9 @@ public class TextureManager extends Manager {
         // GUI
         saveTexture("tree_shop", "resources/menu/tree_menu.png");
         saveTexture("backgroundMainMenu", "resources/menu/backgroundMainMenu.png");
-        saveTexture("gameOverScreen", "resources/healthproperties/gameOverScreen.png");
+        saveTexture("gameOverScreen", "resources/healthproperties/Game-OverV2.11.png");
+        saveTexture("gameOverRestart", "resources/healthproperties/restartButton.png");
+        saveTexture("gameOverExit", "resources/healthproperties/exitButton.png");
         saveTexture("resumePauseMenu", "resources/menu/pauseMenu/resumePauseMenu.png");
         saveTexture("optionsPauseMenu", "resources/menu/pauseMenu/optionsPauseMenu.png");
         saveTexture("savePauseMenu", "resources/menu/pauseMenu/savePauseMenu.png");

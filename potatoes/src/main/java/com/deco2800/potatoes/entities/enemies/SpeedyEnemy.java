@@ -52,8 +52,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	private LinkedList<ResourceTree> resourceTreeQueue = allResourceTrees();
 	private LinkedList<ResourceTree> visitedResourceTrees = new LinkedList<>();
 
-	private static final List<Color> COLOURS = Arrays.asList(Color.PURPLE, Color.RED, Color.ORANGE, Color.YELLOW);
-	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity(COLOURS);
+	private static final ProgressBarEntity PROGRESSBAR = new ProgressBarEntity("healthBarRed", 1.5f);
 
 	private int count = 0;
 	private float lastX;

@@ -52,9 +52,6 @@ public class MooseTest extends BaseTest {
 
         }
 
-        assertEquals(Color.RED, mooseEmpty.getProgressBar().getColours().get(0));
-        assertEquals(Color.valueOf("fff134"), mooseEmpty.getProgressBar().getColours().get(1));
-        assertEquals(Color.GREEN, mooseEmpty.getProgressBar().getColours().get(2));
     }
 
     /*

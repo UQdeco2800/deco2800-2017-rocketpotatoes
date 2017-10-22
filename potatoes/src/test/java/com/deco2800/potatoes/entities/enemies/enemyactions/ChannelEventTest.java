@@ -1,8 +1,6 @@
 package com.deco2800.potatoes.entities.enemies.enemyactions;
 
 import com.deco2800.potatoes.BaseTest;
-import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;

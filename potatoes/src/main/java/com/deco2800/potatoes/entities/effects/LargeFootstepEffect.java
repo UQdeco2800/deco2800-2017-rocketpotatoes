@@ -67,7 +67,7 @@ public class LargeFootstepEffect extends Effect {
                 //Create a particle effect to represent a resource being destroyed
                 ParticleType particle =  new BasicParticleType(1700, 1700.0f,
                         0.0f, 256, Color.OLIVE, 25, 4);
-                particle.speed = 0.04f;
+                particle.setSpeed(0.04f);
                 Vector2 pos = Render3D.worldToScreenCoordinates(entity.getPosX(), entity.getPosY(), -0.5f);
                 int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
                 int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");

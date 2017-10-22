@@ -30,7 +30,6 @@ public class GuiManager extends Manager {
 
     /**
      * Add's a gui element to be tracked by the GuiManager. Duplicates are not well supported
-     * TODO better support for duplicates
      * @param g the gui element
      */
     public void addGui(Gui g) {
@@ -51,8 +50,7 @@ public class GuiManager extends Manager {
                 return (G) g;
             }
         }
-
-		/* If it doesn't exist, we return null. TODO log this? error? */
+        
 
         return null;
     }
