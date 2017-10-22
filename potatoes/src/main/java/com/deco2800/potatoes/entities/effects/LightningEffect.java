@@ -27,11 +27,9 @@ public class LightningEffect extends Effect {
 
 	boolean staticStrike = true;
 
-	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage,
-			float range, EffectTexture texture) {
-
-        super(targetClass, new Circle2D(startPos.x, startPos.y, 7.07f), 1f, 1f, damage, range, texture);
-
+	public LightningEffect(Class<?> targetClass, Vector3 startPos, Vector3 targetPos, float damage, float range,
+			EffectTexture texture) {
+		super(targetClass, new Circle2D(targetPos.x, targetPos.y, 1f), 1f, 1f, damage, range, texture);
 
 		this.startPos = startPos;
 		this.targetPos = targetPos;
@@ -62,26 +60,26 @@ public class LightningEffect extends Effect {
 
 		float magnitude = (float) Math.sqrt(lengthX * lengthX + lengthY * lengthY);
 
-		//the number of divisions in the line
+		// the number of divisions in the line
 		segments = (int) Math.ceil(magnitude / segmentStep);// 8
 		float[][] positions = new float[segments + 1][2];
 
 		Random random = new Random();
 
-		//segments as a decimal
+		// segments as a decimal
 		float segmentSize = (float) (1.0 / segments);// 0.125
 		float segmentsDone = 0;
 
 		for (int i = 0; i < segments + 1; i++) {
-			//the random x offset to add to the nodes
+			// the random x offset to add to the nodes
 			float randx = (float) ((random.nextFloat() - 0.5) * 2f) * (segmentSize * magnitude / 2) * distanceDeltaX;
-			//the random y offset to add to the nodes																									
+			// the random y offset to add to the nodes
 			float randy = (float) ((random.nextFloat() - 0.5) * 2f) * (segmentSize * magnitude / 2) * distanceDeltaY;
-																														
-			//the x pos of the node on the line
+
+			// the x pos of the node on the line
 			float x = (float) (xPos + segmentsDone * lengthX
 					+ Math.abs(Math.sin(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randx);
-			//the y pos of the node on the line
+			// the y pos of the node on the line
 			float y = (float) (yPos + segmentsDone * lengthY
 					+ Math.abs(Math.cos(Math.toRadians(WorldUtil.rotation(xPos, yPos, fxPos, fyPos) - 45))) * randy);
 
@@ -105,14 +103,10 @@ public class LightningEffect extends Effect {
 		if (!staticStrike) {
 			pos = calculatePositions(startPos.y, startPos.x, targetPos.y, targetPos.x);
 		}
-		//draw staight line between each node and the next
+		// draw staight line between each node and the next
 		for (int x = 0; x < pos.length - 1; x++) {
 			drawTextureBetween(batch, getTexture(), pos[x][0], pos[x][1], pos[x + 1][0], pos[x + 1][1]);
 		}
-
-		Shape2D newPos = getMask();
-		newPos.setX(targetPos.x);
-		newPos.setY(targetPos.y);
 	}
 
 	@Override
