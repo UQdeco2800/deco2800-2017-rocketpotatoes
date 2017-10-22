@@ -18,9 +18,10 @@ import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.util.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.LinkedList;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A stronger but slower enemy type, only attacks towers/trees.
@@ -267,14 +268,14 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		LinkedList<Class> mainTargets = new LinkedList<>();
+		List<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
 		mainTargets.add(Caveman.class);
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		LinkedList<Class> sightAggroTargets = new LinkedList<>();
+		List<Class> sightAggroTargets = new ArrayList<>();
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);

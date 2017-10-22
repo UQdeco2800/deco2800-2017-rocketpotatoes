@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class EnemyTargets {
 
-    private LinkedList<Class> mainTargets;
-    private LinkedList<Class> sightAggroTargets;
+    private List<Class> mainTargets;
+    private List<Class> sightAggroTargets;
 
     /**
      * Constructor for class, initialize with collections of classes for main targets and sight aggro.
@@ -23,7 +23,7 @@ public class EnemyTargets {
      * @param mainTargets
      * @param sightAggroTargets
      */
-    public EnemyTargets(LinkedList<Class> mainTargets, LinkedList<Class> sightAggroTargets) {
+    public EnemyTargets(List<Class> mainTargets, List<Class> sightAggroTargets) {
         this.mainTargets = mainTargets;
         this.sightAggroTargets = sightAggroTargets;
     }

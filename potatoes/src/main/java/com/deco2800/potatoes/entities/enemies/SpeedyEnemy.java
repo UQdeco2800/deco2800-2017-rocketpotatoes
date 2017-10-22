@@ -21,8 +21,9 @@ import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -207,7 +208,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		LinkedList<Class> mainTargets = new LinkedList<>();
+		List<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(ResourceTree.class);
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
@@ -215,7 +216,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		LinkedList<Class> sightAggroTargets = new LinkedList<>();
+		List<Class> sightAggroTargets = new ArrayList<>();
 		//sightAggroTargets.add(ResourceTree.class);
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);

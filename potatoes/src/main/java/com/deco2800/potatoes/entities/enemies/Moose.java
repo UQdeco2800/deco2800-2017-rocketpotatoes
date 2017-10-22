@@ -16,7 +16,8 @@ import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
@@ -146,14 +147,14 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 */
 	private EnemyTargets initTargets() {
 		/*Enemy will move to these (in order) if no aggro*/
-		LinkedList<Class> mainTargets = new LinkedList<>();
+		List<Class> mainTargets = new ArrayList<>();
 		mainTargets.add(BasePortal.class);
 		mainTargets.add(Archer.class);
 		mainTargets.add(Caveman.class);
 		mainTargets.add(Wizard.class);
 
 		/*if enemy can 'see' these, then enemy aggros to these*/
-		LinkedList<Class> sightAggroTargets = new LinkedList<>();
+		List<Class> sightAggroTargets = new ArrayList<>();
 		sightAggroTargets.add(Archer.class);
 		sightAggroTargets.add(Caveman.class);
 		sightAggroTargets.add(Wizard.class);
