@@ -74,7 +74,7 @@ public class WorldManager extends Manager implements TickableManager {
 	 */
 	private void addDefaultEntities(World world, WorldType key) {
 		// Temporary, entities are already added to forest world in game screen
-		if (key != ForestWorld.get()) {
+		if (true || key != ForestWorld.get()) {
 			for (AbstractEntity entity : key.getEntities()) {
 				world.addEntity(entity);
 			}

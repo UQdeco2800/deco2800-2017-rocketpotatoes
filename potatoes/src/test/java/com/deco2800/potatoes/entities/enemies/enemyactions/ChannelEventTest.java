@@ -4,6 +4,7 @@ import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Before;

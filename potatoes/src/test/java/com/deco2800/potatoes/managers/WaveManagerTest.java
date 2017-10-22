@@ -4,6 +4,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.WaveLoader;
+import com.deco2800.potatoes.worlds.DesertWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;

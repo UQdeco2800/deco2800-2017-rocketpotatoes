@@ -27,12 +27,12 @@ public class WorldType {
 	protected static final String GROUND = "mud_tile_1";
 	protected static final String WATER = "water_tile_1";
 	protected static final String GRASS = "grass_tile_1";
-	private static final Point PORTAL_POS = new Point(10, 10);
+	private static final Point PORTAL_POS = new Point(WorldManager.WORLD_SIZE / 2, WorldManager.WORLD_SIZE / 2);
 
 	private final TerrainType terrain;
 	// List of suppliers because creating the entities early can cause problems
 	private final List<Supplier<AbstractEntity>> entities;
-	protected List<Point> clearSpots;
+	protected Set<Point> clearSpots;
 	private float landAmount = 0.3f;
 
 	/**
@@ -44,15 +44,17 @@ public class WorldType {
 	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
 		this.terrain = terrain;
 		this.entities = entities;
-		clearSpots = clearPoints();
+		this.clearSpots = clearPoints();
 	}
 
-	protected static List<Point> clearPoints() {
-		List<Point> clearPoints = new ArrayList<>();
-		// player spot
-		clearPoints.add(new Point(5, 10));
-		// spot after going through portal
-		clearPoints.add(new Point(9, 4));
+	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities, Set<Point> clearSpots) {
+		this.terrain = terrain;
+		this.entities = entities;
+		this.clearSpots = clearSpots;
+	}
+
+	protected static Set<Point> clearPoints() {
+		Set<Point> clearPoints = new HashSet<>();
 		// portal and surrounding
 		for (int x = PORTAL_POS.x - 2; x < PORTAL_POS.x + 2; x++) {
 			for (int y = PORTAL_POS.y - 2; y < PORTAL_POS.y + 2; y++) {
@@ -86,6 +88,10 @@ public class WorldType {
 		return result;
 	}
 
+	public List<Point> getClearSpots() {
+		return new ArrayList<>(clearSpots);
+	}
+
 	/**
 	 * Generates a grid of terrain based on the given world size. The terrain types
 	 * and world generation is based on the details of this world type
@@ -96,9 +102,9 @@ public class WorldType {
 		boolean validLand = false;
 		int count = 0;
 		while (!validLand) {
-			float[][] water = wm.getRandomGridEdge();
-			float[][] height = wm.getRandomGrid();
-			float[][] grass = wm.getRandomGrid();
+			float[][] water = GridUtil.smoothDiamondSquareAlgorithm(getWaterSeed(worldSize), 0, 0.5f, 2);
+			float[][] height = GridUtil.smoothDiamondSquareAlgorithm(getWaterSeed(worldSize), 0.42f, 2);
+			float[][] grass = GridUtil.smoothDiamondSquareAlgorithm(GridUtil.seedGrid(worldSize), 0.42f, 2);
 			for (int x = 0; x < worldSize; x++) {
 				for (int y = 0; y < worldSize; y++) {
 					terrainSet[x][y] = chooseTerrain(water[x][y], height[x][y], grass[x][y]);
@@ -118,10 +124,19 @@ public class WorldType {
 		return terrainSet;
 	}
 
+	private float[][] getWaterSeed(int worldSize) {
+		float[][] result = GridUtil.seedGrid(worldSize);
+		for (Point p : clearSpots) {
+			result[p.x][p.y] = 1;
+		}
+		return result;
+	}
+
 	private boolean checkValidLand(int worldSize, Terrain[][] terrainSet) {
 		boolean validLand = true;
 		Set<Point> filled = new HashSet<>();
-		GridUtil.genericFloodFill(clearSpots.get(0), floodFillCheck(worldSize, terrainSet), new HashSet<>(), filled);
+		GridUtil.genericFloodFill(clearSpots.iterator().next(), floodFillCheck(worldSize, terrainSet), new HashSet<>(),
+				filled);
 		for (Point point : clearSpots) {
 			// Positions on the map have x and y swapped
 			point = new Point(point.y, point.x);
@@ -142,9 +157,9 @@ public class WorldType {
 
 	private Terrain chooseTerrain(float water, float height, float grass) {
 		Terrain spot;
-		if (height < 0.4 || water < 0.7) {
+		if (height < 0.3 || water < 0.5) {
 			spot = getTerrain().getWater();
-		} else if (height < 0.5 || water < 0.8) {
+		} else if (height < 0.4 || water < 0.6) {
 			spot = getTerrain().getRock();
 		} else {
 			spot = grass < 0.6 ? getTerrain().getGrass() : getTerrain().getRock();

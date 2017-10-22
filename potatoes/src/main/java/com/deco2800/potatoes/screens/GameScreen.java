@@ -290,20 +290,6 @@ public class GameScreen implements Screen {
 		if (m.isMaster() || !m.isMultiplayer()) {
 			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
 
-			//add enemy gates to game world
-			//W
-			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 6.5f, "enemyCave_SE");
-			GameManager.get().getWorld().addEntity(gateW);
-			//E
-			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 42f, "enemyCave_W");
-			GameManager.get().getWorld().addEntity(gateE);
-			//S
-			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength() / 2, "enemyCave_E");
-			GameManager.get().getWorld().addEntity(gateS);
-			//N
-			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength() / 2, "enemyCave_WS");
-			GameManager.get().getWorld().addEntity(gateN);
-
 			GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
 			// Initial player preparation up period
