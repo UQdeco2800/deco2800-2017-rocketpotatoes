@@ -31,7 +31,7 @@ import java.util.Map;
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient float HEALTH = 80f;
+	private static final transient float HEALTH = 160f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 	private static final transient String[] ENEMY_TYPE = new String[]{
@@ -41,7 +41,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final EnemyProperties STATS = initStats();
 
-	private static float speed = 0.08f;
+	private static float speed = 0.07f;
 	private static Class<?> goal = ResourceTree.class;
 
 	private Path path = null;
@@ -70,7 +70,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 	 * @param posY
 	 */
 	public SpeedyEnemy(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.707f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
+        super(new Circle2D(posX, posY, 0.4f), 0.55f, 0.55f, TEXTURE, HEALTH, speed, goal);
 		SpeedyEnemy.speed = speed + ((speed*roundNum)/2);
 		SpeedyEnemy.goal = goal;
 		this.path = null;

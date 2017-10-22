@@ -226,7 +226,6 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 			sTime = System.currentTimeMillis();
 			setEnemyStatus("attack");
 			phealth=getHealth();
-
 		}
 		//Check if walking
 		if((System.currentTimeMillis()-sTime)/1000.0>3){

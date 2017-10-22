@@ -25,13 +25,12 @@ import java.util.LinkedList;
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient float HEALTH = 100f;
+	private static final transient float HEALTH = 200f;
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();
 	private static final String[] ENEMY_TYPE = new String[]{
 			"squirrel"
-
 	};
 	private static final float SPEED = 0.05f;
 
@@ -60,7 +59,7 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 	 * @param posY The y coordinate the created squirrel will spawn from
 	 */
 	public Squirrel(float posX, float posY) {
-        super(new Circle2D(posX, posY, 0.332f), 0.60f, 0.60f, TEXTURE_LEFT, HEALTH, SPEED, goal);
+        super(new Circle2D(posX, posY, 0.5f), 0.7f, 0.7f, TEXTURE_LEFT, HEALTH, SPEED, goal);
 		Squirrel.goal = goal;
 		this.path = null;
 	}
