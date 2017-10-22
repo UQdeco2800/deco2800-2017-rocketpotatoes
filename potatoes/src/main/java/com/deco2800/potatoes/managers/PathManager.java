@@ -279,6 +279,7 @@ public class PathManager extends Manager {
 
         private Integer targetID;
         private float myWidth = -1;
+        private float targWidth = 0;
 
         boolean needsUpdateFlag = false;
 
@@ -293,14 +294,24 @@ public class PathManager extends Manager {
         private Map<Point2D, Set<Line2D>> nodeEdges = new HashMap<>();  // the edges that each point is a part of
         private Map<Line2D, Float> edgeCost = new HashMap<>();          // the cost of the edge (at the moment distance^2)
 
-        //TODO init
         //TODO add shape
-        //TODO remove shape
+        //TODO remove shape -> init
 
         public void initialise() {
             initialiseNodes();
             initialiseEdges();
             createGraph();
+
+            // get the 'width' of the target
+            Shape2D targMask = GameManager.get().getWorld().getEntities().get(targetID).getMask();
+            targWidth = 0;
+            if (targMask instanceof Box2D) {
+                Box2D targBox = (Box2D) targMask;
+                targWidth = Math.min(targBox.getXLength(), targBox.getYLength()) / 2;
+            } else if (targMask instanceof Circle2D){
+                targWidth = ((Circle2D) targMask).getRadius();
+            }
+
             needsUpdateFlag = false;
         }
 
@@ -447,6 +458,10 @@ public class PathManager extends Manager {
 
             float clearance = myWidth + edgeWidthFudge;
 
+            float touchRangeSqr = myWidth + targWidth;
+            touchRangeSqr = touchRangeSqr * touchRangeSqr;
+
+
             // loop through all nodes,
             for (Point2D node : this.nodes) {
 
@@ -454,7 +469,7 @@ public class PathManager extends Manager {
 
                 float width = getClearance(edge);
 
-                if (width > clearance ) {
+                if ( width > clearance  || edge.getLenSqr() < touchRangeSqr) { //TODO offset targetNode towards node by touchRange
 
                     //this node has a direct line of sight(with given width), it is a direct node
 
