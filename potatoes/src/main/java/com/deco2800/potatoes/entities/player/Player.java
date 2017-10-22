@@ -479,7 +479,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     @Override
     public void onTick(long arg0) {
         //mouse input
-//    	System.out.println(Render3D.screenToTile(0,0));
+
         mousePos = Render3D.screenToTile(GameManager.get().getManager(InputManager.class).getMouseX(),
                 GameManager.get().getManager(InputManager.class).getMouseY());
 
