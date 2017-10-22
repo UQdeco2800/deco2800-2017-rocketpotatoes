@@ -196,13 +196,13 @@ public class Rustyfish implements CheatExecution {
     @Override
     public void run() {
         try {
-            Native.loadLibrary("rustyfish", RLibrary.class).startGame(startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
+            Native.loadLibrary("rustyfish", RLibrary.class).startGame(
+                    startDraw, endDraw, updateWindow, isSpacePressed, clearWindow, flushWindow,
                     getWindowInfo, drawSprite, drawLine, drawRectangle);
         }
         catch (UnsatisfiedLinkError ex) {
             // Ignore failure, don't start game!
             LOGGER.error("Unsatified Link Error occured",ex);
-            System.exit(-1);
         }
     }
 }
