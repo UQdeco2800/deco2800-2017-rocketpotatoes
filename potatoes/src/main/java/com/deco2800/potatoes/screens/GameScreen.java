@@ -95,8 +95,8 @@ public class GameScreen implements Screen {
 	 * @param isHost
 	 *            is this client a host (i.e. start a server then connect to it)
 	 */
-	public GameScreen(RocketPotatoes game, String name, String IP, int port, boolean isHost)
-			throws IllegalStateException, IllegalArgumentException, IOException {
+	public GameScreen(RocketPotatoes game, String name, String Ip, int port, boolean isHost)
+			throws IOException {
 		this.game = game;
 		setupGame();
 		
@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
 			// Loopback for host's connection to itself
 			multiplayerManager.joinGame(name, "127.0.0.1", port);
 		} else {
-			multiplayerManager.joinGame(name, IP, port);
+			multiplayerManager.joinGame(name, Ip, port);
 		}
 
 		initializeGame();
@@ -258,10 +258,10 @@ public class GameScreen implements Screen {
 		//testing Game over screen
 		inputManager.addKeyDownListener(new GameOverHandler());
 
-		MouseHandler mouseHandler = new MouseHandler();
-		inputManager.addTouchDownListener(mouseHandler);
-		inputManager.addTouchDraggedListener(mouseHandler);
-		inputManager.addMouseMovedListener(mouseHandler);
+		MouseHandler mouseHandlers = new MouseHandler();
+		inputManager.addTouchDownListener(mouseHandlers);
+		inputManager.addTouchDraggedListener(mouseHandlers);
+		inputManager.addMouseMovedListener(mouseHandlers);
 		inputMultiplexer.addProcessor(inputManager);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
@@ -328,19 +328,19 @@ public class GameScreen implements Screen {
 			//addResourceTrees();
 			
 			/* Randomly generate trees in each world */
-			AbstractTree forestTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
+			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
 			
-			AbstractTree desertTrees[] = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
+			AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
 			
-			AbstractTree iceTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
+			AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
 			
-			AbstractTree oceanTrees[] = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
+			AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
 			
-			AbstractTree volcanoTrees[] = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
+			AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
 
 
@@ -423,9 +423,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void tickGame(long timeDelta) {
-		/*
-		 * broken! window.removeActor(peonButton); boolean somethingSelected = false;
-		 */
 
 		// Tick our player
 		if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
@@ -438,11 +435,6 @@ public class GameScreen implements Screen {
 				((Tickable) e).onTick(timeDelta);
 
 			}
-
-			/*
-			 * broken! if (e instanceof Selectable) { if (((Selectable) e).isSelected()) {
-			 * peonButton = ((Selectable) e).getButton(); somethingSelected = true; } }
-			 */
 
 		}
 
@@ -463,11 +455,6 @@ public class GameScreen implements Screen {
 
 		// Broadcast our player updating pos TO DO only when needed.
 		multiplayerManager.broadcastPlayerUpdatePosition();
-
-		/*
-		 * broken! if (!somethingSelected) { peonButton = uiPeonButton; }
-		 * window.add(peonButton);
-		 */
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
@@ -519,8 +506,8 @@ public class GameScreen implements Screen {
 				} else {
 					((WavesGui) waveGUI).getWaveStatusLabel().setText("Time left in wave: ");
 				}
-				((WavesGui) waveGUI).getWaveTimeLabel().setText("" + timeToWaveEnd/75);
-				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(""+totalEnemies);
+				((WavesGui) waveGUI).getWaveTimeLabel().setText(Integer.toString(timeToWaveEnd/75));
+				((WavesGui) waveGUI).getWaveEnemiesLabel().setText(Integer.toString(totalEnemies));
 			} else {
 				//No active waves: display if there are more waves and if so how long until it starts
 				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
@@ -607,7 +594,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void pause() {
-
+		//note for sonar
 	}
 
 	/**
@@ -615,7 +602,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resume() {
-
+		// Don't need this at the moment
 	}
 
 	/**
@@ -623,7 +610,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-
+		// Don't need this at the moment
 	}
 
 	/**
@@ -631,7 +618,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void hide() {
-
+		// Don't need this at the moment
 	}
 
 	/**

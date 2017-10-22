@@ -65,8 +65,6 @@ public class Shape2DTest {
         assertTrue(circ1.getRadius() == 3);
     }
 
-    //TODO area
-
     //colision
     @Test
     public void collisionPointToPoint() {
