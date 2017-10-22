@@ -151,7 +151,7 @@ public class EnemyEntityTest extends BaseTest {
     @Test
     public void getMaxProgressTest() {
         tank1 = new TankEnemy(7, 7);
-        Assert.assertTrue("Ratio was not 1", tank1.getMaxProgress() == 1000);
+        Assert.assertTrue("Ratio was not 1", tank1.getMaxProgress() == 2000);
     }
 
     @Test
