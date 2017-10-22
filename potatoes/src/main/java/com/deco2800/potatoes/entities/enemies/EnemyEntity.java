@@ -20,7 +20,6 @@ import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,19 +39,17 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private Map<Integer, AbstractEntity> entities;
 	private boolean moving = true;
 	private int channelTimer;
-	public EnemyTargets targets;
 
 	private static final List<Color> COLOURS = Arrays.asList(Color.RED);
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("progress_bar", COLOURS, 0, 1);
-	private int count=0;
-	private static String perviousTexutre="walk";
-	private String enemyStatus="";
+	private int count = 0;
+	private String enemyStatus = "";
 	protected int roundNum = 0;
+
 	/**
 	 * Default constructor for serialization
 	 */
 	public EnemyEntity() {
-		// empty for serialization
 		getBasicStats().registerEvents(this);	//MAY BE USELESS
 	}
 
@@ -86,17 +83,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		this.goal = goal;
 	}
-
-	// Method of creating enemy with round number included
-
-   /* public EnemyEntity(CollisionMask mask, float xRenderLength, float yRenderLength, String texture, float maxHealth,
-                       float speed, Class<?> goal, int roundNum) {
-        super(mask, xRenderLength, yRenderLength, texture, maxHealth);
-        getBasicStats().registerEvents(this);
-        this.speed = speed + roundNum;
-        this.goal = goal;
-        this.roundNum = roundNum;
-    }*/
 
 	/***
 	 * Update the enemy's target that it is moving to and the path that it is following to do so with
@@ -193,7 +179,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public void updateDirection() {
 		// if not moving don't update
 		if (super.getMoveSpeedModifier() == 0) {
-			return;    // Not moving
+			return;
 		}
 		// set facing Direction based on movement angle
 		this.facing = getFromRad(super.getMoveAngle());
@@ -221,22 +207,22 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 			this.setTexture(type[0] + direction);
 		} else {
 //			LOGGER.warn("Texture:::"+type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
-
 			this.setTexture(type[delay(25, type.length)]+"_"+enemyStatus + direction + "_" + (delay(25, type.length) + 1));
 		}
 
 	}
+
 	/**
 	 * the purpose of method is make a time delay for next texture
 	 * @param time i guest just millisecond
-	 * @param Framesize the texture array size
+	 * @param frameSize the texture array size
 	 * @return Int the index of texture
 	 */
-	public int delay(int time,int Framesize){
+	public int delay(int time,int frameSize){
 		count++;
-		if((count/time)>=(Framesize-1))
+		if((count/time)>=(frameSize-1))
 			count=0;
-		return Math.round((count/time));
+		return count/time;
 	}
 
 	/***
@@ -268,31 +254,36 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Get the goal of the enemy
+	 *
 	 * @return this enemy's goal
 	 */
 	public Class<?> getGoal() {
 		return this.goal;
 	}
 
-
+	/**
+	 * Set the status for an enemy.
+	 *
+	 * @param enemyStatus, the new status
+	 */
 	public void setEnemyStatus(String enemyStatus){
 		this.enemyStatus=enemyStatus;
 	}
-
 
 	public String getEnemyStatus(){
 		return this.enemyStatus;
 	}
 	/**
 	 * Set the enemy's goal to the given entity class
-	 * @param g enemy's new goal(entity class)
+	 * @param newGoal enemy's new goal(entity class)
 	 */
-	public void setGoal(Class<?> g) {
-		this.goal = g;
+	public void setGoal(Class<?> newGoal) {
+		this.goal = newGoal;
 	}
 
 	/**
 	 * Get the speed of this enemy
+	 *
 	 * @return the speed of this enemy
 	 */
 	public float getSpeed() {
@@ -301,15 +292,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Set this enemy's speed to given speed
-	 * @param s enemy's new speed
+	 *
+	 * @param newSpeed enemy's new speed
 	 */
-	public void setSpeed(Float s) {
-		this.speed = s;
+	public void setSpeed(Float newSpeed) {
+		this.speed = newSpeed;
 	}
 
 	/***
 	 * Get the current value of the enemy's channel timer.
-	 *
 	 * The channel timer acts as an internal clock of enemy that can be used to see for how
 	 * long an enemy has been in a channelling state for.
 	 *
@@ -318,7 +309,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	public int getChannelTimer() { return this.channelTimer; }
 
 	/**
-	 * Set the value of the enemy's channel timer
+	 * Set the value of the enemy's channel timer.
 	 *
 	 * @param channelTime
 	 */
@@ -326,6 +317,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+	 *
 	 * @param projectile, the projectile shot
 	 */
 	public void getShot(Projectile projectile) {
@@ -334,9 +326,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		LOGGER.info(this + " was shot. Health now " + getHealth());
 	}
 
-
 	/**
 	 * If the enemy get shot, reduce enemy's health. Remove the enemy if dead.
+	 *
 	 * @param effect, the projectile shot
 	 */
 	public void getShot(Effect effect) {
@@ -346,7 +338,8 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 	/**
 	 * Returns the ProgressBar of an entity
-	 * @return
+	 *
+	 * @return enemy's progress bar
 	 */
 	@Override
 	public ProgressBarEntity getProgressBar() {
@@ -354,7 +347,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/***
-	 * Get the enemy's current health to max health progres
+	 * Get the enemy's current health to max health progress.
 	 *
 	 * @return the ratio of current to maximum health
 	 */
@@ -364,7 +357,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	}
 
 	/**
-	 * Get the maximum health of the enemy
+	 * Get the maximum health of the enemy.
 	 *
 	 * @return the enemy's maximum health
 	 */
@@ -378,7 +371,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * the animation.
 	 *
 	 * @param amount - the amount of health to subtract
-	 * @return
+	 * @return true if damaged
 	 */
 	@Override
 	public boolean damage(float amount) {
