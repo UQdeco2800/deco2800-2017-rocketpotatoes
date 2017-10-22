@@ -203,7 +203,7 @@ public class SpeedyEnemy extends EnemyEntity implements Tickable {
 			//Create a particle effect that will display as the raccoon runs (kicks up a little bit of dirt)
 			ParticleType particle =  new BasicParticleType(370, 400.0f,
 					0.0f, 32, Color.DARK_GRAY, 3, 3);
-			particle.speed = 0.1f;
+			particle.setSpeed(0.1f);
 
 			Vector2 pos = Render3D.worldToScreenCoordinates(this.getPosX() - 0.8f, this.getPosY() - 0.4f, -0.5f);
 			int tileWidth = (int) GameManager.get().getWorld().getMap().getProperties().get("tilewidth");
