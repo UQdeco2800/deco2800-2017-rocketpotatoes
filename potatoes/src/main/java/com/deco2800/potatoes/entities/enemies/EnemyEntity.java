@@ -48,7 +48,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	private int channelTimer;
 
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
-	private int count = 0;
 	private String enemyStatus = "_walk";
 	protected int roundNum = 0;
 	private int texturePointer=1;
@@ -231,7 +230,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		if (type.length == 1) {
 			this.setTexture(type[0] + direction);
 		} else {
-			LOGGER.warn("Texture:::"+type[0]+enemyStatus + direction + "_" + texturePointer);
+			LOGGER.info("Texture:::"+type[0]+enemyStatus + direction + "_" + texturePointer);
 			this.setTexture(type[0]+enemyStatus + direction + "_" + texturePointer);
 			if(delay(delayTime)){
 				texturePointer++;
@@ -239,10 +238,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 					texturePointer=1;
 				}
 			}
-
-
 		}
-
 	}
 
 	/**
