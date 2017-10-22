@@ -14,6 +14,7 @@ import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -88,20 +89,25 @@ public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 		pathMan.initialise();
 
-		AbstractEntity relevantTarget = mostRelevantTarget();
+		//AbstractEntity relevantTarget = mostRelevantTarget();
 
-		if (relevantTarget != null) {
+		if (target == null)				//(relevantTarget == null)
+			return;
 
-			targetNode = pathMan.getTargetNode(this, target, targetNode);
+		targetNode = pathMan.getTargetNode((Circle2D) this.getMask(), target, targetNode);
 
-			float deltaX = target.getPosX() - getPosX();
-			float deltaY = target.getPosY() - getPosY();
+		if (targetNode == null)
+			return;
 
-			super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
-			super.onTickMovement();
+		System.out.println("targNode: " + targetNode);
 
-			super.updateDirection();
-		}
+		float deltaX = target.getPosX() - getPosX();
+		float deltaY = target.getPosY() - getPosY();
+
+		super.setMoveAngle(Direction.getRadFromCoords(deltaX, deltaY));
+		super.onTickMovement();
+
+		super.updateDirection();
 	}
 
 	/*Find the most relevant target to go to according to its EnemyTargets

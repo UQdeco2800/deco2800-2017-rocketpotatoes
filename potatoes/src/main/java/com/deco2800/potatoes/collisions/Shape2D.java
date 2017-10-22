@@ -136,6 +136,8 @@ public abstract class Shape2D {
 	//angle of reflection
 	//distanceInDirection(Shape2D other, float angle)
 
+	//TODO allow breaking up of distance & overlaps methods to -> distanceToPoint, overlapsPoint...
+
 
 	// ----------     Generic Object Methods    ---------- //
 
@@ -147,7 +149,6 @@ public abstract class Shape2D {
 
 	@Override
 	public abstract String toString();
-
 
 
 }

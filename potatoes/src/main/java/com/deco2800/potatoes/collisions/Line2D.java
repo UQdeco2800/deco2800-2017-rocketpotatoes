@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.deco2800.potatoes.entities.trees.IceTreeType;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.TextureManager;
@@ -17,11 +18,34 @@ import java.util.Objects;
 import static com.deco2800.potatoes.util.MathUtil.compareFloat;
 
 public class Line2D extends Shape2D{
-    
-    private float x1;
+
+    // stores the point with the lowest x as point 1, if x is equal the point with the lowest y
+
+    private Point2D point1;
+    private Point2D point2;
+
+    // processing / reused values
+
+    private float x1; //these are just used as shorthand
     private float y1;
     private float x2;
     private float y2;
+
+    private float maxX;
+    private float minX;
+    private float maxY;
+    private float minY;
+
+    private float deltaX;
+    private float deltaY;
+
+    private float lenSqr;
+    //private float length;
+
+    // equation of the line in the form y = mx + b
+    private float m;
+    private float b;
+
 
     private static final String textureStr = "LINE_HIGHLIGHT";
 
@@ -29,18 +53,26 @@ public class Line2D extends Shape2D{
     // ----------     Initialisation    ---------- //
 
     public Line2D(float x1, float y1, float x2, float y2) {
-
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
-
-        //centre point
-        this.x = ( x1 + x2 ) / 2;
-        this.y = ( y1 + y2 ) / 2;
+        this( new Point2D(x1, y1), new Point2D(x2, y2));
     }
     
     public Line2D(Point2D point1, Point2D point2) {
+
+        // swap the points if point 1 is not the leftmost
+        // this ordering is needed for equals() and hashcode() etc.
+        if (point1.getX() < point2.getX() ||
+                (compareFloat(point1.getX(),point2.getX()) && point1.getY() < point2.getY())) {
+            this.point1 = point1;
+            this.point2 = point2;
+        } else {
+            this.point1 = point2;
+            this.point2 = point1;
+        }
+
+        preProcessing();
+    }
+
+    private void preProcessing() {
 
         this.x1 = point1.x;
         this.y1 = point1.y;
@@ -48,210 +80,258 @@ public class Line2D extends Shape2D{
         this.y2 = point2.y;
 
         //centre point
-        this.x = ( point1.x + point2.x ) / 2;
-        this.y = ( point1.y + point2.y ) / 2;
+        super.x = ( x1 + x2 ) / 2;
+        super.y = ( y1 + y2 ) / 2;
+
+        this.maxX = x1 >= x2 ? x1 : x2;
+        this.minX = x1 <= x2 ? x1 : x2;
+        this.maxY = y1 >= y2 ? y1 : y2;
+        this.minY = y1 <= y2 ? y1 : y2;
+
+        this.deltaX = x2 - x1;
+        this.deltaY = y2 - y1;
+
+        this.lenSqr = deltaX * deltaX + deltaY * deltaY;
+        //this.length = Math.sqrt(lenSqr);
+
+        // equation of the line in the form y = mx + b
+        this.m = deltaY / deltaX;
+        this.b = y1 - m * x1;
     }
 
     // ----------     Unique Methods    ---------- //
 
-    public float getLenSqr() {
-        //return lenSqr;
-        return 0;
+    //Shouldn't really be needing to move lines like this
+    @Override
+    public void setX(float x) {
+        float diffX = x - this.x;
+        point1 = new Point2D(point1.x + diffX, point1.y);
+        point2 = new Point2D(point2.x + diffX, point2.y);
+        preProcessing();
+    }
+
+    @Override
+    public void setY(float y) {
+        float diffY = y - this.y;
+        point1 = new Point2D(point1.x, point1.y + diffY);
+        point2 = new Point2D(point2.x, point2.y + diffY);
+        preProcessing();
+    }
+
+    // if endpoint is not valid leftmost point will be returned
+    public Point2D getOtherEndPoint(Point2D endPoint) {
+        if (compareFloat(endPoint.x, point1.x)
+                && compareFloat(endPoint.y, point1.y)) {
+            return point2;
+        } else {
+            return point1;
+        }
     }
 
 
-    // TODO maybe get line endpoints method
+    public float getLenSqr() {
+        return this.lenSqr;
+    }
 
 
     private boolean overlapsPoint(Point2D other) {
-        return false;
+        return compareFloat( distanceToPoint( other ), 0);
     }
 
     private boolean overlapsCircle(Circle2D other) {
-
-        return false;
+        return distanceToCircle( other ) <= 0;
     }
 
     private boolean overlapsBox(Box2D other) {
-        return false;
-    }
 
-    /**TODOcopied from box
-     * Checks to see if a line intersects with this Box2D.
-     * The line goes from point (x1,y1) to (x2,y2).
-     * Uses Axis-Aligned Bounding Box (AABB) Intersection
-     *
-     * @return True iff this Shape2D is overlapped by the line.
-     */
-    private boolean overlapsLine(Line2D other) {
-        /*
         float fMin = 0;
         float fMax = 1;
 
-        float[] lineMin = {Math.min(x1, x2), Math.min(y1, y2)};
-        float[] lineMax = {Math.max(x1, x2), Math.max(y1, y2)};
-        float[] boxMin = {this.x - this.xLength/2, this.y - this.yLength/2};
-        float[] boxMax = {this.x + this.xLength/2, this.y + this.yLength/2};
+        float[] point1 = {x1, y1};
+        float[] point2 = {x2, y2};
+        float[] boxMin = {other.x - other.getXLength()/2, other.y - other.getYLength()/2};
+        float[] boxMax = {other.x + other.getXLength()/2, other.y + other.getYLength()/2};
 
         for (int i = 0; i < 2; i++) {
-            float lineDist = lineMax[i] - lineMin[i];
+            float lineDist = point2[i] - point1[i];
+
+            //if the distance of the line in the given dimension is not 0
             if (!compareFloat(lineDist, 0)) {
-                fMin = Math.max(fMin, (boxMin[i] - lineMin[i]) / lineDist);
-                fMax = Math.min(fMax, (boxMax[i] - lineMin[i]) / lineDist);
+
+                //get the edges of the range where the line & box overlap in the given dimension
+                float intervalRange1 = (boxMin[i] - point1[i]) / lineDist;
+                float intervalRange2 = (boxMax[i] - point1[i]) / lineDist;
+
+                //order the edges in ascending order
+                float intervalRangeMin;
+                float intervalRangeMax;
+
+                if (intervalRange1 < intervalRange2) {
+                    intervalRangeMin = intervalRange1;
+                    intervalRangeMax = intervalRange2;
+                } else {
+                    intervalRangeMin = intervalRange2;
+                    intervalRangeMax = intervalRange1;
+                }
+
+                //update the fraction of the line that intersects
+                fMin = Math.max(fMin, intervalRangeMin);
+                fMax = Math.min(fMax, intervalRangeMax);
+
                 if (fMin > fMax)
                     return false;
 
-            } else if (lineMin[i] < boxMin[i] || lineMax[i] > boxMax[i])
+            } else if (point1[i] < boxMin[i] || point2[i] > boxMax[i])
                 return false;
         }
-         */
+
         return true;
     }
 
-    /**TODO
-     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
-     * Returns 0 if intersecting.
-     *
-     * @return      The minimum straight-line distance
-     */
+    //TODO
+    private boolean overlapsLine(Line2D other) {
+        return false;
+    }
+
+
     private float distanceToPoint(Point2D other) {
-        /*
-        // don't sqrt anything you don't have to
-        float segmentLength = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-        if (Float.compare(segmentLength, 0) == 0) {
-            return distance(new Point2D(x1, y1));
+        // if len approaching 0, consider as a point
+        if (compareFloat(lenSqr, 0)) {
+            return other.distance(point1);
         }
 
         // how far along the line segment is the closest point to us?
-        float unclamped = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / segmentLength;
+        float unclamped = ((other.x - x1) * deltaX + (other.y - y1) * deltaY) / lenSqr;
         float clamped = Math.max(0f, Math.min(1f, unclamped));
 
-        return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
-        */
-        return 0;
+        return new Point2D(x1 + clamped * deltaX, y1 + clamped * deltaY).distance(other);
+
     }
+
 
     private float distanceToCircle(Circle2D other) {
-        Point2D centre = new Point2D(x, y);
-        //return centre.distance(x1, y1, x2, y2) - radius;
-        return 0;
+        Point2D centre = new Point2D(other.x, other.y);
+        return distanceToPoint( centre ) - other.getRadius();
     }
 
-    /**
-     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
-     * returns negative if touching(distance 0) or overlapping.
-     * Expects a line that does not have 0 length.
-     * Currently implements this.overlaps(x1, y1, x2, y2) to check for collision
-     * */
-    private float distanceToBox(Box2D other) {
-        /*
 
-        if (this.overlapsLine(x1, y1, x2, y2)) {
+    private float distanceToBox(Box2D other) {
+
+        Line2D ccc = new Line2D(13.5f, 12.5f, 50, 0); //TODO deleteme
+        boolean aaa = this.equals(ccc) && compareFloat(other.x, 15.5f) && compareFloat(other.y, 11.5f);
+        if (aaa) { //TODO deleteme
+            System.out.println("found col  1");
+        }
+
+        // if len approaching 0, consider as a point
+        if (compareFloat(lenSqr, 0)) {
+            return other.distance(point1);
+        }
+
+
+        // if overlapping the box return a negative
+        if (this.overlapsBox(other)) {
         	return -1;
         }
 
-        float distX1 = Math.abs(x1 - this.x) - this.xLength/2;
-        float distY1 = Math.abs(y1 - this.y) - this.yLength/2;
-        float distX2 = Math.abs(x2 - this.x) - this.xLength/2;
-        float distY2 = Math.abs(y2 - this.y) - this.yLength/2;
-        float maxLineX = x1 >= x2 ? x1 : x2;
-        float minLineX = x1 <= x2 ? x1 : x2;
-        float maxLineY = y1 >= y2 ? y1 : y2;
-        float minLineY = y1 <= y2 ? y1 : y2;
-        float maxBoxX = this.x + this.xLength/2;
-        float minBoxX = this.x - this.xLength/2;
-        float maxBoxY = this.y + this.yLength/2;
-        float minBoxY = this.y - this.yLength/2;
+        float distX1 = Math.abs(x1 - other.x) - other.getXLength()/2;
+        float distY1 = Math.abs(y1 - other.y) - other.getYLength()/2;
+        float distX2 = Math.abs(x2 - other.x) - other.getXLength()/2;
+        float distY2 = Math.abs(y2 - other.y) - other.getYLength()/2;
+
+        float maxBoxX = other.x + other.getXLength()/2;
+        float minBoxX = other.x - other.getXLength()/2;
+        float maxBoxY = other.y + other.getYLength()/2;
+        float minBoxY = other.y - other.getYLength()/2;
 
 
         //gradient = 0 cases
         if (compareFloat(x1, x2)) {
-            if (minBoxY <= maxLineY ) {
-                if(minLineY <= maxBoxY) {
+            if (minBoxY <= maxY ) {
+                if(minY <= maxBoxY) {
                     return distX1;      //line overlaps Box on Y, return X dist
                 } else {
-                    return new Point2D(x1, minLineY).distance(  // line top left or top right of box
-                            minBoxX, maxBoxY, maxBoxX, maxBoxY);
+                    // the line is top left or top right of box
+                    return new Line2D(minBoxX, maxBoxY, maxBoxX, maxBoxY).distanceToPoint(
+                            new Point2D(x1, minY) );
                 }
             } else {
-                return new Point2D(x1, maxLineY).distance(      //line bottom left or bottom right box
-                        minBoxX, minBoxY, maxBoxX, minBoxY);
+                // the line is bottom left or bottom right of box
+                return new Line2D(minBoxX, minBoxY, maxBoxX, minBoxY).distanceToPoint(
+                        new Point2D(x1, maxY) );
             }
         }
 
         if (compareFloat(y1, y2)) {
-            if (minBoxX <= maxLineX ) {
-                if(minLineX <= maxBoxX) {
+            if (minBoxX <= maxX ) {
+                if(minX <= maxBoxX) {
                     return distY1;      //line overlaps Box on X, return Y dist
                 } else {
-                    return new Point2D(minLineX, y1).distance(  // line top right or bottom right of box
-                            maxBoxX, minBoxY, maxBoxX, maxBoxY);
+                    // the line is top right or bottom right of box
+                    return new Line2D(maxBoxX, minBoxY, maxBoxX, maxBoxY).distanceToPoint(
+                            new Point2D(minX, y1) );
                 }
             } else {
-                return new Point2D(maxLineX, y1).distance(      //line top left or bottom left of box
-                        minBoxX, minBoxY, minBoxX, maxBoxY);
+                // the line is top left or bottom left of box
+                return new Line2D(minBoxX, minBoxY, minBoxX, maxBoxY).distanceToPoint(
+                        new Point2D(maxX, y1) );
             }
         }
 
         //closest point overlaps on one axis
         //e.g. point one is within the vertical bounds of the box & closer than point 2 on x axis
-        if (distY1 <= 0 && (this.x < x1 && x1 < x2 || x2 < x1 && x1 < this.x))
+        if (distY1 <= 0 && (other.x < x1 && x1 < x2 || x2 < x1 && x1 < other.x))
             return distX1;
-        if (distY2 <= 0 && (this.x < x2 && x2 < x1 || x1 < x2 && x2 < this.x))
+        if (distY2 <= 0 && (other.x < x2 && x2 < x1 || x1 < x2 && x2 < other.x))
             return distX2;
-        if (distX1 <= 0 && (this.y < y1 && y1 < y2 || y2 < y1 && y1 < this.y))
+        if (distX1 <= 0 && (other.y < y1 && y1 < y2 || y2 < y1 && y1 < other.y))
             return distY1;
-        if (distX2 <= 0 && (this.y < y2 && y2 < y1 || y1 < y2 && y2 < this.y))
+        if (distX2 <= 0 && (other.y < y2 && y2 < y1 || y1 < y2 && y2 < other.y))
             return distY2;
 
 
         //both points in one diagonal
-        if (minLineX >= maxBoxX && minLineY >= maxBoxY) {     //top right
-            return new Point2D(maxBoxX, maxBoxY).distance(x1, y1, x2, y2); }
-        if (maxLineX <= minBoxX && minLineY >= maxBoxY) {     //top left
-            return new Point2D(minBoxX, maxBoxY).distance(x1, y1, x2, y2); }
-        if (minLineX >= maxBoxX && maxLineY <= minBoxY) {     //bot right
-            return new Point2D(maxBoxX, minBoxY).distance(x1, y1, x2, y2); }
-        if (maxLineX <= minBoxX && maxLineY <= minBoxY) {     //bot left
-            return new Point2D(minBoxX, minBoxY).distance(x1, y1, x2, y2); }
+        if (minX >= maxBoxX && minY >= maxBoxY) {     //top right
+            return distanceToPoint( new Point2D(maxBoxX, maxBoxY) ); }
+        if (maxX <= minBoxX && minY >= maxBoxY) {     //top left
+            return distanceToPoint( new Point2D(minBoxX, maxBoxY) ); }
+        if (minX >= maxBoxX && maxY <= minBoxY) {     //bot right
+            return distanceToPoint( new Point2D(maxBoxX, minBoxY) ); }
+        if (maxX <= minBoxX && maxY <= minBoxY) {     //bot left
+            return distanceToPoint( new Point2D(minBoxX, minBoxY) ); }
 
 
-        // gradient of line cannot be 0, calculate the equation of the line (y = mx + b)
-        float m = (y1 - y2) / (x1 - x2);
-        float b = y1 - m * x1;
-        float boxCentreY = m * this.x + b;
+        // gradient of line is preprocessed (y = mx + b)
 
-        Point2D closestCorner;
-        if (m > 0) {                //rising line
-            if (boxCentreY > this.y) {  //passes above, box therefor top left
-                closestCorner = new Point2D(minBoxX, maxBoxY);
-            } else {                    // passes below, box therefor bot right
-                closestCorner = new Point2D(maxBoxX, minBoxY);
-            }
-        } else {                    //decending line
-            if (boxCentreY > this.y) {  //passes above box, therefor top right
-                closestCorner = new Point2D(maxBoxX, maxBoxY);
-            } else {                    // passes below box, therefor bot left
-                closestCorner = new Point2D(minBoxX, minBoxY);
-            }
-        }
+        // The y value of the line, at the centre point of the box
+        float boxCentreY = m * other.x + b;
 
-        return closestCorner.distance(x1, y1, x2, y2);
-         */
-        return 0;
+        boolean gradRise = (m > 0);
+        boolean passAbove = (boxCentreY > other.y);
 
+        // the closest corner of the box to the line
+        Point2D closestCorner = new Point2D(
+                // iff (the lines gradient is rising & the line passes below)
+                //  or (the lines gradient is falling & the line passes above)
+                // then the line passes to the right of the box
+                (gradRise ^ passAbove ? maxBoxX : minBoxX ),
+                // if the line passes above the box, get the top Y of the box
+                (passAbove ? maxBoxY : minBoxY));
+
+        return distanceToPoint( closestCorner );
     }
 
+    //TODO
     private float distanceToLine(Line2D other) {
-        return 0;
+        return 10;
     }
 
 
     // ----------     Abstract Methods    ---------- //
 
-    @Override
+    @Override //TODO copy pre-processing as well
     public Shape2D copy() {
-        return new Line2D( x1, y1, x2, y2);
+        return new Line2D( point1, point2 );
     }
 
     @Override
@@ -276,7 +356,6 @@ public class Line2D extends Shape2D{
 
 
     /**
-     * TODO
      * Finds the minimum perpendicular distance between a straight line and this collision mask. This is used primarily
      * in path finding to see if an entity can walk past an object without colliding with it.
      *
@@ -306,7 +385,6 @@ public class Line2D extends Shape2D{
     @Override
     public void renderShape(ShapeRenderer shapeRenderer) {
 
-
         OrthographicCamera camera = GameManager.get().getManager(CameraManager.class).getCamera();
 
         //calculate orthagonal corners of box
@@ -329,8 +407,9 @@ public class Line2D extends Shape2D{
 
     }
 
+    //TODO copied from LightningEffect, clean up
     /**
-     * !!! TODO copied from LightningEffect, clean up
+     * !!!
      * Renders a line between two points
      *
      * @param batch   the SpriteBatch to render to
@@ -408,7 +487,7 @@ public class Line2D extends Shape2D{
 
     @Override
     public String toString() {
-        return this.x1 + ", " + this.y1 + ", " + this.x2 + ", " + this.y2 ;
+        return x1 + ", " + y1 + ", " + x2 + ", " + y2 ;
     }
 
 

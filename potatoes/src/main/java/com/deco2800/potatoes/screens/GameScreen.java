@@ -270,9 +270,9 @@ public class GameScreen implements Screen {
 			GameManager.get().getWorld().addEntity(new EnemyGate(24.5f,24.5f));
 
 			//add enemy waves
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750));
-			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 750));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 80));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 80));
+			GameManager.get().getManager(WaveManager.class).addWave(new EnemyWave(1, 0, 0, 0, 90));
 
 
 			initialiseResources();
@@ -290,7 +290,7 @@ public class GameScreen implements Screen {
 			 */
 
 				// Make our player
-				playerManager.setPlayer(13.5f, 13.5f);
+				playerManager.setPlayer(12.5f, 12.5f);
 				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
 			}
 			GameManager.get().getManager(ParticleManager.class);
