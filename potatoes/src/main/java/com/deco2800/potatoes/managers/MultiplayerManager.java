@@ -24,6 +24,7 @@ import java.util.List;
 public class MultiplayerManager extends Manager {
     // IP this client is connected to ("" if none)
     private String ip;
+    private String clientExists = "Client already exists!";
 
     // Port this client is connected to (-1 if none)
     private int clientPort;
@@ -85,13 +86,13 @@ public class MultiplayerManager extends Manager {
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    public void createHost(int port) throws IllegalStateException, IllegalArgumentException, IOException {
+    public void createHost(int port) throws IOException {
         if (!isValidPort(port)) {
           throw new IllegalArgumentException("Invalid port: " + port);
         }
 
         if (client != null) {
-           throw new IllegalStateException("Client already exists!");
+           throw new IllegalStateException(clientExists);
          }
 
         master = true;
@@ -111,7 +112,7 @@ public class MultiplayerManager extends Manager {
      * @throws IOException
      * @throws IllegalArgumentException
      */
-    public void joinGame(String name, String inIP, int port) throws IOException, IllegalArgumentException {
+    public void joinGame(String name, String inIP, int port) throws IOException {
         if (!isValidPort(port)) {
            throw new IllegalArgumentException("Invalid port: " + port);
          }
@@ -119,7 +120,7 @@ public class MultiplayerManager extends Manager {
            throw new IllegalArgumentException("Invalid IP: " + inIP);
          }
         if (client != null) {
-           throw new IllegalStateException("Client already exists!");
+           throw new IllegalStateException(clientExists);
          }
 
         
@@ -140,7 +141,7 @@ public class MultiplayerManager extends Manager {
            throw new IllegalArgumentException("Invalid port: " + port);
           }
         if (client != null) {
-           throw new IllegalStateException("Client already exists!");
+           throw new IllegalStateException(clientExists);
          }
 
         clientPort = port;
@@ -214,6 +215,7 @@ public class MultiplayerManager extends Manager {
 
 
     public void broadcastEntityUpdateTimeEvents(int id) {
+        //not yet implemented
     }
 
     /**
