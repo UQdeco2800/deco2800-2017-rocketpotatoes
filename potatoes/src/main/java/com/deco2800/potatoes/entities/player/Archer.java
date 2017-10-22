@@ -2,7 +2,6 @@ package com.deco2800.potatoes.entities.player;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.entities.AbstractEntity;

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.deco2800.potatoes.GameLauncher;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.rust.Rustyfish;
 import com.deco2800.potatoes.gui.MainMenuGui;
@@ -18,11 +17,9 @@ import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.TextureManager;
 
-import com.sun.jna.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Console;
 import java.net.InetAddress;
 import java.util.List;
 
@@ -128,8 +125,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void show() {
-
-
+//not implemented
     }
 
 
@@ -138,7 +134,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void pause() {
-
+//not implemented
     }
 
     /**
@@ -146,7 +142,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void resume() {
-
+//not implemented
     }
 
     /**
@@ -154,7 +150,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void hide() {
-
+//not implemented
     }
 
     /**
@@ -162,7 +158,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void dispose() {
-
+//not implemented
     }
 
     /**
@@ -206,23 +202,25 @@ public class MainMenuScreen implements Screen {
     }
 
     /**
-     * Finds a running server.
+     * Finds a running server on the local network, if no servers are found returns a string noting the failure.
+     * @return The list of IPv4 addresses (as strings) of servers that are running.
      */
     public static Array<String> findHostAddress() {
-        Array<String> ipStrings = new Array<String>();;
+        Array<String> ipStrings = new Array<String>();
+        String failureString = "Failed to find host.";
         try {
             List<InetAddress> ips = GameManager.get().getManager(MultiplayerManager.class).discoverHosts(1337);
             for (InetAddress a: ips) {
                 ipStrings.add(a.getHostAddress());
             }
             if (ipStrings.random() == null) {
-                ipStrings.add("Failed to find host.");
+                ipStrings.add(failureString);
             }
             return ipStrings;
         } catch (Exception ex) {
-            LOGGER.warn("Failed to find host.", ex);
+            LOGGER.warn(failureString, ex);
         }
-        ipStrings.add("Failed to find host.");
+        ipStrings.add(failureString);
         return ipStrings;
     }
 

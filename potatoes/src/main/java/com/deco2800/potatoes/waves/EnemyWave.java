@@ -1,6 +1,5 @@
 package com.deco2800.potatoes.waves;
 
-import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
@@ -73,8 +72,8 @@ public class EnemyWave {
         float speedyRatio = squirrelRatio + speedyRate/total;
         float tankRatio = speedyRatio + tankRate/total;
         float mooseRatio = tankRatio + mooseRate/total;
-        float[] enemyRatios = {squirrelRatio, speedyRatio, tankRatio, mooseRatio};
-        return enemyRatios;
+        float[] ratios = {squirrelRatio, speedyRatio, tankRatio, mooseRatio};
+        return ratios;
     }
 
     /***
@@ -111,13 +110,8 @@ public class EnemyWave {
     public void tickAction() {
         switch (getWaveState()) {
 /*            case WAITING:
-                //Do nothing
-                break;*/
+                //Do nothing*/
             case PAUSE:
-                /*setCurrentWaveTime(elapsedWaveTime() + 1);
-                if (elapsedWaveTime() > getWaveLength()) {
-                    setWaveState(WaveState.FINISHED);
-                }*/
                 break;
             case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
@@ -128,10 +122,6 @@ public class EnemyWave {
                 }
                 //Check to see if wave is paused for some reason
                 break;
- /*           case FINISHED:
-                //Handling finished state
-                break;
-   */
         }
     }
 
@@ -149,7 +139,7 @@ public class EnemyWave {
      * Sets the current wave Time.
      * @param CurrentTime
      */
-    public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
+    public void setCurrentWaveTime(int currentTime) { this.waveTime = currentTime; }
 
     /**
      * @return Amount of time left in current wave

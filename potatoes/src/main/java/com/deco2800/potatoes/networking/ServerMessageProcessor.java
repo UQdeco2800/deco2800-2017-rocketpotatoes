@@ -13,7 +13,7 @@ import java.util.Map;
  * Static processor for messages
  */
 public class ServerMessageProcessor {
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientMessageProcessor.class);
 
     /**
      * Calls the appropriate handler for the given message

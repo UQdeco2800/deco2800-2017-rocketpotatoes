@@ -7,13 +7,28 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class RTreeTest {
 
+    RTree<Integer> tree;
+
+    @Before
+    public void setUp() {
+        tree = new RTree<>();
+    }
+
+    @After
+    public void tearDown() {
+        tree = null;
+    }
+
     @Test
     public void createWithoutExploding() {
-        RTree<Integer> tree = new RTree<>();
+        tree = new RTree<>();
     }
 
     /**
@@ -21,7 +36,7 @@ public class RTreeTest {
      */
     @Test
     public void addToTree() {
-        RTree<Integer> tree = new RTree<>();
+
         for (int x = -5; x < 5; ++x) {
             for (int y = -5; y < 5; ++y) {
                 tree.insert(10 * x + y, new Point2D(x, y));
@@ -35,7 +50,7 @@ public class RTreeTest {
      */
     @Test
     public void addLotsToTree() {
-        RTree<Integer> tree = new RTree<>();
+
         int count = 0;
 
         for (int x = -50; x < 50; ++x) {
@@ -59,7 +74,7 @@ public class RTreeTest {
 
     @Test
     public void findOverlaps() {
-        RTree<Integer> tree = new RTree<>();
+
         List<Shape2D> shapes = new ArrayList<>();
         Collection<Integer> results;
 
@@ -98,7 +113,7 @@ public class RTreeTest {
 
     @Test
     public void findOverlapsInBigTree() {
-        RTree<Integer> tree = new RTree<>();
+
         List<Shape2D> shapes = new ArrayList<>();
         Collection<Integer> results;
 
@@ -157,7 +172,7 @@ public class RTreeTest {
 
     @Test
     public void findNearest() {
-        RTree<Integer> tree = new RTree<>();
+
         List<Shape2D> shapes = new ArrayList<>();
 
         for (int x = -5; x < 5; ++x) {
@@ -179,7 +194,7 @@ public class RTreeTest {
 
     @Test
     public void findNearestInBigTree() {
-        RTree<Integer> tree = new RTree<>();
+
         List<Shape2D> shapes = new ArrayList<>();
         Collection<Integer> results;
 
@@ -223,7 +238,7 @@ public class RTreeTest {
     // relies on findOverlapping and insert
     @Test
     public void removeFromTree() {
-        RTree<Integer> tree = new RTree<>();
+
 
         for (int x = -5; x < 5; ++x) {
             for (int y = -5; y < 5; ++y) {
@@ -241,7 +256,7 @@ public class RTreeTest {
 
     @Test
     public void removeFromBigTree() {
-        RTree<Integer> tree = new RTree<>();
+
         List<Shape2D> shapes = new ArrayList<>();
         Collection<Integer> results;
 

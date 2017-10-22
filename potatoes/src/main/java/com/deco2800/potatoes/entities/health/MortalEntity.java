@@ -238,9 +238,12 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 			return false;
 		}
 		LOGGER.info("{} has been healed for {} points (health now {})", this, amount, getHealth());
-		if (healAnimation != null) {
+		try {
 			GameManager.get().getWorld().addEntity(healAnimation);
+		} catch (Exception e){
+			LOGGER.info("{}",e);
 		}
+		
 		return true;
 	}
 
