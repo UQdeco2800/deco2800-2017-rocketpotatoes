@@ -22,7 +22,9 @@ import java.util.List;
  * @author craig
  */
 public class WaveManager extends Manager implements TickableManager, ForWorld {
-    public static final int EASY = 1, MEDIUM = 2, HARD = 3;
+    public static final int EASY = 1;
+    public static final int MEDIUM = 2;
+    public static final int HARD = 3;
 
     // Default is that there will be no campaign and the difficulty will be medium
     private boolean isCampaign = false;

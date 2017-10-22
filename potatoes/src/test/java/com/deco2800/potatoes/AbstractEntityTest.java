@@ -3,6 +3,7 @@ package com.deco2800.potatoes;
 
 import com.deco2800.potatoes.collisions.Box2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,6 +54,15 @@ public class AbstractEntityTest {
 				4,5, "texture");
 		abstractEntity4 = new TestableAbstractEntity(true, true, false,4, 
 				5, 4,5, "texture");
+	}
+
+	@After
+	public void tearDown() {
+
+		abstractEntity = null;
+		abstractEntity2 = null;
+		abstractEntity3 = null;
+		abstractEntity4 = null;
 	}
 
 	//Common to all initialisation test

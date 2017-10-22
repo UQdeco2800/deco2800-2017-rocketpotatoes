@@ -25,12 +25,12 @@ public class BuoyantParticleType extends ParticleType {
      */
     public BuoyantParticleType(int number, float lifeTime, float cycleDelta, int rate, Color color, int sizeX, int sizeY) {
         this.number = number;
-        this.lifeTime = lifeTime;
+        this.setLifeTime(lifeTime);
         this.cycleDelta = cycleDelta;
         this.rate = rate;
         this.setSizeX(sizeX);
         this.setSizeY(sizeY);
-        this.color = color;
+        this.setColor(color);
         particles = new ArrayList<>();
     }
 
@@ -44,7 +44,7 @@ public class BuoyantParticleType extends ParticleType {
      */
     public BuoyantParticleType(int number, float lifeTime, float cycleDelta, int rate, Texture texture) {
         this.number = number;
-        this.lifeTime = lifeTime;
+        this.setLifeTime(lifeTime);
         this.cycleDelta = cycleDelta;
         this.rate = rate;
         particles = new ArrayList<>();
@@ -71,7 +71,7 @@ public class BuoyantParticleType extends ParticleType {
             p.x += p.vector.x * deltaTime;
             p.y += p.vector.y * deltaTime;
             p.lifeTime -= deltaTime;
-            p.rotation += this.rotationSpeed - this.rotationSpeed  * 2.0f * (p.hashCode() % 2);
+            p.rotation += this.getRotationSpeed() - this.getRotationSpeed()  * 2.0f * (p.hashCode() % 2);
 
             // Buoyant logic (adjust direction of vector to be up)
             p.vector.setAngle(90.0f);
@@ -123,7 +123,7 @@ public class BuoyantParticleType extends ParticleType {
                                 (float) Math.sin(Math.toRadians(direction)),
                                 (float) Math.cos(Math.toRadians(direction))).nor().scl(factor);
 
-                        newP.lifeTime = this.lifeTime;
+                        newP.lifeTime = this.getLifeTime();
                         newP.rotation = random.nextFloat();
 
                         this.particles.add(newP);

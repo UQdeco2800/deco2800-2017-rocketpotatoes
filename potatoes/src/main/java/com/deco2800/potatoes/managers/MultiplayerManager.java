@@ -307,7 +307,7 @@ public class MultiplayerManager extends Manager {
             return client.getClients();
         }
         else {
-            return null;
+            return new ArrayList<>();
         }
     }
 

@@ -98,8 +98,7 @@ public class Caveman extends Player {
 		}
 		
 		setMoveSpeedModifier(0);
-
-		// TODO Stop walking for attacking
+		
 		if (setState(ATTACK)) {
 			GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
 
