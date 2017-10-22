@@ -2,17 +2,6 @@ use std::os::raw::c_char;
 
 use util::*;
 
-#[derive(Debug)]
-pub enum Color {
-    Black = 0,
-    Red = 1,
-    Blue = 2,
-    LightBlue = 3,
-    Green = 4,
-    Yellow = 5,
-    Orange = 6,
-}
-
 #[repr(C)]
 pub struct RenderRectangle {
     x: i32,
