@@ -62,7 +62,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(Player.class);
     private static final transient float HEALTH = 200f;
-    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthbar", 4);
+    private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarGreen", 4);
 
     protected PlayerProjectile.PlayerShootMethod shootMethod = PlayerProjectile.PlayerShootMethod.MOUSE;
     protected Class<?> projectileType = BallisticProjectile.class;
@@ -73,7 +73,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
     protected TimeAnimation currentAnimation;    // The current animation of the player
     protected PlayerState state;        // The current states of the player, set to idle by default
-    public boolean canAttack = true;		// A boolean that determines whether the player can attack
+    public boolean canAttack = true;        // A boolean that determines whether the player can attack
 
     private static int doublePressSpeed = 300;    // double keypressed in ms
     protected float defaultSpeed;    // the default speed of each player
@@ -83,9 +83,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
     private boolean keyA = false;
     private boolean keyS = false;
     private boolean keyD = false;
-
-
-    //TODO change this. -> super. in as many locations as possible
+    
 
     // ----------     PlayerState class     ---------- //
 
@@ -328,7 +326,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 //                        null, new AOEEffect(targetClass,
 //                        new Vector3(startPos.x, startPos.y,startPos.z),1,8f));
 
-                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 0, MineBomb.BombTexture.MINES,
+                MineBomb MBprojectile = new MineBomb(startPos, startPos, 8f, 100, MineBomb.BombTexture.MINES,
                         null, null);
 
                 GameManager.get().getWorld().addEntity(MBprojectile);
@@ -381,8 +379,6 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      */
     void updateMovingAndFacing() {
         Direction newFacing;
-
-        //TODO releasing keys while travelling diagonal, not working, returning to cardinal directions
 
         // get direction based on current keys
         // considers if opposite keys are pressed
@@ -493,9 +489,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         if (terrainModifierCheck <= 0) {
             terrainModifier = 0;
         }
-
-        //TODO getting terrainModifier should be easier as multiple entities will use it
-        //TODO is not using terrainModifier
+        
         if (state == WALK) {
             super.setMoveSpeedModifier(terrainModifier);
         }
@@ -580,7 +574,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
      * are added to the player's inventory.
      */
     private void harvestResources() {
-        double interactRange = 3f; // TODO: Could this be a class variable?
+        double interactRange = 3f; 
         Collection<AbstractEntity> entities = GameManager.get().getWorld().getEntities().values();
         boolean didHarvest = false;
         for (AbstractEntity entitiy : entities) {
@@ -612,7 +606,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         this.setMoveSpeed(defaultSpeed);
         // destroy the player
         GameManager.get().getWorld().removeEntity(this);
-        // play Wilhelm scream sound effect TODO Probably find something better for this...if you can ;)
+        // play Wilhelm scream sound effect
         SoundManager soundManager = new SoundManager();
         soundManager.playSound("death.wav");
         // get the event manager

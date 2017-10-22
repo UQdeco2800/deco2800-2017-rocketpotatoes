@@ -11,7 +11,6 @@ import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.EventManager;
@@ -21,15 +20,12 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Caveman extends Player {
-
+	private Optional<AbstractEntity> target;
 	/**
-	 * 
 	 * Creates a new Caveman instance.
 	 *
-	 * @param posX
-	 *            The x-coordinate.
-	 * @param posY
-	 *            The y-coordinate.
+	 * @param posX The x-coordinate.
+	 * @param posY The y-coordinate.
 	 */
 	public Caveman(float posX, float posY) {
 
@@ -93,13 +89,12 @@ public class Caveman extends Player {
     }
 
 	/* Custom walk sound handling */
-	private int stepNumber = 1; // Used for playing left and right foot steps
-	private boolean alternateSound = false; // Used for playing alternate sounds
+	private int stepNumber = 1;	// Used for playing left and right foot steps
+	private boolean alternateSound = false;	// Used for playing alternate sounds
 	private TimeEvent<Player> walkSound = TimeEvent.createWithSimpleAction(350, true, this::walkHandler);
-
 	private Void walkHandler() {
 		if (alternateSound) {
-			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber + 2) + ".wav");
+			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + (stepNumber+2) + ".wav");
 		} else {
 			GameManager.get().getManager(SoundManager.class).playSound("/walking/walk" + stepNumber + ".wav");
 		}

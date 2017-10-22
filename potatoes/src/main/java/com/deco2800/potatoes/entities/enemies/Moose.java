@@ -4,34 +4,26 @@ import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWave;
+import com.deco2800.potatoes.entities.enemies.enemyactions.ChannelEvent;
+import com.deco2800.potatoes.entities.enemies.enemyactions.HealingWaveEvent;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
-import com.deco2800.potatoes.entities.enemies.enemyactions.Channel;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.player.Archer;
-import com.deco2800.potatoes.entities.player.Caveman;
-import com.deco2800.potatoes.entities.player.Wizard;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.util.Path;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * A moose enemy for the game. Has the special ability of a healing buff to itself and those around it
  */
 public class Moose extends EnemyEntity implements Tickable, HasProgress {
 
-	private static final transient String TEXTURE_LEFT = "pronograde"; // TODO: MAKE MOOSE TEXTURE
+	private static final transient String TEXTURE_LEFT = "pronograde";
 	private static final transient float HEALTH = 100f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 	private static final transient String[] ENEMY_TYPE = new String[]{
 			"moose"
-
 	};
 	private static final EnemyProperties STATS = initStats();
 
@@ -44,13 +36,13 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	private PathAndTarget pathTarget = new PathAndTarget(path, target);
 	private EnemyTargets targets = initTargets();
 
-	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
+	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity("healthBarRed", 1);
 
 	/**
 	 * Empty constructor for serialization
 	 */
 	public Moose() {
-		//Empty for serialization (is a code smell to not have comment here)
+		//Empty for serialization
 	}
 
 	/***
@@ -82,12 +74,10 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		return ENEMY_TYPE;
 	}
 
-	/**
-	 * Moose follows it's path.
-	 * Requests a new path whenever it collides with a staticCollideable entity
-	 * moves directly towards the player once it reaches the end of it's path
+	/***
+	 * Actions to be performed on every tick of the game
 	 *
-	 * @param i
+	 * @param i the current game tick
 	 */
 	@Override
 	public void onTick(long i) {
@@ -95,8 +85,8 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 		if (getMoving()) {
 			pathMovement(pathTarget, relevantTarget);
 			super.onTickMovement();
+			super.updateDirection();
 		}
-		super.updateDirection();
 	}
 
 	/**
@@ -120,17 +110,16 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	 * Initialise EnemyStatistics belonging to this enemy which is referenced by other classes to control
 	 * enemy.
 	 *
-	 * @return
+	 * @return EnemyProperties
 	 */
 	private static EnemyProperties initStats() {
-		HealingWave healingWave = new HealingWave(3500, 8f, 80f);
-		EnemyProperties result = new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
+		HealingWaveEvent healingWave = new HealingWaveEvent(3500, 8f, 80f);
+		return new PropertiesBuilder<>().setHealth(HEALTH).setSpeed(speed)
 				.setAttackRange(ATTACK_RANGE).setAttackSpeed(ATTACK_SPEED).setTexture(TEXTURE_LEFT)
 				.addEvent(new MeleeAttackEvent(ATTACK_SPEED, BasePortal.class))
-				.addEvent(new Channel(50, 1000, healingWave))
+				.addEvent(new ChannelEvent(50, 1000, healingWave))
 				.addEvent(healingWave)
 				.createEnemyStatistics();
-		return result;
 	}
 
 	/***
@@ -140,28 +129,5 @@ public class Moose extends EnemyEntity implements Tickable, HasProgress {
 	@Override
 	public EnemyProperties getBasicStats() {
 		return STATS;
-	}
-
-	/**
-	 * Initialise the EnemyTargets of this enemy for use when determining this enemy's most
-	 * relevant target.
-	 *
-	 * @return this enemy's initialized targets.
-	 */
-	private EnemyTargets initTargets() {
-		/*Enemy will move to these (in order) if no aggro*/
-		LinkedList<Class> mainTargets = new LinkedList<>();
-		mainTargets.add(BasePortal.class);
-		mainTargets.add(Archer.class);
-		mainTargets.add(Caveman.class);
-		mainTargets.add(Wizard.class);
-
-		/*if enemy can 'see' these, then enemy aggros to these*/
-		LinkedList<Class> sightAggroTargets = new LinkedList<>();
-		sightAggroTargets.add(Archer.class);
-		sightAggroTargets.add(Caveman.class);
-		sightAggroTargets.add(Wizard.class);
-
-		return new EnemyTargets(mainTargets, sightAggroTargets);
 	}
 }

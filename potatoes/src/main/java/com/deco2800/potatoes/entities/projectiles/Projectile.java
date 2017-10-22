@@ -124,6 +124,7 @@ public class Projectile extends AbstractEntity implements Tickable {
 		if (startEffect != null)
 			GameManager.get().getWorld().addEntity(startEffect);
 
+
 		setTargetPosition(targetPos.x, targetPos.y, targetPos.z);
 		setPosition();
 	}

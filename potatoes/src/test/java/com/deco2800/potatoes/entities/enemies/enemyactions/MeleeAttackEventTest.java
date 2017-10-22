@@ -1,7 +1,9 @@
-package com.deco2800.potatoes.entities.enemies;
+package com.deco2800.potatoes.entities.enemies.enemyactions;
 
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.TimeEvent;
+import com.deco2800.potatoes.entities.enemies.EnemyEntity;
+import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
@@ -14,7 +16,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test class to test the Moose enemy type
+ * Test class to test the MeleeAttackEvent type
  *
  * @author craig & ryanjphelan
  */
@@ -25,7 +27,7 @@ public class MeleeAttackEventTest extends BaseTest {
     private TankEnemy testMeleeEnemy = new TankEnemy(15, 15);
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         eventEmpty = new MeleeAttackEvent();
         testEvent = new MeleeAttackEvent(20, Player.class);
         GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);

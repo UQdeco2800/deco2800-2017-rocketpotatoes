@@ -69,34 +69,6 @@ public class Path {
      * @param speed distance/tick the entity moves
      * @return new Box3D for the entity per tick cycle
      */
-    // TODO -- figure out if this is used at all
-    // public Box3D getTargetPosition(Box3D currentPosition, float speed) {
-
-    //     // Construct new Box3D from _currentPosition_
-    //     Box3D newPos = new Box3D(currentPosition);
-    //     // Check if the current position overlaps the first node in list
-    //     if (currentPosition.overlaps(nodes.getFirst())) {
-    //         // Remove first node from list as it's been reached
-    //         nodes.removeFirst();
-    //         // Set angle to angle between _currentPosition_ and next node
-    //         setAngle(currentPosition.angle(nodes.getFirst()));
-    //         // Calculate new x and y positions
-    //         float newX = (float) (speed * Math.cos(getAngle()));
-    //         float newY = (float) (speed * Math.sin(getAngle()));
-    //         newPos.setX(newX);
-    //         newPos.setY(newY);
-    //         return newPos;
-    //     }
-    //     // Haven't reached the next node in list
-    //     // Set angle to angle between _currentPosition_ and next node
-    //     setAngle(currentPosition.angle(nodes.getFirst()));
-    //     // Calculate new x and y positions
-    //     float newX = (float) (speed * Math.cos(getAngle()));
-    //     float newY = (float) (speed * Math.sin(getAngle()));
-    //     newPos.setX(newX);
-    //     newPos.setY(newY);
-    //     return newPos;
-    // }
 
     /**
      * Finds the location that the entity following this path should head to next.

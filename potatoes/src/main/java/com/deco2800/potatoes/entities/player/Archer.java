@@ -20,7 +20,7 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Archer extends Player {
-
+	private Optional<AbstractEntity> target;
 	/**
 	 * Creates a new Archer instance.
 	 *
@@ -36,7 +36,7 @@ public class Archer extends Player {
 		this.facing = Direction.SE;
 		this.resetState();
 	}
-
+	protected Class<?> projectileType = BallisticProjectile.class;
 	private Map<Direction, TimeAnimation> archerIdleAnimations = makePlayerAnimation("archer", IDLE, 1, 1, null);
 	private Map<Direction, TimeAnimation> archerWalkAnimations = makePlayerAnimation("archer", WALK, 8, 750, null);
 	private Map<Direction, TimeAnimation> archerAttackAnimations = makePlayerAnimation("archer", ATTACK, 5, 200,
@@ -81,10 +81,7 @@ public class Archer extends Player {
 		}
 	}
 
-	@Override
-	protected void attack() {
-		super.attack();
-	}
+
 
 	@Override
 	protected void interact() {

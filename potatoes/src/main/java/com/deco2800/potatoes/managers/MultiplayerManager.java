@@ -79,7 +79,7 @@ public class MultiplayerManager extends Manager {
 
     /**
      * Creates a host in the background with the given port, the client then has to connect to this server using
-     * joinGame(...); TODO error checking should throw exceptions?
+     * joinGame(...); 
      * @param port
      * @throws IllegalStateException
      * @throws IllegalArgumentException
@@ -107,7 +107,7 @@ public class MultiplayerManager extends Manager {
      * Join's the given IP and port, with the given name (which is then stored in the manager).
      * @param name
      * @param IP - String representing an IP, in the format (255.255.255.255),
-     * @param port - port number in range of 1024-65565 (or 0 for any port) ?? TODO 0 port
+     * @param port - port number in range of 1024-65565 (or 0 for any port)
      * @throws IOException
      * @throws IllegalArgumentException
      */
@@ -122,7 +122,7 @@ public class MultiplayerManager extends Manager {
            throw new IllegalStateException("Client already exists!");
          }
 
-        // TODO move away from ALL tcp
+        
         clientPort = port;
         multiplayer = true;
         ip = inIP;
@@ -167,7 +167,7 @@ public class MultiplayerManager extends Manager {
      */
     public void sendMessageTo(int clientID, String message) {
         if (client != null) {
-            // TODO
+            // unimplented
         }
     }
 
@@ -316,7 +316,6 @@ public class MultiplayerManager extends Manager {
      * @return if a port is within a valid range or not
      */
     public static boolean isValidPort(int p) {
-        // TODO 128 < ports < 1024 are avaliable if running as root/admin could check this
         if (p != 0 && p < 1024 || p > 65535) {
             return false;
         }

@@ -4,15 +4,18 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector3;
 import com.deco2800.potatoes.collisions.Circle2D;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
+import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
+import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -21,37 +24,30 @@ import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.util.WorldUtil;
 
 public class Wizard extends Player {
-
+	private Optional<AbstractEntity> target;
 	private boolean isCharging = false;
-
 	/**
 	 * Creates a new Archer instance.
 	 *
-	 * @param posX
-	 *            The x-coordinate.
-	 * @param posY
-	 *            The y-coordinate.
+	 * @param posX The x-coordinate.
+	 * @param posY The y-coordinate.
 	 */
 
 	public Wizard(float posX, float posY) {
 		super(posX, posY);
-		this.projectileType = OrbProjectile.class;
 		this.defaultSpeed = 0.09f;
+		this.projectileType = OrbProjectile.class;
 		super.setMoveSpeed(defaultSpeed);
 		this.facing = Direction.SE;
 		this.resetState();
 		this.setShadow(shadow);
 	}
-
+	protected Class<?> projectileType = BallisticProjectile.class;
 	private Map<Direction, TimeAnimation> wizardIdleAnimations = makePlayerAnimation("wizard", IDLE, 1, 1, null);
-	private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200,
-			this::completionHandler);
-	private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200,
-			this::damagedCompletionHandler);
-	private Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation("wizard", INTERACT, 6, 450,
-			this::completionHandler);
-	private Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation("wizard", DEATH, 17, 1700,
-			this::completionHandler);
+	private Map<Direction, TimeAnimation> wizardAttackAnimations = makePlayerAnimation("wizard", ATTACK, 4, 200, this::completionHandler);
+	private Map<Direction, TimeAnimation> wizardDamagedAnimations = makePlayerAnimation("wizard", DAMAGED, 1, 200, this::damagedCompletionHandler);
+	private Map<Direction, TimeAnimation> wizardInteractAnimations = makePlayerAnimation("wizard", INTERACT, 6, 450, this::completionHandler);
+	private Map<Direction, TimeAnimation> wizardDeathAnimations = makePlayerAnimation("wizard", DEATH, 17, 1700, this::completionHandler);
 
 	/**
 	 * Custom damaged handling for the wizard
@@ -63,7 +59,7 @@ public class Wizard extends Player {
 		return null;
 	}
 
-	private float hoverTime = 0; // A value used to determine the height of the hover
+	private float hoverTime = 0;	 // A value used to determine the height of the hover
 	private static final float HOVER_SPEED = 0.1f; // Rate at which wizard hovers
 	private static final float HOVER_HEIGHT = 7.5f; // Max height at which wizard hovers
 
@@ -73,34 +69,33 @@ public class Wizard extends Player {
 	public void updateSprites() {
 		super.updateSprites();
 		switch (this.getState()) {
-		case IDLE:
-			super.setAnimation(wizardIdleAnimations.get(super.facing));
-			break;
-		case DAMAGED:
-			super.setAnimation(wizardDamagedAnimations.get(super.facing));
-			break;
-		case ATTACK:
-			super.setAnimation(wizardAttackAnimations.get(super.facing));
-			break;
-		case INTERACT:
-			super.setAnimation(wizardInteractAnimations.get(super.facing));
-			break;
-		case DEATH:
-			super.setAnimation(wizardDeathAnimations.get(super.facing));
-			break;
-		default:
-			super.setAnimation(wizardIdleAnimations.get(super.facing));
-			break;
+			case IDLE:
+				super.setAnimation(wizardIdleAnimations.get(super.facing));
+				break;
+			case DAMAGED:
+				super.setAnimation(wizardDamagedAnimations.get(super.facing));
+				break;
+			case ATTACK:
+				super.setAnimation(wizardAttackAnimations.get(super.facing));
+				break;
+			case INTERACT:
+				super.setAnimation(wizardInteractAnimations.get(super.facing));
+				break;
+			case DEATH:
+				super.setAnimation(wizardDeathAnimations.get(super.facing));
+				break;
+			default:
+				super.setAnimation(wizardIdleAnimations.get(super.facing));
+				break;
 		}
-
 	}
 
 	@Override
 	public void handleKeyDown(int keycode) {
 		super.handleKeyDown(keycode);
 		switch (keycode) {
-		case Input.Keys.SPACE:
-			isCharging = true;
+			case Input.Keys.SPACE:
+				isCharging = true;
 		}
 	}
 
@@ -108,8 +103,8 @@ public class Wizard extends Player {
 	public void handleKeyUp(int keycode) {
 		super.handleKeyUp(keycode);
 		switch (keycode) {
-		case Input.Keys.SPACE:
-			isCharging = false;
+			case Input.Keys.SPACE:
+				isCharging = false;
 		}
 	}
 
@@ -124,37 +119,26 @@ public class Wizard extends Player {
 		shadow.setX(getPosX() - 0.25f);
 
 		if (getMoveSpeed() == defaultSpeed) {
-			this.setYRenderOffset((float) (HOVER_HEIGHT * Math.sin(hoverTime)));
+			this.setYRenderOffset((float) (HOVER_HEIGHT*Math.sin(hoverTime)));
 			hoverTime += HOVER_SPEED;
-			shadow.setRadius((float) (0.4 - 0.1 * Math.sin(hoverTime)));
+			shadow.setRadius((float) (0.4 - 0.1*Math.sin(hoverTime)));
 		} else {
-			this.setYRenderOffset((float) (HOVER_HEIGHT / 1.5 * Math.sin(hoverTime)));
-			hoverTime += HOVER_SPEED * 1.5;
-			shadow.setRadius((float) (0.4 - 0.1 * Math.sin(hoverTime)));
+			this.setYRenderOffset((float) (HOVER_HEIGHT/1.5*Math.sin(hoverTime)));
+			hoverTime += HOVER_SPEED*1.5;
+			shadow.setRadius((float) (0.4 - 0.1*Math.sin(hoverTime)));
 		}
 	}
 
 	@Override
 	protected void interact() {
 		super.interact();
+		// Custom interaction code here
 	}
 
 	@Override
 	public void onTick(long arg0) {
 		super.onTick(arg0);
-
 		hoverAnimation();
-
-		if (projectile != null && OrbProjectile.class.isAssignableFrom(projectileType)) {
-			float pPosX = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosX();
-			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
-			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
-			if (isCharging) {
-				((OrbProjectile) ((PlayerProjectile) projectile).projectile).charge(new Vector3(pPosX, pPosY, pPosZ));
-			} else {
-				((OrbProjectile) ((PlayerProjectile) projectile).projectile).fire();
-			}
-		}
 	}
 
 }
