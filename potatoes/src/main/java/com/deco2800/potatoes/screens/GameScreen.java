@@ -332,7 +332,7 @@ public class GameScreen implements Screen {
 			//addResourceTrees();
 			
 			/* Randomly generate trees in each world */
-			AbstractTree forestTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType())};
+			AbstractTree forestTrees[] = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()),  new DefenseTree(0, 0)};
 			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
 			
 			AbstractTree desertTrees[] = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
@@ -381,7 +381,7 @@ public class GameScreen implements Screen {
 	    	int yPos;
 	    	
 	    	// The amount of each tree to generate
-    		int amount = 30/trees.length;
+    		int amount = 35/trees.length;
 	    	
 	    	// Terrain to add the tree to
 	    	Terrain terrain;
