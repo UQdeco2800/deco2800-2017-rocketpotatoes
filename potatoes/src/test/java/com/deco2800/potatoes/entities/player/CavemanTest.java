@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.player.Player.PlayerState;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager.PlayerType;
+import com.deco2800.potatoes.managers.PlayerManager;
 
 /**
  * JUnit tests for validating the Player class
@@ -22,6 +23,9 @@ public class CavemanTest {
 	@Before
 	public void setup() {
 		caveman = new Caveman(0, 0);
+		PlayerManager m = new PlayerManager();
+		m.setPlayer(caveman);
+		GameManager.get().addManager(m);
 	}
 	
 	@After
@@ -48,6 +52,7 @@ public class CavemanTest {
 		// Test setting idle animation to south west
 		caveman.setAnimation(animationMap.get(Direction.SW));
 	}
+	
 	@Test
 	public void extraTest() {
 		caveman.updateSprites();
@@ -63,6 +68,6 @@ public class CavemanTest {
 		caveman.updateSprites();
 		caveman.setState(Player.PlayerState.INTERACT);
 		caveman.updateSprites();
-		
+		caveman.interact();
 	}
 }

@@ -85,6 +85,15 @@ public class Caveman extends Player {
     @Override
     protected void attack() {
 		super.attack();
+		
+		if (!canAttack) {
+			return;
+		} else {
+			canAttack = false;
+			EventManager em = GameManager.get().getManager(EventManager.class);
+	        em.registerEvent(this, new  AttackCooldownEvent(250));
+		}
+		
 		setMoveSpeedModifier(0);
 
 		// TODO Stop walking for attacking
@@ -95,7 +104,7 @@ public class Caveman extends Player {
 			float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
 			float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-			Optional<AbstractEntity> target = null;
+			Optional<AbstractEntity> target;
 			target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
 			//Disable shooting when no enemies is present until new fix is found.

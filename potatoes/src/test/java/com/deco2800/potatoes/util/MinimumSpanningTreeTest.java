@@ -39,7 +39,6 @@ public class MinimumSpanningTreeTest {
         }
         // Create minimum spanning tree
         tree = new MinimumSpanningTree(numberOfNodes);
-        tree.hashCode();
         // Add vertices to graph
         for (int i = 0; i < numberOfNodes; i++) {
             tree.addVertex(nodes.get(i), i);
@@ -58,6 +57,7 @@ public class MinimumSpanningTreeTest {
                         nodes.get(j).getY()
                 );
                 tree.putGraphEntry(line.getDistance(), i, j);
+                tree.hashCode();
 
             }
         }

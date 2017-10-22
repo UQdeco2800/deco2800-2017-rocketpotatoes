@@ -80,7 +80,7 @@ public class Box2D extends Shape2D {
             }
         }).collect(Collectors.toList());
 
-        if (points.size() == 0) {
+        if (points.isEmpty()) {
             return Optional.empty();
         }
 
@@ -93,7 +93,11 @@ public class Box2D extends Shape2D {
             return Optional.empty();
         }
 
-        return Optional.of(new Box2D((maxX + minX) / 2, (maxY + minY) / 2, maxX - minX, maxY - minY));
+        return Optional.of(new Box2D(
+                    (maxX + minX) / 2,
+                    (maxY + minY) / 2,
+                    0.01f + maxX - minX,
+                    0.01f + maxY - minY));
     }
 
     /**
@@ -303,7 +307,6 @@ public class Box2D extends Shape2D {
             return distY;
         } else {
             // Box & point overlap, return rough negative val
-            // TODO this val might be used in physics
             return Math.max(distX, distY);
         }
     }
@@ -350,7 +353,7 @@ public class Box2D extends Shape2D {
             return (float) Math.sqrt(distPointX * distPointX + distPointY * distPointY) - other.getRadius();
         } else {
             // Box & circle overlap, return negative val
-            // TODO this val might be used in physics
+            
             return -1;
         }
     }

@@ -13,6 +13,7 @@ import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
 import com.deco2800.potatoes.entities.projectiles.PlayerProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
+import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
@@ -87,6 +88,15 @@ public class Wizard extends Player {
     @Override
     protected void attack() {
     		super.attack();
+    		
+    		if (!canAttack) {
+    			return;
+    		} else {
+    			canAttack = false;
+    			EventManager em = GameManager.get().getManager(EventManager.class);
+    	        em.registerEvent(this, new  AttackCooldownEvent(500));
+    		}
+    		
         if (this.setState(ATTACK)) {
 
             GameManager.get().getManager(SoundManager.class).playSound("attack.wav");
@@ -95,7 +105,7 @@ public class Wizard extends Player {
             float pPosY = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosY();
             float pPosZ = GameManager.get().getManager(PlayerManager.class).getPlayer().getPosZ();
 
-            Optional<AbstractEntity> target = null;
+            Optional<AbstractEntity> target;
             target = WorldUtil.getClosestEntityOfClass(EnemyEntity.class, pPosX, pPosY);
 
             if (target.isPresent()) {
@@ -140,7 +150,7 @@ public class Wizard extends Player {
             }
         }
     }
-    
+
     private void hoverAnimation() {
     	// Update shadow position
 		shadow.setY(getPosY() + 0.25f);

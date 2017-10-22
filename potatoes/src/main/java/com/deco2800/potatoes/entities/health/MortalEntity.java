@@ -3,19 +3,19 @@
  */
 package com.deco2800.potatoes.entities.health;
 
-import com.deco2800.potatoes.entities.Direction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Box2D;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
+import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.effects.HealingEffect;
 import com.deco2800.potatoes.gui.GameOverGui;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,7 +30,6 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	protected float damageScaling = 1f;
 	protected boolean deathHandled = false;
 	private boolean dying = false;
-	//TODO use states like the player does
 	protected Direction facing; 		// The direction the entity is facing
 
 
@@ -113,7 +112,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	 *            The id of the texture for this entity.
 	 * @param maxHealth
 	 *            The initial maximum health of the entity
-	 */ //TODO max health probably shouldn't be set here
+	 */
     public MortalEntity(Shape2D mask, float xRenderLength, float yRenderLength, String texture,
 						float maxHealth) {
 
@@ -231,6 +230,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	@Override
 	public boolean heal(float amount) {
 		health += amount;
+		HealingEffect healAnimation = new HealingEffect(this.getClass(), this.getPosX(), this.getPosY(), true, 1f, 1);
 		if (health > maxHealth) {
 			health = maxHealth;
 			LOGGER.info("{} has been healed for {} points (health now {})", this, amount,
@@ -238,6 +238,12 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 			return false;
 		}
 		LOGGER.info("{} has been healed for {} points (health now {})", this, amount, getHealth());
+		try {
+			GameManager.get().getWorld().addEntity(healAnimation);
+		} catch (Exception e){
+			LOGGER.info("{}",e);
+		}
+		
 		return true;
 	}
 
@@ -333,12 +339,17 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 		return true;
 	}
 
+	/***
+	 * Actions to be performed on every tick of the game
+	 *
+	 * @param time the current game tick
+	 */
 	@Override
 	public void onTick(long time) {
-
 	}
 
     public Direction getFacing() {
         return this.facing;
     }
+
 }

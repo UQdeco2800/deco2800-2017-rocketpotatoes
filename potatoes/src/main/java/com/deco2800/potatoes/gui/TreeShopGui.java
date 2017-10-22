@@ -65,13 +65,13 @@ public class TreeShopGui extends Gui implements SceneGui {
 
 
     // Opacity value for treeShop subsection when mouse is not hovering over it
-    final private float UNSELECTED_ALPHA = 0.2f;
+    private final float UNSELECTED_ALPHA = 0.2f;
     // Opacity value for treeShop subsection when mouse hovers over
-    final private float SELECTED_ALPHA = 0.5f;
+    private static final float SELECTED_ALPHA = 0.5f;
     // Maximum number of tile lengths from player where you can plant trees
-    final private int MAX_RANGE = 6;
+    private static final int MAX_RANGE = 6;
 
-    final private int SHOPRADIUS = 150;
+     private int SHOPRADIUS = 150;
 
     /**
      * Instantiates shop with but doesn't display it yet.
@@ -109,7 +109,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     /**
      * Updates the list of unlocked tree states
      */
-    private void refreshTreeStates() {
+    public void refreshTreeStates() {
         unlockedTreeStates = new ArrayList<>();
         if (treeStates != null){
             for (TreeState treeState : treeStates) {
@@ -136,7 +136,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         if (keycode > Input.Keys.NUM_0 && keycode < Input.Keys.NUM_9){
             AbstractTree tree = getTreeBinding(keycode - Input.Keys.NUM_0);
             if (tree != null) {
-                buyTree(tree.clone());
+                buyTree(tree.createCopy());
                 closeShop();
             }
         }
@@ -154,17 +154,23 @@ public class TreeShopGui extends Gui implements SceneGui {
         // Seed resource tree
         Inventory seedTreeCost = new Inventory();
         seedTreeCost.updateQuantity(new SeedResource(), 1);
-        TreeState seedTreeState = new TreeState(new ResourceTree(treeX, treeY, new
-                SeedResource(), 10), seedTreeCost, true, "resource");
+        TreeState seedTreeState = new TreeState(new SeedTree(treeX, treeY), 
+        		seedTreeCost, true, "resource");
         treeStates.add(seedTreeState);
 
         // Food resource tree
         Inventory foodTreeCost = new Inventory();
-        foodTreeCost.updateQuantity(new SeedResource(), 1);
-        //foodTreeCost.updateQuantity(new FoodResource(), 1);
-        TreeState foodTreeState = new TreeState(new ResourceTree(treeX, treeY, new
-                FoodResource(), 10), foodTreeCost, true, "resource");
+        foodTreeCost.updateQuantity(new SeedResource(), 2);
+        TreeState foodTreeState = new TreeState(new FoodTree(treeX, treeY), 
+        		foodTreeCost, false, "resource");
         treeStates.add(foodTreeState);
+        
+        // Pine resource tree
+        Inventory pineTreeCost = new Inventory();
+        pineTreeCost.updateQuantity(new SeedResource(), 1);
+        TreeState pineTreeState = new TreeState(new PineTree(treeX, treeY), 
+        		pineTreeCost, false, "resource");
+        treeStates.add(pineTreeState);
 
         // Lightning tree
         Inventory lightningTreeCost = new Inventory();
@@ -173,7 +179,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         lightningTreeCost.updateQuantity(new TreasureResource(), 1);
         DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
         TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
-                true, "damage");
+                false, "damage");
         treeStates.add(lightningTreeState);
 
         // Ice tree
@@ -203,7 +209,25 @@ public class TreeShopGui extends Gui implements SceneGui {
         TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
                 "damage");
         treeStates.add(acornTreeState);
-
+        
+        // Cactus tree
+        Inventory cactusTreeCost = new Inventory();
+        cactusTreeCost.updateQuantity(new CactusThornResource(), 2);
+        cactusTreeCost.updateQuantity(new PricklyPearResource(), 3);
+        cactusTreeCost.updateQuantity(new SeedResource(), 4);
+        DamageTree cactusTree = new DamageTree(treeX, treeY, new CactusTreeType());
+        TreeState cactusTreeState = new TreeState(cactusTree, cactusTreeCost, false,
+        		"damage");
+        treeStates.add(cactusTreeState);
+        
+        // Defense tree
+        Inventory defenseTreeCost = new Inventory();
+        defenseTreeCost.updateQuantity(new ObsidianResource(), 3);
+        defenseTreeCost.updateQuantity(new SeedResource(), 6);
+        DefenseTree defenseTree = new DefenseTree(treeX, treeY);
+        TreeState defenseTreeState = new TreeState(defenseTree, defenseTreeCost, false,
+        		"defense");
+        treeStates.add(defenseTreeState);
     }
 
     /**
@@ -225,7 +249,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     }
 
     /**
-     * Returns a clone of treeStates.
+     * Returns a createCopy of treeStates.
      */
     public ArrayList<TreeState> getTreeStates() {
         ArrayList<TreeState> clone = new ArrayList<TreeState>();
@@ -242,6 +266,19 @@ public class TreeShopGui extends Gui implements SceneGui {
     public TreeState getTreeStateByTree(AbstractTree tree) {
         for (TreeState treeState : treeStates) {
             if (treeState.getTree().toString().equals(tree.toString()))
+                return treeState;
+        }
+        return null;
+    }
+
+    /**
+     * Returns TreeState with name treeName
+     * @param treeName name of tree
+     * @return treeState with name treeName
+     */
+    public TreeState getTreeStateByName(String treeName) {
+        for (TreeState treeState : treeStates) {
+            if (treeState.getTree().getName().equals(treeName))
                 return treeState;
         }
         return null;
@@ -381,14 +418,14 @@ public class TreeShopGui extends Gui implements SceneGui {
                 int startAngle = 360 * segment / numSegments;
                 float alpha = segment == selectedSegment && mouseIn && !mouseInCancel ?
                         SELECTED_ALPHA : UNSELECTED_ALPHA;
-                float itemAngle = startAngle + degrees / 2;
+                float itemAngle = startAngle + (float) degrees / 2;
 
                 // Set color and draw arc
                 shapeRenderer.setColor(new Color(c.r, c.g, c.b, alpha));
                 renderQuadrantArea(shapeRenderer, startAngle, guiX, guiY, radius, degrees,
                         entry.getKey());
 
-                Vector2 offset = calculateDisplacement(radius / 2, itemAngle);
+                Vector2 offset = calculateDisplacement((float)radius / 2, itemAngle);
 
                 // Render Items
                 float itemX = guiX - imgSize / 2 + offset.x;
@@ -401,7 +438,7 @@ public class TreeShopGui extends Gui implements SceneGui {
                 int n = cost.getInventoryResources().size();
                 int i = 1;
                 for (Resource resource : cost.getInventoryResources()) {
-                    float costAngle = startAngle + degrees * i / (n + 1);
+                    float costAngle = startAngle + (float) degrees * i / (n + 1);
                     renderCostGui(offset, radius, costAngle, guiX, guiY, seedSize,
                             resource.getTexture(), cost.getQuantity(resource));
                     i++;
@@ -589,7 +626,7 @@ public class TreeShopGui extends Gui implements SceneGui {
     private void buyTree() {
 
         AbstractTree newTree;
-        newTree = unlockedTreeStates.get(selectedSegment).getTree().clone();
+        newTree = unlockedTreeStates.get(selectedSegment).getTree().createCopy();
         buyTree(newTree);
     }
 

@@ -59,7 +59,7 @@ public class SoundManager extends Manager {
 	/**
 	 * Stops music playing.
 	 */
-	public void  stopMusic(){
+	public void stopMusic(){
 		if (music != null) {
 			music.stop();
 		}

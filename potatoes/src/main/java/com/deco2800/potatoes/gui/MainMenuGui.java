@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.managers.GameManager;
@@ -125,9 +124,8 @@ public class MainMenuGui extends Gui {
 
         startButtonGroup = new Table();
         startCharacterSelectTable = new Table();
-        startCharacterSelectTable.add(startCharacterImage);
-        startCharacterSelectTable.row();
-        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth).height(buttonHeight/2).space(buttonSpacing);
+        startCharacterSelectTable.add(startCharacterImage).size(125, 125);
+        startCharacterSelectTable.add(startCharacterSelect).width(buttonWidth - 50).height(buttonHeight/2);
         startButtonGroup.add(startCharacterSelectTable);
         startButtonGroup.add(singleplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
         startButtonGroup.add(multiplayerButton).width(buttonWidth).height(buttonHeight).space(buttonSpacing);
@@ -245,7 +243,6 @@ public class MainMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenuScreen.menuBlipSound();
-                // Todo nicer exit?
                 System.exit(0);
             }
         });
@@ -418,7 +415,7 @@ public class MainMenuGui extends Gui {
         root.center();
         root.setWidth(stage.getWidth());
         root.setHeight(stage.getHeight()/2);
-        root.setPosition(0, 0);
+        root.setPosition(0, -45);
 
         switch (state) {
             case PRIMARY:

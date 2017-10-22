@@ -47,10 +47,9 @@ public class GameMenuGui extends Gui {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 for (Renderable r : GameManager.get().getWorld().getEntities().values()) {
-                    if (r instanceof Selectable) {
-                        if (((Selectable) r).isSelected()) {
-                            // Did this ever work?
-                        }
+                    if (r instanceof Selectable && ((Selectable) r).isSelected()) {
+                        // Did this ever work?
+
                     }
                 }
             }
@@ -60,7 +59,6 @@ public class GameMenuGui extends Gui {
 		*   Note: this is left to right order
 		* */
         window.add(pauseMenuButton);
-        //window.add(selectButton);
         window.pack();
         window.setMovable(false); // So it doesn't fly around the screen
         window.setPosition(0, stage.getHeight()); // Place it in the top left of the screen

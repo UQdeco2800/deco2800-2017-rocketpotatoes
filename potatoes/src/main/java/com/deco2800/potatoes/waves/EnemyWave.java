@@ -14,6 +14,7 @@ public class EnemyWave {
     private int waveTime = 0;   //Spawn rate (100 = 1 second)
     private int spawnRate = 75;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
+    private static int totalAmount = 0;
     private int round_number;
     private boolean isPauseWave;
 
@@ -64,15 +65,15 @@ public class EnemyWave {
      *
      * @return an array of floats representing the ratio of enemy rates provided
      * */
-    private float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
+    public float[] calculateEnemyRatios(float squirrelRate, float speedyRate, float tankRate, float mooseRate) {
         float total = squirrelRate + speedyRate + tankRate + mooseRate;
         // Ratios are the total spans of each; i.e. if speedyRatio is .50 and tank is .75, actual ratio is .25.
         float squirrelRatio = squirrelRate/total;
         float speedyRatio = squirrelRatio + speedyRate/total;
         float tankRatio = speedyRatio + tankRate/total;
         float mooseRatio = tankRatio + mooseRate/total;
-        float[] enemyRatios = {squirrelRatio, speedyRatio, tankRatio, mooseRatio};
-        return enemyRatios;
+        float[] ratios = {squirrelRatio, speedyRatio, tankRatio, mooseRatio};
+        return ratios;
     }
 
     /***
@@ -109,13 +110,8 @@ public class EnemyWave {
     public void tickAction() {
         switch (getWaveState()) {
 /*            case WAITING:
-                //Do nothing
-                break;*/
+                //Do nothing*/
             case PAUSE:
-                /*setCurrentWaveTime(elapsedWaveTime() + 1);
-                if (elapsedWaveTime() > getWaveLength()) {
-                    setWaveState(WaveState.FINISHED);
-                }*/
                 break;
             case ACTIVE:
                 setCurrentWaveTime(elapsedWaveTime() + 1);
@@ -126,10 +122,6 @@ public class EnemyWave {
                 }
                 //Check to see if wave is paused for some reason
                 break;
- /*           case FINISHED:
-                //Handling finished state
-                break;
-   */
         }
     }
 
@@ -147,7 +139,7 @@ public class EnemyWave {
      * Sets the current wave Time.
      * @param CurrentTime
      */
-    public void setCurrentWaveTime(int CurrentTime) { this.waveTime = CurrentTime; }
+    public void setCurrentWaveTime(int currentTime) { this.waveTime = currentTime; }
 
     /**
      * @return Amount of time left in current wave
@@ -155,32 +147,48 @@ public class EnemyWave {
     public int getTimeToEnd() { return getWaveLength()-elapsedWaveTime(); }
 
     /**
+     * 
+     * @return total amount of enemies in this wave
+     */
+    public static int getTotalEnemies() {
+    	return totalAmount;
+    }
+    
+    public static void reduceTotalEnemiesByOne(){
+    	totalAmount--;	
+    }
+    
+    /**
      * Add a squirrel to the world
      */
-    private void addSquirrel() {
-        GameManager.get().getWorld().addEntity(new Squirrel(24, 24));
+    private static void addSquirrel() {
+        GameManager.get().getWorld().addEntity(new Squirrel(GameManager.get().getWorld().getLength()/2, 6.5f));
+        totalAmount++;
     }
 
     /**
      * Add a tank (bear) enemy to the world
      */
-    private void addTank() {
-        GameManager.get().getWorld().addEntity(new TankEnemy(24, 24));
+    private static void addTank() {
+        GameManager.get().getWorld().addEntity(new TankEnemy(GameManager.get().getWorld().getLength()/2, 42f));
+        totalAmount++;
     }
 
     /**
      * Add a speedy (raccoon) enemy to the world
      */
-    private void addSpeedy() {
-        GameManager.get().getWorld().addEntity(new SpeedyEnemy(24, 24));
+    private static void addSpeedy() {
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(6.5f, GameManager.get().getWorld().getLength()/2));
+        totalAmount++;
 
     }
 
     /**
      * Add a moose to the world
      */
-    private void addMoose() {
-        GameManager.get().getWorld().addEntity(new Moose(24, 24));
+    private static void addMoose() {
+        GameManager.get().getWorld().addEntity(new Moose(42f, GameManager.get().getWorld().getLength()/2));
+        totalAmount++;
     }
 
     /**

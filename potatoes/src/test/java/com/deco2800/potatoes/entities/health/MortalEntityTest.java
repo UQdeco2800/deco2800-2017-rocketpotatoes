@@ -190,7 +190,7 @@ public class MortalEntityTest {
 		mortalEntity.deathHandler();
 		verify(GameManager.get().getWorld()).removeEntity(any()); //ensure deathHandler called removeEntity()
 	}
-	
+
 	@Test
 	public void setHealthTest() {
 		assertFalse("Health should be set to 0f", mortalEntity.setHealth(0f));
