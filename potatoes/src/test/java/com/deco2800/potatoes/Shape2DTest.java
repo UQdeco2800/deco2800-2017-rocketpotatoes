@@ -61,7 +61,23 @@ public class Shape2DTest {
         assertTrue(circ1.getRadius() == 3);
     }
 
-    //TODO area
+    @Test
+    public void testArea() {
+        for (int width = 1; width < 10; ++width) {
+            for (int height = 1; height < 10; ++height) {
+                Box2D theBox = new Box2D(0, 0, width, height);
+                assertTrue(compareFloat(theBox.getArea(), width * height));
+            }
+        }
+
+        for (int radius = 1; radius < 10; ++radius) {
+            Circle2D theCircle = new Circle2D(0, 0, radius);
+            assertTrue(compareFloat(theCircle.getArea(), (float) Math.PI * radius * radius));
+        }
+
+        Point2D thePoint = new Point2D(0, 0);
+        assertTrue(compareFloat(thePoint.getArea(), 0));
+    }
 
     //TODO line equals
 
