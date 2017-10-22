@@ -22,7 +22,6 @@ import com.deco2800.potatoes.collisions.*;
 import com.deco2800.potatoes.entities.*;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.enemies.EnemyEntity;
-import com.deco2800.potatoes.entities.enemies.EnemyGate;
 import com.deco2800.potatoes.entities.animation.Animated;
 import com.deco2800.potatoes.entities.health.HasProgress;
 import com.deco2800.potatoes.entities.health.HasProgressBar;
@@ -380,12 +379,11 @@ public class Render3D implements Renderer {
 
 			// Progress Bars for allies [Trees, Portals].
 			if (!progressValues.showAlliesProgress() && !(e instanceof EnemyEntity)
-					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())
-					&& !(e instanceof EnemyGate) && !(e instanceof GoalPotate)) {
+					&& !e.equals(GameManager.get().getManager(PlayerManager.class).getPlayer())) {
 				continue;
 			}
 			// Progress Bars for enemy entities.
-			if (!progressValues.showEnemiesProgress() && (e instanceof EnemyEntity || e instanceof EnemyGate)) {
+			if (!progressValues.showEnemiesProgress() && (e instanceof EnemyEntity)) {
 				continue;
 			}
 
@@ -452,9 +450,10 @@ public class Render3D implements Renderer {
 		if (player != null && progressValues.showPlayerProgress()) {
 			// Get texture
 			ProgressBar progressBar = player.getProgressBar();
-			Texture iconTexture = reg.getTexture(player.getProgressBar().getLayoutTexture());
-			Texture barTexture =  reg.getTexture(player.getProgressBar().getTexture());
+			Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
+			Texture barTexture =  reg.getTexture(progressBar.getTexture());
 			// Render the player health HUD
+            hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			hudBatch.begin();
 			hudBatch.setColor(Color.WHITE);
 			hudBatch.draw(iconTexture, 25+75, Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
@@ -486,9 +485,10 @@ public class Render3D implements Renderer {
 		// potato
 		if (potato != null && progressValues.showPotatoProgress()) {
 			// Get texture
-			ProgressBar progressBar = player.getProgressBar();
-			Texture iconTexture = reg.getTexture(potato.getProgressBar().getLayoutTexture());
-			Texture barTexture =  reg.getTexture(potato.getProgressBar().getTexture());
+			ProgressBar progressBar = potato.getProgressBar();
+			Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
+			Texture barTexture =  reg.getTexture(progressBar.getTexture());
+            hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			// Render the player health HUD
 			hudBatch.begin();
 			hudBatch.setColor(Color.WHITE);
