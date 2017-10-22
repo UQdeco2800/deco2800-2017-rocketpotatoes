@@ -55,8 +55,6 @@ public class InventoryGui extends Gui {
 	public InventoryGui(Stage stage) {		
 		/* Set up the Table and Scroll Pane for positioning Inventory Gui */
 		instantiateTable();
-		//inventoryTable.top().right();
-		//instantiateScrollPane();
 		
 		/* set up window */
 		window = new Window("Inventory", skin);

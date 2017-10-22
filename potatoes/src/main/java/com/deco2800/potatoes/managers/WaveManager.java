@@ -110,13 +110,13 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
     	WorldManager worldManager = GameManager.get().getManager(WorldManager.class);
     	
     	// The different world types
-    	World worlds[] = {worldManager.getWorld(WorldType.DESERT_WORLD),
+    	World[] worlds = {worldManager.getWorld(WorldType.DESERT_WORLD),
     			worldManager.getWorld(WorldType.ICE_WORLD),
     			worldManager.getWorld(WorldType.VOLCANO_WORLD),
     			worldManager.getWorld(WorldType.OCEAN_WORLD)};
     	
     	// Array of resources to add
-    	Resource resources[] = {new CactusThornResource(), new PricklyPearResource(),
+    	Resource[] resources = {new CactusThornResource(), new PricklyPearResource(),
     			new TumbleweedResource(), new IceCrystalResource(), new SnowBallResource(),
     			new SealSkinResource(), new BonesResource(), new CoalResource(),
     			new ObsidianResource(), new FishMeatResource(), new PearlResource(),

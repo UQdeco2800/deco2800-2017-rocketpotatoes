@@ -29,8 +29,7 @@ public class NetworkServer {
 
     /**
 
-     * Starts a server for the game 
-     * TODO debug logging
+     * Starts a server for the game
      *
      * @param tcpPort tcp port to use, presumed to be correct
      * @param udpPort udp port to use, presumed to be correct
