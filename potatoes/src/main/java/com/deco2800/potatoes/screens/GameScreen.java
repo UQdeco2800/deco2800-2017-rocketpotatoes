@@ -284,7 +284,6 @@ public class GameScreen implements Screen {
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
 			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
-			GameManager.get().getWorld().addEntity(new GoalPotate(15.5f, 10.5f));
 
 			//add enemy gates to game world
 			//W
