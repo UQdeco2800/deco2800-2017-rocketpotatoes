@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.enemies;
 import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,7 +27,7 @@ public class EnemyGateTest extends BaseTest {
 
     @Before
     public void setup() throws Exception {
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
         enemyGateEmpty = new EnemyGate();
         System.out.println(GameManager.get().getWorld().getLength()/2);
         enemyGate1 = new EnemyGate(4,4, "enemyCave_SE");

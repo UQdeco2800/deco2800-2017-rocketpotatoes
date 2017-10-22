@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.enemies.enemyactions.MeleeAttackEvent;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class MeleeAttackEventTest extends BaseTest {
     public void setUp() throws Exception {
         eventEmpty = new MeleeAttackEvent();
         testEvent = new MeleeAttackEvent(20, Player.class);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
     }
 
     @After

@@ -68,6 +68,6 @@ public class ArcherTest {
 		archer.setState(Player.PlayerState.INTERACT);
 		archer.updateSprites();
 		archer.interact();
-
+		archer.getProgressBar().getLayoutTexture();
 	}
 }

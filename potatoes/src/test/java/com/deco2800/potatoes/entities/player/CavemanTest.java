@@ -69,5 +69,6 @@ public class CavemanTest {
 		caveman.setState(Player.PlayerState.INTERACT);
 		caveman.updateSprites();
 		caveman.interact();
+		caveman.getProgressBar().getLayoutTexture();
 	}
 }

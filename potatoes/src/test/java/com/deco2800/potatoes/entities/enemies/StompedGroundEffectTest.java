@@ -6,6 +6,7 @@ import com.deco2800.potatoes.entities.effects.StompedGroundEffect;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +30,7 @@ public class StompedGroundEffectTest extends BaseTest {
     public void setUp() throws Exception {
         stompEmpty = new StompedGroundEffect();
         stomp1 = new StompedGroundEffect(MortalEntity.class, 0, 0, true, 1, 1);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
     }
 
     @After
@@ -60,6 +61,7 @@ public class StompedGroundEffectTest extends BaseTest {
      */
     @Test
     public void onTickTest() {
+        int entitiesStartSize = GameManager.get().getWorld().getEntities().values().size();
         GameManager.get().getWorld().addEntity(stomp1);
         stomp1.onTick(1);
         assertEquals(true, stomp1.getCurrentTextureIndex() == 0);
@@ -75,6 +77,6 @@ public class StompedGroundEffectTest extends BaseTest {
             stomp1.onTick(1);
         }
         Collection<AbstractEntity> entityValues = GameManager.get().getWorld().getEntities().values();
-        assertEquals(0, entityValues.size());
+        assertEquals(0, entityValues.size() - entitiesStartSize);
     }
 }
