@@ -115,7 +115,7 @@ public class AbstractPortalTest{
 
 		System.out.println(GameManager.get().getWorld().toString());
 
-		assertEquals(WorldType.FOREST_WORLD, GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD));
+		assertEquals(ForestWorld.get(), GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()));
 */
 	}
 

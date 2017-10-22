@@ -4,6 +4,7 @@ import com.deco2800.potatoes.BaseTest;
 import com.deco2800.potatoes.entities.enemies.Moose;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class ChannelEventTest extends BaseTest {
 
     @Before
     public void setUp() throws Exception {
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
         emptyChannel = new ChannelEvent();
         healWave = new HealingWaveEvent(300, 10f, 10f);
         channel = new ChannelEvent(10, 100, healWave);

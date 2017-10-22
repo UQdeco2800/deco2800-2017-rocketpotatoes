@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -30,7 +31,7 @@ public class TankEnemyTest extends BaseTest {
 	public void setup() throws Exception {
 		tankEmpty = new TankEnemy();
 		tank1 = new TankEnemy(0, 0);
-		GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+		GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
 	}
 
 	@After
@@ -49,7 +50,6 @@ public class TankEnemyTest extends BaseTest {
 			assertEquals("bear", data);
 
 		}
-
 
 	}
 	@Test
@@ -104,6 +104,13 @@ public class TankEnemyTest extends BaseTest {
 		Assert.assertEquals(2,tank1.getEnemyType().length);
 
 	}
+
+	@Test
+	public void getProgressBarTest() {
+        assertEquals("healthBarRed", tank1.getProgressBar().getTexture());
+        
+	}
+
 
 	/*
 	 * Test the toString method

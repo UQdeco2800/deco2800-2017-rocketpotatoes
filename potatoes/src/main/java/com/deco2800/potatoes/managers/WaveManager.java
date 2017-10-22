@@ -5,6 +5,10 @@ import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.util.WorldUtil;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
+import com.deco2800.potatoes.worlds.DesertWorld;
+import com.deco2800.potatoes.worlds.IceWorld;
+import com.deco2800.potatoes.worlds.OceanWorld;
+import com.deco2800.potatoes.worlds.VolcanoWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
@@ -110,10 +114,10 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
     	WorldManager worldManager = GameManager.get().getManager(WorldManager.class);
     	
     	// The different world types
-    	World[] worlds = {worldManager.getWorld(WorldType.DESERT_WORLD),
-    			worldManager.getWorld(WorldType.ICE_WORLD),
-    			worldManager.getWorld(WorldType.VOLCANO_WORLD),
-    			worldManager.getWorld(WorldType.OCEAN_WORLD)};
+    	World[] worlds = {worldManager.getWorld(DesertWorld.get()),
+    			worldManager.getWorld(IceWorld.get()),
+    			worldManager.getWorld(VolcanoWorld.get()),
+    			worldManager.getWorld(OceanWorld.get())};
     	
     	// Array of resources to add
     	Resource[] resources = {new CactusThornResource(), new PricklyPearResource(),

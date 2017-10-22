@@ -24,44 +24,37 @@ import java.util.function.Supplier;
 public class WorldType {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorldType.class);
 
-	private static final String GROUND = "mud_tile_1";
-	private static final String WATER = "water_tile_1";
-	private static final String GRASS = "grass_tile_1";
-	private static final Point PORTAL_POS = new Point(10, 10);
-	public static final WorldType FOREST_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
-			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("forest"));
-	public static final WorldType DESERT_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 0.5f, true),
-			new Terrain(GROUND, 1, false), new Terrain(WATER, 0, false)), defaultEntities("desert"));
-	public static final WorldType ICE_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
-			new Terrain(GROUND, 1, false), new Terrain(WATER, 2f, false)), defaultEntities("iceland"));
-	public static final WorldType VOLCANO_WORLD = new WorldType(new TerrainType(null, new Terrain(GRASS, 1, true),
-			new Terrain(GROUND, 0.5f, false), new Terrain(WATER, 0, false)), defaultEntities("volcano"));
-	public static final WorldType OCEAN_WORLD = new WorldType(new TerrainType(null, new Terrain(WATER, 1, true),
-			new Terrain(GROUND, 1, false), new Terrain(GRASS, 0, false)), defaultEntities("sea"));
+	protected static final String GROUND = "mud_tile_1";
+	protected static final String WATER = "water1";
+	protected static final String GRASS = "grass_tile_1";
+	private static final Point PORTAL_POS = new Point(WorldManager.WORLD_SIZE / 2, WorldManager.WORLD_SIZE / 2);
 
 	private final TerrainType terrain;
 	// List of suppliers because creating the entities early can cause problems
 	private final List<Supplier<AbstractEntity>> entities;
-	private List<Point> clearSpots;
+	protected Set<Point> clearSpots;
 	private float landAmount = 0.3f;
 
 	/**
-	 * @param terrain
-	 *            the terrain type
+	 * The super constructor to create sub world types.
+	 * 
+	 * @param terrain The terrain type
+	 * @param entities The entities for that terrain
 	 */
 	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities) {
 		this.terrain = terrain;
 		this.entities = entities;
-		clearSpots = clearPoints();
-
+		this.clearSpots = clearPoints();
 	}
 
-	private static List<Point> clearPoints() {
-		List<Point> clearPoints = new ArrayList<>();
-		// player spot
-		clearPoints.add(new Point(5, 10));
-		// spot after going through portal
-		clearPoints.add(new Point(9, 4));
+	public WorldType(TerrainType terrain, List<Supplier<AbstractEntity>> entities, Set<Point> clearSpots) {
+		this.terrain = terrain;
+		this.entities = entities;
+		this.clearSpots = clearSpots;
+	}
+
+	protected static Set<Point> clearPoints() {
+		Set<Point> clearPoints = new HashSet<>();
 		// portal and surrounding
 		for (int x = PORTAL_POS.x - 2; x < PORTAL_POS.x + 2; x++) {
 			for (int y = PORTAL_POS.y - 2; y < PORTAL_POS.y + 2; y++) {
@@ -71,7 +64,7 @@ public class WorldType {
 		return clearPoints;
 	}
 
-	private static List<Supplier<AbstractEntity>> defaultEntities(String worldType) {
+	protected static List<Supplier<AbstractEntity>> defaultEntities(String worldType) {
 		List<Supplier<AbstractEntity>> result = new ArrayList<>();
 		result.add(() -> new AbstractPortal(PORTAL_POS.x, PORTAL_POS.y, worldType + "_portal"));
 		return result;
@@ -85,7 +78,7 @@ public class WorldType {
 	}
 
 	/**
-	 * Returns the list of entites that should start in a world of this type
+	 * Returns the list of entities that should start in a world of this type
 	 */
 	public List<AbstractEntity> getEntities() {
 		List<AbstractEntity> result = new ArrayList<>();
@@ -93,6 +86,10 @@ public class WorldType {
 			result.add(supplier.get());
 		}
 		return result;
+	}
+
+	public List<Point> getClearSpots() {
+		return new ArrayList<>(clearSpots);
 	}
 
 	/**
@@ -105,9 +102,9 @@ public class WorldType {
 		boolean validLand = false;
 		int count = 0;
 		while (!validLand) {
-			float[][] water = wm.getRandomGridEdge();
-			float[][] height = wm.getRandomGrid();
-			float[][] grass = wm.getRandomGrid();
+			float[][] water = GridUtil.smoothDiamondSquareAlgorithm(getWaterSeed(worldSize), 0, 0.5f, 2);
+			float[][] height = GridUtil.smoothDiamondSquareAlgorithm(getWaterSeed(worldSize), 0.42f, 2);
+			float[][] grass = GridUtil.smoothDiamondSquareAlgorithm(GridUtil.seedGrid(worldSize), 0.42f, 2);
 			for (int x = 0; x < worldSize; x++) {
 				for (int y = 0; y < worldSize; y++) {
 					terrainSet[x][y] = chooseTerrain(water[x][y], height[x][y], grass[x][y]);
@@ -127,10 +124,19 @@ public class WorldType {
 		return terrainSet;
 	}
 
+	private float[][] getWaterSeed(int worldSize) {
+		float[][] result = GridUtil.seedGrid(worldSize);
+		for (Point p : clearSpots) {
+			result[p.x][p.y] = 1;
+		}
+		return result;
+	}
+
 	private boolean checkValidLand(int worldSize, Terrain[][] terrainSet) {
 		boolean validLand = true;
 		Set<Point> filled = new HashSet<>();
-		GridUtil.genericFloodFill(clearSpots.get(0), floodFillCheck(worldSize, terrainSet), new HashSet<>(), filled);
+		GridUtil.genericFloodFill(clearSpots.iterator().next(), floodFillCheck(worldSize, terrainSet), new HashSet<>(),
+				filled);
 		for (Point point : clearSpots) {
 			// Positions on the map have x and y swapped
 			point = new Point(point.y, point.x);
@@ -151,9 +157,9 @@ public class WorldType {
 
 	private Terrain chooseTerrain(float water, float height, float grass) {
 		Terrain spot;
-		if (height < 0.4 || water < 0.7) {
+		if (height < 0.3 || water < 0.5) {
 			spot = getTerrain().getWater();
-		} else if (height < 0.5 || water < 0.8) {
+		} else if (height < 0.4 || water < 0.6) {
 			spot = getTerrain().getRock();
 		} else {
 			spot = grass < 0.6 ? getTerrain().getGrass() : getTerrain().getRock();

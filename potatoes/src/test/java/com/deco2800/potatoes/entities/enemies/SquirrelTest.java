@@ -9,6 +9,7 @@ import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -35,7 +36,7 @@ public class SquirrelTest extends BaseTest {
         squirrelEmpty = new Squirrel();
         squirrel1 = new Squirrel(0, 0);
         squirrel2 = new Squirrel(8, 8);
-        gameManager.getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        gameManager.getManager(WorldManager.class).setWorld(ForestWorld.get());
         gameManager.getWorld().addEntity(new BasePortal(14, 17, 100));
     }
 

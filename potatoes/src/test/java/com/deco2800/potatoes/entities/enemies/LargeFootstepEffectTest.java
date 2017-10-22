@@ -11,6 +11,7 @@ import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 
 import java.util.Collection;
@@ -35,7 +36,7 @@ public class LargeFootstepEffectTest extends BaseTest {
     public void setUp() throws Exception {
         footStepEmpty = new LargeFootstepEffect();
         footStep1 = new LargeFootstepEffect(MortalEntity.class, 0, 0, 1, 1);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
         GameManager.get().addManager(sound1);
     }
 
@@ -69,6 +70,7 @@ public class LargeFootstepEffectTest extends BaseTest {
      */
     @Test
     public void onTickTestNoCollisions() {
+        int entitiesStartSize = GameManager.get().getWorld().getEntities().values().size();
         GameManager.get().getWorld().addEntity(footStep1);
         footStep1.onTick(1);
         assertEquals(true, footStep1.getCurrentTextureIndexCount() == 0);
@@ -84,7 +86,7 @@ public class LargeFootstepEffectTest extends BaseTest {
             footStep1.onTick(1);
         }
         Collection<AbstractEntity> entityValues = GameManager.get().getWorld().getEntities().values();
-        assertEquals(0, entityValues.size());
+        assertEquals(0, entityValues.size() - entitiesStartSize);
     }
 
     /*
@@ -92,6 +94,7 @@ public class LargeFootstepEffectTest extends BaseTest {
      */
     @Test
     public void onTickTestCollisions() {
+        int entitiesStartSize = GameManager.get().getWorld().getEntities().values().size();
         GameManager.get().getWorld().addEntity(footStep1);
         GameManager.get().getWorld().addEntity(new ResourceEntity(-1f,0.5f,new SeedResource()));
         GameManager.get().getWorld().addEntity(new ResourceEntity(-1f,0.5f,new FoodResource()));
@@ -99,9 +102,9 @@ public class LargeFootstepEffectTest extends BaseTest {
         GameManager.get().getWorld().addEntity(new ResourceEntity(-1f,0.5f,new IceCrystalResource()));
         GameManager.get().getWorld().addEntity(new SpeedyEnemy(2,2));
         Collection<AbstractEntity> entityValues = GameManager.get().getWorld().getEntities().values();
-        assertEquals(6, entityValues.size());
+        assertEquals(6, entityValues.size() - entitiesStartSize);
         footStep1.onTick(1);
         entityValues = GameManager.get().getWorld().getEntities().values();
-        assertEquals(3, entityValues.size());
+        assertEquals(3, entityValues.size() - entitiesStartSize);
     }
 }

@@ -8,6 +8,7 @@ import com.deco2800.potatoes.entities.trees.ProjectileTree;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,7 +32,7 @@ public class MooseTest extends BaseTest {
     public void setup() throws Exception {
         mooseEmpty = new Moose();
         moose1 = new Moose(0, 0);
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
     }
 
     @After
@@ -54,6 +55,11 @@ public class MooseTest extends BaseTest {
 
     }
 
+    @Test
+    public void getProgressBarTest() throws Exception {
+        assertEquals("healthBarRed", moose1.getProgressBar().getTexture());
+    }
+    
     /*
      * Test the toString method
      */

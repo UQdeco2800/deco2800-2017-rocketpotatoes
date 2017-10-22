@@ -35,6 +35,11 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.waves.EnemyWave;
+import com.deco2800.potatoes.worlds.DesertWorld;
+import com.deco2800.potatoes.worlds.ForestWorld;
+import com.deco2800.potatoes.worlds.IceWorld;
+import com.deco2800.potatoes.worlds.OceanWorld;
+import com.deco2800.potatoes.worlds.VolcanoWorld;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
@@ -232,7 +237,7 @@ public class GameScreen implements Screen {
 		setupInputHandling();
 
         // Sets the world to the initial world, forest world
-        GameManager.get().getManager(WorldManager.class).setWorld(WorldType.FOREST_WORLD);
+        GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
 
 		/* Move camera to center */
 		cameraManager.getCamera().position.x = GameManager.get().getWorld().getWidth() * 32;
@@ -292,22 +297,6 @@ public class GameScreen implements Screen {
 
 		MultiplayerManager m = multiplayerManager;
 		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getWorld().addEntity(new ProjectileTree(8.5f, 8.5f));
-
-			//add enemy gates to game world
-			//W
-			EnemyGate gateW = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 6.5f, "enemyCave_SE");
-			GameManager.get().getWorld().addEntity(gateW);
-			//E
-			EnemyGate gateE = new EnemyGate(GameManager.get().getWorld().getLength() / 2, 42f, "enemyCave_W");
-			GameManager.get().getWorld().addEntity(gateE);
-			//S
-			EnemyGate gateS = new EnemyGate(6.5f, GameManager.get().getWorld().getLength() / 2, "enemyCave_E");
-			GameManager.get().getWorld().addEntity(gateS);
-			//N
-			EnemyGate gateN = new EnemyGate(42f, GameManager.get().getWorld().getLength() / 2, "enemyCave_WS");
-			GameManager.get().getWorld().addEntity(gateN);
-
 			GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			/*
 			// Initial player preparation up period
@@ -316,19 +305,19 @@ public class GameScreen implements Screen {
 			
 			/* Randomly generate trees in each world */
 			AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.FOREST_WORLD), forestTrees);
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()), forestTrees);
 
 			AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.DESERT_WORLD), desertTrees);
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(DesertWorld.get()), desertTrees);
 
 			AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.ICE_WORLD), iceTrees);
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(IceWorld.get()), iceTrees);
 
 			AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.OCEAN_WORLD), oceanTrees);
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(OceanWorld.get()), oceanTrees);
 
 			AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(WorldType.VOLCANO_WORLD), volcanoTrees);
+			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(VolcanoWorld.get()), volcanoTrees);
 
 
 			if (!multiplayerManager.isMultiplayer()) {
@@ -363,31 +352,36 @@ public class GameScreen implements Screen {
 		// locations to add the trees
 	    	int xPos;
 	    	int yPos;
-	    	
+
 	    	// The amount of each tree to generate
     		int amount = 35/trees.length;
-	    	
+
 	    	// Terrain to add the tree to
 	    	Terrain terrain;
-	    	
+
+	    	boolean oldTreeSpread = true;
+
 	    	// Iterate over the trees
 	    	for (int i = 0; i < trees.length; i ++) {
 	    		for (int j = 0; j < amount; j++) {
-	    			// Generate random location
-	    			xPos = (int) (Math.random() * 40) + 10;
-	    			yPos = (int) (Math.random() * 40) + 10;
-	    			terrain = world.getTerrain(xPos, yPos);
-	    			
-	    			// Only add a tree if it is on grass
-        			if (terrain.getTexture() == "grass_tile_1") {
-        				AbstractTree newTree = trees[i].createCopy();
-        				newTree.setPosX(xPos);
-        				newTree.setPosY(yPos);
-        				world.addEntity(newTree);
-        			}
+	    			if (oldTreeSpread) {// Generate random location
+					    xPos = (int) (Math.random() * 40) + 10;
+					    yPos = (int) (Math.random() * 40) + 10;
+					    terrain = world.getTerrain(xPos, yPos);
+
+					    // Only add a tree if it is on grass
+					    if (terrain.getTexture() == "grass_tile_1") {
+						    AbstractTree newTree = trees[i].createCopy();
+						    newTree.setPosX(xPos);
+						    newTree.setPosY(yPos);
+						    world.addEntity(newTree);
+					    }
+				    } else {
+	    				world.addToPlantable(trees[i].createCopy());
+				    }
 	    		}
 	    	}
-		
+
 	}
 	
 	private void addResourceTrees() {

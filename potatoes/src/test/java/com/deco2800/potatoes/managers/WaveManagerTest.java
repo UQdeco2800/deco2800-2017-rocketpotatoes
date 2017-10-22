@@ -4,6 +4,7 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.resources.*;
 import com.deco2800.potatoes.waves.EnemyWave;
 import com.deco2800.potatoes.waves.WaveLoader;
+import com.deco2800.potatoes.worlds.DesertWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.waves.EnemyWave.WaveState;
@@ -120,10 +121,10 @@ public class WaveManagerTest {
     	WorldManager worldManager = gm.getManager(WorldManager.class);
     	
     	// The worlds to check
-    	World desertWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
-    	World iceWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
-    	World volcanoWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
-    	World oceanWorld = worldManager.getWorld(WorldType.DESERT_WORLD);
+    	World desertWorld = worldManager.getWorld(DesertWorld.get());
+    	World iceWorld = worldManager.getWorld(DesertWorld.get());
+    	World volcanoWorld = worldManager.getWorld(DesertWorld.get());
+    	World oceanWorld = worldManager.getWorld(DesertWorld.get());
     	
     	// Shorter waves to add to the wave manager
     	EnemyWave waveOne = new EnemyWave(1,1,1,1,1);

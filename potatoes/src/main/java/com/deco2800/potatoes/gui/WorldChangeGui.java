@@ -16,6 +16,10 @@ import com.deco2800.potatoes.managers.PlayerManager;
 import com.deco2800.potatoes.managers.SoundManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.screens.GameScreen;
+import com.deco2800.potatoes.worlds.DesertWorld;
+import com.deco2800.potatoes.worlds.IceWorld;
+import com.deco2800.potatoes.worlds.OceanWorld;
+import com.deco2800.potatoes.worlds.VolcanoWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import org.slf4j.Logger;
@@ -131,12 +135,9 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 4
-                changeWorld(WorldType.OCEAN_WORLD);
+                changeWorld(OceanWorld.get());
                 
                 LOGGER.info("Teleported to world 4");
             }
@@ -151,12 +152,9 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 3
-                changeWorld(WorldType.VOLCANO_WORLD);
+                changeWorld(VolcanoWorld.get());
                 
                 LOGGER.info("Teleported to world 3");
             }
@@ -172,12 +170,9 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 2
-                changeWorld(WorldType.ICE_WORLD);
+                changeWorld(IceWorld.get());
                 
                 LOGGER.info("Teleported to world 2");
             }
@@ -192,12 +187,9 @@ public class WorldChangeGui extends Gui {
                 //play warping sound effect
                 SoundManager soundManager = new SoundManager();
                 soundManager.playSound("warpSound.wav");
-                //remove player from old world
-                Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
-                GameManager.get().getWorld().removeEntity(p);
 
                 //change to world 1
-                changeWorld(WorldType.DESERT_WORLD);
+                changeWorld(DesertWorld.get());
                 
                 LOGGER.info("Teleported to world 1");
             }
@@ -212,7 +204,10 @@ public class WorldChangeGui extends Gui {
      * @param world
      * 			The key of the world to change to
      */
-    private void changeWorld(WorldType world) {
+    public void changeWorld(WorldType world) {
+        //remove player from old world
+        Player p = GameManager.get().getManager(PlayerManager.class).getPlayer();
+        GameManager.get().getWorld().removeEntity(p);
         // change to new world
         GameManager.get().getManager(WorldManager.class).setWorld(world);
         // The new world
