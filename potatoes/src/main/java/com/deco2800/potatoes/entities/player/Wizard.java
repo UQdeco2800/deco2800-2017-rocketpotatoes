@@ -86,6 +86,7 @@ public class Wizard extends Player {
 		case Input.Keys.SPACE:
 			if(!(currentShootStage==ShootStage.LOOSE))
 				currentShootStage=ShootStage.HOLDING;
+			break;
 		}
 	}
 
