@@ -70,7 +70,6 @@ public class WorldTest extends BaseTest {
 		world.addEntity(test);
 		world.addEntity(test);
 		world.deSelectAll();
-		world.getBackground();
 	}
 
 	@Test
