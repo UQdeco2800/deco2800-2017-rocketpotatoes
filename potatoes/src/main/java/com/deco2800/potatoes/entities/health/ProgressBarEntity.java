@@ -20,6 +20,8 @@ public class ProgressBarEntity implements ProgressBar {
 	protected int height = 0;
 	// the scale of the progress bar in relation to its entity
 	protected float widthScale = 1;
+	// Used for the player layout texture.
+	protected String layoutTexture = null;
 
 	public ProgressBarEntity() {
 		// empty because serialization
@@ -45,6 +47,13 @@ public class ProgressBarEntity implements ProgressBar {
 	 */
 	public ProgressBarEntity(String texture, float widthScale) {
 		this.texture = texture;
+		this.widthScale = widthScale;
+		this.colours = Arrays.asList(Color.WHITE);
+	}
+	
+	public ProgressBarEntity(String texture, String layoutTexture, float widthScale) {
+		this.texture = texture;
+		this.layoutTexture = layoutTexture;
 		this.widthScale = widthScale;
 		this.colours = Arrays.asList(Color.WHITE);
 	}
@@ -90,6 +99,11 @@ public class ProgressBarEntity implements ProgressBar {
 	@Override
 	public float getWidthScale() {
 		return widthScale;
+	}
+
+	@Override
+	public String getLayoutTexture() {
+		return layoutTexture;
 	}
 
 }
