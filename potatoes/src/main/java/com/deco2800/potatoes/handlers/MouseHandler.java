@@ -42,7 +42,7 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 		float tileY = (int) tileCoords.y;
 
 		// No idea why I have to +1 on X lol
-		GameManager.get().getWorld().addEntity(new Constructable((int) tileX + 1, (int) tileY, 1, 1, true) {});
+		GameManager.get().getWorld().addEntity(new Constructable(tileX, tileY, true));
 
 //		Vector2 coords = Render3D.worldPosToTile(x, y);
 //

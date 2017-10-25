@@ -11,7 +11,7 @@ import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 
-public abstract class Constructable extends MortalEntity implements Tickable, HasProgress, HasProgressBar {
+public class Constructable extends MortalEntity implements Tickable, HasProgress, HasProgressBar {
     private int constructionLeft;
     private transient Animation animation;
 
@@ -19,8 +19,8 @@ public abstract class Constructable extends MortalEntity implements Tickable, Ha
     private static final ProgressBarEntity BUILD_PROGRESS_BAR = new ProgressBarEntity("healthBarBlue", 1.5f);
     private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 
-    public Constructable(float posX, float posY, float xLength, float yLength, boolean constructing) {
-        super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, "tree", 1);
+    public Constructable(float posX, float posY, boolean constructing) {
+        super(new Box2D(posX, posY, 1, 1), 1, 1, "tree", 1);
         super.setStatic(true);
         super.setSolid(true);
         super.setShadow(new Circle2D(0,0,0.4f));
@@ -57,7 +57,7 @@ public abstract class Constructable extends MortalEntity implements Tickable, Ha
         constructionLeft--;
 
         GameManager.get().getManager(EventManager.class).fireConstructionTickEvent(this);
-        
+
         if (!isConstructing()) {
             GameManager.get().getManager(EventManager.class).fireConstructionEndEvent(this);
         }

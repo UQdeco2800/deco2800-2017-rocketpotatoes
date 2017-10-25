@@ -84,6 +84,7 @@ subprojects {
 
         // Reflections for testing
         compile 'org.reflections:reflections:0.9.11'
+        compile 'com.googlecode.json-simple:json-simple:1.1.1'
 
         // JNA
         compile 'net.java.dev.jna:jna:4.5.0'

@@ -93,7 +93,7 @@ public class Render3D implements Renderer {
 		}
 
 		this.batch = batch;
-		
+
 		World world = GameManager.get().getWorld();
 		this.tileWidth = (int) world.getMap().getProperties().get(TILE_WIDTH);
 		this.tileHeight = (int) world.getMap().getProperties().get(TILE_HEIGHT);

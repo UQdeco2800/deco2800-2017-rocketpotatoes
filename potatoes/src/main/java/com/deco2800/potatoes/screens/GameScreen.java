@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.entities.constructables.ConstructableBuilder;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -82,6 +83,9 @@ public class GameScreen implements Screen {
 	 * specific things just yet
 	 */
 	private void setupGame() {
+		// Load json data
+		ConstructableBuilder.loadConstructables();
+
 		/*
 		 * Forces the GameManager to load the TextureManager, and load textures.
 		 */
