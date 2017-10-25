@@ -3,8 +3,7 @@ package com.deco2800.potatoes.handlers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.deco2800.potatoes.entities.AbstractEntity;
-import com.deco2800.potatoes.entities.Clickable;
+import com.deco2800.potatoes.entities.constructables.Constructable;
 import com.deco2800.potatoes.gui.TreeShopGui;
 import com.deco2800.potatoes.managers.CameraManager;
 import com.deco2800.potatoes.managers.GameManager;
@@ -13,10 +12,6 @@ import com.deco2800.potatoes.observers.MouseMovedObserver;
 import com.deco2800.potatoes.observers.TouchDownObserver;
 import com.deco2800.potatoes.observers.TouchDraggedObserver;
 import com.deco2800.potatoes.renderering.Render3D;
-import com.deco2800.potatoes.util.WorldUtil;
-import com.deco2800.potatoes.worlds.World;
-
-import java.util.Optional;
 
 /**
  * Really crappy mouse handler for the game
@@ -41,19 +36,27 @@ public class MouseHandler implements TouchDownObserver, TouchDraggedObserver, Mo
 	 * @param button
 	 */
 	public void handleMouseClick(float x, float y, int button) {
-		Vector2 coords = Render3D.worldPosToTile(x, y);
+		Vector2 tileCoords = Render3D.worldPosToTile(x, y);
 
-		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
-		if (closest.isPresent() && closest.get() instanceof Clickable) {
-			((Clickable) closest.get()).onClick();
-			return;
-		} else {
-			World world = GameManager.get().getWorld();
-			if (world instanceof World) {
-				world.deSelectAll();
-			}
-		}
-		treeShop.initShop(originX,originY);
+		float tileX = (int) tileCoords.x;
+		float tileY = (int) tileCoords.y;
+
+		// No idea why I have to +1 on X lol
+		GameManager.get().getWorld().addEntity(new Constructable((int) tileX + 1, (int) tileY, 1, 1, true) {});
+
+//		Vector2 coords = Render3D.worldPosToTile(x, y);
+//
+//		Optional<AbstractEntity> closest = WorldUtil.closestEntityToPosition(coords.x, coords.y, 2f);
+//		if (closest.isPresent() && closest.get() instanceof Clickable) {
+//			((Clickable) closest.get()).onClick();
+//			return;
+//		} else {
+//			World world = GameManager.get().getWorld();
+//			if (world instanceof World) {
+//				world.deSelectAll();
+//			}
+//		}
+//		treeShop.initShop(originX,originY);
 	}
 
 	@Override

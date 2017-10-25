@@ -233,6 +233,8 @@ public class GameScreen implements Screen {
 
 		GameManager.get().getManager(ParticleManager.class);
 
+		EventManager em = GameManager.get().getManager(EventManager.class);
+
 		//show the tutorial menu
 		//guiManager.getGui(TutorialGui.class).show();
 	}

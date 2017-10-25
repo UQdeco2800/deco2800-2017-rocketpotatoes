@@ -63,7 +63,7 @@ public class WorldManager extends Manager implements TickableManager {
 			// Generate the world here
 			worlds.put(key, generateWorld(key));
 			//add some entities to the worlds that aren't the main world
-			addDefaultEntities(worlds.get(key), key);
+			//addDefaultEntities(worlds.get(key), key);
 
 			return worlds.get(key);
 		}
