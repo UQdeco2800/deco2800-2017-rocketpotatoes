@@ -1,105 +1,53 @@
 package com.deco2800.potatoes.managers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.deco2800.potatoes.entities.constructables.Constructable;
+import com.deco2800.potatoes.events.ConstructionEndEvent;
+import com.deco2800.potatoes.events.ConstructionStartEvent;
+import com.deco2800.potatoes.events.ConstructionTickEvent;
 
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.TimeEvent;
-import com.deco2800.potatoes.entities.player.Player;
-import com.deco2800.potatoes.gui.Gui;
-import com.deco2800.potatoes.gui.RespawnGui;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manager for all TimeEvents associated with tickable entities. <br>
  * <br>
  * If you know a better way implement this, please change
  */
-public class EventManager extends Manager implements TickableManager, ForWorld {
+public class EventManager extends Manager {
+    private List<ConstructionStartEvent> constructionStartEvents  = new ArrayList<>();
+    private List<ConstructionTickEvent> constructionTickEvent = new ArrayList<>();
+    private List<ConstructionEndEvent> constructionEndEven = new ArrayList<>();
 
-	private static class EventPair {
-		private final Tickable tickable;
-		private final TimeEvent<Tickable> event;
+    // TODO stop listening?
 
-		public EventPair(Tickable tickable, TimeEvent<Tickable> event) {
-			this.tickable = tickable;
-			this.event = event;
-		}
-	}
+    public void addConstructionStartListener(ConstructionStartEvent event) {
+        constructionStartEvents.add(event);
+    }
 
-	private List<EventPair> events;
+    public void addConstructionTickListenerent(ConstructionTickEvent event) {
+        constructionTickEvent.add(event);
+    }
 
-	/**
-	 * Initializes this manager to have no events registered.
-	 */
-	public EventManager() {
-		events = new ArrayList<>();
-	}
+    public void addConstructionEndListener(ConstructionEndEvent event) {
+        constructionEndEven.add(event);
+    }
 
-	/**
-	 * Registers the given event with the given entity
-	 */
-	public void registerEvent(Tickable tickable, TimeEvent<? extends Tickable> event) {
-		events.add(new EventPair(tickable, (TimeEvent<Tickable>) event));
-	}
+    public void fireConstructionStartEvent(Constructable constructable) {
+        constructionStartEvents.forEach(e -> e.notify(constructable));
+    }
 
-	/**
-	 * Unregisters the given event associated with the given entity
-	 */
-	public void unregisterEvent(Tickable tickable, TimeEvent<? extends Tickable> event) {
-		for (Iterator<EventPair> iterator = events.iterator(); iterator.hasNext();) {
-			EventPair eventPair = iterator.next();
-			if (eventPair.tickable == tickable && eventPair.event == event) {
-				iterator.remove();
-				return; // only removes 1 event
-			}
-		}
-	}
+    public void fireConstructionTickEvent(Constructable constructable) {
+        constructionTickEvent.forEach(e -> e.notify(constructable));
+    }
 
-	/**
-	 * Unregisters all events associated with entity
-	 */
-	public void unregisterAll(Tickable tickable) {
-		for (Iterator<EventPair> iterator = events.iterator(); iterator.hasNext();) {
-			EventPair eventPair = iterator.next();
-			if (eventPair.tickable == tickable) {
-				iterator.remove();
-			}
-		}
-	}
+    public void fireConstructionEndEvent(Constructable constructable) {
+        constructionEndEven.forEach(e -> e.notify(constructable));
+    }
 
-	/**
-	 * Ticks all registered events. Completed events will be automatically unregistered
-	 */
-	private void tickAll(long deltaTime) {
-		List<EventPair> finishedEvents = new ArrayList<>();
-		for (int i = 0; i < events.size(); i++) {
-			EventPair eventPair = events.get(i);
-			eventPair.event.decreaseProgress(deltaTime, eventPair.tickable);
 
-			//Gets remaining time before player respawns
-			if(eventPair.tickable instanceof Player){
-				Gui respawnGui =GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class);
-				((RespawnGui)respawnGui).setCount(eventPair.event.getProgress());
-			}
-			if (eventPair.event.isCompleted()) {
-				finishedEvents.add(eventPair);
-			}
-		}
-		for (EventPair eventPair : finishedEvents) {
-			unregisterEvent(eventPair.tickable, eventPair.event);
-		}
-	}
-
-	/**
-	 * Unregisters all events registerd with this manager
-	 */
-	public void unregisterAll() {
-		events = new ArrayList<>();
-	}
-
-	@Override
-	public void onTick(long i) {
-		tickAll(i);
+	public void clearListeners() {
+        constructionStartEvents.clear();
+        constructionTickEvent.clear();
+        constructionEndEven.clear();
 	}
 }
