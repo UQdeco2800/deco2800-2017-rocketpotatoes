@@ -367,6 +367,7 @@ public class Render3D implements Renderer {
 		BasePortal portal = null;
 		
 		batch.begin();
+		
 		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
 			AbstractEntity e = entity.getKey();
 
@@ -450,6 +451,9 @@ public class Render3D implements Renderer {
 			}
 
 		}
+		batch.end();
+		hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		hudBatch.begin();
 		// Draw player health HUD and progress bar.
 		if (player != null && progressValues.showPlayerProgress()) {
 			// Get texture
@@ -457,8 +461,6 @@ public class Render3D implements Renderer {
 			Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
 			Texture barTexture =  reg.getTexture(progressBar.getTexture());
 			// Render the player health HUD
-            hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			hudBatch.begin();
 			hudBatch.setColor(Color.WHITE);
 			hudBatch.draw(iconTexture, 25+75, Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(), iconTexture.getHeight(), false, false);
 			
@@ -484,7 +486,6 @@ public class Render3D implements Renderer {
 					(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
 					barTexture.getHeight(),                                // srcHeight
 					false, false);  
-			hudBatch.end();
 		}
 		// portal
 		if (portal != null && progressValues.showPotatoProgress()) {
@@ -492,9 +493,7 @@ public class Render3D implements Renderer {
 			ProgressBar progressBar = portal.getProgressBar();
 			Texture iconTexture = reg.getTexture(progressBar.getLayoutTexture());
 			Texture barTexture =  reg.getTexture(progressBar.getTexture());
-            hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			// Render the player health HUD
-			hudBatch.begin();
 			hudBatch.setColor(Color.WHITE);
 			hudBatch.draw(iconTexture, Gdx.graphics.getWidth() - (25+75)-75 - 638/2.55f, 
 					Gdx.graphics.getHeight()-134/2-75 + 60, 638/2, 134/2, 0, 0, iconTexture.getWidth(),
@@ -522,14 +521,8 @@ public class Render3D implements Renderer {
 					(int) (barTexture.getWidth() * (1 - barRatio)),        // srcWidth
 					barTexture.getHeight(),                                // srcHeight
 					false, false);  
-			hudBatch.end();
 		}
-		
-		// reset the batch colour
-		batch.setColor(Color.WHITE);
-		
-		batch.end();
-			
+		hudBatch.end();
 		batch.setColor(currentShade);
 	}
 
