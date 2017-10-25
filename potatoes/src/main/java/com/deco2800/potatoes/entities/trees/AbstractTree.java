@@ -32,12 +32,12 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	private static final ProgressBarEntity PROGRESS_BAR = new ProgressBarEntity();
 	private static final int UNLOCK_RANGE = 2;
 
+	private boolean firstTick = true;
 	/**
 	 * Default constructor for serialization
 	 */
 	public AbstractTree() {
-		// Reseting may not be needed
-		resetStats();
+
 	}
 
 	/**
@@ -48,11 +48,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	 */
     public AbstractTree(float posX, float posY, float xLength, float yLength) {
         super(new Box2D(posX, posY, xLength, yLength), xLength, yLength, "", 1);
-		resetStats();
-
 		super.setStatic(true);
 		super.setSolid(true);
 		super.setShadow(new Circle2D(0,0,0.4f));
+		setAnimation(getUpgradeStats().getAnimation().apply(this));
 	}
 
 	/**
@@ -62,6 +61,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public void onTick(long time) {
+		if (firstTick) {
+			resetStats();
+			firstTick = false;
+		}
 		// Check if player is close enough to unlock it
 		PlayerManager playerManager = GameManager.get().getManager(PlayerManager.class);
 		if (playerManager != null && playerManager.getPlayer() != null) {
@@ -190,7 +193,7 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public String getTexture() {
-		return getAnimation().getFrame();
+		return getAnimation() == null ? "" : getAnimation().getFrame();
 	}
 
 	@Override

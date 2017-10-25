@@ -40,7 +40,7 @@ public class SeedTree extends ResourceTree {
 	public SeedTree(float posX, float posY) {
 		super(posX, posY, new SeedResource(), GATHER_CAPACITY); // Set resource to seed
 		this.defaultTexture = "seed_resource_tree";
-		this.resetStats();
+
 	}
     
 	/**

@@ -198,7 +198,7 @@ public class DamageTree extends AbstractTree implements Tickable {
         }
 
 
-        this.resetStats();
+
 
     }
 

@@ -49,7 +49,7 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		this.gatherCount = 0;
 		this.setGatherCapacity(32); // Use a default value of 32
 		this.gatherType = new SeedResource();
-		this.resetStats();
+
 		this.setTexture("seed_resource_tree");
 		this.setSolid(false); // setSolid must be false for raccoons to be able to move between different targets
 		this.getShadow().setX(this.getShadow().getX() - 0.4f);
@@ -79,7 +79,6 @@ public class ResourceTree extends AbstractTree implements Tickable {
 		} else {
 			this.gatherType = gatherType;
 		}
-		this.resetStats();
 		this.setSolid(false); // setSolid must be false for raccoons to be able to move between different targets
 		this.getShadow().setX(this.getShadow().getX() - 0.4f);
 		this.getShadow().setY(this.getShadow().getY() + 0.4f);

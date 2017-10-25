@@ -46,6 +46,7 @@ public class ProjectileTreeTest {
 
 	@Test
 	public void constructSetTest() {
+		testTree.onTick(1);
 		testTree.setConstructionLeft(10);
 		testTree.setConstructionLeft(0);
 	}
@@ -69,6 +70,7 @@ public class ProjectileTreeTest {
 
 	@Test
 	public void healthChangeTest() {
+		testTree.onTick(1);
 		assertTrue(HEALTH == testTree.getHealth());
 		testTree.damage(2);
 		assertTrue(HEALTH - 2 == testTree.getHealth());

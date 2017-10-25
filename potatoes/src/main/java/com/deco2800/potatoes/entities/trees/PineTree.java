@@ -40,7 +40,7 @@ public class PineTree extends ResourceTree {
 	public PineTree(float posX, float posY) {
 		super(posX, posY, new PineconeResource(), GATHER_CAPACITY); // Set resource to pinecone
 		this.defaultTexture = "pine_resource_tree";
-		this.resetStats();
+
 	}
 	
 	/**
