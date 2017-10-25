@@ -42,14 +42,14 @@ public class RespawnEvent extends TimeEvent<MortalEntity> {
 			float length = GameManager.get().getWorld().getLength();
 			float width = GameManager.get().getWorld().getWidth();
 			// the new positions
-			float newPosX;
-			float newPosY;
 			
-			do {
-				// randomly probes for a collision-less position on the map
-				newPosX = length * random.nextFloat();
-				newPosY = width * random.nextFloat();
-			} while (hasCollisions(param, (int) newPosX, (int) newPosY));
+			int newPosX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
+			int newPosY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
+
+			while (GameManager.get().getWorld().getTerrain(newPosX, newPosY).getMoveScale() == 0) {
+				newPosX += GameManager.get().getRandom().nextInt() % 4 - 2;
+				newPosY += GameManager.get().getRandom().nextInt() % 4 - 2;
+			}
 			
 			// sets the location of the player to respawn
 			((Player) param).setState(PlayerState.IDLE);
