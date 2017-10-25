@@ -1,18 +1,12 @@
 package com.deco2800.potatoes.entities;
 
+import com.deco2800.potatoes.entities.animation.*;
+import com.deco2800.potatoes.entities.health.MortalEntity;
+import com.deco2800.potatoes.entities.health.ProgressBar;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import com.deco2800.potatoes.entities.animation.Animated;
-import com.deco2800.potatoes.entities.animation.Animation;
-import com.deco2800.potatoes.entities.animation.AnimationFactory;
-import com.deco2800.potatoes.entities.animation.TimeAnimation;
-import com.deco2800.potatoes.entities.animation.TimeTriggerAnimation;
-import com.deco2800.potatoes.entities.health.MortalEntity;
-import com.deco2800.potatoes.entities.health.ProgressBar;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
 
 /**
  * Class storing basic properties for a tickable entity
@@ -44,7 +38,7 @@ public class BasicProperties<T extends Tickable> {
 	public void registerEvents(T tickable) {
 		unregisterEvents(tickable);
 		for (TimeEvent<T> timeEvent : events) {
-			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
+//			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
 		}
 		if (tickable instanceof Animated) {
 			AnimationFactory.registerTimeAnimations(((Animated) tickable).getAnimation(), tickable);
@@ -55,7 +49,7 @@ public class BasicProperties<T extends Tickable> {
 	 * Unregisters all events for the tickable given.
 	 */
 	public void unregisterEvents(T tickable) {
-		GameManager.get().getManager(EventManager.class).unregisterAll(tickable);
+//		GameManager.get().getManager(EventManager.class).unregisterAll(tickable);
 	}
 	
 	/**

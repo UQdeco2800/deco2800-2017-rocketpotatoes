@@ -269,9 +269,9 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 */
 	private void registerNewEvents(List<TimeEvent<EnemyEntity>> events) {
 		EventManager eventManager = GameManager.get().getManager(EventManager.class);
-		eventManager.unregisterAll(this);
+//		eventManager.unregisterAll(this);
 		for (TimeEvent<EnemyEntity> timeEvent : events) {
-		eventManager.registerEvent(this, timeEvent);
+//		eventManager.registerEvent(this, timeEvent);
 		}
 	}
 
@@ -442,7 +442,7 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 
 		// destroy the enemy & it's events
 		GameManager.get().getWorld().removeEntity(this);
-		GameManager.get().getManager(EventManager.class).unregisterAll(this);
+//		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		GameManager.get().getManager(WaveManager.class).getActiveWave().reduceTotalEnemiesByOne();
 	}
 

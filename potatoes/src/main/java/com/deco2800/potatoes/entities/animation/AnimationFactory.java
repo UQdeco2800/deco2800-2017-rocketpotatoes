@@ -1,13 +1,13 @@
 package com.deco2800.potatoes.entities.animation;
 
+import com.deco2800.potatoes.entities.Tickable;
+import com.deco2800.potatoes.managers.EventManager;
+import com.deco2800.potatoes.managers.GameManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
-
-import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
 
 /**
  * Class containing utility methods for creating simple animations
@@ -62,7 +62,7 @@ public final class AnimationFactory {
 		Animation nextAnimation = animation;
 		while (!(nextAnimation instanceof SingleFrameAnimation)) {
 			if (nextAnimation instanceof TimeAnimation) {
-				eventManager.registerEvent(t, (TimeAnimation) nextAnimation);
+//				eventManager.registerEvent(t, (TimeAnimation) nextAnimation);
 			}
 			for (int i = 0; i < animation.getFrames().length; i++) {
 				animations.push(animation.getFrames()[i]);

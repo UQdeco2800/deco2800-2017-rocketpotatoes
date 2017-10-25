@@ -1,17 +1,16 @@
 package com.deco2800.potatoes.entities.player;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Direction;
 import com.deco2800.potatoes.entities.TimeEvent;
 import com.deco2800.potatoes.entities.animation.TimeAnimation;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
-import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.SoundManager;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 public class Caveman extends Player {
     private Optional<AbstractEntity> target;
@@ -114,10 +113,10 @@ public class Caveman extends Player {
         super.walk(active);
         if (active) {
             // Caveman starts walking
-            GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
+//            GameManager.get().getManager(EventManager.class).registerEvent(this, walkSound);
         } else {
             // Caveman stops walking
-            GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
+//            GameManager.get().getManager(EventManager.class).unregisterEvent(this, walkSound);
         }
     }
 

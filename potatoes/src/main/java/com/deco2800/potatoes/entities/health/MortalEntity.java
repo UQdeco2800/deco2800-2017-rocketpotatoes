@@ -11,7 +11,6 @@ import com.deco2800.potatoes.entities.GoalPotate;
 import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.effects.HealingEffect;
 import com.deco2800.potatoes.gui.GameOverGui;
-import com.deco2800.potatoes.managers.EventManager;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.GuiManager;
 import org.slf4j.Logger;
@@ -252,7 +251,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	public void deathHandler() {
 		LOGGER.info(this + " is dead.");
 		GameManager.get().getWorld().removeEntity(this);
-		GameManager.get().getManager(EventManager.class).unregisterAll(this);
+//		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		if (this instanceof GoalPotate){
 			GameManager.get().getManager(GuiManager.class).getGui(GameOverGui.class).show();
 		}
@@ -280,7 +279,7 @@ public class MortalEntity extends AbstractEntity implements Mortal, HasProgress,
 	}
 	
 	public void dyingHandler() {
-		GameManager.get().getManager(EventManager.class).unregisterAll(this);
+//		GameManager.get().getManager(EventManager.class).unregisterAll(this);
 		setDying(false);
 	}
 

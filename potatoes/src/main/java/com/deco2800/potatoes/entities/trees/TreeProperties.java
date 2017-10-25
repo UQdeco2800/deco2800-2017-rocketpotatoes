@@ -1,8 +1,5 @@
 package com.deco2800.potatoes.entities.trees;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.deco2800.potatoes.entities.BasicProperties;
 import com.deco2800.potatoes.entities.PropertiesBuilder;
 import com.deco2800.potatoes.entities.TimeEvent;
@@ -12,7 +9,11 @@ import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.entities.resources.Resource;
 import com.deco2800.potatoes.entities.resources.SeedResource;
 import com.deco2800.potatoes.gui.TreeShopGui;
-import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.GuiManager;
+import com.deco2800.potatoes.managers.PlayerManager;
+
+import java.util.List;
 
 /**
  * Class to represent attributes for tree upgrades
@@ -43,9 +44,9 @@ public class TreeProperties extends BasicProperties<AbstractTree> {
 	public void registerBuildEvents(AbstractTree tickable) {
 		unregisterEvents(tickable);
 		for (TimeEvent<AbstractTree> timeEvent : buildEvents) {
-			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
+//			GameManager.get().getManager(EventManager.class).registerEvent(tickable, timeEvent.copy());
 		}
-		GameManager.get().getManager(EventManager.class).registerEvent(tickable, new ConstructionEvent(buildTime));
+//		GameManager.get().getManager(EventManager.class).registerEvent(tickable, new ConstructionEvent(buildTime));
 		if (tickable instanceof Animated) {
 			AnimationFactory.registerTimeAnimations(((Animated) tickable).getAnimation(), tickable);
 		}

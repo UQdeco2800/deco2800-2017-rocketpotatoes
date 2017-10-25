@@ -11,21 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.*;
-import com.deco2800.potatoes.entities.health.HasProgress;
-import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.AcornTreeType;
-import com.deco2800.potatoes.entities.trees.CactusTreeType;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.DefenseTree;
-import com.deco2800.potatoes.entities.trees.FireTreeType;
-import com.deco2800.potatoes.entities.trees.FoodTree;
-import com.deco2800.potatoes.entities.trees.IceTreeType;
-import com.deco2800.potatoes.entities.trees.PineTree;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
-import com.deco2800.potatoes.entities.trees.SeedTree;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -34,18 +20,7 @@ import com.deco2800.potatoes.observers.ScrollObserver;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
-import com.deco2800.potatoes.waves.EnemyWave;
-import com.deco2800.potatoes.worlds.DesertWorld;
 import com.deco2800.potatoes.worlds.ForestWorld;
-import com.deco2800.potatoes.worlds.IceWorld;
-import com.deco2800.potatoes.worlds.OceanWorld;
-import com.deco2800.potatoes.worlds.VolcanoWorld;
-import com.deco2800.potatoes.worlds.WorldType;
-import com.deco2800.potatoes.worlds.terrain.Terrain;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Map;
 
 /* "Feral Chase" Kevin MacLeod (incompetech.com)
  * Licensed under Creative Commons: By Attribution 3.0 License
@@ -244,29 +219,6 @@ public class GameScreen implements Screen {
 	 * `reset` the state of the game
 	 */
 	private void initializeGame() {
-		GameManager.get().getManager(EventManager.class).unregisterAll();
-
-		GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
-			/*
-			// Initial player preparation up period
-			*/
-		initialisePortal();
-			
-			/* Randomly generate trees in each world */
-		AbstractTree[] forestTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
-		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()), forestTrees);
-
-		AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
-		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(DesertWorld.get()), desertTrees);
-
-		AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
-		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(IceWorld.get()), iceTrees);
-
-		AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
-		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(OceanWorld.get()), oceanTrees);
-
-		AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
-		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(VolcanoWorld.get()), volcanoTrees);
 		// Make our player
 		int targetX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
 		int targetY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
@@ -282,71 +234,71 @@ public class GameScreen implements Screen {
 		GameManager.get().getManager(ParticleManager.class);
 
 		//show the tutorial menu
-		guiManager.getGui(TutorialGui.class).show();
+		//guiManager.getGui(TutorialGui.class).show();
 	}
 	
-	/**
-	 * Randomly generates trees in a specified world. Currently only spawns
-	 * resource trees.
-	 * 
-	 * @param world 		the world to randomly generate trees in
-	 * @param trees	 	the trees allowed to generate
-	 */
-	private void randomlyGenerateTrees(com.deco2800.potatoes.worlds.World world, AbstractTree[] trees) {
-		// locations to add the trees
-	    	int xPos;
-	    	int yPos;
+//	/**
+//	 * Randomly generates trees in a specified world. Currently only spawns
+//	 * resource trees.
+//	 *
+//	 * @param world 		the world to randomly generate trees in
+//	 * @param trees	 	the trees allowed to generate
+//	 */
+//	private void randomlyGenerateTrees(com.deco2800.potatoes.worlds.World world, AbstractTree[] trees) {
+//		// locations to add the trees
+//	    	int xPos;
+//	    	int yPos;
+//
+//	    	// The amount of each tree to generate
+//    		int amount = 35/trees.length;
+//
+//	    	// Terrain to add the tree to
+//	    	Terrain terrain;
+//
+//	    	boolean oldTreeSpread = true;
+//
+//	    	// Iterate over the trees
+//	    	for (int i = 0; i < trees.length; i ++) {
+//	    		for (int j = 0; j < amount; j++) {
+//	    			if (oldTreeSpread) {// Generate random location
+//					    xPos = (int) (Math.random() * 40) + 10;
+//					    yPos = (int) (Math.random() * 40) + 10;
+//					    terrain = world.getTerrain(xPos, yPos);
+//
+//					    // Only add a tree if it is on grass
+//					    if (terrain.getTexture() == "grass_tile_1") {
+//						    AbstractTree newTree = trees[i].createCopy();
+//						    newTree.setPosX(xPos);
+//						    newTree.setPosY(yPos);
+//						    world.addEntity(newTree);
+//					    }
+//				    } else {
+//	    				world.addToPlantable(trees[i].createCopy());
+//				    }
+//	    		}
+//	    	}
+//
+//	}
+//
+//	private void addResourceTrees() {
+//		GameManager.get().getWorld().addEntity(new SeedTree(20f, 20f));
+//		GameManager.get().getWorld().addEntity(new FoodTree(22f, 20f));
+//		GameManager.get().getWorld().addEntity(new PineTree(24f, 20f));
+//	}
+//
+//	private void addDamageTree() {
+//		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
+//		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
+//		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
+//		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));
+//		GameManager.get().getWorld().addEntity(new DamageTree(12.5f, 11.5f, new CactusTreeType()));
+//
+//		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
+//	}
 
-	    	// The amount of each tree to generate
-    		int amount = 35/trees.length;
-
-	    	// Terrain to add the tree to
-	    	Terrain terrain;
-
-	    	boolean oldTreeSpread = true;
-
-	    	// Iterate over the trees
-	    	for (int i = 0; i < trees.length; i ++) {
-	    		for (int j = 0; j < amount; j++) {
-	    			if (oldTreeSpread) {// Generate random location
-					    xPos = (int) (Math.random() * 40) + 10;
-					    yPos = (int) (Math.random() * 40) + 10;
-					    terrain = world.getTerrain(xPos, yPos);
-
-					    // Only add a tree if it is on grass
-					    if (terrain.getTexture() == "grass_tile_1") {
-						    AbstractTree newTree = trees[i].createCopy();
-						    newTree.setPosX(xPos);
-						    newTree.setPosY(yPos);
-						    world.addEntity(newTree);
-					    }
-				    } else {
-	    				world.addToPlantable(trees[i].createCopy());
-				    }
-	    		}
-	    	}
-
-	}
-	
-	private void addResourceTrees() {
-		GameManager.get().getWorld().addEntity(new SeedTree(20f, 20f));
-		GameManager.get().getWorld().addEntity(new FoodTree(22f, 20f));
-		GameManager.get().getWorld().addEntity(new PineTree(24f, 20f));
-	}
-
-	private void addDamageTree() {
-		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
-		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));
-		GameManager.get().getWorld().addEntity(new DamageTree(12.5f, 11.5f, new CactusTreeType()));
-		
-		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
-	}
-
-	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 10000));
-	}
+//	private void initialisePortal() {
+//		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 10000));
+//	}
 
 	private void tickGame(long timeDelta) {
 
@@ -383,50 +335,50 @@ public class GameScreen implements Screen {
 		guiManager.getStage().draw();
 	}
 
-	/**
-	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
-	 */
-	private void updateWaveGUI() {
-		int timeToWaveEnd;
-		int currentIndex = GameManager.get().getManager(WaveManager.class).getNonPauseWaveIndex();	//position of current wave in queue
-		int totalEnemies = GameManager.get().getManager(
-				WaveManager.class).getActiveWave().getTotalEnemies();//total enemies in game
-		Gui waveGui = guiManager.getGui(WavesGui.class);
-		if (waveGui instanceof WavesGui) {
-			//Display progress through total waves
-			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
-			((WavesGui) waveGui).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex));
-			if (activeWave != null) {
-				//if a wave is currently active show time left until it finishes spawning enemies
-				timeToWaveEnd = activeWave.getTimeToEnd();
-				if (activeWave.isPauseWave()) {
-					((WavesGui) waveGui).getWaveStatusLabel().setText("Time to next wave: ");
-				} else {
-					((WavesGui) waveGui).getWaveStatusLabel().setText("Time left in wave: ");
-				}
-				((WavesGui) waveGui).getWaveTimeLabel().setText(Integer.toString(timeToWaveEnd/75));
-				((WavesGui) waveGui).getWaveEnemiesLabel().setText(Integer.toString(totalEnemies));
-			} else {
-				//No active waves: display if there are more waves and if so how long until it starts
-				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
-					((WavesGui) waveGui).getWaveStatusLabel().setText("No more waves.");
-					((WavesGui) waveGui).getWaveTimeLabel().setText("");
-				}
-			}
-		}
-	}
-	
-	private void updateRespawnGUI(){
-
-		Gui respawnGui = guiManager.getGui(RespawnGui.class);
-
-		if(playerManager.getPlayer().isDead()) {
-			int count = ((RespawnGui) respawnGui).returnCount();
-			int display =(int) Math.round(count/1000.0) + 1;
-			((RespawnGui) respawnGui).returnTimer().setText(Integer.toString(display));
-		}
-
-	}
+//	/**
+//	 * Get the current state of waves from WaveManager and update the WavesGui accordingly.
+//	 */
+//	private void updateWaveGUI() {
+//		int timeToWaveEnd;
+//		int currentIndex = GameManager.get().getManager(WaveManager.class).getNonPauseWaveIndex();	//position of current wave in queue
+//		int totalEnemies = GameManager.get().getManager(
+//				WaveManager.class).getActiveWave().getTotalEnemies();//total enemies in game
+//		Gui waveGui = guiManager.getGui(WavesGui.class);
+//		if (waveGui instanceof WavesGui) {
+//			//Display progress through total waves
+//			EnemyWave activeWave = GameManager.get().getManager(WaveManager.class).getActiveWave();
+//			((WavesGui) waveGui).getWaveGuiWindow().getTitleLabel().setText("wave: " + (currentIndex));
+//			if (activeWave != null) {
+//				//if a wave is currently active show time left until it finishes spawning enemies
+//				timeToWaveEnd = activeWave.getTimeToEnd();
+//				if (activeWave.isPauseWave()) {
+//					((WavesGui) waveGui).getWaveStatusLabel().setText("Time to next wave: ");
+//				} else {
+//					((WavesGui) waveGui).getWaveStatusLabel().setText("Time left in wave: ");
+//				}
+//				((WavesGui) waveGui).getWaveTimeLabel().setText(Integer.toString(timeToWaveEnd/75));
+//				((WavesGui) waveGui).getWaveEnemiesLabel().setText(Integer.toString(totalEnemies));
+//			} else {
+//				//No active waves: display if there are more waves and if so how long until it starts
+//				if (GameManager.get().getManager(WaveManager.class).areWavesCompleted()) {
+//					((WavesGui) waveGui).getWaveStatusLabel().setText("No more waves.");
+//					((WavesGui) waveGui).getWaveTimeLabel().setText("");
+//				}
+//			}
+//		}
+//	}
+//
+//	private void updateRespawnGUI(){
+//
+//		Gui respawnGui = guiManager.getGui(RespawnGui.class);
+//
+//		if(playerManager.getPlayer().isDead()) {
+//			int count = ((RespawnGui) respawnGui).returnCount();
+//			int display =(int) Math.round(count/1000.0) + 1;
+//			((RespawnGui) respawnGui).returnTimer().setText(Integer.toString(display));
+//		}
+//
+//	}
 
 	/**
 	 * Renderer thread Must update all displayed elements using a Renderer
@@ -461,8 +413,8 @@ public class GameScreen implements Screen {
 
 		renderer.render(batch);
 
-		updateWaveGUI();
-		updateRespawnGUI();
+//		updateWaveGUI();
+//		updateRespawnGUI();
 		renderGUI(batch);
 
 	}

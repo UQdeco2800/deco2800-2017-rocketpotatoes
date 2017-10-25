@@ -1,17 +1,5 @@
 package com.deco2800.potatoes.entities.player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import com.deco2800.potatoes.entities.effects.AOEEffect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -26,12 +14,7 @@ import com.deco2800.potatoes.entities.health.HasProgressBar;
 import com.deco2800.potatoes.entities.health.MortalEntity;
 import com.deco2800.potatoes.entities.health.ProgressBar;
 import com.deco2800.potatoes.entities.health.ProgressBarEntity;
-import com.deco2800.potatoes.entities.health.RespawnEvent;
-import com.deco2800.potatoes.entities.projectiles.BallisticProjectile;
-import com.deco2800.potatoes.entities.projectiles.HomingProjectile;
-import com.deco2800.potatoes.entities.projectiles.MineBomb;
-import com.deco2800.potatoes.entities.projectiles.OrbProjectile;
-import com.deco2800.potatoes.entities.projectiles.Projectile;
+import com.deco2800.potatoes.entities.projectiles.*;
 import com.deco2800.potatoes.entities.projectiles.Projectile.ProjectileTexture;
 import com.deco2800.potatoes.entities.resources.FoodResource;
 import com.deco2800.potatoes.entities.resources.Resource;
@@ -41,16 +24,14 @@ import com.deco2800.potatoes.entities.trees.AbstractTree;
 import com.deco2800.potatoes.entities.trees.ResourceTree;
 import com.deco2800.potatoes.gui.RespawnGui;
 import com.deco2800.potatoes.gui.TreeShopGui;
-import com.deco2800.potatoes.managers.EventManager;
-import com.deco2800.potatoes.managers.GameManager;
-import com.deco2800.potatoes.managers.GuiManager;
-import com.deco2800.potatoes.managers.InputManager;
-import com.deco2800.potatoes.managers.Inventory;
-import com.deco2800.potatoes.managers.PlayerManager;
-import com.deco2800.potatoes.managers.SoundManager;
-import com.deco2800.potatoes.managers.TreeState;
+import com.deco2800.potatoes.managers.*;
 import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.util.WorldUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Entity for the playable character.
@@ -190,9 +171,9 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
 
         EventManager em = GameManager.get().getManager(EventManager.class);
 
-        em.unregisterEvent(this, this.currentAnimation);
+//        em.unregisterEvent(this, this.currentAnimation);
         currentAnimation = animation;
-        em.registerEvent(this, currentAnimation);
+//        em.registerEvent(this, currentAnimation);
 
         LOGGER.info("Changed animation to " + facing);
     }
@@ -625,7 +606,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         // get the event manager
         EventManager eventManager = GameManager.get().getManager(EventManager.class);
         // add the respawn event
-        eventManager.registerEvent(this, new RespawnEvent(respawnTime));
+//        eventManager.registerEvent(this, new RespawnEvent(respawnTime));
 
         GameManager.get().getManager(GuiManager.class).getGui(RespawnGui.class).show();
     }
@@ -665,7 +646,7 @@ public class Player extends MortalEntity implements Tickable, HasProgressBar {
         } else {
             canAttack = false;
             EventManager em = GameManager.get().getManager(EventManager.class);
-            em.registerEvent(this, new  AttackCooldownEvent(500));
+//            em.registerEvent(this, new  AttackCooldownEvent(500));
         }
         if (this.setState(ATTACK)) {
             currentShootStage=ShootStage.READY;
