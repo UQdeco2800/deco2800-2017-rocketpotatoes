@@ -9,7 +9,7 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class IceWorld extends WorldType {
-	private static final TerrainType iceTerrain = new TerrainType(null, RandomTerrain.SNOW, new Terrain(GROUND, 1, true), new Terrain(WATER, 2f, false));
+	private static final TerrainType iceTerrain = new TerrainType(RandomTerrain.SNOW, new Terrain(GROUND, 1, true), new Terrain(WATER, 2f, false));
 	private static final List<Supplier<AbstractEntity>> iceEntities = defaultEntities("iceland");
 	private static final IceWorld instance = new IceWorld(iceTerrain, iceEntities);
 

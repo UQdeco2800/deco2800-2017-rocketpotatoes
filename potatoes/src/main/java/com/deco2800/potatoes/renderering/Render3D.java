@@ -86,7 +86,7 @@ public class Render3D implements Renderer {
 			shapeRenderer = new ShapeRenderer();
 		}
 		if (cache == null) {
-			cache = new SpriteCache(5000, true);
+			cache = new SpriteCache(8191, true);
 		}
 		if (spriteCacheBatch == null) {
 			spriteCacheBatch = new SpriteCacheBatch();
@@ -167,18 +167,7 @@ public class Render3D implements Renderer {
 	/**
 	 * Renders the tiles of the Map	*/
 	private void renderMap() {
-		BatchTiledMapRenderer tileRenderer = getTileRenderer(spriteCacheBatch);
-
-		if (!GameManager.get().getManager(WorldManager.class).isWorldCached()) {
-			cache.clear();
-			tileRenderer.setMap(GameManager.get().getWorld().getMap());
-
-			tileRenderer.setView(new Matrix4(), 0, 0, tileWidth * WorldManager.WORLD_SIZE, tileHeight *
-					WorldManager.WORLD_SIZE);
-			tileRenderer.render();
-			GameManager.get().getManager(WorldManager.class).setWorldCached(true);
-
-		}
+		BatchTiledMapRenderer tileRenderer = getTileRenderer(batch);
 
 		batch.begin();
 		// within the screen, but down rounded to the nearest tile
@@ -195,22 +184,10 @@ public class Render3D implements Renderer {
 		batch.draw(background.getRegion(), waterCoords.x - tileWidth / 2, waterCoords.y - tileHeight / 2);
 		batch.end();
 
-		cache.setProjectionMatrix(GameManager.get().getManager(CameraManager.class).getCamera().combined);
-		cache.begin();
-		// Blending has to be enabled with cache
-		Gdx.gl.glEnable(GL20.GL_BLEND);
+		tileRenderer.setMap(GameManager.get().getWorld().getMap());
 
-		//Set the shader to blend the time colour
-		GameManager.get().getManager(ShaderManager.class).getShader().setUniformf(ShaderManager
-				.EXTRA_COLOR_ATTRIBUTE, batch.getColor().r, batch.getColor().g, batch.getColor().b, batch.getColor().a);
-		cache.setShader(GameManager.get().getManager(ShaderManager.class).getShader());
-
-		// Render everything in the cache, maybe should be changed to just map later
-		for (int cacheId : spriteCacheBatch.cacheIds) {
-			cache.draw(cacheId);
-		}
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-		cache.end();
+		tileRenderer.setView(GameManager.get().getManager(CameraManager.class).getCamera());
+		tileRenderer.render();
 	}
 
 	/**

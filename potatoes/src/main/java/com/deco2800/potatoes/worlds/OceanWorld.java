@@ -8,7 +8,7 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class OceanWorld extends WorldType {
-	private static final TerrainType oceanTerrain = new TerrainType(null, new Terrain(WATER, 1, true), new Terrain(GROUND, 1, false), new Terrain(GRASS, 0, false));
+	private static final TerrainType oceanTerrain = new TerrainType(new Terrain(WATER, 1, true), new Terrain(GROUND, 1, false), new Terrain(GRASS, 0, false));
 	private static final List<Supplier<AbstractEntity>> oceanEntities = defaultEntities("sea");
 	private static final OceanWorld instance = new OceanWorld(oceanTerrain, oceanEntities);
 	

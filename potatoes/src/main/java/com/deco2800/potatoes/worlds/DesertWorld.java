@@ -9,7 +9,7 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class DesertWorld extends WorldType {
-	private static final TerrainType desertTerrain = new TerrainType(null, RandomTerrain.DIRT, new Terrain("sand_tile_1", 1, false), new Terrain(WATER, 0, false));
+	private static final TerrainType desertTerrain = new TerrainType(RandomTerrain.DIRT, new Terrain("sand_tile_1", 1, false), new Terrain(WATER, 0, false));
 	private static final List<Supplier<AbstractEntity>> desertEntities = defaultEntities("desert");
 	private static final DesertWorld instance = new DesertWorld(desertTerrain, desertEntities);
 	

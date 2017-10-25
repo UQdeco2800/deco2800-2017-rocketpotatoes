@@ -9,7 +9,7 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class VolcanoWorld extends WorldType {
-	private static final TerrainType volcanoTerrain = new TerrainType(null, RandomTerrain.DIRT, RandomTerrain.ROCK, new Terrain(WATER, 0, false));
+	private static final TerrainType volcanoTerrain = new TerrainType(RandomTerrain.DIRT, RandomTerrain.ROCK, new Terrain(WATER, 0, false));
 	private static final List<Supplier<AbstractEntity>> volcanoEntities = defaultEntities("volcano");
 	private static final VolcanoWorld instance = new VolcanoWorld(volcanoTerrain, volcanoEntities);
 	

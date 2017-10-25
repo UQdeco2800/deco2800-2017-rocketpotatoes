@@ -16,7 +16,7 @@ import java.util.Map;
  * Manager for worlds. Stores and generates all the worlds.
  */
 public class WorldManager extends Manager implements TickableManager {
-	public static final int WORLD_SIZE = 50;
+	public static final int WORLD_SIZE = 150;
 
 	private Map<WorldType, World> worlds;
 	private Map<String, Cell> cells;

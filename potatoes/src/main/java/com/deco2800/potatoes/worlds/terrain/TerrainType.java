@@ -6,36 +6,22 @@ import java.util.List;
  * Class representing all the types of terrain for a world type
  */
 public class TerrainType {
-	// Slopes need to be sorted out
-	private final List<Terrain> slopes;
 	private final Terrain grass;
 	private final Terrain rock;
 	private final Terrain water;
 
 	/**
 	 * Creates a terrain type with the specified terrains
-	 * 
-	 * @param slopes
-	 *            the list of slope terrains
-	 * @param grass
+	 *  @param grass
 	 *            the grass terrain
 	 * @param rock
 	 *            the rock terrain
 	 * @param water
-	 *            the water terrain
 	 */
-	public TerrainType(List<Terrain> slopes, Terrain grass, Terrain rock, Terrain water) {
-		this.slopes = slopes;
+	public TerrainType(Terrain grass, Terrain rock, Terrain water) {
 		this.grass = grass;
 		this.rock = rock;
 		this.water = water;
-	}
-
-	/**
-	 * @return the slopes
-	 */
-	public List<Terrain> getSlopes() {
-		return slopes;
 	}
 
 	/**
@@ -69,7 +55,6 @@ public class TerrainType {
 		int result = 1;
 		result = prime * result + (grass == null ? 0 : grass.hashCode());
 		result = prime * result + (rock == null ? 0 : rock.hashCode());
-		result = prime * result + (slopes == null ? 0 : slopes.hashCode());
 		result = prime * result + (water == null ? 0 : water.hashCode());
 		return result;
 	}
@@ -96,11 +81,6 @@ public class TerrainType {
 			if (other.rock != null)
 				return false;
 		} else if (!rock.equals(other.rock))
-			return false;
-		if (slopes == null) {
-			if (other.slopes != null)
-				return false;
-		} else if (!slopes.equals(other.slopes))
 			return false;
 		if (water == null) {
 			if (other.water != null)

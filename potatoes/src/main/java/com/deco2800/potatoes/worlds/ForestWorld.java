@@ -16,7 +16,7 @@ import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class ForestWorld extends WorldType {
-	private static final TerrainType FOREST_TERRAIN = new TerrainType(null, RandomTerrain.GRASS, RandomTerrain.DIRT_NO_PLANT, new Terrain(WATER, 0, false));
+	private static final TerrainType FOREST_TERRAIN = new TerrainType(RandomTerrain.GRASS, RandomTerrain.DIRT_NO_PLANT, new Terrain(WATER, 0, false));
 	private static final List<Supplier<AbstractEntity>> FOREST_ENTITIES = forestDefaultEntities();
 	private static final Set<Point> FOREST_CLEAR_SPOTS = forestClearSpots();
 	private static final ForestWorld INSTANCE = new ForestWorld(FOREST_TERRAIN, FOREST_ENTITIES, FOREST_CLEAR_SPOTS);

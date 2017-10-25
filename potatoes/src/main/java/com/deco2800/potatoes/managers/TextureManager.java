@@ -7,6 +7,7 @@ import com.deco2800.potatoes.entities.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -416,14 +417,9 @@ public class TextureManager extends Manager {
 
         // Tiles
         // Maybe just load everything from this directory
-        String[] tileNames = {"dirt_tile_1", "dirt_tile_2", "grass_tile_1", "grass_tile_2", "grass_tile_3",
-                "gravel_tile_1", "gravel_tile_1", "mud_tile_1", "rock_tile_1",
-                "rock_tile_2", "rock_tile_3", "sand_tile_1", "snow_tile_1", "snow_tile_2"};
-        for (String string : tileNames) {
-            saveTexture(string, "resources/tiles/" + string + ".png");
-        }
-        for (int i = 1; i <= 12; i++) {
-            saveTexture("water" + i, "resources/tiles/water" + i + ".png");
+
+        for (File file : new File("resources/tiles/").listFiles()) {
+            saveTexture(file.getName().replaceFirst(".png", ""), file.getPath());
         }
 
 
