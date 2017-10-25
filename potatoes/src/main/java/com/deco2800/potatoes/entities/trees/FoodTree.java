@@ -40,7 +40,7 @@ public class FoodTree extends ResourceTree {
 	public FoodTree(float posX, float posY) {
 		super(posX, posY, new FoodResource(), GATHER_CAPACITY); // Set resource to food and capacity to 8
 		this.defaultTexture = "food_resource_tree";
-		this.resetStats();
+
 	}
 	
 	/**

@@ -183,7 +183,8 @@ public class World {
 		for (int i = 0; i < 10; i++) {
 			Point p = worldType.getClearSpots().get(GameManager.get().getRandom().nextInt(worldType.clearSpots.size()));
 			if (getTerrain(p.x, p.y).isPlantable()) {
-				entity.setPosition(p.x, p.y);
+				entity.setPosX(p.x);
+				entity.setPosY(p.y);
 				addEntity(entity);
 			}
 		}

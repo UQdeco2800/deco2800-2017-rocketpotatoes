@@ -286,12 +286,7 @@ public class Render3D implements Renderer {
 				continue;
 
 			// get texture
-			Texture tex;
-			if (e instanceof Animated) {
-				tex = texMan.getTexture(((Animated) e).getAnimation().getFrame());
-			} else {
-				tex = texMan.getTexture(e.getTexture());
-			}
+			Texture tex = texMan.getTexture(e.getTexture());
 
 			Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
 
