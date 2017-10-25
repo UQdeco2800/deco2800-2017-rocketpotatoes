@@ -118,7 +118,6 @@ public class Render3D implements Renderer {
 		// text & displays
 		batch.setColor(Color.WHITE);	// clear shading
 		renderTreeResources();			// rend tree resource count
-		renderMultiplayerName();		// 		mutiplayer names
 		renderProgressBars();			// 		progress bars
 
 		// tree shop radial menu
@@ -558,41 +557,6 @@ public class Render3D implements Renderer {
 			}
 		}
 		batch.end();
-	}
-
-	/**
-	 * Renders names of players if multiplayer is on */
-	private void renderMultiplayerName() {
-		//draw multiplayer names
-		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
-
-		if (!m.isMultiplayer())
-			return;
-
-		font.getData().setScale(1.3f);
-
-
-		batch.begin();
-		for (Map.Entry<AbstractEntity, Integer> entity : rendEntities.entrySet()) {
-			AbstractEntity e = entity.getKey();
-
-			if (e instanceof Player) {
-
-				//font colour
-				if (m.getID() == entity.getValue()) {
-					font.setColor(Color.BLUE);
-				} else {
-					font.setColor(Color.WHITE);
-				}
-
-				Vector2 isoPosition = worldToScreenCoordinates(e.getPosX(), e.getPosY(), e.getPosZ());
-
-				font.draw(batch, String.format("%s", m.getClients().get(entity.getValue())),
-						isoPosition.x + tileWidth / 2 - 10, isoPosition.y + 70);
-			}
-		}
-
-		return;
 	}
 
 	/**

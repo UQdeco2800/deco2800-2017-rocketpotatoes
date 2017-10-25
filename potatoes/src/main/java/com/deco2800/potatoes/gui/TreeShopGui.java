@@ -634,14 +634,7 @@ public class TreeShopGui extends Gui implements SceneGui {
 
             newTree.setPosX(treeX + 0.5f);
             newTree.setPosY(treeY + 0.5f);
-
-            MultiplayerManager multiplayerManager = GameManager.get().getManager
-                    (MultiplayerManager.class);
-            if (!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster()) {
-                AbstractTree.constructTree(newTree);
-            } else {
-                multiplayerManager.broadcastBuildOrder(newTree);
-            }
+            AbstractTree.constructTree(newTree);
         }
     }
 
