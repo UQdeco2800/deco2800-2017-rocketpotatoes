@@ -370,7 +370,7 @@ public class GameScreen implements Screen {
 					    terrain = world.getTerrain(xPos, yPos);
 
 					    // Only add a tree if it is on grass
-					    if (terrain.getTexture() == "grass_tile_1") {
+					    if (terrain.isPlantable()) {
 						    AbstractTree newTree = trees[i].createCopy();
 						    newTree.setPosX(xPos);
 						    newTree.setPosY(yPos);
