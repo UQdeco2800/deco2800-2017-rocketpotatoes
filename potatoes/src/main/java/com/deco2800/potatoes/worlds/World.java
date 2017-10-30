@@ -18,7 +18,6 @@ import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Selectable;
 import com.deco2800.potatoes.managers.GameManager;
 import com.deco2800.potatoes.managers.Manager;
-import com.deco2800.potatoes.managers.MultiplayerManager;
 import com.deco2800.potatoes.managers.TextureManager;
 import com.deco2800.potatoes.managers.WorldManager;
 import com.deco2800.potatoes.renderering.Renderable;
@@ -114,33 +113,7 @@ public class World {
 	 * @param entity
 	 */
 	public void addEntity(AbstractEntity entity) {
-		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
-		if (m.isMultiplayer()&& m.isMaster()) {
-			// HashMap because I want entities to have unique ids that aren't necessarily
-			// sequential
-			// O(n) insertion? Sorry this is pretty hacky :(
-			while (true) {
-				if (entities.containsKey(currentIndex)) {
-					currentIndex++;
-				} else {
-					// If we're in multiplayer and the master tell other entities.
-					addToMaps(currentIndex++, entity);
-
-					// Tell other clients about this entity. Note that we should always broadcast
-					// master changes AFTER
-					// they have actually been made. Since the server will often read the master
-					// state for information.
-					m.broadcastNewEntity(currentIndex - 1);
-					break;
-					}
-				}
-		}else if (m.isMultiplayer()&& !m.isMaster()) {
-				throw new IllegalStateException(
-						"Clients who aren't master shouldn't be adding entities when in multiplayer!");
-		} else {
-				// Singleplayer behaviour
-				addToMaps(currentIndex++, entity);
-		}
+		addToMaps(currentIndex++, entity);
 	}
 
 	/**
@@ -155,13 +128,7 @@ public class World {
 	 * @param id
 	 */
 	public void addEntity(AbstractEntity entity, int id) {
-		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
-		if (m.isMultiplayer()) {
-			addToMaps(id, entity);
-		} else {
-			throw new IllegalStateException("Not in multiplayer, this function should only be used for multiplayer");
-		}
-
+		addToMaps(id, entity);
 	}
 
 	/**
@@ -195,12 +162,6 @@ public class World {
 	 */
 	public void removeEntity(int id) {
 		removeFromMaps(id);
-
-		// Tell the other clients if we're master and in multiplayer.
-		MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
-		if (m.isMultiplayer() && m.isMaster()) {
-			m.broadcastEntityDestroy(id);
-		}
 	}
 
 	/**
@@ -211,12 +172,6 @@ public class World {
 		for (Map.Entry<Integer, AbstractEntity> e : entities.entrySet()) {
 			if (e.getValue() == entity) {
 				removeFromMaps(e.getKey());
-
-				// Tell the other clients if we're master and in multiplayer.
-				MultiplayerManager m = GameManager.get().getManager(MultiplayerManager.class);
-				if (m.isMultiplayer() && m.isMaster()) {
-					m.broadcastEntityDestroy(e.getKey());
-				}
 				return;
 			}
 		}

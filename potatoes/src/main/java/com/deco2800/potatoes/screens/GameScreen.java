@@ -11,21 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
-import com.deco2800.potatoes.entities.*;
-import com.deco2800.potatoes.entities.enemies.*;
-import com.deco2800.potatoes.entities.health.HasProgress;
+import com.deco2800.potatoes.entities.Tickable;
 import com.deco2800.potatoes.entities.portals.BasePortal;
-import com.deco2800.potatoes.entities.trees.AbstractTree;
-import com.deco2800.potatoes.entities.trees.AcornTreeType;
-import com.deco2800.potatoes.entities.trees.CactusTreeType;
-import com.deco2800.potatoes.entities.trees.DamageTree;
-import com.deco2800.potatoes.entities.trees.DefenseTree;
-import com.deco2800.potatoes.entities.trees.FireTreeType;
-import com.deco2800.potatoes.entities.trees.FoodTree;
-import com.deco2800.potatoes.entities.trees.IceTreeType;
-import com.deco2800.potatoes.entities.trees.PineTree;
-import com.deco2800.potatoes.entities.trees.ProjectileTree;
-import com.deco2800.potatoes.entities.trees.SeedTree;
+import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
 import com.deco2800.potatoes.managers.*;
@@ -35,17 +23,8 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.Renderable;
 import com.deco2800.potatoes.renderering.Renderer;
 import com.deco2800.potatoes.waves.EnemyWave;
-import com.deco2800.potatoes.worlds.DesertWorld;
-import com.deco2800.potatoes.worlds.ForestWorld;
-import com.deco2800.potatoes.worlds.IceWorld;
-import com.deco2800.potatoes.worlds.OceanWorld;
-import com.deco2800.potatoes.worlds.VolcanoWorld;
-import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.*;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Map;
 
 /* "Feral Chase" Kevin MacLeod (incompetech.com)
  * Licensed under Creative Commons: By Attribution 3.0 License
@@ -73,7 +52,6 @@ public class GameScreen implements Screen {
 	private SoundManager soundManager;
 	private MouseHandler mouseHandler;
 	private PlayerManager playerManager;
-	private MultiplayerManager multiplayerManager;
 	private GuiManager guiManager;
 	private CameraManager cameraManager;
 	private TextureManager textureManager;
@@ -90,39 +68,6 @@ public class GameScreen implements Screen {
 	float minimumZoom = 1.0f;
 	float maximumZoom = 4.0f;
 	float zoomSpeed = 0.2f;
-
-	/**
-	 * Start's a multiplayer game
-	 *
-	 * @param game
-	 *            game instance
-	 * @param name
-	 *            name to join with
-	 * @param Ip
-	 *            IP to connect to, (ignored if isHost is true (will connect to
-	 *            127.0.0.1))
-	 * @param port
-	 *            port to connect/host on
-	 * @param isHost
-	 *            is this client a host (i.e. start a server then connect to it)
-	 */
-	public GameScreen(RocketPotatoes game, String name, String ip, int port, boolean isHost)
-			throws IOException {
-		this.game = game;
-		setupGame();
-		
-		// setup multiplayer
-		if (isHost) {
-			multiplayerManager.createHost(port);
-			// Loopback for host's connection to itself
-			multiplayerManager.joinGame(name, InetAddress.getLoopbackAddress().getHostAddress(), port);
-		} else {
-			multiplayerManager.joinGame(name, ip, port);
-		}
-
-		initializeGame();
-		
-	}
 
 	/**
 	 * Start's a singleplayer game
@@ -155,9 +100,6 @@ public class GameScreen implements Screen {
 
 		/* Create a mouse handler for the game */
 		mouseHandler = new MouseHandler();
-
-		/* Create a multiplayer manager for the game */
-		multiplayerManager = GameManager.get().getManager(MultiplayerManager.class);
 
 		/* Create a player manager. */
 		playerManager = GameManager.get().getManager(PlayerManager.class);
@@ -206,15 +148,9 @@ public class GameScreen implements Screen {
 		// Make our DebugMenuGui
 		guiManager.addGui(new DebugModeGui(guiManager.getStage(), this));
 
-		// Make our chat window
-		guiManager.addGui(new ChatGui(guiManager.getStage()));
-
 		// Add test TreeShop Gui
 		guiManager.addGui(new TreeShopGui(guiManager.getStage()));
 		maxShopRange = guiManager.getGui(TreeShopGui.class).getMaxRange();
-
-        // Make our chat window
-        guiManager.addGui(new ChatGui(guiManager.getStage()));
 
         // Make our inventory window
         guiManager.addGui(new InventoryGui(guiManager.getStage()));
@@ -287,56 +223,43 @@ public class GameScreen implements Screen {
 	 * `reset` the state of the game
 	 */
 	private void initializeGame() {
-
-		if (!multiplayerManager.isMultiplayer()) {
-			guiManager.getGui(ChatGui.class).hide();
-		}
-
 		GameManager.get().getManager(EventManager.class).unregisterAll();
 
-
-		MultiplayerManager m = multiplayerManager;
-		if (m.isMaster() || !m.isMultiplayer()) {
-			GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
-			/*
-			// Initial player preparation up period
-			*/
-			initialisePortal();
+		GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
+		/*
+		// Initial player preparation up period
+		*/
+		initialisePortal();
 			
-			/* Randomly generate trees in each world */
-			AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()), forestTrees);
+		/* Randomly generate trees in each world */
+		AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
+		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()), forestTrees);
 
-			AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(DesertWorld.get()), desertTrees);
+		AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
+		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(DesertWorld.get()), desertTrees);
 
-			AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(IceWorld.get()), iceTrees);
+		AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
+		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(IceWorld.get()), iceTrees);
 
-			AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(OceanWorld.get()), oceanTrees);
+		AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
+		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(OceanWorld.get()), oceanTrees);
 
-			AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
-			randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(VolcanoWorld.get()), volcanoTrees);
+		AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
+		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(VolcanoWorld.get()), volcanoTrees);
+		// Make our player
+		int targetX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
+		int targetY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
 
-
-			if (!multiplayerManager.isMultiplayer()) {
-
-				// Make our player
-				int targetX = (int) (GameManager.get().getWorld().getLength() / 2 - 5f);
-				int targetY = (int) (GameManager.get().getWorld().getWidth() / 2 - 5f);
-
-				while (GameManager.get().getWorld().getTerrain(targetX, targetY).getMoveScale() == 0) {
-					targetX += GameManager.get().getRandom().nextInt() % 4 - 2;
-					targetY += GameManager.get().getRandom().nextInt() % 4 - 2;
-				}
-
-				playerManager.setPlayer(targetX, targetY);
-				GameManager.get().getWorld().addEntity(playerManager.getPlayer());
-			}
-			GameManager.get().getManager(ParticleManager.class);
+		while (GameManager.get().getWorld().getTerrain(targetX, targetY).getMoveScale() == 0) {
+			targetX += GameManager.get().getRandom().nextInt() % 4 - 2;
+			targetY += GameManager.get().getRandom().nextInt() % 4 - 2;
 		}
-		
+
+		playerManager.setPlayer(targetX, targetY);
+		GameManager.get().getWorld().addEntity(playerManager.getPlayer());
+
+		GameManager.get().getManager(ParticleManager.class);
+
 		//show the tutorial menu
 		guiManager.getGui(TutorialGui.class).show();
 	}
@@ -406,45 +329,20 @@ public class GameScreen implements Screen {
 
 	private void tickGame(long timeDelta) {
 
-		// Tick our player
-		if (multiplayerManager.isMultiplayer() && !multiplayerManager.isMaster()) {
-			playerManager.getPlayer().onTick(timeDelta);
-		}
-
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
-			if (e instanceof Tickable &&(!multiplayerManager.isMultiplayer() || multiplayerManager.isMaster())) {
+			if (e instanceof Tickable) {
 				((Tickable) e).onTick(timeDelta);
-
-			}
-
-		}
-
-		// Broadcast updates if we're master TO DO only when needed.
-		if (multiplayerManager.isMultiplayer() && multiplayerManager.isMaster()) {
-			for (Map.Entry<Integer, AbstractEntity> e : GameManager.get().getWorld().getEntities().entrySet()) {
-				// But don't broadcast our player yet
-				if (e.getKey() != multiplayerManager.getID()) {
-					multiplayerManager.broadcastEntityUpdatePosition(e.getKey());
-
-					// TO DO only when needed Maybe attach to the HasProgress interface itself?
-					if (e.getValue() instanceof HasProgress) {
-						multiplayerManager.broadcastEntityUpdateProgress(e.getKey());
-					}
-				}
 			}
 		}
-
-		// Broadcast our player updating pos TO DO only when needed.
-		multiplayerManager.broadcastPlayerUpdatePosition();
 
 		// Tick CameraManager, maybe want to make managers tickable??
 		cameraManager.centerOnTarget(timeDelta);
+
 		// Ticks all tickable managers, currently events, waves, particles
 		GameManager.get().onTick(timeDelta);
 		
 		guiManager.tickFadingGuis(timeDelta);
-
     }
 
 	private void renderGUI(SpriteBatch batch) {

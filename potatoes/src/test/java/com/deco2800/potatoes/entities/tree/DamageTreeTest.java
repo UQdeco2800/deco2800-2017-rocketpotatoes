@@ -55,13 +55,13 @@ public class DamageTreeTest {
         assertTrue(coralTreeDamageTree.getDamageTreeType() instanceof CoralTreeType);
         
         assertEquals(defaultDamageTree.createCopy(), new DamageTree(0, 0));
-        assertEquals(defaultDamageTree.getName(), "Lightning Tree");
-        assertEquals(iceTreeDamageTree.getName(), "Ice Tree");
-        assertEquals(acornTreeDamageTree.getName(), "Acorn Tree");
-        assertEquals(fireTreeDamageTree.getName(), "Fire Tree");
-        assertEquals(cactusTreeDamageTree.getName(), "Cactus Tree");
-        assertEquals(coralTreeDamageTree.getName(), "Coral Tree");
-        assertEquals(nullTypeDamageTree.getName(), "Lightning Tree");
+        assertEquals(defaultDamageTree.getName(), "LightningTree");
+        assertEquals(iceTreeDamageTree.getName(), "IceTree");
+        assertEquals(acornTreeDamageTree.getName(), "AcornTree");
+        assertEquals(fireTreeDamageTree.getName(), "FireTree");
+        assertEquals(cactusTreeDamageTree.getName(), "CactusTree");
+        assertEquals(coralTreeDamageTree.getName(), "CoralTree");
+        assertEquals(nullTypeDamageTree.getName(), "LightningTree");
 
     }
     @Test

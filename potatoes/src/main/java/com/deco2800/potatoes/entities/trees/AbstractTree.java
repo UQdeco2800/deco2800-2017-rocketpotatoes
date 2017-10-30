@@ -193,7 +193,8 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 
 	@Override
 	public String getTexture() {
-		return getAnimation() == null ? "" : getAnimation().getFrame();
+		String originalTexture = super.getTexture();
+		return getAnimation() == null ? originalTexture : getAnimation().getFrame();
 	}
 
 	@Override
@@ -283,5 +284,10 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	@Override
 	public String toString(){
 		return "Tree: " + getUpgradeStats().getAnimation().apply(this).getFrame();
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode() * 33;
 	}
 }

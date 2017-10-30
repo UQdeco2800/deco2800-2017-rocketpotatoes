@@ -439,7 +439,6 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 		int tileHeight = (int) GameManager.get().getWorld().getMap().getProperties().get("tileheight");
 		p.addParticleEmitter(2f, new ParticleEmitter(pos.x + tileWidth / 2, pos.y + tileHeight / 2,
 				particle));
-
 		// destroy the enemy & it's events
 		GameManager.get().getWorld().removeEntity(this);
 		GameManager.get().getManager(EventManager.class).unregisterAll(this);

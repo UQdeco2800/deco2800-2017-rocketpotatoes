@@ -301,7 +301,7 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 	 */
 	@Override
 	public String getTexture() {
-		return texture;
+		return this.texture;
 	}
 
 	/**
