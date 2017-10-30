@@ -226,10 +226,6 @@ public class GameScreen implements Screen {
 		GameManager.get().getManager(EventManager.class).unregisterAll();
 
 		GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
-		/*
-		// Initial player preparation up period
-		*/
-		initialisePortal();
 			
 		/* Randomly generate trees in each world */
 		AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
@@ -277,7 +273,7 @@ public class GameScreen implements Screen {
 	    	int yPos;
 
 	    	// The amount of each tree to generate
-    		int amount = 35/trees.length;
+    		int amount = 70/trees.length;
 
 	    	// Terrain to add the tree to
 	    	Terrain terrain;
@@ -288,8 +284,10 @@ public class GameScreen implements Screen {
 	    	for (int i = 0; i < trees.length; i ++) {
 	    		for (int j = 0; j < amount; j++) {
 	    			if (oldTreeSpread) {// Generate random location
-					    xPos = (int) (Math.random() * 40) + 10;
-					    yPos = (int) (Math.random() * 40) + 10;
+					    xPos = (int) (Math.random() * WorldManager.WORLD_SIZE * 0.7) + (int)(WorldManager.WORLD_SIZE
+							    * 0.15);
+					    yPos = (int) (Math.random() * WorldManager.WORLD_SIZE * 0.7) + (int)(WorldManager.WORLD_SIZE
+							    * 0.15);
 					    terrain = world.getTerrain(xPos, yPos);
 
 					    // Only add a tree if it is on grass
@@ -321,10 +319,6 @@ public class GameScreen implements Screen {
 		GameManager.get().getWorld().addEntity(new DamageTree(12.5f, 11.5f, new CactusTreeType()));
 		
 		GameManager.get().getWorld().addEntity(new DefenseTree(10.5f, 11.5f));
-	}
-
-	private void initialisePortal() {
-		GameManager.get().getWorld().addEntity(new BasePortal(GameManager.get().getWorld().getLength()/2, GameManager.get().getWorld().getWidth()/2, 10000));
 	}
 
 	private void tickGame(long timeDelta) {

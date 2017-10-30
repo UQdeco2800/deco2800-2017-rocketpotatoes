@@ -5,6 +5,9 @@ import com.deco2800.potatoes.entities.enemies.SpeedyEnemy;
 import com.deco2800.potatoes.entities.enemies.Squirrel;
 import com.deco2800.potatoes.entities.enemies.TankEnemy;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.WorldManager;
+import com.deco2800.potatoes.worlds.World;
+
 import java.util.*;
 
 public class EnemyWave {
@@ -172,7 +175,8 @@ public class EnemyWave {
      * Add a squirrel to the world
      */
     private static void addSquirrel() {
-        GameManager.get().getWorld().addEntity(new Squirrel(GameManager.get().getWorld().getLength()/2, 6.5f));
+        GameManager.get().getWorld().addEntity(new Squirrel(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE /
+                8f));
         totalAmount++;
     }
 
@@ -180,7 +184,8 @@ public class EnemyWave {
      * Add a tank (bear) enemy to the world
      */
     private static void addTank() {
-        GameManager.get().getWorld().addEntity(new TankEnemy(GameManager.get().getWorld().getLength()/2, 42f));
+        GameManager.get().getWorld().addEntity(new TankEnemy(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE
+                - WorldManager.WORLD_SIZE / 8f));
         totalAmount++;
     }
 
@@ -188,7 +193,8 @@ public class EnemyWave {
      * Add a speedy (raccoon) enemy to the world
      */
     private static void addSpeedy() {
-        GameManager.get().getWorld().addEntity(new SpeedyEnemy(6.5f, GameManager.get().getWorld().getLength()/2));
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(WorldManager.WORLD_SIZE / 8f, WorldManager
+                .WORLD_SIZE / 2f));
         totalAmount++;
 
     }
@@ -197,7 +203,8 @@ public class EnemyWave {
      * Add a moose to the world
      */
     private static void addMoose() {
-        GameManager.get().getWorld().addEntity(new Moose(42f, GameManager.get().getWorld().getLength()/2));
+        GameManager.get().getWorld().addEntity(new Moose(WorldManager.WORLD_SIZE - WorldManager.WORLD_SIZE / 8f,
+                WorldManager.WORLD_SIZE / 2f));
         totalAmount++;
     }
 

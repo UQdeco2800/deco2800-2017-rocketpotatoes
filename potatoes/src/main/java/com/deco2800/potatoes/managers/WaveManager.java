@@ -138,8 +138,8 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
     		// Attempt to add 10 of each resource
     		for (int j = 0; j < 10; j++) {
     			// Generate random location
-    			xPos = (int) (Math.random() * 40) + 10;
-    			yPos = (int) (Math.random() * 40) + 10;
+    			xPos = (int) (Math.random() * WorldManager.WORLD_SIZE * 0.7) + (int)(WorldManager.WORLD_SIZE * 0.15);
+    			yPos = (int) (Math.random() * WorldManager.WORLD_SIZE * 0.7) + (int)(WorldManager.WORLD_SIZE * 0.15);
     			
     			// Iterate over the 4 worlds
     			for (int k = 0; k < 4; k++) {
@@ -147,7 +147,7 @@ public class WaveManager extends Manager implements TickableManager, ForWorld {
         			terrain = worlds[k].getTerrain(xPos, yPos);
         			
         			// Only add the resource if it isn't over water
-        			if (terrain.getTexture() != "water_tile_1") {
+        			if (terrain.getMoveScale() > 0) {
         				// Add the resource to the world. Offset the resource array index to the
         				// resources relevant to each world.
         				worlds[k].addEntity(new ResourceEntity(xPos, yPos, resources[i + 3 * k]));
