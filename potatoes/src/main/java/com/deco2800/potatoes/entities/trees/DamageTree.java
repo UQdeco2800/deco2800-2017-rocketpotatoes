@@ -196,10 +196,6 @@ public class DamageTree extends AbstractTree implements Tickable {
         }else{
             damageTreeType=texture;
         }
-
-
-
-
     }
 
 
@@ -211,8 +207,6 @@ public class DamageTree extends AbstractTree implements Tickable {
     public DamageTree createCopy() {
     	return new DamageTree(this.getPosX(), this.getPosY(), this.getDamageTreeType());
     }
-
-
 
     @Override
     public List<TreeProperties> getAllUpgradeStats() {
@@ -237,8 +231,6 @@ public class DamageTree extends AbstractTree implements Tickable {
             this.setTexture("cactusTree");
             return CACTUS_TREE_STATS;
         }else if(damageTreeType instanceof CoralTreeType){
-
-
             this.setTexture("coralTree");
             return CORAL_TREE_STATS;
         }
@@ -247,6 +239,11 @@ public class DamageTree extends AbstractTree implements Tickable {
         return LIGHTNING_TREE_STATS;
     }
 
+    @Override
+    public String getName(){
+        return damageTreeType.getTypeName();
+
+    }
     /**
      *The class will refresh cureent tree status
      * @return a map that contain the tree status and lambda function
@@ -290,22 +287,6 @@ public class DamageTree extends AbstractTree implements Tickable {
         return damageTreeType;
     }
 
-    @Override
-    public String getName(){
-        if(damageTreeType instanceof IceTreeType){
-            return "Ice Tree";
-        }else if(damageTreeType instanceof AcornTreeType){
-            return "Acorn Tree";
-        } else if(damageTreeType instanceof FireTreeType){
-            return "Fire Tree";
-        } else if(damageTreeType instanceof CactusTreeType){
-            return "Cactus Tree";
-        } else if(damageTreeType instanceof CoralTreeType){
-            return "Coral Tree";            
-        } else {
-            return "Lightning Tree";
-        }
 
-    }
 
 }

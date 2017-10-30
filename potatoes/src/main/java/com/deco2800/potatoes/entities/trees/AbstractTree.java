@@ -284,4 +284,9 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public String toString(){
 		return "Tree: " + getUpgradeStats().getAnimation().apply(this).getFrame();
 	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode() * 33;
+	}
 }
