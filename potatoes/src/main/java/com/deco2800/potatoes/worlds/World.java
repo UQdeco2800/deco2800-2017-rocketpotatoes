@@ -306,7 +306,7 @@ public class World {
 		if (!tile.equals(terrain[x][y]) && !backgroundTerrain[0].equals(tile)) {
 			GameManager.get().getManager(WorldManager.class).setWorldCached(false);
 			terrain[x][y] = tile;
-			Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile.getTexture());
+			Cell cell = GameManager.get().getManager(WorldManager.class).getCell(tile);
 			((TiledMapTileLayer) map.getLayers().get(0)).setCell(x, y, cell);
 		}
 	}

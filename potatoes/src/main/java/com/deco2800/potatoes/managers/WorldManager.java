@@ -1,15 +1,21 @@
 package com.deco2800.potatoes.managers;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.utils.Array;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.util.GridUtil;
 import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
+import com.deco2800.potatoes.worlds.terrain.AnimatedTerrain;
+import com.deco2800.potatoes.worlds.terrain.RandomTerrain;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,23 +117,16 @@ public class WorldManager extends Manager implements TickableManager {
 	 * Returns the cell associated with a given texture. A new cell is created with
 	 * the given texture if one doesn't exist already
 	 */
-	public Cell getCell(String texture) {
-		if (!cells.containsKey(texture)) {
-			cells.put(texture, new Cell().setTile(new StaticTiledMapTile(
-					GameManager.get().getManager(TextureManager.class).getTextureRegion(texture))));
+	public Cell getCell(Terrain terrain) {
+		if (!cells.containsKey(terrain.getTexture())) {
+			terrain.putCell(cells);
 		}
-		return cells.get(texture);
+		return cells.get(terrain.getTexture());
 	}
 
 	private World generateWorld(WorldType worldType) {
 		World world = new World();
-		Cell[][] terrainCells = new Cell[WORLD_SIZE][WORLD_SIZE];
 		Terrain[][] terrain = worldType.generateWorld(WORLD_SIZE);
-		for (int x = 0; x < WORLD_SIZE; x++) {
-			for (int y = 0; y < WORLD_SIZE; y++) {
-				terrainCells[x][y] = getCell(terrain[x][y].getTexture());
-			}
-		}
 		world.setBackground(worldType.getTerrain().getWater());
 		world.setTerrain(terrain);
 		return world;

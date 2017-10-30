@@ -3,12 +3,15 @@ package com.deco2800.potatoes.worlds;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.deco2800.potatoes.worlds.terrain.AnimatedTerrain;
+import com.deco2800.potatoes.worlds.terrain.RandomTerrain;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
 import com.deco2800.potatoes.worlds.terrain.TerrainType;
 import com.deco2800.potatoes.entities.AbstractEntity;
 
 public class OceanWorld extends WorldType {
-	private static final TerrainType oceanTerrain = new TerrainType(new Terrain(WATER, 1, true), new Terrain(GROUND, 1, false), new Terrain(GRASS, 0, false));
+	private static final TerrainType oceanTerrain = new TerrainType(RandomTerrain.SAND, AnimatedTerrain
+			.SHALLOW_WATER, new Terrain(WATER, 0, false));
 	private static final List<Supplier<AbstractEntity>> oceanEntities = defaultEntities("sea");
 	private static final OceanWorld instance = new OceanWorld(oceanTerrain, oceanEntities);
 	

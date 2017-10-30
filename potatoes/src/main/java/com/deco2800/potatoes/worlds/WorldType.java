@@ -166,35 +166,4 @@ public class WorldType {
 		}
 		return spot;
 	}
-
-	/*
-	 * Auto generated, no need to manually test. Created from fields: terrain
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (terrain == null ? 0 : terrain.hashCode());
-		return result;
-	}
-
-	/*
-	 * Auto generated, no need to manually test. Created from fields: terrain
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		WorldType other = (WorldType) obj;
-		if (terrain == null) {
-			if (other.terrain != null)
-				return false;
-		} else if (!terrain.equals(other.terrain))
-			return false;
-		return true;
-	}
 }
