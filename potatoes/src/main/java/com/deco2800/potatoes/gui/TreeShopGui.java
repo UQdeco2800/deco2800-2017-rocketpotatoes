@@ -96,14 +96,6 @@ public class TreeShopGui extends Gui implements SceneGui {
         refreshTreeStates();
         for (TreeState treeState : treeStates) {
             items.put(treeState.getTree(), treeColorCode.get(treeState.getTreeType()));
-            System.out.println(treeState.getTree().getName()+": "+treeState.isUnlocked
-                    ()+" - " + treeState.getTree().getTexture());
-        }
-
-        System.out.println("testing...");
-
-        for (AbstractTree tree : items.keySet()){
-            System.out.println(tree.getName());
         }
 
         for (AbstractTree tree : items.keySet()) {

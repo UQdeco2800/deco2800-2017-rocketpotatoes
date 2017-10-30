@@ -39,7 +39,7 @@ public class DamageTreeType implements Comparable<DamageTreeType> {
      * 				The texture location.
      */
     public String getTexture() {
-        return texture;
+        return this.texture;
     }
 
 
