@@ -127,7 +127,9 @@ public class WorldType {
 	private float[][] getWaterSeed(int worldSize) {
 		float[][] result = GridUtil.seedGrid(worldSize);
 		for (Point p : clearSpots) {
-			result[p.x][p.y] = 1;
+			if (p.x < worldSize && p.y < worldSize) {
+				result[p.x][p.y] = 1;
+			}
 		}
 		return result;
 	}
@@ -152,7 +154,7 @@ public class WorldType {
 
 	private Function<Point, Boolean> floodFillCheck(int worldSize, Terrain[][] terrainSet) {
 		return p -> p.x > 0 && p.y > 0 && p.x < worldSize && p.y < worldSize
-				&& !terrainSet[p.x][p.y].getTexture().equals(WATER);
+				&& !terrainSet[p.x][p.y].getTexture().equals(getTerrain().getWater());
 	}
 
 	private Terrain chooseTerrain(float water, float height, float grass) {

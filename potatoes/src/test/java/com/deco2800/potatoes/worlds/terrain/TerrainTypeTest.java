@@ -52,11 +52,11 @@ public class TerrainTypeTest {
         assertFalse(t1.equals(t3));
         assertFalse(t1.equals(t4));
         assertFalse(t1.equals(t5));
-        assertFalse(t1.equals(t6));
+        assertTrue(t1.equals(t6));
         assertFalse(t1.equals(t7));
         assertFalse(t1.equals(t8));
         assertFalse(t1.equals(t9));
-        assertFalse(t6.equals(t1));
+        assertTrue(t6.equals(t1));
         assertFalse(t7.equals(t1));
         assertFalse(t8.equals(t1));
         assertFalse(t9.equals(t1));

@@ -3,6 +3,7 @@ package com.deco2800.potatoes.entities.health;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.deco2800.potatoes.entities.player.Player;
 import com.deco2800.potatoes.managers.*;
+import com.deco2800.potatoes.worlds.ForestWorld;
 import com.deco2800.potatoes.worlds.World;
 import com.deco2800.potatoes.worlds.WorldType;
 import com.deco2800.potatoes.worlds.terrain.Terrain;
@@ -19,24 +20,9 @@ public class RespawnEventTest {
 
 	@Before
 	public void initWorld() {
-		int worldSize = 50;
-		// create a test world of size 50 by 50
-		World testWorld = new TestWorld();
-		GameManager.get().setWorld(testWorld);
+		GameManager.get().getManager(WorldManager.class).setWorld(ForestWorld.get());
 		GameManager.get().addManager(new SoundManager());
 		GameManager.get().addManager(new GuiManager());
-		// set the test world to forest world terrain
-		WorldType worldType = new WorldType(new TerrainType(new Terrain("grass", 1, true),
-				new Terrain("ground_1", 1, false), new Terrain("w1", 0, false)), null);
-		Cell[][] terrainCells = new Cell[worldSize][worldSize];
-		Terrain[][] terrain = worldType.generateWorld(worldSize);
-		for (int x = 0; x < worldSize; x++) {
-			for (int y = 0; y < worldSize; y++) {
-				terrainCells[x][y] = GameManager.get().getManager(WorldManager.class).getCell(terrain[x][y].getTexture());
-			}
-		}
-		testWorld.setTerrain(terrain);
-		GameManager.get().getWorld().setTerrain(terrain);
 	}
 	
 	@After
@@ -58,9 +44,4 @@ public class RespawnEventTest {
 		GameManager.get().getManager(PlayerManager.class).setPlayer(player);
 		testEvent.action(player);
 	}
-
-	private class TestWorld extends World {
-		
-	}
-
 }
