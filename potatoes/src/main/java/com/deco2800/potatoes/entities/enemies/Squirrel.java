@@ -18,7 +18,7 @@ import com.deco2800.potatoes.util.Path;
 public class Squirrel extends EnemyEntity implements Tickable, HasProgress {
 
 	private static final transient String TEXTURE_LEFT = "squirrel";
-	private static final transient float HEALTH = 200f;
+	private static final transient float HEALTH = 50f;
 	private static final transient float ATTACK_RANGE = 8f;
 	private static final transient int ATTACK_SPEED = 500;
 	private static final EnemyProperties STATS = initStats();

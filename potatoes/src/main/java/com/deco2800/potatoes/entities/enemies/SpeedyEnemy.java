@@ -31,7 +31,7 @@ import java.util.Map;
 public class SpeedyEnemy extends EnemyEntity implements Tickable {
 
 	private static final transient String TEXTURE = "speedyRaccoon";
-	private static final transient float HEALTH = 160f;
+	private static final transient float HEALTH = 35f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 2000;
 	private static final transient String[] ENEMY_TYPE = new String[]{

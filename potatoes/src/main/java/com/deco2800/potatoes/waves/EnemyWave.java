@@ -15,7 +15,7 @@ public class EnemyWave {
     private float[] enemyRatios;    //Length of wave in .001 of seconds
     private int waveLength;     //The current time of the wave
     private int waveTime = 0;   //Spawn rate (100 = 1 second)
-    private int spawnRate = 75;     //Time counting down for gui
+    private int spawnRate = 110;     //Time counting down for gui
     private int[] enemyCounts = {0, 0, 0, 0};   //counter for squirrle:speedy:tank:moose added to wave
     private static int totalAmount = 0;
     private int roundNumber;
@@ -177,25 +177,43 @@ public class EnemyWave {
     private static void addSquirrel() {
         GameManager.get().getWorld().addEntity(new Squirrel(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE /
                 8f));
-        totalAmount++;
+        GameManager.get().getWorld().addEntity(new Squirrel(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE
+                - WorldManager.WORLD_SIZE / 8f));
+        GameManager.get().getWorld().addEntity(new Squirrel(WorldManager.WORLD_SIZE / 8f, WorldManager
+                .WORLD_SIZE / 2f));
+        GameManager.get().getWorld().addEntity(new Squirrel(WorldManager.WORLD_SIZE - WorldManager.WORLD_SIZE / 8f,
+                WorldManager.WORLD_SIZE / 2f));
+        totalAmount += 4;
     }
 
     /**
      * Add a tank (bear) enemy to the world
      */
     private static void addTank() {
+        GameManager.get().getWorld().addEntity(new TankEnemy(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE /
+                8f));
         GameManager.get().getWorld().addEntity(new TankEnemy(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE
                 - WorldManager.WORLD_SIZE / 8f));
-        totalAmount++;
+        GameManager.get().getWorld().addEntity(new TankEnemy(WorldManager.WORLD_SIZE / 8f, WorldManager
+                .WORLD_SIZE / 2f));
+        GameManager.get().getWorld().addEntity(new TankEnemy(WorldManager.WORLD_SIZE - WorldManager.WORLD_SIZE / 8f,
+                WorldManager.WORLD_SIZE / 2f));
+        totalAmount += 4;
     }
 
     /**
      * Add a speedy (raccoon) enemy to the world
      */
     private static void addSpeedy() {
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE /
+                8f));
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE
+                - WorldManager.WORLD_SIZE / 8f));
         GameManager.get().getWorld().addEntity(new SpeedyEnemy(WorldManager.WORLD_SIZE / 8f, WorldManager
                 .WORLD_SIZE / 2f));
-        totalAmount++;
+        GameManager.get().getWorld().addEntity(new SpeedyEnemy(WorldManager.WORLD_SIZE - WorldManager.WORLD_SIZE / 8f,
+                WorldManager.WORLD_SIZE / 2f));
+        totalAmount += 4;
 
     }
 
@@ -203,9 +221,15 @@ public class EnemyWave {
      * Add a moose to the world
      */
     private static void addMoose() {
+        GameManager.get().getWorld().addEntity(new Moose(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE /
+                8f));
+        GameManager.get().getWorld().addEntity(new Moose(WorldManager.WORLD_SIZE / 2f, WorldManager.WORLD_SIZE
+                - WorldManager.WORLD_SIZE / 8f));
+        GameManager.get().getWorld().addEntity(new Moose(WorldManager.WORLD_SIZE / 8f, WorldManager
+                .WORLD_SIZE / 2f));
         GameManager.get().getWorld().addEntity(new Moose(WorldManager.WORLD_SIZE - WorldManager.WORLD_SIZE / 8f,
                 WorldManager.WORLD_SIZE / 2f));
-        totalAmount++;
+        totalAmount += 4;
     }
 
     /**

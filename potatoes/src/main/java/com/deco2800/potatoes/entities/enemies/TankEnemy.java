@@ -36,7 +36,7 @@ public class TankEnemy extends EnemyEntity implements Tickable {
 
 	private static final EnemyProperties STATS = initStats();
 	private static final transient String TEXTURE = "tankBear";
-	private static final transient float HEALTH = 2000;
+	private static final transient float HEALTH = 200f;
 	private static final transient float ATTACK_RANGE = 0.5f;
 	private static final transient int ATTACK_SPEED = 1000;
 	private long sTime=0;
