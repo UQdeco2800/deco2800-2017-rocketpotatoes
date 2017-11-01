@@ -22,7 +22,6 @@ public class DamageTreeTest {
     @Before
     public void setup() {
         defaultDamageTree = new DamageTree();
-        defaultDamageTree = new DamageTree(0, 0);
         iceTreeDamageTree = new DamageTree(1, 0, new IceTreeType());
         acornTreeDamageTree = new DamageTree(1, 0, new AcornTreeType());
         fireTreeDamageTree = new DamageTree(1, 0, new FireTreeType());
@@ -49,19 +48,16 @@ public class DamageTreeTest {
         assertTrue(iceTreeDamageTree.getDamageTreeType() instanceof IceTreeType);
         assertTrue(acornTreeDamageTree.getDamageTreeType() instanceof AcornTreeType);
         assertTrue(fireTreeDamageTree.getDamageTreeType() instanceof FireTreeType);
-        assertTrue(defaultDamageTree.getDamageTreeType() instanceof LightningTreeType);
-        assertTrue(nullTypeDamageTree.getDamageTreeType() instanceof LightningTreeType);
         assertTrue(cactusTreeDamageTree.getDamageTreeType() instanceof CactusTreeType);
         assertTrue(coralTreeDamageTree.getDamageTreeType() instanceof CoralTreeType);
         
-        assertEquals(defaultDamageTree.createCopy(), new DamageTree(0, 0));
-        assertEquals(defaultDamageTree.getName(), "LightningTree");
+
+
         assertEquals(iceTreeDamageTree.getName(), "IceTree");
         assertEquals(acornTreeDamageTree.getName(), "AcornTree");
         assertEquals(fireTreeDamageTree.getName(), "FireTree");
         assertEquals(cactusTreeDamageTree.getName(), "CactusTree");
         assertEquals(coralTreeDamageTree.getName(), "CoralTree");
-        assertEquals(nullTypeDamageTree.getName(), "LightningTree");
 
     }
     @Test
