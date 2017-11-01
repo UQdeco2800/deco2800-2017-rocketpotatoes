@@ -228,16 +228,16 @@ public class GameScreen implements Screen {
 		GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			
 		/* Randomly generate trees in each world */
-		AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
+		AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType())};
 		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()), forestTrees);
 
-		AbstractTree[] desertTrees = {new PineTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
+		AbstractTree[] desertTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};
 		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(DesertWorld.get()), desertTrees);
 
-		AbstractTree[] iceTrees = {new SeedTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
+		AbstractTree[] iceTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new IceTreeType())};
 		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(IceWorld.get()), iceTrees);
 
-		AbstractTree[] oceanTrees = {new FoodTree(0, 0), new DefenseTree(0, 0), new DamageTree(0, 0)};
+		AbstractTree[] oceanTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new LightningTreeType())};
 		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(OceanWorld.get()), oceanTrees);
 
 		AbstractTree[] volcanoTrees = {new FoodTree(0, 0), new PineTree(0, 0), new DamageTree(0, 0, new FireTreeType())};
@@ -273,7 +273,7 @@ public class GameScreen implements Screen {
 	    	int yPos;
 
 	    	// The amount of each tree to generate
-    		int amount = 70/trees.length;
+    		int amount = 100/trees.length;
 
 	    	// Terrain to add the tree to
 	    	Terrain terrain;
@@ -312,7 +312,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void addDamageTree() {
-		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f));
+		GameManager.get().getWorld().addEntity(new DamageTree(16.5f, 11.5f, new LightningTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(14.5f, 11.5f, new AcornTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(15.5f, 11.5f, new IceTreeType()));
 		GameManager.get().getWorld().addEntity(new DamageTree(13.5f, 11.5f, new FireTreeType()));

@@ -300,7 +300,7 @@ public class TextureManager extends Manager {
 
         //Resources
         saveTexture("seed", "resources/resourceEntities/seed.png");
-        saveTexture("wood", "resources/resourceEntities/wood.png");
+        saveTexture("food", "resources/resourceEntities/food.png");
 
         saveTexture("tumbleweed", "resources/resourceEntities/tumbleweed.png");
         saveTexture("cactusThorn", "resources/resourceEntities/cactusThorn.png");

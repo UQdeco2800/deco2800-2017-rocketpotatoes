@@ -148,14 +148,15 @@ public class TreeShopGui extends Gui implements SceneGui {
 
         // Seed resource tree
         Inventory seedTreeCost = new Inventory();
-        seedTreeCost.updateQuantity(new SeedResource(), 1);
+        seedTreeCost.updateQuantity(new SeedResource(), 2);
         TreeState seedTreeState = new TreeState(new SeedTree(treeX, treeY), 
         		seedTreeCost, true, "resource");
         treeStates.add(seedTreeState);
 
         // Food resource tree
         Inventory foodTreeCost = new Inventory();
-        foodTreeCost.updateQuantity(new SeedResource(), 2);
+        foodTreeCost.updateQuantity(new SeedResource(), 1);
+        foodTreeCost.updateQuantity(new FoodResource(), 1);
         TreeState foodTreeState = new TreeState(new FoodTree(treeX, treeY), 
         		foodTreeCost, false, "resource");
         treeStates.add(foodTreeState);
@@ -163,15 +164,16 @@ public class TreeShopGui extends Gui implements SceneGui {
         // Pine resource tree
         Inventory pineTreeCost = new Inventory();
         pineTreeCost.updateQuantity(new SeedResource(), 1);
+        pineTreeCost.updateQuantity(new PineconeResource(), 1);
         TreeState pineTreeState = new TreeState(new PineTree(treeX, treeY), 
         		pineTreeCost, false, "resource");
         treeStates.add(pineTreeState);
 
         // Lightning tree
         Inventory lightningTreeCost = new Inventory();
-        lightningTreeCost.updateQuantity(new CactusThornResource(), 1);
-        lightningTreeCost.updateQuantity(new SeedResource(), 3);
-        lightningTreeCost.updateQuantity(new TreasureResource(), 1);
+        lightningTreeCost.updateQuantity(new FishMeatResource(), 4);
+        lightningTreeCost.updateQuantity(new PearlResource(), 3);
+        lightningTreeCost.updateQuantity(new TreasureResource(), 4);
         DamageTree lightningTree = new DamageTree(treeX, treeY, new LightningTreeType());
         TreeState lightningTreeState = new TreeState(lightningTree, lightningTreeCost,
                 false, "damage");
@@ -179,17 +181,18 @@ public class TreeShopGui extends Gui implements SceneGui {
 
         // Ice tree
         Inventory iceTreeCost = new Inventory();
-        iceTreeCost.updateQuantity(new IceCrystalResource(), 1);
-        iceTreeCost.updateQuantity(new SeedResource(), 4);
+        iceTreeCost.updateQuantity(new IceCrystalResource(), 2);
+        iceTreeCost.updateQuantity(new SealSkinResource(), 4);
+        iceTreeCost.updateQuantity(new IceCrystalResource(), 4);
         DamageTree iceTree = new DamageTree(treeX, treeY, new IceTreeType());
         TreeState iceTreeState = new TreeState(iceTree, iceTreeCost, false, "defense");
         treeStates.add(iceTreeState);
 
         // Fire tree
         Inventory fireTreeCost = new Inventory();
-        fireTreeCost.updateQuantity(new ObsidianResource(), 1);
-        fireTreeCost.updateQuantity(new WoodResource(), 1);
-        fireTreeCost.updateQuantity(new SeedResource(), 6);
+        fireTreeCost.updateQuantity(new ObsidianResource(), 2);
+        fireTreeCost.updateQuantity(new CoalResource(), 4);
+        fireTreeCost.updateQuantity(new BonesResource(), 3);
         DamageTree fireTree = new DamageTree(treeX, treeY, new FireTreeType());
         TreeState fireTreeState = new TreeState(fireTree, fireTreeCost, false,
                 "damage");
@@ -197,8 +200,8 @@ public class TreeShopGui extends Gui implements SceneGui {
 
         // Acorn tree
         Inventory acornTreeCost = new Inventory();
-        acornTreeCost.updateQuantity(new PineconeResource(), 1);
-        acornTreeCost.updateQuantity(new TumbleweedResource(), 1);
+        acornTreeCost.updateQuantity(new PineconeResource(), 2);
+        acornTreeCost.updateQuantity(new FoodResource(), 2);
         acornTreeCost.updateQuantity(new SeedResource(), 3);
         DamageTree acornTree = new DamageTree(treeX, treeY, new AcornTreeType());
         TreeState acornTreeState = new TreeState(acornTree, acornTreeCost, true,
@@ -209,7 +212,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         Inventory cactusTreeCost = new Inventory();
         cactusTreeCost.updateQuantity(new CactusThornResource(), 2);
         cactusTreeCost.updateQuantity(new PricklyPearResource(), 3);
-        cactusTreeCost.updateQuantity(new SeedResource(), 4);
+        cactusTreeCost.updateQuantity(new TumbleweedResource(), 4);
         DamageTree cactusTree = new DamageTree(treeX, treeY, new CactusTreeType());
         TreeState cactusTreeState = new TreeState(cactusTree, cactusTreeCost, false,
         		"damage");
@@ -217,8 +220,7 @@ public class TreeShopGui extends Gui implements SceneGui {
         
         // Defense tree
         Inventory defenseTreeCost = new Inventory();
-        defenseTreeCost.updateQuantity(new ObsidianResource(), 3);
-        defenseTreeCost.updateQuantity(new SeedResource(), 6);
+        defenseTreeCost.updateQuantity(new SeedResource(), 1);
         DefenseTree defenseTree = new DefenseTree(treeX, treeY);
         TreeState defenseTreeState = new TreeState(defenseTree, defenseTreeCost, false,
         		"defense");
