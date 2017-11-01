@@ -2,7 +2,6 @@ package com.deco2800.potatoes.util;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class MathUtilTest {
