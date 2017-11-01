@@ -35,5 +35,9 @@ public class LRUCacheTest {
         for (int i = 0; i < cap; ++i) {
             assertEquals(Optional.of(new Integer(i + diff).toString()), cache.get(i + diff));
         }
+
+        for (int i = 0; i < diff; ++i) {
+            assertEquals(Optional.empty(), cache.get(i));
+        }
     }
 }
