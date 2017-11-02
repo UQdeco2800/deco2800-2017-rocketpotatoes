@@ -2,6 +2,7 @@ package com.deco2800.potatoes.entities.enemies;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
 import com.deco2800.potatoes.entities.Tickable;
@@ -21,7 +22,6 @@ import com.deco2800.potatoes.renderering.Render3D;
 import com.deco2800.potatoes.renderering.particles.ParticleEmitter;
 import com.deco2800.potatoes.renderering.particles.types.BasicParticleType;
 import com.deco2800.potatoes.renderering.particles.types.ParticleType;
-import com.deco2800.potatoes.util.Path;
 import com.deco2800.potatoes.util.WorldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,41 +100,15 @@ public abstract class EnemyEntity extends MortalEntity implements HasProgressBar
 	 * @param goalEntity the entity the enemy's path and target are to be set to
 	 */
 	public void pathMovement(PathAndTarget pathTarget, AbstractEntity goalEntity) {
-		Path path = pathTarget.getPath();
-		Shape2D target = pathTarget.getTarget();
+		Shape2D target = goalEntity.getMask();
 		PathManager pathManager = GameManager.get().getManager(PathManager.class);
-		if (goalEntity != null) {
-			// check paths
-			// check that we actually have a path
-			if (path == null || path.isEmpty()) {
-				path = pathManager.generatePath(this.getMask(), goalEntity.getMask());
-			}
+		if (goalEntity != null && target != null) {
+			Point2D targetPoint = pathManager.requestPath(target, getMask());
 
-			//check if last node in path matches player
-			if (!path.goal().overlaps(goalEntity.getMask())) {
-				path = pathManager.generatePath(this.getMask(), goalEntity.getMask());
-			}
-
-			//check if close enough to target
-			if (target != null && target.overlaps(this.getMask())) {
-				target = null;
-			}
-
-			//check if the path has another node
-			if (target == null && !path.isEmpty()) {
-				target = path.pop();
-			}
-
-			if (target == null) {
-				target = goalEntity.getMask();
-			}
-
-			float deltaX = target.getX() - getPosX();
-			float deltaY = target.getY() - getPosY();
+			float deltaX = targetPoint.getX() - getPosX();
+			float deltaY = targetPoint.getY() - getPosY();
 
 			super.setMoveAngle(getRadFromCoords(deltaX, deltaY));
-			pathTarget.setPath(path);
-			pathTarget.setTarget(target);
 		}
 	}
 
