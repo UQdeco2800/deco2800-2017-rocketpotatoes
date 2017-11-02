@@ -102,31 +102,6 @@ public class Point2D extends Shape2D {
     }
 
     /**
-     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
-     * Returns 0 if intersecting.
-     *
-     * @param x1    The x coord of point 1 of the line
-     * @param y1    The y coord of point 1 of the line
-     * @param x2    The x coord of point 2 of the line
-     * @param y2    The y coord of point 2 of the line
-     * @return      The minimum straight-line distance
-     */
-    @Override
-    public float distance(float x1, float y1, float x2, float y2) {
-        // don't sqrt anything you don't have to
-        float segmentLength = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-        if (Float.compare(segmentLength, 0) == 0) {
-            return distance(new Point2D(x1, y1));
-        }
-
-        // how far along the line segment is the closest point to us?
-        float unclamped = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / segmentLength;
-        float clamped = Math.max(0f, Math.min(1f, unclamped));
-
-        return distance(new Point2D(x1 + clamped * (x2 - x1), y1 + clamped * (y2 - y1)));
-    }
-
-    /**
      * Renders an X using this shape using an current shapeRenderer
      * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
      */

@@ -112,21 +112,6 @@ public class Circle2D extends Shape2D {
     }
 
     /**
-     * Finds the minimum straight-line distance between the edges of this collision mask and the given line.
-     *
-     * @param x1    The x coord of point 1 of the line
-     * @param y1    The y coord of point 1 of the line
-     * @param x2    The x coord of point 2 of the line
-     * @param y2    The y coord of point 2 of the line
-     * @return      The minimum straight-line distance
-     */
-    @Override
-    public float distance(float x1, float y1, float x2, float y2) {
-        Point2D centre = new Point2D(x, y);
-        return centre.distance(x1, y1, x2, y2) - radius;
-    }
-
-    /**
      * Renders the fill or outline of this shape using an current shapeRenderer
      * @param shapeRenderer a shapeRenderer that has run begin() & setcolour() already
      */
