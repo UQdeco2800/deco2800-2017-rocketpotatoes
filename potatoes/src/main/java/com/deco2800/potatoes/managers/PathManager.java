@@ -78,7 +78,7 @@ public class PathManager extends Manager {
                 Point2D second = (Point2D) dots.find(j);
                 Line2D line = new Line2D(first, second);
                 // check that no entities overlap the line between these paths
-                if (!world.getEntitiesOverlapping(line).hasNext()) {
+                if (!world.getEntitiesOverlapping(line).anyMatch(x -> true)) {
                     graph.put(new Pair(i, j), (float) Math.sqrt(line.getLenSqr()));
                 }
             }
@@ -97,7 +97,9 @@ public class PathManager extends Manager {
         for (int i = 0; i < NUMBER_OF_RANDOM_NODES; ++i) {
             Point2D centre = new Point2D(goal.getX(), goal.getY());
             Line2D line = new Line2D((Point2D) dots.find(i), centre);
-            if (!world.getEntitiesOverlapping(line).hasNext()) {
+            if (!world.getEntitiesOverlapping(line)
+                    .filter(entity -> !entity.getMask().equals(goal))
+                    .anyMatch(x -> true)) {
                 output.put(i, -1);
                 toVisit.put(i, (float) Math.sqrt(line.getLenSqr()));
             } else {
@@ -163,7 +165,7 @@ public class PathManager extends Manager {
             Shape2D nextGoal = next == -1 ? goal : dots.find(next);
             Line2D line = new Line2D(new Point2D(self.getX(), self.getY()),
                     new Point2D(nextGoal.getX(), nextGoal.getY()));
-            if (next == -1 || world.getEntitiesOverlapping(line).hasNext()) {
+            if (next == -1 || world.getEntitiesOverlapping(line).anyMatch(x -> true)) {
                 break;
             }
             else {

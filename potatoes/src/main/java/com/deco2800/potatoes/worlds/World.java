@@ -2,6 +2,7 @@ package com.deco2800.potatoes.worlds;
 
 import java.awt.Point;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -178,9 +179,9 @@ public class World {
 		}
 	}
 
-    public Iterator<AbstractEntity> getEntitiesOverlapping(Shape2D shape) {
+    public Stream<AbstractEntity> getEntitiesOverlapping(Shape2D shape) {
         return entitiesRtree
-            .findOverlapping(shape).stream().map((id) -> entities.get(id)).iterator();
+            .findOverlapping(shape).stream().map((id) -> entities.get(id));
     }
 
 	/**
