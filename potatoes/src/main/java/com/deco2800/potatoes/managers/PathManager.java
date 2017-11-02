@@ -10,9 +10,11 @@ import com.deco2800.potatoes.util.LRUCache;
 import com.deco2800.potatoes.util.RTree;
 import com.deco2800.potatoes.util.Pair;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Object to manage the allocation of paths for enemies to follow.
@@ -68,8 +70,60 @@ public class PathManager extends Manager {
     private void updateGraph() {
         age += 1;
         graph = new HashMap<>();
+        World world = GameManager.get().getWorld();
 
+        for (int i = 0; i < NUMBER_OF_RANDOM_NODES; ++i) {
+            Point2D first = (Point2D) dots.find(i);
+            for (int j = 0; j < NUMBER_OF_RANDOM_NODES; ++j) {
+                Point2D second = (Point2D) dots.find(j);
+                Line2D line = new Line2D(first, second);
+                // check that no entities overlap the line between these paths
+                if (!world.getEntitiesOverlapping(line).hasNext()) {
+                    graph.put(new Pair(i, j), (float) Math.sqrt(line.getLenSqr()));
+                }
+            }
+        }
 
+    }
+
+    /**
+     * Generates a new shortes path tree centered around a given goal.
+     */
+    private Map<Integer, Integer> generateShortestPathTree(Shape2D goal) {
+        Map<Integer, Integer> output = new HashMap<>();
+        Map<Integer, Float> toVisit = new HashMap<>();
+        World world = GameManager.get().getWorld();
+
+        for (int i = 0; i < NUMBER_OF_RANDOM_NODES; ++i) {
+            Point2D centre = new Point2D(goal.getX(), goal.getY());
+            Line2D line = new Line2D((Point2D) dots.find(i), centre);
+            if (!world.getEntitiesOverlapping(line).hasNext()) {
+                output.put(i, -1);
+                toVisit.put(i, (float) Math.sqrt(line.getLenSqr()));
+            } else {
+                toVisit.put(i, Float.MAX_VALUE);
+            }
+        }
+
+        while (toVisit.size() > 0) {
+            int next = toVisit
+                .keySet()
+                .stream()
+                .min(Comparator.comparingDouble(id -> toVisit.get(id)))
+                .get();
+
+            toVisit.remove(next);
+
+            for (int other: toVisit.keySet()) {
+                Float dist = graph.get(new Pair(other, next));
+                if (dist != null && dist < toVisit.get(other)) {
+                    toVisit.put(other, dist);
+                    output.put(other, next);
+                }
+            }
+        }
+
+        return output;
     }
 
     public PathManager() {
@@ -83,9 +137,40 @@ public class PathManager extends Manager {
             dots.insert(i, new Point2D((float) (Math.random() * world.getWidth()),
                         (float) (Math.random() * world.getLength())));
         }
+
+        updateGraph();
     }
 
-    public Point2D requestPath(Shape2D goal) {
-        return new Point2D(goal.getX(), goal.getY());
+    /**
+     * Find the next point on the path this entity should be following.
+     */
+    public Point2D requestPath(Shape2D goal, Shape2D self) {
+        TreeKey key = new TreeKey(age, goal);
+        Optional<Map<Integer, Integer>> maybeTree = trees.get(key);
+        Map<Integer, Integer> tree;
+        World world = GameManager.get().getWorld();
+
+        if (maybeTree.isPresent()) {
+            tree = maybeTree.get();
+        } else {
+            tree = generateShortestPathTree(goal);
+            trees.put(key, tree);
+        }
+
+        int nearest = dots.findClosest(self);
+        while (true) {
+            int next = tree.get(nearest);
+            Shape2D nextGoal = next == -1 ? goal : dots.find(next);
+            Line2D line = new Line2D(new Point2D(self.getX(), self.getY()),
+                    new Point2D(nextGoal.getX(), nextGoal.getY()));
+            if (next == -1 || world.getEntitiesOverlapping(line).hasNext()) {
+                break;
+            }
+            else {
+                nearest = next;
+            }
+        }
+
+        return nearest == -1 ? new Point2D(goal.getX(), goal.getY()) : (Point2D) dots.find(nearest);
     }
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.deco2800.potatoes.collisions.Shape2D;
 import com.deco2800.potatoes.collisions.Circle2D;
 import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.AbstractEntity;
@@ -176,6 +177,11 @@ public class World {
 			}
 		}
 	}
+
+    public Iterator<AbstractEntity> getEntitiesOverlapping(Shape2D shape) {
+        return entitiesRtree
+            .findOverlapping(shape).stream().map((id) -> entities.get(id)).iterator();
+    }
 
 	/**
 	 *
