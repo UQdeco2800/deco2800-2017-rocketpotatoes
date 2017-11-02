@@ -99,6 +99,7 @@ public class PathManager extends Manager {
             Line2D line = new Line2D((Point2D) dots.find(i), centre);
             if (!world.getEntitiesOverlapping(line)
                     .filter(entity -> !entity.getMask().equals(goal))
+                    .filter(entity -> entity.isStatic())
                     .anyMatch(x -> true)) {
                 output.put(i, -1);
                 toVisit.put(i, (float) Math.sqrt(line.getLenSqr()));
@@ -172,6 +173,7 @@ public class PathManager extends Manager {
                 .getEntitiesOverlapping(line)
                 .filter(entity -> !entity.getMask().equals(goal))
                 .filter(entity -> !entity.getMask().equals(self))
+                .filter(entity -> entity.isStatic())
                 .anyMatch(x -> {System.out.println(x); return true;});
             if (collides) {
                 break;
