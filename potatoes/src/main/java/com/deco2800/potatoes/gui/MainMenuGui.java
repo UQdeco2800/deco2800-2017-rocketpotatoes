@@ -93,7 +93,7 @@ public class MainMenuGui extends Gui {
         startCharacterImage = new Image(new TextureRegion(textureManager.getTexture("caveman_idle_SW_1")));
         startCharacterSelect = new SelectBox<String>(uiSkin);
         startCharacterSelect.setItems(capitalisePlayerTypes(PlayerType.names()));
-        singleplayerButton = new TextButton("Single Player", uiSkin);
+        singleplayerButton = new TextButton("Start Game", uiSkin);
         startBackButton = new TextButton("Back", uiSkin);
 
         startButtonGroup = new Table();
