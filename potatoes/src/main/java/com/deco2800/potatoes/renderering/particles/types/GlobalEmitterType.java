@@ -88,8 +88,8 @@ public class GlobalEmitterType extends ParticleType {
                     } else {
                         newP.alive = true;
                         // lol
-                        newP.x = random.nextFloat() * 20000 - 10000;
-                        newP.y = random.nextFloat() * 20000 - 10000;
+                        newP.x = random.nextFloat() * 40000 - 20000;
+                        newP.y = random.nextFloat() * 40000 - 20000;
 
                         float min = this.getSpeedVarianceMin();
                         float max = this.getSpeedVarianceMax();
