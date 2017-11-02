@@ -160,18 +160,29 @@ public class PathManager extends Manager {
         }
 
         int nearest = dots.findClosest(self);
+        System.out.println("Begin path finding");
+        System.out.println("\tNext point: " + nearest);
         while (true) {
             int next = tree.get(nearest);
+            System.out.println("\tNext point: " + next);
             Shape2D nextGoal = next == -1 ? goal : dots.find(next);
             Line2D line = new Line2D(new Point2D(self.getX(), self.getY()),
                     new Point2D(nextGoal.getX(), nextGoal.getY()));
-            if (next == -1 || world.getEntitiesOverlapping(line).anyMatch(x -> true)) {
+            boolean collides = world
+                .getEntitiesOverlapping(line)
+                .filter(entity -> !entity.getMask().equals(goal))
+                .filter(entity -> !entity.getMask().equals(self))
+                .anyMatch(x -> {System.out.println(x); return true;});
+            if (collides) {
                 break;
-            }
-            else {
+            } else if (next == -1) {
+                nearest = next;
+                break;
+            } else {
                 nearest = next;
             }
         }
+        System.out.println("\tFinal point: " + nearest);
 
         return nearest == -1 ? new Point2D(goal.getX(), goal.getY()) : (Point2D) dots.find(nearest);
     }
