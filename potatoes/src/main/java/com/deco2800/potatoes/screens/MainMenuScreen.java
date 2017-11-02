@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -88,8 +89,8 @@ public class MainMenuScreen implements Screen {
         // Draw/update gui
         stage.act();
         stage.getBatch().begin();
-        stage.getBatch().draw(textureManager.getTexture("backgroundMainMenu"), 0, 0, Gdx.graphics.getWidth(),
-                Gdx.graphics.getHeight());
+        Texture t = textureManager.getTexture("backgroundMainMenu");
+        stage.getBatch().draw(t, 0 - (int)(t.getWidth() / 2.0) + (int)(stage.getWidth() / 2.0),  0 - (int)(t.getHeight() / 2.0) + (int)(stage.getHeight() / 2.0), t.getWidth(), t.getHeight());
 
 
         stage.getBatch().end();

@@ -187,14 +187,7 @@ public class DamageTree extends AbstractTree implements Tickable {
     public DamageTree(float posX, float posY, DamageTreeType texture) {
         super(posX, posY, 1f, 1f);
         damageTreeType=texture;
-        texture = texture;
-    }
-
-
-    public DamageTree(float posX, float posY, DamageTreeType texture, float maxHealth,float damage) {
-        super(posX, posY, 1f, 1f);
-        damageTreeType=texture;
-        texture = texture;
+        updateTexture();
     }
 
     @Override

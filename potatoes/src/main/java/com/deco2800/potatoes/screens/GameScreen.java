@@ -228,7 +228,7 @@ public class GameScreen implements Screen {
 		GameManager.get().getManager(WaveManager.class).regularGame(WaveManager.EASY);
 			
 		/* Randomly generate trees in each world */
-		AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType())};
+		AbstractTree[] forestTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new AcornTreeType()), new DefenseTree(0, 0)};
 		randomlyGenerateTrees(GameManager.get().getManager(WorldManager.class).getWorld(ForestWorld.get()), forestTrees);
 
 		AbstractTree[] desertTrees = {new SeedTree(0, 0), new PineTree(0, 0), new FoodTree(0, 0), new DamageTree(0, 0, new CactusTreeType())};

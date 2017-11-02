@@ -20,7 +20,7 @@ public class DuckLife implements CheatExecution {
         else {
             if (emitter == null) {
                 emitter = new ParticleEmitter(0, 0,
-                        new GlobalEmitterType(1000, 5000.0f, 100.0f, 30, t.getTexture("duck")));
+                        new GlobalEmitterType(2000, 5000.0f, 75.0f, 30, t.getTexture("duck")));
             }
 
             m.addParticleEmitter(0, emitter);

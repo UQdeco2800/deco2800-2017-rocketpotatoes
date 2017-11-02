@@ -170,8 +170,15 @@ public abstract class AbstractTree extends MortalEntity implements Tickable, Has
 	public void resetStats() {
 		this.addMaxHealth(getUpgradeStats().getHealth() - this.getMaxHealth());
 		this.heal(getMaxHealth());
-		setAnimation(getUpgradeStats().getAnimation().apply(this));
+		updateTexture();
 		setRegisteredEvents(true);
+	}
+
+	/**
+	 * Updates the texture based on the upgrade stats
+	 */
+	public void updateTexture() {
+		setAnimation(getUpgradeStats().getAnimation().apply(this));
 	}
 
 	/**
