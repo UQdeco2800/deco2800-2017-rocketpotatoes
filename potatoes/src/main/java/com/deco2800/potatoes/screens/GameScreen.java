@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.deco2800.potatoes.RocketPotatoes;
 import com.deco2800.potatoes.cheats.CheatList;
 import com.deco2800.potatoes.entities.Tickable;
-import com.deco2800.potatoes.entities.portals.BasePortal;
 import com.deco2800.potatoes.entities.trees.*;
 import com.deco2800.potatoes.gui.*;
 import com.deco2800.potatoes.handlers.MouseHandler;
@@ -322,7 +321,6 @@ public class GameScreen implements Screen {
 	}
 
 	private void tickGame(long timeDelta) {
-
 		// Tick other stuff maybe
 		for (Renderable e : GameManager.get().getWorld().getEntities().values()) {
 			if (e instanceof Tickable) {

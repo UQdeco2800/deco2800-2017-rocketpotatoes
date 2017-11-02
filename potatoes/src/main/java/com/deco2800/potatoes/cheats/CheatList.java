@@ -56,6 +56,17 @@ public class CheatList {
                 Key.LEFT,
                 Key.UP,
                 Key.LEFT
-                );
+        );
+
+        manager.addCheatCode(new PotatoLife(),
+                Key.UP,
+                Key.RIGHT,
+                Key.UP,
+                Key.RIGHT,
+                Key.UP,
+                Key.RIGHT,
+                Key.UP,
+                Key.RIGHT
+        );
     }
 }
