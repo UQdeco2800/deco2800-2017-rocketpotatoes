@@ -26,7 +26,7 @@ public class PathManager extends Manager {
     private Map<Pair<Integer>, Float> graph;
     private LRUCache<TreeKey, Map<Integer, Integer>> trees;
 
-    private static int NUMBER_OF_RANDOM_NODES = 100;
+    private static int NUMBER_OF_RANDOM_NODES = 200;
 
     /**
      * Used to determine which shortest-path tree an enemy should follow.
@@ -67,7 +67,7 @@ public class PathManager extends Manager {
     /**
      * Updates the graph, by removing lines that are already in use.
      */
-    private void updateGraph() {
+    public void updateGraph() {
         age += 1;
         graph = new HashMap<>();
         World world = GameManager.get().getWorld();
@@ -79,7 +79,13 @@ public class PathManager extends Manager {
                 Line2D line = new Line2D(first, second);
                 // check that no entities overlap the line between these paths
                 if (!world.getEntitiesOverlapping(line).anyMatch(x -> true)) {
-                    graph.put(new Pair(i, j), (float) Math.sqrt(line.getLenSqr()));
+                    float cost = 0;
+                    for (int k = 0; k < Math.sqrt(line.getLenSqr()); ++k) {
+                        int x = (int) ((second.getX() - first.getX()) * k + first.getX());
+                        int y = (int) ((second.getY() - first.getY()) * k + first.getY());
+                        cost += 1 / (0.001f + world.getTerrain(x, y).getMoveScale());
+                    }
+                    graph.put(new Pair(i, j), cost);
                 }
             }
         }
@@ -137,8 +143,12 @@ public class PathManager extends Manager {
         World world = GameManager.get().getWorld();
 
         for (int i = 0; i < NUMBER_OF_RANDOM_NODES; ++i) {
-            dots.insert(i, new Point2D((float) (Math.random() * world.getWidth()),
-                        (float) (Math.random() * world.getLength())));
+            float x, y;
+            do {
+                x = (float) Math.random() * world.getWidth();
+                y = (float) Math.random() * world.getLength();
+            } while (world.getTerrain((int) x, (int) y).getMoveScale() == 0);
+            dots.insert(i, new Point2D(x, y));
         }
 
         updateGraph();
@@ -161,11 +171,8 @@ public class PathManager extends Manager {
         }
 
         int nearest = dots.findClosest(self);
-        System.out.println("Begin path finding");
-        System.out.println("\tNext point: " + nearest);
         while (true) {
             int next = tree.get(nearest);
-            System.out.println("\tNext point: " + next);
             Shape2D nextGoal = next == -1 ? goal : dots.find(next);
             Line2D line = new Line2D(new Point2D(self.getX(), self.getY()),
                     new Point2D(nextGoal.getX(), nextGoal.getY()));
@@ -175,7 +182,13 @@ public class PathManager extends Manager {
                 .filter(entity -> !entity.getMask().equals(self))
                 .filter(entity -> entity.isStatic())
                 .anyMatch(x -> {System.out.println(x); return true;});
-            if (collides) {
+            float cost = 0;
+            for (int k = 0; k < Math.sqrt(line.getLenSqr()); ++k) {
+                int x = (int) ((self.getX() - nextGoal.getX()) * k + nextGoal.getX());
+                int y = (int) ((self.getY() - nextGoal.getY()) * k + nextGoal.getY());
+                cost += 1 / (0.001f + world.getTerrain(x, y).getMoveScale());
+            }
+            if (collides || cost > 1000) {
                 break;
             } else if (next == -1) {
                 nearest = next;
@@ -184,7 +197,6 @@ public class PathManager extends Manager {
                 nearest = next;
             }
         }
-        System.out.println("\tFinal point: " + nearest);
 
         return nearest == -1 ? new Point2D(goal.getX(), goal.getY()) : (Point2D) dots.find(nearest);
     }

@@ -6,6 +6,7 @@ import com.deco2800.potatoes.collisions.Point2D;
 import com.deco2800.potatoes.entities.effects.Effect;
 import com.deco2800.potatoes.entities.projectiles.Projectile;
 import com.deco2800.potatoes.managers.GameManager;
+import com.deco2800.potatoes.managers.PathManager;
 import com.deco2800.potatoes.renderering.Renderable;
 
 import java.util.HashSet;
@@ -178,6 +179,10 @@ public abstract class AbstractEntity implements Renderable, Comparable<AbstractE
 
 		this.texture = texture;
 		setMass();
+
+        if (isStatic) {
+            GameManager.get().getManager(PathManager.class).updateGraph();
+        }
 	}
 
 
